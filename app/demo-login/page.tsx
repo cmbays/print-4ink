@@ -27,7 +27,7 @@ export default function DemoLoginPage() {
       } else {
         setError('Invalid access code. Please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
