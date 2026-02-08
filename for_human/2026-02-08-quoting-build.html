@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quoting Vertical Build &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tag-feature,
+    .tag-build    { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-decision,
+    .tag-learning { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .meta-item {
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .session-resume {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+
+    .session-resume code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--action);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    .related-nav { margin-bottom: 32px; }
+
+    .related-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .related-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .related-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      transition: all 0.15s ease;
+    }
+
+    .related-link:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    .related-link .related-desc {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .header-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 32px 0;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    td:first-child { color: var(--text-primary); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .check-pass { color: var(--success); }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-feature">Feature</span>
+        <span class="tag tag-build">Build</span>
+      </div>
+
+      <h1>Quoting Vertical Build</h1>
+      <p class="subtitle">Complete implementation of the Quoting vertical &mdash; 3 pages, 4 reusable components, expanded data layer. Built with 6 parallel agents via TeamCreate.</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">February 8, 2026</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>feature/quoting-build</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Mockup</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Quoting (Pilot)</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume 26f630e2-3a37-4531-846a-e627322fdbe6</code>
+      </div>
+    </header>
+
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="2026-02-08-strategic-pivot.html">
+          &larr; Strategic Pivot <span class="related-desc">&mdash; Vertical-by-vertical strategy</span>
+        </a>
+        <a class="related-link" href="2026-02-08-quoting-discovery.html">
+          &larr; Quoting Discovery <span class="related-desc">&mdash; Print Life analysis + interview</span>
+        </a>
+      </div>
+    </nav>
+
+    <hr class="header-divider">
+
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value">31</div>
+        <div class="stat-label">Files Changed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3,874</div>
+        <div class="stat-label">Lines Added</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">116</div>
+        <div class="stat-label">Tests Passing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Parallel Agents</div>
+      </div>
+    </div>
+
+    <!-- Verification -->
+    <h2>Verification</h2>
+    <div class="check-grid">
+      <div class="check-item">
+        <span class="check-pass">&#10003;</span> TypeScript &mdash; 0 errors
+      </div>
+      <div class="check-item">
+        <span class="check-pass">&#10003;</span> ESLint &mdash; 0 errors/warnings
+      </div>
+      <div class="check-item">
+        <span class="check-pass">&#10003;</span> Tests &mdash; 116/116 pass
+      </div>
+      <div class="check-item">
+        <span class="check-pass">&#10003;</span> Build &mdash; all routes generated
+      </div>
+    </div>
+
+    <!-- PR -->
+    <h2>Pull Request</h2>
+    <div class="card">
+      <div class="card-title"><a href="https://github.com/cmbays/print-4ink/pull/13">PR #13</a> &mdash; feat: Build complete Quoting vertical</div>
+      <div class="card-desc">31 files, 3,874 insertions, 54 deletions. Ready for review.</div>
+    </div>
+
+    <!-- Pages -->
+    <h2>Pages Built</h2>
+
+    <div class="card">
+      <div class="card-title">/quotes &mdash; Quotes List</div>
+      <div class="card-desc">DataTable with status tab filters (All/Draft/Sent/Accepted/Declined/Revised), debounced search, column sorting, row action dropdown (View/Edit/Duplicate/Send), empty state with CTA.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">/quotes/new &mdash; New Quote Form</div>
+      <div class="card-desc">Single-page form with customer combobox, multiple line items (garment picker + color swatch + size grid + print locations), instant client-side pricing, price override, notes accordion, Save as Draft / Save & Send actions.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">/quotes/[id] &mdash; Quote Detail</div>
+      <div class="card-desc">Read-only view with breadcrumbs, customer info, line items with color swatches + sizes + locations, pricing breakdown with override indicator, internal/customer notes, action buttons (Edit/Duplicate/Send/Email Preview).</div>
+    </div>
+
+    <!-- Components -->
+    <h2>Reusable Components</h2>
+
+    <table>
+      <tr>
+        <th>Component</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><strong>ColorSwatchPicker</strong></td>
+        <td>S&S Activewear-style dense swatch grid. 42 colors, search, favorites, keyboard navigation, ARIA labels. 308 lines.</td>
+      </tr>
+      <tr>
+        <td><strong>CustomerCombobox</strong></td>
+        <td>Popover + Command pattern. Type-ahead search with customer info card. "Add New Customer" trigger opens modal.</td>
+      </tr>
+      <tr>
+        <td><strong>EmailPreviewModal</strong></td>
+        <td>Email preview dialog with To/Subject/Body fields. Mock send with toast confirmation.</td>
+      </tr>
+      <tr>
+        <td><strong>StatusBadge</strong></td>
+        <td>Reusable badge with semantic color mapping per quote status (Draft=muted, Sent=action, Accepted=success, Declined=error, Revised=warning).</td>
+      </tr>
+    </table>
+
+    <!-- Data Layer -->
+    <h2>Data Layer</h2>
+
+    <table>
+      <tr>
+        <th>Schema</th>
+        <th>Changes</th>
+      </tr>
+      <tr>
+        <td><strong>color.ts</strong> (NEW)</td>
+        <td>42 mock colors with hex, swatchTextColor, family, isFavorite. Mirrors S&S Activewear API shapes.</td>
+      </tr>
+      <tr>
+        <td><strong>quote.ts</strong></td>
+        <td>5 statuses (draft/sent/accepted/declined/revised). Line items with sizes record, print locations, colorsPerLocation, unitPrice, lineTotal. Quote adds subtotal, priceOverride, notes, updatedAt, sentAt.</td>
+      </tr>
+      <tr>
+        <td><strong>garment.ts</strong></td>
+        <td>Added garmentCatalogSchema with brand, SKU, name, basePrice, availableColors, availableSizes.</td>
+      </tr>
+      <tr>
+        <td><strong>mock-data.ts</strong></td>
+        <td>Expanded: 5 customers, 42 colors, 5 garment catalog entries, 6 quotes (all statuses).</td>
+      </tr>
+    </table>
+
+    <!-- Build Approach -->
+    <h2>Build Approach</h2>
+    <p>Used git worktree for isolation and TeamCreate for parallel agent orchestration:</p>
+
+    <h3>Phase A (4 agents in parallel)</h3>
+    <ul>
+      <li><strong>schema-agent</strong>: Updated schemas, expanded mock data, added 116 tests</li>
+      <li><strong>swatch-agent</strong>: Built ColorSwatchPicker (308 lines)</li>
+      <li><strong>combobox-agent</strong>: Built CustomerCombobox + AddCustomerModal</li>
+      <li><strong>list-agent</strong>: Built QuotesDataTable + StatusBadge + quotes page</li>
+    </ul>
+
+    <h3>Phase B (2 agents after Phase A)</h3>
+    <ul>
+      <li><strong>form-agent</strong>: Built QuoteForm + LineItemRow + PricingSummary + /quotes/new</li>
+      <li><strong>detail-agent</strong>: Built quote detail page + QuoteActions + EmailPreviewModal</li>
+    </ul>
+
+    <!-- Next Steps -->
+    <h2>Next Steps</h2>
+    <ol>
+      <li>Merge PR #13 after review</li>
+      <li>Run quality-gate audit on all 3 screens</li>
+      <li>Demo to 4Ink owner, collect feedback</li>
+      <li>Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)</li>
+      <li>Move to Invoicing vertical</li>
+    </ol>
+
+    <footer>
+      Screen Print Pro &mdash; Quoting Vertical Build &mdash; February 8, 2026
+    </footer>
+  </div>
+</body>
+</html>

@@ -5,14 +5,14 @@
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-08
 **Last Verified**: 2026-02-08
-**Status**: Quoting discovery COMPLETE. All 4 discovery docs populated. Breadboarding skill created. Ready for BUILD phase.
+**Status**: Quoting vertical BUILD COMPLETE. PR #13 open for review. 3 pages + 4 components + expanded data layer. All checks pass (tsc, lint, 116 tests, build).
 
 ## What's Built
 
 ### Infrastructure
 - [x] Next.js 16.1.6 scaffold with App Router, TypeScript, Turbopack
 - [x] Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
-- [x] shadcn/ui components: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form
+- [x] shadcn/ui components: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form, accordion, checkbox, command, popover, scroll-area, sonner
 - [x] Fonts: Inter + JetBrains Mono via `next/font`
 - [x] Dark mode default (`className="dark"` on `<html>`)
 - [x] Vitest setup with schema tests (66 tests, 6 test files)
@@ -31,8 +31,22 @@
 
 ### Data Layer
 - [x] Zod schemas: `job.ts`, `quote.ts`, `customer.ts`, `garment.ts`, `screen.ts`
-- [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels
-- [x] Mock data: 3 customers, 6 jobs, 3 quotes, 5 screens
+- [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels/colors
+- [x] Mock data: 5 customers, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garment catalog entries
+
+### Quoting Vertical (PR #13)
+- [x] **Quotes List** (`/quotes`) — DataTable with status tab filters, debounced search, column sort, row actions, empty state
+- [x] **New Quote Form** (`/quotes/new`) — Single-page form with CustomerCombobox, LineItemRows (garment + color swatch + sizes + print locations), PricingSummary with price override, notes accordion, Save as Draft / Save & Send
+- [x] **Quote Detail** (`/quotes/[id]`) — Read-only view with breadcrumbs, customer info, line items, pricing breakdown, notes, action buttons
+- [x] **ColorSwatchPicker** — S&S Activewear-style dense grid, search, favorites, keyboard nav, ARIA
+- [x] **CustomerCombobox** — Type-ahead with info card, "Add New Customer" modal
+- [x] **AddCustomerModal** — Dialog with name/email/company fields, validation
+- [x] **EmailPreviewModal** — Email preview with mock send
+- [x] **StatusBadge** — Reusable badge with semantic color mapping
+- [x] **Color schema** (`lib/schemas/color.ts`) — id, name, hex, swatchTextColor, family, isFavorite
+- [x] **Quote schema** updated — 5 statuses, lineItems with sizes/locations/pricing, priceOverride, notes
+- [x] **Garment schema** updated — catalog with brand, SKU, basePrice, availableColors/Sizes
+- [x] **116 tests** across 7 test files — all passing
 
 ### Agent & Skill Infrastructure
 - [x] **5 agents** in `.claude/agents/`: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
@@ -82,8 +96,8 @@
 **Quoting Vertical — Scope Definition** (COMPLETE, UPDATED):
 - **`docs/strategy/quoting-scope-definition.md`** — Updated with all discovery findings: S&S color swatch component (CORE), price override, quote notes, "Revised" status, functional Duplicate/Edit, "Save & Send" flow. **STATUS**: Complete, ready for breadboarding.
 
-**Quoting Vertical — Breadboarding** (NEXT):
-- **`docs/breadboards/quoting-breadboard.md`** — To be created. Will map all UI affordances, code affordances, data stores, and wiring for the quoting vertical before build begins. **STATUS**: Not started.
+**Quoting Vertical — Build** (COMPLETE):
+- **PR #13** (`feature/quoting-build`) — Full implementation: 3 pages, 4 reusable components, expanded data layer. 31 files, 3874 lines. All checks pass. **STATUS**: Open for review.
 
 **Navigation & Reference**:
 - **`docs/strategy/STRATEGY_README.md`** — Master index of all strategy documents. How to use each folder by phase. Cross-references to related docs. **STATUS**: Complete.
@@ -95,21 +109,17 @@
 - `progress.txt` — This file, session log and current state
 - `docs/IMPLEMENTATION_PLAN.md` — Old 10-step plan (superseded, kept for reference)
 
-### Next Actions — BUILD PHASE
+### Next Actions — DEMO & ITERATION PHASE
 
-**✅ Discovery phase COMPLETE.** All blocking dependencies resolved.
+**✅ Build phase COMPLETE.** PR #13 open for review.
 
-**📅 Build Order** (ready to start):
-1. Create **Quoting Breadboard** (`docs/breadboards/quoting-breadboard.md`) — Map all affordances, wiring, component boundaries, build order
-2. Build **Quotes List** (`/quotes`) — DataTable, status filters, search, quick actions
-3. Build **New Quote Form** (`/quotes/new`) — Single-page form, instant pricing, S&S color swatch
-4. Build **Quote Detail** (`/quotes/[id]`) — Read-only view, action buttons
-5. Build **S&S Color Swatch Component** — Dense grid, search, favorites (reusable)
-6. Build **Customer Combobox** — Type-ahead with "Add New" modal
-7. Build **Email Preview Modal** — "Send to Customer" mockup
-8. Run quality-gate audit on all screens
-9. Demo to user, collect feedback, iterate
-10. Move to Invoicing vertical
+**📅 Next Steps**:
+1. ~~Build Quoting vertical~~ — DONE (PR #13)
+2. Merge PR #13 after review
+3. Run quality-gate audit on all 3 screens
+4. Demo to user (4Ink owner), collect feedback
+5. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
+6. Move to Invoicing vertical
 
 **Key Design Requirements** (from discovery):
 - Instant client-side pricing — never block input
@@ -144,3 +154,4 @@
 | 2026-02-08 | For Human Template Standardization | Created `for_human/_template.html` reference template. Standardized all 6 existing HTML files with consistent header: back nav, tag pills (6 types: Feature/Build/Plan/Decision/Research/Learning), meta grid (Date/Branch/Phase/Vertical), session resume, related session navigation. Updated `index.html` with multi-tag support, `README.md` with template docs, `CLAUDE.md` For Human Docs section with tag definitions and template rules. |
 | 2026-02-08 | Quoting Discovery: COMPLETE | Conducted full discovery phase for Quoting vertical. (1) **Playwright exploration**: Set up headless browser in /tmp/pw-explorer/, navigated through 4Ink's customer portal at project-builder.app. Captured Steps 1-3 (product catalog, qty/size entry, art upload). Documented: 6-step flow, 103 color swatches, blocking recalculation, Angular SPA with S&S Activewear data. Steps 4-6 unreachable without art upload. (2) **Web research**: Print Life founded by Cam Earven, ~200 shops, Angular SPA, solo dev, QuickBooks integration. 2024 updates: impression cost display. Q1 2025: payment fixes, matrix pricing types. (3) **User interview**: 5-20 quotes/week, 50/50 simple/complex, 10 min per quote. Critical pain: recalculation blocks input, mandatory unused steps, forced color swatches, art style change resets all selections. Wants: hybrid approval (customer submits → shop reviews price → approves), quote reuse/duplication, keyboard navigation, simpler workflow. Currently builds quotes internally, communicates price by phone. No formal quote tracking. Tools: Print Life + QuickBooks + Excel + Email + Shopify + Square. (4) **Documents completed**: print-life-quoting-analysis.md (full feature list, 10 friction points, UI patterns, competitive landscape), print-life-journey-quoting.md (step-by-step journey, time distribution, success metrics), screen-print-pro-journey-quoting.md (redesigned single-page flow, targets 60-70% time reduction, S&S color swatch grid, instant pricing, hybrid approval). Updated quoting-scope-definition.md with all findings (S&S color swatch component, price override, quote notes, Revised status, functional Duplicate/Edit). (5) **4Ink owner request**: Color swatches should use S&S Activewear-style dense palette with color names in white font overlaid on swatches. |
 | 2026-02-08 | Breadboarding Skill | Reassessed shaping-skills decision post-pivot. Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Created: (1) `.claude/skills/breadboarding/SKILL.md` (9-step workflow: identify places, map UI/code affordances, map data stores, verify wiring, identify component boundaries, define build order); (2) `.claude/skills/breadboarding/templates/breadboard-template.md` (output template with YAML frontmatter); (3) `.claude/skills/breadboarding/reference/concepts.md` (key concepts: affordances, places, wiring, component boundaries). Integrated into workflow: updated vertical-by-vertical-strategy.md with Phase 2.5 (Breadboarding), updated CLAUDE.md (architecture, pre-build ritual, skills table, orchestration patterns), updated frontend-builder agent (added breadboarding to skills, breadboard-first startup sequence), updated AGENTS.md (Vertical Build Chain pattern, 5 orchestration patterns). Created `docs/breadboards/` directory. Ran doc-sync agent to fix drift in MEMORY.md and STRATEGY_README.md. Skill count: 6 → 8 (added vertical-discovery + breadboarding). |
+| 2026-02-08 | Quoting Vertical: BUILD COMPLETE | Built full Quoting vertical using git worktree (`feature/quoting-build`) and 6 parallel agents via TeamCreate. **Phase A** (4 agents parallel): (1) schema-agent updated quote/garment schemas, created color schema, expanded mock data (5 customers, 42 colors, 5 garment catalog, 6 quotes), added 116 tests; (2) swatch-agent built ColorSwatchPicker (308 lines, S&S-style dense grid, search, favorites, keyboard nav); (3) combobox-agent built CustomerCombobox + AddCustomerModal; (4) list-agent built QuotesDataTable + StatusBadge + quotes page. **Phase B** (2 agents after A): (5) form-agent built QuoteForm + LineItemRow + PricingSummary + new quote page; (6) detail-agent built quote detail page + QuoteActions + EmailPreviewModal. Fixed all lint errors (7→0). All checks pass: tsc 0 errors, lint 0 errors/warnings, 116/116 tests, production build success. PR #13 created. 31 files changed, 3874 insertions. |

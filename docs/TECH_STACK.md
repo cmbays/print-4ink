@@ -51,9 +51,12 @@ depends_on: []
 |------|---------|---------|
 | **shadcn/ui** | 3.8.4 (dev) | Radix-based primitives. Copy-paste components in `components/ui/`. |
 | **radix-ui** | ^1.4.3 | Underlying primitives for shadcn/ui (dialog, dropdown, etc.) |
+| **cmdk** | ^1.1.1 | Command palette / combobox primitive. Used by shadcn/ui Command component. |
+| **next-themes** | ^0.4.6 | Theme management (dark/light mode). Provides `useTheme` hook for Sonner toaster theming. |
+| **sonner** | ^2.0.7 | Toast notification library. Wraps in shadcn/ui `<Toaster>` component. |
 | **Lucide React** | ^0.563.0 | Icon library. Consistent naming, tree-shakeable. |
 
-**Installed shadcn/ui components**: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form
+**Installed shadcn/ui components**: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form, checkbox, command, popover, accordion, scroll-area
 
 **When to add a component**: Run `npx shadcn@latest add <component>`. Always check if one already exists in `components/ui/` before creating custom UI.
 
