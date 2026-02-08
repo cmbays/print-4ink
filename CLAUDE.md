@@ -221,6 +221,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
+| `vertical-discovery` | Start of each new vertical | 7-step competitor research + user interview + journey design methodology |
 | `screen-builder` | Starting Steps 1-10 | Build screens with design system + quality checklist + templates |
 | `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report |
 | `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions |

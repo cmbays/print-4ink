@@ -15,6 +15,8 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Type |
 |------|-------|------|------|
+| [2026-02-08-quoting-discovery.html](2026-02-08-quoting-discovery.html) | Quoting discovery complete: Playwright exploration, user interview, 10 friction points, improved journey design, S&S color swatch request | 2026-02-08 | Feature |
+| [2026-02-08-strategic-pivot.html](2026-02-08-strategic-pivot.html) | Strategic pivot to vertical-by-vertical approach, 4-phase methodology, discovery docs | 2026-02-08 | Plan |
 | [session-2026-02-08-agent-architecture.html](session-2026-02-08-agent-architecture.html) | 5 agents, 4 skills, orchestration patterns, agent registry | 2026-02-08 | Feature |
 | [session-2026-02-07-shaping-skills.html](session-2026-02-07-shaping-skills.html) | Shaping skills evaluation, pre-build ritual, Phase 1 workflow | 2026-02-07 | Decision |
 | [session-2026-02-07-skills-implementation.html](session-2026-02-07-skills-implementation.html) | Built screen-builder + quality-gate skills (20 files) | 2026-02-07 | Feature |
