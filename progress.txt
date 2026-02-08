@@ -61,10 +61,23 @@
 
 ## What's Next
 
-See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
-- Step 1: Shared layout polish (sidebar active states, topbar search, breadcrumbs)
-- Step 2: Jobs List page (`/jobs`)
-- Step 3: Job Detail page (`/jobs/[id]`)
+**STRATEGIC PIVOT (2026-02-08)**: Moving from linear 10-step implementation plan to **vertical-by-vertical approach** based on 4Ink's validated pain points.
+
+**New Process**:
+1. Quoting vertical (PILOT): Discovery → Scope → Build → Demo & Iterate
+2. Invoicing vertical (then)
+3. Customer Management vertical (then)
+4. Pricing Matrix vertical (then)
+5. Reporting vertical (stretch)
+
+**Next Immediate Actions**:
+1. ✅ Create strategic plan document (`.claude/plans/vertical-by-vertical-strategy.md`)
+2. ✅ Create discovery phase documents (interview questions, Print Life analysis, journey maps)
+3. ✅ Create scope definition (`docs/strategy/quoting-scope-definition.md`)
+4. **NEXT**: Complete Quoting discovery phase (user interview, Print Life trial)
+5. **THEN**: Build Quoting mockup (3-4 days)
+
+**See**: `.claude/plans/vertical-by-vertical-strategy.md` for full rationale and timeline
 
 ## Session Log
 
@@ -78,4 +91,5 @@ See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
 | 2026-02-07 | For Human Docs | Created `for_human/` framework: index.html (navigable), README.md (index table + bundling rules), first session doc (shaping-skills evaluation). Added standing rule to CLAUDE.md to always create/update for_human docs after completing work. Configured CodeRabbit with local learning scope. |
 | 2026-02-07 | Skills | Created 2 project skills in `.claude/skills/`: `screen-builder` (workflow + 3 templates + 2 checklists + 2 reference docs) and `quality-gate` (10-category audit + scoring rubric). Added Project Skills section to CLAUDE.md. Skills encode design system, quality checklist, and domain knowledge into repeatable workflows for Steps 1-10. |
 | 2026-02-07 | CI + Testing | Set up Vitest with schema validation tests (66 tests across 6 files). Created GitHub Actions CI workflow (typecheck, lint, test, build). Fixed mock data UUIDs — Zod v4 validates RFC-4122 variant byte strictly. Added Vitest to TECH_STACK.md. |
-| 2026-02-08 | Agent Architecture | Created 5 agents (.claude/agents/) and 4 new skills (.claude/skills/). Agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync. Skills: pre-build-interrogator, design-audit, feature-strategy, doc-sync. Created AGENTS.md registry, agent-outputs/ directory, and updated CLAUDE.md with agent infrastructure section. |
+| 2026-02-08 | Agent Architecture | Created 5 agents (.claude/agents/) and 4 new skills (.claude/skills/). Agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync. Skills: pre-build-interrogator, design-audit, feature-strategy, doc-sync. Created AGENTS.md registry, agent-outputs/ directory, and updated CLAUDE.md with agent infrastructure section. Addressed CodeRabbit review: fixed .gitignore nested file tracking, added markdown language tags, corrected branch metadata, added research methodology step to feature-strategy. Merged PR #6 to main. |
+| 2026-02-08 | Strategic Pivot: Vertical-by-Vertical | Implemented comprehensive pivot from linear 10-step plan to vertical-by-vertical approach. Created: (1) `.claude/plans/vertical-by-vertical-strategy.md` (full strategic rationale, 4-phase methodology, timeline); (2) `docs/strategy/quoting-discovery-interview-questions.md` (30-45 min interview guide with 25+ questions); (3) `docs/competitive-analysis/print-life-quoting-analysis.md` (Print Life feature/workflow analysis template); (4) `docs/competitive-analysis/print-life-journey-quoting.md` (detailed journey map with friction points); (5) `docs/strategy/quoting-scope-definition.md` (CORE/PERIPHERAL/INTERCONNECTION categorization, acceptance criteria, quality checklists). Updated progress.txt with new roadmap. Ready for user's Quoting discovery phase. |
