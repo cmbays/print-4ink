@@ -1,7 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-
-type QuoteStatus = "draft" | "sent" | "accepted" | "declined" | "revised";
+import type { QuoteStatus } from "@/lib/schemas/quote";
 
 interface StatusBadgeProps {
   status: QuoteStatus;

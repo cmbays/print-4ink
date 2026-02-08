@@ -20,6 +20,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 
+/** Subset of Customer fields needed by the combobox */
 export interface CustomerOption {
   id: string;
   name: string;
@@ -33,27 +34,6 @@ export interface CustomerComboboxProps {
   onSelect: (customerId: string) => void;
   onAddNew?: () => void;
 }
-
-export const MOCK_CUSTOMERS: CustomerOption[] = [
-  {
-    id: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    name: "Marcus Rivera",
-    company: "River City Brewing Co.",
-    email: "marcus@rivercitybrewing.com",
-  },
-  {
-    id: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
-    name: "Sarah Chen",
-    company: "Lonestar Lacrosse League",
-    email: "sarah@lonestarlax.org",
-  },
-  {
-    id: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
-    name: "Jake Thompson",
-    company: "Thompson Family Reunion 2026",
-    email: "jake.thompson@gmail.com",
-  },
-];
 
 export function CustomerCombobox({
   customers,

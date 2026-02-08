@@ -9,8 +9,8 @@ export const quoteStatusEnum = z.enum([
 ]);
 
 export const quoteLineItemSchema = z.object({
-  garmentId: z.string(),
-  colorId: z.string(),
+  garmentId: z.string().min(1),
+  colorId: z.string().min(1),
   sizes: z.record(z.string(), z.number().int().nonnegative()),
   printLocations: z.array(z.string()),
   colorsPerLocation: z.number().int().positive().default(1),

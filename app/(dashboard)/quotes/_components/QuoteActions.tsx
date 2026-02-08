@@ -49,6 +49,7 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
         <Button
           variant="outline"
           size="sm"
+          disabled
           onClick={() =>
             toast.info("Invoice conversion coming in Phase 2")
           }
@@ -60,6 +61,7 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
         <Button
           variant="outline"
           size="sm"
+          disabled
           onClick={() =>
             toast.info("PDF generation coming in Phase 2")
           }
@@ -77,10 +79,7 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
           quote={{
             quoteNumber: quote.quoteNumber,
             total: quote.priceOverride ?? quote.total,
-            lineItems: quote.lineItems.map((li) => ({
-              garmentId: li.garmentId,
-              lineTotal: li.lineTotal,
-            })),
+            lineItems: quote.lineItems,
           }}
           customer={{
             name: customer.name,

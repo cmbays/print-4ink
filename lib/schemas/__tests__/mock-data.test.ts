@@ -134,7 +134,7 @@ describe("data coverage", () => {
   });
 
   it("has quotes with priceOverride", () => {
-    const withOverride = quotes.filter((q) => q.priceOverride !== undefined);
+    const withOverride = quotes.filter((q) => q.priceOverride != null);
     expect(withOverride.length).toBeGreaterThanOrEqual(1);
   });
 });

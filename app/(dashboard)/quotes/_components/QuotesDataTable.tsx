@@ -36,14 +36,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { StatusBadge } from "@/components/features/StatusBadge";
+import type { QuoteStatus } from "@/lib/schemas/quote";
+import { quotes as rawQuotes, customers } from "@/lib/mock-data";
 
 // ---------------------------------------------------------------------------
-// Types & Mock Data
+// Derived table rows from canonical mock data
 // ---------------------------------------------------------------------------
 
-type QuoteStatus = "draft" | "sent" | "accepted" | "declined" | "revised";
-
-interface MockQuote {
+interface TableQuote {
   id: string;
   quoteNumber: string;
   customerId: string;
@@ -54,68 +54,19 @@ interface MockQuote {
   createdAt: string;
 }
 
-const MOCK_QUOTES: MockQuote[] = [
-  {
-    id: "q-1024",
-    quoteNumber: "Q-1024",
-    customerId: "c1",
-    customerName: "River City Brewing Co.",
-    status: "draft",
-    lineItemCount: 1,
-    total: 475.0,
-    createdAt: "2026-02-06T10:00:00Z",
-  },
-  {
-    id: "q-1025",
-    quoteNumber: "Q-1025",
-    customerId: "c2",
-    customerName: "Lonestar Lacrosse League",
-    status: "sent",
-    lineItemCount: 2,
-    total: 3110.0,
-    createdAt: "2026-02-05T14:30:00Z",
-  },
-  {
-    id: "q-1026",
-    quoteNumber: "Q-1026",
-    customerId: "c3",
-    customerName: "Thompson Family Reunion",
-    status: "accepted",
-    lineItemCount: 1,
-    total: 980.0,
-    createdAt: "2026-02-03T09:15:00Z",
-  },
-  {
-    id: "q-1027",
-    quoteNumber: "Q-1027",
-    customerId: "c4",
-    customerName: "Sunset 5K Run",
-    status: "declined",
-    lineItemCount: 1,
-    total: 340.0,
-    createdAt: "2026-01-28T11:00:00Z",
-  },
-  {
-    id: "q-1028",
-    quoteNumber: "Q-1028",
-    customerId: "c5",
-    customerName: "Lakeside Music Festival",
-    status: "revised",
-    lineItemCount: 3,
-    total: 2100.0,
-    createdAt: "2026-02-07T16:45:00Z",
-  },
-  {
-    id: "q-1029",
-    quoteNumber: "Q-1029",
-    customerId: "c1",
-    customerName: "River City Brewing Co.",
-    status: "draft",
-    lineItemCount: 1,
-    total: 525.0,
-    createdAt: "2026-02-08T08:30:00Z",
-  },
-];
+const MOCK_QUOTES: TableQuote[] = rawQuotes.map((q) => {
+  const customer = customers.find((c) => c.id === q.customerId);
+  return {
+    id: q.id,
+    quoteNumber: q.quoteNumber,
+    customerId: q.customerId,
+    customerName: customer?.company ?? customer?.name ?? "Unknown",
+    status: q.status,
+    lineItemCount: q.lineItems.length,
+    total: q.priceOverride ?? q.total,
+    createdAt: q.createdAt,
+  };
+});
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -260,9 +211,9 @@ export function QuotesDataTable() {
   const renderSortIcon = (column: SortKey) => {
     if (sortKey !== column) return null;
     return sortDir === "asc" ? (
-      <ChevronUp className="size-3.5" />
+      <ChevronUp className="size-4" />
     ) : (
-      <ChevronDown className="size-3.5" />
+      <ChevronDown className="size-4" />
     );
   };
 
@@ -452,7 +403,7 @@ export function QuotesDataTable() {
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ClipboardList className="size-10 text-muted-foreground" />
+          <ClipboardList className="size-6 text-muted-foreground" />
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {searchQuery || statusFilter !== "all"

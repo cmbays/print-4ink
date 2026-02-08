@@ -38,8 +38,11 @@ interface QuoteFormProps {
   quoteId?: string;
 }
 
+let lineItemCounter = 0;
 function createEmptyLineItem(): LineItemData {
+  lineItemCounter += 1;
   return {
+    id: `li-${Date.now()}-${lineItemCounter}`,
     garmentId: "",
     colorId: "",
     sizes: {},
@@ -58,7 +61,7 @@ function calculateUnitPrice(
   return garment.basePrice + colorsPerLocation * 0.5 + locationCount * 0.25;
 }
 
-export function QuoteForm({ initialData }: QuoteFormProps) {
+export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   const router = useRouter();
 
   // Customer state
@@ -211,6 +214,8 @@ export function QuoteForm({ initialData }: QuoteFormProps) {
     );
   }
 
+  const isEdit = mode === "edit";
+
   function handleSave(sendToCustomer: boolean) {
     if (!validate()) return;
 
@@ -219,9 +224,14 @@ export function QuoteForm({ initialData }: QuoteFormProps) {
         description: "The customer will receive an email with the quote.",
       });
     } else {
-      toast.success("Quote saved as draft", {
-        description: "You can continue editing this quote later.",
-      });
+      toast.success(
+        isEdit ? "Quote updated" : "Quote saved as draft",
+        {
+          description: isEdit
+            ? `Quote ${quoteId ?? ""} has been updated.`
+            : "You can continue editing this quote later.",
+        }
+      );
     }
 
     router.push("/quotes");
@@ -265,7 +275,7 @@ export function QuoteForm({ initialData }: QuoteFormProps) {
           )}
           {lineItems.map((item, i) => (
             <LineItemRow
-              key={i}
+              key={item.id}
               index={i}
               data={item}
               onChange={handleLineItemChange}
@@ -381,7 +391,7 @@ export function QuoteForm({ initialData }: QuoteFormProps) {
               onClick={() => handleSave(false)}
             >
               <Save size={16} className="mr-2" />
-              Save as Draft
+              {isEdit ? "Update Quote" : "Save as Draft"}
             </Button>
             <Button
               onClick={() => handleSave(true)}

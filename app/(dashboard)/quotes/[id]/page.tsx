@@ -135,6 +135,13 @@ export default async function QuoteDetailPage({
       {/* Line Items */}
       <div className="space-y-3">
         <h2 className="text-lg font-semibold text-foreground">Line Items</h2>
+        {quote.lineItems.length === 0 && (
+          <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-8">
+            <p className="text-sm text-muted-foreground">
+              No line items on this quote.
+            </p>
+          </div>
+        )}
         {quote.lineItems.map((item, index) => {
           const garment = garmentCatalog.find((g) => g.id === item.garmentId);
           const color = colors.find((c) => c.id === item.colorId);

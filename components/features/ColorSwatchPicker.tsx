@@ -11,40 +11,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-
-export interface ColorOption {
-  id: string;
-  name: string;
-  hex: string;
-  hex2?: string;
-  swatchTextColor: string;
-  family: string;
-}
+import type { Color } from "@/lib/schemas/color";
+import { colors as catalogColors } from "@/lib/mock-data";
 
 interface ColorSwatchPickerProps {
-  colors: ColorOption[];
+  colors: Color[];
   selectedColorId?: string;
   onSelect: (colorId: string) => void;
   favorites?: string[];
   onToggleFavorite?: (colorId: string) => void;
 }
 
-const MOCK_COLORS: ColorOption[] = [
-  { id: "c-black", name: "Black", hex: "#000000", swatchTextColor: "#FFFFFF", family: "Black" },
-  { id: "c-white", name: "White", hex: "#FFFFFF", swatchTextColor: "#000000", family: "White" },
-  { id: "c-navy", name: "Navy", hex: "#1B2A4A", swatchTextColor: "#FFFFFF", family: "Blue" },
-  { id: "c-red", name: "Red", hex: "#CC0000", swatchTextColor: "#FFFFFF", family: "Red" },
-  { id: "c-royal", name: "Royal Blue", hex: "#1E3A8A", swatchTextColor: "#FFFFFF", family: "Blue" },
-  { id: "c-kelly", name: "Kelly Green", hex: "#006B3F", swatchTextColor: "#FFFFFF", family: "Green" },
-  { id: "c-gold", name: "Gold", hex: "#FFD700", swatchTextColor: "#000000", family: "Yellow" },
-  { id: "c-orange", name: "Orange", hex: "#FF6600", swatchTextColor: "#FFFFFF", family: "Orange" },
-  { id: "c-charcoal", name: "Charcoal", hex: "#36454F", swatchTextColor: "#FFFFFF", family: "Gray" },
-  { id: "c-hthr-grey", name: "Heather Grey", hex: "#9CA3AF", hex2: "#B0B0B0", swatchTextColor: "#000000", family: "Gray" },
-  { id: "c-maroon", name: "Maroon", hex: "#800000", swatchTextColor: "#FFFFFF", family: "Red" },
-  { id: "c-purple", name: "Purple", hex: "#6B21A8", swatchTextColor: "#FFFFFF", family: "Purple" },
-];
-
-const MOCK_FAVORITES = ["c-black", "c-white", "c-navy", "c-red", "c-royal"];
+const DEFAULT_COLORS = catalogColors;
+const DEFAULT_FAVORITES = catalogColors
+  .filter((c) => c.isFavorite === true)
+  .map((c) => c.id);
 
 function Swatch({
   color,
@@ -54,7 +35,7 @@ function Swatch({
   onToggleFavorite,
   tabIndex,
 }: {
-  color: ColorOption;
+  color: Color;
   isSelected: boolean;
   isFavorite: boolean;
   onSelect: () => void;
@@ -64,13 +45,18 @@ function Swatch({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button
-          type="button"
+        <div
           role="option"
           aria-selected={isSelected}
           aria-label={`${color.name}${isSelected ? " (selected)" : ""}`}
           tabIndex={tabIndex}
           onClick={onSelect}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onSelect();
+            }
+          }}
           className={cn(
             "relative flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-transform",
             "hover:scale-105 hover:ring-1 hover:ring-foreground/30",
@@ -120,14 +106,14 @@ function Swatch({
               }}
             >
               <Star
-                size={10}
+                size={16}
                 className={cn(isFavorite && "fill-current")}
                 style={{ color: color.swatchTextColor }}
                 aria-hidden="true"
               />
             </button>
           )}
-        </button>
+        </div>
       </TooltipTrigger>
       <TooltipContent side="bottom" sideOffset={4}>
         {color.name}
@@ -137,10 +123,10 @@ function Swatch({
 }
 
 export function ColorSwatchPicker({
-  colors = MOCK_COLORS,
+  colors = DEFAULT_COLORS,
   selectedColorId,
   onSelect,
-  favorites = MOCK_FAVORITES,
+  favorites = DEFAULT_FAVORITES,
   onToggleFavorite,
 }: ColorSwatchPickerProps) {
   const [search, setSearch] = useState("");
@@ -232,7 +218,7 @@ export function ColorSwatchPicker({
           {favoriteColors.length > 0 && (
             <div className="mb-3">
               <p className="mb-1.5 flex items-center gap-1 text-xs font-medium text-muted-foreground">
-                <Star size={12} className="fill-current" aria-hidden="true" />
+                <Star size={16} className="fill-current" aria-hidden="true" />
                 Favorites
               </p>
               <div
@@ -304,5 +290,3 @@ export function ColorSwatchPicker({
     </TooltipProvider>
   );
 }
-
-export { MOCK_COLORS, MOCK_FAVORITES };

@@ -11,20 +11,14 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import type { Quote } from "@/lib/schemas/quote";
+import type { Customer } from "@/lib/schemas/customer";
 
 interface EmailPreviewModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  quote: {
-    quoteNumber: string;
-    total: number;
-    lineItems: { garmentId: string; lineTotal: number }[];
-  };
-  customer: {
-    name: string;
-    email: string;
-    company: string;
-  };
+  quote: Pick<Quote, "quoteNumber" | "total" | "lineItems">;
+  customer: Pick<Customer, "name" | "email" | "company">;
 }
 
 function formatCurrency(amount: number): string {
@@ -61,7 +55,7 @@ export function EmailPreviewModal({
         </DialogHeader>
 
         {/* Email metadata */}
-        <div className="space-y-1 text-sm">
+        <div className="space-y-2 text-sm">
           <p>
             <span className="text-muted-foreground">To: </span>
             <span className="text-foreground">{customer.email}</span>
@@ -75,13 +69,13 @@ export function EmailPreviewModal({
         </div>
 
         {/* Email body preview */}
-        <div className="rounded-md border border-border bg-card p-4 space-y-3 text-sm text-foreground">
+        <div className="rounded-md border border-border bg-card p-4 space-y-4 text-sm text-foreground">
           <p>Hi {firstName},</p>
           <p>
             Here&apos;s your quote for your recent order. Please review the
             details below.
           </p>
-          <div className="space-y-1">
+          <div className="space-y-2">
             <p>
               <span className="text-muted-foreground">Quote: </span>
               {quote.quoteNumber}
@@ -98,7 +92,7 @@ export function EmailPreviewModal({
               </span>
             </p>
           </div>
-          <div className="rounded-md border border-border bg-surface px-3 py-2">
+          <div className="rounded-md border border-border bg-surface px-4 py-2">
             <p className="font-medium text-action">
               View Quote →
             </p>

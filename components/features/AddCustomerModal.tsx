@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// Simple 3-field modal — React Hook Form + Zod would be overkill here.
+// Validation is minimal (name required, email required + format check).
 export interface AddCustomerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

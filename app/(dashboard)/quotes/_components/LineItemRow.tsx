@@ -25,6 +25,7 @@ import type { GarmentCatalog } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
 
 export interface LineItemData {
+  id: string;
   garmentId: string;
   colorId: string;
   sizes: Record<string, number>;
