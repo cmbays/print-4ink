@@ -1,8 +1,15 @@
-# APP_FLOW Standard
+---
+title: "APP_FLOW_STANDARD"
+description: "Template and process for writing APP_FLOW documentation. Defines required sections, user journey format, and state definitions."
+category: reference
+status: active
+phase: all
+last_updated: 2026-02-04
+last_verified: 2026-02-07
+depends_on: []
+---
 
-**Last Updated**: 2026-02-04
-**Status**: Active
-**Purpose**: Template and process for creating APP_FLOW documentation
+# APP_FLOW Standard
 
 ---
 

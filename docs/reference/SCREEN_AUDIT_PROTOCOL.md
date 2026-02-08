@@ -1,14 +1,23 @@
-# Playground Audit Protocol
+---
+title: "SCREEN_AUDIT_PROTOCOL"
+description: "15-point visual quality audit for screens. Run before marking implementation steps complete or at user review checkpoints."
+category: reference
+status: active
+phase: all
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on:
+  - docs/reference/FRONTEND_GUIDELINES.md
+  - docs/APP_FLOW.md
+---
 
-**Last Updated**: 2026-02-04
-**Status**: Active
-**Purpose**: Systematic quality checklist for playground UI review
+# Screen Audit Protocol
 
 ---
 
 ## Overview
 
-This protocol defines the systematic audit process for evaluating playground UI implementations. Every playground must pass this audit before being considered production-ready.
+This protocol defines the systematic audit process for evaluating Screen Print Pro page implementations. Every screen must pass this audit before being considered done (per CLAUDE.md Quality Checklist).
 
 **Philosophy**: "Linear calm + Raycast polish + Neobrutalist delight"
 
@@ -18,9 +27,9 @@ This protocol defines the systematic audit process for evaluating playground UI 
 
 Before running the audit, ensure:
 
-- [ ] FRONTEND_GUIDELINES.md has been read and internalized
-- [ ] APP_FLOW exists for this playground (or create one first)
-- [ ] Playground loads without console errors
+- [ ] FRONTEND_GUIDELINES.md has been reviewed
+- [ ] APP_FLOW.md entry exists for this screen (route, purpose, connections)
+- [ ] Page loads without console errors
 - [ ] All interactive features are functional
 
 ---
@@ -35,29 +44,29 @@ Before running the audit, ensure:
 |----------|---------------|
 | Does the eye land where it should? | Primary action is most prominent |
 | Is the most important element obvious? | No competing elements at same visual weight |
-| Can a user understand the screen in 2 seconds? | Purpose is immediately clear |
+| Can a user understand the screen in 5 seconds? | Purpose is immediately clear |
 
-**Token Check**: Are heading sizes using `--text-2xl`, `--text-xl`, `--text-lg` hierarchy?
+**Check**: Heading sizes use `text-2xl` > `text-xl` > `text-lg` hierarchy.
 
 #### 2. Spacing & Rhythm
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Is whitespace consistent and intentional? | All spacing uses `--space-*` tokens |
-| Do elements breathe or are they cramped? | Minimum `--space-4` between sections |
+| Is whitespace consistent and intentional? | All spacing uses Tailwind utilities |
+| Do elements breathe or are they cramped? | Minimum `gap-4` between sections |
 | Is vertical rhythm harmonious? | Consistent gaps throughout |
 
-**Token Check**: No hardcoded pixel values for margins/padding.
+**Check**: No hardcoded pixel values for margins/padding.
 
 #### 3. Typography
 
 | Question | Pass Criteria |
 |----------|---------------|
 | Are type sizes establishing clear hierarchy? | Max 3-4 distinct sizes per screen |
-| Are there too many font weights competing? | Max 3 weights (regular, medium, semibold) |
+| Are there too many font weights competing? | Max 3 weights (normal, medium, semibold) |
 | Does the type feel calm or chaotic? | Inter for UI, JetBrains Mono for code only |
 
-**Token Check**: All text uses `--text-*` and `--leading-*` tokens.
+**Check**: All text uses Tailwind `text-*` and `font-*` utilities.
 
 #### 4. Color
 
@@ -67,7 +76,7 @@ Before running the audit, ensure:
 | Do colors guide attention or scatter it? | Status colors only for communication |
 | Is contrast sufficient for accessibility? | WCAG AA minimum (4.5:1 for text) |
 
-**Token Check**: Colors use `--color-*` tokens, no hex/rgb literals.
+**Check**: Colors use design tokens — no hex/rgb literals in components.
 
 #### 5. Alignment & Grid
 
@@ -87,29 +96,29 @@ Before running the audit, ensure:
 |----------|---------------|
 | Are similar elements styled identically? | Same component = same styles everywhere |
 | Are interactive elements obviously interactive? | Cursor changes, hover states present |
-| Are all states accounted for? | Disabled, hover, active, focus all styled |
+| Are all states accounted for? | Disabled, hover, active, focus-visible all styled |
 
-**Token Check**: Buttons use `.btn`, `.btn-primary` patterns from guidelines.
+**Check**: Uses shadcn/ui components from `components/ui/` where possible.
 
 #### 7. Iconography
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Are icons consistent in style and weight? | All from same icon set |
-| Are they consistent in size? | Icons use standard sizes (16px, 20px, 24px) |
+| Are icons consistent in style and weight? | All from Lucide React |
+| Are they consistent in size? | Icons use standard sizes (`h-4 w-4`, `h-5 w-5`, `h-6 w-6`) |
 | Do they support meaning or just decorate? | Every icon has purpose |
 
-**Standard**: Use Lucide icons via CDN.
+**Standard**: Lucide React only. No emoji. No custom SVGs.
 
 #### 8. Motion & Transitions
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Do transitions feel natural and purposeful? | Use `--transition-*` tokens |
+| Do transitions feel natural and purposeful? | Tailwind `transition-*` for hover, Framer Motion for layout |
 | Is there motion that exists for no reason? | Remove decorative animations |
-| Does the app feel responsive to interaction? | Immediate feedback on click/hover |
+| Does the page feel responsive to interaction? | Immediate feedback on click/hover |
 
-**Token Check**: Respects `prefers-reduced-motion`.
+**Check**: Respects `prefers-reduced-motion`.
 
 ---
 
@@ -119,45 +128,56 @@ Before running the audit, ensure:
 
 | Question | Pass Criteria |
 |----------|---------------|
-| What does every screen look like with no data? | Intentional empty state designed |
-| Do blank screens feel intentional or broken? | Clear messaging, not just blank |
-| Is the user guided toward their first action? | CTA present in empty state |
+| What does this screen look like with no data? | Intentional empty state designed |
+| Do blank screens feel intentional or broken? | Clear messaging with Lucide icon |
+| Is the user guided toward their first action? | CTA present in empty state where appropriate |
+
+**Screen Print Pro examples**:
+- Jobs List with no jobs: "No jobs yet. Jobs will appear here."
+- Dashboard with no blocked items: "All clear — no blocked jobs"
+- Customer Detail with no quotes: "No quotes for this customer"
 
 #### 10. Loading States
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Are loading indicators consistent? | Same spinner/skeleton everywhere |
-| Does the app feel alive while waiting? | Visual feedback during operations |
+| Are loading indicators consistent? | Same skeleton/spinner pattern everywhere |
+| Does the page feel alive while waiting? | Visual feedback during operations |
 | Are long operations handled? | Progress indication for >2s operations |
+
+**Note**: Phase 1 uses mock data (synchronous), so loading states are minimal. Design skeleton patterns for Phase 2.
 
 #### 11. Error States
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Are error messages styled consistently? | Use `--color-error` token |
+| Are error messages styled consistently? | Use `text-error` / `border-error` tokens |
 | Do they feel helpful and clear? | Plain language, actionable guidance |
 | Are error messages accessible? | `role="alert"` or `aria-live` |
+
+**Screen Print Pro examples**:
+- Invalid job ID: "Job not found" + link back to `/jobs`
+- No search results: "No results for '[query]'" + clear search action
 
 ---
 
 ### Responsive & Accessible (12-15)
 
-#### 12. Dark Mode / Theming
+#### 12. Dark Mode
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Is dark mode actually designed? | Not just inverted colors |
-| Do all tokens hold up in dark mode? | Test contrast ratios |
-| Are shadows appropriate for dark? | Subtle or removed in dark mode |
+| Do all semantic colors hold up? | Using `bg-background`, `text-foreground`, etc. |
+| Are there hardcoded colors bypassing the theme? | No hex values in component code |
+| Are shadows appropriate? | Subtle or removed |
 
-**Note**: Our playgrounds default to dark mode (monochrome base).
+**Note**: Dark mode is default. Verify all elements use Tailwind semantic classes.
 
 #### 13. Density
 
 | Question | Pass Criteria |
 |----------|---------------|
-| Can anything be removed without losing meaning? | Apply Jobs filter |
+| Can anything be removed without losing meaning? | Apply Jobs Filter |
 | Are there redundant elements? | No duplicate information |
 | Is every element earning its place? | Justify each element's existence |
 
@@ -169,17 +189,17 @@ Before running the audit, ensure:
 | Does content remain readable at all widths? | No horizontal overflow |
 | Are controls accessible at all sizes? | Touch targets adequate |
 
-**Note**: Desktop-first. Mobile is future scope.
+**Note**: Desktop-first. Mobile is Phase 2 scope.
 
 #### 15. Accessibility
 
 | Requirement | Implementation |
 |-------------|----------------|
-| Keyboard navigation | All interactive elements focusable |
-| Focus states | Visible focus indicators (`:focus-visible`) |
-| ARIA labels | Dynamic content has appropriate roles |
+| Keyboard navigation | All interactive elements focusable via Tab |
+| Focus states | Visible `:focus-visible` indicators |
+| ARIA labels | Icon-only buttons have `aria-label`, dynamic content has roles |
 | Color contrast | 4.5:1 minimum for text |
-| Screen reader flow | Logical reading order |
+| Screen reader flow | Logical reading order, headings in correct hierarchy |
 
 ---
 
@@ -217,11 +237,11 @@ For **every element** on the screen, ask these five questions:
 ## Audit Output Template
 
 ```markdown
-## Playground Audit: [Name]
+## Screen Audit: [Screen Name]
 
 **Date**: YYYY-MM-DD
-**Reviewer**: [Name/Agent]
-**APP_FLOW**: [Link or "Not Created"]
+**Route**: /path
+**APP_FLOW entry**: Verified / Missing
 
 ### Summary
 
@@ -235,13 +255,13 @@ For **every element** on the screen, ask these five questions:
 
 ### Detailed Findings
 
-#### Passing (✅)
+#### Passing
 - [List items that pass]
 
-#### Warnings (⚠️)
+#### Warnings
 - [List items with minor issues]
 
-#### Failing (❌)
+#### Failing
 - [List items that fail]
 
 ### Jobs Filter Results
@@ -250,21 +270,10 @@ For **every element** on the screen, ask these five questions:
 - Elements to redesign: X
 - Elements to remove: X
 
-### Phased Remediation Plan
-
-#### Phase 1 — Critical (Do First)
-1. [Issue]: [Current] → [Required] → [Reason]
-
-#### Phase 2 — Refinement (Do Next)
-1. [Issue]: [Current] → [Required] → [Reason]
-
-#### Phase 3 — Polish (Do Last)
-1. [Issue]: [Current] → [Required] → [Reason]
-
 ### Verdict
 
-- [ ] **Pass**: Ready for production
-- [ ] **Conditional Pass**: Usable with Phase 1 fixes
+- [ ] **Pass**: Ready for user review
+- [ ] **Conditional Pass**: Usable with fixes noted above
 - [ ] **Fail**: Requires significant work
 ```
 
@@ -274,50 +283,32 @@ For **every element** on the screen, ask these five questions:
 
 | Score | Meaning | Action |
 |-------|---------|--------|
-| 15/15 | Exceptional | Ship it |
-| 12-14 | Good | Polish and ship |
-| 9-11 | Acceptable | Address warnings |
-| 6-8 | Needs Work | Complete Phase 1 |
-| <6 | Failing | Significant rework |
+| 15/15 | Exceptional | Ready for user acceptance testing |
+| 12-14 | Good | Polish and present |
+| 9-11 | Acceptable | Address warnings before review |
+| 6-8 | Needs Work | Complete failing items |
+| <6 | Failing | Significant rework required |
 
 ---
 
-## Quick Checklist (Copy/Paste)
+## When to Run This Audit
 
-```markdown
-### Quick Audit Checklist
+**Required**:
+- Before marking an IMPLEMENTATION_PLAN step as complete
+- Before each user review checkpoint (Checkpoints 1, 2, 3)
 
-#### Visual Quality
-- [ ] 1. Visual hierarchy clear
-- [ ] 2. Spacing uses tokens
-- [ ] 3. Typography hierarchy (max 4 sizes)
-- [ ] 4. Color is monochrome base + status accents
-- [ ] 5. Pixel-perfect alignment
-
-#### Component Consistency
-- [ ] 6. Components styled consistently
-- [ ] 7. Icons from single set (Lucide)
-- [ ] 8. Motion uses tokens, respects reduced-motion
-
-#### State Handling
-- [ ] 9. Empty states designed
-- [ ] 10. Loading states consistent
-- [ ] 11. Error states helpful and accessible
-
-#### Responsive & Accessible
-- [ ] 12. Dark mode properly designed
-- [ ] 13. Density: nothing redundant
-- [ ] 14. Works at 1280px, 1440px, 1920px
-- [ ] 15. Keyboard nav, focus states, ARIA, contrast
-```
+**Recommended**:
+- After significant UI changes to existing screens
+- During the Step 10 polish pass
 
 ---
 
 ## Related Documents
 
-- [FRONTEND_GUIDELINES.md](../reference/FRONTEND_GUIDELINES.md) - Design tokens and patterns
-- [APP_FLOW_STANDARD.md](./APP_FLOW_STANDARD.md) - User journey documentation
-- [design-reviewer.md](../../.claude/agents/design-reviewer.md) - Agent definition
+- [FRONTEND_GUIDELINES.md](./FRONTEND_GUIDELINES.md) — Design tokens and component patterns
+- [UX_HEURISTICS.md](./UX_HEURISTICS.md) — 10-point UX quality checklist
+- [APP_FLOW_STANDARD.md](./APP_FLOW_STANDARD.md) — User flow documentation standard
+- [CLAUDE.md](../../CLAUDE.md) — Quality Checklist (distilled version of this audit)
 
 ---
 
@@ -325,4 +316,5 @@ For **every element** on the screen, ask these five questions:
 
 | Date | Change |
 |------|--------|
-| 2026-02-04 | Initial protocol created |
+| 2026-02-04 | Initial protocol (as PLAYGROUND_AUDIT_PROTOCOL.md) |
+| 2026-02-07 | Adapted for Screen Print Pro: renamed, updated examples, fixed references |

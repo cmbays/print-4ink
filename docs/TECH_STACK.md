@@ -1,9 +1,17 @@
+---
+title: "TECH_STACK"
+description: "Every dependency mapped to its domain purpose, with decision context, forbidden packages, and version policy."
+category: canonical
+status: active
+phase: all
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on: []
+---
+
 # Screen Print Pro — Tech Stack
 
 > Every tool earns its place. This document captures **what** we use, **why** we chose it, and **when** to reach for it.
-
-**Last Updated**: 2026-02-07
-**Last Verified**: 2026-02-07
 
 ---
 

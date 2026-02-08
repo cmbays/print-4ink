@@ -1,3 +1,14 @@
+---
+title: "CLAUDE.md"
+description: "AI operating rules, design system, coding standards, and canonical doc registry. Loaded every session."
+category: canonical
+status: active
+phase: all
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on: []
+---
+
 # Screen Print Pro — CLAUDE.md
 
 ## Project Overview
@@ -161,12 +172,10 @@ These documents define the project. Reference them, keep them current, and never
 
 Extended context lives in `docs/reference/` — consult only when needed:
 
-- `FRONTEND_GUIDELINES.md` — Full design token definitions, component CSS patterns
-- `PLAYGROUND_AUDIT_PROTOCOL.md` — 15-point quality audit checklist
-- `UX_USER_RESEARCH.md` — User pain points, "Love Factor" criteria
-- `UX_HEURISTICS.md` — 10 UX heuristics for evaluation
-- `UX_TASK_FLOWS.md` — Ideal user journey mappings
-- `APP_FLOW_STANDARD.md` — User flow documentation standard
+- `FRONTEND_GUIDELINES.md` — Design tokens, component patterns, Tailwind + shadcn/ui usage
+- `SCREEN_AUDIT_PROTOCOL.md` — 15-point visual quality audit checklist
+- `UX_HEURISTICS.md` — 10-point UX quality checklist with Screen Print Pro examples
+- `APP_FLOW_STANDARD.md` — Template for writing APP_FLOW documentation
 
 ## Lessons Learned
 

@@ -1,3 +1,14 @@
+---
+title: "PROJECT_BIBLE"
+description: "Original project context document. Domain workflows, core business logic, and initial tech stack decisions. Superseded by CLAUDE.md for daily use."
+category: reference
+status: active
+phase: all
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on: []
+---
+
 # **Screen Print Pro \- Project Bible**
 
 ## **1\. Project Overview**
