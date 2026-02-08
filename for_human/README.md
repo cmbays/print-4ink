@@ -25,6 +25,27 @@ Open any `.html` file in your browser, or start with `index.html` for a navigabl
 - Links to artifacts created or modified
 - The `claude --resume` command to continue that session
 
+## Finding the Session ID
+
+Each session doc includes a `claude --resume <session-id>` command. To find the correct session ID:
+
+```bash
+# Most recently modified .jsonl is the current/latest session
+ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1
+```
+
+The filename (without `.jsonl`) is the session ID. For example:
+```
+58358bf9-61aa-4451-a184-c3d91d1871bd.jsonl
+→ claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd
+```
+
+You can also list recent sessions to find a specific one:
+```bash
+# Show 5 most recent sessions with dates
+ls -lt ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -5
+```
+
 ## Bundling Rules
 
 - **Bundle together**: Content from the same feature build, multi-session work on one screen, or closely related decisions
