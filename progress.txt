@@ -5,7 +5,7 @@
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-08
 **Last Verified**: 2026-02-08
-**Status**: Scaffold complete, agent architecture established, ready for feature build
+**Status**: Quoting discovery COMPLETE. All 4 discovery docs populated. Ready for BUILD phase.
 
 ## What's Built
 
@@ -68,13 +68,16 @@
 **Master Strategy** (READ FIRST):
 - **`.claude/plans/vertical-by-vertical-strategy.md`** — Full strategic rationale, 4-phase methodology, timeline, success criteria. Master reference for entire approach.
 
-**Quoting Vertical — Discovery Phase** (IN PROGRESS):
-- **`docs/strategy/quoting-discovery-interview-questions.md`** — Interview guide for Chris. 30-45 min, 25+ questions covering workflow → pain points → interconnections → wishlist. **STATUS**: Ready to use, awaiting interview.
-- **`docs/competitive-analysis/print-life-quoting-analysis.md`** — Template to document Print Life features, UI patterns, workflows from screenshots + trial. **STATUS**: Skeleton ready, waiting for user's trial data.
-- **`docs/competitive-analysis/print-life-journey-quoting.md`** — Template to map Print Life workflows with friction points, click/time analysis, interconnections. **STATUS**: Skeleton ready, waiting for user's trial data.
+**Quoting Vertical — Discovery Phase** (COMPLETE):
+- **`docs/strategy/quoting-discovery-interview-questions.md`** — Interview guide. **STATUS**: Used, interview complete.
+- **`docs/competitive-analysis/print-life-quoting-analysis.md`** — Full competitive analysis with Playwright data + web research + user interview findings. 10 friction points, click/time metrics, UI patterns. **STATUS**: Complete.
+- **`docs/competitive-analysis/print-life-journey-quoting.md`** — Full journey map with detailed step-by-step flow, friction point inventory, time distribution, success metrics. **STATUS**: Complete.
 
-**Quoting Vertical — Scope Definition** (READY TO BRIEF BUILDERS):
-- **`docs/strategy/quoting-scope-definition.md`** — Comprehensive scope: CORE features (Quotes List, Quote Detail, New Quote Form), PERIPHERAL (mocked UI), INTERCONNECTIONS (minimal), NOT BUILDING list. Includes acceptance criteria and quality checklist per feature. **STATUS**: Complete and validated, ready to brief frontend-builder agent.
+**Quoting Vertical — Improved Journey Design** (COMPLETE):
+- **`docs/strategy/screen-print-pro-journey-quoting.md`** — Redesigned single-page quoting flow. Addresses all 10 friction points. Targets: 3-4 min simple quote (60-70% faster), 8-12 clicks (60% fewer). Includes S&S-style color swatch grid, instant pricing, hybrid approval workflow, quote reuse. **STATUS**: Complete.
+
+**Quoting Vertical — Scope Definition** (COMPLETE, UPDATED):
+- **`docs/strategy/quoting-scope-definition.md`** — Updated with all discovery findings: S&S color swatch component (CORE), price override, quote notes, "Revised" status, functional Duplicate/Edit, "Save & Send" flow. **STATUS**: Complete, ready to brief frontend-builder agent.
 
 **Navigation & Reference**:
 - **`docs/strategy/STRATEGY_README.md`** — Master index of all strategy documents. How to use each folder by phase. Cross-references to related docs. **STATUS**: Complete.
@@ -86,23 +89,31 @@
 - `progress.txt` — This file, session log and current state
 - `docs/IMPLEMENTATION_PLAN.md` — Old 10-step plan (superseded, kept for reference)
 
-### Blocking Dependencies & Next Actions
+### Next Actions — BUILD PHASE
 
-**🚫 Cannot build Quoting until**: Discovery phase complete (user interview + Print Life trial analysis)
+**✅ Discovery phase COMPLETE.** All blocking dependencies resolved.
 
-**✅ Next Immediate Actions** (for user, within 3-5 days):
-1. Schedule 30-45 min Quoting interview with Chris using `docs/strategy/quoting-discovery-interview-questions.md`
-2. Complete Print Life trial (create simple + complex quotes, document steps, friction, time, clicks)
-3. Fill in `docs/competitive-analysis/print-life-quoting-analysis.md` and `.../print-life-journey-quoting.md` with trial findings
-4. Validate `docs/strategy/quoting-scope-definition.md` confirms CORE/PERIPHERAL/INTERCONNECTION alignment
-5. Create `docs/strategy/screen-print-pro-journey-quoting.md` with improved workflow design (goals, click reduction, time savings)
-
-**📅 Then I'll**:
+**📅 Build Order** (ready to start):
 1. Brief frontend-builder agent with scope definition + improved journey
-2. Build CORE features (Quotes List, Quote Detail, New Quote Form)
-3. Run quality-gate audit
-4. Demo to user, collect feedback
-5. Iterate if needed before moving to Invoicing vertical
+2. Build **Quotes List** (`/quotes`) — DataTable, status filters, search, quick actions
+3. Build **New Quote Form** (`/quotes/new`) — Single-page form, instant pricing, S&S color swatch
+4. Build **Quote Detail** (`/quotes/[id]`) — Read-only view, action buttons
+5. Build **S&S Color Swatch Component** — Dense grid, search, favorites (reusable)
+6. Build **Customer Combobox** — Type-ahead with "Add New" modal
+7. Build **Email Preview Modal** — "Send to Customer" mockup
+8. Run quality-gate audit on all screens
+9. Demo to user, collect feedback, iterate
+10. Move to Invoicing vertical
+
+**Key Design Requirements** (from discovery):
+- Instant client-side pricing — never block input
+- S&S-style dense color swatch grid (white text overlay, search, favorites)
+- Single-page form (no multi-step wizard)
+- Price override (editable grand total)
+- Hybrid approval workflow (UI in Phase 1, backend in Phase 2)
+- Quote statuses: Draft, Sent, Accepted, Declined, Revised
+- Duplicate Quote for reuse
+- Internal + customer-facing notes
 
 ### Timeline & Scope
 
@@ -124,3 +135,4 @@
 | 2026-02-07 | CI + Testing | Set up Vitest with schema validation tests (66 tests across 6 files). Created GitHub Actions CI workflow (typecheck, lint, test, build). Fixed mock data UUIDs — Zod v4 validates RFC-4122 variant byte strictly. Added Vitest to TECH_STACK.md. |
 | 2026-02-08 | Agent Architecture | Created 5 agents (.claude/agents/) and 4 new skills (.claude/skills/). Agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync. Skills: pre-build-interrogator, design-audit, feature-strategy, doc-sync. Created AGENTS.md registry, agent-outputs/ directory, and updated CLAUDE.md with agent infrastructure section. Addressed CodeRabbit review: fixed .gitignore nested file tracking, added markdown language tags, corrected branch metadata, added research methodology step to feature-strategy. Merged PR #6 to main. |
 | 2026-02-08 | Strategic Pivot: Vertical-by-Vertical | Implemented comprehensive pivot from linear 10-step plan to vertical-by-vertical approach. Created: (1) `.claude/plans/vertical-by-vertical-strategy.md` (full strategic rationale, 4-phase methodology per vertical, pilot Quoting plan, roadmap for 4 subsequent verticals, success criteria, 23-33 day timeline); (2) `docs/strategy/quoting-discovery-interview-questions.md` (30-45 min interview guide, 25+ structured questions covering workflow/pain points/interconnections/wishlist); (3) `docs/competitive-analysis/print-life-quoting-analysis.md` (template for Print Life feature/UI/workflow analysis, ready for user's trial data); (4) `docs/competitive-analysis/print-life-journey-quoting.md` (template for journey map with friction points, click/time analysis, interconnections); (5) `docs/strategy/quoting-scope-definition.md` (comprehensive scope: CORE/PERIPHERAL/INTERCONNECTIONS, acceptance criteria per feature, quality checklist); (6) `docs/strategy/STRATEGY_README.md` (master index, how to use each doc by phase, cross-references); (7) `for_human/2026-02-08-strategic-pivot.html` (beautiful summary for user review). Committed 2 PRs: dfe61cd (#7) + abb6063. Updated progress.txt with document map and blocking dependencies. Ready for user's Quoting discovery phase (interview + Print Life trial). |
+| 2026-02-08 | Quoting Discovery: COMPLETE | Conducted full discovery phase for Quoting vertical. (1) **Playwright exploration**: Set up headless browser in /tmp/pw-explorer/, navigated through 4Ink's customer portal at project-builder.app. Captured Steps 1-3 (product catalog, qty/size entry, art upload). Documented: 6-step flow, 103 color swatches, blocking recalculation, Angular SPA with S&S Activewear data. Steps 4-6 unreachable without art upload. (2) **Web research**: Print Life founded by Cam Earven, ~200 shops, Angular SPA, solo dev, QuickBooks integration. 2024 updates: impression cost display. Q1 2025: payment fixes, matrix pricing types. (3) **User interview**: 5-20 quotes/week, 50/50 simple/complex, 10 min per quote. Critical pain: recalculation blocks input, mandatory unused steps, forced color swatches, art style change resets all selections. Wants: hybrid approval (customer submits → shop reviews price → approves), quote reuse/duplication, keyboard navigation, simpler workflow. Currently builds quotes internally, communicates price by phone. No formal quote tracking. Tools: Print Life + QuickBooks + Excel + Email + Shopify + Square. (4) **Documents completed**: print-life-quoting-analysis.md (full feature list, 10 friction points, UI patterns, competitive landscape), print-life-journey-quoting.md (step-by-step journey, time distribution, success metrics), screen-print-pro-journey-quoting.md (redesigned single-page flow, targets 60-70% time reduction, S&S color swatch grid, instant pricing, hybrid approval). Updated quoting-scope-definition.md with all findings (S&S color swatch component, price override, quote notes, Revised status, functional Duplicate/Edit). (5) **4Ink owner request**: Color swatches should use S&S Activewear-style dense palette with color names in white font overlaid on swatches. |

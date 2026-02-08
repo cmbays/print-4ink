@@ -2,16 +2,29 @@
 title: "Quoting Vertical — Scope Definition"
 description: "What we'll build (CORE), what we'll mock (PERIPHERAL), what we'll minimize (INTERCONNECTIONS)"
 category: strategy
-status: draft
+status: complete
 phase: 1
 created: 2026-02-08
+last-verified: 2026-02-08
 ---
 
 # Quoting Vertical — Scope Definition
 
 **Purpose**: Define boundaries for Quoting mockup in Screen Print Pro
-**Status**: Draft (to be finalized after discovery interview)
-**Depends on**: Print Life analysis, discovery interview with Chris
+**Status**: Complete (finalized after Playwright exploration + user interview)
+**Depends on**: Print Life analysis (complete), user interview (complete)
+
+---
+
+## Terminology: Internal vs External Quoting
+
+| Term | Definition | Phase |
+|------|-----------|-------|
+| **Internal Quote** | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote. | **Phase 1** (building now) |
+| **External Quote** | Customer submits quote request via customer portal. Shop reviews, adjusts, approves. | **Phase 2** (UI mockups only in Phase 1) |
+| **Hybrid Approval** | Customer self-service + shop approval gate. Customer submits → shop reviews/adjusts price → approves → customer notified. | **Phase 2** (shop-side status tracking in Phase 1) |
+
+**Phase 1 scope**: Internal quoting only. "Send to Customer" shows email preview mockup but doesn't send. Customer portal link in email is non-functional. All quote statuses (Draft/Sent/Accepted/Declined/Revised) are tracked shop-side only.
 
 ---
 
@@ -26,12 +39,14 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
 **Features**:
 - [ ] DataTable display with columns: Quote #, Customer, Status, Line Items, Total, Date
 - [ ] Search by quote # or customer name (URL query param)
-- [ ] Filter by status: All, Draft, Sent, Accepted, Declined (URL query param)
+- [ ] Filter by status: All, Draft, Sent, Accepted, Declined, Revised (URL query param)
 - [ ] Sort by columns (clickable headers)
 - [ ] Click quote row → navigate to `/quotes/[id]`
 - [ ] "New Quote" button (primary CTA) → `/quotes/new`
 - [ ] Empty state: "No quotes yet" with link to create first quote
-- [ ] Mock data: 3-5 existing quotes in various statuses
+- [ ] Quick actions per row: Edit (Draft only), Duplicate, Send (Draft only), View
+- [ ] "Duplicate Quote" creates new draft pre-filled with same line items
+- [ ] Mock data: 5-6 existing quotes in various statuses (Draft, Sent, Accepted, Declined, Revised)
 
 **Acceptance Criteria**:
 - ✅ Can search for quote by customer name or quote number
@@ -44,7 +59,7 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
 - [ ] Visual hierarchy: "New Quote" button is primary action
 - [ ] Spacing: Tailwind tokens only
 - [ ] Typography: Max 3 sizes (header, body, small)
-- [ ] Color: Status badges only (Draft gray, Sent blue, Accepted green, Declined red)
+- [ ] Color: Status badges only (Draft gray, Sent cyan, Accepted green, Declined red, Revised amber)
 - [ ] Interactive states: All rows have hover state
 - [ ] Keyboard: Tab to quote, Enter to open
 - [ ] Accessibility: ARIA labels for status, sortable headers labeled
@@ -60,10 +75,11 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
 - [ ] Line items table: Description/Garment, Qty, Colors, Print Locations, Unit Price, Line Total
 - [ ] Totals section: Subtotal, Setup Fees, Grand Total
 - [ ] Action buttons:
-  - "Edit Quote" (non-functional, shows "Coming in Phase 2")
-  - "Duplicate Quote" (non-functional)
-  - "Send to Customer" (non-functional, shows email preview modal)
+  - "Edit Quote" → navigates to `/quotes/[id]/edit` (pre-filled form, Draft status only)
+  - "Duplicate Quote" → creates new draft at `/quotes/new` pre-filled with same line items
+  - "Send to Customer" → opens email preview modal (mockup, doesn't send)
   - "Convert to Invoice" (non-functional, shows "Coming in Phase 2")
+  - "Download PDF" (non-functional, shows "Coming in Phase 2")
 - [ ] Breadcrumb: Dashboard > Quotes > Q-1024
 - [ ] Back link to `/quotes`
 - [ ] Handle invalid quote ID (show "Quote not found" with link to quotes list)
@@ -98,24 +114,33 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
 - [ ] Line items section:
   - Start with 1 empty row
   - Per-line fields:
-    - Garment (dropdown/search: shows SKU + Style + Color)
-    - Quantity (number field)
-    - [OPTIONAL per discovery] Size breakdown (inline grid: S, M, L, XL with qty each)
-    - Print locations (multi-select or checklist: Front, Back, Sleeves, Full Back, Custom)
-    - Color count (number field)
+    - Garment (searchable combobox: shows Brand + SKU + Style Name)
+    - **Color selection: S&S-style dense swatch grid** (per 4Ink owner request)
+      - Swatches packed tight (~32-40px), color name in white text overlaid on swatch
+      - Search/filter bar above swatches
+      - Favorites row at top (starred colors)
+      - Dark text for very light colors (white, cream)
+    - Size breakdown (inline grid: XS, S, M, L, XL, 2XL, 3XL with qty per size)
+    - Print locations (checkbox group: Front, Back, L Sleeve, R Sleeve, Neck Label)
+    - Color count per location (number input, defaults to 1)
   - "Add Another Line Item" button adds new row
   - "Remove" button per row (if multiple rows exist)
-  - **Real-time pricing calculation**: As user fills fields, unit price and line total update automatically
+  - **Real-time pricing calculation**: Instant client-side — NEVER blocks input (addresses #1 friction point)
     - Formula (simplified): Unit Price = (Base Garment Price) + (Colors × Color Upcharge) + (Locations × Location Upcharge)
-    - Line Total = Unit Price × Quantity (or × sum of size breakdown if applicable)
+    - Line Total = Unit Price × sum of size breakdown quantities
 - [ ] Setup fees field (number, optional, default $0)
-- [ ] Totals (auto-calculated, read-only):
-  - Subtotal = sum of all line items
+- [ ] Totals section:
+  - Subtotal = sum of all line items (read-only)
   - Setup Fees = user-entered value
-  - Grand Total = Subtotal + Setup Fees
+  - Grand Total = Subtotal + Setup Fees (**editable for price override** — shop can adjust before customer sees)
+  - If overridden, show indicator: "Price adjusted from $X"
+- [ ] Notes section (collapsed accordion):
+  - Internal Notes (shop-only, not visible to customer)
+  - Customer Notes (visible on sent quote)
 - [ ] Action buttons:
-  - "Save as Draft" (validates form, adds to mock data, navigates to `/quotes/[new-id]`, shows toast)
-  - "Cancel" (navigates to `/quotes`)
+  - "Save as Draft" (secondary, validates form, saves with Draft status)
+  - "Save & Send to Customer" (primary CTA, saves + opens email preview modal)
+  - "Cancel" (text link, navigates to `/quotes`)
 - [ ] Form validation (Zod schema):
   - Customer: required
   - At least 1 line item: required
@@ -128,24 +153,57 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
   - Shift+Tab to go back
 
 **Acceptance Criteria**:
-- ✅ Can select customer from dropdown
+- ✅ Can select customer from dropdown (type-ahead search)
 - ✅ Can add multiple line items
-- ✅ Can specify garment, quantity, print locations, colors
-- ✅ Pricing calculates in real-time
-- ✅ Totals update automatically
+- ✅ Can specify garment, color (S&S-style swatch grid), size breakdown, print locations
+- ✅ Pricing calculates in real-time — **never blocks input**
+- ✅ Totals update automatically, grand total is overridable
 - ✅ Can save as draft (adds to mock quotes list)
+- ✅ Can save & send (opens email preview modal)
 - ✅ Validation prevents incomplete quotes
-- ✅ Keyboard navigable (no mouse required)
+- ✅ Keyboard navigable — tab through all fields without mouse
+- ✅ Color swatch grid uses S&S-style dense layout with white text overlay
 
 **Quality Checklist**:
-- [ ] Visual hierarchy: "Save as Draft" primary action (cyan, neobrutalist shadow)
+- [ ] Visual hierarchy: "Save & Send" is primary action (cyan, neobrutalist shadow), "Save as Draft" is secondary
 - [ ] Spacing: Clear section breaks, 8px base scale
 - [ ] Typography: Field labels clear, helper text for price formula
 - [ ] Color: Error messages red, success green, calculation feedback cyan
 - [ ] Interactive states: Required field indicators (*), hover states on inputs
 - [ ] Empty state: One blank line item ready to fill
-- [ ] Loading: N/A (synchronous calculations)
+- [ ] Loading: N/A (instant client-side calculations)
 - [ ] Error handling: Validation messages inline, prevent submission if invalid
+- [ ] Color swatch grid: Dense layout, white text overlay, search bar, favorites row
+
+---
+
+### ✅ S&S-Style Color Swatch Component (Reusable)
+
+**Purpose**: Dense color picker matching S&S Activewear UI, requested by 4Ink owner
+
+**Features**:
+- [ ] Dense grid of color swatches (~32-40px squares) packed tight with minimal gap
+- [ ] Color name displayed in **white text overlaid** on the swatch
+- [ ] Dark text for very light colors (white, cream, light yellow)
+- [ ] Search/filter bar above grid: type to filter colors by name
+- [ ] Favorites row at top: starred colors shown first (initially pre-populated with common colors)
+- [ ] Selected state: checkmark overlay + border highlight
+- [ ] Multi-select mode (for future use) vs single-select mode
+- [ ] Reusable component in `components/features/ColorSwatchPicker.tsx`
+- [ ] Mock color data: ~30-50 common garment colors with hex values
+
+**Acceptance Criteria**:
+- ✅ Swatches are tightly packed with color name visible on each swatch
+- ✅ Can search/filter colors by name
+- ✅ Favorites appear at top of grid
+- ✅ Selected color is visually distinct
+- ✅ Keyboard navigable (Arrow keys to move, Enter/Space to select)
+
+**Quality Checklist**:
+- [ ] Visual: Matches S&S Activewear color grid aesthetic (dense, no wasted space)
+- [ ] Typography: Color name small but legible (10-11px), white text with subtle shadow for readability
+- [ ] Interactive: Hover shows enlarged swatch or tooltip with full color name
+- [ ] Accessibility: ARIA labels for color names, keyboard navigation
 
 ---
 
@@ -192,6 +250,7 @@ These features are nice-to-have but won't block the demo. Show them in UI so the
 ### 🟡 "Send to Customer" Email Preview (mockup)
 
 **Purpose**: Demonstrate quote submission flow to customer
+**Phase note**: This is a **shop-side mockup only**. No email is sent. The portal link in the preview is non-functional. Full email sending and customer portal are Phase 2 (External Quoting).
 
 **Implementation**:
 - [ ] "Send to Customer" button on Quote Detail
@@ -322,15 +381,18 @@ const lineTotal = unitPrice * quantity
 
 | Component | Scope | Status |
 |-----------|-------|--------|
-| Quotes List | CORE | Build fully |
-| Quote Detail | CORE | Build fully |
-| New Quote Form | CORE | Build fully (most complex) |
-| Customer dropdown | CORE + INTERCONNECTION | Build simple combobox |
-| Customer modal | PERIPHERAL | Build simple modal |
+| Quotes List | CORE | Build fully (filters, search, quick actions, duplicate) |
+| Quote Detail | CORE | Build fully (actions: edit, duplicate, send, view) |
+| New Quote Form | CORE | Build fully (most complex — single-page, instant calc) |
+| S&S Color Swatch Grid | CORE | Build as reusable component (dense grid, search, favorites) |
+| Customer combobox | CORE + INTERCONNECTION | Build simple combobox with type-ahead |
+| Customer modal | PERIPHERAL | Build simple modal (Name, Email, Company) |
 | Artwork upload | PERIPHERAL | Show placeholder, don't process |
 | PDF download | PERIPHERAL | Show button, mock response |
 | Email preview | PERIPHERAL | Show modal mockup, don't send |
-| Pricing formula | INTERCONNECTION | Hard-code formula |
+| Price override | CORE | Editable grand total on quote form |
+| Quote notes | CORE | Internal + customer-facing notes |
+| Pricing formula | INTERCONNECTION | Hard-code formula, instant client-side |
 | "Convert to Invoice" button | INTERCONNECTION | Non-functional, show message |
 | Customer portal | ❌ NOT BUILDING | Defer to Phase 2 |
 | Invoice generation | ❌ NOT BUILDING | Defer to Invoicing vertical |
@@ -340,41 +402,36 @@ const lineTotal = unitPrice * quantity
 
 ## Mock Data Requirements
 
-**Quotes (3-5 examples)**:
+**Quotes (5-6 examples covering all statuses)**:
 ```javascript
 [
-  {
-    id: "q-1024",
-    number: "Q-1024",
-    status: "draft",
-    customerId: "cust-001",
-    date: "2026-02-05",
-    lineItems: [
-      {
-        garmentId: "gar-001",
-        quantity: 50,
-        sizes: { S: 10, M: 20, L: 15, XL: 5 },
-        colors: 2,
-        locations: ["front", "back"],
-        unitPrice: 8.50,
-        lineTotal: 425.00
-      }
-    ],
-    setupFees: 50.00,
-    subtotal: 425.00,
-    total: 475.00
-  },
-  // ... more quotes in various statuses
+  { id: "q-1024", number: "Q-1024", status: "draft", customer: "Downtown Brewery", total: 475.00 },
+  { id: "q-1025", number: "Q-1025", status: "sent", customer: "Riverside Church", total: 890.00 },
+  { id: "q-1026", number: "Q-1026", status: "accepted", customer: "Metro Youth Soccer", total: 1250.00 },
+  { id: "q-1027", number: "Q-1027", status: "declined", customer: "Sunset 5K Run", total: 340.00 },
+  { id: "q-1028", number: "Q-1028", status: "revised", customer: "Downtown Brewery", total: 520.00 },
+  { id: "q-1029", number: "Q-1029", status: "draft", customer: "Lakeside Festival", total: 2100.00 }
 ]
 ```
 
+Each quote includes:
+- `lineItems[]` with garment, color, sizes (size breakdown), locations, colorCount, unitPrice, lineTotal
+- `setupFees`, `subtotal`, `total`, `priceOverride` (optional)
+- `internalNotes`, `customerNotes` (optional)
+- `createdAt`, `updatedAt`, `sentAt` (optional)
+
 **Customers** (linked to quotes):
 - Pull from existing `lib/mock-data.ts`
-- 3-5 customers sufficient for demo
+- 4-5 customers sufficient for demo
 
 **Garments** (for dropdown):
 - Pull from existing mock garment data
-- Show SKU + Style + Color in dropdown
+- Show Brand + SKU + Style Name in dropdown (e.g., "Bella+Canvas 3001 — Unisex Short Sleeve")
+
+**Colors** (for swatch grid):
+- ~30-50 common garment colors with name + hex value
+- Include: Black, White, Navy, Red, Royal, Kelly Green, Gold, Orange, Charcoal, Heather Grey, Maroon, Purple, Sand, Berry, etc.
+- Pre-populated favorites: Black, White, Navy, Red, Royal
 
 ---
 

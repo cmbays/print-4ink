@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quoting Discovery Complete &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .back-link {
+      display: inline-block;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 24px;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--action); }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--success);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .friction-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .friction-table th {
+      text-align: left;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .friction-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .severity-critical {
+      color: var(--error);
+      font-weight: 600;
+    }
+
+    .severity-high {
+      color: var(--warning);
+      font-weight: 600;
+    }
+
+    .severity-medium {
+      color: var(--text-secondary);
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .comparison-col {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .comparison-col h4 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .comparison-col.them h4 { color: var(--error); }
+    .comparison-col.us h4 { color: var(--success); }
+
+    .comparison-col ul {
+      list-style: none;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .comparison-col ul li {
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .comparison-col.them ul li::before {
+      content: "\2717";
+      position: absolute;
+      left: 0;
+      color: var(--error);
+    }
+
+    .comparison-col.us ul li::before {
+      content: "\2713";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+    }
+
+    .doc-link {
+      display: block;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      font-size: 13px;
+      text-decoration: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .doc-link:hover {
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    .doc-link .doc-status {
+      float: right;
+      font-size: 11px;
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    .resume-cmd {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back-link" href="index.html">&larr; Back to index</a>
+
+    <div class="badge">Feature</div>
+    <h1>Quoting Discovery: Complete</h1>
+    <p class="subtitle">Full competitive analysis, user interview, and improved journey design for the Quoting vertical</p>
+    <p class="meta">2026-02-08 &mdash; Session ID: 0fe71069-b9c2-45f3-9a06-5c57de8a013d</p>
+
+    <h2>Target Improvements</h2>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value">60-70%</div>
+        <div class="stat-label">Faster (simple quote)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3-4 min</div>
+        <div class="stat-label">Target (vs 10 min)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">60%</div>
+        <div class="stat-label">Fewer clicks</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">10</div>
+        <div class="stat-label">Friction points found</div>
+      </div>
+    </div>
+
+    <h2>What We Did</h2>
+
+    <div class="card">
+      <div class="card-title">1. Playwright Exploration</div>
+      <div class="card-desc">Set up headless browser to navigate the 4Ink customer portal (project-builder.app). Captured Steps 1-3 of the 6-step Print Life quoting flow. Documented: product catalog, 103 color swatches with no search, blocking recalculation on quantity entry, Angular SPA with S&S Activewear data integration.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">2. Web Research</div>
+      <div class="card-desc">Print Life: founded by Cam Earven (former screen printer), ~200 shops, Angular SPA, solo developer. 2024 updates added impression cost display. Q1 2025 added payment fixes and matrix pricing types. Competitive landscape: Printavo ($49-250/mo), Teesom ($67/mo), YoPrint ($39/mo), ShopVOX.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">3. User Interview</div>
+      <div class="card-desc">5-20 quotes/week, 50/50 simple vs complex, ~10 min per quote. Critical pain: recalculation blocks tabbing through sizes (adds 2-3 min/quote). Mandatory unused steps. Art style change resets all selections. Wants hybrid approval workflow, quote reuse, keyboard navigation, S&S-style color swatch UI.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">4. Improved Journey Design</div>
+      <div class="card-desc">Single-page form replaces 6-step wizard. Instant client-side pricing. S&S-style dense color swatch grid (white text overlay, search, favorites). Hybrid approval: customer submits &rarr; shop reviews/adjusts price &rarr; approves &rarr; customer notified. Quote statuses: Draft/Sent/Accepted/Declined/Revised.</div>
+    </div>
+
+    <h2>Top 5 Friction Points</h2>
+
+    <table class="friction-table">
+      <thead>
+        <tr>
+          <th>Friction</th>
+          <th>Severity</th>
+          <th>Our Fix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Qty entry blocks on recalculation</td>
+          <td class="severity-critical">Critical</td>
+          <td>Instant client-side calc, never block</td>
+        </tr>
+        <tr>
+          <td>Mandatory unused steps</td>
+          <td class="severity-high">High</td>
+          <td>Single-page form, no steps to skip</td>
+        </tr>
+        <tr>
+          <td>Art style change resets all selections</td>
+          <td class="severity-high">High</td>
+          <td>Non-destructive editing</td>
+        </tr>
+        <tr>
+          <td>No quote reuse / duplication</td>
+          <td class="severity-high">High</td>
+          <td>Duplicate Quote button</td>
+        </tr>
+        <tr>
+          <td>No quote tracking or status</td>
+          <td class="severity-high">High</td>
+          <td>Full status dashboard</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Print Life vs Screen Print Pro</h2>
+
+    <div class="comparison">
+      <div class="comparison-col them">
+        <h4>Print Life (Current)</h4>
+        <ul>
+          <li>6 mandatory sequential steps</li>
+          <li>Recalculation blocks input</li>
+          <li>103 tiny color swatches, no search</li>
+          <li>Can't skip unused steps</li>
+          <li>No quote tracking or reuse</li>
+          <li>Quote = invoice immediately</li>
+          <li>Price by phone call only</li>
+        </ul>
+      </div>
+      <div class="comparison-col us">
+        <h4>Screen Print Pro (Target)</h4>
+        <ul>
+          <li>Single scrollable page</li>
+          <li>Instant client-side pricing</li>
+          <li>S&S-style grid + search + favorites</li>
+          <li>Only show what's needed</li>
+          <li>Full dashboard + duplicate</li>
+          <li>Draft &rarr; Sent &rarr; Accepted</li>
+          <li>Hybrid approval workflow</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>4Ink Owner Request</h2>
+
+    <div class="card">
+      <div class="card-title">S&S-Style Color Swatch Grid</div>
+      <div class="card-desc">Color swatches should match S&S Activewear's supplier UI: dense palette with swatches packed tightly together, minimal white space, color name in white font overlaid on each swatch. Makes it easier to see all colors at once and pick quickly. Building as reusable <code>ColorSwatchPicker</code> component.</div>
+    </div>
+
+    <h2>Documents Created</h2>
+
+    <a class="doc-link" href="../docs/competitive-analysis/print-life-quoting-analysis.md">
+      docs/competitive-analysis/print-life-quoting-analysis.md
+      <span class="doc-status">Complete</span>
+    </a>
+    <a class="doc-link" href="../docs/competitive-analysis/print-life-journey-quoting.md">
+      docs/competitive-analysis/print-life-journey-quoting.md
+      <span class="doc-status">Complete</span>
+    </a>
+    <a class="doc-link" href="../docs/strategy/screen-print-pro-journey-quoting.md">
+      docs/strategy/screen-print-pro-journey-quoting.md
+      <span class="doc-status">Complete</span>
+    </a>
+    <a class="doc-link" href="../docs/strategy/quoting-scope-definition.md">
+      docs/strategy/quoting-scope-definition.md
+      <span class="doc-status">Updated</span>
+    </a>
+
+    <h2>Next: Build Phase</h2>
+
+    <p>All discovery documents are complete. The build order is:</p>
+    <div class="card">
+      <div class="card-desc">
+        1. Quotes List (<code>/quotes</code>) &mdash; DataTable, status filters, search, quick actions<br>
+        2. New Quote Form (<code>/quotes/new</code>) &mdash; Single-page, instant pricing, S&S color swatch<br>
+        3. Quote Detail (<code>/quotes/[id]</code>) &mdash; Read-only view, action buttons<br>
+        4. S&S Color Swatch Component &mdash; Dense grid, search, favorites (reusable)<br>
+        5. Customer Combobox &mdash; Type-ahead with "Add New" modal<br>
+        6. Email Preview Modal &mdash; "Send to Customer" mockup
+      </div>
+    </div>
+
+    <h2>Resume Session</h2>
+    <div class="resume-cmd">claude --resume 0fe71069-b9c2-45f3-9a06-5c57de8a013d</div>
+
+    <footer>
+      Screen Print Pro &mdash; Quoting Discovery &mdash; 2026-02-08
+    </footer>
+  </div>
+</body>
+</html>
