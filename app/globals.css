@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* shadcn/ui semantic colors */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Design system: status colors */
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-action-bold: var(--action-bold);
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-bold: var(--success-bold);
+  --color-error: var(--error);
+  --color-error-hover: var(--error-hover);
+  --color-error-bold: var(--error-bold);
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-bold: var(--warning-bold);
+
+  /* Design system: surface colors */
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+
+  /* Neobrutalist shadow */
+  --shadow-brutal: 4px 4px 0px;
+
+  /* Spring transition */
+  --transition-timing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =====================
+   DARK MODE (Default)
+   "Linear Calm + Raycast Polish + Neobrutalist Delight"
+   ===================== */
+
+:root {
+  --radius: 0.5rem;
+
+  /* Background — near-black monochrome */
+  --background: #09090b;
+  --foreground: rgba(255, 255, 255, 0.87);
+  --surface: #1c1c1f;
+  --elevated: #18181b;
+
+  /* Card */
+  --card: #18181b;
+  --card-foreground: rgba(255, 255, 255, 0.87);
+
+  /* Popover */
+  --popover: #18181b;
+  --popover-foreground: rgba(255, 255, 255, 0.87);
+
+  /* Primary — cyan action */
+  --primary: #22d3ee;
+  --primary-foreground: #000000;
+
+  /* Secondary — elevated surface */
+  --secondary: #1c1c1f;
+  --secondary-foreground: rgba(255, 255, 255, 0.87);
+
+  /* Muted */
+  --muted: #0f0f11;
+  --muted-foreground: rgba(255, 255, 255, 0.60);
+
+  /* Accent */
+  --accent: #1c1c1f;
+  --accent-foreground: rgba(255, 255, 255, 0.87);
+
+  /* Destructive — error red */
+  --destructive: #f87171;
+
+  /* Borders — subtle opacity */
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #22d3ee;
+
+  /* Status colors — Neobrutalist attention layer */
+  --action: #22d3ee;
+  --action-hover: #06b6d4;
+  --action-bold: #00e5ff;
+
+  --success: #34d399;
+  --success-hover: #10b981;
+  --success-bold: #00ff88;
+
+  --error: #f87171;
+  --error-hover: #ef4444;
+  --error-bold: #ff4444;
+
+  --warning: #fbbf24;
+  --warning-hover: #f59e0b;
+  --warning-bold: #ffcc00;
+
+  /* Charts */
+  --chart-1: #22d3ee;
+  --chart-2: #34d399;
+  --chart-3: #fbbf24;
+  --chart-4: #f87171;
+  --chart-5: #a78bfa;
+
+  /* Sidebar */
+  --sidebar: #0f0f11;
+  --sidebar-foreground: rgba(255, 255, 255, 0.87);
+  --sidebar-primary: #22d3ee;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1c1c1f;
+  --sidebar-accent-foreground: rgba(255, 255, 255, 0.87);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #22d3ee;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
