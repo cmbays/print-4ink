@@ -15,6 +15,7 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
+| [2026-02-08-quoting-breadboard.html](2026-02-08-quoting-breadboard.html) | Quoting breadboard: 7 Places, 65 UI affordances, 32 code affordances, Mermaid diagrams, build order | 2026-02-08 | Plan, Build |
 | [2026-02-08-breadboarding-skill.html](2026-02-08-breadboarding-skill.html) | Breadboarding skill created, integrated into vertical workflow as Phase 2.5, skill count 6 to 8 | 2026-02-08 | Feature, Decision |
 | [2026-02-08-quoting-discovery.html](2026-02-08-quoting-discovery.html) | Quoting discovery complete: Playwright exploration, user interview, 10 friction points, improved journey design, S&S color swatch request | 2026-02-08 | Feature, Research |
 | [2026-02-08-strategic-pivot.html](2026-02-08-strategic-pivot.html) | Strategic pivot to vertical-by-vertical approach, 4-phase methodology, discovery docs | 2026-02-08 | Plan, Decision |
