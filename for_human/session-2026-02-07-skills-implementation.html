@@ -380,6 +380,30 @@
       </tbody>
     </table>
 
+    <h2>Design Token Fix</h2>
+    <div class="card">
+      <div class="card-label">Decision</div>
+      <p style="margin-bottom: 12px;">CodeRabbit flagged <code>shadow-cyan-400</code> in template code as a hardcoded Tailwind palette color violating our design token guidelines. Replaced all occurrences with <code>shadow-action</code>.</p>
+      <table style="margin-bottom: 0;">
+        <thead>
+          <tr><th>Approach</th><th>Pros</th><th>Cons</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>shadow-cyan-400</code></td>
+            <td>Guaranteed Tailwind utility</td>
+            <td>Hardcoded &mdash; won't update if action color changes. Violates our own "no colors outside design tokens" rule.</td>
+          </tr>
+          <tr>
+            <td style="color: var(--success);"><code>shadow-action</code></td>
+            <td>Semantic, future-proof, consistent with <code>text-action</code>/<code>bg-action</code></td>
+            <td>None &mdash; Tailwind v4 auto-generates <code>shadow-*</code> for any <code>--color-*</code> in <code>@theme inline</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Fixed in 4 files: <code>FRONTEND_GUIDELINES.md</code>, <code>interactive-states.md</code>, <code>design-tokens-quick-ref.md</code>, <code>form-screen.tsx</code>. The root cause was FRONTEND_GUIDELINES.md &mdash; all other files copied the pattern from there.</p>
+
     <h2>Other Changes</h2>
     <table>
       <thead>
@@ -428,7 +452,7 @@
 
     <div class="resume-box">
       <div class="card-label">Resume This Session</div>
-      <div class="code-block">claude --resume f125022d-0029-41ed-a6ab-8802eb2576b3</div>
+      <div class="code-block">claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd</div>
     </div>
 
     <footer>
