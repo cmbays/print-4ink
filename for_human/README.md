@@ -35,10 +35,12 @@ ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1
 ```
 
 The filename (without `.jsonl`) is the session ID. For example:
-```
+```text
 58358bf9-61aa-4451-a184-c3d91d1871bd.jsonl
 → claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd
 ```
+
+> **Note**: The project path is derived from the absolute path with `/` replaced by `-`. For this project at `/Users/cmbays/Github/print-4ink`, the directory is `-Users-cmbays-Github-print-4ink`.
 
 You can also list recent sessions to find a specific one:
 ```bash

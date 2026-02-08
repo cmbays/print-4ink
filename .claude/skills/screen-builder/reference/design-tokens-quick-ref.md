@@ -32,7 +32,7 @@ Each has hover variant: `text-action-hover`, `text-success-hover`, etc.
 
 ## Production State → Color
 
-```
+```text
 design     → text-muted-foreground
 approval   → text-warning
 burning    → text-action
@@ -43,7 +43,7 @@ shipped    → text-success
 
 ## Priority → Color
 
-```
+```text
 low    → text-muted-foreground
 medium → text-foreground
 high   → text-warning
@@ -85,7 +85,7 @@ Fonts: `font-sans` (Inter), `font-mono` (JetBrains Mono — code only)
 ## Neobrutalist CTA
 
 ```tsx
-className="bg-action text-black font-semibold border-2 border-current shadow-[4px_4px_0px] shadow-cyan-400 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px] transition-all"
+className="bg-action text-black font-semibold border-2 border-current shadow-[4px_4px_0px] shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px] transition-all"
 ```
 
 ## Icon Sizes
