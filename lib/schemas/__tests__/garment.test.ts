@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { garmentSchema } from "../garment";
+import { garmentSchema, garmentCatalogSchema, garmentSizeSchema } from "../garment";
 
 describe("garmentSchema", () => {
   const validGarment = {
@@ -52,6 +52,102 @@ describe("garmentSchema", () => {
   it("rejects fractional size quantities", () => {
     expect(() =>
       garmentSchema.parse({ ...validGarment, sizes: { M: 2.5 } })
+    ).toThrow();
+  });
+});
+
+describe("garmentSizeSchema", () => {
+  const validSize = { name: "XL", order: 4, priceAdjustment: 0 };
+
+  it("accepts a valid size", () => {
+    expect(garmentSizeSchema.parse(validSize)).toEqual(validSize);
+  });
+
+  it("accepts positive price adjustment", () => {
+    const result = garmentSizeSchema.parse({ ...validSize, priceAdjustment: 2.0 });
+    expect(result.priceAdjustment).toBe(2.0);
+  });
+
+  it("accepts negative price adjustment", () => {
+    const result = garmentSizeSchema.parse({ ...validSize, priceAdjustment: -1.0 });
+    expect(result.priceAdjustment).toBe(-1.0);
+  });
+
+  it("rejects empty name", () => {
+    expect(() =>
+      garmentSizeSchema.parse({ ...validSize, name: "" })
+    ).toThrow();
+  });
+
+  it("rejects negative order", () => {
+    expect(() =>
+      garmentSizeSchema.parse({ ...validSize, order: -1 })
+    ).toThrow();
+  });
+
+  it("rejects fractional order", () => {
+    expect(() =>
+      garmentSizeSchema.parse({ ...validSize, order: 1.5 })
+    ).toThrow();
+  });
+});
+
+describe("garmentCatalogSchema", () => {
+  const validCatalog = {
+    id: "gc-001",
+    brand: "Bella+Canvas",
+    sku: "3001",
+    name: "Unisex Jersey Short Sleeve Tee",
+    basePrice: 3.5,
+    availableColors: ["clr-black", "clr-white"],
+    availableSizes: [
+      { name: "S", order: 0, priceAdjustment: 0 },
+      { name: "M", order: 1, priceAdjustment: 0 },
+    ],
+  };
+
+  it("accepts a valid catalog entry", () => {
+    const result = garmentCatalogSchema.parse(validCatalog);
+    expect(result.brand).toBe("Bella+Canvas");
+  });
+
+  it("accepts empty availableColors", () => {
+    const result = garmentCatalogSchema.parse({
+      ...validCatalog,
+      availableColors: [],
+    });
+    expect(result.availableColors).toEqual([]);
+  });
+
+  it("accepts empty availableSizes", () => {
+    const result = garmentCatalogSchema.parse({
+      ...validCatalog,
+      availableSizes: [],
+    });
+    expect(result.availableSizes).toEqual([]);
+  });
+
+  it("rejects negative base price", () => {
+    expect(() =>
+      garmentCatalogSchema.parse({ ...validCatalog, basePrice: -1 })
+    ).toThrow();
+  });
+
+  it("rejects empty brand", () => {
+    expect(() =>
+      garmentCatalogSchema.parse({ ...validCatalog, brand: "" })
+    ).toThrow();
+  });
+
+  it("rejects empty sku", () => {
+    expect(() =>
+      garmentCatalogSchema.parse({ ...validCatalog, sku: "" })
+    ).toThrow();
+  });
+
+  it("rejects empty name", () => {
+    expect(() =>
+      garmentCatalogSchema.parse({ ...validCatalog, name: "" })
     ).toThrow();
   });
 });

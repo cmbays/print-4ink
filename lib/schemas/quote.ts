@@ -1,14 +1,21 @@
 import { z } from "zod";
 
-export const quoteStatusEnum = z.enum(["draft", "sent", "approved", "rejected"]);
+export const quoteStatusEnum = z.enum([
+  "draft",
+  "sent",
+  "accepted",
+  "declined",
+  "revised",
+]);
 
 export const quoteLineItemSchema = z.object({
-  description: z.string().min(1),
-  quantity: z.number().int().positive(),
-  colorCount: z.number().int().positive(),
-  locations: z.number().int().positive(),
+  garmentId: z.string(),
+  colorId: z.string(),
+  sizes: z.record(z.string(), z.number().int().nonnegative()),
+  printLocations: z.array(z.string()),
+  colorsPerLocation: z.number().int().positive().default(1),
   unitPrice: z.number().nonnegative(),
-  total: z.number().nonnegative(),
+  lineTotal: z.number().nonnegative(),
 });
 
 export const quoteSchema = z.object({
@@ -17,9 +24,15 @@ export const quoteSchema = z.object({
   customerId: z.string().uuid(),
   lineItems: z.array(quoteLineItemSchema),
   setupFees: z.number().nonnegative(),
+  subtotal: z.number().nonnegative(),
   total: z.number().nonnegative(),
+  priceOverride: z.number().nonnegative().optional(),
   status: quoteStatusEnum,
+  internalNotes: z.string().optional(),
+  customerNotes: z.string().optional(),
   createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime().optional(),
+  sentAt: z.string().datetime().optional(),
 });
 
 export type QuoteStatus = z.infer<typeof quoteStatusEnum>;

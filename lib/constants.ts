@@ -43,6 +43,15 @@ export const BURN_STATUS_LABELS: Record<BurnStatus, string> = {
 export const QUOTE_STATUS_LABELS: Record<QuoteStatus, string> = {
   draft: "Draft",
   sent: "Sent",
-  approved: "Approved",
-  rejected: "Rejected",
+  accepted: "Accepted",
+  declined: "Declined",
+  revised: "Revised",
+};
+
+export const QUOTE_STATUS_COLORS: Record<QuoteStatus, string> = {
+  draft: "text-muted-foreground",
+  sent: "text-action",
+  accepted: "text-success",
+  declined: "text-error",
+  revised: "text-warning",
 };

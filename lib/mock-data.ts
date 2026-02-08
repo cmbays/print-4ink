@@ -2,6 +2,8 @@ import type { Customer } from "./schemas/customer";
 import type { Job } from "./schemas/job";
 import type { Quote } from "./schemas/quote";
 import type { Screen } from "./schemas/screen";
+import type { Color } from "./schemas/color";
+import type { GarmentCatalog } from "./schemas/garment";
 
 export const customers: Customer[] = [
   {
@@ -27,6 +29,22 @@ export const customers: Customer[] = [
     email: "jake.thompson@gmail.com",
     phone: "(737) 555-0412",
     address: "789 Live Oak Dr, Round Rock, TX 78664",
+  },
+  {
+    id: "f4d5e6f7-a8b9-4c0d-8e2f-3a4b5c6d7e8f",
+    name: "Maria Gonzalez",
+    company: "Sunset 5K Run",
+    email: "maria@sunset5k.org",
+    phone: "(512) 555-0533",
+    address: "2100 Barton Springs Rd, Austin, TX 78704",
+  },
+  {
+    id: "a5e6f7a8-b9c0-4d1e-9f3a-4b5c6d7e8f9a",
+    name: "Chris Patel",
+    company: "Lakeside Music Festival",
+    email: "chris@lakesidefest.com",
+    phone: "(737) 555-0671",
+    address: "500 E Cesar Chavez, Austin, TX 78701",
   },
 ];
 
@@ -170,73 +188,373 @@ export const jobs: Job[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Colors — mirrors S&S Activewear color catalog shape
+// ---------------------------------------------------------------------------
+
+export const colors: Color[] = [
+  // Black family
+  { id: "clr-black", name: "Black", hex: "#000000", swatchTextColor: "#FFFFFF", family: "Black", isFavorite: true },
+  { id: "clr-charcoal", name: "Charcoal", hex: "#36454F", swatchTextColor: "#FFFFFF", family: "Black" },
+  { id: "clr-dark-heather", name: "Dark Heather", hex: "#414a4c", swatchTextColor: "#FFFFFF", family: "Black" },
+
+  // White family
+  { id: "clr-white", name: "White", hex: "#FFFFFF", swatchTextColor: "#000000", family: "White", isFavorite: true },
+  { id: "clr-natural", name: "Natural", hex: "#F5F0E1", swatchTextColor: "#000000", family: "White" },
+  { id: "clr-ice-grey", name: "Ice Grey", hex: "#C4C8CB", swatchTextColor: "#000000", family: "White" },
+
+  // Gray family
+  { id: "clr-sport-grey", name: "Sport Grey", hex: "#97999B", swatchTextColor: "#000000", family: "Gray" },
+  { id: "clr-heather-grey", name: "Heather Grey", hex: "#B2BEB5", swatchTextColor: "#000000", family: "Gray" },
+  { id: "clr-graphite-heather", name: "Graphite Heather", hex: "#5B5B5B", swatchTextColor: "#FFFFFF", family: "Gray" },
+  { id: "clr-ash", name: "Ash", hex: "#B2BEB5", swatchTextColor: "#000000", family: "Gray" },
+
+  // Blue family
+  { id: "clr-navy", name: "Navy", hex: "#1B2A4A", swatchTextColor: "#FFFFFF", family: "Blue", isFavorite: true },
+  { id: "clr-royal", name: "Royal Blue", hex: "#2B5FD4", swatchTextColor: "#FFFFFF", family: "Blue", isFavorite: true },
+  { id: "clr-carolina-blue", name: "Carolina Blue", hex: "#56A0D3", swatchTextColor: "#FFFFFF", family: "Blue" },
+  { id: "clr-light-blue", name: "Light Blue", hex: "#ADD8E6", swatchTextColor: "#000000", family: "Blue" },
+  { id: "clr-indigo", name: "Indigo", hex: "#3F51B5", swatchTextColor: "#FFFFFF", family: "Blue" },
+  { id: "clr-sapphire", name: "Sapphire", hex: "#0F52BA", swatchTextColor: "#FFFFFF", family: "Blue" },
+
+  // Red family
+  { id: "clr-red", name: "Red", hex: "#C41E3A", swatchTextColor: "#FFFFFF", family: "Red", isFavorite: true },
+  { id: "clr-cardinal", name: "Cardinal", hex: "#8C1515", swatchTextColor: "#FFFFFF", family: "Red" },
+  { id: "clr-cherry-red", name: "Cherry Red", hex: "#DE3163", swatchTextColor: "#FFFFFF", family: "Red" },
+  { id: "clr-maroon", name: "Maroon", hex: "#5A1A2A", swatchTextColor: "#FFFFFF", family: "Red" },
+
+  // Green family
+  { id: "clr-forest-green", name: "Forest Green", hex: "#228B22", swatchTextColor: "#FFFFFF", family: "Green" },
+  { id: "clr-irish-green", name: "Irish Green", hex: "#009A44", swatchTextColor: "#FFFFFF", family: "Green" },
+  { id: "clr-military-green", name: "Military Green", hex: "#4B5320", swatchTextColor: "#FFFFFF", family: "Green" },
+  { id: "clr-mint", name: "Mint", hex: "#98FF98", swatchTextColor: "#000000", family: "Green" },
+  { id: "clr-sage", name: "Sage", hex: "#B2AC88", swatchTextColor: "#000000", family: "Green" },
+  { id: "clr-kelly-green", name: "Kelly Green", hex: "#4CBB17", swatchTextColor: "#FFFFFF", family: "Green" },
+
+  // Yellow family
+  { id: "clr-gold", name: "Gold", hex: "#FFD700", swatchTextColor: "#000000", family: "Yellow" },
+  { id: "clr-daisy", name: "Daisy", hex: "#FBE870", swatchTextColor: "#000000", family: "Yellow" },
+  { id: "clr-safety-green", name: "Safety Green", hex: "#CCFF00", swatchTextColor: "#000000", family: "Yellow" },
+
+  // Orange family
+  { id: "clr-orange", name: "Orange", hex: "#FF6600", swatchTextColor: "#FFFFFF", family: "Orange" },
+  { id: "clr-texas-orange", name: "Texas Orange", hex: "#BF5700", swatchTextColor: "#FFFFFF", family: "Orange" },
+  { id: "clr-sunset", name: "Sunset", hex: "#FAD6A5", swatchTextColor: "#000000", family: "Orange" },
+
+  // Purple family
+  { id: "clr-purple", name: "Purple", hex: "#6A0DAD", swatchTextColor: "#FFFFFF", family: "Purple" },
+  { id: "clr-heather-team-purple", name: "Heather Team Purple", hex: "#5E4B8B", swatchTextColor: "#FFFFFF", family: "Purple" },
+  { id: "clr-lilac", name: "Lilac", hex: "#C8A2C8", swatchTextColor: "#000000", family: "Purple" },
+
+  // Pink family
+  { id: "clr-hot-pink", name: "Hot Pink", hex: "#FF69B4", swatchTextColor: "#000000", family: "Pink" },
+  { id: "clr-light-pink", name: "Light Pink", hex: "#FFB6C1", swatchTextColor: "#000000", family: "Pink" },
+  { id: "clr-heliconia", name: "Heliconia", hex: "#E4287C", swatchTextColor: "#FFFFFF", family: "Pink" },
+
+  // Brown family
+  { id: "clr-brown-savana", name: "Brown Savana", hex: "#8B4513", swatchTextColor: "#FFFFFF", family: "Brown" },
+  { id: "clr-chestnut", name: "Chestnut", hex: "#954535", swatchTextColor: "#FFFFFF", family: "Brown" },
+  { id: "clr-sand", name: "Sand", hex: "#C2B280", swatchTextColor: "#000000", family: "Brown" },
+];
+
+// ---------------------------------------------------------------------------
+// Garment Catalog — mirrors S&S Activewear catalog shape
+// ---------------------------------------------------------------------------
+
+const commonColorIds = [
+  "clr-black", "clr-white", "clr-navy", "clr-sport-grey", "clr-red",
+  "clr-royal", "clr-charcoal", "clr-forest-green", "clr-maroon",
+  "clr-gold", "clr-orange", "clr-purple",
+];
+
+const extendedColorIds = [
+  ...commonColorIds,
+  "clr-heather-grey", "clr-carolina-blue", "clr-light-blue",
+  "clr-cardinal", "clr-irish-green", "clr-military-green",
+  "clr-hot-pink", "clr-indigo", "clr-texas-orange",
+];
+
+const standardSizes = [
+  { name: "XS", order: 0, priceAdjustment: 0 },
+  { name: "S", order: 1, priceAdjustment: 0 },
+  { name: "M", order: 2, priceAdjustment: 0 },
+  { name: "L", order: 3, priceAdjustment: 0 },
+  { name: "XL", order: 4, priceAdjustment: 0 },
+  { name: "2XL", order: 5, priceAdjustment: 2.0 },
+  { name: "3XL", order: 6, priceAdjustment: 3.0 },
+];
+
+export const garmentCatalog: GarmentCatalog[] = [
+  {
+    id: "gc-001",
+    brand: "Bella+Canvas",
+    sku: "3001",
+    name: "Unisex Jersey Short Sleeve Tee",
+    basePrice: 3.5,
+    availableColors: extendedColorIds,
+    availableSizes: standardSizes,
+  },
+  {
+    id: "gc-002",
+    brand: "Gildan",
+    sku: "5000",
+    name: "Heavy Cotton Tee",
+    basePrice: 2.75,
+    availableColors: extendedColorIds,
+    availableSizes: standardSizes,
+  },
+  {
+    id: "gc-003",
+    brand: "Gildan",
+    sku: "18500",
+    name: "Heavy Blend Hooded Sweatshirt",
+    basePrice: 9.5,
+    availableColors: commonColorIds,
+    availableSizes: [
+      { name: "S", order: 0, priceAdjustment: 0 },
+      { name: "M", order: 1, priceAdjustment: 0 },
+      { name: "L", order: 2, priceAdjustment: 0 },
+      { name: "XL", order: 3, priceAdjustment: 0 },
+      { name: "2XL", order: 4, priceAdjustment: 2.5 },
+      { name: "3XL", order: 5, priceAdjustment: 3.5 },
+      { name: "4XL", order: 6, priceAdjustment: 5.0 },
+      { name: "5XL", order: 7, priceAdjustment: 5.0 },
+    ],
+  },
+  {
+    id: "gc-004",
+    brand: "Next Level",
+    sku: "6210",
+    name: "Unisex CVC V-Neck Tee",
+    basePrice: 4.25,
+    availableColors: [
+      "clr-black", "clr-white", "clr-navy", "clr-heather-grey",
+      "clr-charcoal", "clr-red", "clr-royal", "clr-light-blue",
+      "clr-hot-pink", "clr-purple",
+    ],
+    availableSizes: [
+      { name: "XS", order: 0, priceAdjustment: 0 },
+      { name: "S", order: 1, priceAdjustment: 0 },
+      { name: "M", order: 2, priceAdjustment: 0 },
+      { name: "L", order: 3, priceAdjustment: 0 },
+      { name: "XL", order: 4, priceAdjustment: 0 },
+      { name: "2XL", order: 5, priceAdjustment: 1.5 },
+      { name: "3XL", order: 6, priceAdjustment: 2.5 },
+    ],
+  },
+  {
+    id: "gc-005",
+    brand: "Comfort Colors",
+    sku: "1717",
+    name: "Garment Dyed Heavyweight Tee",
+    basePrice: 5.0,
+    availableColors: [
+      "clr-black", "clr-white", "clr-navy", "clr-charcoal",
+      "clr-ice-grey", "clr-sage", "clr-light-blue",
+      "clr-sand", "clr-light-pink", "clr-mint",
+      "clr-lilac", "clr-gold", "clr-texas-orange",
+    ],
+    availableSizes: [
+      { name: "S", order: 0, priceAdjustment: 0 },
+      { name: "M", order: 1, priceAdjustment: 0 },
+      { name: "L", order: 2, priceAdjustment: 0 },
+      { name: "XL", order: 3, priceAdjustment: 0 },
+      { name: "2XL", order: 4, priceAdjustment: 2.0 },
+      { name: "3XL", order: 5, priceAdjustment: 3.0 },
+      { name: "4XL", order: 6, priceAdjustment: 4.0 },
+    ],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Quotes — new schema with garmentId/colorId/sizes/printLocations
+// ---------------------------------------------------------------------------
+
 export const quotes: Quote[] = [
   {
     id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    quoteNumber: "Q-2048",
+    quoteNumber: "Q-1024",
     customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     lineItems: [
       {
-        description: "Gildan 5000 Black — 3-color front, 2-color back",
-        quantity: 50,
-        colorCount: 3,
-        locations: 2,
+        garmentId: "gc-002",
+        colorId: "clr-black",
+        sizes: { S: 5, M: 15, L: 20, XL: 10 },
+        printLocations: ["Front Center", "Back Full"],
+        colorsPerLocation: 3,
         unitPrice: 14.5,
-        total: 725,
+        lineTotal: 725,
       },
     ],
     setupFees: 150,
+    subtotal: 725,
     total: 875,
-    status: "approved",
-    createdAt: "2026-01-28T10:00:00Z",
+    status: "draft",
+    internalNotes: "Marcus wants same design as spring 2025 run. Check file archive.",
+    createdAt: "2026-02-01T10:00:00Z",
+    updatedAt: "2026-02-03T14:20:00Z",
   },
   {
     id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
-    quoteNumber: "Q-2049",
+    quoteNumber: "Q-1025",
     customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
     lineItems: [
       {
-        description: "NB Dry Fit White — 2-color chest, 1-color back number, 1-color sleeve",
-        quantity: 65,
-        colorCount: 2,
-        locations: 3,
+        garmentId: "gc-001",
+        colorId: "clr-white",
+        sizes: { S: 8, M: 20, L: 25, XL: 12 },
+        printLocations: ["Front Left Chest", "Back Number", "Left Sleeve"],
+        colorsPerLocation: 2,
         unitPrice: 22.0,
-        total: 1430,
+        lineTotal: 1430,
       },
       {
-        description: "NB Dry Fit Navy — 2-color chest, 1-color back number, 1-color sleeve",
-        quantity: 65,
-        colorCount: 2,
-        locations: 3,
+        garmentId: "gc-001",
+        colorId: "clr-navy",
+        sizes: { S: 8, M: 20, L: 25, XL: 12 },
+        printLocations: ["Front Left Chest", "Back Number", "Left Sleeve"],
+        colorsPerLocation: 2,
         unitPrice: 22.0,
-        total: 1430,
+        lineTotal: 1430,
       },
     ],
     setupFees: 250,
+    subtotal: 2860,
     total: 3110,
     status: "sent",
+    customerNotes: "Tournament date is Feb 22. Need delivery by Feb 20 at the latest.",
     createdAt: "2026-02-01T14:30:00Z",
+    sentAt: "2026-02-02T09:00:00Z",
   },
   {
     id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
-    quoteNumber: "Q-2050",
+    quoteNumber: "Q-1026",
     customerId: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     lineItems: [
       {
-        description: "Bella+Canvas 3001 Heather Grey — 4-color front",
-        quantity: 65,
-        colorCount: 4,
-        locations: 1,
+        garmentId: "gc-001",
+        colorId: "clr-heather-grey",
+        sizes: { YM: 5, YL: 5, S: 10, M: 15, L: 15, XL: 10, "2XL": 5 },
+        printLocations: ["Front Center"],
+        colorsPerLocation: 4,
         unitPrice: 12.0,
-        total: 780,
+        lineTotal: 780,
       },
     ],
     setupFees: 200,
+    subtotal: 780,
     total: 980,
-    status: "draft",
+    status: "accepted",
+    customerNotes: "Family loves the design! Approved as-is.",
     createdAt: "2026-02-05T09:15:00Z",
+    sentAt: "2026-02-05T10:00:00Z",
+    updatedAt: "2026-02-06T11:30:00Z",
+  },
+  {
+    id: "14d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f",
+    quoteNumber: "Q-1027",
+    customerId: "f4d5e6f7-a8b9-4c0d-8e2f-3a4b5c6d7e8f",
+    lineItems: [
+      {
+        garmentId: "gc-004",
+        colorId: "clr-red",
+        sizes: { S: 50, M: 100, L: 100, XL: 50 },
+        printLocations: ["Front Center", "Back Full"],
+        colorsPerLocation: 2,
+        unitPrice: 10.5,
+        lineTotal: 3150,
+      },
+      {
+        garmentId: "gc-004",
+        colorId: "clr-white",
+        sizes: { S: 25, M: 50, L: 50, XL: 25 },
+        printLocations: ["Front Center"],
+        colorsPerLocation: 2,
+        unitPrice: 8.0,
+        lineTotal: 1200,
+      },
+    ],
+    setupFees: 200,
+    subtotal: 4350,
+    total: 4550,
+    status: "declined",
+    internalNotes: "Maria said budget was only $3k. Offered to reduce to 1-color print.",
+    customerNotes: "Over budget. Can you do a simpler version?",
+    createdAt: "2026-01-28T08:00:00Z",
+    sentAt: "2026-01-28T09:30:00Z",
+    updatedAt: "2026-01-30T16:00:00Z",
+  },
+  {
+    id: "25e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a",
+    quoteNumber: "Q-1028",
+    customerId: "a5e6f7a8-b9c0-4d1e-9f3a-4b5c6d7e8f9a",
+    lineItems: [
+      {
+        garmentId: "gc-005",
+        colorId: "clr-black",
+        sizes: { S: 30, M: 75, L: 75, XL: 40, "2XL": 20 },
+        printLocations: ["Front Center", "Back Full", "Left Sleeve"],
+        colorsPerLocation: 3,
+        unitPrice: 18.0,
+        lineTotal: 4320,
+      },
+      {
+        garmentId: "gc-003",
+        colorId: "clr-navy",
+        sizes: { S: 15, M: 30, L: 30, XL: 15 },
+        printLocations: ["Front Center"],
+        colorsPerLocation: 2,
+        unitPrice: 24.0,
+        lineTotal: 2160,
+      },
+      {
+        garmentId: "gc-001",
+        colorId: "clr-white",
+        sizes: { M: 50, L: 50, XL: 25 },
+        printLocations: ["Front Center"],
+        colorsPerLocation: 1,
+        unitPrice: 7.5,
+        lineTotal: 937.5,
+      },
+    ],
+    setupFees: 450,
+    subtotal: 7417.5,
+    total: 7867.5,
+    priceOverride: 7500,
+    status: "revised",
+    internalNotes: "Second revision. Chris asked for hoodie option and volunteer tees. Gave volume discount.",
+    customerNotes: "Added hoodies for crew and volunteer tees. Please confirm new total.",
+    createdAt: "2026-01-25T11:00:00Z",
+    sentAt: "2026-02-01T10:00:00Z",
+    updatedAt: "2026-02-04T15:45:00Z",
+  },
+  {
+    id: "36f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b",
+    quoteNumber: "Q-1029",
+    customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    lineItems: [
+      {
+        garmentId: "gc-002",
+        colorId: "clr-forest-green",
+        sizes: { S: 10, M: 25, L: 25, XL: 15, "2XL": 5 },
+        printLocations: ["Front Center", "Back Full"],
+        colorsPerLocation: 2,
+        unitPrice: 13.0,
+        lineTotal: 1040,
+      },
+    ],
+    setupFees: 100,
+    subtotal: 1040,
+    total: 1140,
+    status: "draft",
+    internalNotes: "Repeat order from Marcus. Similar to holiday merch but spring palette.",
+    createdAt: "2026-02-07T16:00:00Z",
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Screens (unchanged)
+// ---------------------------------------------------------------------------
 
 export const screens: Screen[] = [
   {
