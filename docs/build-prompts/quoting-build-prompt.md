@@ -41,7 +41,7 @@ Build the complete Quoting workflow: 3 pages + 3 reusable components + expanded 
 
 ### Team Structure (Use TeamCreate)
 
-Create a team called `quoting-build`. Run Phase A agents in parallel, then Phase B after they finish.
+Create a team called `quoting-build`. Follow the orchestration patterns in `docs/AGENTS.md` (Linear / Pre-Build / Checkpoint). Phase A tasks are independent and can run in parallel inside a Pre-Build step. Phase B depends on Phase A outputs and follows as a Linear Chain.
 
 **Phase A — Independent Work (run in parallel):**
 
