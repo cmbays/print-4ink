@@ -5,7 +5,7 @@
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-08
 **Last Verified**: 2026-02-08
-**Status**: Quoting discovery COMPLETE. All 4 discovery docs populated. Ready for BUILD phase.
+**Status**: Quoting discovery COMPLETE. All 4 discovery docs populated. Breadboarding skill created. Ready for BUILD phase.
 
 ## What's Built
 
@@ -36,8 +36,10 @@
 
 ### Agent & Skill Infrastructure
 - [x] **5 agents** in `.claude/agents/`: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
-- [x] **6 skills** in `.claude/skills/`:
-  - `screen-builder` — Workflow + templates + checklists + reference for building Steps 1-10
+- [x] **8 skills** in `.claude/skills/`:
+  - `vertical-discovery` — 7-step competitor research + user interview + journey design methodology
+  - `breadboarding` — UI/code affordance mapping with wiring, component boundaries, and build order
+  - `screen-builder` — Workflow + templates + checklists + reference for building screens
   - `quality-gate` — 10-category audit with pass/fail scoring
   - `pre-build-interrogator` — Exhaustive questioning before building complex features
   - `design-audit` — 15-dimension Jobs/Ive-style design review
@@ -45,6 +47,7 @@
   - `doc-sync` — Drift detection and documentation synchronization
 - [x] `docs/AGENTS.md` — Agent registry, orchestration patterns, calling conventions
 - [x] `agent-outputs/` — Structured output directory for agent audit trail
+- [x] `docs/breadboards/` — Directory for breadboard output documents
 
 ### Documentation
 - [x] `CLAUDE.md` — AI operating rules, design system, coding standards
@@ -66,7 +69,7 @@
 ### Document Map & Usage Guide
 
 **Master Strategy** (READ FIRST):
-- **`.claude/plans/vertical-by-vertical-strategy.md`** — Full strategic rationale, 4-phase methodology, timeline, success criteria. Master reference for entire approach.
+- **`.claude/plans/vertical-by-vertical-strategy.md`** — Full strategic rationale, 5-phase methodology (Discovery → Scope → Breadboarding → Build → Demo), timeline, success criteria. Master reference for entire approach.
 
 **Quoting Vertical — Discovery Phase** (COMPLETE):
 - **`docs/strategy/quoting-discovery-interview-questions.md`** — Interview guide. **STATUS**: Used, interview complete.
@@ -77,7 +80,10 @@
 - **`docs/strategy/screen-print-pro-journey-quoting.md`** — Redesigned single-page quoting flow. Addresses all 10 friction points. Targets: 3-4 min simple quote (60-70% faster), 8-12 clicks (60% fewer). Includes S&S-style color swatch grid, instant pricing, hybrid approval workflow, quote reuse. **STATUS**: Complete.
 
 **Quoting Vertical — Scope Definition** (COMPLETE, UPDATED):
-- **`docs/strategy/quoting-scope-definition.md`** — Updated with all discovery findings: S&S color swatch component (CORE), price override, quote notes, "Revised" status, functional Duplicate/Edit, "Save & Send" flow. **STATUS**: Complete, ready to brief frontend-builder agent.
+- **`docs/strategy/quoting-scope-definition.md`** — Updated with all discovery findings: S&S color swatch component (CORE), price override, quote notes, "Revised" status, functional Duplicate/Edit, "Save & Send" flow. **STATUS**: Complete, ready for breadboarding.
+
+**Quoting Vertical — Breadboarding** (NEXT):
+- **`docs/breadboards/quoting-breadboard.md`** — To be created. Will map all UI affordances, code affordances, data stores, and wiring for the quoting vertical before build begins. **STATUS**: Not started.
 
 **Navigation & Reference**:
 - **`docs/strategy/STRATEGY_README.md`** — Master index of all strategy documents. How to use each folder by phase. Cross-references to related docs. **STATUS**: Complete.
@@ -94,7 +100,7 @@
 **✅ Discovery phase COMPLETE.** All blocking dependencies resolved.
 
 **📅 Build Order** (ready to start):
-1. Brief frontend-builder agent with scope definition + improved journey
+1. Create **Quoting Breadboard** (`docs/breadboards/quoting-breadboard.md`) — Map all affordances, wiring, component boundaries, build order
 2. Build **Quotes List** (`/quotes`) — DataTable, status filters, search, quick actions
 3. Build **New Quote Form** (`/quotes/new`) — Single-page form, instant pricing, S&S color swatch
 4. Build **Quote Detail** (`/quotes/[id]`) — Read-only view, action buttons
@@ -117,7 +123,7 @@
 
 ### Timeline & Scope
 
-- **Quoting Vertical (Pilot)**: 7-9 days (Discovery 2-3d + Scope 1d + Build 3-4d + Demo 1d)
+- **Quoting Vertical (Pilot)**: 7.5-10 days (Discovery 2-3d + Scope 1d + Breadboarding 0.5-1d + Build 3-4d + Demo 1d)
 - **Full MVP (4 verticals + Reporting stretch)**: 23-33 days
 - **See**: `.claude/plans/vertical-by-vertical-strategy.md` for full timeline
 
@@ -137,3 +143,4 @@
 | 2026-02-08 | Strategic Pivot: Vertical-by-Vertical | Implemented comprehensive pivot from linear 10-step plan to vertical-by-vertical approach. Created: (1) `.claude/plans/vertical-by-vertical-strategy.md` (full strategic rationale, 4-phase methodology per vertical, pilot Quoting plan, roadmap for 4 subsequent verticals, success criteria, 23-33 day timeline); (2) `docs/strategy/quoting-discovery-interview-questions.md` (30-45 min interview guide, 25+ structured questions covering workflow/pain points/interconnections/wishlist); (3) `docs/competitive-analysis/print-life-quoting-analysis.md` (template for Print Life feature/UI/workflow analysis, ready for user's trial data); (4) `docs/competitive-analysis/print-life-journey-quoting.md` (template for journey map with friction points, click/time analysis, interconnections); (5) `docs/strategy/quoting-scope-definition.md` (comprehensive scope: CORE/PERIPHERAL/INTERCONNECTIONS, acceptance criteria per feature, quality checklist); (6) `docs/strategy/STRATEGY_README.md` (master index, how to use each doc by phase, cross-references); (7) `for_human/2026-02-08-strategic-pivot.html` (beautiful summary for user review). Committed 2 PRs: dfe61cd (#7) + abb6063. Updated progress.txt with document map and blocking dependencies. Ready for user's Quoting discovery phase (interview + Print Life trial). |
 | 2026-02-08 | For Human Template Standardization | Created `for_human/_template.html` reference template. Standardized all 6 existing HTML files with consistent header: back nav, tag pills (6 types: Feature/Build/Plan/Decision/Research/Learning), meta grid (Date/Branch/Phase/Vertical), session resume, related session navigation. Updated `index.html` with multi-tag support, `README.md` with template docs, `CLAUDE.md` For Human Docs section with tag definitions and template rules. |
 | 2026-02-08 | Quoting Discovery: COMPLETE | Conducted full discovery phase for Quoting vertical. (1) **Playwright exploration**: Set up headless browser in /tmp/pw-explorer/, navigated through 4Ink's customer portal at project-builder.app. Captured Steps 1-3 (product catalog, qty/size entry, art upload). Documented: 6-step flow, 103 color swatches, blocking recalculation, Angular SPA with S&S Activewear data. Steps 4-6 unreachable without art upload. (2) **Web research**: Print Life founded by Cam Earven, ~200 shops, Angular SPA, solo dev, QuickBooks integration. 2024 updates: impression cost display. Q1 2025: payment fixes, matrix pricing types. (3) **User interview**: 5-20 quotes/week, 50/50 simple/complex, 10 min per quote. Critical pain: recalculation blocks input, mandatory unused steps, forced color swatches, art style change resets all selections. Wants: hybrid approval (customer submits → shop reviews price → approves), quote reuse/duplication, keyboard navigation, simpler workflow. Currently builds quotes internally, communicates price by phone. No formal quote tracking. Tools: Print Life + QuickBooks + Excel + Email + Shopify + Square. (4) **Documents completed**: print-life-quoting-analysis.md (full feature list, 10 friction points, UI patterns, competitive landscape), print-life-journey-quoting.md (step-by-step journey, time distribution, success metrics), screen-print-pro-journey-quoting.md (redesigned single-page flow, targets 60-70% time reduction, S&S color swatch grid, instant pricing, hybrid approval). Updated quoting-scope-definition.md with all findings (S&S color swatch component, price override, quote notes, Revised status, functional Duplicate/Edit). (5) **4Ink owner request**: Color swatches should use S&S Activewear-style dense palette with color names in white font overlaid on swatches. |
+| 2026-02-08 | Breadboarding Skill | Reassessed shaping-skills decision post-pivot. Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Created: (1) `.claude/skills/breadboarding/SKILL.md` (9-step workflow: identify places, map UI/code affordances, map data stores, verify wiring, identify component boundaries, define build order); (2) `.claude/skills/breadboarding/templates/breadboard-template.md` (output template with YAML frontmatter); (3) `.claude/skills/breadboarding/reference/concepts.md` (key concepts: affordances, places, wiring, component boundaries). Integrated into workflow: updated vertical-by-vertical-strategy.md with Phase 2.5 (Breadboarding), updated CLAUDE.md (architecture, pre-build ritual, skills table, orchestration patterns), updated frontend-builder agent (added breadboarding to skills, breadboard-first startup sequence), updated AGENTS.md (Vertical Build Chain pattern, 5 orchestration patterns). Created `docs/breadboards/` directory. Ran doc-sync agent to fix drift in MEMORY.md and STRATEGY_README.md. Skill count: 6 → 8 (added vertical-discovery + breadboarding). |
