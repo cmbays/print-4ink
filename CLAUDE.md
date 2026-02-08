@@ -177,6 +177,7 @@ These documents define the project. Reference them, keep them current, and never
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
 - Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
 - After completing work, update `progress.txt` with what was built and what's next.
+- After completing work, create or update the appropriate `for_human/` HTML doc (see For Human Docs below).
 - When a doc becomes stale, update it — don't ignore it.
 - Every canonical doc has a `Last Verified` date. Update it when you confirm the doc still matches reality.
 
@@ -188,6 +189,46 @@ Extended context lives in `docs/reference/` — consult only when needed:
 - `SCREEN_AUDIT_PROTOCOL.md` — 15-point visual quality audit checklist
 - `UX_HEURISTICS.md` — 10-point UX quality checklist with Screen Print Pro examples
 - `APP_FLOW_STANDARD.md` — Template for writing APP_FLOW documentation
+
+## Project Skills
+
+Custom skills in `.claude/skills/` — Claude auto-discovers these.
+
+| Skill | Trigger | Purpose |
+|-------|---------|---------|
+| `screen-builder` | Starting Steps 1-10 | Build screens with design system + quality checklist + templates |
+| `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report |
+
+### screen-builder
+
+**Directory**: `.claude/skills/screen-builder/`
+
+Workflow: Preflight (read IMPLEMENTATION_PLAN + APP_FLOW + PRD) → Select template (data-table, detail, or form) → Build with design system rules → Verify (quality checklist + cross-links + build checks) → Update progress.
+
+Templates: `templates/data-table-screen.tsx`, `templates/detail-screen.tsx`, `templates/form-screen.tsx`
+Reference: `reference/design-tokens-quick-ref.md`, `reference/component-inventory.md`
+Checklists: `checklists/quality-checklist.md`, `checklists/cross-link-checklist.md`
+
+### quality-gate
+
+**Directory**: `.claude/skills/quality-gate/`
+
+Workflow: Identify target screen → Audit 10 categories → Run build checks → Output structured report → Enforce (Fail = must fix, Warn = optional).
+
+Categories: Visual Hierarchy, Spacing, Typography, Color, Interactive States, Icons, Motion, Empty/Error States, Accessibility, Jobs Filter.
+
+## For Human Docs
+
+After every feature build, plan, or decision, create or update an HTML doc in `for_human/`.
+
+**Rules:**
+- **Bundle** related content into the same file (e.g., multi-session work on one screen)
+- **Separate** distinct features, standalone decisions, different project phases
+- **Update `for_human/index.html`** with a new entry card (insert above `<!-- NEW ENTRIES GO HERE -->`)
+- **Update `for_human/README.md`** index table to match
+- **Include**: session resume command, artifact links, PR links, decision rationale
+- **Style**: use project design tokens (dark theme, cyan accent, Inter font) — match existing HTML files
+- **Types**: Decision (amber tag), Feature (green tag), Plan (cyan tag)
 
 ## Lessons Learned
 
