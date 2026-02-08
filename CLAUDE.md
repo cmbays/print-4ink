@@ -4,8 +4,8 @@ description: "AI operating rules, design system, coding standards, and canonical
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-07
-last_verified: 2026-02-07
+last_updated: 2026-02-08
+last_verified: 2026-02-08
 depends_on: []
 ---
 
@@ -59,7 +59,13 @@ lib/
   utils.ts                  # shadcn/ui cn() helper
 docs/
   PROJECT_BIBLE.md          # Full project context
+  AGENTS.md                 # Agent registry & orchestration guide
+  spikes/                   # Pre-build research spikes
   reference/                # Archived design system docs, UX research
+agent-outputs/              # Structured output from agent runs (audit trail)
+.claude/
+  agents/                   # Agent definitions (YAML frontmatter + system prompts)
+  skills/                   # Skill definitions (SKILL.md + templates/reference)
 ```
 
 ## Domain Context
@@ -168,6 +174,7 @@ These documents define the project. Reference them, keep them current, and never
 | Document | Purpose | Update When |
 |----------|---------|-------------|
 | `CLAUDE.md` | AI operating rules, loaded every session | Any pattern/rule changes |
+| `docs/AGENTS.md` | Agent registry, orchestration, calling conventions | Adding/retiring agents |
 | `docs/TECH_STACK.md` | Tool choices, versions, decision context | Adding/removing/upgrading deps |
 | `docs/PRD.md` | Features, scope, acceptance criteria | Scope changes or new features |
 | `docs/APP_FLOW.md` | Screens, routes, navigation paths | Adding/changing pages or flows |
@@ -192,32 +199,41 @@ Extended context lives in `docs/reference/` — consult only when needed:
 - `UX_HEURISTICS.md` — 10-point UX quality checklist with Screen Print Pro examples
 - `APP_FLOW_STANDARD.md` — Template for writing APP_FLOW documentation
 
-## Project Skills
+## Agent & Skill Infrastructure
 
-Custom skills in `.claude/skills/` — Claude auto-discovers these.
+Agents and skills are different primitives. **Agents** (`.claude/agents/`) are specialized AI assistants with own context windows and system prompts. **Skills** (`.claude/skills/`) are domain expertise containers with instructions, templates, and references. Agents preload skills for domain expertise.
+
+Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestration patterns, and calling conventions).
+
+### Agents
+
+| Agent | Use When | Preloaded Skills |
+|-------|----------|------------------|
+| `frontend-builder` | Building screens or components | screen-builder, quality-gate |
+| `requirements-interrogator` | Before building complex features | pre-build-interrogator |
+| `design-auditor` | Design review checkpoints | design-audit |
+| `feature-strategist` | Competitive analysis, feature planning | feature-strategy |
+| `doc-sync` | Syncing docs with code changes | doc-sync |
+
+**Calling convention**: "Use the [agent-name] agent to [task]" — e.g., "Use the frontend-builder agent to build PageHeader"
+
+### Skills
 
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
 | `screen-builder` | Starting Steps 1-10 | Build screens with design system + quality checklist + templates |
 | `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report |
+| `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions |
+| `design-audit` | Design review checkpoints | 15-dimension audit against design system |
+| `feature-strategy` | Feature planning | Product strategy frameworks and feature plan templates |
+| `doc-sync` | After completing steps | Drift detection and doc synchronization |
 
-### screen-builder
+### Orchestration Patterns
 
-**Directory**: `.claude/skills/screen-builder/`
-
-Workflow: Preflight (read IMPLEMENTATION_PLAN + APP_FLOW + PRD) → Select template (data-table, detail, or form) → Build with design system rules → Verify (quality checklist + cross-links + build checks) → Update progress.
-
-Templates: `templates/data-table-screen.tsx`, `templates/detail-screen.tsx`, `templates/form-screen.tsx`
-Reference: `reference/design-tokens-quick-ref.md`, `reference/component-inventory.md`
-Checklists: `checklists/quality-checklist.md`, `checklists/cross-link-checklist.md`
-
-### quality-gate
-
-**Directory**: `.claude/skills/quality-gate/`
-
-Workflow: Identify target screen → Audit 10 categories → Run build checks → Output structured report → Enforce (Fail = must fix, Warn = optional).
-
-Categories: Visual Hierarchy, Spacing, Typography, Color, Interactive States, Icons, Motion, Empty/Error States, Accessibility, Jobs Filter.
+- **Linear Chain** (simple screens): `frontend-builder → quality-gate → progress update`
+- **Pre-Build Chain** (complex screens): `requirements-interrogator → spike → frontend-builder → quality-gate`
+- **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → fixes`
+- **Competitive Analysis**: `feature-strategist → feature plan → user approval`
 
 ## For Human Docs
 
