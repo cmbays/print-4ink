@@ -1,0 +1,51 @@
+import { describe, it, expect } from "vitest";
+import { customerSchema } from "../customer";
+
+describe("customerSchema", () => {
+  const validCustomer = {
+    id: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    name: "Marcus Rivera",
+    company: "River City Brewing Co.",
+    email: "marcus@rivercitybrewing.com",
+    phone: "(512) 555-0147",
+    address: "1200 E 6th St, Austin, TX 78702",
+  };
+
+  it("accepts a valid customer", () => {
+    expect(customerSchema.parse(validCustomer)).toEqual(validCustomer);
+  });
+
+  it("rejects invalid UUID", () => {
+    expect(() =>
+      customerSchema.parse({ ...validCustomer, id: "not-a-uuid" })
+    ).toThrow();
+  });
+
+  it("rejects empty name", () => {
+    expect(() =>
+      customerSchema.parse({ ...validCustomer, name: "" })
+    ).toThrow();
+  });
+
+  it("rejects empty company", () => {
+    expect(() =>
+      customerSchema.parse({ ...validCustomer, company: "" })
+    ).toThrow();
+  });
+
+  it("rejects invalid email", () => {
+    expect(() =>
+      customerSchema.parse({ ...validCustomer, email: "not-an-email" })
+    ).toThrow();
+  });
+
+  it("accepts empty phone and address", () => {
+    const result = customerSchema.parse({
+      ...validCustomer,
+      phone: "",
+      address: "",
+    });
+    expect(result.phone).toBe("");
+    expect(result.address).toBe("");
+  });
+});

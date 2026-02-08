@@ -21,7 +21,7 @@ export const customers: Customer[] = [
     address: "4500 Mueller Blvd, Austin, TX 78723",
   },
   {
-    id: "e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+    id: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     name: "Jake Thompson",
     company: "Thompson Family Reunion 2026",
     email: "jake.thompson@gmail.com",
@@ -84,10 +84,10 @@ export const jobs: Job[] = [
     ],
   },
   {
-    id: "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+    id: "c3d4e5f6-a7b8-4c9d-8e1f-2a3b4c5d6e7f",
     jobNumber: "J-1026",
     title: "Thompson Family Reunion Tees",
-    customerId: "e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+    customerId: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     status: "design",
     priority: "low",
     dueDate: "2026-03-15",
@@ -105,7 +105,7 @@ export const jobs: Job[] = [
     ],
   },
   {
-    id: "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+    id: "d4e5f6a7-b8c9-4d0e-9f2a-3b4c5d6e7f8a",
     jobNumber: "J-1027",
     title: "River City Brewing — Pint Night Promo",
     customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
@@ -126,7 +126,7 @@ export const jobs: Job[] = [
     ],
   },
   {
-    id: "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
+    id: "e5f6a7b8-c9d0-4e1f-aa3b-4c5d6e7f8a9b",
     jobNumber: "J-1028",
     title: "Lonestar Lax — Coach Polos",
     customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
@@ -147,7 +147,7 @@ export const jobs: Job[] = [
     ],
   },
   {
-    id: "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+    id: "f6a7b8c9-d0e1-4f2a-bb4c-5d6e7f8a9b0c",
     jobNumber: "J-1022",
     title: "River City Brewing — Holiday Merch",
     customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
@@ -172,7 +172,7 @@ export const jobs: Job[] = [
 
 export const quotes: Quote[] = [
   {
-    id: "q1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     quoteNumber: "Q-2048",
     customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     lineItems: [
@@ -191,7 +191,7 @@ export const quotes: Quote[] = [
     createdAt: "2026-01-28T10:00:00Z",
   },
   {
-    id: "q2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+    id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
     quoteNumber: "Q-2049",
     customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
     lineItems: [
@@ -218,9 +218,9 @@ export const quotes: Quote[] = [
     createdAt: "2026-02-01T14:30:00Z",
   },
   {
-    id: "q3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+    id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     quoteNumber: "Q-2050",
-    customerId: "e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+    customerId: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     lineItems: [
       {
         description: "Bella+Canvas 3001 Heather Grey — 4-color front",
@@ -240,38 +240,38 @@ export const quotes: Quote[] = [
 
 export const screens: Screen[] = [
   {
-    id: "s1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    id: "51a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     meshCount: 160,
     emulsionType: "Dual Cure",
     burnStatus: "burned",
     jobId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
   },
   {
-    id: "s2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+    id: "52b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
     meshCount: 230,
     emulsionType: "Dual Cure",
     burnStatus: "burned",
     jobId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
   },
   {
-    id: "s3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+    id: "53c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     meshCount: 110,
     emulsionType: "Photopolymer",
     burnStatus: "pending",
-    jobId: "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+    jobId: "d4e5f6a7-b8c9-4d0e-9f2a-3b4c5d6e7f8a",
   },
   {
-    id: "s4d5e6f7-a8b9-4c0d-1e2f-3a4b5c6d7e8f",
+    id: "54d5e6f7-a8b9-4c0d-9e2f-3a4b5c6d7e8f",
     meshCount: 160,
     emulsionType: "Dual Cure",
     burnStatus: "pending",
-    jobId: "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+    jobId: "d4e5f6a7-b8c9-4d0e-9f2a-3b4c5d6e7f8a",
   },
   {
-    id: "s5e6f7a8-b9c0-4d1e-2f3a-4b5c6d7e8f9a",
+    id: "55e6f7a8-b9c0-4d1e-af3a-4b5c6d7e8f9a",
     meshCount: 200,
     emulsionType: "Dual Cure",
     burnStatus: "reclaimed",
-    jobId: "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+    jobId: "f6a7b8c9-d0e1-4f2a-bb4c-5d6e7f8a9b0c",
   },
 ];

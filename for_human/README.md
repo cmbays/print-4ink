@@ -17,6 +17,7 @@ This directory stores session summaries, decision logs, and reference materials 
 |------|-------|------|------|
 | [session-2026-02-07-shaping-skills.html](session-2026-02-07-shaping-skills.html) | Shaping skills evaluation, pre-build ritual, Phase 1 workflow | 2026-02-07 | Decision |
 | [session-2026-02-07-skills-implementation.html](session-2026-02-07-skills-implementation.html) | Built screen-builder + quality-gate skills (20 files) | 2026-02-07 | Feature |
+| [session-2026-02-07-ci-testing.html](session-2026-02-07-ci-testing.html) | GitHub Actions CI, Vitest schema tests (66), mock data UUID fix | 2026-02-07 | Feature |
 
 ## How to Use
 
