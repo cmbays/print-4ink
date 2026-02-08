@@ -23,6 +23,8 @@ Screen Print Pro is production management software for 4Ink, a screen-printing s
 npm run dev          # Start dev server (Turbopack)
 npm run build        # Production build
 npm run lint         # ESLint
+npm test             # Run Vitest (schema tests)
+npm run test:watch   # Vitest in watch mode
 npx tsc --noEmit     # Type check
 npx shadcn@latest add <component>  # Add shadcn/ui component
 ```
@@ -227,6 +229,7 @@ After every feature build, plan, or decision, create or update an HTML doc in `f
 - **Update `for_human/index.html`** with a new entry card (insert above `<!-- NEW ENTRIES GO HERE -->`)
 - **Update `for_human/README.md`** index table to match
 - **Include**: session resume command, artifact links, PR links, decision rationale
+- **Session ID**: Find the current session ID by running `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — the filename (without `.jsonl`) is the ID. Never use IDs from plan text or prior sessions.
 - **Style**: use project design tokens (dark theme, cyan accent, Inter font) — match existing HTML files
 - **Types**: Decision (amber tag), Feature (green tag), Plan (cyan tag)
 
@@ -237,3 +240,4 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Tailwind v4**: Uses `@theme inline` in CSS, not `tailwind.config.ts`. Design tokens go in `globals.css`.
 - **shadcn/ui init**: Works after scaffold files are in place and `npm install` has run.
 - **create-next-app**: Refuses non-empty directories — scaffold in temp dir and copy files.
+- **Zod v4 UUID validation**: Validates full RFC-4122 format — version byte (3rd group must start with 1-8) AND variant byte (4th group must start with 8, 9, a, or b). Hand-crafted UUIDs often fail the variant check.

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session: Skills Implementation &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 48px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--success);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .meta span { display: flex; align-items: center; gap: 6px; }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p, li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    li { margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .skill-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .skill-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .skill-card.primary {
+      border-color: rgba(34, 211, 238, 0.25);
+    }
+
+    .skill-card.secondary {
+      border-color: rgba(52, 211, 153, 0.2);
+    }
+
+    .skill-card .card-label { color: var(--action); }
+    .skill-card.secondary .card-label { color: var(--success); }
+
+    .skill-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      font-family: var(--font-mono);
+    }
+
+    a {
+      color: var(--action);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    td:first-child { color: var(--text-primary); }
+
+    .tree {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .tree .dir { color: var(--action); }
+    .tree .file { color: var(--text-primary); }
+
+    .resume-box {
+      background: var(--bg-surface);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 40px;
+    }
+
+    .resume-box .card-label { color: var(--action); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    .code-block {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      color: var(--text-primary);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tag {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+    }
+
+    .highlight { color: var(--text-primary); }
+
+    .count-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--action);
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Feature</div>
+      <h1>Skills Implementation</h1>
+      <p class="subtitle">Built two project-specific Claude Code skills &mdash; <code>screen-builder</code> and <code>quality-gate</code> &mdash; encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens.</p>
+      <div class="meta">
+        <span>Feb 7, 2026</span>
+        <span>Phase 1 &mdash; Tooling</span>
+      </div>
+    </header>
+
+    <h2>What Was Built</h2>
+    <p class="highlight" style="font-size: 15px; margin-bottom: 16px;"><strong>2 skills, 20 files</strong> in <code>.claude/skills/</code>. Skills are folders, not just markdown &mdash; each contains a workflow (SKILL.md), templates, checklists, and reference docs.</p>
+
+    <div class="skill-grid">
+      <div class="skill-card primary">
+        <div class="card-label">High Priority</div>
+        <div class="skill-name">screen-builder</div>
+        <p style="font-size: 13px; margin-top: 8px;">Build any of the 10 remaining screens with consistent design system, patterns, and quality. 5-step workflow: Preflight &rarr; Template &rarr; Build &rarr; Verify &rarr; Update.</p>
+        <div style="margin-top: 10px; font-size: 12px; color: var(--text-muted);">8 files &middot; 3 templates &middot; 2 checklists &middot; 2 ref docs</div>
+      </div>
+      <div class="skill-card secondary">
+        <div class="card-label">Medium Priority</div>
+        <div class="skill-name">quality-gate</div>
+        <p style="font-size: 13px; margin-top: 8px;">Audit completed screens against 10 quality categories. Produces structured pass/warn/fail report with specific fix instructions and line references.</p>
+        <div style="margin-top: 10px; font-size: 12px; color: var(--text-muted);">12 files &middot; 10 checklists &middot; 1 scoring rubric</div>
+      </div>
+    </div>
+
+    <h2>Directory Structure</h2>
+
+    <h3>screen-builder</h3>
+    <div class="tree">
+      <span class="dir">.claude/skills/screen-builder/</span><br>
+      &nbsp;&nbsp;<span class="file">SKILL.md</span> &mdash; 5-step workflow<br>
+      &nbsp;&nbsp;<span class="dir">templates/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">data-table-screen.tsx</span> &mdash; list pages (Jobs, Quotes, Customers, etc.)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">detail-screen.tsx</span> &mdash; detail pages (Job, Quote, Customer)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">form-screen.tsx</span> &mdash; form pages (New Quote)<br>
+      &nbsp;&nbsp;<span class="dir">checklists/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">quality-checklist.md</span> &mdash; 10-item quality pass/fail<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">cross-link-checklist.md</span> &mdash; navigation verification<br>
+      &nbsp;&nbsp;<span class="dir">reference/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">design-tokens-quick-ref.md</span> &mdash; colors, spacing, typography<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">component-inventory.md</span> &mdash; what's available in components/
+    </div>
+
+    <h3>quality-gate</h3>
+    <div class="tree">
+      <span class="dir">.claude/skills/quality-gate/</span><br>
+      &nbsp;&nbsp;<span class="file">SKILL.md</span> &mdash; audit workflow<br>
+      &nbsp;&nbsp;<span class="dir">checklists/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">visual-hierarchy.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">spacing-layout.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">typography.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">color-usage.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">interactive-states.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">icons.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">motion-animation.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">empty-error-states.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">accessibility.md</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">jobs-filter.md</span><br>
+      &nbsp;&nbsp;<span class="dir">rubric/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">scoring-guide.md</span> &mdash; pass/warn/fail criteria + report template
+    </div>
+
+    <h2>The Insight</h2>
+    <p>An X post argued that <strong>skills are folders, not markdown files</strong>. The SKILL.md is just the README &mdash; the folder is the actual product. Inside: scripts for deterministic work, templates for consistent output, LLM instructions for creative/judgment work. The key insight is <strong>deterministic + non-deterministic layering</strong>:</p>
+
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>What Provides It</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Deterministic</td><td>Templates, checklists, reference docs</td><td>Quality checklist, screen templates, design tokens</td></tr>
+        <tr><td>Non-deterministic</td><td>AI judgment within constraints</td><td>Layout decisions, component composition, UX tradeoffs</td></tr>
+        <tr><td>Reproducible</td><td>Consistent directory structure</td><td>Same workflow, same quality gates, every time</td></tr>
+      </tbody>
+    </table>
+
+    <h2>What We Didn't Build</h2>
+    <div class="card">
+      <ul style="margin-bottom: 0;">
+        <li><strong>Domain context skill</strong> &mdash; CLAUDE.md + docs already provide rich domain context automatically</li>
+        <li><strong>Workflow orchestration skill</strong> &mdash; the superpowers chain (brainstorming &rarr; writing-plans &rarr; executing-plans) already handles this</li>
+        <li><strong>Generic frontend patterns</strong> &mdash; existing plugins cover this</li>
+        <li><strong>Scripts</strong> &mdash; deferred to Phase 2 when real APIs exist. Phase 1 doesn't benefit from scripted automation.</li>
+        <li><strong>continuous-learning</strong> &mdash; deferred. Requires Stop hook, adds complexity.</li>
+      </ul>
+    </div>
+
+    <h2>Projected ROI</h2>
+    <table>
+      <thead>
+        <tr><th>Skill</th><th>Applies To</th><th>Estimated Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>screen-builder</td><td>9 remaining screens (Steps 2&ndash;10)</td><td>30&ndash;50% time savings per screen via templates + preflight workflow</td></tr>
+        <tr><td>quality-gate</td><td>Every screen before marking done</td><td>100% checklist coverage, fewer review cycles</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Design Token Fix</h2>
+    <div class="card">
+      <div class="card-label">Decision</div>
+      <p style="margin-bottom: 12px;">CodeRabbit flagged <code>shadow-cyan-400</code> in template code as a hardcoded Tailwind palette color violating our design token guidelines. Replaced all occurrences with <code>shadow-action</code>.</p>
+      <table style="margin-bottom: 0;">
+        <thead>
+          <tr><th>Approach</th><th>Pros</th><th>Cons</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>shadow-cyan-400</code></td>
+            <td>Guaranteed Tailwind utility</td>
+            <td>Hardcoded &mdash; won't update if action color changes. Violates our own "no colors outside design tokens" rule.</td>
+          </tr>
+          <tr>
+            <td style="color: var(--success);"><code>shadow-action</code></td>
+            <td>Semantic, future-proof, consistent with <code>text-action</code>/<code>bg-action</code></td>
+            <td>None &mdash; Tailwind v4 auto-generates <code>shadow-*</code> for any <code>--color-*</code> in <code>@theme inline</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Fixed in 4 files: <code>FRONTEND_GUIDELINES.md</code>, <code>interactive-states.md</code>, <code>design-tokens-quick-ref.md</code>, <code>form-screen.tsx</code>. The root cause was FRONTEND_GUIDELINES.md &mdash; all other files copied the pattern from there.</p>
+
+    <h2>Other Changes</h2>
+    <table>
+      <thead>
+        <tr><th>File</th><th>Change</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>CLAUDE.md</code></td>
+          <td>Added "Project Skills" section documenting both skills</td>
+        </tr>
+        <tr>
+          <td><code>progress.txt</code></td>
+          <td>Added skills to "What's Built" and session log</td>
+        </tr>
+        <tr>
+          <td><code>eslint.config.mjs</code></td>
+          <td>Excluded <code>.claude/skills/**/templates/**</code> from linting (templates have intentional unused imports)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Verification</h2>
+    <div class="card">
+      <ul style="margin-bottom: 0;">
+        <li><strong style="color: var(--success);">Pass</strong> &mdash; <code>npx tsc --noEmit</code></li>
+        <li><strong style="color: var(--success);">Pass</strong> &mdash; <code>npm run lint</code> (0 errors, 0 warnings after ESLint exclusion)</li>
+        <li><strong style="color: var(--success);">Pass</strong> &mdash; <code>npm run build</code></li>
+      </ul>
+    </div>
+
+    <h2>Next Steps</h2>
+    <ul>
+      <li>Build Step 1 (Shared Layout Polish) using <code>screen-builder</code> skill</li>
+      <li>Run <code>quality-gate</code> on the completed screen</li>
+      <li>Compare time/quality against Step 0 (built without skills)</li>
+      <li>Iterate skill content based on findings</li>
+    </ul>
+
+    <div class="tag-row">
+      <span class="tag">skills</span>
+      <span class="tag">tooling</span>
+      <span class="tag">screen-builder</span>
+      <span class="tag">quality-gate</span>
+      <span class="tag">templates</span>
+    </div>
+
+    <div class="resume-box">
+      <div class="card-label">Resume This Session</div>
+      <div class="code-block">claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd</div>
+    </div>
+
+    <footer>
+      Screen Print Pro &mdash; for_human session log &mdash; Generated 2026-02-07
+    </footer>
+  </div>
+</body>
+</html>
