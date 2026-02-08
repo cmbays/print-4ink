@@ -61,10 +61,54 @@
 
 ## What's Next
 
-See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
-- Step 1: Shared layout polish (sidebar active states, topbar search, breadcrumbs)
-- Step 2: Jobs List page (`/jobs`)
-- Step 3: Job Detail page (`/jobs/[id]`)
+**STRATEGIC PIVOT (2026-02-08)**: Moving from linear 10-step implementation plan to **vertical-by-vertical approach** based on 4Ink's validated pain points.
+
+### Document Map & Usage Guide
+
+**Master Strategy** (READ FIRST):
+- **`.claude/plans/vertical-by-vertical-strategy.md`** — Full strategic rationale, 4-phase methodology, timeline, success criteria. Master reference for entire approach.
+
+**Quoting Vertical — Discovery Phase** (IN PROGRESS):
+- **`docs/strategy/quoting-discovery-interview-questions.md`** — Interview guide for Chris. 30-45 min, 25+ questions covering workflow → pain points → interconnections → wishlist. **STATUS**: Ready to use, awaiting interview.
+- **`docs/competitive-analysis/print-life-quoting-analysis.md`** — Template to document Print Life features, UI patterns, workflows from screenshots + trial. **STATUS**: Skeleton ready, waiting for user's trial data.
+- **`docs/competitive-analysis/print-life-journey-quoting.md`** — Template to map Print Life workflows with friction points, click/time analysis, interconnections. **STATUS**: Skeleton ready, waiting for user's trial data.
+
+**Quoting Vertical — Scope Definition** (READY TO BRIEF BUILDERS):
+- **`docs/strategy/quoting-scope-definition.md`** — Comprehensive scope: CORE features (Quotes List, Quote Detail, New Quote Form), PERIPHERAL (mocked UI), INTERCONNECTIONS (minimal), NOT BUILDING list. Includes acceptance criteria and quality checklist per feature. **STATUS**: Complete and validated, ready to brief frontend-builder agent.
+
+**Navigation & Reference**:
+- **`docs/strategy/STRATEGY_README.md`** — Master index of all strategy documents. How to use each folder by phase. Cross-references to related docs. **STATUS**: Complete.
+- **`for_human/2026-02-08-strategic-pivot.html`** — Beautiful HTML summary of pivot. Timeline, methodology, success criteria, next steps, document map. **STATUS**: Complete.
+
+**Related (Existing)**:
+- `CLAUDE.md` — Project rules, design system, quality checklist
+- `docs/AGENTS.md` — Agent registry (frontend-builder, requirements-interrogator, etc.)
+- `progress.txt` — This file, session log and current state
+- `docs/IMPLEMENTATION_PLAN.md` — Old 10-step plan (superseded, kept for reference)
+
+### Blocking Dependencies & Next Actions
+
+**🚫 Cannot build Quoting until**: Discovery phase complete (user interview + Print Life trial analysis)
+
+**✅ Next Immediate Actions** (for user, within 3-5 days):
+1. Schedule 30-45 min Quoting interview with Chris using `docs/strategy/quoting-discovery-interview-questions.md`
+2. Complete Print Life trial (create simple + complex quotes, document steps, friction, time, clicks)
+3. Fill in `docs/competitive-analysis/print-life-quoting-analysis.md` and `.../print-life-journey-quoting.md` with trial findings
+4. Validate `docs/strategy/quoting-scope-definition.md` confirms CORE/PERIPHERAL/INTERCONNECTION alignment
+5. Create `docs/strategy/screen-print-pro-journey-quoting.md` with improved workflow design (goals, click reduction, time savings)
+
+**📅 Then I'll**:
+1. Brief frontend-builder agent with scope definition + improved journey
+2. Build CORE features (Quotes List, Quote Detail, New Quote Form)
+3. Run quality-gate audit
+4. Demo to user, collect feedback
+5. Iterate if needed before moving to Invoicing vertical
+
+### Timeline & Scope
+
+- **Quoting Vertical (Pilot)**: 7-9 days (Discovery 2-3d + Scope 1d + Build 3-4d + Demo 1d)
+- **Full MVP (4 verticals + Reporting stretch)**: 23-33 days
+- **See**: `.claude/plans/vertical-by-vertical-strategy.md` for full timeline
 
 ## Session Log
 
@@ -78,4 +122,5 @@ See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
 | 2026-02-07 | For Human Docs | Created `for_human/` framework: index.html (navigable), README.md (index table + bundling rules), first session doc (shaping-skills evaluation). Added standing rule to CLAUDE.md to always create/update for_human docs after completing work. Configured CodeRabbit with local learning scope. |
 | 2026-02-07 | Skills | Created 2 project skills in `.claude/skills/`: `screen-builder` (workflow + 3 templates + 2 checklists + 2 reference docs) and `quality-gate` (10-category audit + scoring rubric). Added Project Skills section to CLAUDE.md. Skills encode design system, quality checklist, and domain knowledge into repeatable workflows for Steps 1-10. |
 | 2026-02-07 | CI + Testing | Set up Vitest with schema validation tests (66 tests across 6 files). Created GitHub Actions CI workflow (typecheck, lint, test, build). Fixed mock data UUIDs — Zod v4 validates RFC-4122 variant byte strictly. Added Vitest to TECH_STACK.md. |
-| 2026-02-08 | Agent Architecture | Created 5 agents (.claude/agents/) and 4 new skills (.claude/skills/). Agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync. Skills: pre-build-interrogator, design-audit, feature-strategy, doc-sync. Created AGENTS.md registry, agent-outputs/ directory, and updated CLAUDE.md with agent infrastructure section. |
+| 2026-02-08 | Agent Architecture | Created 5 agents (.claude/agents/) and 4 new skills (.claude/skills/). Agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync. Skills: pre-build-interrogator, design-audit, feature-strategy, doc-sync. Created AGENTS.md registry, agent-outputs/ directory, and updated CLAUDE.md with agent infrastructure section. Addressed CodeRabbit review: fixed .gitignore nested file tracking, added markdown language tags, corrected branch metadata, added research methodology step to feature-strategy. Merged PR #6 to main. |
+| 2026-02-08 | Strategic Pivot: Vertical-by-Vertical | Implemented comprehensive pivot from linear 10-step plan to vertical-by-vertical approach. Created: (1) `.claude/plans/vertical-by-vertical-strategy.md` (full strategic rationale, 4-phase methodology per vertical, pilot Quoting plan, roadmap for 4 subsequent verticals, success criteria, 23-33 day timeline); (2) `docs/strategy/quoting-discovery-interview-questions.md` (30-45 min interview guide, 25+ structured questions covering workflow/pain points/interconnections/wishlist); (3) `docs/competitive-analysis/print-life-quoting-analysis.md` (template for Print Life feature/UI/workflow analysis, ready for user's trial data); (4) `docs/competitive-analysis/print-life-journey-quoting.md` (template for journey map with friction points, click/time analysis, interconnections); (5) `docs/strategy/quoting-scope-definition.md` (comprehensive scope: CORE/PERIPHERAL/INTERCONNECTIONS, acceptance criteria per feature, quality checklist); (6) `docs/strategy/STRATEGY_README.md` (master index, how to use each doc by phase, cross-references); (7) `for_human/2026-02-08-strategic-pivot.html` (beautiful summary for user review). Committed 2 PRs: dfe61cd (#7) + abb6063. Updated progress.txt with document map and blocking dependencies. Ready for user's Quoting discovery phase (interview + Print Life trial). |
