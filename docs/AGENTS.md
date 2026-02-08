@@ -16,7 +16,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 
 | Agent | Use When | Example Invocation | Preloaded Skills | Output |
 |-------|----------|-------------------|------------------|--------|
-| `frontend-builder` | Building screens or components | "Use frontend-builder agent to build PageHeader" | screen-builder, quality-gate | Screen/component files |
+| `frontend-builder` | Building screens or components | "Use frontend-builder agent to build PageHeader" | breadboarding, screen-builder, quality-gate | Screen/component files |
 | `requirements-interrogator` | Before building complex features | "Ask requirements-interrogator about Kanban workflow" | pre-build-interrogator | Spike doc in `docs/spikes/` |
 | `design-auditor` | Design review checkpoint | "Have design-auditor review the jobs screen" | design-audit | Audit report in `agent-outputs/` |
 | `feature-strategist` | Competitive analysis, feature planning | "Use feature-strategist for quote system analysis" | feature-strategy | Feature plan in `docs/` |
@@ -26,16 +26,16 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 
 ### frontend-builder
 
-**Purpose**: Build frontend screens and components following project standards. Consolidates screen and component building into one agent that knows the full design system, schema layer, and mock data patterns.
+**Purpose**: Build frontend screens and components following project standards. Consolidates screen and component building into one agent that knows the full design system, schema layer, and mock data patterns. Uses breadboard documents as primary build blueprints — every UI affordance, code affordance, and wiring connection is pre-mapped before code is written.
 
 **Tools**: Read, Write, Edit, Bash, Grep, Glob
-**Preloaded skills**: screen-builder, quality-gate
-**Reads**: All frontend code, schemas, mock data, design system docs
+**Preloaded skills**: breadboarding, screen-builder, quality-gate
+**Reads**: Breadboard docs, scope definitions, all frontend code, schemas, mock data, design system docs
 **Writes**: Screen files in `app/(dashboard)/`, component files in `components/features/`, `progress.txt`
 **Never touches**: Backend, docs (except progress.txt)
 
 **When to use**:
-- Building any screen from IMPLEMENTATION_PLAN Steps 1-10
+- Building any screen within a vertical (uses breadboard as build blueprint)
 - Creating shared components (StatusBadge, DataTable, PageHeader, etc.)
 - Wiring navigation, breadcrumbs, and cross-links
 
@@ -101,37 +101,47 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 
 ## Orchestration Patterns
 
-### Pattern 1: Linear Chain (Simple Screens)
+### Pattern 1: Vertical Build Chain (Standard for Verticals)
+
+```text
+vertical-discovery → scope definition → breadboarding → frontend-builder → quality-gate → demo
+```
+
+**Use for**: Every new vertical (Quoting, Invoicing, Customer Management, etc.)
+
+This is the standard 5-phase workflow. Breadboarding produces the build blueprint that frontend-builder consumes. The breadboard maps all UI affordances, code affordances, data stores, and wiring before any code is written.
+
+### Pattern 2: Linear Chain (Simple Screens)
 
 ```text
 frontend-builder → quality-gate → progress update
 ```
 
-**Use for**: Steps 2, 3, 5, 7, 8, 9 (straightforward table/detail screens)
+**Use for**: Straightforward table/detail screens within a vertical (when breadboard already exists)
 
-The frontend-builder preloads both screen-builder and quality-gate skills, so this chain runs within a single agent invocation.
+The frontend-builder preloads breadboarding, screen-builder, and quality-gate skills, so this chain runs within a single agent invocation.
 
-### Pattern 2: Pre-Build Chain (Complex Screens)
+### Pattern 3: Pre-Build Chain (Complex Screens)
 
 ```text
-requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update
+breadboarding → requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update
 ```
 
-**Use for**: Steps 4, 6 (Kanban board, Quote form)
+**Use for**: Complex screens with ambiguous behavior (e.g., Kanban board, Quote form)
 
-First the interrogator surfaces unknowns and documents them. Then the builder uses the spike as additional context.
+Breadboarding maps the affordances first, then the interrogator surfaces unknowns and documents them. The builder uses both the breadboard and spike as context.
 
-### Pattern 3: Checkpoint Chain (Milestones)
+### Pattern 4: Checkpoint Chain (Milestones)
 
 ```text
 design-auditor → audit report → user approval → frontend-builder (fixes) → quality-gate
 ```
 
-**Use for**: After Steps 3, 6, 10 (major checkpoints)
+**Use for**: After completing a vertical's build phase (major checkpoints)
 
 The auditor reviews all screens built so far and produces a phased improvement plan. User approves which phases to execute. Builder implements approved changes.
 
-### Pattern 4: Competitive Analysis Chain
+### Pattern 5: Competitive Analysis Chain
 
 ```text
 feature-strategist → feature plan → user approval → update IMPLEMENTATION_PLAN
@@ -146,7 +156,7 @@ feature-strategist → feature plan → user approval → update IMPLEMENTATION_
 All agents receive context through their preloaded skills and the task prompt. Provide:
 
 ```text
-Step: [number from IMPLEMENTATION_PLAN]
+Vertical: [name of vertical]
 Description: [what to build/audit/interrogate]
 Context files: [specific files to read]
 ```
@@ -156,7 +166,7 @@ Context files: [specific files to read]
 All agents produce structured markdown:
 
 ```markdown
-# [Agent Name] Output — [Step/Task]
+# [Agent Name] Output — [Vertical/Task]
 
 ## Summary
 [1-2 sentences]
@@ -169,7 +179,7 @@ All agents produce structured markdown:
 [What agent should run next OR "Ready for user review"]
 ```
 
-Agent outputs are stored in `agent-outputs/[step]/` for audit trail.
+Agent outputs are stored in `agent-outputs/[vertical]/` for audit trail.
 
 ## Agent Design Principles
 
@@ -208,7 +218,7 @@ Used by agents calling other agents or in scripts:
 ```python
 Task(
   subagent_type="frontend-builder",
-  prompt="Build PageHeader component from Step 1 spec",
+  prompt="Build PageHeader component from Quoting breadboard",
   description="Building PageHeader"
 )
 ```
