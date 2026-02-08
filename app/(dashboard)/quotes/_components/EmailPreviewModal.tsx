@@ -34,7 +34,7 @@ export function EmailPreviewModal({
   quote,
   customer,
 }: EmailPreviewModalProps) {
-  const firstName = customer.name.split(" ")[0];
+  const firstName = customer.name.trim().split(" ")[0] || "there";
 
   function handleSend() {
     toast.success(`Email sent to ${customer.email}`);

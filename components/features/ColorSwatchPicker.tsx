@@ -58,7 +58,7 @@ function Swatch({
             }
           }}
           className={cn(
-            "relative flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-transform",
+            "group relative flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-transform",
             "hover:scale-105 hover:ring-1 hover:ring-foreground/30",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             "motion-reduce:transition-none",
