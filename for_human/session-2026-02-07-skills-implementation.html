@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Session: Skills Implementation &mdash; Screen Print Pro</title>
+  <title>Skills Implementation &mdash; Screen Print Pro</title>
   <style>
     :root {
       --bg-primary: #09090b;
@@ -14,6 +14,7 @@
       --text-muted: rgba(255,255,255,0.38);
       --action: #22d3ee;
       --success: #34d399;
+      --error: #f87171;
       --warning: #fbbf24;
       --border: rgba(255,255,255,0.08);
       --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,264 +31,203 @@
       padding: 48px 24px;
     }
 
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text-muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; padding: 6px 12px; border-radius: 6px;
+      border: 1px solid var(--border); transition: all 0.15s ease;
+    }
+    .back-btn:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 4px 10px; border-radius: 4px;
+    }
+    .tag-feature { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-build   { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .subtitle { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; }
+
+    .meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; margin-bottom: 12px;
+    }
+    .meta-item { background: var(--bg-elevated); padding: 12px 16px; }
+    .meta-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .meta-value { font-size: 13px; color: var(--text-primary); }
+
+    .session-resume {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+    }
+    .session-resume code {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--action); user-select: all; cursor: pointer;
     }
 
-    header {
-      margin-bottom: 48px;
+    .related-nav { margin-bottom: 32px; }
+    .related-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 8px;
     }
-
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: rgba(52, 211, 153, 0.12);
-      color: var(--success);
-      margin-bottom: 12px;
+    .related-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .related-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-secondary); text-decoration: none;
+      padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg-elevated); transition: all 0.15s ease;
     }
+    .related-link:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
+    .related-link .related-desc { color: var(--text-muted); font-size: 11px; }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
+    .header-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 32px 0; }
 
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 15px;
-    }
-
-    .meta {
-      display: flex;
-      gap: 24px;
-      margin-top: 16px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .meta span { display: flex; align-items: center; gap: 6px; }
-
-    h2 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 40px;
-      margin-bottom: 16px;
-      letter-spacing: -0.01em;
-    }
-
-    h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-top: 24px;
-      margin-bottom: 8px;
-    }
-
-    p, li {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    ul, ol {
-      padding-left: 20px;
-      margin-bottom: 16px;
-    }
-
+    h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; letter-spacing: -0.01em; }
+    h3 { font-size: 15px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    p, li { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
     li { margin-bottom: 6px; }
     li strong { color: var(--text-primary); }
-
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    .card-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
-    .skill-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .skill-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .skill-card.primary {
-      border-color: rgba(34, 211, 238, 0.25);
-    }
-
-    .skill-card.secondary {
-      border-color: rgba(52, 211, 153, 0.2);
-    }
-
-    .skill-card .card-label { color: var(--action); }
-    .skill-card.secondary .card-label { color: var(--success); }
-
-    .skill-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-      font-family: var(--font-mono);
-    }
-
-    a {
-      color: var(--action);
-      text-decoration: none;
-    }
-
+    a { color: var(--action); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
+    .card {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px; margin-bottom: 16px;
+    }
+    .card-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;
+    }
+
+    .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .skill-card {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px;
+    }
+    .skill-card.primary { border-color: rgba(34, 211, 238, 0.25); }
+    .skill-card.secondary { border-color: rgba(52, 211, 153, 0.2); }
+    .skill-card .card-label { color: var(--action); }
+    .skill-card.secondary .card-label { color: var(--success); }
+    .skill-name {
+      font-size: 16px; font-weight: 600; color: var(--text-primary);
+      margin-bottom: 4px; font-family: var(--font-mono);
+    }
+
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 16px;
-      font-size: 13px;
+      width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;
     }
-
     th {
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
+      text-align: left; font-weight: 600; color: var(--text-muted);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
     }
-
-    td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
     td:first-child { color: var(--text-primary); }
 
     .tree {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 16px 20px;
-      line-height: 1.8;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
+      font-family: var(--font-mono); font-size: 13px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 16px 20px; line-height: 1.8;
+      color: var(--text-secondary); margin-bottom: 16px;
     }
-
     .tree .dir { color: var(--action); }
     .tree .file { color: var(--text-primary); }
 
-    .resume-box {
-      background: var(--bg-surface);
-      border: 1px solid rgba(34, 211, 238, 0.2);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-top: 40px;
-    }
-
-    .resume-box .card-label { color: var(--action); }
-
     code {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: var(--bg-surface);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--action);
+      font-family: var(--font-mono); font-size: 13px;
+      background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; color: var(--action);
     }
 
-    .code-block {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px 16px;
-      margin-top: 8px;
-      color: var(--text-primary);
-      user-select: all;
-      cursor: pointer;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 32px 0;
-    }
-
-    .tag-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .tag {
-      font-size: 12px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.06);
-      color: var(--text-secondary);
+    .count-badge {
+      display: inline-block; font-size: 12px; font-weight: 600;
+      background: rgba(34, 211, 238, 0.1); color: var(--action);
+      padding: 2px 8px; border-radius: 10px; margin-left: 8px;
     }
 
     .highlight { color: var(--text-primary); }
 
-    .count-badge {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      background: rgba(34, 211, 238, 0.1);
-      color: var(--action);
-      padding: 2px 8px;
-      border-radius: 10px;
-      margin-left: 8px;
-    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
     footer {
-      margin-top: 48px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: center;
+      margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted); text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
+
+    <!-- ========== TOP NAV ========== -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <!-- ========== HEADER ========== -->
     <header>
-      <div class="badge">Feature</div>
+      <div class="tag-row">
+        <span class="tag tag-feature">Feature</span>
+        <span class="tag tag-build">Build</span>
+      </div>
+
       <h1>Skills Implementation</h1>
       <p class="subtitle">Built two project-specific Claude Code skills &mdash; <code>screen-builder</code> and <code>quality-gate</code> &mdash; encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens.</p>
-      <div class="meta">
-        <span>Feb 7, 2026</span>
-        <span>Phase 1 &mdash; Tooling</span>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-07</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>main</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Tooling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Infrastructure</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd</code>
       </div>
     </header>
+
+    <!-- ========== RELATED SESSIONS ========== -->
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="session-2026-02-07-shaping-skills.html">
+          &larr; Shaping Skills <span class="related-desc">&mdash; Methodology evaluation that led to this</span>
+        </a>
+        <a class="related-link" href="session-2026-02-08-agent-architecture.html">
+          Agent Architecture &rarr; <span class="related-desc">&mdash; 5 agents + 4 more skills built on these</span>
+        </a>
+      </div>
+    </nav>
+
+    <hr class="header-divider">
+
+    <!-- ========== BODY CONTENT ========== -->
 
     <h2>What Was Built</h2>
     <p class="highlight" style="font-size: 15px; margin-bottom: 16px;"><strong>2 skills, 20 files</strong> in <code>.claude/skills/</code>. Skills are folders, not just markdown &mdash; each contains a workflow (SKILL.md), templates, checklists, and reference docs.</p>
@@ -442,21 +382,8 @@
       <li>Iterate skill content based on findings</li>
     </ul>
 
-    <div class="tag-row">
-      <span class="tag">skills</span>
-      <span class="tag">tooling</span>
-      <span class="tag">screen-builder</span>
-      <span class="tag">quality-gate</span>
-      <span class="tag">templates</span>
-    </div>
-
-    <div class="resume-box">
-      <div class="card-label">Resume This Session</div>
-      <div class="code-block">claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd</div>
-    </div>
-
     <footer>
-      Screen Print Pro &mdash; for_human session log &mdash; Generated 2026-02-07
+      Screen Print Pro &mdash; Skills Implementation &mdash; 2026-02-07
     </footer>
   </div>
 </body>

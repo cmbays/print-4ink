@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Session: CI &amp; Testing Setup &mdash; Screen Print Pro</title>
+  <title>CI &amp; Testing Setup &mdash; Screen Print Pro</title>
   <style>
     :root {
       --bg-primary: #09090b;
@@ -14,8 +14,8 @@
       --text-muted: rgba(255,255,255,0.38);
       --action: #22d3ee;
       --success: #34d399;
-      --warning: #fbbf24;
       --error: #f87171;
+      --warning: #fbbf24;
       --border: rgba(255,255,255,0.08);
       --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -32,193 +32,155 @@
     }
 
     .container { max-width: 720px; margin: 0 auto; }
-    header { margin-bottom: 48px; }
 
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: rgba(52, 211, 153, 0.12);
-      color: var(--success);
-      margin-bottom: 12px;
+    .top-nav { margin-bottom: 24px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text-muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; padding: 6px 12px; border-radius: 6px;
+      border: 1px solid var(--border); transition: all 0.15s ease;
+    }
+    .back-btn:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 4px 10px; border-radius: 4px;
+    }
+    .tag-feature  { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-build    { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-learning { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .subtitle { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; }
+
+    .meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; margin-bottom: 12px;
+    }
+    .meta-item { background: var(--bg-elevated); padding: 12px 16px; }
+    .meta-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .meta-value { font-size: 13px; color: var(--text-primary); }
+
+    .session-resume {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+    }
+    .session-resume code {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--action); user-select: all; cursor: pointer;
     }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
+    .header-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 32px 0; }
 
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 15px;
-    }
-
-    .meta {
-      display: flex;
-      gap: 24px;
-      margin-top: 16px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .meta span { display: flex; align-items: center; gap: 6px; }
-
-    h2 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 40px;
-      margin-bottom: 16px;
-      letter-spacing: -0.01em;
-    }
-
-    h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-top: 24px;
-      margin-bottom: 8px;
-    }
-
-    p, li {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
+    h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; letter-spacing: -0.01em; }
+    h3 { font-size: 15px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    p, li { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
     ul, ol { padding-left: 20px; margin-bottom: 16px; }
     li { margin-bottom: 6px; }
     li strong { color: var(--text-primary); }
-
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    .card-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
     a { color: var(--action); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
+    .card {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px; margin-bottom: 16px;
+    }
+    .card-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;
+    }
+
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 16px;
-      font-size: 13px;
+      width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;
     }
-
     th {
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
+      text-align: left; font-weight: 600; color: var(--text-muted);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
     }
-
-    td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
     td:first-child { color: var(--text-primary); }
 
     code {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: var(--bg-surface);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--action);
-    }
-
-    .code-block {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px 16px;
-      margin-top: 8px;
-      color: var(--text-primary);
-      user-select: all;
-      cursor: pointer;
-    }
-
-    .resume-box {
-      background: var(--bg-surface);
-      border: 1px solid rgba(34, 211, 238, 0.2);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-top: 40px;
-    }
-
-    .resume-box .card-label { color: var(--action); }
-
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 32px 0;
+      font-family: var(--font-mono); font-size: 13px;
+      background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; color: var(--action);
     }
 
     .count-badge {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      background: rgba(34, 211, 238, 0.1);
-      color: var(--action);
-      padding: 2px 8px;
-      border-radius: 4px;
+      display: inline-block; font-size: 12px; font-weight: 600;
+      background: rgba(34, 211, 238, 0.1); color: var(--action);
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .bug-badge {
+      display: inline-block; font-size: 12px; font-weight: 600;
+      background: rgba(248, 113, 113, 0.1); color: var(--error);
+      padding: 2px 8px; border-radius: 4px;
     }
 
-    .bug-badge {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      background: rgba(248, 113, 113, 0.1);
-      color: var(--error);
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
     footer {
-      margin-top: 48px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: center;
+      margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted); text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
+
+    <!-- ========== TOP NAV ========== -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <!-- ========== HEADER ========== -->
     <header>
-      <div class="badge">Feature</div>
+      <div class="tag-row">
+        <span class="tag tag-feature">Feature</span>
+        <span class="tag tag-build">Build</span>
+        <span class="tag tag-learning">Learning</span>
+      </div>
+
       <h1>CI &amp; Testing Setup</h1>
       <p class="subtitle">GitHub Actions CI workflow, Vitest schema tests, and mock data UUID fix. Catches build/lint/type/test failures on every push and PR.</p>
-      <div class="meta">
-        <span>2026-02-07</span>
-        <span>Branch: <code>infra/ci-testing-setup</code></span>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-07</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>infra/ci-testing-setup</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Mockup</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Infrastructure</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume 29d21a39-94a9-4cb3-8ac1-bcc442a85d68</code>
       </div>
     </header>
+
+    <hr class="header-divider">
+
+    <!-- ========== BODY CONTENT ========== -->
 
     <h2>What Was Built</h2>
 
@@ -284,11 +246,6 @@
       <li><strong>Component tests skipped</strong>: The components ARE the deliverable and they're changing rapidly. Negative ROI.</li>
       <li><strong>No Claude Code hooks</strong>: CI catches the same issues asynchronously. Hooks add friction during rapid prototyping.</li>
     </ul>
-
-    <div class="resume-box">
-      <div class="card-label">Resume this session</div>
-      <div class="code-block">claude --resume 29d21a39-94a9-4cb3-8ac1-bcc442a85d68</div>
-    </div>
 
     <footer>
       Screen Print Pro &mdash; CI &amp; Testing Setup &mdash; 2026-02-07

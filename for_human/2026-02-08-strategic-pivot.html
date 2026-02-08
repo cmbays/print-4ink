@@ -1,707 +1,352 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategic Pivot: Vertical-by-Vertical Approach</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --color-bg-primary: #09090b;
-            --color-bg-elevated: #18181b;
-            --color-bg-surface: #1c1c1f;
-            --color-text-primary: rgba(255,255,255,0.87);
-            --color-text-secondary: rgba(255,255,255,0.60);
-            --color-text-muted: rgba(255,255,255,0.38);
-            --color-action: #22d3ee;
-            --color-success: #34d399;
-            --color-error: #f87171;
-            --color-warning: #fbbf24;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strategic Pivot: Vertical-by-Vertical &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            padding: 2rem;
-        }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    .container { max-width: 720px; margin: 0 auto; }
 
-        h1, h2, h3 {
-            font-weight: 700;
-            margin-top: 1.5em;
-            margin-bottom: 0.5em;
-        }
+    .top-nav { margin-bottom: 24px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text-muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; padding: 6px 12px; border-radius: 6px;
+      border: 1px solid var(--border); transition: all 0.15s ease;
+    }
+    .back-btn:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
 
-        h1 {
-            font-size: 2rem;
-            color: var(--color-text-primary);
-        }
+    header { margin-bottom: 32px; }
 
-        h2 {
-            font-size: 1.5rem;
-            color: var(--color-text-primary);
-            border-bottom: 2px solid var(--color-action);
-            padding-bottom: 0.5rem;
-        }
+    .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 4px 10px; border-radius: 4px;
+    }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-decision { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
 
-        h3 {
-            font-size: 1.25rem;
-            color: var(--color-text-secondary);
-        }
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .subtitle { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; }
 
-        p {
-            margin: 0.8em 0;
-            color: var(--color-text-secondary);
-        }
+    .meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; margin-bottom: 12px;
+    }
+    .meta-item { background: var(--bg-elevated); padding: 12px 16px; }
+    .meta-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .meta-value { font-size: 13px; color: var(--text-primary); }
 
-        .tag {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-right: 0.5rem;
-            margin-bottom: 1rem;
-        }
+    .session-resume {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+    }
+    .session-resume code {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--action); user-select: all; cursor: pointer;
+    }
 
-        .tag-strategy {
-            background: var(--color-action);
-            color: var(--color-bg-primary);
-        }
+    .related-nav { margin-bottom: 32px; }
+    .related-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 8px;
+    }
+    .related-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .related-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-secondary); text-decoration: none;
+      padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg-elevated); transition: all 0.15s ease;
+    }
+    .related-link:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
+    .related-link .related-desc { color: var(--text-muted); font-size: 11px; }
 
-        .tag-approved {
-            background: var(--color-success);
-            color: var(--color-bg-primary);
-        }
+    .header-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 32px 0; }
 
-        .tag-blocking {
-            background: var(--color-error);
-            color: white;
-        }
+    h2 { font-size: 18px; font-weight: 600; margin-top: 40px; margin-bottom: 16px; letter-spacing: -0.01em; }
+    h3 { font-size: 15px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    p, li { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-        .card {
-            background: var(--color-bg-elevated);
-            border: 1px solid var(--color-bg-surface);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
+    .card {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px; margin-bottom: 16px;
+    }
+    .card-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;
+    }
 
-        .section {
-            margin: 2rem 0;
-        }
+    .highlight {
+      background: var(--bg-surface); border-left: 4px solid var(--action);
+      padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0;
+    }
 
-        .highlight {
-            background: var(--color-bg-surface);
-            border-left: 4px solid var(--color-action);
-            padding: 1rem;
-            margin: 1rem 0;
-        }
+    table {
+      width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;
+    }
+    th {
+      text-align: left; font-weight: 600; color: var(--text-muted);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    td:first-child { color: var(--text-primary); }
 
-        code {
-            background: var(--color-bg-surface);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9em;
-        }
+    code {
+      font-family: var(--font-mono); font-size: 12px;
+      background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; color: var(--action);
+    }
 
-        .code-block {
-            background: var(--color-bg-surface);
-            border: 1px solid var(--color-bg-surface);
-            border-radius: 4px;
-            padding: 1rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9em;
-        }
+    .success-metric {
+      background: var(--bg-surface); border-left: 4px solid var(--success);
+      padding: 10px 16px; margin: 8px 0; border-radius: 0 6px 6px 0;
+      font-size: 13px;
+    }
+    .blocking-item {
+      background: var(--bg-surface); border-left: 4px solid var(--error);
+      padding: 10px 16px; margin: 8px 0; border-radius: 0 6px 6px 0;
+      font-size: 13px;
+    }
 
-        ul, ol {
-            margin: 0.8em 0;
-            padding-left: 1.5rem;
-            color: var(--color-text-secondary);
-        }
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline li { position: relative; margin-bottom: 1.5rem; }
+    .timeline li::before {
+      content: "\2192"; position: absolute; left: -1.5rem;
+      color: var(--action); font-weight: bold;
+    }
 
-        li {
-            margin: 0.4em 0;
-        }
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 
-        .checklist li::before {
-            content: "✓ ";
-            color: var(--color-success);
-            font-weight: bold;
-            margin-right: 0.5rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            background: var(--color-bg-surface);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        th {
-            background: var(--color-bg-elevated);
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--color-text-primary);
-            border-bottom: 2px solid var(--color-action);
-        }
-
-        td {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--color-bg-primary);
-            color: var(--color-text-secondary);
-        }
-
-        .button {
-            display: inline-block;
-            background: var(--color-action);
-            color: var(--color-bg-primary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 0.5rem 0.5rem 0.5rem 0;
-            transition: all 0.3s ease;
-            box-shadow: 4px 4px 0px rgba(34, 211, 238, 0.2);
-        }
-
-        .button:hover {
-            box-shadow: 6px 6px 0px rgba(34, 211, 238, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline li {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .timeline li::before {
-            content: "→";
-            position: absolute;
-            left: -1.5rem;
-            color: var(--color-action);
-            font-weight: bold;
-        }
-
-        .footer {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px solid var(--color-bg-surface);
-            color: var(--color-text-muted);
-            font-size: 0.9rem;
-        }
-
-        .command {
-            background: var(--color-bg-surface);
-            border-left: 4px solid var(--color-action);
-            padding: 0.75rem;
-            margin: 1rem 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9em;
-            color: var(--color-action);
-        }
-
-        .success-metric {
-            background: var(--color-bg-surface);
-            border-left: 4px solid var(--color-success);
-            padding: 0.75rem 1rem;
-            margin: 0.5rem 0;
-            color: var(--color-text-secondary);
-        }
-
-        .blocking-item {
-            background: var(--color-bg-surface);
-            border-left: 4px solid var(--color-error);
-            padding: 0.75rem 1rem;
-            margin: 0.5rem 0;
-            color: var(--color-text-secondary);
-        }
-    </style>
+    footer {
+      margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted); text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="section">
-            <span class="tag tag-strategy">STRATEGY</span>
-            <span class="tag tag-approved">APPROVED</span>
+  <div class="container">
 
-            <h1>🎯 Strategic Pivot: Vertical-by-Vertical Approach</h1>
+    <!-- ========== TOP NAV ========== -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
 
-            <p style="color: var(--color-text-secondary); font-size: 1.1rem;">
-                Moving from linear 10-step implementation plan to <strong>user-validated vertical development</strong> focused on 4Ink's core pain points.
-            </p>
+    <!-- ========== HEADER ========== -->
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-plan">Plan</span>
+        <span class="tag tag-decision">Decision</span>
+      </div>
+
+      <h1>Strategic Pivot: Vertical-by-Vertical</h1>
+      <p class="subtitle">Moving from linear 10-step implementation plan to user-validated vertical development focused on 4Ink's core pain points.</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-08</span>
         </div>
-
-        <div class="card">
-            <h3>📋 Session Info</h3>
-            <table>
-                <tr>
-                    <td><strong>Date</strong></td>
-                    <td>2026-02-08</td>
-                </tr>
-                <tr>
-                    <td><strong>Phase</strong></td>
-                    <td>Phase 1 (Mockup with mock data)</td>
-                </tr>
-                <tr>
-                    <td><strong>Status</strong></td>
-                    <td>Discovery phase planning complete, ready for user interview</td>
-                </tr>
-                <tr>
-                    <td><strong>Commit</strong></td>
-                    <td><code>dfe61cd</code> — Implement strategic pivot: vertical-by-vertical approach (#7)</td>
-                </tr>
-                <tr>
-                    <td><strong>Resume Command</strong></td>
-                    <td><code>claude --resume 7b394c57-f392-4fb2-87da-1583c256b010</code></td>
-                </tr>
-            </table>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>main</code></span>
         </div>
-
-        <div class="section">
-            <h2>🔄 The Pivot: Why and What Changed</h2>
-
-            <div class="highlight">
-                <strong>Old Plan (Linear 10 Steps):</strong> Build all 11 screens in order (Dashboard → Jobs → Quotes → Customers → Screen Room → Garments), no user feedback until end
-                <br><br>
-                <strong>New Plan (Vertical-by-Vertical):</strong> Build 3-5 complete user workflows that demonstrate 10x better UX vs Print Life, with fast feedback loops after each vertical
-            </div>
-
-            <h3>Why We Pivoted</h3>
-            <ul class="checklist">
-                <li><strong>User Validation:</strong> 4Ink feedback was specific ("Quoting is painful, invoicing is painful, pricing is broken, reporting doesn't work") not generic</li>
-                <li><strong>Fast Feedback:</strong> Complete vertical → user demo → iterate, before moving to next vertical. Much faster than building all 11 screens first</li>
-                <li><strong>Depth > Breadth:</strong> 3 excellent verticals that demonstrate 10x better UX will impress user more than 11 mediocre screens</li>
-                <li><strong>Tested Methodology:</strong> Pilot on Quoting, then scale repeatable process to 4 more verticals</li>
-                <li><strong>Aligned Scope:</strong> Original plan included Jobs/Screen Room/Garments that user didn't mention. New plan addresses their stated pain points</li>
-            </ul>
-
-            <h3>What Verticals Are We Building?</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Vertical</th>
-                        <th>Status</th>
-                        <th>Est. Time</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Quoting</strong></td>
-                        <td>🟠 Discovery planning</td>
-                        <td>7-9 days</td>
-                        <td>PILOT VERTICAL — Establishes repeatable methodology</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Invoicing</strong></td>
-                        <td>⚪ Pending</td>
-                        <td>5-7 days</td>
-                        <td>User's pain point: "Invoice generation is tedious"</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Customer Management</strong></td>
-                        <td>⚪ Pending</td>
-                        <td>4-6 days</td>
-                        <td>User's pain point: "Customer tracking is poor"</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Pricing Matrix</strong></td>
-                        <td>⚪ Pending</td>
-                        <td>3-5 days</td>
-                        <td>User's pain point: "Pricing is inflexible"</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Reporting</strong></td>
-                        <td>⚪ Stretch goal</td>
-                        <td>4-6 days</td>
-                        <td>User's pain point: "Print Life's reporting is broken"</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Strategy</span>
         </div>
-
-        <div class="section">
-            <h2>🔍 The Methodology: 4-Phase Approach (per Vertical)</h2>
-
-            <p>Each vertical follows this repeatable cycle:</p>
-
-            <h3>Phase 1: Discovery (2-3 days per vertical)</h3>
-            <p>Deeply understand Print Life's current experience and 4Ink's pain points</p>
-            <ul>
-                <li><strong>Print Life Analysis:</strong> Screenshot review + trial walkthrough, extract feature list, UI patterns, workflow steps</li>
-                <li><strong>User Interview:</strong> 30-45 min with Chris, cover current workflow → pain points → interconnections → wishlist</li>
-                <li><strong>Journey Mapping:</strong> Document current workflow steps, identify friction points, rate severity</li>
-            </ul>
-
-            <h3>Phase 2: Scope Definition (1 day per vertical)</h3>
-            <p>Define what we'll build (CORE), what we'll mock (PERIPHERAL), what we'll minimize (INTERCONNECTIONS)</p>
-            <ul>
-                <li><strong>CORE:</strong> Must-have workflows that demonstrate superior UX</li>
-                <li><strong>PERIPHERAL:</strong> Nice-to-haves shown in UI but non-functional (e.g., "PDF download" button that shows "Coming in Phase 2")</li>
-                <li><strong>INTERCONNECTIONS:</strong> Minimal representations for user journey continuity (e.g., customer dropdown links to Customer Management vertical but doesn't build full CRUD)</li>
-            </ul>
-
-            <h3>Phase 3: Build Execution (2-4 days per vertical)</h3>
-            <p>Implement mockup with design system adherence and quality gates</p>
-            <ul>
-                <li><strong>Component Planning:</strong> Identify reusable components, build shared pieces first</li>
-                <li><strong>Screen Implementation:</strong> Use frontend-builder agent with screen-builder skill, follow design system</li>
-                <li><strong>Quality Gate:</strong> Run quality-gate skill audit, fix Critical/High issues</li>
-            </ul>
-
-            <h3>Phase 4: Demo & Iteration (1 day per vertical)</h3>
-            <p>Get feedback, refine before moving to next vertical</p>
-            <ul>
-                <li><strong>Live Demo:</strong> Screen share, compare side-by-side to Print Life, ask feedback questions</li>
-                <li><strong>Rate Dimensions:</strong> User rates Clarity, Speed, Polish, Value (target 8+ average)</li>
-                <li><strong>Iterate:</strong> If needed, implement changes and re-run quality gate (max 1 day)</li>
-            </ul>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">All (Methodology)</span>
         </div>
+      </div>
 
-        <div class="section">
-            <h2>⚡ Quoting Vertical: Detailed Pilot Plan</h2>
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume 7b394c57-f392-4fb2-87da-1583c256b010</code>
+      </div>
+    </header>
 
-            <p>Quoting is the pilot vertical that establishes the repeatable 4-phase methodology.</p>
+    <!-- ========== RELATED SESSIONS ========== -->
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="2026-02-08-quoting-discovery.html">
+          Quoting Discovery &rarr; <span class="related-desc">&mdash; First vertical's discovery phase</span>
+        </a>
+      </div>
+    </nav>
 
-            <h3>Why Quoting?</h3>
-            <ul class="checklist">
-                <li>Most customer-facing (sets first impression)</li>
-                <li>Clearest feedback from 4Ink (they showed us this vertical specifically)</li>
-                <li>Establishes patterns for form-heavy workflows (applies to Invoicing, Pricing Matrix)</li>
-                <li>Defines interconnection patterns (customer selection, pricing, reporting)</li>
-            </ul>
+    <hr class="header-divider">
 
-            <h3>What We're Building (CORE)</h3>
-            <ul class="checklist">
-                <li><strong>Quotes List</strong> (<code>/quotes</code>) — Browse quotes, filter by status, search by customer/number</li>
-                <li><strong>Quote Detail</strong> (<code>/quotes/[id]</code>) — View full quote breakdown, totals, action buttons</li>
-                <li><strong>New Quote Form</strong> (<code>/quotes/new</code>) — Dynamic line items, real-time pricing, inline editing (no modals!)</li>
-            </ul>
+    <!-- ========== BODY CONTENT ========== -->
 
-            <h3>What We're Showing But Not Building (PERIPHERAL)</h3>
-            <ul>
-                <li>Customer creation modal (simple name+email only)</li>
-                <li>Artwork upload area (placeholder, doesn't process files)</li>
-                <li>PDF download button (shows "Coming in Phase 2")</li>
-                <li>"Send to Customer" email preview (mockup modal, doesn't send)</li>
-            </ul>
+    <h2>The Pivot: Why and What Changed</h2>
 
-            <h3>What We're Minimizing (INTERCONNECTIONS)</h3>
-            <ul>
-                <li><strong>Customer Selection:</strong> Simple searchable dropdown (hints at full Customer Management vertical)</li>
-                <li><strong>Pricing Formula:</strong> Hard-coded calculation (hints at Pricing Matrix vertical)</li>
-                <li><strong>"Convert to Invoice" Button:</strong> Non-functional, shows message (hints at Invoicing vertical)</li>
-                <li><strong>Quote Totals:</strong> Captured but not displayed (will feed into Reporting vertical)</li>
-            </ul>
-
-            <h3>Key Design Goals</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Print Life</th>
-                        <th>Screen Print Pro Target</th>
-                        <th>Improvement</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Simple Quote Clicks</strong></td>
-                        <td>13-20</td>
-                        <td>10-12</td>
-                        <td>20-30% reduction</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Simple Quote Time</strong></td>
-                        <td>3-5 min</td>
-                        <td>2-3 min</td>
-                        <td>30-40% faster</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Complex Quote Clicks</strong></td>
-                        <td>25-35</td>
-                        <td>18-25</td>
-                        <td>20-30% reduction</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Complex Quote Time</strong></td>
-                        <td>8-12 min</td>
-                        <td>5-7 min</td>
-                        <td>30-40% faster</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section">
-            <h2>📁 Documents Created</h2>
-
-            <h3>Master Strategy Document</h3>
-            <ul>
-                <li><strong><code>.claude/plans/vertical-by-vertical-strategy.md</code></strong>
-                    <ul>
-                        <li>Executive summary of pivot</li>
-                        <li>4-phase methodology detail</li>
-                        <li>Pilot vertical plan (Quoting)</li>
-                        <li>Subsequent verticals roadmap</li>
-                        <li>Success criteria and timeline</li>
-                        <li>Relationship to original 10-step plan</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>Quoting Vertical Discovery Documents</h3>
-            <ul>
-                <li><strong><code>docs/strategy/quoting-discovery-interview-questions.md</code></strong>
-                    <ul>
-                        <li>30-45 min interview guide for Chris</li>
-                        <li>25+ structured questions organized into sections</li>
-                        <li>Ready to use immediately</li>
-                    </ul>
-                </li>
-                <li><strong><code>docs/competitive-analysis/print-life-quoting-analysis.md</code></strong>
-                    <ul>
-                        <li>Template for Print Life feature/workflow analysis</li>
-                        <li>To be filled in by Chris's trial walkthrough</li>
-                        <li>Extracts feature list, UI patterns, friction points</li>
-                    </ul>
-                </li>
-                <li><strong><code>docs/competitive-analysis/print-life-journey-quoting.md</code></strong>
-                    <ul>
-                        <li>Detailed journey map template</li>
-                        <li>Step-by-step workflows for simple and complex quotes</li>
-                        <li>Friction point inventory with severity ratings</li>
-                        <li>Click and time analysis</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>Quoting Vertical Scope Definition</h3>
-            <ul>
-                <li><strong><code>docs/strategy/quoting-scope-definition.md</code></strong>
-                    <ul>
-                        <li>Complete specification of CORE/PERIPHERAL/INTERCONNECTIONS</li>
-                        <li>Acceptance criteria per feature</li>
-                        <li>Quality checklist (design system, interactive states, accessibility)</li>
-                        <li>Mock data requirements</li>
-                        <li>Ready to brief frontend-builder agent</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>Navigation Guide</h3>
-            <ul>
-                <li><strong><code>docs/strategy/STRATEGY_README.md</code></strong>
-                    <ul>
-                        <li>Master index of all strategy documents</li>
-                        <li>How to use this folder (by phase)</li>
-                        <li>Cross-references and related documents</li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>⏭️ Next Steps: What Happens Now</h2>
-
-            <h3>For You (User) — Within 3-5 Days</h3>
-            <ol class="timeline">
-                <li><strong>Schedule Interview:</strong> Block 30-45 minutes for Quoting discovery interview with Chris
-                    <ul>
-                        <li>Interviewer will use <code>docs/strategy/quoting-discovery-interview-questions.md</code></li>
-                        <li>Questions cover: current workflow, pain points, wishlist, interconnections</li>
-                    </ul>
-                </li>
-                <li><strong>Complete Print Life Trial:</strong> Walk through Quoting in Print Life
-                    <ul>
-                        <li>Create simple quote (1 garment, 1 color, 50 units)</li>
-                        <li>Create complex quote (multiple garments, colors, sizes)</li>
-                        <li>Document steps, clicks, time, friction points</li>
-                        <li>Fill in <code>print-life-quoting-analysis.md</code> and <code>print-life-journey-quoting.md</code></li>
-                    </ul>
-                </li>
-                <li><strong>Share Screenshots:</strong> Any additional Print Life screenshots of Quoting</li>
-                <li><strong>Validate Scope:</strong> Review <code>docs/strategy/quoting-scope-definition.md</code>, confirm CORE/PERIPHERAL/INTERCONNECTIONS align with your vision</li>
-            </ol>
-
-            <h3>For AI (Me) — Immediately</h3>
-            <ol class="timeline">
-                <li>✅ <strong>Create Strategy Documents:</strong> Complete ✓</li>
-                <li>✅ <strong>Create Discovery Documents:</strong> Complete ✓</li>
-                <li><strong>Create Scope Definition:</strong> Complete ✓</li>
-                <li><strong>Await Discovery Data:</strong> Wait for user's Print Life trial results</li>
-                <li><strong>Build Quoting Vertical:</strong> Once discovery complete, brief frontend-builder agent to build CORE features</li>
-                <li><strong>Quality Gate + Demo:</strong> Run quality-gate audit, prepare for user demo</li>
-            </ol>
-        </div>
-
-        <div class="section">
-            <h2>⚠️ Blocking Dependencies</h2>
-
-            <div class="blocking-item">
-                <strong>Cannot build Quoting until:</strong> Discovery phase complete (user interview + Print Life trial)
-            </div>
-
-            <div class="blocking-item">
-                <strong>Cannot proceed to next vertical (Invoicing) until:</strong> Quoting vertical user-validated (user rates 8+ on Clarity, Speed, Polish, Value)
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>✅ Success Criteria</h2>
-
-            <h3>Per-Vertical Success (After Demo)</h3>
-            <div class="success-metric">✓ User rates Clarity, Speed, Polish, Value as 8+ (average)</div>
-            <div class="success-metric">✓ User identifies specific time savings or friction reduction</div>
-            <div class="success-metric">✓ User says "yes, this is better than Print Life"</div>
-            <div class="success-metric">✓ Quality gate audit: Zero Critical issues, <3 High issues</div>
-
-            <h3>Overall MVP Success (After All 4-5 Verticals)</h3>
-            <div class="success-metric">✓ User says "I'm truly excited to adopt this software"</div>
-            <div class="success-metric">✓ User can articulate why it's 10x better (specific examples)</div>
-            <div class="success-metric">✓ User requests Phase 2 timeline</div>
-            <div class="success-metric">✓ User shares with team or other shop owners</div>
-        </div>
-
-        <div class="section">
-            <h2>⏱️ Timeline Estimate</h2>
-
-            <h3>Quoting Vertical (Pilot)</h3>
-            <ul>
-                <li>Discovery: 2-3 days (depends on user availability)</li>
-                <li>Scope Definition: 1 day</li>
-                <li>Build: 3-4 days</li>
-                <li>Demo + Iteration: 1 day</li>
-                <li><strong>Total: 7-9 days</strong></li>
-            </ul>
-
-            <h3>Subsequent Verticals (each)</h3>
-            <ul>
-                <li>Discovery: 1-2 days (methodology established, faster)</li>
-                <li>Scope Definition: 0.5-1 day</li>
-                <li>Build: 2-3 days</li>
-                <li>Demo + Iteration: 1 day</li>
-                <li><strong>Total: 4.5-7 days</strong></li>
-            </ul>
-
-            <h3>Full MVP (4 Core Verticals + Reporting Stretch)</h3>
-            <ul>
-                <li>Quoting: 7-9 days</li>
-                <li>Invoicing: 5-7 days</li>
-                <li>Customer Management: 4-6 days</li>
-                <li>Pricing Matrix: 3-5 days</li>
-                <li>Reporting (stretch): 4-6 days</li>
-                <li><strong>Total: 23-33 days</strong></li>
-            </ul>
-
-            <p style="color: var(--color-text-muted);">Note: Timeline assumes user availability for interviews and demos. Delays in feedback will extend timeline.</p>
-        </div>
-
-        <div class="section">
-            <h2>🔗 Key Documents to Review</h2>
-
-            <p><strong>Start here:</strong></p>
-            <ul>
-                <li><code>.claude/plans/vertical-by-vertical-strategy.md</code> — Full strategic rationale and roadmap</li>
-                <li><code>docs/strategy/STRATEGY_README.md</code> — Navigation guide for all strategy docs</li>
-            </ul>
-
-            <p><strong>For Quoting discovery:</strong></p>
-            <ul>
-                <li><code>docs/strategy/quoting-discovery-interview-questions.md</code> — Interview guide (ready to use)</li>
-                <li><code>docs/strategy/quoting-scope-definition.md</code> — What we're building, acceptance criteria, quality checklist</li>
-            </ul>
-
-            <p><strong>After user's Print Life trial:</strong></p>
-            <ul>
-                <li><code>docs/competitive-analysis/print-life-quoting-analysis.md</code> — Feature analysis (to be filled in)</li>
-                <li><code>docs/competitive-analysis/print-life-journey-quoting.md</code> — Journey map (to be filled in)</li>
-            </ul>
-
-            <p><strong>Related project docs:</strong></p>
-            <ul>
-                <li><code>CLAUDE.md</code> — Project operating rules, design system, quality checklist</li>
-                <li><code>docs/AGENTS.md</code> — Agent registry (frontend-builder, requirements-interrogator, etc.)</li>
-                <li><code>progress.txt</code> — Session log and current state</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>💭 How This Differs from Original Plan</h2>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Aspect</th>
-                        <th>Original Plan (10 Steps)</th>
-                        <th>New Plan (Vertical-by-Vertical)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Approach</strong></td>
-                        <td>Linear: Steps 1-10 in order</td>
-                        <td>Iterative: Complete vertical → feedback → next vertical</td>
-                    </tr>
-                    <tr>
-                        <td><strong>User Feedback</strong></td>
-                        <td>After all 11 screens built</td>
-                        <td>After each vertical (faster loops)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Focus</strong></td>
-                        <td>All screens: Jobs, Quotes, Customers, Screen Room, Garments</td>
-                        <td>4-5 complete workflows: Quoting, Invoicing, Customer, Pricing, Reporting</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Validation</strong></td>
-                        <td>Assumed features from generic PRD</td>
-                        <td>Based on 4Ink's stated pain points</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Scope</strong></td>
-                        <td>Everything at once</td>
-                        <td>Depth per vertical: CORE (full) + PERIPHERAL (mocked) + INTERCONNECTIONS (minimal)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Quality</strong></td>
-                        <td>Apply checklist to 11 screens (broad)</td>
-                        <td>Apply checklist deeply to 3-5 complete workflows (deep)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="footer">
-            <p><strong>Document:</strong> 2026-02-08 Strategic Pivot Session</p>
-            <p><strong>Status:</strong> Discovery phase planning complete, awaiting user interview and Print Life trial</p>
-            <p><strong>Next Review:</strong> After Quoting discovery phase (user interview + Print Life analysis complete)</p>
-            <p style="margin-top: 1.5rem;">For questions or updates, see: <code>.claude/plans/vertical-by-vertical-strategy.md</code> and <code>docs/strategy/STRATEGY_README.md</code></p>
-        </div>
+    <div class="highlight">
+      <strong>Old Plan (Linear 10 Steps):</strong> Build all 11 screens in order (Dashboard &rarr; Jobs &rarr; Quotes &rarr; Customers &rarr; Screen Room &rarr; Garments), no user feedback until end.
+      <br><br>
+      <strong>New Plan (Vertical-by-Vertical):</strong> Build 3-5 complete user workflows that demonstrate 10x better UX vs Print Life, with fast feedback loops after each vertical.
     </div>
+
+    <h3>Why We Pivoted</h3>
+    <ul>
+      <li><strong>User Validation:</strong> 4Ink feedback was specific ("Quoting is painful, invoicing is painful, pricing is broken, reporting doesn't work") not generic</li>
+      <li><strong>Fast Feedback:</strong> Complete vertical &rarr; user demo &rarr; iterate, before moving to next vertical</li>
+      <li><strong>Depth > Breadth:</strong> 3 excellent verticals that demonstrate 10x better UX will impress user more than 11 mediocre screens</li>
+      <li><strong>Tested Methodology:</strong> Pilot on Quoting, then scale repeatable process to 4 more verticals</li>
+      <li><strong>Aligned Scope:</strong> Original plan included Jobs/Screen Room/Garments that user didn't mention</li>
+    </ul>
+
+    <h3>What Verticals Are We Building?</h3>
+    <table>
+      <thead>
+        <tr><th>Vertical</th><th>Status</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Quoting</strong></td><td style="color: var(--warning);">Discovery planning</td><td>PILOT VERTICAL</td></tr>
+        <tr><td><strong>Invoicing</strong></td><td>Pending</td><td>"Invoice generation is tedious"</td></tr>
+        <tr><td><strong>Customer Management</strong></td><td>Pending</td><td>"Customer tracking is poor"</td></tr>
+        <tr><td><strong>Pricing Matrix</strong></td><td>Pending</td><td>"Pricing is inflexible"</td></tr>
+        <tr><td><strong>Reporting</strong></td><td style="color: var(--text-muted);">Stretch goal</td><td>"Print Life's reporting is broken"</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2>The Methodology: 4-Phase Approach (per Vertical)</h2>
+
+    <h3>Phase 1: Discovery (2-3 days)</h3>
+    <p>Deeply understand Print Life's current experience and 4Ink's pain points.</p>
+    <ul>
+      <li><strong>Print Life Analysis:</strong> Screenshot review + trial walkthrough</li>
+      <li><strong>User Interview:</strong> 30-45 min with Chris covering workflow &rarr; pain points &rarr; wishlist</li>
+      <li><strong>Journey Mapping:</strong> Document steps, identify friction points, rate severity</li>
+    </ul>
+
+    <h3>Phase 2: Scope Definition (1 day)</h3>
+    <p>Define CORE (must-have), PERIPHERAL (shown but non-functional), INTERCONNECTIONS (minimal representations).</p>
+
+    <h3>Phase 3: Build Execution (2-4 days)</h3>
+    <p>Implement with design system adherence and quality gates.</p>
+
+    <h3>Phase 4: Demo &amp; Iteration (1 day)</h3>
+    <p>User rates Clarity, Speed, Polish, Value (target 8+ average).</p>
+
+    <hr>
+
+    <h2>Quoting Vertical: Pilot Plan</h2>
+
+    <h3>CORE (Building)</h3>
+    <ul>
+      <li><strong>Quotes List</strong> (<code>/quotes</code>) &mdash; Browse, filter by status, search</li>
+      <li><strong>Quote Detail</strong> (<code>/quotes/[id]</code>) &mdash; Full breakdown, action buttons</li>
+      <li><strong>New Quote Form</strong> (<code>/quotes/new</code>) &mdash; Dynamic line items, real-time pricing</li>
+    </ul>
+
+    <h3>PERIPHERAL (Shown, not functional)</h3>
+    <ul>
+      <li>Customer creation modal, artwork upload placeholder, PDF download, email preview</li>
+    </ul>
+
+    <h3>INTERCONNECTIONS (Minimal)</h3>
+    <ul>
+      <li>Customer dropdown, pricing formula, "Convert to Invoice" button, quote totals</li>
+    </ul>
+
+    <h3>Key Targets</h3>
+    <table>
+      <thead><tr><th>Metric</th><th>Print Life</th><th>Our Target</th></tr></thead>
+      <tbody>
+        <tr><td>Simple Quote Time</td><td>3-5 min</td><td>2-3 min</td></tr>
+        <tr><td>Complex Quote Time</td><td>8-12 min</td><td>5-7 min</td></tr>
+        <tr><td>Simple Quote Clicks</td><td>13-20</td><td>10-12</td></tr>
+        <tr><td>Complex Quote Clicks</td><td>25-35</td><td>18-25</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h2>Documents Created</h2>
+    <ul>
+      <li><code>.claude/plans/vertical-by-vertical-strategy.md</code> &mdash; Master strategy document</li>
+      <li><code>docs/strategy/quoting-discovery-interview-questions.md</code> &mdash; 25+ question interview guide</li>
+      <li><code>docs/competitive-analysis/print-life-quoting-analysis.md</code> &mdash; Feature analysis template</li>
+      <li><code>docs/competitive-analysis/print-life-journey-quoting.md</code> &mdash; Journey map template</li>
+      <li><code>docs/strategy/quoting-scope-definition.md</code> &mdash; CORE/PERIPHERAL/INTERCONNECTIONS spec</li>
+      <li><code>docs/strategy/STRATEGY_README.md</code> &mdash; Navigation guide for all strategy docs</li>
+    </ul>
+
+    <hr>
+
+    <h2>Blocking Dependencies</h2>
+    <div class="blocking-item">
+      <strong>Cannot build Quoting until:</strong> Discovery phase complete (user interview + Print Life trial)
+    </div>
+    <div class="blocking-item">
+      <strong>Cannot proceed to Invoicing until:</strong> Quoting user-validated (8+ rating)
+    </div>
+
+    <h2>Success Criteria</h2>
+    <div class="success-metric">User rates Clarity, Speed, Polish, Value as 8+ (average)</div>
+    <div class="success-metric">User identifies specific time savings or friction reduction</div>
+    <div class="success-metric">User says "yes, this is better than Print Life"</div>
+    <div class="success-metric">Quality gate audit: Zero Critical issues, &lt;3 High issues</div>
+
+    <hr>
+
+    <h2>How This Differs from Original Plan</h2>
+    <table>
+      <thead><tr><th>Aspect</th><th>Original (10 Steps)</th><th>New (Vertical-by-Vertical)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Approach</strong></td><td>Linear: Steps 1-10 in order</td><td>Iterative: Complete vertical &rarr; feedback &rarr; next</td></tr>
+        <tr><td><strong>User Feedback</strong></td><td>After all 11 screens</td><td>After each vertical</td></tr>
+        <tr><td><strong>Focus</strong></td><td>All screens</td><td>4-5 complete workflows</td></tr>
+        <tr><td><strong>Validation</strong></td><td>Assumed features from PRD</td><td>Based on 4Ink's stated pain points</td></tr>
+        <tr><td><strong>Scope</strong></td><td>Everything at once</td><td>CORE + PERIPHERAL + INTERCONNECTIONS per vertical</td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      Screen Print Pro &mdash; Strategic Pivot &mdash; 2026-02-08
+    </footer>
+  </div>
 </body>
 </html>
