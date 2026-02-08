@@ -18,7 +18,7 @@ npx shadcn@latest add <component>  # Add shadcn/ui component
 
 ## Tech Stack
 
-- **Framework**: Next.js 15+ (App Router, TypeScript, Turbopack)
+- **Framework**: Next.js 16.1.6 (App Router, TypeScript, Turbopack)
 - **Styling**: Tailwind CSS — utility-first, no separate CSS files
 - **UI Components**: shadcn/ui (Radix primitives). Always check `@/components/ui/` first.
 - **Icons**: Lucide React only — no emoji icons, no custom SVGs
@@ -136,6 +136,27 @@ Before considering any screen done:
 - No decorative gradients — color communicates meaning
 - No `className` string concatenation — use `cn()` from `@/lib/utils`
 
+## Canonical Documents
+
+These documents define the project. Reference them, keep them current, and never contradict them.
+
+| Document | Purpose | Update When |
+|----------|---------|-------------|
+| `CLAUDE.md` | AI operating rules, loaded every session | Any pattern/rule changes |
+| `docs/TECH_STACK.md` | Tool choices, versions, decision context | Adding/removing/upgrading deps |
+| `docs/PRD.md` | Features, scope, acceptance criteria | Scope changes or new features |
+| `docs/APP_FLOW.md` | Screens, routes, navigation paths | Adding/changing pages or flows |
+| `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
+| `progress.txt` | Session-to-session state | After every completed feature |
+
+**Rules:**
+- Before adding a dependency, check `TECH_STACK.md`. If it's not listed, ask first.
+- Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
+- Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
+- After completing work, update `progress.txt` with what was built and what's next.
+- When a doc becomes stale, update it — don't ignore it.
+- Every canonical doc has a `Last Verified` date. Update it when you confirm the doc still matches reality.
+
 ## Reference Documents
 
 Extended context lives in `docs/reference/` — consult only when needed:
@@ -146,3 +167,11 @@ Extended context lives in `docs/reference/` — consult only when needed:
 - `UX_HEURISTICS.md` — 10 UX heuristics for evaluation
 - `UX_TASK_FLOWS.md` — Ideal user journey mappings
 - `APP_FLOW_STANDARD.md` — User flow documentation standard
+
+## Lessons Learned
+
+Capture mistakes and patterns here so they aren't repeated. Update as you go.
+
+- **Tailwind v4**: Uses `@theme inline` in CSS, not `tailwind.config.ts`. Design tokens go in `globals.css`.
+- **shadcn/ui init**: Works after scaffold files are in place and `npm install` has run.
+- **create-next-app**: Refuses non-empty directories — scaffold in temp dir and copy files.

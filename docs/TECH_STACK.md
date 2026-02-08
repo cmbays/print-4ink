@@ -1,0 +1,157 @@
+# Screen Print Pro — Tech Stack
+
+> Every tool earns its place. This document captures **what** we use, **why** we chose it, and **when** to reach for it.
+
+**Last Updated**: 2026-02-07
+**Last Verified**: 2026-02-07
+
+---
+
+## Core Framework
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Next.js** | 16.1.6 | App Router, file-based routing, server components, Turbopack dev server |
+| **React** | 19.2.3 | UI rendering. Server components by default; `"use client"` only when needed. |
+| **TypeScript** | ^5 | Type safety. No `any` types — use Zod inference. |
+
+**Why Next.js**: App Router gives us file-based routing with layouts, server components for zero-JS pages, and Turbopack for fast dev. We use the `(dashboard)` route group for the main shell.
+
+**When NOT to use**: Don't use Next.js API routes in Phase 1. Mock data only.
+
+---
+
+## Styling
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Tailwind CSS** | ^4 | Utility-first styling. All design tokens live in `globals.css` via `@theme inline`. |
+| **tailwind-merge** | ^3.4.0 | Merge conflicting Tailwind classes in `cn()` utility |
+| **clsx** | ^2.1.1 | Conditional class joining (used inside `cn()`) |
+| **class-variance-authority** | ^0.7.1 | Variant-based component styling (shadcn/ui uses this) |
+| **tw-animate-css** | ^1.4.0 | Animation utilities for Tailwind |
+
+**Why Tailwind v4**: New `@theme inline` CSS-first config replaces `tailwind.config.ts`. Design tokens defined in CSS, not JS. Simpler, faster.
+
+**When NOT to use**: No separate CSS files. No CSS modules. No styled-components. All styling via Tailwind utilities and `cn()`.
+
+---
+
+## UI Components
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **shadcn/ui** | 3.8.4 (dev) | Radix-based primitives. Copy-paste components in `components/ui/`. |
+| **radix-ui** | ^1.4.3 | Underlying primitives for shadcn/ui (dialog, dropdown, etc.) |
+| **Lucide React** | ^0.563.0 | Icon library. Consistent naming, tree-shakeable. |
+
+**Installed shadcn/ui components**: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form
+
+**When to add a component**: Run `npx shadcn@latest add <component>`. Always check if one already exists in `components/ui/` before creating custom UI.
+
+**When NOT to use**: Don't install other component libraries (Material UI, Chakra, Ant Design). Don't use custom SVG icons — Lucide only. Don't use emoji as icons.
+
+---
+
+## Forms & Validation
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Zod** | ^4.3.6 | Schema-first validation. Define schema, derive types via `z.infer<>`. |
+| **React Hook Form** | ^7.71.1 | Form state management, validation integration |
+| **@hookform/resolvers** | ^5.2.2 | Connects Zod schemas to React Hook Form |
+
+**Why Zod-first**: Schemas are the single source of truth. Types are derived, never hand-written. Schemas live in `lib/schemas/`. This pattern carries forward to Phase 3 backend.
+
+**When to use**: Every data shape needs a Zod schema. Every form uses React Hook Form + Zod resolver. No separate TypeScript interfaces for data models.
+
+---
+
+## Tables
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **TanStack Table** | ^8.21.3 | Headless table with sorting, filtering, pagination |
+
+**Domain purpose**: Job queue lists, quote lists, customer lists, screen inventory — any tabular data with sortable columns.
+
+**When to use**: Any list view with >5 items or that needs sorting/filtering. Pair with shadcn/ui `<Table>` for rendering.
+
+**When NOT to use**: Simple 2-3 item lists — use a plain `<div>` layout instead. Don't use TanStack Table for card-based layouts or Kanban boards.
+
+---
+
+## Drag & Drop
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **@dnd-kit/core** | ^6.3.1 | Core drag-and-drop engine |
+| **@dnd-kit/sortable** | ^10.0.0 | Sortable list/grid primitives |
+| **@dnd-kit/utilities** | ^3.2.2 | CSS transform utilities |
+
+**Domain purpose**: Kanban production board — dragging jobs between columns (design, approval, burning, press, finishing, shipped).
+
+**When to use**: Only for the Kanban board and any future drag-to-reorder interactions.
+
+**When NOT to use**: Don't use dnd-kit for simple click-to-move state transitions. Use buttons/dropdowns for status changes outside the Kanban view.
+
+---
+
+## Animation
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Framer Motion** | ^12.33.0 | Spring-based transitions, layout animations, gestures |
+
+**Domain purpose**: Page transitions, card enter/exit animations, Kanban column transitions, toast notifications.
+
+**When to use**: Any element that enters, exits, or changes layout. Use spring physics (not linear easing). Always wrap in `prefers-reduced-motion` check.
+
+**When NOT to use**: Don't use Framer Motion for hover effects — Tailwind `transition-*` utilities are sufficient. Don't animate everything — restrain to meaningful state changes.
+
+---
+
+## Dev Tooling
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **ESLint** | ^9 | Linting with Next.js config |
+| **eslint-config-next** | 16.1.6 | Next.js-specific lint rules |
+| **@tailwindcss/postcss** | ^4 | PostCSS plugin for Tailwind v4 |
+
+---
+
+## Explicitly Forbidden
+
+These packages must NOT be added without discussion:
+
+| Package | Reason |
+|---------|--------|
+| Redux, Zustand, Jotai, Recoil | No global state — use URL params + React state |
+| Axios, ky, got | No HTTP clients in Phase 1 — mock data only |
+| styled-components, Emotion, CSS Modules | Tailwind utilities only |
+| Material UI, Chakra UI, Ant Design | shadcn/ui only |
+| moment.js, date-fns, dayjs | Use native `Intl.DateTimeFormat` or simple string formatting until needed |
+| lodash | Use native JS methods. Only add specific lodash functions if truly needed. |
+| Prisma, Drizzle, Supabase client | Phase 3 concern. No database in Phase 1. |
+| NextAuth, Clerk | Phase 3 concern. No auth in Phase 1. |
+
+---
+
+## Version Policy
+
+- **Pin major versions** for framework (Next.js, React, Tailwind)
+- **Range for minor** (`^`) for utilities (lucide, clsx, etc.)
+- **Upgrade when**: Security patch, bug affecting us, or needed feature
+- **Don't upgrade when**: "Just because a new version exists"
+- **Lock file**: `package-lock.json` committed and respected
+
+---
+
+## Adding a New Dependency
+
+Before adding any package:
+
+1. Check `TECH_STACK.md` — is it already covered or explicitly forbidden?
+2. Can the need be met with existing tools or native JS?
+3. If truly needed, document it here with: version, purpose, when to use, when NOT to use.

@@ -1,0 +1,62 @@
+# Screen Print Pro — Progress
+
+## Current State
+
+**Phase**: 1 — Mockup with mock data
+**Last Updated**: 2026-02-07
+**Last Verified**: 2026-02-07
+**Status**: Scaffold complete, documentation framework established, ready for feature build
+
+## What's Built
+
+### Infrastructure
+- [x] Next.js 16.1.6 scaffold with App Router, TypeScript, Turbopack
+- [x] Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
+- [x] shadcn/ui components: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form
+- [x] Fonts: Inter + JetBrains Mono via `next/font`
+- [x] Dark mode default (`className="dark"` on `<html>`)
+
+### Layout Shell
+- [x] `app/(dashboard)/layout.tsx` — sidebar + topbar + main content area
+- [x] `components/layout/sidebar.tsx` — navigation with 6 links (Dashboard, Jobs, Quotes, Customers, Screen Room, Garments)
+- [x] `components/layout/topbar.tsx` — top bar component
+
+### Dashboard (`/`)
+- [x] Summary cards: Blocked, In Progress, Shipped, Total Jobs
+- [x] "Needs Attention" section — jobs awaiting artwork approval
+- [x] "In Progress" section — active jobs with status + priority badges
+- [x] Uses mock data from `lib/mock-data.ts`
+
+### Data Layer
+- [x] Zod schemas: `job.ts`, `quote.ts`, `customer.ts`, `garment.ts`, `screen.ts`
+- [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels
+- [x] Mock data: 3 customers, 6 jobs, 3 quotes, 5 screens
+
+### Documentation
+- [x] `CLAUDE.md` — AI operating rules, design system, coding standards
+- [x] `docs/PROJECT_BIBLE.md` — Domain context and workflow overview
+- [x] `docs/reference/FRONTEND_GUIDELINES.md` — Full design tokens + component patterns
+- [x] `docs/reference/UX_USER_RESEARCH.md` — User pain points, "Love Factor"
+- [x] `docs/reference/UX_HEURISTICS.md` — 10-point quality checklist
+- [x] `docs/reference/UX_TASK_FLOWS.md` — Ideal user journey mappings
+- [x] `docs/reference/APP_FLOW_STANDARD.md` — Template for APP_FLOW docs
+- [x] `docs/TECH_STACK.md` — Tool choices with decision context
+- [x] `docs/PRD.md` — Phase 1 features, scope, acceptance criteria
+- [x] `docs/APP_FLOW.md` — Routes, screens, navigation paths
+- [x] `docs/IMPLEMENTATION_PLAN.md` — Sequenced build steps
+
+## What's Next
+
+See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
+- Step 1: Shared layout polish (sidebar active states, topbar search, breadcrumbs)
+- Step 2: Jobs List page (`/jobs`)
+- Step 3: Job Detail page (`/jobs/[id]`)
+
+## Session Log
+
+| Date | Session | Work Done |
+|------|---------|-----------|
+| 2026-02-07 | Initial setup | Scaffolded project, installed deps, configured Tailwind v4 + shadcn/ui |
+| 2026-02-07 | Dashboard MVP | Built dashboard with summary cards, blocked/in-progress sections |
+| 2026-02-07 | Data layer | Created Zod schemas, constants, mock data |
+| 2026-02-07 | Documentation | Created canonical doc framework: PRD, APP_FLOW, TECH_STACK, IMPLEMENTATION_PLAN |
