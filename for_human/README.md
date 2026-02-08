@@ -16,6 +16,7 @@ This directory stores session summaries, decision logs, and reference materials 
 | File | Topic | Date | Type |
 |------|-------|------|------|
 | [session-2026-02-07-shaping-skills.html](session-2026-02-07-shaping-skills.html) | Shaping skills evaluation, pre-build ritual, Phase 1 workflow | 2026-02-07 | Decision |
+| [session-2026-02-07-skills-implementation.html](session-2026-02-07-skills-implementation.html) | Built screen-builder + quality-gate skills (20 files) | 2026-02-07 | Feature |
 
 ## How to Use
 

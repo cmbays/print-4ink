@@ -15,6 +15,8 @@
 - [x] shadcn/ui components: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form
 - [x] Fonts: Inter + JetBrains Mono via `next/font`
 - [x] Dark mode default (`className="dark"` on `<html>`)
+- [x] Vitest setup with schema tests (66 tests, 6 test files)
+- [x] GitHub Actions CI: type check + lint + test + build on push/PR to main
 
 ### Layout Shell
 - [x] `app/(dashboard)/layout.tsx` — sidebar + topbar + main content area
@@ -31,6 +33,15 @@
 - [x] Zod schemas: `job.ts`, `quote.ts`, `customer.ts`, `garment.ts`, `screen.ts`
 - [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels
 - [x] Mock data: 3 customers, 6 jobs, 3 quotes, 5 screens
+
+### Project Skills (`.claude/skills/`)
+- [x] `screen-builder` — Workflow + templates + checklists + reference for building Steps 1-10
+  - Templates: data-table-screen, detail-screen, form-screen
+  - Checklists: quality (10 items), cross-link (4 items)
+  - Reference: design tokens quick ref, component inventory
+- [x] `quality-gate` — 10-category audit with pass/fail scoring
+  - Categories: visual hierarchy, spacing, typography, color, interactive states, icons, motion, empty/error states, accessibility, jobs filter
+  - Rubric: scoring guide with verdict rules + report template
 
 ### Documentation
 - [x] `CLAUDE.md` — AI operating rules, design system, coding standards
@@ -61,3 +72,6 @@ See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
 | 2026-02-07 | Data layer | Created Zod schemas, constants, mock data |
 | 2026-02-07 | Documentation | Created canonical doc framework: PRD, APP_FLOW, TECH_STACK, IMPLEMENTATION_PLAN |
 | 2026-02-07 | Methodology | Evaluated Ryan Singer's shaping-skills repo. Decided against full adoption (project past 0-to-1 phase, existing docs cover most needs). Extracted 3 patterns: spikes for unknowns, affordance decomposition, pre-build interview. Added Pre-Build Ritual to CLAUDE.md and pre-build tasks to Steps 4 and 6 in IMPLEMENTATION_PLAN. Created `docs/spikes/` directory. |
+| 2026-02-07 | For Human Docs | Created `for_human/` framework: index.html (navigable), README.md (index table + bundling rules), first session doc (shaping-skills evaluation). Added standing rule to CLAUDE.md to always create/update for_human docs after completing work. Configured CodeRabbit with local learning scope. |
+| 2026-02-07 | Skills | Created 2 project skills in `.claude/skills/`: `screen-builder` (workflow + 3 templates + 2 checklists + 2 reference docs) and `quality-gate` (10-category audit + scoring rubric). Added Project Skills section to CLAUDE.md. Skills encode design system, quality checklist, and domain knowledge into repeatable workflows for Steps 1-10. |
+| 2026-02-07 | CI + Testing | Set up Vitest with schema validation tests (66 tests across 6 files). Created GitHub Actions CI workflow (typecheck, lint, test, build). Fixed mock data UUIDs — Zod v4 validates RFC-4122 variant byte strictly. Added Vitest to TECH_STACK.md. |

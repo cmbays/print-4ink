@@ -26,6 +26,7 @@ next-env.d.ts
 
 # Claude Code
 .claude/
+!.claude/skills/
 .claudeignore
 
 # inbox / scratch
