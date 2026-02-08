@@ -104,6 +104,12 @@ Step 2: [STEP]
 | 1 | | Critical/High/Medium/Low | Every time / Sometimes / Rarely | | |
 | 2 | | | | | |
 
+**Severity Guide**:
+- **Critical**: Blocks workflow or causes data loss
+- **High**: Adds significant time or causes rework
+- **Medium**: Annoying but workable
+- **Low**: Minor inconvenience
+
 ---
 
 ## Strengths (What [COMPETITOR] Does Well)

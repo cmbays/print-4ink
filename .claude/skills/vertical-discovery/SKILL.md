@@ -102,7 +102,7 @@ Each vertical discovery produces exactly 4 documents (+ updates to 2 existing do
 **Tools**: Playwright MCP (preferred) or manual Playwright scripts
 
 **Using Playwright MCP** (when available):
-```
+```text
 Use the Playwright MCP tools to:
 1. Navigate to [URL]
 2. Take a snapshot of the page

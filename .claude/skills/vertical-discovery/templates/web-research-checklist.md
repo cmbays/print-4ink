@@ -21,7 +21,7 @@
 - [ ] Data sources (vendor catalogs, stock levels, pricing APIs)
 - [ ] Mobile support (responsive? native app?)
 
-## Feature Set for [VERTICAL]
+## Feature Set
 
 - [ ] List all features related to this vertical (from marketing pages, help docs)
 - [ ] Check feature comparison pages vs competitors

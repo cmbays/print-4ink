@@ -121,7 +121,7 @@ last-verified: 2026-02-08
 
 **Measured from user interview**: ~10 minutes
 
-```
+```text
 Step 1: ADD ITEMS — Browse/search catalog, click product, select color, click ADD ITEM
   • Time: ~1-2 min (search, scroll, click through modal)
   • Friction: Color grid overwhelming (103 tiny swatches, no search)

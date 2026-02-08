@@ -102,10 +102,16 @@ Adapt these questions to the specific vertical. Not every question will apply �
 
 ### Severity Ratings (from interviewee)
 
-| Pain Point | Frequency | Severity (1-10) | Workaround |
-|-----------|-----------|-----------------|------------|
-| | | | |
-| | | | |
+| Pain Point | Frequency | Severity (1-10) | Category | Workaround |
+|-----------|-----------|-----------------|----------|------------|
+| | | | | |
+| | | | | |
+
+**Severity Scale → Category Mapping**:
+- **9-10** → Critical (Blocks workflow or causes data loss)
+- **7-8** → High (Adds significant time or causes rework)
+- **4-6** → Medium (Annoying but workable)
+- **1-3** → Low (Minor inconvenience)
 
 ### Surprise Findings
 

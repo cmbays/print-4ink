@@ -50,7 +50,7 @@ last-verified: 2026-02-08
 
 ## Detailed Journey: Simple Quote
 
-```
+```text
 START: Customer calls/emails requesting 50 black tees with front print
   ↓
 STEP 1: ADD ITEMS (/builder/quote/product-list)
@@ -103,7 +103,7 @@ END: Quote built internally → immediately becomes invoice → price communicat
 
 ## Detailed Journey: Complex Quote
 
-```
+```text
 START: Customer wants 3 garment types, multiple colors, full size breakdowns, front + back print
   ↓
 GARMENT 1: Repeat Steps 1-5 above (~8-10 min)

@@ -91,6 +91,12 @@ END: [RESULT]
 | 2 | | | High | | |
 | 3 | | | Medium | | |
 
+**Severity Guide**:
+- **Critical**: Blocks workflow or causes data loss
+- **High**: Adds significant time or causes rework
+- **Medium**: Annoying but workable
+- **Low**: Minor inconvenience
+
 ---
 
 ## Interconnections with Other Workflows
