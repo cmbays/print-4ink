@@ -119,6 +119,20 @@ depends_on: []
 
 ---
 
+## Testing
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Vitest** | ^4.0.18 | Unit test runner. Schema validation tests in Phase 1, expanding in Phase 3. |
+
+**Why Vitest**: Fast, native TypeScript support, Vite-based (shares config patterns with Next.js ecosystem). Tests live in `__tests__/` directories next to source files.
+
+**When to use**: Zod schema validation tests (`lib/schemas/__tests__/`), mock data integrity tests. Component tests deferred to Phase 2/3 when UI stabilizes.
+
+**When NOT to use**: Don't write component rendering tests in Phase 1 — the UI is changing too rapidly. E2E tests (Playwright) deferred until after Checkpoint 1.
+
+---
+
 ## Dev Tooling
 
 | Tool | Version | Purpose |
