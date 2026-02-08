@@ -35,7 +35,16 @@ After reading everything, analyze:
 - What do best-in-class competitors offer that this app doesn't?
 - What does NO competitor offer that the user journey clearly demands?
 
-### 3. Apply Feature Frameworks
+### 3. Research & Validate
+
+Before proposing features, validate your assumptions:
+
+- **User research**: Review any user feedback, competitor screenshots, or pain point documentation in `inbox/screenshots/` and `docs/reference/UX_USER_RESEARCH.md`
+- **Data model check**: Confirm proposed features can be supported by existing schemas in `lib/schemas/`
+- **Tech feasibility**: Verify proposed features work within the stack defined in `docs/TECH_STACK.md`
+- **Deliverables**: This step produces a validated understanding of constraints before feature ideation
+
+### 4. Apply Feature Frameworks
 
 Think across these feature types (detailed in `.claude/skills/feature-strategy/reference/feature-frameworks.md`):
 
@@ -47,7 +56,7 @@ Think across these feature types (detailed in `.claude/skills/feature-strategy/r
 - **Monetization Enablers** — Features so valuable users WANT to pay
 - **Platform Extenders** — Leverage platform capabilities (shortcuts, widgets, offline)
 
-### 4. Produce Feature Plan
+### 5. Produce Feature Plan
 
 Create ONE file using the template at `.claude/skills/feature-strategy/templates/feature-plan-template.md`.
 
@@ -63,13 +72,13 @@ Structure:
 
 For each feature include: what it does, why it matters now, what it builds on, what it doesn't touch, and enough context for the build agent to plan from.
 
-### 5. Wait for Approval
+### 6. Wait for Approval
 
 - Present the plan. Do NOT implement anything.
 - The user may reorder, cut, or modify any recommendation.
 - Once approved, the feature plan goes to the frontend-builder agent alongside canonical docs.
 
-### 6. Output
+### 7. Output
 
 ```markdown
 # Feature Strategy Output — [Context]

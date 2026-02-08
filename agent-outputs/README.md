@@ -4,7 +4,7 @@ Structured output from agent runs. This directory provides an audit trail of wha
 
 ## Structure
 
-```
+```text
 agent-outputs/
   step-01/                    # Step 1 outputs
     frontend-builder-output.md

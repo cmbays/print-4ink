@@ -3,6 +3,13 @@
 **Context**: [What prompted this analysis — competitor review, user feedback, milestone checkpoint]
 **Scope**: [What area of the app or user journey this plan covers]
 
+## Research Methodology
+
+- **Sources reviewed**: [List docs, screenshots, user feedback consulted]
+- **User research**: [Pain points identified, usage patterns observed]
+- **Competitive analysis**: [Competitors examined, features compared]
+- **Constraints validated**: [Tech stack limits, schema constraints, timeline]
+
 ## Executive Summary
 
 [3-5 sentences. The app's biggest opportunity right now. What's working, what's missing, and what would create the most value.]

@@ -103,7 +103,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 
 ### Pattern 1: Linear Chain (Simple Screens)
 
-```
+```text
 frontend-builder → quality-gate → progress update
 ```
 
@@ -113,7 +113,7 @@ The frontend-builder preloads both screen-builder and quality-gate skills, so th
 
 ### Pattern 2: Pre-Build Chain (Complex Screens)
 
-```
+```text
 requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update
 ```
 
@@ -123,7 +123,7 @@ First the interrogator surfaces unknowns and documents them. Then the builder us
 
 ### Pattern 3: Checkpoint Chain (Milestones)
 
-```
+```text
 design-auditor → audit report → user approval → frontend-builder (fixes) → quality-gate
 ```
 
@@ -133,7 +133,7 @@ The auditor reviews all screens built so far and produces a phased improvement p
 
 ### Pattern 4: Competitive Analysis Chain
 
-```
+```text
 feature-strategist → feature plan → user approval → update IMPLEMENTATION_PLAN
 ```
 
@@ -145,7 +145,7 @@ feature-strategist → feature plan → user approval → update IMPLEMENTATION_
 
 All agents receive context through their preloaded skills and the task prompt. Provide:
 
-```
+```text
 Step: [number from IMPLEMENTATION_PLAN]
 Description: [what to build/audit/interrogate]
 Context files: [specific files to read]
@@ -185,7 +185,7 @@ Agent outputs are stored in `agent-outputs/[step]/` for audit trail.
 
 Ask Claude to use a specific agent:
 
-```
+```text
 Use the frontend-builder agent to build PageHeader
 Have the design-auditor agent review the jobs screen
 Ask the requirements-interrogator about the Kanban board workflow
@@ -195,7 +195,7 @@ Ask the requirements-interrogator about the Kanban board workflow
 
 Describe the task and Claude matches it to the right agent:
 
-```
+```text
 Build the PageHeader component
 Review the design of the dashboard
 What questions should we answer before building the Kanban board?
