@@ -119,6 +119,18 @@ Before considering any screen done:
 - **Priority order on dashboard**: (1) What's blocked, (2) Recent activity, (3) In progress
 - **Love Factor**: Always correct data, saves time, guided workflow, zero friction
 
+## Pre-Build Ritual (Complex Steps Only)
+
+For steps flagged as complex (currently Steps 4 and 6):
+
+1. **Spike unknowns**: Write a spike file in `docs/spikes/` investigating technical questions
+   - Structure: Context → Goal → Questions → Findings → Recommendation
+   - Name: `spike-{topic}.md` (e.g., `spike-kanban-dnd.md`)
+   - Questions should ask about mechanics ("How does X work?"), not effort ("How long?")
+2. **Decompose affordances**: List UI elements, code mechanisms, and wiring in a simple table
+3. **Ask 3-5 clarifying questions** before building (use AskUserQuestion)
+4. **Document answers** in progress.txt session log
+
 ## Development Workflow
 
 1. **Phase 1 (current)**: Build high-fidelity UI with mock data. No backend, no API calls.

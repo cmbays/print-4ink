@@ -112,6 +112,11 @@
 **APP_FLOW**: `/jobs/board` — drag-and-drop columns
 **Depends on**: Step 2 (view toggle exists)
 
+**Pre-Build** (complete before coding):
+- [ ] Spike: dnd-kit mechanics for 6-column Kanban with sortable containers (`docs/spikes/spike-kanban-dnd.md`)
+- [ ] Affordance table: list all UI elements (columns, cards, drag overlay) + code mechanisms (onDragEnd, state update) + wiring
+- [ ] Ask user: (1) Drag confirmation or instant move? (2) Can cards with pending artwork be dragged to Press? (3) Fixed-width columns or flex-to-fill?
+
 **Tasks**:
 - [ ] Create `app/(dashboard)/jobs/board/page.tsx`
 - [ ] Build Kanban layout: 6 horizontal columns (one per production state)
@@ -154,6 +159,11 @@
 **PRD**: F7 (New Quote Form)
 **APP_FLOW**: `/quotes/new`
 **Depends on**: Step 5 (quotes route exists)
+
+**Pre-Build** (complete before coding):
+- [ ] Spike: React Hook Form field arrays with Zod validation + auto-calculation (`docs/spikes/spike-quote-form.md`)
+- [ ] Affordance table: list all form fields, calculation logic, validation rules, and data flow
+- [ ] Ask user: (1) What determines unit price — quantity x colors x locations formula, or a rate card? (2) Auto-save while typing or explicit save only? (3) Need to duplicate existing quotes?
 
 **Tasks**:
 - [ ] Create `app/(dashboard)/quotes/new/page.tsx` (client component)

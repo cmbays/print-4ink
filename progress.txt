@@ -60,3 +60,4 @@ See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
 | 2026-02-07 | Dashboard MVP | Built dashboard with summary cards, blocked/in-progress sections |
 | 2026-02-07 | Data layer | Created Zod schemas, constants, mock data |
 | 2026-02-07 | Documentation | Created canonical doc framework: PRD, APP_FLOW, TECH_STACK, IMPLEMENTATION_PLAN |
+| 2026-02-07 | Methodology | Evaluated Ryan Singer's shaping-skills repo. Decided against full adoption (project past 0-to-1 phase, existing docs cover most needs). Extracted 3 patterns: spikes for unknowns, affordance decomposition, pre-build interview. Added Pre-Build Ritual to CLAUDE.md and pre-build tasks to Steps 4 and 6 in IMPLEMENTATION_PLAN. Created `docs/spikes/` directory. |
