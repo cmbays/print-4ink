@@ -60,6 +60,7 @@ lib/
 docs/
   PROJECT_BIBLE.md          # Full project context
   AGENTS.md                 # Agent registry & orchestration guide
+  breadboards/              # Breadboard documents (affordance maps per vertical)
   spikes/                   # Pre-build research spikes
   reference/                # Archived design system docs, UX research
 agent-outputs/              # Structured output from agent runs (audit trail)
@@ -138,17 +139,31 @@ Before considering any screen done:
 - **Priority order on dashboard**: (1) What's blocked, (2) Recent activity, (3) In progress
 - **Love Factor**: Always correct data, saves time, guided workflow, zero friction
 
-## Pre-Build Ritual (Complex Steps Only)
+## Pre-Build Ritual
 
-For steps flagged as complex (currently Steps 4 and 6):
+### Every Vertical (Required)
+
+Before building any vertical's screens, produce a **breadboard document** using the `breadboarding` skill:
+
+1. **Run breadboarding skill** → produces `docs/breadboards/{vertical}-breadboard.md`
+   - Maps all Places (pages, modals, subplaces)
+   - Lists every UI affordance with wiring (control flow + data flow)
+   - Identifies code affordances (Phase 1: client-side, Phase 2: server-side)
+   - Defines component boundaries (shared vs vertical-specific)
+   - Establishes build order with dependency chain
+2. **Verify scope coverage** — every CORE feature from scope definition has corresponding affordances
+3. **Frontend-builder reads breadboard** as part of its startup sequence
+
+### Complex Screens (Additional)
+
+For screens with high interaction complexity (e.g., New Quote Form, Kanban Board):
 
 1. **Spike unknowns**: Write a spike file in `docs/spikes/` investigating technical questions
    - Structure: Context → Goal → Questions → Findings → Recommendation
    - Name: `spike-{topic}.md` (e.g., `spike-kanban-dnd.md`)
    - Questions should ask about mechanics ("How does X work?"), not effort ("How long?")
-2. **Decompose affordances**: List UI elements, code mechanisms, and wiring in a simple table
-3. **Ask 3-5 clarifying questions** before building (use AskUserQuestion)
-4. **Document answers** in progress.txt session log
+2. **Ask 3-5 clarifying questions** before building (use AskUserQuestion)
+3. **Document answers** in progress.txt session log
 
 ## Development Workflow
 
@@ -209,7 +224,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 | Agent | Use When | Preloaded Skills |
 |-------|----------|------------------|
-| `frontend-builder` | Building screens or components | screen-builder, quality-gate |
+| `frontend-builder` | Building screens or components | screen-builder, quality-gate, breadboarding |
 | `requirements-interrogator` | Before building complex features | pre-build-interrogator |
 | `design-auditor` | Design review checkpoints | design-audit |
 | `feature-strategist` | Competitive analysis, feature planning | feature-strategy |
@@ -222,6 +237,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
 | `vertical-discovery` | Start of each new vertical | 7-step competitor research + user interview + journey design methodology |
+| `breadboarding` | After scope definition, before build | Map UI/code affordances, wiring, places, and component boundaries into a buildable blueprint |
 | `screen-builder` | Starting Steps 1-10 | Build screens with design system + quality checklist + templates |
 | `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report |
 | `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions |
@@ -231,8 +247,9 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 ### Orchestration Patterns
 
+- **Vertical Build Chain** (standard per-vertical): `vertical-discovery → scope definition → breadboarding → frontend-builder → quality-gate → demo`
 - **Linear Chain** (simple screens): `frontend-builder → quality-gate → progress update`
-- **Pre-Build Chain** (complex screens): `requirements-interrogator → spike → frontend-builder → quality-gate`
+- **Pre-Build Chain** (complex screens): `breadboarding → requirements-interrogator → spike → frontend-builder → quality-gate`
 - **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → fixes`
 - **Competitive Analysis**: `feature-strategist → feature plan → user approval`
 
