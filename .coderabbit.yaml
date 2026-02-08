@@ -1,0 +1,8 @@
+# CodeRabbit Configuration
+# Docs: https://docs.coderabbit.ai/guides/configuration
+
+reviews:
+  # Prevent cross-repo learning contamination.
+  # Only apply learnings from this repository, not from other org repos.
+  learnings:
+    scope: "local"
