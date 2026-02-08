@@ -224,7 +224,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 | Agent | Use When | Preloaded Skills |
 |-------|----------|------------------|
-| `frontend-builder` | Building screens or components | screen-builder, quality-gate, breadboarding |
+| `frontend-builder` | Building screens or components | breadboarding, screen-builder, quality-gate |
 | `requirements-interrogator` | Before building complex features | pre-build-interrogator |
 | `design-auditor` | Design review checkpoints | design-audit |
 | `feature-strategist` | Competitive analysis, feature planning | feature-strategy |
@@ -247,11 +247,13 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 ### Orchestration Patterns
 
+> Simplified references. See `docs/AGENTS.md` for full pattern details.
+
 - **Vertical Build Chain** (standard per-vertical): `vertical-discovery → scope definition → breadboarding → frontend-builder → quality-gate → demo`
 - **Linear Chain** (simple screens): `frontend-builder → quality-gate → progress update`
-- **Pre-Build Chain** (complex screens): `breadboarding → requirements-interrogator → spike → frontend-builder → quality-gate`
-- **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → fixes`
-- **Competitive Analysis**: `feature-strategist → feature plan → user approval`
+- **Pre-Build Chain** (complex screens): `breadboarding → requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update`
+- **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → frontend-builder (fixes) → quality-gate`
+- **Competitive Analysis**: `feature-strategist → feature plan → user approval → update IMPLEMENTATION_PLAN`
 
 ## For Human Docs
 

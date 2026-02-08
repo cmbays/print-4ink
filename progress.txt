@@ -123,7 +123,7 @@
 
 ### Timeline & Scope
 
-- **Quoting Vertical (Pilot)**: 8-10 days (Discovery 2-3d + Scope 1d + Breadboarding 0.5-1d + Build 3-4d + Demo 1d)
+- **Quoting Vertical (Pilot)**: 7.5-10 days (Discovery 2-3d + Scope 1d + Breadboarding 0.5-1d + Build 3-4d + Demo 1d)
 - **Full MVP (4 verticals + Reporting stretch)**: 23-33 days
 - **See**: `.claude/plans/vertical-by-vertical-strategy.md` for full timeline
 

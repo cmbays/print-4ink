@@ -373,7 +373,7 @@ Reuses the exact same form component as P2 with these differences:
 | **StatusBadge** | P1, P3 | U11, U48 | `components/features/StatusBadge.tsx` | Yes — reusable for jobs, invoices |
 
 **File structure**:
-```
+```text
 components/features/
   ColorSwatchPicker.tsx      ← shared, reusable
   CustomerCombobox.tsx       ← shared, reusable
