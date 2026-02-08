@@ -240,15 +240,35 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 After every feature build, plan, or decision, create or update an HTML doc in `for_human/`.
 
+**Template**: Use `for_human/_template.html` as the reference. Every file must have the standardized header:
+1. Back navigation (`← Back to Index`)
+2. Tag pills (1-3 per session)
+3. Title + subtitle
+4. Meta grid: Date, Branch, Phase, Vertical
+5. Session resume: `claude --resume <id>`
+6. Related sessions (navigation buttons to related `for_human/` docs, if any)
+7. Divider before body content
+
+**Tags** (apply 1-3 per session):
+
+| Tag | Color | Use When |
+|-----|-------|----------|
+| Feature | Green | New functionality built |
+| Build | Green | Infrastructure, tooling, scaffold |
+| Plan | Cyan | Strategy or roadmap created |
+| Decision | Amber | Choice made between alternatives |
+| Research | Purple | Competitive analysis, exploration |
+| Learning | Amber | Lesson learned or gotcha documented |
+
 **Rules:**
 - **Bundle** related content into the same file (e.g., multi-session work on one screen)
 - **Separate** distinct features, standalone decisions, different project phases
-- **Update `for_human/index.html`** with a new entry card (insert above `<!-- NEW ENTRIES GO HERE -->`)
+- **Update `for_human/index.html`** with a new entry card (insert above `<!-- NEW ENTRIES GO HERE -->`) with matching tags
 - **Update `for_human/README.md`** index table to match
 - **Include**: session resume command, artifact links, PR links, decision rationale
 - **Session ID**: Find the current session ID by running `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — the filename (without `.jsonl`) is the ID. Never use IDs from plan text or prior sessions.
-- **Style**: use project design tokens (dark theme, cyan accent, Inter font) — match existing HTML files
-- **Types**: Decision (amber tag), Feature (green tag), Plan (cyan tag)
+- **Style**: use project design tokens (dark theme, cyan accent, Inter font) — copy from `_template.html`
+- **Related sessions**: Link to other `for_human/` docs that share the same workflow chain (e.g., discovery → build → demo)
 
 ## Lessons Learned
 

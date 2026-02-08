@@ -121,24 +121,16 @@
       letter-spacing: 0.05em;
       padding: 2px 8px;
       border-radius: 4px;
-      background: rgba(251, 191, 36, 0.1);
-      color: var(--warning);
     }
 
-    .type-tag.feature {
-      background: rgba(52, 211, 153, 0.1);
-      color: var(--success);
-    }
+    .type-tag.feature,
+    .type-tag.build    { background: rgba(52, 211, 153, 0.1); color: var(--success); }
+    .type-tag.plan     { background: rgba(34, 211, 238, 0.1); color: var(--action); }
+    .type-tag.decision,
+    .type-tag.learning { background: rgba(251, 191, 36, 0.1); color: var(--warning); }
+    .type-tag.research { background: rgba(167, 139, 250, 0.1); color: #a78bfa; }
 
-    .type-tag.decision {
-      background: rgba(251, 191, 36, 0.1);
-      color: var(--warning);
-    }
-
-    .type-tag.plan {
-      background: rgba(34, 211, 238, 0.1);
-      color: var(--action);
-    }
+    .tag-group { display: flex; gap: 6px; flex-wrap: wrap; }
 
     footer {
       margin-top: 48px;
@@ -165,16 +157,22 @@
       <div class="entry-desc">Full discovery phase for Quoting vertical. Playwright exploration of Print Life (6-step flow, 103 color swatches, blocking recalculation). User interview: 10 friction points, hybrid approval workflow, S&S-style color swatch request. Created 4 documents: competitive analysis, journey map, improved journey design (3-4 min target vs 10 min), updated scope definition. Ready for build phase.</div>
       <div class="entry-meta">
         <span>2026-02-08</span>
-        <span class="type-tag feature">Feature</span>
+        <div class="tag-group">
+          <span class="type-tag feature">Feature</span>
+          <span class="type-tag research">Research</span>
+        </div>
       </div>
     </a>
 
     <a class="entry" href="2026-02-08-strategic-pivot.html">
       <div class="entry-title">Strategic Pivot: Vertical-by-Vertical Approach</div>
-      <div class="entry-desc">Implemented comprehensive pivot from linear 10-step plan to user-validated vertical development. Pilot vertical: Quoting. Subsequent: Invoicing, Customer Management, Pricing Matrix, Reporting. 4-phase repeatable methodology (Discovery → Scope → Build → Demo). Full discovery documents created, ready for user interview.</div>
+      <div class="entry-desc">Implemented comprehensive pivot from linear 10-step plan to user-validated vertical development. Pilot vertical: Quoting. Subsequent: Invoicing, Customer Management, Pricing Matrix, Reporting. 4-phase repeatable methodology (Discovery &rarr; Scope &rarr; Build &rarr; Demo). Full discovery documents created, ready for user interview.</div>
       <div class="entry-meta">
         <span>2026-02-08</span>
-        <span class="type-tag plan">Plan</span>
+        <div class="tag-group">
+          <span class="type-tag plan">Plan</span>
+          <span class="type-tag decision">Decision</span>
+        </div>
       </div>
     </a>
 
@@ -183,7 +181,10 @@
       <div class="entry-desc">5 specialized agents, 4 new skills, orchestration patterns, and agent registry. Agents preload skills for domain expertise and chain together for complex workflows.</div>
       <div class="entry-meta">
         <span>2026-02-08</span>
-        <span class="type-tag feature">Feature</span>
+        <div class="tag-group">
+          <span class="type-tag feature">Feature</span>
+          <span class="type-tag build">Build</span>
+        </div>
       </div>
     </a>
 
@@ -192,8 +193,10 @@
       <div class="entry-desc">Evaluated Ryan Singer's shaping-skills methodology. Extracted 3 patterns (spikes, affordance decomposition, pre-build interview). Defined Phase 1 workflow using Print Life as competitor benchmark.</div>
       <div class="entry-meta">
         <span>2026-02-07</span>
-        <span class="type-tag decision">Decision</span>
-        <span>PR #2</span>
+        <div class="tag-group">
+          <span class="type-tag decision">Decision</span>
+          <span class="type-tag research">Research</span>
+        </div>
       </div>
     </a>
 
@@ -202,7 +205,10 @@
       <div class="entry-desc">Built 2 project-specific Claude Code skills: screen-builder (workflow + 3 templates + 2 checklists + 2 ref docs) and quality-gate (10-category audit + scoring rubric). Encodes design system and domain knowledge into repeatable workflows for Steps 1-10.</div>
       <div class="entry-meta">
         <span>2026-02-07</span>
-        <span class="type-tag feature">Feature</span>
+        <div class="tag-group">
+          <span class="type-tag feature">Feature</span>
+          <span class="type-tag build">Build</span>
+        </div>
       </div>
     </a>
 
@@ -211,7 +217,11 @@
       <div class="entry-desc">GitHub Actions CI (typecheck, lint, test, build). Vitest schema tests (66 tests). Fixed 8 invalid mock data UUIDs caught by Zod v4 strict validation.</div>
       <div class="entry-meta">
         <span>2026-02-07</span>
-        <span class="type-tag feature">Feature</span>
+        <div class="tag-group">
+          <span class="type-tag feature">Feature</span>
+          <span class="type-tag build">Build</span>
+          <span class="type-tag learning">Learning</span>
+        </div>
       </div>
     </a>
 

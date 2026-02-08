@@ -13,14 +13,14 @@ This directory stores session summaries, decision logs, and reference materials 
 
 ## Index
 
-| File | Topic | Date | Type |
+| File | Topic | Date | Tags |
 |------|-------|------|------|
-| [2026-02-08-quoting-discovery.html](2026-02-08-quoting-discovery.html) | Quoting discovery complete: Playwright exploration, user interview, 10 friction points, improved journey design, S&S color swatch request | 2026-02-08 | Feature |
-| [2026-02-08-strategic-pivot.html](2026-02-08-strategic-pivot.html) | Strategic pivot to vertical-by-vertical approach, 4-phase methodology, discovery docs | 2026-02-08 | Plan |
-| [session-2026-02-08-agent-architecture.html](session-2026-02-08-agent-architecture.html) | 5 agents, 4 skills, orchestration patterns, agent registry | 2026-02-08 | Feature |
-| [session-2026-02-07-shaping-skills.html](session-2026-02-07-shaping-skills.html) | Shaping skills evaluation, pre-build ritual, Phase 1 workflow | 2026-02-07 | Decision |
-| [session-2026-02-07-skills-implementation.html](session-2026-02-07-skills-implementation.html) | Built screen-builder + quality-gate skills (20 files) | 2026-02-07 | Feature |
-| [session-2026-02-07-ci-testing.html](session-2026-02-07-ci-testing.html) | GitHub Actions CI, Vitest schema tests (66), mock data UUID fix | 2026-02-07 | Feature |
+| [2026-02-08-quoting-discovery.html](2026-02-08-quoting-discovery.html) | Quoting discovery complete: Playwright exploration, user interview, 10 friction points, improved journey design, S&S color swatch request | 2026-02-08 | Feature, Research |
+| [2026-02-08-strategic-pivot.html](2026-02-08-strategic-pivot.html) | Strategic pivot to vertical-by-vertical approach, 4-phase methodology, discovery docs | 2026-02-08 | Plan, Decision |
+| [session-2026-02-08-agent-architecture.html](session-2026-02-08-agent-architecture.html) | 5 agents, 4 skills, orchestration patterns, agent registry | 2026-02-08 | Feature, Build |
+| [session-2026-02-07-shaping-skills.html](session-2026-02-07-shaping-skills.html) | Shaping skills evaluation, pre-build ritual, Phase 1 workflow | 2026-02-07 | Decision, Research |
+| [session-2026-02-07-skills-implementation.html](session-2026-02-07-skills-implementation.html) | Built screen-builder + quality-gate skills (20 files) | 2026-02-07 | Feature, Build |
+| [session-2026-02-07-ci-testing.html](session-2026-02-07-ci-testing.html) | GitHub Actions CI, Vitest schema tests (66), mock data UUID fix | 2026-02-07 | Feature, Build, Learning |
 
 ## How to Use
 
@@ -51,6 +51,33 @@ You can also list recent sessions to find a specific one:
 # Show 5 most recent sessions with dates
 ls -lt ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -5
 ```
+
+## Template
+
+Every HTML file uses a standardized header template. See `_template.html` for the reference implementation.
+
+### Header Structure
+
+1. **Back navigation** — `← Back to Index` link at the top
+2. **Tags** — One or more tag pills describing the session type
+3. **Title + subtitle** — What was done, one-line summary
+4. **Meta grid** — Date, Branch, Phase, Vertical (2x2 grid)
+5. **Session resume** — Copyable `claude --resume <id>` command
+6. **Related sessions** — Navigation buttons to related `for_human/` docs (optional)
+7. **Divider** — Separates the header from body content
+
+### Tags
+
+| Tag | Color | Use When |
+|-----|-------|----------|
+| `Feature` | Green | New functionality was built |
+| `Build` | Green | Infrastructure, tooling, or scaffold work |
+| `Plan` | Cyan | Strategy or roadmap was created |
+| `Decision` | Amber | A choice was made between alternatives |
+| `Research` | Purple | Competitive analysis, exploration, or investigation |
+| `Learning` | Amber | A lesson was learned or gotcha documented |
+
+Apply 1-3 tags per session. Most sessions combine two (e.g., Feature + Build, Decision + Research).
 
 ## Bundling Rules
 

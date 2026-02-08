@@ -33,272 +33,198 @@
 
     .container { max-width: 720px; margin: 0 auto; }
 
-    .back-link {
-      display: inline-block;
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-bottom: 24px;
-      text-decoration: none;
+    .top-nav { margin-bottom: 24px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text-muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; padding: 6px 12px; border-radius: 6px;
+      border: 1px solid var(--border); transition: all 0.15s ease;
     }
-    .back-link:hover { color: var(--action); }
+    .back-btn:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
 
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: rgba(52, 211, 153, 0.12);
-      color: var(--success);
-      margin-bottom: 12px;
+    header { margin-bottom: 32px; }
+
+    .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 4px 10px; border-radius: 4px;
+    }
+    .tag-feature  { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .subtitle { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; }
+
+    .meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; margin-bottom: 12px;
+    }
+    .meta-item { background: var(--bg-elevated); padding: 12px 16px; }
+    .meta-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .meta-value { font-size: 13px; color: var(--text-primary); }
+
+    .session-resume {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+    }
+    .session-resume code {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--action); user-select: all; cursor: pointer;
     }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
+    .related-nav { margin-bottom: 32px; }
+    .related-label {
+      display: block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-bottom: 8px;
     }
+    .related-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .related-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-secondary); text-decoration: none;
+      padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg-elevated); transition: all 0.15s ease;
+    }
+    .related-link:hover { color: var(--action); border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
+    .related-link .related-desc { color: var(--text-muted); font-size: 11px; }
 
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 15px;
-      margin-bottom: 8px;
-    }
-
-    .meta {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-bottom: 32px;
-    }
+    .header-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 32px 0; }
 
     h2 {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-top: 40px;
-      margin-bottom: 16px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-muted);
+      margin-top: 40px; margin-bottom: 16px;
     }
-
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin-top: 24px;
-      margin-bottom: 8px;
-    }
-
-    p {
-      color: var(--text-secondary);
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
+    h3 { font-size: 16px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; }
+    p { color: var(--text-secondary); font-size: 14px; margin-bottom: 12px; }
     a { color: var(--action); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 12px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px; margin-bottom: 12px;
     }
+    .card-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .card-desc { font-size: 13px; color: var(--text-secondary); }
 
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
     .stat {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px; text-align: center;
     }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--action);
-    }
-
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--action); }
     .stat-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 4px;
+      font-size: 11px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px;
     }
 
-    .friction-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-bottom: 24px;
-    }
-
+    .friction-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
     .friction-table th {
-      text-align: left;
-      padding: 8px 12px;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      text-align: left; padding: 8px 12px; color: var(--text-muted);
+      border-bottom: 1px solid var(--border); font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
+    .friction-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .severity-critical { color: var(--error); font-weight: 600; }
+    .severity-high { color: var(--warning); font-weight: 600; }
 
-    .friction-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    .severity-critical {
-      color: var(--error);
-      font-weight: 600;
-    }
-
-    .severity-high {
-      color: var(--warning);
-      font-weight: 600;
-    }
-
-    .severity-medium {
-      color: var(--text-secondary);
-    }
-
-    .comparison {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
+    .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
     .comparison-col {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px;
     }
-
-    .comparison-col h4 {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
+    .comparison-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
     .comparison-col.them h4 { color: var(--error); }
     .comparison-col.us h4 { color: var(--success); }
-
-    .comparison-col ul {
-      list-style: none;
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    .comparison-col ul li {
-      padding: 4px 0;
-      padding-left: 16px;
-      position: relative;
-    }
-
-    .comparison-col.them ul li::before {
-      content: "\2717";
-      position: absolute;
-      left: 0;
-      color: var(--error);
-    }
-
-    .comparison-col.us ul li::before {
-      content: "\2713";
-      position: absolute;
-      left: 0;
-      color: var(--success);
-    }
+    .comparison-col ul { list-style: none; font-size: 13px; color: var(--text-secondary); }
+    .comparison-col ul li { padding: 4px 0; padding-left: 16px; position: relative; }
+    .comparison-col.them ul li::before { content: "\2717"; position: absolute; left: 0; color: var(--error); }
+    .comparison-col.us ul li::before { content: "\2713"; position: absolute; left: 0; color: var(--success); }
 
     .doc-link {
-      display: block;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-      font-size: 13px;
-      text-decoration: none;
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 12px 16px; margin-bottom: 8px;
+      color: var(--text-primary); font-size: 13px; text-decoration: none;
       transition: border-color 0.15s ease;
     }
-
-    .doc-link:hover {
-      border-color: rgba(34, 211, 238, 0.3);
-      text-decoration: none;
-    }
-
-    .doc-link .doc-status {
-      float: right;
-      font-size: 11px;
-      color: var(--success);
-      font-weight: 600;
-    }
+    .doc-link:hover { border-color: rgba(34, 211, 238, 0.3); text-decoration: none; }
+    .doc-link .doc-status { margin-left: 12px; font-size: 11px; color: var(--success); font-weight: 600; white-space: nowrap; }
 
     code {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      background: var(--bg-surface);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--action);
-    }
-
-    .resume-cmd {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 24px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text-secondary);
-      word-break: break-all;
+      font-family: var(--font-mono); font-size: 12px;
+      background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; color: var(--action);
     }
 
     footer {
-      margin-top: 48px;
-      padding-top: 24px;
+      margin-top: 48px; padding-top: 24px;
       border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: center;
+      font-size: 12px; color: var(--text-muted); text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <a class="back-link" href="index.html">&larr; Back to index</a>
 
-    <div class="badge">Feature</div>
-    <h1>Quoting Discovery: Complete</h1>
-    <p class="subtitle">Full competitive analysis, user interview, and improved journey design for the Quoting vertical</p>
-    <p class="meta">2026-02-08 &mdash; Session ID: 0fe71069-b9c2-45f3-9a06-5c57de8a013d</p>
+    <!-- ========== TOP NAV ========== -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <!-- ========== HEADER ========== -->
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-feature">Feature</span>
+        <span class="tag tag-research">Research</span>
+      </div>
+
+      <h1>Quoting Discovery: Complete</h1>
+      <p class="subtitle">Full competitive analysis, user interview, and improved journey design for the Quoting vertical</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-08</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>main</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Mockup</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Quoting</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume 0fe71069-b9c2-45f3-9a06-5c57de8a013d</code>
+      </div>
+    </header>
+
+    <!-- ========== RELATED SESSIONS ========== -->
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="2026-02-08-strategic-pivot.html">
+          &larr; Strategic Pivot <span class="related-desc">&mdash; Vertical-by-vertical methodology</span>
+        </a>
+      </div>
+    </nav>
+
+    <hr class="header-divider">
+
+    <!-- ========== BODY CONTENT ========== -->
 
     <h2>Target Improvements</h2>
 
@@ -450,9 +376,6 @@
         6. Email Preview Modal &mdash; "Send to Customer" mockup
       </div>
     </div>
-
-    <h2>Resume Session</h2>
-    <div class="resume-cmd">claude --resume 0fe71069-b9c2-45f3-9a06-5c57de8a013d</div>
 
     <footer>
       Screen Print Pro &mdash; Quoting Discovery &mdash; 2026-02-08
