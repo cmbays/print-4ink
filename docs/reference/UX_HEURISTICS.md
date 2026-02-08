@@ -1,37 +1,49 @@
-# UX Heuristics for Playground Tools
+---
+title: "UX_HEURISTICS"
+description: "10-point UX quality checklist for workflow efficiency and usability. Complements the 15-point visual audit."
+category: reference
+status: active
+phase: all
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on:
+  - docs/APP_FLOW.md
+  - docs/reference/SCREEN_AUDIT_PROTOCOL.md
+---
 
-**Created**: 2026-02-05
-**Purpose**: Lightweight quality checklist for playground UX audits
-**Scope**: All 6 interactive playgrounds + future tools
+# UX Heuristics for Screen Print Pro
+
+**Scope**: All 11 screens defined in APP_FLOW.md
 
 ## Overview
 
-This is a **10-point heuristic checklist** for evaluating playground UX quality. Use this before releasing new playgrounds or major updates.
+This is a **10-point heuristic checklist** for evaluating page UX quality. Use this before user review checkpoints or after major UI changes.
 
 **Philosophy**: Lightweight, actionable, focused on user trust and efficiency.
 
 **How to Use**:
-1. Open playground to audit
+1. Open the screen to audit
 2. Complete each heuristic check (Yes/No/Partial)
 3. Document failures with severity (Critical/High/Medium/Low)
-4. Fix Critical and High issues before release
+4. Fix Critical and High issues before user review
 
 ---
 
 ## The 10 UX Heuristics
 
-### 1. Can the user accomplish the primary task in ≤3 clicks?
+### 1. Can the user accomplish the primary task in 3 clicks or fewer?
 
 **What to Check**:
-- Identify the playground's primary task (see UX_TASK_FLOWS.md)
-- Count clicks from open → task completion
-- Clicks include: button press, dropdown select, modal interaction
+- Identify the screen's primary task (see APP_FLOW.md user journeys)
+- Count clicks from screen load to task completion
+- Clicks include: button press, dropdown select, row click
 
 **Examples**:
-- ✅ **Workflow Hub Resume**: Open → Click [Resume Work] → Ready (2 clicks)
-- ❌ **Workflow Hub Resume (current)**: Open → Load State modal → Select file → Confirm → Parse → Close modal → Scan dashboard → Find action (7+ clicks)
+- **Dashboard -> Job Detail**: Dashboard -> click blocked job row -> see full detail (2 clicks)
+- **Create Quote**: Quotes list -> "New Quote" button -> fill form -> save (3 clicks)
+- **Find Job**: Jobs list -> type in search -> click row (2 clicks)
 
-**Pass Criteria**: Primary task ≤3 clicks, no modals for common actions
+**Pass Criteria**: Primary task within 3 clicks, no unnecessary modals or extra steps
 
 **Severity if Failed**: High (directly impacts "zero friction" goal)
 
@@ -40,102 +52,108 @@ This is a **10-point heuristic checklist** for evaluating playground UX quality.
 ### 2. Is the current state always visible?
 
 **What to Check**:
-- User should know "where am I?" without clicking
-- Current phase, track, session status shown prominently
-- Timestamps for data freshness ("Last updated: 5s ago")
+- User should know "where am I and what's happening" without clicking
+- Page title and context shown prominently
+- Breadcrumbs show navigation path for detail pages
 
 **Examples**:
-- ✅ **Worktree Coordinator**: Shows branch name, ahead/behind, CI status at top
-- ❌ **Workflow Hub (current)**: State buried in widgets, unclear what's active
+- **Dashboard**: Summary cards immediately show blocked count, in-progress count, shipped count
+- **Job Detail**: Job number, status badge, and priority visible in header without scrolling
+- **Kanban Board**: Column headers show job count per production state
 
-**Pass Criteria**: Hero section shows context + freshness indicator
+**Pass Criteria**: Key state visible above the fold, breadcrumbs on detail pages
 
-**Severity if Failed**: Critical (user can't trust data)
+**Severity if Failed**: Critical (user can't orient themselves)
 
 ---
 
 ### 3. Can the user undo/recover from mistakes?
 
 **What to Check**:
-- Destructive actions have confirmation ("Are you sure?")
-- Non-destructive actions are reversible (close modal, clear filter)
+- Destructive actions have confirmation dialogs
+- Non-destructive actions are reversible (close modal, clear filter, undo search)
 - User can always return to previous state
 
 **Examples**:
-- ✅ **Mermaid Designer**: Template selection doesn't clear unsaved work (localStorage backup)
-- ⚠️ **Workflow Hub**: Closing modal loses selected state (should cache)
+- **Kanban Board**: Dragging a job to wrong column should be reversible (drag back)
+- **New Quote Form**: "Cancel" returns to quotes list without data loss
+- **Search**: Clear button resets filters to show all items
 
 **Pass Criteria**: No data loss on accidental clicks, confirmations for destructive actions
 
-**Severity if Failed**: Medium (frustration, not blocking)
+**Severity if Failed**: Medium (frustrating, but Phase 1 data isn't persisted anyway)
 
 ---
 
 ### 4. Are keyboard shortcuts discoverable?
 
 **What to Check**:
-- ? key shows help modal with shortcuts
-- Common shortcuts labeled on buttons (e.g., "Refresh (R)")
-- Shortcuts work consistently across playgrounds
+- Primary shortcuts work consistently across pages
+- Shortcuts are labeled on buttons where applicable
 
 **Examples**:
-- ✅ **Worktree Coordinator**: ? shows help, R refreshes, Esc closes modals
-- ❌ **Workflow Hub**: No help modal, shortcuts undiscoverable
+- **Global search**: `/` focuses the search input
+- **Close dialog**: `Esc` closes any open dialog/sheet
+- **Submit form**: `Enter` submits when form is focused
 
-**Pass Criteria**: ? key help modal, primary shortcuts labeled
+**Pass Criteria**: Core shortcuts work, `Esc` always closes overlays
 
-**Severity if Failed**: Low (power users only)
+**Severity if Failed**: Low (power user feature, Phase 2 priority)
 
 ---
 
-### 5. Does progressive disclosure work (simple → advanced)?
+### 5. Does progressive disclosure work (simple -> advanced)?
 
 **What to Check**:
-- Default view shows summary (3-5 lines max)
-- [Show Details] / [Expand] reveals complexity
-- Advanced features hidden until needed
+- Default view shows summary information
+- Details expand on demand (click row, expand section)
+- Advanced features don't clutter the primary view
 
 **Examples**:
-- ✅ **Mermaid Designer**: Start with template picker, advanced options in settings
-- ❌ **Workflow Hub**: All widgets shown at once (no summary mode)
+- **Dashboard**: Shows blocked count -> click to see blocked job details -> click to see full job
+- **Jobs List**: Table shows key columns -> click row for full detail
+- **Customer Detail**: Contact info visible -> jobs/quotes tables expand with full history
 
-**Pass Criteria**: Summary view on load, expand controls for details
+**Pass Criteria**: Summary visible on load, details accessible in 1-2 clicks
 
-**Severity if Failed**: High (contributes to "too much information" problem)
+**Severity if Failed**: High (contributes to information overload)
 
 ---
 
 ### 6. Are empty states helpful (not just blank)?
 
 **What to Check**:
-- Empty state shows why it's empty + how to populate
-- Includes illustration or icon (optional but helpful)
-- Primary action button to get started
+- Empty state shows why it's empty and what to expect
+- Includes a Lucide icon for visual clarity
+- CTA button to take action where appropriate
 
 **Examples**:
-- ✅ **Agent Visualizer**: "No state loaded. Drag file here or select from dropdown."
-- ⚠️ **Workflow Hub (if no tracks)**: Should show "No active work. [Start New Task]"
+- **Jobs List (no jobs)**: Package icon + "No jobs yet. Jobs will appear here."
+- **Dashboard (no blocked)**: "All clear — no blocked jobs" (positive framing)
+- **Customer Detail (no quotes)**: "No quotes for this customer"
+- **Search (no results)**: "No results for 'xyz'" + clear search action
 
-**Pass Criteria**: Helpful message + action button
+**Pass Criteria**: Helpful message + icon, action button where it makes sense
 
-**Severity if Failed**: Medium (confusing for new users)
+**Severity if Failed**: Medium (confusing for first-time use and demo scenarios)
 
 ---
 
 ### 7. Are loading states informative?
 
 **What to Check**:
-- User knows something is happening (spinner, progress bar)
-- Estimated time shown if >3 seconds
+- User knows something is happening (spinner, skeleton, progress)
 - Partial data shown while loading (optimistic UI)
+- No silent pauses where the screen appears frozen
 
 **Examples**:
-- ✅ **Worktree Coordinator**: "Refreshing worktrees..." spinner during git operations
-- ❌ **Workflow Hub PM Session**: Silent failure, no indication of why it didn't load
+- **Phase 1**: Mock data is synchronous, so loading states are minimal
+- **Phase 2+**: Job list should show skeleton rows while fetching
+- **Quote save**: Button should show spinner during save operation
 
-**Pass Criteria**: Spinner + status message, no silent failures
+**Pass Criteria**: No silent pauses; skeleton/spinner where async operations occur
 
-**Severity if Failed**: High (user thinks playground is broken)
+**Severity if Failed**: Low for Phase 1 (no async), High for Phase 2+
 
 ---
 
@@ -143,60 +161,63 @@ This is a **10-point heuristic checklist** for evaluating playground UX quality.
 
 **What to Check**:
 - Error message states what went wrong
-- Includes fix instructions ("Run: npm start")
-- Offers fallback ("View cached data instead?")
+- Includes a recovery path (link, button, instruction)
+- Doesn't use technical jargon
 
 **Examples**:
-- ✅ **Worktree Coordinator**: "Git command failed. Ensure you're in a git repository."
-- ❌ **Workflow Hub PM Session**: "Cannot connect to backlog.md" (no fix instructions)
+- **Invalid job URL** (`/jobs/nonexistent`): "Job not found" + "Back to Jobs" link
+- **Quote form validation**: Red border on empty field + "Description is required"
+- **404 page**: "Page not found" + link to Dashboard
 
-**Pass Criteria**: Error + fix instructions + fallback option
+**Pass Criteria**: Error + recovery action, no dead ends
 
-**Severity if Failed**: Critical (user stuck with no recovery path)
+**Severity if Failed**: High (user stuck with no way forward)
 
 ---
 
 ### 9. Is help accessible without leaving context?
 
 **What to Check**:
-- ? key or [Help] button opens in-context modal
-- Help content specific to current view
-- Links to full docs if needed
+- Tooltips on non-obvious UI elements
+- Form fields have helpful labels/placeholders
+- Technical terms are explained where needed
 
 **Examples**:
-- ✅ **Worktree Coordinator**: ? shows shortcuts + workflow tips
-- ❌ **Most playgrounds**: No help system, user must check PLAYGROUND-TOOLS.md externally
+- **Screen Room**: "Mesh Count" column could have tooltip explaining what mesh count means
+- **Quote Form**: Placeholder text in fields guides input format
+- **Production States**: Status badges are labeled (not just color-coded)
 
-**Pass Criteria**: ? key help modal with context-specific tips
+**Pass Criteria**: Labels are clear, tooltips on domain-specific terms
 
-**Severity if Failed**: Low (documentation gap, not blocking)
+**Severity if Failed**: Low (shop owner knows the domain, but helpful for demos)
 
 ---
 
-### 10. Does the tool remember user preferences?
+### 10. Does the interface feel consistent?
 
 **What to Check**:
-- Last selected file/state cached (localStorage)
-- UI preferences saved (theme, collapsed sections)
-- Restored on next visit
+- Same patterns used across similar pages (list pages look alike, detail pages look alike)
+- Same components for same purposes (badges, tables, cards)
+- Navigation patterns are predictable
 
 **Examples**:
-- ✅ **Mermaid Designer**: Restores last diagram from localStorage
-- ⚠️ **Workflow Hub**: Should remember last track, auto-load on open
+- **All list pages** (Jobs, Quotes, Customers, Screens): Same toolbar pattern (search + filter + optional CTA)
+- **All detail pages** (Job, Quote, Customer): Same breadcrumb pattern, same back navigation
+- **All status indicators**: Same Badge component with consistent color mapping
 
-**Pass Criteria**: Key preferences cached, restored on load
+**Pass Criteria**: A user who learns one list page can navigate any list page
 
-**Severity if Failed**: Medium (quality of life, not critical)
+**Severity if Failed**: Medium (inconsistency erodes trust and learnability)
 
 ---
 
 ## Heuristic Scorecard Template
 
-Use this table to audit each playground:
+Use this table to audit each screen:
 
 | Heuristic | Pass? | Severity | Notes |
 |-----------|-------|----------|-------|
-| 1. ≤3 clicks to primary task | | | |
+| 1. Primary task within 3 clicks | | | |
 | 2. Current state visible | | | |
 | 3. Undo/recovery | | | |
 | 4. Shortcuts discoverable | | | |
@@ -205,134 +226,73 @@ Use this table to audit each playground:
 | 7. Informative loading | | | |
 | 8. Fix-oriented errors | | | |
 | 9. In-context help | | | |
-| 10. Remember preferences | | | |
+| 10. Consistent patterns | | | |
 
 **Scoring**:
-- ✅ Pass = 1 point
-- ⚠️ Partial = 0.5 points
-- ❌ Fail = 0 points
+- Pass = 1 point
+- Partial = 0.5 points
+- Fail = 0 points
 
 **Quality Thresholds**:
-- **9-10 points**: Excellent UX, ready to ship
+- **9-10 points**: Excellent UX, ready for user review
 - **7-8 points**: Good UX, minor polish needed
 - **5-6 points**: Acceptable UX, notable gaps
 - **<5 points**: Poor UX, major rework needed
 
 ---
 
-## Workflow Hub Audit Example (Current State)
+## Dashboard Audit Example (Current State)
 
 | Heuristic | Pass? | Severity | Notes |
 |-----------|-------|----------|-------|
-| 1. ≤3 clicks to primary task | ❌ | High | 7+ clicks to resume work (modals, file selection) |
-| 2. Current state visible | ❌ | Critical | State buried in widgets, unclear active track |
-| 3. Undo/recovery | ⚠️ | Medium | Modals close without saving selected state |
-| 4. Shortcuts discoverable | ❌ | Low | No ? help, shortcuts unlabeled |
-| 5. Progressive disclosure | ❌ | High | All widgets shown at once, overwhelming |
-| 6. Helpful empty states | ❌ | Medium | Unknown (not tested without active work) |
-| 7. Informative loading | ❌ | High | PM session fails silently, no spinner |
-| 8. Fix-oriented errors | ❌ | Critical | "Cannot connect" with no fix instructions |
-| 9. In-context help | ❌ | Low | No help modal |
-| 10. Remember preferences | ❌ | Medium | State Inspector requires manual load every time |
+| 1. Primary task within 3 clicks | Partial | Medium | Can scan status instantly, but job rows aren't clickable links yet |
+| 2. Current state visible | Pass | - | Summary cards show blocked/in-progress/shipped counts immediately |
+| 3. Undo/recovery | Pass | - | Read-only dashboard, no destructive actions |
+| 4. Shortcuts discoverable | Fail | Low | No keyboard shortcuts implemented yet |
+| 5. Progressive disclosure | Pass | - | Summary cards -> blocked section -> in-progress section |
+| 6. Helpful empty states | Partial | Medium | No empty state for "no blocked jobs" (section just doesn't render) |
+| 7. Informative loading | Pass | - | Mock data loads synchronously |
+| 8. Fix-oriented errors | N/A | - | No error states possible on dashboard currently |
+| 9. In-context help | Partial | Low | Labels are clear, but no tooltips on metrics |
+| 10. Consistent patterns | Pass | - | Follows card + list pattern consistently |
 
-**Score**: 0.5 / 10 (5%)
-**Assessment**: Poor UX, major rework needed
-
-**Priority Fixes** (Critical + High):
-1. Show current state in hero section (Heuristic 2)
-2. Add fix instructions to error messages (Heuristic 8)
-3. Implement progressive disclosure (Heuristic 5)
-4. Fix silent PM session failure (Heuristic 7)
-5. Reduce clicks to primary task (Heuristic 1)
-
----
-
-## Worktree Coordinator Audit Example (Current State)
-
-| Heuristic | Pass? | Severity | Notes |
-|-----------|-------|----------|-------|
-| 1. ≤3 clicks to primary task | ✅ | - | Open → Scan status → Done (1-2 clicks) |
-| 2. Current state visible | ✅ | - | Branch, ahead/behind, CI status prominent |
-| 3. Undo/recovery | ✅ | - | Read-only dashboard, no destructive actions |
-| 4. Shortcuts discoverable | ✅ | - | ? help modal, R refresh labeled |
-| 5. Progressive disclosure | ⚠️ | Medium | Could hide detailed git info in accordion |
-| 6. Helpful empty states | ⚠️ | Medium | Shows "No worktrees" but no next action |
-| 7. Informative loading | ✅ | - | "Refreshing..." spinner during git commands |
-| 8. Fix-oriented errors | ⚠️ | Medium | Git errors shown but fix instructions minimal |
-| 9. In-context help | ✅ | - | ? modal with shortcuts + workflow tips |
-| 10. Remember preferences | ✅ | - | Last refresh time cached |
-
-**Score**: 8 / 10 (80%)
+**Score**: 7 / 10 (70%)
 **Assessment**: Good UX, minor polish needed
 
-**Priority Fixes** (Medium):
-1. Add [Create Worktree] button to empty state (Heuristic 6)
-2. Expand git error messages with fix instructions (Heuristic 8)
-3. Optional: Collapse detailed git info (Heuristic 5)
+**Priority Fixes**:
+1. Make job rows clickable links to `/jobs/[id]` (Heuristic 1)
+2. Add positive empty state for "no blocked jobs" (Heuristic 6)
 
 ---
 
-## Integration with Development Workflow
+## Relationship to Screen Audit Protocol
 
-### When to Run Heuristic Audit
-
-**Required**:
-- Before releasing new playground
-- Before merging major UI changes
-- As part of VERIFY phase (standard workflow)
-
-**Recommended**:
-- After user feedback session
-- During UX-focused sprints (e.g., v0.11)
-
-### Who Runs Audit
-
-**Primary**: Designer or UX-focused agent (design-reviewer persona)
-**Fallback**: Developer self-audit before code review
-
-### Output Format
-
-Create audit document in:
-```
-temp/AGENT_REPORTS/[feature]/UX_AUDIT.md
-```
-
-Include:
-- Scorecard table (10 heuristics)
-- Total score + assessment
-- Priority fix list (Critical/High issues)
-- Recommendations for future enhancements
-
----
-
-## Relationship to Design Audit
-
-**Design Audit** (15-point checklist in DESIGN_AUDIT.md):
-- Focus: Visual design (color, typography, spacing, accessibility)
+**Screen Audit Protocol** (15-point, SCREEN_AUDIT_PROTOCOL.md):
+- Focus: Visual design quality (color, typography, spacing, accessibility)
 - Layer: UI (presentation)
 
-**UX Heuristics** (10-point checklist, this document):
+**UX Heuristics** (10-point, this document):
 - Focus: User workflows and task efficiency
 - Layer: UX (interaction)
 
-**Both Required** for complete quality check:
-1. Design Audit ensures visual polish
+**Both required** for a complete quality check:
+1. Screen Audit ensures visual polish
 2. UX Heuristics ensure functional usability
 
 ---
 
-## Heuristic Evolution
+## Related Documents
 
-This is v1.0 of the heuristics. **Update this document** when:
-- New patterns emerge across playgrounds
-- User research reveals new pain points
-- Playgrounds expand beyond dashboard tools
-
-**Change Log**:
-- 2026-02-05: v1.0 created (10 heuristics)
+- [SCREEN_AUDIT_PROTOCOL.md](./SCREEN_AUDIT_PROTOCOL.md) — 15-point visual quality audit
+- [FRONTEND_GUIDELINES.md](./FRONTEND_GUIDELINES.md) — Design tokens and patterns
+- [APP_FLOW.md](../APP_FLOW.md) — Screen inventory and user journeys
+- [CLAUDE.md](../../CLAUDE.md) — Quality checklist and UX principles
 
 ---
 
-**Document Status**: v1.0 Complete
-**Owner**: UX Research Track
-**Next Review**: After P0 fixes implemented (Q1 2026)
+## Version History
+
+| Date | Change |
+|------|--------|
+| 2026-02-05 | Initial heuristics (dbt-playground context) |
+| 2026-02-07 | Adapted for Screen Print Pro: replaced all examples, updated audit scorecard |

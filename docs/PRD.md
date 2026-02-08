@@ -1,11 +1,19 @@
+---
+title: "PRD"
+description: "Phase 1 features, user stories, acceptance criteria, and scope boundaries. Defines what 'done' means for the mockup."
+category: canonical
+status: active
+phase: 1
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on: []
+---
+
 # Screen Print Pro — Product Requirements Document
 
 > Phase 1: High-fidelity mockup with mock data for user acceptance testing.
 
-**Last Updated**: 2026-02-07
-**Last Verified**: 2026-02-07
 **Primary User**: Shop owner/operator of 4Ink, a screen-printing business
-**Phase**: 1 — Mockup (no backend, no API calls, no database)
 
 ---
 

@@ -1,9 +1,16 @@
+---
+title: "APP_FLOW"
+description: "Every screen, route, navigation path, and user journey. The authoritative reference for how users move through the app."
+category: canonical
+status: active
+phase: 1
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+depends_on:
+  - docs/PRD.md
+---
+
 # Screen Print Pro — App Flow
-
-> Every screen, route, and navigation path. The authoritative reference for how users move through the app.
-
-**Last Updated**: 2026-02-07
-**Last Verified**: 2026-02-07
 
 ---
 

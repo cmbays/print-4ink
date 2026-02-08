@@ -1,9 +1,19 @@
+---
+title: "IMPLEMENTATION_PLAN"
+description: "Sequenced build steps for Phase 1. Each step references PRD features and APP_FLOW routes. Check current step before starting work."
+category: canonical
+status: active
+phase: 1
+last_updated: 2026-02-07
+last_verified: 2026-02-07
+current_step: 0
+depends_on:
+  - docs/PRD.md
+  - docs/APP_FLOW.md
+---
+
 # Screen Print Pro — Implementation Plan
 
-> Sequenced build steps for Phase 1. Each step references PRD features and APP_FLOW routes.
-
-**Last Updated**: 2026-02-07
-**Last Verified**: 2026-02-07
 **Current Step**: Step 0 (complete) — Scaffold + Dashboard MVP
 
 ---
