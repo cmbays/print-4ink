@@ -262,7 +262,9 @@
 
         <div class="section">
             <h2>Overview</h2>
-            <p class="content-text">Set up Vercel deployment for Screen Print Pro with password protection using the access code <span class="highlight">4Ink-demo</span>. This allows secure demo access to 4Ink without exposing the app publicly.</p>
+            <p class="content-text">Set up Vercel deployment for Screen Print Pro with password protection using an access code stored securely in Vercel's environment variables. This allows secure demo access to 4Ink without exposing the app publicly.</p>
+            <p class="content-text"><strong>⚠️ Security Note:</strong> The actual access code is stored in the <span class="highlight">DEMO_ACCESS_CODE</span> environment variable in Vercel. Never commit the code to git. To view it:</p>
+            <div class="code-block">vercel env list</div>
         </div>
 
         <div class="section">
@@ -280,7 +282,7 @@
                 <li><strong>Middleware</strong> (<span class="highlight">middleware.ts</span>) — Protects all routes except login pages</li>
                 <li><strong>Login Page</strong> (<span class="highlight">/demo-login</span>) — Clean, branded interface for access code entry</li>
                 <li><strong>API Route</strong> (<span class="highlight">/api/demo-login</span>) — Validates code and sets secure httpOnly cookie</li>
-                <li><strong>Environment Variable</strong> — <span class="highlight">DEMO_ACCESS_CODE</span> encrypted in Vercel (default: 4Ink-demo)</li>
+                <li><strong>Environment Variable</strong> — <span class="highlight">DEMO_ACCESS_CODE</span> encrypted in Vercel (default: <REDACTED_ACCESS_CODE>)</li>
             </ul>
 
             <h3>Security Details</h3>
@@ -300,7 +302,7 @@
                 <li>User visits deployed app (e.g., <span class="highlight">print-4ink.vercel.app</span>)</li>
                 <li>Middleware checks for <span class="highlight">demo-access</span> cookie</li>
                 <li>If missing, redirect to <span class="highlight">/demo-login</span></li>
-                <li>User enters code: <span class="highlight">4Ink-demo</span></li>
+                <li>User enters code: <span class="highlight"><REDACTED_ACCESS_CODE></span></li>
                 <li>API validates against environment variable</li>
                 <li>If valid, cookie is set and user redirected to dashboard</li>
                 <li>Cookie persists for 30 days or until browser cleared</li>
@@ -338,9 +340,13 @@
                 </ol>
             </div>
 
-            <h3>To Change Access Code Later</h3>
-            <p class="content-text">Update <span class="highlight">DEMO_ACCESS_CODE</span> environment variable in Vercel dashboard, or via CLI:</p>
-            <div class="code-block">vercel env rm DEMO_ACCESS_CODE && echo "new-code" | vercel env add DEMO_ACCESS_CODE production</div>
+            <h3>To View or Change Access Code</h3>
+            <p class="content-text"><strong>View current code:</strong></p>
+            <div class="code-block">vercel env list</div>
+            <p class="content-text"><strong>Change the code:</strong></p>
+            <p class="content-text">Update <span class="highlight">DEMO_ACCESS_CODE</span> in the Vercel dashboard (recommended) or via CLI:</p>
+            <div class="code-block">vercel env rm DEMO_ACCESS_CODE && printf "your-new-code" | vercel env add DEMO_ACCESS_CODE production</div>
+            <p class="content-text">Then redeploy: <span class="highlight">vercel deploy --prod</span></p>
         </div>
 
         <div class="divider"></div>
