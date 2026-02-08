@@ -3,9 +3,9 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-07
-**Last Verified**: 2026-02-07
-**Status**: Scaffold complete, documentation framework established, ready for feature build
+**Last Updated**: 2026-02-08
+**Last Verified**: 2026-02-08
+**Status**: Scaffold complete, agent architecture established, ready for feature build
 
 ## What's Built
 
@@ -34,14 +34,17 @@
 - [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels
 - [x] Mock data: 3 customers, 6 jobs, 3 quotes, 5 screens
 
-### Project Skills (`.claude/skills/`)
-- [x] `screen-builder` — Workflow + templates + checklists + reference for building Steps 1-10
-  - Templates: data-table-screen, detail-screen, form-screen
-  - Checklists: quality (10 items), cross-link (4 items)
-  - Reference: design tokens quick ref, component inventory
-- [x] `quality-gate` — 10-category audit with pass/fail scoring
-  - Categories: visual hierarchy, spacing, typography, color, interactive states, icons, motion, empty/error states, accessibility, jobs filter
-  - Rubric: scoring guide with verdict rules + report template
+### Agent & Skill Infrastructure
+- [x] **5 agents** in `.claude/agents/`: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
+- [x] **6 skills** in `.claude/skills/`:
+  - `screen-builder` — Workflow + templates + checklists + reference for building Steps 1-10
+  - `quality-gate` — 10-category audit with pass/fail scoring
+  - `pre-build-interrogator` — Exhaustive questioning before building complex features
+  - `design-audit` — 15-dimension Jobs/Ive-style design review
+  - `feature-strategy` — Product strategy frameworks and feature plan templates
+  - `doc-sync` — Drift detection and documentation synchronization
+- [x] `docs/AGENTS.md` — Agent registry, orchestration patterns, calling conventions
+- [x] `agent-outputs/` — Structured output directory for agent audit trail
 
 ### Documentation
 - [x] `CLAUDE.md` — AI operating rules, design system, coding standards
@@ -75,3 +78,4 @@ See `docs/IMPLEMENTATION_PLAN.md` for the full build sequence. Next up:
 | 2026-02-07 | For Human Docs | Created `for_human/` framework: index.html (navigable), README.md (index table + bundling rules), first session doc (shaping-skills evaluation). Added standing rule to CLAUDE.md to always create/update for_human docs after completing work. Configured CodeRabbit with local learning scope. |
 | 2026-02-07 | Skills | Created 2 project skills in `.claude/skills/`: `screen-builder` (workflow + 3 templates + 2 checklists + 2 reference docs) and `quality-gate` (10-category audit + scoring rubric). Added Project Skills section to CLAUDE.md. Skills encode design system, quality checklist, and domain knowledge into repeatable workflows for Steps 1-10. |
 | 2026-02-07 | CI + Testing | Set up Vitest with schema validation tests (66 tests across 6 files). Created GitHub Actions CI workflow (typecheck, lint, test, build). Fixed mock data UUIDs — Zod v4 validates RFC-4122 variant byte strictly. Added Vitest to TECH_STACK.md. |
+| 2026-02-08 | Agent Architecture | Created 5 agents (.claude/agents/) and 4 new skills (.claude/skills/). Agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync. Skills: pre-build-interrogator, design-audit, feature-strategy, doc-sync. Created AGENTS.md registry, agent-outputs/ directory, and updated CLAUDE.md with agent infrastructure section. |
