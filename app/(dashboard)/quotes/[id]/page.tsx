@@ -23,19 +23,19 @@ export default async function QuoteDetailPage({
   if (!quote) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
-        <div className="rounded-lg border border-border bg-card p-8 text-center">
+        <div className="rounded-lg border border-border bg-card p-8 text-center" role="alert">
           <h2 className="text-xl font-semibold text-foreground">
             Quote not found
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             This quote doesn&apos;t exist or has been removed.
           </p>
-          <Link href="/quotes">
-            <Button variant="outline" className="mt-4">
+          <Button variant="outline" className="mt-4" asChild>
+            <Link href="/quotes">
               <ArrowLeft className="size-4" />
               Back to Quotes
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     );
@@ -64,15 +64,6 @@ export default async function QuoteDetailPage({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-
-      {/* Back link */}
-      <Link
-        href="/quotes"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back to Quotes
-      </Link>
 
       {/* Quote Detail */}
       <QuoteDetailView

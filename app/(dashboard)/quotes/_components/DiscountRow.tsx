@@ -59,6 +59,7 @@ export function DiscountRow({
         onChange={(e) => onLabelChange?.(e.target.value)}
         className="h-7 text-sm flex-1"
         placeholder="Discount label..."
+        aria-label="Discount label"
       />
       <div className="relative w-24 shrink-0">
         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">-$</span>
@@ -72,6 +73,7 @@ export function DiscountRow({
             onAmountChange?.(isNaN(val) ? 0 : Math.max(0, val));
           }}
           className="h-7 pl-6 text-right text-sm"
+          aria-label="Discount amount"
         />
       </div>
       {onRemove && (

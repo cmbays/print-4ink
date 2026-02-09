@@ -404,7 +404,7 @@ export function QuotesDataTable() {
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ClipboardList className="size-6 text-muted-foreground" />
+          <ClipboardList className="size-12 text-muted-foreground/50" />
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {searchQuery || statusFilter !== "all"

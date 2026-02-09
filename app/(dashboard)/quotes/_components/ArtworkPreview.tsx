@@ -30,7 +30,7 @@ export function ArtworkPreview({
             />
           </div>
         ) : (
-          <span className="text-[8px] text-white/50">{location}</span>
+          <span className="text-[8px] text-foreground/50">{location}</span>
         )}
       </div>
       <span className="text-[10px] text-muted-foreground">{location}</span>

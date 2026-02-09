@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Pencil, Copy, Send, Receipt, FileText } from "lucide-react";
+import { Pencil, Copy, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import type { Quote } from "@/lib/schemas/quote";
@@ -20,19 +20,19 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {isDraft && (
-        <Link href={`/quotes/${quote.id}/edit`}>
-          <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/quotes/${quote.id}/edit`}>
             <Pencil className="size-4" />
             Edit
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       )}
-      <Link href={`/quotes/new?duplicate=${quote.id}`}>
-        <Button variant="outline" size="sm">
+      <Button variant="outline" size="sm" asChild>
+        <Link href={`/quotes/new?duplicate=${quote.id}`}>
           <Copy className="size-4" />
           Copy as New
-        </Button>
-      </Link>
+        </Link>
+      </Button>
       {isDraft && customer && (
         <Button
           variant="outline"
@@ -43,25 +43,6 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
           Send
         </Button>
       )}
-      <Button
-        variant="outline"
-        size="sm"
-        disabled
-        className="opacity-50"
-      >
-        <Receipt className="size-4" />
-        Invoice
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        disabled
-        className="opacity-50"
-      >
-        <FileText className="size-4" />
-        PDF
-      </Button>
-
       {customer && (
         <EmailPreviewModal
           open={emailOpen}

@@ -124,7 +124,7 @@ export function ArtworkLibrary({
       {/* Grid */}
       {sorted.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-8">
-          <ImageIcon className="size-6 text-muted-foreground" />
+          <ImageIcon className="size-12 text-muted-foreground/50" />
           <p className="mt-2 text-sm text-muted-foreground">No artwork found</p>
         </div>
       ) : (

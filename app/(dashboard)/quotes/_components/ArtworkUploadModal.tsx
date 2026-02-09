@@ -116,7 +116,7 @@ export function ArtworkUploadModal({
               }}
               aria-invalid={!!errors.name}
             />
-            {errors.name && <p className="text-xs text-error">{errors.name}</p>}
+            {errors.name && <p className="text-xs text-error" role="alert">{errors.name}</p>}
           </div>
 
           {/* Color count */}

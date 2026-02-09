@@ -51,7 +51,6 @@ export function QuoteReviewSheet({
             customer={customer}
             artworks={artworks}
             mode="review"
-            onBack={() => onOpenChange(false)}
             onSend={handleSend}
           />
         </ScrollArea>
