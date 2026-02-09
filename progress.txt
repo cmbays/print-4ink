@@ -3,9 +3,9 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-08
-**Last Verified**: 2026-02-08
-**Status**: Quoting Patch v2 COMPLETE. 20 feedback items addressed (2 bugs, 9 features, 9 UX changes). All checks pass (tsc, lint 0 errors, 171 tests, build). Ready for PR.
+**Last Updated**: 2026-02-09
+**Last Verified**: 2026-02-09
+**Status**: Quoting Patch v2 MERGED (PR #14). Sticky top bar, artwork sync fix, "Copy as New" rename, flat setup fee model, CodeRabbit review fixes. All checks pass (tsc, lint 0 errors 0 warnings, 172 tests, build).
 
 ## What's Built
 
@@ -109,17 +109,34 @@
 - `progress.txt` — This file, session log and current state
 - `docs/IMPLEMENTATION_PLAN.md` — Old 10-step plan (superseded, kept for reference)
 
+### Quoting Patch v2 — Polish Session (PR #14, MERGED)
+- [x] **Sticky top bar** — Summary bar showing customer, artwork thumbnails, notes toggle, grand total
+- [x] **Artwork sync fix** — Deselecting artwork from library now clears per-location assignments too
+- [x] **"Copy as New" rename** — "Duplicate" → "Copy as New" across QuoteActions, DataTable, new page
+- [x] **Flat setup fee model** — Screen-print: $40/quote flat. Embroidery: $20/line item. DTF: $0
+- [x] **CodeRabbit review fixes** — 17 items: icon sizes (16/20/24px), a11y (Space key, aria-pressed, nested interactives), design tokens (Tailwind grid), lint warnings (0), originalTotal calc fix, mock data total fix
+- [x] **"per line item" label** — Setup fee label corrected from "per item" to "per line item"
+- [x] **172 tests** across 8 test files — all passing, 0 lint warnings
+
+### Deferred Tech Debt (GitHub Issues)
+- [ ] **#15** — Migrate forms to React Hook Form + Zod (QuoteForm, ArtworkUploadModal, AddCustomerModal)
+- [ ] **#16** — Replace local LineItemRow interfaces with schema-derived types
+- [ ] **#17** — Sync garment category filter with URL query params (may be exception to rule)
+- [ ] **#18** — Extract shared formatCurrency/formatDate to lib/utils
+
 ### Next Actions — DEMO & ITERATION PHASE
 
-**✅ Build phase COMPLETE.** PR #13 open for review.
+**✅ Build phase COMPLETE.** PR #13 merged, PR #14 (patch v2 polish) merged.
 
 **📅 Next Steps**:
 1. ~~Build Quoting vertical~~ — DONE (PR #13)
-2. Merge PR #13 after review
-3. Run quality-gate audit on all 3 screens
-4. Demo to user (4Ink owner), collect feedback
-5. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-6. Move to Invoicing vertical
+2. ~~Merge PR #13 after review~~ — DONE
+3. ~~Address feedback, patch v2~~ — DONE (PR #14)
+4. Run quality-gate audit on all 3 screens
+5. Demo to user (4Ink owner), collect feedback
+6. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
+7. Address deferred tech debt (#15-#18) as needed
+8. Move to Invoicing vertical
 
 **Key Design Requirements** (from discovery):
 - Instant client-side pricing — never block input
@@ -160,7 +177,7 @@
 - [x] **AddCustomerModal** — Phone field, tag selector
 - [x] **QuoteActions** — Inline header bar (was card layout)
 - [x] **Mock data** — 8 artworks, customer tags, migrated 6 quotes to new schema, discount examples
-- [x] **171 tests** across 8 test files — all passing
+- [x] **172 tests** across 8 test files — all passing
 
 ## Session Log
 
@@ -181,3 +198,4 @@
 | 2026-02-08 | Breadboarding Skill | Reassessed shaping-skills decision post-pivot. Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Created: (1) `.claude/skills/breadboarding/SKILL.md` (9-step workflow: identify places, map UI/code affordances, map data stores, verify wiring, identify component boundaries, define build order); (2) `.claude/skills/breadboarding/templates/breadboard-template.md` (output template with YAML frontmatter); (3) `.claude/skills/breadboarding/reference/concepts.md` (key concepts: affordances, places, wiring, component boundaries). Integrated into workflow: updated vertical-by-vertical-strategy.md with Phase 2.5 (Breadboarding), updated CLAUDE.md (architecture, pre-build ritual, skills table, orchestration patterns), updated frontend-builder agent (added breadboarding to skills, breadboard-first startup sequence), updated AGENTS.md (Vertical Build Chain pattern, 5 orchestration patterns). Created `docs/breadboards/` directory. Ran doc-sync agent to fix drift in MEMORY.md and STRATEGY_README.md. Skill count: 6 → 8 (added vertical-discovery + breadboarding). |
 | 2026-02-08 | Quoting Vertical: BUILD COMPLETE | Built full Quoting vertical using git worktree (`feature/quoting-build`) and 6 parallel agents via TeamCreate. **Phase A** (4 agents parallel): (1) schema-agent updated quote/garment schemas, created color schema, expanded mock data (5 customers, 42 colors, 5 garment catalog, 6 quotes), added 116 tests; (2) swatch-agent built ColorSwatchPicker (308 lines, S&S-style dense grid, search, favorites, keyboard nav); (3) combobox-agent built CustomerCombobox + AddCustomerModal; (4) list-agent built QuotesDataTable + StatusBadge + quotes page. **Phase B** (2 agents after A): (5) form-agent built QuoteForm + LineItemRow + PricingSummary + new quote page; (6) detail-agent built quote detail page + QuoteActions + EmailPreviewModal. Fixed all lint errors (7→0). All checks pass: tsc 0 errors, lint 0 errors/warnings, 116/116 tests, production build success. PR #13 created. 31 files changed, 3874 insertions. |
 | 2026-02-08 | Quoting Patch v2 | Addressed 20 feedback items from 4Ink first-round review. **Phase A**: New artwork schema, customer tags (new/repeat/contract), service types (screen-print/dtf/embroidery), per-location print details (replaces flat locations), discount model (replaces priceOverride), shipping+tax fields, 8 mock artworks, 8 SVG placeholders. Updated all 6 mock quotes. 171 tests passing. **Phase B-F**: PricingSummary redesign (full breakdown with discounts/shipping/tax/savings), DiscountRow, LineItemRow rewrite (service type selector, per-location details with artwork assignment), ArtworkLibrary (customer-tag-aware), ArtworkUploadModal, ArtworkAssignmentPicker, ArtworkPreview, CollapsibleSection, QuoteDetailView (reusable detail/review), QuoteReviewSheet (slide-from-right), form restructure (5 collapsible sections), customer-aware defaults (contract=auto-discount+free-shipping, new=upload-only, repeat=recently-used-first), CustomerCombobox tags+phone, AddCustomerModal phone+tag, QuoteActions inline header bar. Fixed duplicate quote bug and search re-render loop. All checks pass: tsc 0 errors, lint 0 errors/2 warnings, 171/171 tests, production build success. |
+| 2026-02-09 | Quoting Patch v2 Polish (PR #14 MERGED) | Completed sticky top bar (controlled CollapsibleSection for Notes, scrollIntoView). Fixed artwork sync: deselecting from library now clears per-location assignments; switching customers clears artwork from printLocationDetails. Renamed "Duplicate" → "Copy as New" (4 files). Restructured setup fees: screen-print=$40/quote flat, embroidery=$20/line item, DTF=$0. Replaced SETUP_FEE_PER_COLOR with calculateLineItemSetupFee + calculateQuoteSetupFee. Fixed "per item" → "per line item" label. Created PR #14, addressed full CodeRabbit review (28 comments): fixed icon sizes to 16/20/24px (6 files), added Space key handler + aria-pressed tags + fixed nested interactives (a11y), replaced hardcoded px with Tailwind grid tokens, swapped text "✓" for Lucide Check icon, replaced raw input with shadcn Input, fixed originalTotal strike-through calc, fixed Q-1028 mock data total, eliminated all lint warnings (0 errors, 0 warnings). Merged PR #14 (squash). Created 4 GitHub issues for deferred tech debt: #15 (RHF+Zod migration), #16 (schema-derived types), #17 (URL query params for garment filter), #18 (shared format utils). 172 tests, all passing. |
