@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -20,18 +21,37 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+import { ArtworkAssignmentPicker } from "./ArtworkAssignmentPicker";
+import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@/lib/constants";
+import type { GarmentCatalog, GarmentCategory } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
+import type { Artwork } from "@/lib/schemas/artwork";
+import type { ServiceType } from "@/lib/schemas/quote";
+
+export interface PrintLocationDetail {
+  location: string;
+  colorCount: number;
+  setupFee: number;
+  artworkId?: string;
+}
 
 export interface LineItemData {
   id: string;
   garmentId: string;
   colorId: string;
   sizes: Record<string, number>;
-  printLocations: string[];
-  colorsPerLocation: number;
+  serviceType: ServiceType;
+  printLocationDetails: PrintLocationDetail[];
 }
+
+export { SCREEN_PRINT_QUOTE_SETUP, EMBROIDERY_LINE_ITEM_SETUP, DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee };
 
 interface LineItemRowProps {
   index: number;
@@ -41,6 +61,7 @@ interface LineItemRowProps {
   canRemove: boolean;
   garmentCatalog: GarmentCatalog[];
   colors: Color[];
+  quoteArtworks: Artwork[];
   errors?: Record<string, string>;
 }
 
@@ -52,13 +73,65 @@ const PRINT_LOCATIONS = [
   "Neck Label",
 ];
 
-function calculateUnitPrice(
-  garment: GarmentCatalog | undefined,
-  colorsPerLocation: number,
-  locationCount: number
-): number {
+const SERVICE_TYPES: ServiceType[] = ["screen-print", "dtf", "embroidery"];
+
+const ALL_GARMENT_CATEGORIES: GarmentCategory[] = [
+  "t-shirts",
+  "fleece",
+  "outerwear",
+  "pants",
+  "headwear",
+];
+
+// Phase 1: Only T-Shirts is selectable
+const ENABLED_CATEGORIES: Set<GarmentCategory> = new Set(["t-shirts"]);
+
+// Setup fees: screen-print = flat $40/quote, embroidery = $20/line item, DTF = none
+const SCREEN_PRINT_QUOTE_SETUP = 40;
+const EMBROIDERY_LINE_ITEM_SETUP = 20;
+
+// Decoration cost per color per unit
+const DECORATION_COST_PER_COLOR: Record<ServiceType, number> = {
+  "screen-print": 0.5,
+  dtf: 0.75,
+  embroidery: 1.0,
+};
+
+// Per-location flat fee per unit
+const LOCATION_FEE_PER_UNIT: Record<ServiceType, number> = {
+  "screen-print": 0.25,
+  dtf: 0.5,
+  embroidery: 0.75,
+};
+
+function calculateGarmentCost(garment: GarmentCatalog | undefined, totalQty: number): number {
   if (!garment) return 0;
-  return garment.basePrice + colorsPerLocation * 0.5 + locationCount * 0.25;
+  return garment.basePrice * totalQty;
+}
+
+function calculateDecorationCost(
+  serviceType: ServiceType,
+  printLocationDetails: PrintLocationDetail[],
+  totalQty: number
+): number {
+  const colorCostPerUnit = printLocationDetails.reduce(
+    (sum, d) => sum + d.colorCount * DECORATION_COST_PER_COLOR[serviceType],
+    0
+  );
+  const locationCostPerUnit = printLocationDetails.length * LOCATION_FEE_PER_UNIT[serviceType];
+  return (colorCostPerUnit + locationCostPerUnit) * totalQty;
+}
+
+// Per line item setup fee (embroidery only)
+function calculateLineItemSetupFee(serviceType: ServiceType): number {
+  return serviceType === "embroidery" ? EMBROIDERY_LINE_ITEM_SETUP : 0;
+}
+
+// Quote-level flat setup fee ($40 if any line item is screen-print)
+function calculateQuoteSetupFee(lineItems: { serviceType: ServiceType }[]): number {
+  return lineItems.some((item) => item.serviceType === "screen-print")
+    ? SCREEN_PRINT_QUOTE_SETUP
+    : 0;
 }
 
 function formatCurrency(value: number): string {
@@ -76,15 +149,21 @@ export function LineItemRow({
   canRemove,
   garmentCatalog,
   colors,
+  quoteArtworks,
   errors,
 }: LineItemRowProps) {
   const [garmentOpen, setGarmentOpen] = useState(false);
   const [colorOpen, setColorOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<GarmentCategory>("t-shirts");
 
   const selectedGarment = garmentCatalog.find((g) => g.id === data.garmentId);
+
+  const filteredGarmentCatalog = useMemo(
+    () => garmentCatalog.filter((g) => g.baseCategory === selectedCategory),
+    [garmentCatalog, selectedCategory]
+  );
   const selectedColor = colors.find((c) => c.id === data.colorId);
 
-  // Available sizes from selected garment, sorted by order
   const availableSizes = useMemo(() => {
     if (!selectedGarment) return [];
     return [...selectedGarment.availableSizes].sort(
@@ -92,7 +171,6 @@ export function LineItemRow({
     );
   }, [selectedGarment]);
 
-  // Filter colors to those available for this garment
   const availableColors = useMemo(() => {
     if (!selectedGarment) return colors;
     return colors.filter((c) =>
@@ -105,17 +183,22 @@ export function LineItemRow({
     [data.sizes]
   );
 
-  const unitPrice = useMemo(
-    () =>
-      calculateUnitPrice(
-        selectedGarment,
-        data.colorsPerLocation,
-        data.printLocations.length
-      ),
-    [selectedGarment, data.colorsPerLocation, data.printLocations.length]
+  const garmentCost = useMemo(
+    () => calculateGarmentCost(selectedGarment, totalQty),
+    [selectedGarment, totalQty]
   );
 
-  const lineTotal = unitPrice * totalQty;
+  const decorationCost = useMemo(
+    () => calculateDecorationCost(data.serviceType, data.printLocationDetails, totalQty),
+    [data.serviceType, data.printLocationDetails, totalQty]
+  );
+
+  const setupFee = useMemo(
+    () => calculateLineItemSetupFee(data.serviceType),
+    [data.serviceType]
+  );
+
+  const lineTotal = garmentCost + decorationCost;
 
   function updateField(partial: Partial<LineItemData>) {
     onChange(index, { ...data, ...partial });
@@ -123,14 +206,12 @@ export function LineItemRow({
 
   function handleGarmentSelect(garmentId: string) {
     const garment = garmentCatalog.find((g) => g.id === garmentId);
-    // Reset sizes and color when garment changes
     const resetSizes: Record<string, number> = {};
     if (garment) {
       garment.availableSizes.forEach((s) => {
         resetSizes[s.name] = 0;
       });
     }
-    // Clear color if not available for new garment
     const colorStillAvailable =
       garment && data.colorId
         ? garment.availableColors.includes(data.colorId)
@@ -154,19 +235,53 @@ export function LineItemRow({
   }
 
   function handleLocationToggle(location: string) {
-    const next = data.printLocations.includes(location)
-      ? data.printLocations.filter((l) => l !== location)
-      : [...data.printLocations, location];
-    updateField({ printLocations: next });
+    const existing = data.printLocationDetails.find(
+      (d) => d.location === location
+    );
+    if (existing) {
+      updateField({
+        printLocationDetails: data.printLocationDetails.filter(
+          (d) => d.location !== location
+        ),
+      });
+    } else {
+      updateField({
+        printLocationDetails: [
+          ...data.printLocationDetails,
+          { location, colorCount: 1, setupFee: 0 },
+        ],
+      });
+    }
   }
+
+  function handleLocationDetailChange(
+    location: string,
+    partial: Partial<PrintLocationDetail>
+  ) {
+    updateField({
+      printLocationDetails: data.printLocationDetails.map((d) =>
+        d.location === location ? { ...d, ...partial } : d
+      ),
+    });
+  }
+
+  const activeLocations = data.printLocationDetails.map((d) => d.location);
 
   return (
     <div className="rounded-lg border border-border bg-elevated p-4">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-sm font-medium text-foreground">
-          Line Item {index + 1}
-        </h4>
+        <div className="flex items-center gap-2">
+          <h4 className="text-sm font-medium text-foreground">
+            Line Item {index + 1}
+          </h4>
+          <Badge
+            variant="ghost"
+            className={cn("text-xs", SERVICE_TYPE_COLORS[data.serviceType])}
+          >
+            {SERVICE_TYPE_LABELS[data.serviceType]}
+          </Badge>
+        </div>
         {canRemove && (
           <Button
             type="button"
@@ -182,6 +297,74 @@ export function LineItemRow({
       </div>
 
       <div className="space-y-4">
+        {/* Service Type */}
+        <div className="space-y-1.5">
+          <Label className="text-sm text-muted-foreground">Service Type</Label>
+          <div className="flex gap-1">
+            {SERVICE_TYPES.map((type) => (
+              <Button
+                key={type}
+                type="button"
+                variant={data.serviceType === type ? "default" : "outline"}
+                size="sm"
+                className={cn(
+                  "h-7 text-xs",
+                  data.serviceType === type &&
+                    "bg-action text-primary-foreground"
+                )}
+                onClick={() => updateField({ serviceType: type })}
+              >
+                {SERVICE_TYPE_LABELS[type]}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Garment Category */}
+        <div className="space-y-1.5">
+          <Label className="text-sm text-muted-foreground">Garment Type</Label>
+          <TooltipProvider delayDuration={200}>
+            <div className="flex gap-1">
+              {ALL_GARMENT_CATEGORIES.map((cat) => {
+                const enabled = ENABLED_CATEGORIES.has(cat);
+                const isSelected = selectedCategory === cat;
+                const btn = (
+                  <Button
+                    key={cat}
+                    type="button"
+                    variant={isSelected ? "default" : "outline"}
+                    size="sm"
+                    disabled={!enabled}
+                    className={cn(
+                      "h-7 text-xs",
+                      isSelected && "bg-action text-primary-foreground",
+                      !enabled && "opacity-40 cursor-not-allowed"
+                    )}
+                    onClick={() => {
+                      if (enabled) setSelectedCategory(cat);
+                    }}
+                  >
+                    {GARMENT_CATEGORY_LABELS[cat]}
+                  </Button>
+                );
+                if (!enabled) {
+                  return (
+                    <Tooltip key={cat}>
+                      <TooltipTrigger asChild>
+                        <span tabIndex={0}>{btn}</span>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        <p className="text-xs">Coming soon</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                }
+                return btn;
+              })}
+            </div>
+          </TooltipProvider>
+        </div>
+
         {/* Garment Selector */}
         <div className="space-y-1.5">
           <Label className="text-sm text-muted-foreground">Garment</Label>
@@ -211,7 +394,7 @@ export function LineItemRow({
             >
               <Command
                 filter={(value, search) => {
-                  const garment = garmentCatalog.find((g) => g.id === value);
+                  const garment = filteredGarmentCatalog.find((g) => g.id === value);
                   if (!garment) return 0;
                   const haystack =
                     `${garment.brand} ${garment.sku} ${garment.name}`.toLowerCase();
@@ -222,7 +405,7 @@ export function LineItemRow({
                 <CommandList>
                   <CommandEmpty>No garments found.</CommandEmpty>
                   <CommandGroup>
-                    {garmentCatalog.map((garment) => (
+                    {filteredGarmentCatalog.map((garment) => (
                       <CommandItem
                         key={garment.id}
                         value={garment.id}
@@ -337,63 +520,87 @@ export function LineItemRow({
           </div>
         )}
 
-        {/* Print Locations */}
-        <div className="space-y-1.5">
+        {/* Print Locations with per-location details */}
+        <div className="space-y-2">
           <Label className="text-sm text-muted-foreground">
             Print Locations
           </Label>
-          <div className="flex flex-wrap gap-x-4 gap-y-2">
-            {PRINT_LOCATIONS.map((location) => (
-              <label
-                key={location}
-                className="flex items-center gap-2 text-sm text-foreground"
-              >
-                <Checkbox
-                  checked={data.printLocations.includes(location)}
-                  onCheckedChange={() => handleLocationToggle(location)}
-                  aria-label={location}
-                />
-                {location}
-              </label>
-            ))}
-          </div>
+          {PRINT_LOCATIONS.map((location) => {
+            const isActive = activeLocations.includes(location);
+            const detail = data.printLocationDetails.find(
+              (d) => d.location === location
+            );
+
+            return (
+              <div key={location} className="space-y-1">
+                <label className="flex items-center gap-2 text-sm text-foreground">
+                  <Checkbox
+                    checked={isActive}
+                    onCheckedChange={() => handleLocationToggle(location)}
+                    aria-label={location}
+                  />
+                  {location}
+                </label>
+                {isActive && detail && (
+                  <div className="ml-6 flex flex-wrap items-center gap-3 rounded-md bg-surface px-3 py-2">
+                    <div className="flex items-center gap-1.5">
+                      <Label className="text-xs text-muted-foreground">
+                        Colors:
+                      </Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={12}
+                        value={detail.colorCount}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          const colorCount = isNaN(val) ? 1 : Math.max(1, Math.min(12, val));
+                          handleLocationDetailChange(location, { colorCount });
+                        }}
+                        className="h-7 w-14 text-center text-sm"
+                        aria-label={`${location} color count`}
+                      />
+                    </div>
+                    <ArtworkAssignmentPicker
+                      artworks={quoteArtworks}
+                      selectedArtworkId={detail.artworkId}
+                      onSelect={(artworkId) =>
+                        handleLocationDetailChange(location, { artworkId })
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Colors per Location */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor={`colors-per-loc-${index}`}
-            className="text-sm text-muted-foreground"
-          >
-            Colors per Location
-          </Label>
-          <Input
-            id={`colors-per-loc-${index}`}
-            type="number"
-            min={1}
-            max={12}
-            value={data.colorsPerLocation}
-            onChange={(e) => {
-              const val = parseInt(e.target.value, 10);
-              updateField({
-                colorsPerLocation: isNaN(val) ? 1 : Math.max(1, Math.min(12, val)),
-              });
-            }}
-            className="h-8 w-20 text-center text-sm"
-          />
-        </div>
-
-        {/* Pricing */}
-        <div className="flex items-center justify-between rounded-md bg-surface px-3 py-2">
-          <span className="text-sm text-muted-foreground">
-            Unit Price:{" "}
-            <span className="font-medium text-foreground">
-              {formatCurrency(unitPrice)}
+        {/* Pricing Breakdown */}
+        <div className="space-y-1 rounded-md bg-surface px-3 py-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">
+              Garments: {selectedGarment ? formatCurrency(selectedGarment.basePrice) : "$0.00"} x {totalQty}
             </span>
-          </span>
-          <span className="text-sm font-semibold text-foreground">
-            Line Total: {formatCurrency(lineTotal)}
-          </span>
+            <span className="text-foreground">{formatCurrency(garmentCost)}</span>
+          </div>
+          {data.printLocationDetails.length > 0 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                Decoration: {data.printLocationDetails.length} location{data.printLocationDetails.length !== 1 ? "s" : ""}, {data.printLocationDetails.reduce((s, d) => s + d.colorCount, 0)} color{data.printLocationDetails.reduce((s, d) => s + d.colorCount, 0) !== 1 ? "s" : ""}
+              </span>
+              <span className="text-foreground">{formatCurrency(decorationCost)}</span>
+            </div>
+          )}
+          {setupFee > 0 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Setup Fee (per line item)</span>
+              <span className="text-foreground">{formatCurrency(setupFee)}</span>
+            </div>
+          )}
+          <div className="flex items-center justify-between border-t border-border pt-1 mt-1">
+            <span className="text-sm font-semibold text-foreground">Line Total</span>
+            <span className="text-sm font-semibold text-foreground">{formatCurrency(lineTotal)}</span>
+          </div>
         </div>
       </div>
     </div>

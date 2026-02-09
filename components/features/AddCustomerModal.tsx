@@ -13,14 +13,29 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CUSTOMER_TAG_LABELS } from "@/lib/constants";
+import type { CustomerTag } from "@/lib/schemas/customer";
 
-// Simple 3-field modal — React Hook Form + Zod would be overkill here.
-// Validation is minimal (name required, email required + format check).
 export interface AddCustomerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (customer: { name: string; email: string; company?: string }) => void;
+  onSave: (customer: {
+    name: string;
+    email: string;
+    company?: string;
+    phone?: string;
+    tag?: CustomerTag;
+  }) => void;
 }
+
+const TAG_OPTIONS: CustomerTag[] = ["new", "repeat", "contract"];
 
 export function AddCustomerModal({
   open,
@@ -30,6 +45,8 @@ export function AddCustomerModal({
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [company, setCompany] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [tag, setTag] = React.useState<CustomerTag>("new");
   const [errors, setErrors] = React.useState<{
     name?: string;
     email?: string;
@@ -39,6 +56,8 @@ export function AddCustomerModal({
     setName("");
     setEmail("");
     setCompany("");
+    setPhone("");
+    setTag("new");
     setErrors({});
   }
 
@@ -69,6 +88,8 @@ export function AddCustomerModal({
       name: name.trim(),
       email: email.trim(),
       company: company.trim() || undefined,
+      phone: phone.trim() || undefined,
+      tag,
     });
     reset();
     onOpenChange(false);
@@ -129,6 +150,31 @@ export function AddCustomerModal({
               value={company}
               onChange={(e) => setCompany(e.target.value)}
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="customer-phone">Phone</Label>
+            <Input
+              id="customer-phone"
+              type="tel"
+              placeholder="(555) 123-4567"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="customer-tag">Customer Type</Label>
+            <Select value={tag} onValueChange={(v) => setTag(v as CustomerTag)}>
+              <SelectTrigger id="customer-tag" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {TAG_OPTIONS.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {CUSTOMER_TAG_LABELS[t]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <DialogFooter>

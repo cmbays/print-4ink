@@ -8,12 +8,31 @@ export const quoteStatusEnum = z.enum([
   "revised",
 ]);
 
+export const serviceTypeEnum = z.enum([
+  "screen-print",
+  "dtf",
+  "embroidery",
+]);
+
+export const printLocationDetailSchema = z.object({
+  location: z.string().min(1),
+  colorCount: z.number().int().positive(),
+  artworkId: z.string().optional(),
+  setupFee: z.number().nonnegative(),
+});
+
+export const discountSchema = z.object({
+  label: z.string().min(1),
+  amount: z.number().positive(),
+  type: z.enum(["manual", "contract", "volume"]),
+});
+
 export const quoteLineItemSchema = z.object({
   garmentId: z.string().min(1),
   colorId: z.string().min(1),
   sizes: z.record(z.string(), z.number().int().nonnegative()),
-  printLocations: z.array(z.string()),
-  colorsPerLocation: z.number().int().positive().default(1),
+  serviceType: serviceTypeEnum.default("screen-print"),
+  printLocationDetails: z.array(printLocationDetailSchema),
   unitPrice: z.number().nonnegative(),
   lineTotal: z.number().nonnegative(),
 });
@@ -26,7 +45,10 @@ export const quoteSchema = z.object({
   setupFees: z.number().nonnegative(),
   subtotal: z.number().nonnegative(),
   total: z.number().nonnegative(),
-  priceOverride: z.number().nonnegative().optional(),
+  discounts: z.array(discountSchema).default([]),
+  shipping: z.number().nonnegative().default(0),
+  tax: z.number().nonnegative().default(0),
+  artworkIds: z.array(z.string()).default([]),
   status: quoteStatusEnum,
   internalNotes: z.string().optional(),
   customerNotes: z.string().optional(),
@@ -36,5 +58,8 @@ export const quoteSchema = z.object({
 });
 
 export type QuoteStatus = z.infer<typeof quoteStatusEnum>;
+export type ServiceType = z.infer<typeof serviceTypeEnum>;
+export type PrintLocationDetail = z.infer<typeof printLocationDetailSchema>;
+export type Discount = z.infer<typeof discountSchema>;
 export type QuoteLineItem = z.infer<typeof quoteLineItemSchema>;
 export type Quote = z.infer<typeof quoteSchema>;

@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+// Garment category — mirrors S&S Activewear API "baseCategory" field on /v2/styles/
+export const garmentCategoryEnum = z.enum([
+  "t-shirts",
+  "fleece",
+  "outerwear",
+  "pants",
+  "headwear",
+]);
+
+export type GarmentCategory = z.infer<typeof garmentCategoryEnum>;
+
 // Existing schema (for job garment instances)
 export const garmentSchema = z.object({
   sku: z.string().min(1),
@@ -23,6 +34,7 @@ export const garmentCatalogSchema = z.object({
   brand: z.string().min(1),
   sku: z.string().min(1),
   name: z.string().min(1),
+  baseCategory: garmentCategoryEnum,
   basePrice: z.number().nonnegative(),
   availableColors: z.array(z.string()),
   availableSizes: z.array(garmentSizeSchema),

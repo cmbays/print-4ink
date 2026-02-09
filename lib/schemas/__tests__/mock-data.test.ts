@@ -5,6 +5,7 @@ import { quoteSchema } from "../quote";
 import { screenSchema } from "../screen";
 import { colorSchema } from "../color";
 import { garmentCatalogSchema } from "../garment";
+import { artworkSchema } from "../artwork";
 import {
   customers,
   jobs,
@@ -12,6 +13,7 @@ import {
   screens,
   colors,
   garmentCatalog,
+  artworks,
 } from "@/lib/mock-data";
 
 describe("mock data validates against schemas", () => {
@@ -48,6 +50,12 @@ describe("mock data validates against schemas", () => {
   it("all garment catalog entries are valid", () => {
     for (const garment of garmentCatalog) {
       expect(() => garmentCatalogSchema.parse(garment)).not.toThrow();
+    }
+  });
+
+  it("all artworks are valid", () => {
+    for (const artwork of artworks) {
+      expect(() => artworkSchema.parse(artwork)).not.toThrow();
     }
   });
 });
@@ -100,6 +108,35 @@ describe("referential integrity", () => {
       }
     }
   });
+
+  it("all artwork customerIds reference existing customers", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const artwork of artworks) {
+      expect(customerIds.has(artwork.customerId)).toBe(true);
+    }
+  });
+
+  it("all quote artworkIds reference existing artworks", () => {
+    const artworkIds = new Set(artworks.map((a) => a.id));
+    for (const quote of quotes) {
+      for (const artworkId of quote.artworkIds) {
+        expect(artworkIds.has(artworkId)).toBe(true);
+      }
+    }
+  });
+
+  it("all line item artworkIds reference existing artworks", () => {
+    const artworkIds = new Set(artworks.map((a) => a.id));
+    for (const quote of quotes) {
+      for (const item of quote.lineItems) {
+        for (const detail of item.printLocationDetails) {
+          if (detail.artworkId) {
+            expect(artworkIds.has(detail.artworkId)).toBe(true);
+          }
+        }
+      }
+    }
+  });
 });
 
 describe("data coverage", () => {
@@ -119,6 +156,10 @@ describe("data coverage", () => {
     expect(garmentCatalog.length).toBeGreaterThanOrEqual(5);
   });
 
+  it("has at least 8 artworks", () => {
+    expect(artworks.length).toBeGreaterThanOrEqual(8);
+  });
+
   it("covers all quote statuses", () => {
     const statuses = new Set(quotes.map((q) => q.status));
     expect(statuses).toContain("draft");
@@ -133,8 +174,24 @@ describe("data coverage", () => {
     expect(favorites.length).toBeGreaterThanOrEqual(3);
   });
 
-  it("has quotes with priceOverride", () => {
-    const withOverride = quotes.filter((q) => q.priceOverride != null);
-    expect(withOverride.length).toBeGreaterThanOrEqual(1);
+  it("has quotes with discounts", () => {
+    const withDiscounts = quotes.filter((q) => q.discounts.length > 0);
+    expect(withDiscounts.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("covers all customer tags", () => {
+    const tags = new Set(customers.map((c) => c.tag));
+    expect(tags).toContain("new");
+    expect(tags).toContain("repeat");
+    expect(tags).toContain("contract");
+  });
+
+  it("covers all discount types", () => {
+    const types = new Set(
+      quotes.flatMap((q) => q.discounts.map((d) => d.type))
+    );
+    expect(types).toContain("manual");
+    expect(types).toContain("contract");
+    expect(types).toContain("volume");
   });
 });

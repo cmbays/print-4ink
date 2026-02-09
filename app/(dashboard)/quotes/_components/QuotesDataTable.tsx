@@ -63,7 +63,7 @@ const MOCK_QUOTES: TableQuote[] = rawQuotes.map((q) => {
     customerName: customer?.company ?? customer?.name ?? "Unknown",
     status: q.status,
     lineItemCount: q.lineItems.length,
-    total: q.priceOverride ?? q.total,
+    total: q.total,
     createdAt: q.createdAt,
   };
 });
@@ -130,7 +130,8 @@ export function QuotesDataTable() {
       router.replace(`?${params.toString()}`, { scroll: false });
     }, 300);
     return () => clearTimeout(timer);
-  }, [localSearch, searchParams, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally omitting searchParams to avoid re-render loop
+  }, [localSearch, router]);
 
   // Status filter → URL
   const handleStatusChange = useCallback(
@@ -379,7 +380,7 @@ export function QuotesDataTable() {
                         <DropdownMenuItem asChild>
                           <Link href={`/quotes/new?duplicate=${quote.id}`}>
                             <Copy className="size-4" />
-                            Duplicate
+                            Copy as New
                           </Link>
                         </DropdownMenuItem>
                         {quote.status === "draft" && (

@@ -1,5 +1,18 @@
 import { describe, it, expect } from "vitest";
-import { customerSchema } from "../customer";
+import { customerSchema, customerTagEnum } from "../customer";
+
+describe("customerTagEnum", () => {
+  it.each(["new", "repeat", "contract"])(
+    "accepts '%s'",
+    (tag) => {
+      expect(customerTagEnum.parse(tag)).toBe(tag);
+    }
+  );
+
+  it("rejects invalid tag", () => {
+    expect(() => customerTagEnum.parse("vip")).toThrow();
+  });
+});
 
 describe("customerSchema", () => {
   const validCustomer = {
@@ -9,10 +22,20 @@ describe("customerSchema", () => {
     email: "marcus@rivercitybrewing.com",
     phone: "(512) 555-0147",
     address: "1200 E 6th St, Austin, TX 78702",
+    tag: "repeat" as const,
   };
 
   it("accepts a valid customer", () => {
-    expect(customerSchema.parse(validCustomer)).toEqual(validCustomer);
+    const result = customerSchema.parse(validCustomer);
+    expect(result.name).toBe("Marcus Rivera");
+    expect(result.tag).toBe("repeat");
+  });
+
+  it("defaults tag to 'new' when omitted", () => {
+    const withoutTag = { ...validCustomer };
+    delete (withoutTag as Record<string, unknown>).tag;
+    const result = customerSchema.parse(withoutTag);
+    expect(result.tag).toBe("new");
   });
 
   it("rejects invalid UUID", () => {
@@ -47,5 +70,18 @@ describe("customerSchema", () => {
     });
     expect(result.phone).toBe("");
     expect(result.address).toBe("");
+  });
+
+  it("accepts all tag values", () => {
+    for (const tag of ["new", "repeat", "contract"]) {
+      const result = customerSchema.parse({ ...validCustomer, tag });
+      expect(result.tag).toBe(tag);
+    }
+  });
+
+  it("rejects invalid tag", () => {
+    expect(() =>
+      customerSchema.parse({ ...validCustomer, tag: "premium" })
+    ).toThrow();
   });
 });

@@ -98,6 +98,7 @@ describe("garmentCatalogSchema", () => {
     brand: "Bella+Canvas",
     sku: "3001",
     name: "Unisex Jersey Short Sleeve Tee",
+    baseCategory: "t-shirts" as const,
     basePrice: 3.5,
     availableColors: ["clr-black", "clr-white"],
     availableSizes: [
@@ -125,6 +126,12 @@ describe("garmentCatalogSchema", () => {
       availableSizes: [],
     });
     expect(result.availableSizes).toEqual([]);
+  });
+
+  it("rejects invalid baseCategory", () => {
+    expect(() =>
+      garmentCatalogSchema.parse({ ...validCatalog, baseCategory: "invalid" })
+    ).toThrow();
   });
 
   it("rejects negative base price", () => {
