@@ -354,16 +354,16 @@
       </div>
 
       <h1>Quoting Vertical Build</h1>
-      <p class="subtitle">Complete implementation of the Quoting vertical &mdash; 3 pages, 4 reusable components, expanded data layer. Built with 6 parallel agents via TeamCreate.</p>
+      <p class="subtitle">Complete implementation of the Quoting vertical &mdash; 3 pages, 15+ components, artwork system, flat pricing model, collapsible form sections. Built with parallel agents, polished via CodeRabbit review.</p>
 
       <div class="meta-grid">
         <div class="meta-item">
           <span class="meta-label">Date</span>
-          <span class="meta-value">February 8, 2026</span>
+          <span class="meta-value">February 8&ndash;9, 2026</span>
         </div>
         <div class="meta-item">
-          <span class="meta-label">Branch</span>
-          <span class="meta-value"><code>feature/quoting-build</code></span>
+          <span class="meta-label">PRs</span>
+          <span class="meta-value"><code>#13</code> + <code>#14</code> (merged)</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Phase</span>
@@ -376,8 +376,8 @@
       </div>
 
       <div class="session-resume">
-        <span class="meta-label">Resume Session</span>
-        <code>claude --resume 26f630e2-3a37-4531-846a-e627322fdbe6</code>
+        <span class="meta-label">Resume Session (Patch v2)</span>
+        <code>claude --resume 43fc70c6-31ae-400e-87d4-f138533d8028</code>
       </div>
     </header>
 
@@ -398,20 +398,20 @@
     <!-- Stats -->
     <div class="stat-grid">
       <div class="stat">
-        <div class="stat-value">31</div>
-        <div class="stat-label">Files Changed</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">3,874</div>
-        <div class="stat-label">Lines Added</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">116</div>
+        <div class="stat-value">172</div>
         <div class="stat-label">Tests Passing</div>
       </div>
       <div class="stat">
-        <div class="stat-value">6</div>
-        <div class="stat-label">Parallel Agents</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Lint Warnings</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">15+</div>
+        <div class="stat-label">Components</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Pages</div>
       </div>
     </div>
 
@@ -422,21 +422,25 @@
         <span class="check-pass">&#10003;</span> TypeScript &mdash; 0 errors
       </div>
       <div class="check-item">
-        <span class="check-pass">&#10003;</span> ESLint &mdash; 0 errors/warnings
+        <span class="check-pass">&#10003;</span> ESLint &mdash; 0 errors, 0 warnings
       </div>
       <div class="check-item">
-        <span class="check-pass">&#10003;</span> Tests &mdash; 116/116 pass
+        <span class="check-pass">&#10003;</span> Tests &mdash; 172/172 pass
       </div>
       <div class="check-item">
-        <span class="check-pass">&#10003;</span> Build &mdash; all routes generated
+        <span class="check-pass">&#10003;</span> Build &mdash; production success
       </div>
     </div>
 
-    <!-- PR -->
-    <h2>Pull Request</h2>
+    <!-- PRs -->
+    <h2>Pull Requests</h2>
     <div class="card">
       <div class="card-title"><a href="https://github.com/cmbays/print-4ink/pull/13">PR #13</a> &mdash; feat: Build complete Quoting vertical</div>
-      <div class="card-desc">31 files, 3,874 insertions, 54 deletions. Ready for review.</div>
+      <div class="card-desc">Initial build: 3 pages, 4 reusable components, expanded data layer. 31 files, 3,874 insertions. <strong>Merged.</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><a href="https://github.com/cmbays/print-4ink/pull/14">PR #14</a> &mdash; feat: Quoting patch v2 &mdash; pricing, artwork, form UX</div>
+      <div class="card-desc">20 feedback items: artwork system, customer tags, service types, discount model, flat setup fees, collapsible sections, sticky top bar, CodeRabbit review fixes. <strong>Merged.</strong></div>
     </div>
 
     <!-- Pages -->
@@ -444,21 +448,44 @@
 
     <div class="card">
       <div class="card-title">/quotes &mdash; Quotes List</div>
-      <div class="card-desc">DataTable with status tab filters (All/Draft/Sent/Accepted/Declined/Revised), debounced search, column sorting, row action dropdown (View/Edit/Duplicate/Send), empty state with CTA.</div>
+      <div class="card-desc">DataTable with status tab filters (All/Draft/Sent/Accepted/Declined/Revised), debounced search, column sorting, customer tag badges, row action dropdown (View/Edit/Copy as New/Send), empty state with CTA.</div>
     </div>
 
     <div class="card">
       <div class="card-title">/quotes/new &mdash; New Quote Form</div>
-      <div class="card-desc">Single-page form with customer combobox, multiple line items (garment picker + color swatch + size grid + print locations), instant client-side pricing, price override, notes accordion, Save as Draft / Save & Send actions.</div>
+      <div class="card-desc">Single-page form with 5 collapsible sections: Customer (combobox with tag badges) &rarr; Artwork (customer-tag-aware library) &rarr; Garments &amp; Print (service type per item, per-location details with artwork assignment) &rarr; Pricing (discounts, shipping, tax, savings banner) &rarr; Notes. Sticky top bar with customer, artwork thumbnails, and grand total. "Review &amp; Send" opens full-screen sheet.</div>
     </div>
 
     <div class="card">
       <div class="card-title">/quotes/[id] &mdash; Quote Detail</div>
-      <div class="card-desc">Read-only view with breadcrumbs, customer info, line items with color swatches + sizes + locations, pricing breakdown with override indicator, internal/customer notes, action buttons (Edit/Duplicate/Send/Email Preview).</div>
+      <div class="card-desc">Read-only view with inline action header bar (Edit/Copy as New/Send/Email Preview). Service type badges, per-location color counts with artwork thumbnails, full pricing breakdown with discount visibility, artwork previews on garment swatches.</div>
+    </div>
+
+    <!-- Key Features -->
+    <h2>Key Features</h2>
+
+    <div class="card">
+      <div class="card-title">Artwork System</div>
+      <div class="card-desc">Two-tier library: customer artwork library + per-quote curated set. Customer-tag-aware: new customers see upload dropzone, repeat see recently-used first, contract see full grid with search + tag filters. Per-location artwork assignment with inline picker. Artwork preview on garment color swatches.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Flat Setup Fee Pricing</div>
+      <div class="card-desc">Screen-print: $40 flat per quote. Embroidery: $20 per line item. DTF: no setup fee. Full breakdown: garment cost + decoration cost + setup fees + discounts + shipping + tax = grand total. Contract customers get auto-applied 7% discount + free shipping. Savings banner with crossed-out original prices.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Service Types &amp; Customer Tags</div>
+      <div class="card-desc">3 service types per line item: screen-print, DTF, embroidery. 3 customer tags: new, repeat, contract. Tags drive smart defaults: auto-discounts, artwork library mode, shipping behavior. Per-location print details with color count and artwork assignment.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Discount Model</div>
+      <div class="card-desc">Replaces flat price override. Discount types: manual, contract, volume. Each has label + amount. Add/remove in form. "You save $X!" banner when discounts exist. Contract pricing auto-applied when contract customer selected.</div>
     </div>
 
     <!-- Components -->
-    <h2>Reusable Components</h2>
+    <h2>Components (15+)</h2>
 
     <table>
       <tr>
@@ -467,19 +494,55 @@
       </tr>
       <tr>
         <td><strong>ColorSwatchPicker</strong></td>
-        <td>S&S Activewear-style dense swatch grid. 42 colors, search, favorites, keyboard navigation, ARIA labels. 308 lines.</td>
+        <td>S&S Activewear-style dense swatch grid. 42 colors, search, favorites, keyboard nav, ARIA.</td>
       </tr>
       <tr>
         <td><strong>CustomerCombobox</strong></td>
-        <td>Popover + Command pattern. Type-ahead search with customer info card. "Add New Customer" trigger opens modal.</td>
+        <td>Type-ahead search with tag badges, phone display, info card. "Add New Customer" modal.</td>
+      </tr>
+      <tr>
+        <td><strong>ArtworkLibrary</strong></td>
+        <td>Customer-tag-aware grid. Search + tag filters for contract, recently-used for repeat, upload dropzone for new.</td>
+      </tr>
+      <tr>
+        <td><strong>ArtworkUploadModal</strong></td>
+        <td>Mock upload with name, color count, tag multi-select, save-to-library toggle.</td>
+      </tr>
+      <tr>
+        <td><strong>ArtworkAssignmentPicker</strong></td>
+        <td>Per-location inline dropdown from quote's curated artwork set. Mini thumbnails.</td>
+      </tr>
+      <tr>
+        <td><strong>ArtworkPreview</strong></td>
+        <td>Garment color swatch rectangle with artwork thumbnail overlay.</td>
+      </tr>
+      <tr>
+        <td><strong>CollapsibleSection</strong></td>
+        <td>Accordion wrapper with title, icon, summary when collapsed, completion checkmark. Controlled mode for programmatic open/close.</td>
+      </tr>
+      <tr>
+        <td><strong>PricingSummary</strong></td>
+        <td>Full breakdown: subtotal, setup fees, discounts (add/remove), shipping (FREE badge), tax, grand total, savings banner.</td>
+      </tr>
+      <tr>
+        <td><strong>DiscountRow</strong></td>
+        <td>Editable row with label, amount, type badge, delete button. Reused in form and detail views.</td>
+      </tr>
+      <tr>
+        <td><strong>QuoteDetailView</strong></td>
+        <td>Reusable for detail page and review sheet. Service type badges, per-location details, artwork previews.</td>
+      </tr>
+      <tr>
+        <td><strong>QuoteReviewSheet</strong></td>
+        <td>Full-screen Sheet (slides from right). Shows quote preview before sending. Keeps form state intact.</td>
       </tr>
       <tr>
         <td><strong>EmailPreviewModal</strong></td>
-        <td>Email preview dialog with To/Subject/Body fields. Mock send with toast confirmation.</td>
+        <td>Email preview with pricing breakdown. Mock send with toast confirmation.</td>
       </tr>
       <tr>
         <td><strong>StatusBadge</strong></td>
-        <td>Reusable badge with semantic color mapping per quote status (Draft=muted, Sent=action, Accepted=success, Declined=error, Revised=warning).</td>
+        <td>Semantic color mapping: Draft=muted, Sent=action, Accepted=success, Declined=error, Revised=warning.</td>
       </tr>
     </table>
 
@@ -489,56 +552,77 @@
     <table>
       <tr>
         <th>Schema</th>
-        <th>Changes</th>
+        <th>Details</th>
       </tr>
       <tr>
-        <td><strong>color.ts</strong> (NEW)</td>
+        <td><strong>artwork.ts</strong> (new)</td>
+        <td>Artwork with customerId, name, fileName, thumbnailUrl, colorCount, tags[], createdAt, lastUsedAt.</td>
+      </tr>
+      <tr>
+        <td><strong>color.ts</strong> (new)</td>
         <td>42 mock colors with hex, swatchTextColor, family, isFavorite. Mirrors S&S Activewear API shapes.</td>
       </tr>
       <tr>
         <td><strong>quote.ts</strong></td>
-        <td>5 statuses (draft/sent/accepted/declined/revised). Line items with sizes record, print locations, colorsPerLocation, unitPrice, lineTotal. Quote adds subtotal, priceOverride, notes, updatedAt, sentAt.</td>
+        <td>Service types, per-location printLocationDetails (location, colorCount, setupFee, artworkId), discounts[] (label, amount, type), shipping, tax, artworkIds[].</td>
+      </tr>
+      <tr>
+        <td><strong>customer.ts</strong></td>
+        <td>Added customerTagEnum ("new" | "repeat" | "contract") with behavior differentiation.</td>
       </tr>
       <tr>
         <td><strong>garment.ts</strong></td>
-        <td>Added garmentCatalogSchema with brand, SKU, name, basePrice, availableColors, availableSizes.</td>
+        <td>Catalog with brand, SKU, name, basePrice, availableColors, availableSizes.</td>
       </tr>
       <tr>
         <td><strong>mock-data.ts</strong></td>
-        <td>Expanded: 5 customers, 42 colors, 5 garment catalog entries, 6 quotes (all statuses).</td>
+        <td>5 customers (with tags), 42 colors, 5 garments, 6 quotes (all statuses, discount examples), 8 artworks, 8 SVG placeholders.</td>
       </tr>
     </table>
 
     <!-- Build Approach -->
     <h2>Build Approach</h2>
-    <p>Used git worktree for isolation and TeamCreate for parallel agent orchestration:</p>
 
-    <h3>Phase A (4 agents in parallel)</h3>
+    <h3>PR #13 &mdash; Initial Build (6 parallel agents)</h3>
+    <p>Used git worktree for isolation and TeamCreate for parallel agent orchestration:</p>
     <ul>
-      <li><strong>schema-agent</strong>: Updated schemas, expanded mock data, added 116 tests</li>
-      <li><strong>swatch-agent</strong>: Built ColorSwatchPicker (308 lines)</li>
-      <li><strong>combobox-agent</strong>: Built CustomerCombobox + AddCustomerModal</li>
-      <li><strong>list-agent</strong>: Built QuotesDataTable + StatusBadge + quotes page</li>
+      <li><strong>Phase A</strong> (4 agents): schema-agent (schemas + mock data + 116 tests), swatch-agent (ColorSwatchPicker), combobox-agent (CustomerCombobox + AddCustomerModal), list-agent (QuotesDataTable + StatusBadge)</li>
+      <li><strong>Phase B</strong> (2 agents): form-agent (QuoteForm + LineItemRow + PricingSummary), detail-agent (quote detail + QuoteActions + EmailPreviewModal)</li>
     </ul>
 
-    <h3>Phase B (2 agents after Phase A)</h3>
+    <h3>PR #14 &mdash; Patch v2 (20 feedback items)</h3>
+    <p>Addressed first-round feedback from 4Ink. Phased build (A through F) with targeted fixes:</p>
     <ul>
-      <li><strong>form-agent</strong>: Built QuoteForm + LineItemRow + PricingSummary + /quotes/new</li>
-      <li><strong>detail-agent</strong>: Built quote detail page + QuoteActions + EmailPreviewModal</li>
+      <li><strong>Phase A</strong>: New artwork schema, customer tags, service types, per-location details, discount model, shipping/tax, mock data overhaul, 2 bug fixes (duplicate + search)</li>
+      <li><strong>Phase B</strong>: PricingSummary redesign, DiscountRow, LineItemRow rewrite, CustomerCombobox tags</li>
+      <li><strong>Phase C</strong>: ArtworkLibrary, ArtworkUploadModal, ArtworkAssignmentPicker</li>
+      <li><strong>Phase D</strong>: CollapsibleSection, form restructure, customer-aware defaults</li>
+      <li><strong>Phase E</strong>: QuoteDetailView extraction, QuoteReviewSheet, detail page update</li>
+      <li><strong>Phase F</strong>: ArtworkPreview, discount visibility polish, sticky top bar, flat setup fee model, CodeRabbit review fixes (17 items: icon sizes, a11y, design tokens, lint)</li>
+    </ul>
+
+    <!-- Deferred Tech Debt -->
+    <h2>Deferred Tech Debt</h2>
+    <p>Tracked as GitHub issues for future sessions:</p>
+    <ul>
+      <li><a href="https://github.com/cmbays/print-4ink/issues/15">#15</a> &mdash; Migrate forms to React Hook Form + Zod (QuoteForm, ArtworkUploadModal, AddCustomerModal)</li>
+      <li><a href="https://github.com/cmbays/print-4ink/issues/16">#16</a> &mdash; Replace local LineItemRow interfaces with schema-derived types</li>
+      <li><a href="https://github.com/cmbays/print-4ink/issues/17">#17</a> &mdash; Sync garment category filter with URL query params</li>
+      <li><a href="https://github.com/cmbays/print-4ink/issues/18">#18</a> &mdash; Extract shared formatCurrency/formatDate to lib/utils</li>
     </ul>
 
     <!-- Next Steps -->
     <h2>Next Steps</h2>
     <ol>
-      <li>Merge PR #13 after review</li>
       <li>Run quality-gate audit on all 3 screens</li>
       <li>Demo to 4Ink owner, collect feedback</li>
       <li>Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)</li>
+      <li>Address deferred tech debt (#15&ndash;#18) as needed</li>
       <li>Move to Invoicing vertical</li>
     </ol>
 
     <footer>
-      Screen Print Pro &mdash; Quoting Vertical Build &mdash; February 8, 2026
+      Screen Print Pro &mdash; Quoting Vertical Build &mdash; February 8&ndash;9, 2026
     </footer>
   </div>
 </body>
