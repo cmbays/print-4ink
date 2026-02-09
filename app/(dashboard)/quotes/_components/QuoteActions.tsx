@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Pencil, Copy, Send, Receipt, FileText } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import type { Quote } from "@/lib/schemas/quote";
@@ -19,58 +18,49 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
   const isDraft = quote.status === "draft";
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6 space-y-3">
-      <h2 className="text-lg font-semibold text-foreground">Actions</h2>
-      <div className="flex flex-wrap gap-3">
-        {isDraft && (
-          <Link href={`/quotes/${quote.id}/edit`}>
-            <Button variant="outline" size="sm">
-              <Pencil className="size-4" />
-              Edit Quote
-            </Button>
-          </Link>
-        )}
-        <Link href={`/quotes/new?duplicate=${quote.id}`}>
+    <div className="flex flex-wrap items-center gap-2">
+      {isDraft && (
+        <Link href={`/quotes/${quote.id}/edit`}>
           <Button variant="outline" size="sm">
-            <Copy className="size-4" />
-            Duplicate
+            <Pencil className="size-4" />
+            Edit
           </Button>
         </Link>
-        {isDraft && customer && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setEmailOpen(true)}
-          >
-            <Send className="size-4" />
-            Send to Customer
-          </Button>
-        )}
+      )}
+      <Link href={`/quotes/new?duplicate=${quote.id}`}>
+        <Button variant="outline" size="sm">
+          <Copy className="size-4" />
+          Copy as New
+        </Button>
+      </Link>
+      {isDraft && customer && (
         <Button
           variant="outline"
           size="sm"
-          disabled
-          onClick={() =>
-            toast.info("Invoice conversion coming in Phase 2")
-          }
-          className="opacity-50"
+          onClick={() => setEmailOpen(true)}
         >
-          <Receipt className="size-4" />
-          Convert to Invoice
+          <Send className="size-4" />
+          Send
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled
-          onClick={() =>
-            toast.info("PDF generation coming in Phase 2")
-          }
-          className="opacity-50"
-        >
-          <FileText className="size-4" />
-          Download PDF
-        </Button>
-      </div>
+      )}
+      <Button
+        variant="outline"
+        size="sm"
+        disabled
+        className="opacity-50"
+      >
+        <Receipt className="size-4" />
+        Invoice
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        disabled
+        className="opacity-50"
+      >
+        <FileText className="size-4" />
+        PDF
+      </Button>
 
       {customer && (
         <EmailPreviewModal
@@ -78,7 +68,7 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
           onOpenChange={setEmailOpen}
           quote={{
             quoteNumber: quote.quoteNumber,
-            total: quote.priceOverride ?? quote.total,
+            total: quote.total,
             lineItems: quote.lineItems,
           }}
           customer={{

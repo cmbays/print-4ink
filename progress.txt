@@ -5,7 +5,7 @@
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-08
 **Last Verified**: 2026-02-08
-**Status**: Quoting vertical BUILD COMPLETE. PR #13 open for review. 3 pages + 4 components + expanded data layer. All checks pass (tsc, lint, 116 tests, build).
+**Status**: Quoting Patch v2 COMPLETE. 20 feedback items addressed (2 bugs, 9 features, 9 UX changes). All checks pass (tsc, lint 0 errors, 171 tests, build). Ready for PR.
 
 ## What's Built
 
@@ -137,6 +137,31 @@
 - **Full MVP (4 verticals + Reporting stretch)**: 23-33 days
 - **See**: `.claude/plans/vertical-by-vertical-strategy.md` for full timeline
 
+### Quoting Patch v2 (COMPLETE)
+- [x] **Bug Fix: Duplicate Quote** — `?duplicate=` param now reads source quote, transforms to initialData with new schema
+- [x] **Bug Fix: Search** — Fixed re-render loop by removing searchParams from useEffect deps
+- [x] **Artwork schema** (`lib/schemas/artwork.ts`) — New: id, customerId, name, fileName, thumbnailUrl, colorCount, tags[], createdAt, lastUsedAt
+- [x] **Customer tags** — `"new" | "repeat" | "contract"` with behavior differentiation
+- [x] **Service types** — `"screen-print" | "dtf" | "embroidery"` per line item
+- [x] **Per-location print details** — Replaces flat `printLocations[]` + `colorsPerLocation` with structured `printLocationDetails[]` (location, colorCount, setupFee, artworkId)
+- [x] **Discount model** — `discounts[]` with label/amount/type replaces `priceOverride`. Types: manual, contract, volume
+- [x] **Shipping + Tax** fields on quote
+- [x] **PricingSummary redesign** — Full breakdown: subtotal, setup fees, discounts (add/remove), shipping (FREE badge), tax, grand total, savings banner
+- [x] **ArtworkLibrary** — Customer-tag-aware: new=upload dropzone, repeat=recently-used first, contract=full grid with search+tag filters
+- [x] **ArtworkUploadModal** — Mock upload with name, color count, tags, save-to-library toggle
+- [x] **ArtworkAssignmentPicker** — Per-location artwork assignment from quote's curated set
+- [x] **ArtworkPreview** — Garment color swatch with artwork thumbnail overlay
+- [x] **CollapsibleSection** — Wrapper with title, icon, summary, isComplete checkmark, expand/collapse
+- [x] **QuoteDetailView** — Reusable for detail/review modes. Service type badges, per-location details, discount breakdown, artwork previews
+- [x] **QuoteReviewSheet** — Full-screen slide-from-right Sheet before sending
+- [x] **Form restructure** — Customer → Artwork → Garments & Print → Pricing → Notes (collapsible sections)
+- [x] **Customer-aware defaults** — Contract: auto-discount + free shipping. New: upload-only artwork. Repeat: recently-used first
+- [x] **CustomerCombobox** — Tag badges, phone display
+- [x] **AddCustomerModal** — Phone field, tag selector
+- [x] **QuoteActions** — Inline header bar (was card layout)
+- [x] **Mock data** — 8 artworks, customer tags, migrated 6 quotes to new schema, discount examples
+- [x] **171 tests** across 8 test files — all passing
+
 ## Session Log
 
 | Date | Session | Work Done |
@@ -155,3 +180,4 @@
 | 2026-02-08 | Quoting Discovery: COMPLETE | Conducted full discovery phase for Quoting vertical. (1) **Playwright exploration**: Set up headless browser in /tmp/pw-explorer/, navigated through 4Ink's customer portal at project-builder.app. Captured Steps 1-3 (product catalog, qty/size entry, art upload). Documented: 6-step flow, 103 color swatches, blocking recalculation, Angular SPA with S&S Activewear data. Steps 4-6 unreachable without art upload. (2) **Web research**: Print Life founded by Cam Earven, ~200 shops, Angular SPA, solo dev, QuickBooks integration. 2024 updates: impression cost display. Q1 2025: payment fixes, matrix pricing types. (3) **User interview**: 5-20 quotes/week, 50/50 simple/complex, 10 min per quote. Critical pain: recalculation blocks input, mandatory unused steps, forced color swatches, art style change resets all selections. Wants: hybrid approval (customer submits → shop reviews price → approves), quote reuse/duplication, keyboard navigation, simpler workflow. Currently builds quotes internally, communicates price by phone. No formal quote tracking. Tools: Print Life + QuickBooks + Excel + Email + Shopify + Square. (4) **Documents completed**: print-life-quoting-analysis.md (full feature list, 10 friction points, UI patterns, competitive landscape), print-life-journey-quoting.md (step-by-step journey, time distribution, success metrics), screen-print-pro-journey-quoting.md (redesigned single-page flow, targets 60-70% time reduction, S&S color swatch grid, instant pricing, hybrid approval). Updated quoting-scope-definition.md with all findings (S&S color swatch component, price override, quote notes, Revised status, functional Duplicate/Edit). (5) **4Ink owner request**: Color swatches should use S&S Activewear-style dense palette with color names in white font overlaid on swatches. |
 | 2026-02-08 | Breadboarding Skill | Reassessed shaping-skills decision post-pivot. Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Created: (1) `.claude/skills/breadboarding/SKILL.md` (9-step workflow: identify places, map UI/code affordances, map data stores, verify wiring, identify component boundaries, define build order); (2) `.claude/skills/breadboarding/templates/breadboard-template.md` (output template with YAML frontmatter); (3) `.claude/skills/breadboarding/reference/concepts.md` (key concepts: affordances, places, wiring, component boundaries). Integrated into workflow: updated vertical-by-vertical-strategy.md with Phase 2.5 (Breadboarding), updated CLAUDE.md (architecture, pre-build ritual, skills table, orchestration patterns), updated frontend-builder agent (added breadboarding to skills, breadboard-first startup sequence), updated AGENTS.md (Vertical Build Chain pattern, 5 orchestration patterns). Created `docs/breadboards/` directory. Ran doc-sync agent to fix drift in MEMORY.md and STRATEGY_README.md. Skill count: 6 → 8 (added vertical-discovery + breadboarding). |
 | 2026-02-08 | Quoting Vertical: BUILD COMPLETE | Built full Quoting vertical using git worktree (`feature/quoting-build`) and 6 parallel agents via TeamCreate. **Phase A** (4 agents parallel): (1) schema-agent updated quote/garment schemas, created color schema, expanded mock data (5 customers, 42 colors, 5 garment catalog, 6 quotes), added 116 tests; (2) swatch-agent built ColorSwatchPicker (308 lines, S&S-style dense grid, search, favorites, keyboard nav); (3) combobox-agent built CustomerCombobox + AddCustomerModal; (4) list-agent built QuotesDataTable + StatusBadge + quotes page. **Phase B** (2 agents after A): (5) form-agent built QuoteForm + LineItemRow + PricingSummary + new quote page; (6) detail-agent built quote detail page + QuoteActions + EmailPreviewModal. Fixed all lint errors (7→0). All checks pass: tsc 0 errors, lint 0 errors/warnings, 116/116 tests, production build success. PR #13 created. 31 files changed, 3874 insertions. |
+| 2026-02-08 | Quoting Patch v2 | Addressed 20 feedback items from 4Ink first-round review. **Phase A**: New artwork schema, customer tags (new/repeat/contract), service types (screen-print/dtf/embroidery), per-location print details (replaces flat locations), discount model (replaces priceOverride), shipping+tax fields, 8 mock artworks, 8 SVG placeholders. Updated all 6 mock quotes. 171 tests passing. **Phase B-F**: PricingSummary redesign (full breakdown with discounts/shipping/tax/savings), DiscountRow, LineItemRow rewrite (service type selector, per-location details with artwork assignment), ArtworkLibrary (customer-tag-aware), ArtworkUploadModal, ArtworkAssignmentPicker, ArtworkPreview, CollapsibleSection, QuoteDetailView (reusable detail/review), QuoteReviewSheet (slide-from-right), form restructure (5 collapsible sections), customer-aware defaults (contract=auto-discount+free-shipping, new=upload-only, repeat=recently-used-first), CustomerCombobox tags+phone, AddCustomerModal phone+tag, QuoteActions inline header bar. Fixed duplicate quote bug and search re-render loop. All checks pass: tsc 0 errors, lint 0 errors/2 warnings, 171/171 tests, production build success. |

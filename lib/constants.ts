@@ -1,6 +1,9 @@
 import type { ProductionState, Priority } from "./schemas/job";
 import type { BurnStatus } from "./schemas/screen";
-import type { QuoteStatus } from "./schemas/quote";
+import type { QuoteStatus, ServiceType } from "./schemas/quote";
+import type { CustomerTag } from "./schemas/customer";
+import type { ArtworkTag } from "./schemas/artwork";
+import type { GarmentCategory } from "./schemas/garment";
 
 export const PRODUCTION_STATE_LABELS: Record<ProductionState, string> = {
   design: "Design",
@@ -54,4 +57,45 @@ export const QUOTE_STATUS_COLORS: Record<QuoteStatus, string> = {
   accepted: "text-success",
   declined: "text-error",
   revised: "text-warning",
+};
+
+export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
+  "screen-print": "Screen Print",
+  dtf: "DTF",
+  embroidery: "Embroidery",
+};
+
+export const SERVICE_TYPE_COLORS: Record<ServiceType, string> = {
+  "screen-print": "text-action",
+  dtf: "text-warning",
+  embroidery: "text-success",
+};
+
+export const CUSTOMER_TAG_LABELS: Record<CustomerTag, string> = {
+  new: "New",
+  repeat: "Repeat",
+  contract: "Contract",
+};
+
+export const CUSTOMER_TAG_COLORS: Record<CustomerTag, string> = {
+  new: "text-action",
+  repeat: "text-success",
+  contract: "text-warning",
+};
+
+export const GARMENT_CATEGORY_LABELS: Record<GarmentCategory, string> = {
+  "t-shirts": "T-Shirts",
+  fleece: "Hoodies & Fleece",
+  outerwear: "Jackets",
+  pants: "Pants",
+  headwear: "Headwear",
+};
+
+export const ARTWORK_TAG_LABELS: Record<ArtworkTag, string> = {
+  corporate: "Corporate",
+  event: "Event",
+  seasonal: "Seasonal",
+  promotional: "Promotional",
+  sports: "Sports",
+  custom: "Custom",
 };

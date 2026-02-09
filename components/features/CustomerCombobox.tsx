@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, Plus, User, Building2, Mail } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, User, Building2, Mail, Phone } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -19,6 +20,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { CUSTOMER_TAG_LABELS, CUSTOMER_TAG_COLORS } from "@/lib/constants";
+import type { CustomerTag } from "@/lib/schemas/customer";
 
 /** Subset of Customer fields needed by the combobox */
 export interface CustomerOption {
@@ -26,6 +29,8 @@ export interface CustomerOption {
   name: string;
   company: string;
   email: string;
+  phone?: string;
+  tag?: CustomerTag;
 }
 
 export interface CustomerComboboxProps {
@@ -99,6 +104,17 @@ export function CustomerCombobox({
                       {customer.name}
                       <span className="text-muted-foreground"> — {customer.company}</span>
                     </span>
+                    {customer.tag && (
+                      <Badge
+                        variant="ghost"
+                        className={cn(
+                          "ml-auto text-xs shrink-0",
+                          CUSTOMER_TAG_COLORS[customer.tag]
+                        )}
+                      >
+                        {CUSTOMER_TAG_LABELS[customer.tag]}
+                      </Badge>
+                    )}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -128,6 +144,17 @@ export function CustomerCombobox({
           <div className="flex items-center gap-2 text-foreground">
             <User className="size-4 shrink-0 text-muted-foreground" />
             <span>{selectedCustomer.name}</span>
+            {selectedCustomer.tag && (
+              <Badge
+                variant="ghost"
+                className={cn(
+                  "text-xs",
+                  CUSTOMER_TAG_COLORS[selectedCustomer.tag]
+                )}
+              >
+                {CUSTOMER_TAG_LABELS[selectedCustomer.tag]}
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 text-foreground">
             <Building2 className="size-4 shrink-0 text-muted-foreground" />
@@ -137,6 +164,12 @@ export function CustomerCombobox({
             <Mail className="size-4 shrink-0 text-muted-foreground" />
             <span>{selectedCustomer.email}</span>
           </div>
+          {selectedCustomer.phone && (
+            <div className="flex items-center gap-2 text-foreground">
+              <Phone className="size-4 shrink-0 text-muted-foreground" />
+              <span>{selectedCustomer.phone}</span>
+            </div>
+          )}
         </div>
       )}
     </div>
