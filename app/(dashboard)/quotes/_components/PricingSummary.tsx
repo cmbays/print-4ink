@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { DiscountRow } from "./DiscountRow";
@@ -65,7 +66,9 @@ export function PricingSummary({
   const preTaxTotal = subtotal + setupFees - totalDiscounts + shipping;
   const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
   const grandTotal = preTaxTotal + tax;
-  const originalTotal = subtotal + setupFees + shipping + tax;
+  const originalPreTax = subtotal + setupFees + shipping;
+  const originalTax = Math.round(originalPreTax * TAX_RATE * 100) / 100;
+  const originalTotal = originalPreTax + originalTax;
 
   function handleAddDiscount() {
     onDiscountsChange([
@@ -174,7 +177,7 @@ export function PricingSummary({
           onClick={handleAddDiscount}
           className="text-xs text-muted-foreground hover:text-foreground"
         >
-          <Plus size={14} className="mr-1" />
+          <Plus size={16} className="mr-1" />
           Add Discount
         </Button>
 
@@ -191,7 +194,7 @@ export function PricingSummary({
               </Badge>
             )}
             <div className="w-28">
-              <input
+              <Input
                 type="number"
                 min={0}
                 step={0.01}
@@ -200,7 +203,7 @@ export function PricingSummary({
                   const val = parseFloat(e.target.value);
                   onShippingChange(isNaN(val) ? 0 : Math.max(0, val));
                 }}
-                className="flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-right text-sm shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="h-8 text-right text-sm"
                 placeholder="$0.00"
               />
             </div>

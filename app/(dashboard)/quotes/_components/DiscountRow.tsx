@@ -83,7 +83,7 @@ export function DiscountRow({
           className="h-7 w-7 p-0 text-muted-foreground hover:text-error shrink-0"
           aria-label="Remove discount"
         >
-          <Trash2 size={14} />
+          <Trash2 size={16} />
         </Button>
       )}
     </div>

@@ -31,12 +31,12 @@ export default async function EditQuotePage({
           <p className="mt-2 text-sm text-muted-foreground">
             This quote doesn&apos;t exist or has been removed.
           </p>
-          <Link href="/quotes">
-            <Button variant="outline" className="mt-4">
+          <Button variant="outline" className="mt-4" asChild>
+            <Link href="/quotes">
               <ArrowLeft className="size-4" />
               Back to Quotes
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     );

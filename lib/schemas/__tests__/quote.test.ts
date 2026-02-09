@@ -151,7 +151,8 @@ describe("quoteLineItemSchema", () => {
   });
 
   it("defaults serviceType to screen-print when omitted", () => {
-    const { serviceType: _serviceType, ...withoutType } = validItem;
+    const withoutType = { ...validItem };
+    delete (withoutType as Record<string, unknown>).serviceType;
     const result = quoteLineItemSchema.parse(withoutType);
     expect(result.serviceType).toBe("screen-print");
   });

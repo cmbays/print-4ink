@@ -222,6 +222,16 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       // Reset artwork selection when customer changes
       setArtworkIds([]);
       setLocalArtworks([]);
+      // Clear artwork assignments from print location details
+      setLineItems((prev) =>
+        prev.map((item) => ({
+          ...item,
+          printLocationDetails: item.printLocationDetails.map((d) => ({
+            ...d,
+            artworkId: undefined,
+          })),
+        }))
+      );
 
       // Free shipping for contract customers
       const customer = customers.find((c) => c.id === id);
@@ -458,15 +468,15 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     <>
       <div className="mx-auto w-full max-w-3xl space-y-4">
         {/* Sticky summary bar */}
-        <div className="sticky top-0 z-20 -mx-1 rounded-lg border border-border bg-card/95 backdrop-blur-sm px-4 py-2.5 shadow-sm">
+        <div className="sticky top-0 z-20 -mx-1 rounded-lg border border-border bg-card/95 backdrop-blur-sm px-4 py-2 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             {/* Left: customer + artwork thumbnails */}
             <div className="flex items-center gap-3 min-w-0">
               {/* Customer */}
               <div className="flex items-center gap-1.5 min-w-0">
-                <User size={14} className="shrink-0 text-muted-foreground" />
+                <User size={16} className="shrink-0 text-muted-foreground" />
                 {selectedCustomer ? (
-                  <span className="text-sm font-medium text-foreground truncate max-w-[160px]">
+                  <span className="text-sm font-medium text-foreground truncate max-w-40">
                     {selectedCustomer.name}
                   </span>
                 ) : (
@@ -516,7 +526,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >
-                <StickyNote size={12} />
+                <StickyNote size={16} />
                 Notes{hasNotes && " ●"}
               </button>
               <div className="text-right">

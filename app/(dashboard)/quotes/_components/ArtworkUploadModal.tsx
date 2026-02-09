@@ -85,7 +85,7 @@ export function ArtworkUploadModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Upload size={18} />
+            <Upload size={20} />
             Upload Artwork
           </DialogTitle>
           <DialogDescription>
@@ -96,7 +96,7 @@ export function ArtworkUploadModal({
         <div className="space-y-4 py-2">
           {/* File dropzone (mock) */}
           <div className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-6">
-            <ImageIcon className="size-8 text-muted-foreground" />
+            <ImageIcon className="size-6 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">Artwork upload simulated for Phase 1</p>
             <p className="text-xs text-muted-foreground">A placeholder will be generated</p>
           </div>
@@ -141,19 +141,24 @@ export function ArtworkUploadModal({
             <Label>Tags</Label>
             <div className="flex flex-wrap gap-1.5">
               {ALL_TAGS.map((tag) => (
-                <Badge
+                <button
                   key={tag}
-                  variant="ghost"
-                  className={cn(
-                    "cursor-pointer text-xs",
-                    selectedTags.includes(tag)
-                      ? "bg-action/10 text-action border border-action/20"
-                      : "bg-muted text-muted-foreground hover:text-foreground"
-                  )}
+                  type="button"
                   onClick={() => handleToggleTag(tag)}
+                  aria-pressed={selectedTags.includes(tag)}
                 >
-                  {ARTWORK_TAG_LABELS[tag]}
-                </Badge>
+                  <Badge
+                    variant="ghost"
+                    className={cn(
+                      "cursor-pointer text-xs",
+                      selectedTags.includes(tag)
+                        ? "bg-action/10 text-action border border-action/20"
+                        : "bg-muted text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {ARTWORK_TAG_LABELS[tag]}
+                  </Badge>
+                </button>
               ))}
             </div>
           </div>

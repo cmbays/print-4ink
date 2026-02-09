@@ -64,9 +64,9 @@ export function ArtworkLibrary({
         onClick={onUploadNew}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter") onUploadNew(); }}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onUploadNew(); } }}
       >
-        <Upload className="size-8 text-muted-foreground" />
+        <Upload className="size-6 text-muted-foreground" />
         <p className="text-sm font-medium text-foreground">Upload Artwork</p>
         <p className="text-xs text-muted-foreground">Drop files here or click to browse</p>
       </div>
@@ -78,7 +78,7 @@ export function ArtworkLibrary({
       {/* Search + filter */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search size={16} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search artwork..."
             value={search}
@@ -87,7 +87,7 @@ export function ArtworkLibrary({
           />
         </div>
         <Button variant="outline" size="sm" onClick={onUploadNew} className="h-8 shrink-0">
-          <Upload size={14} />
+          <Upload size={16} />
           Upload
         </Button>
       </div>

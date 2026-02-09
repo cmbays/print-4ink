@@ -669,7 +669,7 @@ export const quotes: Quote[] = [
     ],
     setupFees: 40,
     subtotal: 7417.5,
-    total: 7142.5,
+    total: 6857.5,
     discounts: [
       { label: "Volume Discount — 500+ units", amount: 600, type: "volume" },
     ],

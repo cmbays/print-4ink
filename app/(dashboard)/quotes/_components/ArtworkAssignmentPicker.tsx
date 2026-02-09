@@ -56,15 +56,15 @@ export function ArtworkAssignmentPicker({
                 height={16}
                 className="size-4 rounded-sm object-contain bg-muted"
               />
-              <span className="truncate max-w-[100px]">{selected.name}</span>
+              <span className="truncate max-w-24">{selected.name}</span>
             </>
           ) : (
             <>
-              <ImageIcon size={12} className="text-muted-foreground" />
+              <ImageIcon size={16} className="text-muted-foreground" />
               <span className="text-muted-foreground">Assign Artwork</span>
             </>
           )}
-          <ChevronsUpDown size={12} className="text-muted-foreground" />
+          <ChevronsUpDown size={16} className="text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0" align="start">
@@ -83,7 +83,7 @@ export function ArtworkAssignmentPicker({
                 >
                   <Check
                     className={cn(
-                      "mr-2 size-3",
+                      "mr-2 size-4",
                       selectedArtworkId === artwork.id ? "opacity-100" : "opacity-0"
                     )}
                   />

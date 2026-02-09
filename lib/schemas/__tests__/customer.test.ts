@@ -32,7 +32,8 @@ describe("customerSchema", () => {
   });
 
   it("defaults tag to 'new' when omitted", () => {
-    const { tag: _tag, ...withoutTag } = validCustomer;
+    const withoutTag = { ...validCustomer };
+    delete (withoutTag as Record<string, unknown>).tag;
     const result = customerSchema.parse(withoutTag);
     expect(result.tag).toBe("new");
   });

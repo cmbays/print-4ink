@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -34,8 +34,8 @@ export function CollapsibleSection({
           {icon}
           {title}
           {isComplete && (
-            <span className="inline-flex size-5 items-center justify-center rounded-full bg-success/20 text-success text-xs">
-              ✓
+            <span className="inline-flex size-5 items-center justify-center rounded-full bg-success/20 text-success">
+              <Check size={12} />
             </span>
           )}
         </span>
