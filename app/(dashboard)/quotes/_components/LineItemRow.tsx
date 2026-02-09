@@ -593,7 +593,7 @@ export function LineItemRow({
           )}
           {setupFee > 0 && (
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Setup Fee (per item)</span>
+              <span className="text-muted-foreground">Setup Fee (per line item)</span>
               <span className="text-foreground">{formatCurrency(setupFee)}</span>
             </div>
           )}
