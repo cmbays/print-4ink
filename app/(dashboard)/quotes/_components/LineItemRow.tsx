@@ -248,7 +248,7 @@ export function LineItemRow({
       updateField({
         printLocationDetails: [
           ...data.printLocationDetails,
-          { location, colorCount: 1, setupFee: 0 },
+          { location, colorCount: 0, setupFee: 0 },
         ],
       });
     }
@@ -437,7 +437,7 @@ export function LineItemRow({
             </PopoverContent>
           </Popover>
           {errors?.garmentId && (
-            <p className="text-xs text-error">{errors.garmentId}</p>
+            <p className="text-xs text-error" role="alert">{errors.garmentId}</p>
           )}
         </div>
 
@@ -483,7 +483,7 @@ export function LineItemRow({
             </PopoverContent>
           </Popover>
           {errors?.colorId && (
-            <p className="text-xs text-error">{errors.colorId}</p>
+            <p className="text-xs text-error" role="alert">{errors.colorId}</p>
           )}
         </div>
 
@@ -515,7 +515,7 @@ export function LineItemRow({
               ))}
             </div>
             {errors?.sizes && (
-              <p className="text-xs text-error">{errors.sizes}</p>
+              <p className="text-xs text-error" role="alert">{errors.sizes}</p>
             )}
           </div>
         )}
@@ -543,31 +543,24 @@ export function LineItemRow({
                 </label>
                 {isActive && detail && (
                   <div className="ml-6 flex flex-wrap items-center gap-3 rounded-md bg-surface px-3 py-2">
-                    <div className="flex items-center gap-1.5">
-                      <Label className="text-xs text-muted-foreground">
-                        Colors:
-                      </Label>
-                      <Input
-                        type="number"
-                        min={1}
-                        max={12}
-                        value={detail.colorCount}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value, 10);
-                          const colorCount = isNaN(val) ? 1 : Math.max(1, Math.min(12, val));
-                          handleLocationDetailChange(location, { colorCount });
-                        }}
-                        className="h-7 w-14 text-center text-sm"
-                        aria-label={`${location} color count`}
-                      />
-                    </div>
                     <ArtworkAssignmentPicker
                       artworks={quoteArtworks}
                       selectedArtworkId={detail.artworkId}
-                      onSelect={(artworkId) =>
-                        handleLocationDetailChange(location, { artworkId })
-                      }
+                      onSelect={(artworkId) => {
+                        const artwork = artworkId
+                          ? quoteArtworks.find((a) => a.id === artworkId)
+                          : undefined;
+                        handleLocationDetailChange(location, {
+                          artworkId,
+                          colorCount: artwork?.colorCount ?? 0,
+                        });
+                      }}
                     />
+                    <span className="text-xs text-muted-foreground">
+                      {detail.colorCount > 0
+                        ? `${detail.colorCount} color${detail.colorCount !== 1 ? "s" : ""}`
+                        : "—"}
+                    </span>
                   </div>
                 )}
               </div>

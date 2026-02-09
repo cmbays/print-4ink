@@ -62,7 +62,7 @@ export default async function NewQuotePage({
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -76,7 +76,7 @@ export default async function NewQuotePage({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <h1 className="text-2xl font-semibold">
+      <h1 className="text-2xl font-semibold tracking-tight">
         {isDuplicate ? "Copy as New" : "New Quote"}
       </h1>
       <QuoteForm key={duplicate || "new"} mode="create" initialData={initialData} />

@@ -15,7 +15,7 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
-| [2026-02-08-quoting-build.html](2026-02-08-quoting-build.html) | Quoting vertical: 3 pages, 15+ components, artwork system, flat pricing, collapsible form. PR #13 + #14 merged. 172 tests, 0 warnings. | 2026-02-08/09 | Feature, Build |
+| [2026-02-08-quoting-build.html](2026-02-08-quoting-build.html) | Quoting vertical: 3 pages, 15+ components, artwork system, flat pricing, collapsible form. PR #13 + #14 + #20 merged. 172 tests, 0 warnings. | 2026-02-08/09 | Feature, Build |
 | [2026-02-08-vercel-setup.html](2026-02-08-vercel-setup.html) | Vercel deployment with access code protection (env var: DEMO_ACCESS_CODE), middleware, login page, API validation | 2026-02-08 | Build |
 | [2026-02-08-quoting-breadboard.html](2026-02-08-quoting-breadboard.html) | Quoting breadboard: 7 Places, 65 UI affordances, 32 code affordances, Mermaid diagrams, build order | 2026-02-08 | Plan, Build |
 | [2026-02-08-breadboarding-skill.html](2026-02-08-breadboarding-skill.html) | Breadboarding skill created, integrated into vertical workflow as Phase 2.5, skill count 6 to 8 | 2026-02-08 | Feature, Decision |

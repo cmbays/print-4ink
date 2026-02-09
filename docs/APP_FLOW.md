@@ -5,7 +5,7 @@ category: canonical
 status: active
 phase: 1
 last_updated: 2026-02-07
-last_verified: 2026-02-07
+last_verified: 2026-02-09
 depends_on:
   - docs/PRD.md
 ---
@@ -399,7 +399,7 @@ Not applicable for Phase 1 (mock data is synchronous). Design loading skeleton p
 **Sections**:
 - Quote header: number, status badge, date
 - Customer info card
-- Line items table: description, qty, colors, locations, unit price, total
+- Line items with pricing formula: garment + decoration cost per unit, setup fees, line total with info tooltip
 - Summary: subtotal, setup fees, grand total
 
 **Key Actions**:
@@ -412,7 +412,7 @@ Not applicable for Phase 1 (mock data is synchronous). Design loading skeleton p
 
 **Layout**: Form, single column
 **Sections**:
-- Customer selector (dropdown)
+- Customer selector (combobox with search)
 - Line items (dynamic, add/remove rows)
 - Setup fees input
 - Totals (auto-calculated, read-only)

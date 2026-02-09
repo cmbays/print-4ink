@@ -1,14 +1,20 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign } from "lucide-react";
+import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CustomerCombobox } from "@/components/features/CustomerCombobox";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { LineItemRow } from "./LineItemRow";
@@ -23,7 +29,7 @@ import {
   garmentCatalog,
   artworks as mockArtworks,
 } from "@/lib/mock-data";
-import { CUSTOMER_TAG_LABELS } from "@/lib/constants";
+import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount } from "@/lib/schemas/quote";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
@@ -222,13 +228,14 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       // Reset artwork selection when customer changes
       setArtworkIds([]);
       setLocalArtworks([]);
-      // Clear artwork assignments from print location details
+      // Clear artwork assignments and reset color counts from print location details
       setLineItems((prev) =>
         prev.map((item) => ({
           ...item,
           printLocationDetails: item.printLocationDetails.map((d) => ({
             ...d,
             artworkId: undefined,
+            colorCount: 0,
           })),
         }))
       );
@@ -276,12 +283,12 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     setArtworkIds((prev) => {
       const isDeselecting = prev.includes(artworkId);
       if (isDeselecting) {
-        // Also clear this artwork from any print location assignments
+        // Also clear this artwork from any print location assignments and reset color count
         setLineItems((prevItems) =>
           prevItems.map((item) => ({
             ...item,
             printLocationDetails: item.printLocationDetails.map((d) =>
-              d.artworkId === artworkId ? { ...d, artworkId: undefined } : d
+              d.artworkId === artworkId ? { ...d, artworkId: undefined, colorCount: 0 } : d
             ),
           }))
         );
@@ -447,15 +454,86 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     ? `${selectedCustomer.name} — ${selectedCustomer.company}${customerTag ? ` (${CUSTOMER_TAG_LABELS[customerTag]})` : ""}`
     : undefined;
 
+  const totalArtworkColors = useMemo(() => {
+    return quoteArtworks.reduce((sum, a) => sum + a.colorCount, 0);
+  }, [quoteArtworks]);
+
   const artworkSummary =
     artworkIds.length > 0
-      ? `${artworkIds.length} artwork${artworkIds.length !== 1 ? "s" : ""}`
+      ? `${artworkIds.length} artwork${artworkIds.length !== 1 ? "s" : ""} | ${totalArtworkColors} total color${totalArtworkColors !== 1 ? "s" : ""}`
       : undefined;
 
-  const lineItemSummary =
-    lineItems.length > 0 && lineItems[0].garmentId
-      ? `${lineItems.length} item${lineItems.length !== 1 ? "s" : ""}`
-      : undefined;
+  // Line item summary grouped by service type (includes artwork + garment details)
+  const serviceTypeBreakdown = useMemo(() => {
+    const grouped: Record<string, {
+      count: number;
+      qty: number;
+      garments: { garmentName: string; colorHex: string; colorName: string; sizes: Record<string, number>; locations: { location: string; artworkId?: string }[] }[];
+    }> = {};
+    lineItems.forEach((item) => {
+      if (!item.garmentId) return;
+      const totalQty = Object.values(item.sizes).reduce((sum, qty) => sum + qty, 0);
+      if (!grouped[item.serviceType]) {
+        grouped[item.serviceType] = { count: 0, qty: 0, garments: [] };
+      }
+      grouped[item.serviceType].count += 1;
+      grouped[item.serviceType].qty += totalQty;
+      const garment = garmentCatalog.find((g) => g.id === item.garmentId);
+      const color = mockColors.find((c) => c.id === item.colorId);
+      if (color) {
+        grouped[item.serviceType].garments.push({
+          garmentName: garment ? `${garment.brand} ${garment.sku}` : "Unknown",
+          colorHex: color.hex,
+          colorName: color.name,
+          sizes: item.sizes,
+          locations: item.printLocationDetails.map((d) => ({
+            location: d.location,
+            artworkId: d.artworkId,
+          })),
+        });
+      }
+    });
+    return grouped;
+  }, [lineItems]);
+
+  const lineItemSummary = useMemo(() => {
+    const entries = Object.entries(serviceTypeBreakdown);
+    if (entries.length === 0) return undefined;
+    return entries
+      .map(([type, { count, qty }]) =>
+        `${count} ${SERVICE_TYPE_LABELS[type as keyof typeof SERVICE_TYPE_LABELS]}: ${qty} qty`
+      )
+      .join(" | ");
+  }, [serviceTypeBreakdown]);
+
+  // Per-artwork usage: which service types + locations each artwork appears in
+  // Pricing summary — itemized discounts + total
+  const discountDetails = useMemo(() => {
+    const { garmentSubtotal, decorationSubtotal } = pricingBreakdown;
+    const subtotal = garmentSubtotal + decorationSubtotal;
+    const contractAmount = customerTag === "contract"
+      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
+      : 0;
+    const items: { label: string; amount: number }[] = [];
+    if (contractAmount > 0) {
+      items.push({ label: "Contract Pricing (7%)", amount: contractAmount });
+    }
+    discounts.forEach((d) => items.push({ label: d.label, amount: d.amount }));
+    const total = items.reduce((s, d) => s + d.amount, 0);
+    return { items, total };
+  }, [pricingBreakdown, customerTag, discounts]);
+
+  const pricingSummary = discountDetails.total > 0
+    ? `${formatCurrency(discountDetails.total)} in discounts`
+    : undefined;
+
+  // Notes summary — indicators for which notes exist
+  const notesSummary = useMemo(() => {
+    const parts: string[] = [];
+    if (internalNotes) parts.push("Internal");
+    if (customerNotes) parts.push("Customer");
+    return parts.length > 0 ? parts.join(" + ") : undefined;
+  }, [internalNotes, customerNotes]);
 
   function handleScrollToNotes() {
     notesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -468,76 +546,201 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     <>
       <div className="mx-auto w-full max-w-3xl space-y-4">
         {/* Sticky summary bar */}
+        <TooltipProvider delayDuration={200} skipDelayDuration={300}>
         <div className="sticky top-0 z-20 -mx-1 rounded-lg border border-border bg-card/95 backdrop-blur-sm px-4 py-2 shadow-sm">
+          {/* Top row: customer, notes, total */}
           <div className="flex items-center justify-between gap-3">
-            {/* Left: customer + artwork thumbnails */}
-            <div className="flex items-center gap-3 min-w-0">
-              {/* Customer */}
-              <div className="flex items-center gap-1.5 min-w-0">
-                <User size={16} className="shrink-0 text-muted-foreground" />
-                {selectedCustomer ? (
-                  <span className="text-sm font-medium text-foreground truncate max-w-40">
-                    {selectedCustomer.name}
-                  </span>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">No customer</span>
-                )}
-              </div>
-
-              {/* Artwork thumbnails */}
-              {quoteArtworks.length > 0 && (
-                <>
-                  <span className="text-border">|</span>
-                  <div className="flex items-center gap-1">
-                    {quoteArtworks.slice(0, 4).map((art) => (
-                      <div
-                        key={art.id}
-                        className="flex size-6 items-center justify-center rounded border border-border bg-white/90 overflow-hidden"
-                        title={art.name}
-                      >
-                        <Image
-                          src={art.thumbnailUrl}
-                          alt={art.name}
-                          width={20}
-                          height={20}
-                          className="size-5 object-contain"
-                        />
-                      </div>
-                    ))}
-                    {quoteArtworks.length > 4 && (
-                      <span className="text-xs text-muted-foreground ml-0.5">
-                        +{quoteArtworks.length - 4}
-                      </span>
-                    )}
-                  </div>
-                </>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <User size={14} className="shrink-0 text-muted-foreground" />
+              {selectedCustomer ? (
+                <span className="text-sm font-medium text-foreground truncate">
+                  {selectedCustomer.name} <span className="text-muted-foreground font-normal">|</span> {selectedCustomer.company}
+                </span>
+              ) : (
+                <span className="text-sm text-muted-foreground italic">No customer</span>
               )}
             </div>
-
-            {/* Right: notes button + total */}
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={handleScrollToNotes}
-                className={cn(
-                  "flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors",
-                  hasNotes
-                    ? "bg-action/10 text-action hover:bg-action/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}
-              >
-                <StickyNote size={16} />
-                Notes{hasNotes && " ●"}
-              </button>
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Artwork icons */}
+              {quoteArtworks.length > 0 && (
+                <div className="flex items-center gap-1">
+                  {quoteArtworks.map((art) => (
+                      <Tooltip key={art.id}>
+                        <TooltipTrigger asChild>
+                          <div className="flex size-6 items-center justify-center rounded border border-border bg-white/90 overflow-hidden cursor-default">
+                            <Image
+                              src={art.thumbnailUrl}
+                              alt={art.name}
+                              width={20}
+                              height={20}
+                              className="size-5 object-contain"
+                            />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="start" className="w-48 p-0 overflow-hidden">
+                          <div className="flex items-center justify-center bg-white p-3">
+                            <Image
+                              src={art.thumbnailUrl}
+                              alt={art.name}
+                              width={160}
+                              height={160}
+                              className="size-36 object-contain"
+                            />
+                          </div>
+                          <div className="px-3 py-2 text-xs">
+                            <p className="font-medium text-foreground">
+                              {art.name} <span className="text-muted-foreground font-normal">|</span> {art.colorCount} color{art.colorCount !== 1 ? "s" : ""}
+                            </p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                  ))}
+                </div>
+              )}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={handleScrollToNotes}
+                    aria-label="Scroll to notes"
+                    className={cn(
+                      "flex items-center justify-center rounded-md size-7 transition-colors",
+                      hasNotes
+                        ? "bg-action/10 text-action hover:bg-action/20"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <StickyNote size={16} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" align="end" className="max-w-xs">
+                  {hasNotes ? (
+                    <div className="space-y-1.5 text-xs">
+                      {internalNotes && (
+                        <div>
+                          <p className="font-medium text-foreground">Internal</p>
+                          <p className="text-muted-foreground line-clamp-3">{internalNotes}</p>
+                        </div>
+                      )}
+                      {customerNotes && (
+                        <div>
+                          <p className="font-medium text-foreground">Customer</p>
+                          <p className="text-muted-foreground line-clamp-3">{customerNotes}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">No notes — click to add</p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+              {discountDetails.total > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="flex items-center gap-1 rounded-md bg-success/10 px-2 py-1 text-xs font-medium text-success cursor-default">
+                      <Tag size={12} />
+                      −{formatCurrency(discountDetails.total)}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="end" className="min-w-48">
+                    <div className="space-y-1 text-xs">
+                      <p className="font-medium text-foreground">Discounts Applied</p>
+                      {discountDetails.items.map((item, i) => (
+                        <div key={i} className="flex items-center justify-between gap-4">
+                          <span className="text-muted-foreground">{item.label}</span>
+                          <span className="font-medium text-foreground">−{formatCurrency(item.amount)}</span>
+                        </div>
+                      ))}
+                      {discountDetails.items.length > 1 && (
+                        <>
+                          <div className="border-t border-border my-1" />
+                          <div className="flex items-center justify-between gap-4 font-medium">
+                            <span className="text-foreground">Total</span>
+                            <span className="text-success">−{formatCurrency(discountDetails.total)}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <div className="text-right">
                 <p className="text-xs text-muted-foreground leading-none">Total</p>
-                <p className="text-sm font-bold text-foreground leading-tight">
+                <p className="text-sm font-semibold text-foreground leading-tight">
                   {formatCurrency(grandTotal)}
                 </p>
               </div>
             </div>
           </div>
+
+          {/* Service type summary row */}
+          {Object.keys(serviceTypeBreakdown).length > 0 && (
+            <div className="mt-1.5 border-t border-border pt-1.5">
+              <div className="flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted-foreground">
+                {Object.entries(serviceTypeBreakdown).map(([type, { qty, garments }], typeIndex) => (
+                  <Fragment key={type}>
+                    {typeIndex > 0 && <span className="text-border mx-1">|</span>}
+                    {/* Color swatches for this service type */}
+                    {garments.map((g, gi) => {
+                      const sizeEntries = Object.entries(g.sizes).filter(([, q]) => q > 0);
+                      return (
+                        <Tooltip key={gi}>
+                          <TooltipTrigger asChild>
+                            <span
+                              className="inline-block size-3.5 rounded-sm border border-border cursor-default"
+                              style={{ backgroundColor: g.colorHex }}
+                              aria-label={g.colorName}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" align="start" className="w-72 p-0 overflow-hidden">
+                            <div className="space-y-1.5 px-3 py-2 text-xs">
+                              <p className="font-medium text-foreground">{g.garmentName}</p>
+                              <p className="text-muted-foreground">{g.colorName}</p>
+                              {sizeEntries.length > 0 && (
+                                <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-muted-foreground">
+                                  {sizeEntries.map(([size, sQty]) => (
+                                    <span key={size}>{size}: <span className="font-medium text-foreground">{sQty}</span></span>
+                                  ))}
+                                </div>
+                              )}
+                              {g.locations.length > 0 && (
+                                <div className="border-t border-border pt-1.5 mt-1.5 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center">
+                                  {g.locations.map((loc) => {
+                                    const art = loc.artworkId ? quoteArtworks.find((a) => a.id === loc.artworkId) : undefined;
+                                    return (
+                                      <Fragment key={loc.location}>
+                                        <span className="text-foreground whitespace-nowrap">{loc.location}</span>
+                                        <span className="text-muted-foreground truncate min-w-0">
+                                          {art ? (
+                                            <span className="inline-flex items-center gap-1 min-w-0">
+                                              <Image src={art.thumbnailUrl} alt="" width={14} height={14} className="size-3.5 shrink-0 rounded-sm object-contain bg-white/90" />
+                                              <span className="truncate">{art.name}</span>
+                                            </span>
+                                          ) : (
+                                            <span className="italic">No artwork</span>
+                                          )}
+                                        </span>
+                                      </Fragment>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
+                    <span className="ml-0.5">
+                      <span className="font-medium text-foreground">{qty}</span>{" "}
+                      {SERVICE_TYPE_LABELS[type as keyof typeof SERVICE_TYPE_LABELS]}
+                    </span>
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+        </TooltipProvider>
 
         {/* Section 1: Customer */}
         <CollapsibleSection
@@ -555,7 +758,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
               onAddNew={() => setShowAddCustomer(true)}
             />
             {errors.customerId && (
-              <p className="text-xs text-error">{errors.customerId}</p>
+              <p className="text-xs text-error" role="alert">{errors.customerId}</p>
             )}
           </div>
         </CollapsibleSection>
@@ -595,7 +798,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         >
           <div className="space-y-4 pt-2">
             {errors.lineItems && (
-              <p className="text-xs text-error">{errors.lineItems}</p>
+              <p className="text-xs text-error" role="alert">{errors.lineItems}</p>
             )}
             {lineItems.map((item, i) => (
               <LineItemRow
@@ -627,6 +830,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         <CollapsibleSection
           title="Pricing"
           icon={<DollarSign size={16} className="text-muted-foreground" />}
+          summary={pricingSummary}
           defaultOpen
         >
           <div className="pt-2">
@@ -648,6 +852,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         <CollapsibleSection
           title="Notes"
           icon={<StickyNote size={16} className="text-muted-foreground" />}
+          summary={notesSummary}
           isComplete={!!(internalNotes || customerNotes)}
           defaultOpen={false}
           open={notesOpen}

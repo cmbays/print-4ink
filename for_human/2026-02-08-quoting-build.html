@@ -363,7 +363,7 @@
         </div>
         <div class="meta-item">
           <span class="meta-label">PRs</span>
-          <span class="meta-value"><code>#13</code> + <code>#14</code> (merged)</span>
+          <span class="meta-value"><code>#13</code> + <code>#14</code> + <code>#20</code> (merged)</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Phase</span>
@@ -376,8 +376,8 @@
       </div>
 
       <div class="session-resume">
-        <span class="meta-label">Resume Session (Patch v2)</span>
-        <code>claude --resume 43fc70c6-31ae-400e-87d4-f138533d8028</code>
+        <span class="meta-label">Resume Session (Patch v3)</span>
+        <code>claude --resume 13546e08-2ee1-4de3-94a7-c2a596a15e1a</code>
       </div>
     </header>
 
@@ -441,6 +441,10 @@
     <div class="card">
       <div class="card-title"><a href="https://github.com/cmbays/print-4ink/pull/14">PR #14</a> &mdash; feat: Quoting patch v2 &mdash; pricing, artwork, form UX</div>
       <div class="card-desc">20 feedback items: artwork system, customer tags, service types, discount model, flat setup fees, collapsible sections, sticky top bar, CodeRabbit review fixes. <strong>Merged.</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><a href="https://github.com/cmbays/print-4ink/pull/20">PR #20</a> &mdash; feat: Quoting patch v3 &mdash; sticky bar, pricing, tooltips</div>
+      <div class="card-desc">Sticky bar redesign (single-row service type layout with inline color swatches), pricing formula with info tooltip in review view, artwork-derived color counts, tooltip dark mode + hover fixes, removed Edit Quote from review slide-out. CodeRabbit fixes (icon sizes). <strong>Merged.</strong></div>
     </div>
 
     <!-- Pages -->
@@ -599,6 +603,17 @@
       <li><strong>Phase D</strong>: CollapsibleSection, form restructure, customer-aware defaults</li>
       <li><strong>Phase E</strong>: QuoteDetailView extraction, QuoteReviewSheet, detail page update</li>
       <li><strong>Phase F</strong>: ArtworkPreview, discount visibility polish, sticky top bar, flat setup fee model, CodeRabbit review fixes (17 items: icon sizes, a11y, design tokens, lint)</li>
+    </ul>
+
+    <h3>PR #20 &mdash; Patch v3 (sticky bar, pricing, tooltips)</h3>
+    <p>Iterative polish session focused on sticky bar UX, tooltip behavior, and pricing clarity:</p>
+    <ul>
+      <li><strong>Sticky bar redesign</strong>: Collapsed multi-row service type layout into single inline row with color swatches + qty labels separated by pipe (<code>[swatch][swatch] 455 Screen Print | [swatch] 700 DTF</code>). Added artwork thumbnail icons, discount badge, notes icon with tooltips.</li>
+      <li><strong>Tooltip system</strong>: Fixed dark mode styling (bg-elevated), hover/flickering bugs (shared TooltipProvider, sideOffset gap, pointer-events-none on closing state), swatch tooltips with garment + sizes + print locations, artwork tooltips with large preview images.</li>
+      <li><strong>Pricing formula</strong>: Review view line items now show <code>($13.50 x 562 qty) + $40 setup = $7,627.00</code> with info icon tooltip explaining per-unit cost breakdown and setup fee rates per service type.</li>
+      <li><strong>Color count from artwork</strong>: Removed manual color count input. Color count auto-derived from assigned artwork. Resets when artwork removed or customer changed.</li>
+      <li><strong>Review slide-out</strong>: Added grand total to sticky header. Removed Edit Quote button (close via X or click-away).</li>
+      <li><strong>CodeRabbit fixes</strong>: Icon sizes (size-12 &rarr; size-6) in empty state placeholders.</li>
     </ul>
 
     <!-- Deferred Tech Debt -->

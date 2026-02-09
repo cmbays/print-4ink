@@ -7,13 +7,19 @@ import { DiscountRow } from "./DiscountRow";
 import { ArtworkPreview } from "./ArtworkPreview";
 import { QuoteActions } from "./QuoteActions";
 import { Button } from "@/components/ui/button";
-import { Pencil, Send } from "lucide-react";
+import { Info, Send } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Quote } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Artwork } from "@/lib/schemas/artwork";
 import { garmentCatalog, colors as allColors } from "@/lib/mock-data";
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, CUSTOMER_TAG_LABELS, CUSTOMER_TAG_COLORS } from "@/lib/constants";
-import { calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
+import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import { cn } from "@/lib/utils";
 
 interface QuoteDetailViewProps {
@@ -21,7 +27,6 @@ interface QuoteDetailViewProps {
   customer: Customer | null;
   artworks: Artwork[];
   mode: "detail" | "review";
-  onBack?: () => void;
   onSend?: () => void;
 }
 
@@ -42,7 +47,6 @@ export function QuoteDetailView({
   customer,
   artworks,
   mode,
-  onBack,
   onSend,
 }: QuoteDetailViewProps) {
   const totalDiscounts = quote.discounts.reduce((sum, d) => sum + d.amount, 0);
@@ -70,19 +74,19 @@ export function QuoteDetailView({
       <div className="sticky top-0 z-10 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-semibold text-foreground">
+            <h1 className="text-xl font-semibold text-foreground">
               {quote.quoteNumber}
-            </h2>
+            </h1>
             <StatusBadge status={quote.status} />
           </div>
           {mode === "detail" ? (
             <QuoteActions quote={quote} customer={customer} />
           ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={onBack}>
-                <Pencil size={14} />
-                Edit Quote
-              </Button>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground leading-none">Total</p>
+                <p className="text-base font-semibold text-foreground leading-tight">{formatCurrency(effectiveTotal)}</p>
+              </div>
               <Button size="sm" onClick={onSend} className="bg-action text-primary-foreground">
                 <Send size={14} />
                 Send Quote
@@ -111,12 +115,21 @@ export function QuoteDetailView({
       </div>
 
       {/* Line Items */}
+      <TooltipProvider delayDuration={200}>
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-foreground">Line Items</h3>
         {quote.lineItems.map((item, index) => {
           const garment = garmentCatalog.find((g) => g.id === item.garmentId);
           const color = allColors.find((c) => c.id === item.colorId);
           const totalQty = getTotalQty(item.sizes);
+          const serviceType = item.serviceType as keyof typeof DECORATION_COST_PER_COLOR;
+          const garmentUnitCost = garment?.basePrice ?? 0;
+          const decorationPerUnit = item.printLocationDetails.reduce(
+            (sum, d) => sum + d.colorCount * DECORATION_COST_PER_COLOR[serviceType] + LOCATION_FEE_PER_UNIT[serviceType],
+            0
+          );
+          const unitCostCombined = garmentUnitCost + decorationPerUnit;
+          const itemSetupFee = calculateLineItemSetupFee(serviceType);
 
           return (
             <div key={index} className="rounded-lg border border-border bg-surface p-4 space-y-3">
@@ -151,10 +164,11 @@ export function QuoteDetailView({
                 <span className="text-muted-foreground">= {totalQty} total</span>
               </div>
 
-              {/* Print Locations with per-location details */}
+              {/* Print Locations with per-location decoration fee */}
               <div className="space-y-1">
                 {item.printLocationDetails.map((detail, di) => {
                   const artwork = detail.artworkId ? artworkMap.get(detail.artworkId) : undefined;
+                  const locDecorationPerUnit = detail.colorCount * DECORATION_COST_PER_COLOR[serviceType] + LOCATION_FEE_PER_UNIT[serviceType];
                   return (
                     <div key={di} className="flex items-center gap-3 text-sm">
                       {color && (
@@ -170,19 +184,44 @@ export function QuoteDetailView({
                         <span className="text-muted-foreground"> · {detail.colorCount} color{detail.colorCount !== 1 ? "s" : ""}</span>
                         {artwork && <span className="text-muted-foreground"> · {artwork.name}</span>}
                       </div>
-                      <span className="text-xs text-muted-foreground">{formatCurrency(detail.setupFee)} setup</span>
+                      <span className="text-xs text-muted-foreground">+{formatCurrency(locDecorationPerUnit)}/unit</span>
                     </div>
                   );
                 })}
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                {formatCurrency(item.unitPrice)} x {totalQty} = <span className="font-medium text-foreground">{formatCurrency(item.lineTotal)}</span>
-              </p>
+              {/* Formula with setup fee and info tooltip */}
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <span>
+                  ({formatCurrency(unitCostCombined)} x {totalQty} qty){itemSetupFee > 0 && <> + {formatCurrency(itemSetupFee)} setup</>} = <span className="font-medium text-foreground">{formatCurrency(item.lineTotal)}</span>
+                </span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-default text-muted-foreground hover:text-foreground transition-colors">
+                      <Info size={14} />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" align="start" className="max-w-xs">
+                    <div className="space-y-1.5 text-xs">
+                      <p className="font-medium text-foreground">Price Breakdown</p>
+                      <p className="text-muted-foreground">
+                        {formatCurrency(garmentUnitCost)} garment + {formatCurrency(decorationPerUnit)} decoration = {formatCurrency(unitCostCombined)}/unit
+                      </p>
+                      <div className="border-t border-border pt-1.5 space-y-0.5">
+                        <p className="font-medium text-foreground">Setup Fees</p>
+                        <p className="text-muted-foreground">Screen Print: $40 per quote</p>
+                        <p className="text-muted-foreground">DTF: $0</p>
+                        <p className="text-muted-foreground">Embroidery: $20 per design</p>
+                      </div>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </div>
           );
         })}
       </div>
+      </TooltipProvider>
 
       {/* Pricing */}
       <div className="rounded-lg border border-border bg-card p-6 space-y-2">

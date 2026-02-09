@@ -5,7 +5,7 @@ category: canonical
 status: active
 phase: all
 last_updated: 2026-02-07
-last_verified: 2026-02-07
+last_verified: 2026-02-09
 depends_on: []
 ---
 
@@ -56,7 +56,7 @@ depends_on: []
 | **sonner** | ^2.0.7 | Toast notification library. Wraps in shadcn/ui `<Toaster>` component. |
 | **Lucide React** | ^0.563.0 | Icon library. Consistent naming, tree-shakeable. |
 
-**Installed shadcn/ui components**: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form, checkbox, command, popover, accordion, scroll-area
+**Installed shadcn/ui components**: accordion, avatar, badge, breadcrumb, button, card, checkbox, collapsible, command, dialog, dropdown-menu, form, input, label, popover, scroll-area, select, separator, sheet, table, tabs, textarea, tooltip
 
 **When to add a component**: Run `npx shadcn@latest add <component>`. Always check if one already exists in `components/ui/` before creating custom UI.
 

@@ -205,6 +205,7 @@ export function PricingSummary({
                 }}
                 className="h-8 text-right text-sm"
                 placeholder="$0.00"
+                aria-label="Shipping cost"
               />
             </div>
           </div>
@@ -232,7 +233,7 @@ export function PricingSummary({
               </p>
             )}
           </div>
-          <p className="text-lg font-bold text-foreground">
+          <p className="text-lg font-semibold text-foreground">
             {formatCurrency(grandTotal)}
           </p>
         </div>

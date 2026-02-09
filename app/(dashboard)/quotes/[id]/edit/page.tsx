@@ -24,7 +24,7 @@ export default async function EditQuotePage({
   if (!quote) {
     return (
       <div className="flex flex-col items-center justify-center py-24">
-        <div className="rounded-lg border border-border bg-card p-8 text-center">
+        <div className="rounded-lg border border-border bg-card p-8 text-center" role="alert">
           <h2 className="text-xl font-semibold text-foreground">
             Quote not found
           </h2>
@@ -77,7 +77,7 @@ export default async function EditQuotePage({
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -95,7 +95,7 @@ export default async function EditQuotePage({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <h1 className="text-2xl font-semibold">Edit Quote — {quote.quoteNumber}</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Edit Quote — {quote.quoteNumber}</h1>
       <QuoteForm mode="edit" initialData={initialData} quoteId={quote.id} />
     </div>
   );
