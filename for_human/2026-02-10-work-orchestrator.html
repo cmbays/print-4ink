@@ -423,25 +423,29 @@
       </div>
     </div>
 
-    <h2>Tmux Architecture</h2>
-    <pre>tmux session: "main"
-  &boxvr;&boxh; window: "main" &larr; Planning Claude session
+    <h2>Ghostty + Tmux Architecture</h2>
+    <pre>Ghostty Quick Terminal (hotkey toggle)
+&boxvr;&boxh; Pane 1 (you split manually)
+&boxv;  &boxur;&boxh; tmux session: "main"
+&boxv;      &boxur;&boxh; window: main Claude (planning)
+&boxv;
+&boxvr;&boxh; Pane 2 (you split manually, Claude gives command)
+&boxv;  &boxur;&boxh; tmux session: "invoicing-schema"
+&boxv;      &boxvr;&boxh; window: invoicing-schema  &larr; work invoicing-schema
+&boxv;      &boxvr;&boxh; window: invoicing-ui      &larr; Claude runs work (stacked)
+&boxv;      &boxvr;&boxh; window: (auto)            &larr; Agent Teams (hook)
+&boxv;      &boxur;&boxh; window: (auto)            &larr; Agent Teams (hook)
+&boxv;
+&boxur;&boxh; Pane 3 (you split manually)
+   &boxur;&boxh; tmux session: "customer-export"
+       &boxur;&boxh; window: customer-export  &larr; work customer-export</pre>
 
-tmux session: "invoicing-schema"
-  &boxvr;&boxh; window: "invoicing-schema" &larr; work invoicing-schema (lead)
-  &boxvr;&boxh; window: "invoicing-ui"     &larr; work invoicing-ui (stacked)
-  &boxvr;&boxh; window: (auto)             &larr; Agent Teams (auto-converted)
-  &boxur;&boxh; window: (auto)             &larr; Agent Teams (auto-converted)
-
-tmux session: "customer-export"
-  &boxur;&boxh; window: "customer-export"  &larr; work customer-export</pre>
-
-    <p><strong>Key rules:</strong></p>
+    <p><strong>Two modes:</strong></p>
     <ul>
-      <li><code>work &lt;topic&gt;</code> from main &rarr; new tmux <strong>session</strong></li>
-      <li><code>work &lt;topic&gt; &lt;base&gt;</code> stacked &rarr; new <strong>window</strong> in parent session</li>
-      <li>Agent Teams pane splits auto-convert to windows via <code>after-split-window</code> hook</li>
-      <li><code>work focus</code> creates a read-only monitor session (original untouched)</li>
+      <li><strong>New workstream</strong> (<code>work &lt;topic&gt;</code>) &rarr; detached tmux session. Claude gives you the command; you attach from a new Ghostty pane.</li>
+      <li><strong>Related work</strong> (<code>work &lt;topic&gt; &lt;base&gt;</code>) &rarr; new window/tab in parent's tmux session. Claude does this automatically; no pane splitting needed.</li>
+      <li><strong>Agent Teams</strong> &rarr; pane splits auto-convert to windows via <code>after-split-window</code> hook. All agents appear as tabs in the same session.</li>
+      <li><strong><code>--prompt</code></strong> &rarr; seeds the new Claude with an initial task via <code>tmux send-keys</code>.</li>
     </ul>
 
     <h2>Commands Reference</h2>
@@ -452,11 +456,15 @@ tmux session: "customer-export"
       </tr>
       <tr>
         <td><code>work &lt;topic&gt;</code></td>
-        <td>New worktree from main + tmux session + Claude</td>
+        <td>New workstream: detached tmux session + worktree + Claude</td>
       </tr>
       <tr>
         <td><code>work &lt;topic&gt; &lt;base&gt;</code></td>
-        <td>Stacked worktree + window in parent's tmux session</td>
+        <td>Related work: window in parent's tmux session + worktree</td>
+      </tr>
+      <tr>
+        <td><code>work &lt;topic&gt; --prompt "..."</code></td>
+        <td>Seed new Claude with an initial task prompt</td>
       </tr>
       <tr>
         <td><code>work --stack &lt;topic&gt;</code></td>
@@ -500,35 +508,36 @@ tmux session: "customer-export"
 
     <h2>Workflow Examples</h2>
 
-    <h3>1. Independent features</h3>
-    <div class="code-block">work invoicing-schema
-work customer-export
-# Two separate tmux sessions, two worktrees, two Claude processes</div>
+    <h3>1. New workstream (you split the Ghostty pane)</h3>
+    <div class="code-block"># Claude says: "Run this in a new Ghostty pane:"
+work invoicing-schema --prompt "Build the Zod schemas per docs/strategy/..."
+# Then in a new Ghostty pane:
+tmux attach -t invoicing-schema
+# Claude is already running with your prompt</div>
 
-    <h3>2. Stacked PRs</h3>
-    <div class="code-block">work invoicing-schema                                # New session
-work invoicing-ui session/0210-invoicing-schema       # Window in same session
-# invoicing-ui branches from invoicing-schema</div>
+    <h3>2. Related work (Claude does this automatically)</h3>
+    <div class="code-block"># Claude runs this from within the invoicing-schema session:
+work invoicing-ui session/0210-invoicing-schema --prompt "Build UI components"
+# New tab appears in the invoicing-schema tmux session
+# Navigate: Ctrl+b n (next) or Ctrl+b w (tree)</div>
 
-    <h3>3. Manual parallel agents</h3>
-    <div class="code-block">work invoicing-schema                                    # New session
-work invoicing-components session/0210-invoicing-schema  # Window
-work invoicing-mock-data session/0210-invoicing-schema   # Window
-work focus                                               # Monitor all 3</div>
-
-    <h3>4. Claude Agent Teams (within one worktree)</h3>
-    <div class="code-block">work invoicing-schema                  # Creates session with hook
-# Inside that Claude session, use TeamCreate
+    <h3>3. Agent Teams (fully automatic)</h3>
+    <div class="code-block"># Inside a work-created session, Claude uses TeamCreate
 # TeamCreate splits panes &rarr; hook converts to windows
-# Session now has 4 windows: lead + 3 agents
-work focus                             # Monitor all 4</div>
+# All agents appear as tabs: Ctrl+b n to cycle
+work focus                             # Monitor all agents tiled</div>
 
-    <h3>5. Combined &mdash; worktrees + Agent Teams</h3>
-    <div class="code-block">work invoicing-schema                                    # Session with hook
-work invoicing-ui session/0210-invoicing-schema          # Stacked window
-# Inside invoicing-schema, TeamCreate spawns 2 agents
-# Session: invoicing-schema, invoicing-ui, agent-1, agent-2
-work focus                                               # See all 4</div>
+    <h3>4. Full example &mdash; workstream + stacked + Agent Teams</h3>
+    <div class="code-block"># You: split Ghostty pane, run:
+work invoicing-schema
+
+# Claude spawns related work (new tabs in same session):
+work invoicing-ui session/0210-invoicing-schema --prompt "Build UI"
+work invoicing-tests session/0210-invoicing-schema --prompt "Write tests"
+
+# Claude also uses TeamCreate for parallel agents (auto-converted to tabs)
+# Session now has: invoicing-schema, invoicing-ui, invoicing-tests, agent-1, agent-2
+work focus                             # See all 5 tiled</div>
 
     <h2>Tmux Navigation Cheatsheet</h2>
     <table>

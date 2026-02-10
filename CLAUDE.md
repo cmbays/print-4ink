@@ -39,13 +39,16 @@ gh pr create --title "..." --body "..."  # Create PR
 npm run gen:index                    # Regenerate for_human index (main only)
 
 # Session Orchestration (requires: source scripts/work.sh in .zshrc)
-work <topic>                     # New worktree + tmux session + Claude
-work <topic> <base-branch>      # Stacked worktree + window in parent session
-work --stack <topic>             # Stack from current branch
-work list                        # Show sessions, windows, ports
-work focus                       # Read-only tiled monitor of agents
-work unfocus                     # Close monitor, back to original
-work clean <topic>               # Remove worktree + tmux + branch
+work <topic>                          # New workstream: detached tmux session + worktree
+work <topic> <base-branch>           # Related work: window in parent's tmux session
+work <topic> --prompt "task desc"     # Seed new Claude with initial prompt
+work --stack <topic>                  # Stack from current branch (auto-detects $PWD)
+work list                             # Show sessions, windows, ports
+work focus                            # Read-only tiled monitor of windows
+work unfocus                          # Close monitor, back to original
+work clean <topic>                    # Remove worktree + tmux + branch
+# New workstream: user splits Ghostty pane, runs "tmux attach -t <topic>"
+# Related work: Claude runs work automatically, new window appears as tab
 ```
 
 ## Session Startup (Required)

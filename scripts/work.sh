@@ -5,6 +5,12 @@
 #   source ~/Github/print-4ink/scripts/work.sh
 #
 # Then use: work <topic>, work list, work focus, work clean <topic>, etc.
+#
+# UX Model:
+#   - New workstream (work <topic>) → detached tmux session. You attach from a new Ghostty pane.
+#   - Related work (work <topic> <base>) → new window in parent's tmux session. Appears as a tab.
+#   - Agent Teams → hook converts pane splits to windows in the same session.
+#   - work focus → read-only tiled monitor of all windows in current session.
 
 # ── Config ──────────────────────────────────────────────────────────────────
 PRINT4INK_REPO="$HOME/Github/print-4ink"
@@ -24,19 +30,34 @@ work() {
             _work_help ;;
         --stack)
             shift
-            local TOPIC="$1"
-            [[ -z "$TOPIC" ]] && { echo "Error: topic required. Usage: work --stack <topic>"; return 1; }
+            local topic="${1:-}"
+            [[ -z "$topic" ]] && { echo "Error: topic required. Usage: work --stack <topic> [--prompt \"...\"]"; return 1; }
+            shift
+            local prompt=""
+            [[ "${1:-}" == "--prompt" ]] && prompt="${2:-}"
             # Auto-detect current branch from $PWD
-            local CURRENT_BRANCH
-            CURRENT_BRANCH=$(git -C "$PWD" rev-parse --abbrev-ref HEAD 2>/dev/null)
-            if [[ -z "$CURRENT_BRANCH" || "$CURRENT_BRANCH" == "HEAD" ]]; then
+            local current_branch
+            current_branch=$(git -C "$PWD" rev-parse --abbrev-ref HEAD 2>/dev/null)
+            if [[ -z "$current_branch" || "$current_branch" == "HEAD" ]]; then
                 echo "Error: Not in a git worktree. Use 'work <topic> <base-branch>' instead."
                 return 1
             fi
-            _work_new "$TOPIC" "$CURRENT_BRANCH"
+            _work_new "$topic" "$current_branch" "$prompt"
             ;;
         *)
-            _work_new "$1" "${2:-main}" ;;
+            # Parse: work <topic> [<base-branch>] [--prompt "..."]
+            local topic="$1"; shift
+            local base="main"
+            local prompt=""
+            # Next arg is either a base-branch or --prompt
+            if [[ "${1:-}" == "--prompt" ]]; then
+                prompt="${2:-}"
+            elif [[ -n "${1:-}" ]]; then
+                base="$1"; shift
+                [[ "${1:-}" == "--prompt" ]] && prompt="${2:-}"
+            fi
+            _work_new "$topic" "$base" "$prompt"
+            ;;
     esac
 }
 
@@ -46,33 +67,52 @@ _work_help() {
 work — Claude + Tmux Worktree Orchestrator
 
 USAGE
-  work <topic>                   New worktree from main + tmux session + Claude
-  work <topic> <base-branch>    Stacked worktree + window in parent's tmux session
-  work --stack <topic>           Stack from current branch (auto-detects from $PWD)
-  work list                      Show sessions, windows, worktrees, and ports
-  work focus                     Read-only tiled monitor of all windows in current session
-  work unfocus                   Close monitor, return to original session
-  work clean <topic>             Remove worktree + close tmux window/session + delete branch
-  work help                      This help text
+  work <topic>                          New workstream: worktree + detached tmux session
+  work <topic> <base-branch>           Related work: worktree + window in parent's session
+  work --stack <topic>                  Stack from current branch (auto-detects $PWD)
+  work <topic> --prompt "task desc"     Seed the new Claude with an initial prompt
+  work list                             Show sessions, windows, worktrees, and ports
+  work focus                            Read-only tiled monitor of all windows
+  work unfocus                          Close monitor, return to original session
+  work clean <topic>                    Remove worktree + tmux + branch
+  work help                             This help text
+
+WORKFLOW
+  New workstream (new Ghostty pane needed):
+    1. Claude tells you: work invoicing-schema
+    2. You split a new pane in Ghostty
+    3. Run: tmux attach -t invoicing-schema
+    4. Claude is already running with your prompt
+
+  Related work (Claude does this automatically):
+    1. Claude runs: work invoicing-ui session/0210-invoicing-schema --prompt "..."
+    2. New window appears in the "invoicing-schema" tmux session
+    3. Navigate: Ctrl+b n (next window) or Ctrl+b w (window tree)
+
+  Agent Teams (automatic):
+    1. Claude uses TeamCreate → agents spawn via split-window
+    2. after-split-window hook converts each pane to a window
+    3. All agents appear as tabs in the same session
 
 EXAMPLES
-  work invoicing-schema                                  # New feature session
-  work invoicing-ui session/0210-invoicing-schema        # Stacked PR (window in parent)
-  work --stack invoicing-tests                           # Stack from current worktree
-  work focus                                             # Monitor all agents side-by-side
-  work clean invoicing-schema                            # Full cleanup
+  work invoicing-schema                                     # New workstream
+  work invoicing-schema --prompt "Build the Zod schemas"    # With initial task
+  work invoicing-ui session/0210-invoicing-schema           # Window in parent
+  work --stack invoicing-tests --prompt "Write tests"       # Stack from $PWD
+  work focus                                                # Monitor all
+  work clean invoicing-schema                               # Full cleanup
 
 TMUX NAVIGATION
-  Ctrl+b s   Session picker (all features)
-  Ctrl+b n   Next window (cycle agents in session)
+  Ctrl+b s   Session picker (switch between workstreams)
+  Ctrl+b n   Next window (cycle agents/branches in session)
   Ctrl+b p   Previous window
   Ctrl+b w   Window tree (all sessions + windows)
   Ctrl+b z   Zoom pane (in focus view)
 
 NOTES
-  - Always operates from main repo (~/Github/print-4ink), never from $PWD
-  - Branch naming: session/<MMDD>-<topic> (auto-generated)
-  - Each session gets an after-split-window hook for Agent Teams compatibility
+  - New workstreams create detached sessions — attach from a new Ghostty pane
+  - Related work creates windows in parent's session — no pane splitting needed
+  - Branch naming: session/<MMDD>-<topic> (auto-generated, kebab-case enforced)
   - Max 6 concurrent worktrees
 HELP
 }
@@ -81,6 +121,7 @@ HELP
 _work_new() {
     local TOPIC="$1"
     local BASE="${2:-main}"
+    local PROMPT="${3:-}"
 
     # Validate topic
     [[ -z "$TOPIC" ]] && { echo "Error: topic required"; return 1; }
@@ -149,6 +190,7 @@ _work_new() {
 # Port: ${PORT}
 
 ## Task
+${PROMPT:-}
 
 ## Decisions
 
@@ -162,26 +204,42 @@ CONTEXT
     echo "  Port:      $PORT"
     echo "  Dev:       PORT=$PORT npm run dev"
 
-    # Tmux integration
+    # ── Tmux Integration ────────────────────────────────────────────────────
     if [[ -n "$TMUX" ]]; then
         if [[ "$BASE" == "main" ]]; then
-            # Standard: new tmux session
+            # ── New workstream: detached tmux session ───────────────────────
+            # Creates session in background. User attaches from a new Ghostty pane.
             tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
+
             # Set hook to auto-convert Agent Teams panes → windows
             tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+
+            # Launch Claude in the new session
             tmux send-keys -t "$TOPIC" "claude" Enter
-            tmux switch-client -t "$TOPIC"
-            echo "  Session:   $TOPIC (Ctrl+b s to switch sessions)"
+
+            # Seed with initial prompt if provided
+            if [[ -n "$PROMPT" ]]; then
+                sleep 3
+                tmux send-keys -t "$TOPIC" "$PROMPT" Enter
+            fi
+
+            echo "  Session:   $TOPIC (detached)"
+            echo ""
+            echo "  Attach from a new Ghostty pane:"
+            echo "    tmux attach -t $TOPIC"
+
         else
-            # Stacked/parallel: find parent session, add window
+            # ── Related work: new window in parent's tmux session ───────────
+            # Finds the parent session and adds a window tab. No pane splitting.
             local PARENT_SESSION=""
             local sess
 
-            # Strategy 1: Check if any session's panes are in the base branch worktree
+            # Strategy 1: Check if any session's windows are in the base branch worktree
             for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-                local paths
-                paths=$(tmux list-panes -t "$sess" -F '#{pane_current_path}' -a 2>/dev/null)
-                if echo "$paths" | grep -q "${PRINT4INK_WORKTREES}/${BASE}" 2>/dev/null; then
+                [[ "$sess" == focus-* ]] && continue
+                local win_paths
+                win_paths=$(tmux list-windows -t "$sess" -F '#{pane_current_path}' 2>/dev/null)
+                if echo "$win_paths" | grep -q "${PRINT4INK_WORKTREES}/${BASE}" 2>/dev/null; then
                     PARENT_SESSION="$sess"
                     break
                 fi
@@ -192,6 +250,7 @@ CONTEXT
                 local base_slug
                 base_slug=$(echo "$BASE" | sed 's|session/[0-9]*-||')
                 for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
+                    [[ "$sess" == focus-* ]] && continue
                     if [[ "$sess" == "$base_slug" ]]; then
                         PARENT_SESSION="$sess"
                         break
@@ -199,23 +258,51 @@ CONTEXT
                 done
             fi
 
+            # Strategy 3: Check current session (Claude calling work for related work)
+            if [[ -z "$PARENT_SESSION" ]]; then
+                local current_session
+                current_session=$(tmux display-message -p '#S' 2>/dev/null)
+                if [[ -n "$current_session" && "$current_session" != focus-* ]]; then
+                    PARENT_SESSION="$current_session"
+                fi
+            fi
+
             if [[ -n "$PARENT_SESSION" ]]; then
-                tmux new-window -t "$PARENT_SESSION" -n "$TOPIC" -c "$WORKTREE_DIR"
+                # Create window WITHOUT switching to it (-d flag)
+                tmux new-window -d -t "$PARENT_SESSION" -n "$TOPIC" -c "$WORKTREE_DIR"
+
+                # Launch Claude
                 tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "claude" Enter
-                echo "  Window:    $TOPIC in session '$PARENT_SESSION' (Ctrl+b n to switch)"
+
+                # Seed with initial prompt if provided
+                if [[ -n "$PROMPT" ]]; then
+                    sleep 3
+                    tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "$PROMPT" Enter
+                fi
+
+                echo "  Window:    $TOPIC in session '$PARENT_SESSION'"
+                echo "  Navigate:  Ctrl+b n (next) or Ctrl+b w (tree)"
             else
-                # Fallback: create new session if parent not found
+                # Fallback: create detached session if parent not found
                 tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
                 tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
                 tmux send-keys -t "$TOPIC" "claude" Enter
-                tmux switch-client -t "$TOPIC"
-                echo "  Session:   $TOPIC (parent session not found, created new)"
+
+                if [[ -n "$PROMPT" ]]; then
+                    sleep 3
+                    tmux send-keys -t "$TOPIC" "$PROMPT" Enter
+                fi
+
+                echo "  Session:   $TOPIC (parent not found, created detached session)"
+                echo ""
+                echo "  Attach from a new Ghostty pane:"
+                echo "    tmux attach -t $TOPIC"
             fi
         fi
     else
         echo ""
-        echo "  Not in tmux. Run manually:"
-        echo "    cd $WORKTREE_DIR && claude"
+        echo "  Not in tmux. Start with:"
+        echo "    cd $WORKTREE_DIR && tmux new-session -s $TOPIC && claude"
     fi
 }
 
@@ -293,7 +380,7 @@ _work_focus() {
 
     tmux select-layout -t "$FOCUS" tiled
     tmux switch-client -t "$FOCUS"
-    echo "Focus mode: $COUNT agents tiled. 'work unfocus' to exit."
+    echo "Focus mode: $COUNT windows tiled. 'work unfocus' to exit."
 }
 
 # ── Unfocus: Return to Original Session ─────────────────────────────────────
