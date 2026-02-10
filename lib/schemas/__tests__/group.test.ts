@@ -3,7 +3,7 @@ import { groupSchema } from "../group";
 
 describe("groupSchema", () => {
   const validGroup = {
-    id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    id: "91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     name: "Marketing Dept",
     customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
   };

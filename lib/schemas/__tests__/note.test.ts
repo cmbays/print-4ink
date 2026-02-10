@@ -29,7 +29,7 @@ describe("noteEntityTypeEnum", () => {
 
 describe("noteSchema", () => {
   const validNote = {
-    id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    id: "61a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     content: "Customer prefers black garments.",
     createdAt: "2026-02-01T10:00:00Z",
     createdBy: "Gary",

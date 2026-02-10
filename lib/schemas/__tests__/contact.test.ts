@@ -47,10 +47,10 @@ describe("contactSchema", () => {
   it("accepts contact with groupId", () => {
     const withGroup = {
       ...validContact,
-      groupId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+      groupId: "91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     };
     const result = contactSchema.parse(withGroup);
-    expect(result.groupId).toBe("01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c");
+    expect(result.groupId).toBe("91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c");
   });
 
   it("rejects empty name", () => {

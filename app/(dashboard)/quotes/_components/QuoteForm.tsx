@@ -50,11 +50,9 @@ interface QuoteFormProps {
   quoteId?: string;
 }
 
-let lineItemCounter = 0;
 function createEmptyLineItem(): LineItemData {
-  lineItemCounter += 1;
   return {
-    id: `li-${Date.now()}-${lineItemCounter}`,
+    id: crypto.randomUUID(),
     garmentId: "",
     colorId: "",
     sizes: {},
@@ -260,10 +258,10 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     }) => {
       const now = new Date().toISOString();
       const newCustomer: Customer = {
-        id: `new-${Date.now()}-0000-4000-a000-000000000000`,
+        id: crypto.randomUUID(),
         name: data.name,
         email: data.email,
-        company: data.company || "",
+        company: data.company || data.name,
         phone: data.phone || "",
         address: "",
         tag: (data.tag || "new") as CustomerTag,

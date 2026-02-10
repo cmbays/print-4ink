@@ -147,7 +147,7 @@ describe("customerSchema", () => {
       ],
       groups: [
         {
-          id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+          id: "91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
           name: "Marketing",
           customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
         },
@@ -162,7 +162,7 @@ describe("customerSchema", () => {
     const withAddresses = {
       ...validCustomer,
       billingAddress: {
-        id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+        id: "31a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
         label: "Main",
         street: "1200 E 6th St",
         city: "Austin",
@@ -174,7 +174,7 @@ describe("customerSchema", () => {
       },
       shippingAddresses: [
         {
-          id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+          id: "32b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
           label: "Warehouse",
           street: "3400 Industrial Blvd",
           city: "Austin",

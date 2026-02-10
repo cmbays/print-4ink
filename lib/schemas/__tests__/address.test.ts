@@ -13,7 +13,7 @@ describe("addressTypeEnum", () => {
 
 describe("addressSchema", () => {
   const validAddress = {
-    id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    id: "31a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     label: "Main",
     street: "1200 E 6th St",
     city: "Austin",

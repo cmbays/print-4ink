@@ -33,8 +33,8 @@ const CUSTOMER_IDS = {
 
 export const contacts: Contact[] = [
   // River City Brewing — 2 contacts, 1 group
-  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", name: "Marcus Rivera", email: "marcus@rivercitybrewing.com", phone: "(512) 555-0147", role: "ordering", isPrimary: true, groupId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c" },
-  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", name: "Lisa Park", email: "lisa@rivercitybrewing.com", role: "art-approver", isPrimary: false, groupId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c" },
+  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", name: "Marcus Rivera", email: "marcus@rivercitybrewing.com", phone: "(512) 555-0147", role: "ordering", isPrimary: true, groupId: "91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c" },
+  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", name: "Lisa Park", email: "lisa@rivercitybrewing.com", role: "art-approver", isPrimary: false, groupId: "91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c" },
   // Lonestar Lacrosse — 1 contact
   { id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", name: "Sarah Chen", email: "sarah@lonestarlax.org", phone: "(512) 555-0298", role: "ordering", isPrimary: true },
   // Thompson Family — 1 contact
@@ -45,8 +45,8 @@ export const contacts: Contact[] = [
   { id: "06f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", name: "Chris Patel", email: "chris@lakesidefest.com", phone: "(737) 555-0671", role: "ordering", isPrimary: true },
   { id: "07a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", name: "Amy Wong", email: "amy@lakesidefest.com", phone: "(737) 555-0672", role: "billing", isPrimary: false },
   // Metro Youth Soccer — 2 contacts, 1 group
-  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", name: "Coach Williams", email: "coach@metroyouthsoccer.org", phone: "(512) 555-0801", role: "ordering", isPrimary: true, groupId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d" },
-  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", name: "Janet Lee", email: "janet@metroyouthsoccer.org", phone: "(512) 555-0802", role: "billing", isPrimary: false, groupId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d" },
+  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", name: "Coach Williams", email: "coach@metroyouthsoccer.org", phone: "(512) 555-0801", role: "ordering", isPrimary: true, groupId: "92b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d" },
+  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", name: "Janet Lee", email: "janet@metroyouthsoccer.org", phone: "(512) 555-0802", role: "billing", isPrimary: false, groupId: "92b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d" },
   // TikTok Merch Co — 1 contact
   { id: "10d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", name: "Alex Kim", email: "alex@tiktokmerch.co", phone: "(737) 555-0910", role: "owner", isPrimary: true },
   // Riverside Church — 1 contact
@@ -62,8 +62,8 @@ export const contacts: Contact[] = [
 // ---------------------------------------------------------------------------
 
 export const customerGroups: Group[] = [
-  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", name: "Marketing Dept", customerId: CUSTOMER_IDS.riverCity },
-  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", name: "Admin", customerId: CUSTOMER_IDS.metroYouth },
+  { id: "91a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", name: "Marketing Dept", customerId: CUSTOMER_IDS.riverCity },
+  { id: "92b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", name: "Admin", customerId: CUSTOMER_IDS.metroYouth },
 ];
 
 // ---------------------------------------------------------------------------
@@ -72,35 +72,35 @@ export const customerGroups: Group[] = [
 
 export const customerAddresses: Address[] = [
   // River City Brewing
-  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", label: "Main", street: "1200 E 6th St", city: "Austin", state: "TX", zip: "78702", country: "US", isDefault: true, type: "billing" },
-  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", label: "Taproom", street: "1200 E 6th St", city: "Austin", state: "TX", zip: "78702", country: "US", isDefault: true, type: "shipping" },
-  { id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", label: "Warehouse", street: "3400 Industrial Blvd", city: "Austin", state: "TX", zip: "78745", country: "US", isDefault: false, type: "shipping" },
+  { id: "31a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", label: "Main", street: "1200 E 6th St", city: "Austin", state: "TX", zip: "78702", country: "US", isDefault: true, type: "billing" },
+  { id: "32b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", label: "Taproom", street: "1200 E 6th St", city: "Austin", state: "TX", zip: "78702", country: "US", isDefault: true, type: "shipping" },
+  { id: "33c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", label: "Warehouse", street: "3400 Industrial Blvd", city: "Austin", state: "TX", zip: "78745", country: "US", isDefault: false, type: "shipping" },
   // Lonestar Lacrosse
-  { id: "04d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", label: "Office", street: "4500 Mueller Blvd", city: "Austin", state: "TX", zip: "78723", country: "US", isDefault: true, type: "billing" },
-  { id: "05e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", label: "Fields", street: "4500 Mueller Blvd", city: "Austin", state: "TX", zip: "78723", country: "US", isDefault: true, type: "shipping" },
+  { id: "34d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", label: "Office", street: "4500 Mueller Blvd", city: "Austin", state: "TX", zip: "78723", country: "US", isDefault: true, type: "billing" },
+  { id: "35e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", label: "Fields", street: "4500 Mueller Blvd", city: "Austin", state: "TX", zip: "78723", country: "US", isDefault: true, type: "shipping" },
   // Thompson Family
-  { id: "06f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", label: "Home", street: "789 Live Oak Dr", city: "Round Rock", state: "TX", zip: "78664", country: "US", isDefault: true, type: "billing" },
-  { id: "07a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", label: "Home", street: "789 Live Oak Dr", city: "Round Rock", state: "TX", zip: "78664", country: "US", isDefault: true, type: "shipping" },
+  { id: "36f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", label: "Home", street: "789 Live Oak Dr", city: "Round Rock", state: "TX", zip: "78664", country: "US", isDefault: true, type: "billing" },
+  { id: "37a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", label: "Home", street: "789 Live Oak Dr", city: "Round Rock", state: "TX", zip: "78664", country: "US", isDefault: true, type: "shipping" },
   // Sunset 5K
-  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", label: "Office", street: "2100 Barton Springs Rd", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
+  { id: "38b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", label: "Office", street: "2100 Barton Springs Rd", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
   // Lakeside Music Festival
-  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", label: "Office", street: "500 E Cesar Chavez", city: "Austin", state: "TX", zip: "78701", country: "US", isDefault: true, type: "billing" },
-  { id: "10d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", label: "Festival Grounds", street: "2100 S Lakeshore Blvd", city: "Austin", state: "TX", zip: "78741", country: "US", isDefault: true, type: "shipping" },
+  { id: "39c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", label: "Office", street: "500 E Cesar Chavez", city: "Austin", state: "TX", zip: "78701", country: "US", isDefault: true, type: "billing" },
+  { id: "40d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", label: "Festival Grounds", street: "2100 S Lakeshore Blvd", city: "Austin", state: "TX", zip: "78741", country: "US", isDefault: true, type: "shipping" },
   // Metro Youth Soccer
-  { id: "11e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", label: "Office", street: "8200 N Lamar Blvd", city: "Austin", state: "TX", zip: "78753", country: "US", isDefault: true, type: "billing" },
-  { id: "12f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", label: "Fields", street: "8200 N Lamar Blvd", city: "Austin", state: "TX", zip: "78753", country: "US", isDefault: true, type: "shipping" },
+  { id: "41e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", label: "Office", street: "8200 N Lamar Blvd", city: "Austin", state: "TX", zip: "78753", country: "US", isDefault: true, type: "billing" },
+  { id: "42f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", label: "Fields", street: "8200 N Lamar Blvd", city: "Austin", state: "TX", zip: "78753", country: "US", isDefault: true, type: "shipping" },
   // TikTok Merch Co
-  { id: "13a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", label: "Studio", street: "1100 S Congress Ave", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
-  { id: "14b5c6d7-e8f9-4a0b-812c-3d4e5f6a7b8c", label: "Studio", street: "1100 S Congress Ave", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "shipping" },
+  { id: "43a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", label: "Studio", street: "1100 S Congress Ave", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
+  { id: "44b5c6d7-e8f9-4a0b-812c-3d4e5f6a7b8c", label: "Studio", street: "1100 S Congress Ave", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "shipping" },
   // Riverside Church
-  { id: "15c6d7e8-f9a0-4b1c-923d-4e5f6a7b8c9d", label: "Church", street: "600 W Riverside Dr", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
-  { id: "16d7e8f9-a0b1-4c2d-a34e-5f6a7b8c9d0e", label: "Church", street: "600 W Riverside Dr", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "shipping" },
+  { id: "45c6d7e8-f9a0-4b1c-923d-4e5f6a7b8c9d", label: "Church", street: "600 W Riverside Dr", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
+  { id: "46d7e8f9-a0b1-4c2d-a34e-5f6a7b8c9d0e", label: "Church", street: "600 W Riverside Dr", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "shipping" },
   // CrossTown Printing
-  { id: "17e8f9a0-b1c2-4d3e-b45f-6a7b8c9d0e1f", label: "Shop", street: "2200 Airport Blvd", city: "Austin", state: "TX", zip: "78722", country: "US", isDefault: true, type: "billing" },
-  { id: "18f9a0b1-c2d3-4e4f-860a-7b8c9d0e1f2a", label: "Shop", street: "2200 Airport Blvd", city: "Austin", state: "TX", zip: "78722", country: "US", isDefault: true, type: "shipping" },
+  { id: "47e8f9a0-b1c2-4d3e-b45f-6a7b8c9d0e1f", label: "Shop", street: "2200 Airport Blvd", city: "Austin", state: "TX", zip: "78722", country: "US", isDefault: true, type: "billing" },
+  { id: "48f9a0b1-c2d3-4e4f-860a-7b8c9d0e1f2a", label: "Shop", street: "2200 Airport Blvd", city: "Austin", state: "TX", zip: "78722", country: "US", isDefault: true, type: "shipping" },
   // Mountain View HS
-  { id: "19a0b1c2-d3e4-4f5a-971b-8c9d0e1f2a3b", label: "School", street: "5300 Mountain View Dr", city: "Cedar Park", state: "TX", zip: "78613", country: "US", isDefault: true, type: "billing" },
-  { id: "20b1c2d3-e4f5-4a6b-a82c-9d0e1f2a3b4c", label: "Athletics", street: "5300 Mountain View Dr", city: "Cedar Park", state: "TX", zip: "78613", country: "US", isDefault: true, type: "shipping" },
+  { id: "49a0b1c2-d3e4-4f5a-971b-8c9d0e1f2a3b", label: "School", street: "5300 Mountain View Dr", city: "Cedar Park", state: "TX", zip: "78613", country: "US", isDefault: true, type: "billing" },
+  { id: "50b1c2d3-e4f5-4a6b-a82c-9d0e1f2a3b4c", label: "Athletics", street: "5300 Mountain View Dr", city: "Cedar Park", state: "TX", zip: "78613", country: "US", isDefault: true, type: "shipping" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -109,36 +109,36 @@ export const customerAddresses: Address[] = [
 
 export const customerNotes: Note[] = [
   // River City Brewing — 3 notes (1 pinned)
-  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", content: "Prefers Comfort Colors for all casual wear. Always wants black or forest green.", createdAt: "2025-10-15T14:30:00Z", createdBy: "Gary", isPinned: true, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
-  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", content: "Marcus called about spring order. Wants same design as last year but with updated date.", createdAt: "2026-01-20T09:15:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
-  { id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", content: "Referred Jake Thompson — family reunion order.", createdAt: "2026-01-25T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
+  { id: "61a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", content: "Prefers Comfort Colors for all casual wear. Always wants black or forest green.", createdAt: "2025-10-15T14:30:00Z", createdBy: "Gary", isPinned: true, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
+  { id: "62b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", content: "Marcus called about spring order. Wants same design as last year but with updated date.", createdAt: "2026-01-20T09:15:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
+  { id: "63c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", content: "Referred Jake Thompson — family reunion order.", createdAt: "2026-01-25T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
   // Lonestar Lacrosse — 2 notes (1 pinned)
-  { id: "04d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", content: "Tax exempt — certificate on file, expires 2027-03-31. Net 30 payment terms per contract.", createdAt: "2025-06-01T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.lonestar },
-  { id: "05e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", content: "Sarah confirmed tournament dates for Feb 22. Rush delivery needed by Feb 20.", createdAt: "2026-02-01T15:00:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.lonestar },
+  { id: "64d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", content: "Tax exempt — certificate on file, expires 2027-03-31. Net 30 payment terms per contract.", createdAt: "2025-06-01T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.lonestar },
+  { id: "65e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", content: "Sarah confirmed tournament dates for Feb 22. Rush delivery needed by Feb 20.", createdAt: "2026-02-01T15:00:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.lonestar },
   // Thompson Family — 2 notes (1 pinned)
-  { id: "06f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", content: "One-time order — family reunion. Referred by Marcus Rivera at River City Brewing.", createdAt: "2026-02-05T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.thompson },
-  { id: "07a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", content: "Jake approved the design over email. Wants youth sizes included.", createdAt: "2026-02-06T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.thompson },
+  { id: "66f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", content: "One-time order — family reunion. Referred by Marcus Rivera at River City Brewing.", createdAt: "2026-02-05T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.thompson },
+  { id: "67a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", content: "Jake approved the design over email. Wants youth sizes included.", createdAt: "2026-02-06T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.thompson },
   // Sunset 5K — 2 notes (1 pinned)
-  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", content: "Budget-conscious — declined first quote at $4,500. Try to keep under $3,000.", createdAt: "2026-01-30T16:30:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.sunset5k },
-  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", content: "Maria asked about 1-color option to reduce cost. Sent revised quote.", createdAt: "2026-01-31T10:00:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.sunset5k },
+  { id: "68b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", content: "Budget-conscious — declined first quote at $4,500. Try to keep under $3,000.", createdAt: "2026-01-30T16:30:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.sunset5k },
+  { id: "69c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", content: "Maria asked about 1-color option to reduce cost. Sent revised quote.", createdAt: "2026-01-31T10:00:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.sunset5k },
   // Lakeside Music Festival — 2 notes (1 pinned)
-  { id: "10d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", content: "Chris is the main decision-maker. Amy handles all billing. Always reach Chris first for creative decisions.", createdAt: "2025-09-10T14:00:00Z", createdBy: "Gary", isPinned: true, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.lakeside },
-  { id: "11e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", content: "Haven't heard from Chris in a while. Last order was October. Should follow up about spring festival merch.", createdAt: "2026-02-05T08:30:00Z", createdBy: "Gary", isPinned: false, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.lakeside },
+  { id: "70d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", content: "Chris is the main decision-maker. Amy handles all billing. Always reach Chris first for creative decisions.", createdAt: "2025-09-10T14:00:00Z", createdBy: "Gary", isPinned: true, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.lakeside },
+  { id: "71e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", content: "Haven't heard from Chris in a while. Last order was October. Should follow up about spring festival merch.", createdAt: "2026-02-05T08:30:00Z", createdBy: "Gary", isPinned: false, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.lakeside },
   // Metro Youth Soccer — 2 notes (1 pinned)
-  { id: "12f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", content: "Seasonal orders: spring jerseys (Feb-Mar) and fall tournament gear (Aug-Sep). Tax exempt — school district.", createdAt: "2025-08-01T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.metroYouth },
-  { id: "13a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", content: "Coach Williams prefers to text for quick questions. Janet handles all POs and invoicing.", createdAt: "2025-09-15T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "text", entityType: "customer", entityId: CUSTOMER_IDS.metroYouth },
+  { id: "72f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", content: "Seasonal orders: spring jerseys (Feb-Mar) and fall tournament gear (Aug-Sep). Tax exempt — school district.", createdAt: "2025-08-01T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.metroYouth },
+  { id: "73a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", content: "Coach Williams prefers to text for quick questions. Janet handles all POs and invoicing.", createdAt: "2025-09-15T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "text", entityType: "customer", entityId: CUSTOMER_IDS.metroYouth },
   // TikTok Merch Co — 2 notes (1 pinned)
-  { id: "14b5c6d7-e8f9-4a0b-812c-3d4e5f6a7b8c", content: "Storefront customer — has online merch store. Fast turnaround is critical for trending content.", createdAt: "2025-11-01T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.tiktokMerch },
-  { id: "15c6d7e8-f9a0-4b1c-923d-4e5f6a7b8c9d", content: "Alex wants to explore DTF for small batch runs. Schedule a sample session.", createdAt: "2026-01-15T14:00:00Z", createdBy: "Gary", isPinned: false, channel: "social", entityType: "customer", entityId: CUSTOMER_IDS.tiktokMerch },
+  { id: "74b5c6d7-e8f9-4a0b-812c-3d4e5f6a7b8c", content: "Storefront customer — has online merch store. Fast turnaround is critical for trending content.", createdAt: "2025-11-01T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.tiktokMerch },
+  { id: "75c6d7e8-f9a0-4b1c-923d-4e5f6a7b8c9d", content: "Alex wants to explore DTF for small batch runs. Schedule a sample session.", createdAt: "2026-01-15T14:00:00Z", createdBy: "Gary", isPinned: false, channel: "social", entityType: "customer", entityId: CUSTOMER_IDS.tiktokMerch },
   // Riverside Church — 2 notes (1 pinned)
-  { id: "16d7e8f9-a0b1-4c2d-a34e-5f6a7b8c9d0e", content: "Referred by Lonestar Lacrosse (Sarah Chen). First order — VBS t-shirts.", createdAt: "2026-01-20T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.riverside },
-  { id: "17e8f9a0-b1c2-4d3e-b45f-6a7b8c9d0e1f", content: "Pastor James mentioned they do 3-4 events per year. Could become a repeat customer.", createdAt: "2026-02-01T11:30:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.riverside },
+  { id: "76d7e8f9-a0b1-4c2d-a34e-5f6a7b8c9d0e", content: "Referred by Lonestar Lacrosse (Sarah Chen). First order — VBS t-shirts.", createdAt: "2026-01-20T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.riverside },
+  { id: "77e8f9a0-b1c2-4d3e-b45f-6a7b8c9d0e1f", content: "Pastor James mentioned they do 3-4 events per year. Could become a repeat customer.", createdAt: "2026-02-01T11:30:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.riverside },
   // CrossTown Printing — 2 notes (1 pinned)
-  { id: "18f9a0b1-c2d3-4e4f-860a-7b8c9d0e1f2a", content: "Wholesale account — another print shop. Contract pricing at 15% off. Overflow work for their large orders.", createdAt: "2025-05-01T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.crosstown },
-  { id: "19a0b1c2-d3e4-4f5a-971b-8c9d0e1f2a3b", content: "Mike sends work our way when they're at capacity. Good relationship — reliable payment.", createdAt: "2025-12-10T15:00:00Z", createdBy: "Gary", isPinned: false, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.crosstown },
+  { id: "78f9a0b1-c2d3-4e4f-860a-7b8c9d0e1f2a", content: "Wholesale account — another print shop. Contract pricing at 15% off. Overflow work for their large orders.", createdAt: "2025-05-01T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.crosstown },
+  { id: "79a0b1c2-d3e4-4f5a-971b-8c9d0e1f2a3b", content: "Mike sends work our way when they're at capacity. Good relationship — reliable payment.", createdAt: "2025-12-10T15:00:00Z", createdBy: "Gary", isPinned: false, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.crosstown },
   // Mountain View HS — 2 notes (1 pinned)
-  { id: "20b1c2d3-e4f5-4a6b-a82c-9d0e1f2a3b4c", content: "Athletic director exploring new vendors. Currently uses a competitor. Tax exempt — ISD.", createdAt: "2026-02-03T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.mountainView },
-  { id: "21c2d3e4-f5a6-4b7c-b93d-0e1f2a3b4c5d", content: "Tom requested a sample quote for spring sports. Baseball and track teams.", createdAt: "2026-02-07T14:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.mountainView },
+  { id: "80b1c2d3-e4f5-4a6b-a82c-9d0e1f2a3b4c", content: "Athletic director exploring new vendors. Currently uses a competitor. Tax exempt — ISD.", createdAt: "2026-02-03T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.mountainView },
+  { id: "81c2d3e4-f5a6-4b7c-b93d-0e1f2a3b4c5d", content: "Tom requested a sample quote for spring sports. Baseball and track teams.", createdAt: "2026-02-07T14:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.mountainView },
 ];
 
 // ---------------------------------------------------------------------------
@@ -831,7 +831,7 @@ export const quotes: Quote[] = [
     ],
     setupFees: 40,
     subtotal: 725,
-    total: 850,
+    total: 765,
     discounts: [],
     shipping: 0,
     tax: 0,
@@ -875,7 +875,7 @@ export const quotes: Quote[] = [
     ],
     setupFees: 40,
     subtotal: 2860,
-    total: 2960,
+    total: 2614,
     discounts: [
       { label: "Contract Pricing — 10% off", amount: 286, type: "contract" },
     ],
@@ -906,7 +906,7 @@ export const quotes: Quote[] = [
     ],
     setupFees: 40,
     subtotal: 780,
-    total: 915,
+    total: 855,
     discounts: [],
     shipping: 35,
     tax: 0,
@@ -948,7 +948,7 @@ export const quotes: Quote[] = [
     ],
     setupFees: 40,
     subtotal: 4350,
-    total: 4500,
+    total: 4390,
     discounts: [],
     shipping: 0,
     tax: 0,
@@ -1037,7 +1037,7 @@ export const quotes: Quote[] = [
     ],
     setupFees: 40,
     subtotal: 1040,
-    total: 1090,
+    total: 1030,
     discounts: [
       { label: "Repeat Customer — 5% off", amount: 52, type: "manual" },
     ],
