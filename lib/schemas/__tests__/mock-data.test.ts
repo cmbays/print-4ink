@@ -218,6 +218,28 @@ describe("referential integrity", () => {
       }
     }
   });
+
+  it("embedded customer.contacts match standalone contacts array", () => {
+    for (const customer of customers) {
+      for (const embedded of customer.contacts) {
+        const standalone = contacts.find((c) => c.id === embedded.id);
+        expect(standalone).toBeDefined();
+        expect(standalone?.name).toBe(embedded.name);
+        expect(standalone?.role).toBe(embedded.role);
+      }
+    }
+  });
+
+  it("all addresses are embedded in a customer record", () => {
+    for (const address of customerAddresses) {
+      const ownerExists = customers.some(
+        (c) =>
+          c.billingAddress?.id === address.id ||
+          c.shippingAddresses.some((sa) => sa.id === address.id)
+      );
+      expect(ownerExists).toBe(true);
+    }
+  });
 });
 
 describe("data coverage", () => {

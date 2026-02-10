@@ -22,7 +22,7 @@ export function TypeTagBadges({ tags, className }: TypeTagBadgesProps) {
           variant="ghost"
           className={cn(
             CUSTOMER_TYPE_TAG_COLORS[tag],
-            "transition-colors text-[11px]"
+            "transition-colors text-xs"
           )}
           aria-label={`Type: ${CUSTOMER_TYPE_TAG_LABELS[tag]}`}
         >

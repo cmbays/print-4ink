@@ -1,14 +1,16 @@
 import { cn } from "@/lib/utils";
 import { DollarSign, ShoppingBag, TrendingUp, Clock, Users } from "lucide-react";
 
+export interface CustomerStats {
+  lifetimeRevenue: number;
+  totalOrders: number;
+  avgOrderValue: number;
+  lastOrderDate: string | null;
+  referralCount?: number;
+}
+
 interface CustomerQuickStatsProps {
-  stats: {
-    lifetimeRevenue: number;
-    totalOrders: number;
-    avgOrderValue: number;
-    lastOrderDate: string | null;
-    referralCount?: number;
-  };
+  stats: CustomerStats;
   variant?: "bar" | "header";
   className?: string;
 }

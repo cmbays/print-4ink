@@ -1091,3 +1091,32 @@ export const screens: Screen[] = [
     jobId: "f6a7b8c9-d0e1-4f2a-bb4c-5d6e7f8a9b0c",
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Reverse lookup helpers
+// ---------------------------------------------------------------------------
+
+export function getCustomerQuotes(customerId: string): Quote[] {
+  return quotes.filter((q) => q.customerId === customerId);
+}
+
+export function getCustomerJobs(customerId: string): Job[] {
+  return jobs.filter((j) => j.customerId === customerId);
+}
+
+export function getCustomerContacts(customerId: string): Contact[] {
+  return contacts.filter((c) => {
+    const customer = customers.find((cust) => cust.id === customerId);
+    return customer?.contacts.some((ec) => ec.id === c.id);
+  });
+}
+
+export function getCustomerNotes(customerId: string): Note[] {
+  return customerNotes.filter(
+    (n) => n.entityType === "customer" && n.entityId === customerId
+  );
+}
+
+export function getCustomerArtworks(customerId: string): Artwork[] {
+  return artworks.filter((a) => a.customerId === customerId);
+}

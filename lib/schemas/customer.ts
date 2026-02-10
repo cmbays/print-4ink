@@ -3,7 +3,11 @@ import { contactSchema } from "./contact";
 import { groupSchema } from "./group";
 import { addressSchema } from "./address";
 
-// Legacy enum — kept for backwards compatibility with quoting code
+// Legacy enum — kept for backwards compatibility with quoting code.
+// Migration scope (Step 13): customerTagEnum is read by:
+//   - CustomerCombobox.tsx (customer.tag for badge display)
+//   - QuoteDetailView.tsx (customer.tag for badge display)
+// After migration, replace with lifecycleStage reads.
 export const customerTagEnum = z.enum(["new", "repeat", "contract"]);
 
 export const lifecycleStageEnum = z.enum([
@@ -47,10 +51,19 @@ export const customerSchema = z.object({
   company: z.string().min(1),
 
   // Denormalized convenience field — primary contact name.
-  // Kept for backwards compatibility with quoting code that reads customer.name.
+  // Legacy: kept for backwards compatibility with quoting code that reads customer.name.
+  // Migration scope (Step 13) — customer.name is read by:
+  //   - CustomerCombobox.tsx (display + search)
+  //   - QuoteActions.tsx (duplicate quote)
+  //   - EmailPreviewModal.tsx (firstName extraction)
+  //   - QuoteDetailView.tsx (header display)
+  // After migration, derive from contacts[].isPrimary instead.
   name: z.string().min(1),
 
-  // Legacy fields — kept for backwards compatibility with quoting code
+  // Legacy fields — kept for backwards compatibility with quoting code.
+  // Migration scope (Step 13) — customer.email/phone/address read by:
+  //   - CustomerCombobox.tsx (email display in dropdown)
+  // After migration, derive from contacts[] + shippingAddresses[].
   email: z.string().email(),
   phone: z.string(),
   address: z.string(),
