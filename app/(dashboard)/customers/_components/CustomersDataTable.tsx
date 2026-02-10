@@ -421,7 +421,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
               <button
                 type="button"
                 onClick={() => setLocalSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
                 <X className="size-4" />
@@ -435,6 +435,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             className={cn(
               "inline-flex items-center gap-1.5 text-sm font-medium transition-colors",
               "rounded-full px-3 py-1.5 border",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               showArchived
                 ? "bg-action/10 text-action border-action/20"
                 : "bg-transparent text-muted-foreground border-transparent hover:text-foreground hover:bg-muted",
@@ -459,7 +460,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                 onClick={() => toggleTag(tag)}
                 className={cn(
                   "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-                  "border",
+                  "border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   isActive
                     ? "bg-action/10 text-action border-action/20"
                     : "bg-muted text-muted-foreground border-transparent hover:text-foreground",
@@ -486,7 +487,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                 onClick={() => handleLifecycleChange(stage)}
                 className={cn(
                   "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-                  "border",
+                  "border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   isActive
                     ? "bg-action/10 text-action border-action/20"
                     : "bg-muted text-muted-foreground border-transparent hover:text-foreground",
@@ -505,7 +506,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             <button
               type="button"
               onClick={clearFilters}
-              className="ml-auto text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              className="ml-auto text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
               Clear all
             </button>
@@ -524,7 +525,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   <TableHead>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                       onClick={() => handleSort("company")}
                       aria-label="Sort by company"
                     >
@@ -534,7 +535,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   <TableHead>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                       onClick={() => handleSort("contact")}
                       aria-label="Sort by primary contact"
                     >
@@ -545,7 +546,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   <TableHead>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                       onClick={() => handleSort("lifecycle")}
                       aria-label="Sort by lifecycle stage"
                     >
@@ -556,7 +557,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   <TableHead>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                       onClick={() => handleSort("lastOrder")}
                       aria-label="Sort by last order"
                     >
@@ -566,7 +567,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   <TableHead>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                       onClick={() => handleSort("revenue")}
                       aria-label="Sort by revenue"
                     >
@@ -583,8 +584,17 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   return (
                     <TableRow
                       key={customer.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      className="cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
                       onClick={() => router.push(`/customers/${customer.id}`)}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          router.push(`/customers/${customer.id}`);
+                        }
+                      }}
+                      role="link"
+                      aria-label={`View ${customer.company}`}
                     >
                       <TableCell className="font-medium">
                         <span className="text-action hover:underline">
