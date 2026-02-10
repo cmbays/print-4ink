@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Management Feedback &mdash; Screen Print Pro</title>
+  <title>Customer Management Quality Gate &mdash; Screen Print Pro</title>
   <style>
     :root {
       --bg-primary: #09090b;
@@ -218,7 +218,7 @@
 
     .stat-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 24px;
     }
@@ -238,6 +238,8 @@
     }
 
     .stat-value.success { color: var(--success); }
+    .stat-value.error { color: var(--error); }
+    .stat-value.warning { color: var(--warning); }
 
     .stat-label {
       font-size: 11px;
@@ -245,26 +247,6 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-top: 4px;
-    }
-
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 12px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
     }
 
     table {
@@ -292,6 +274,21 @@
     }
 
     td:first-child { color: var(--text-primary); }
+
+    .severity-fail {
+      color: var(--error);
+      font-weight: 600;
+    }
+
+    .severity-warn {
+      color: var(--warning);
+      font-weight: 600;
+    }
+
+    .severity-bonus {
+      color: var(--success);
+      font-weight: 600;
+    }
 
     code {
       font-family: var(--font-mono);
@@ -331,12 +328,12 @@
 
     <header>
       <div class="tag-row">
-        <span class="tag tag-feature">Feature</span>
         <span class="tag tag-build">Build</span>
+        <span class="tag tag-feature">Feature</span>
       </div>
 
-      <h1>Customer Management Feedback</h1>
-      <p class="subtitle">8 feedback items from 4Ink owner review. Layout consistency, inline column filters, timeline interactivity, workflow improvements, and code quality refinements.</p>
+      <h1>Customer Management Quality Gate</h1>
+      <p class="subtitle">Comprehensive 5-subagent audit of Customer List + Customer Detail pages. 10 fixes across 11 files.</p>
 
       <div class="meta-grid">
         <div class="meta-item">
@@ -345,7 +342,7 @@
         </div>
         <div class="meta-item">
           <span class="meta-label">Branch</span>
-          <span class="meta-value"><code>session/0210-customer-feedback</code></span>
+          <span class="meta-value"><code>session/0210-customer-quality-gate</code></span>
         </div>
         <div class="meta-item">
           <span class="meta-label">Phase</span>
@@ -359,151 +356,161 @@
 
       <div class="session-resume">
         <span class="meta-label">Resume Session</span>
-        <code>claude --resume 0ba68ef8-1b02-40be-a039-2c63d6d15cd1</code>
+        <code>claude --resume fb57182f-1dee-41b4-be8c-173b629bb9b1</code>
       </div>
     </header>
 
     <nav class="related-nav">
       <span class="related-label">Related Sessions</span>
       <div class="related-links">
-        <a class="related-link" href="2026-02-10-customer-quality-gate.html">
-          &larr; Quality Gate <span class="related-desc">&mdash; Audit + fixes</span>
-        </a>
         <a class="related-link" href="2026-02-10-customer-list-page.html">
-          Customer List <span class="related-desc">&mdash; Initial build</span>
+          &larr; Customer List Page <span class="related-desc">&mdash; Build phase</span>
         </a>
-        <a class="related-link" href="2026-02-10-customer-mgmt-breadboard.html">
-          Breadboard <span class="related-desc">&mdash; Blueprint</span>
+        <a class="related-link" href="2026-02-10-quoting-interconnection.html">
+          Quoting Interconnection <span class="related-desc">&mdash; Cross-vertical</span>
         </a>
       </div>
     </nav>
 
     <hr class="header-divider">
 
-    <h2>Summary</h2>
+    <h2>Audit Summary</h2>
 
     <div class="stat-grid">
       <div class="stat">
-        <div class="stat-value success">8</div>
-        <div class="stat-label">Feedback Items</div>
+        <div class="stat-value error">4</div>
+        <div class="stat-label">FAILs Fixed</div>
       </div>
       <div class="stat">
-        <div class="stat-value">10</div>
+        <div class="stat-value warning">5</div>
+        <div class="stat-label">WARNs Fixed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value success">11</div>
         <div class="stat-label">Files Changed</div>
       </div>
       <div class="stat">
-        <div class="stat-value success">3</div>
-        <div class="stat-label">PRs Merged</div>
+        <div class="stat-value">264</div>
+        <div class="stat-label">Tests Passing</div>
       </div>
     </div>
 
-    <p>The 4Ink owner reviewed both the Customer List and Customer Detail pages. Feedback centered on layout consistency between Quotes and Customers pages, too much visual noise from filter chips, missing column interactivity, and workflow gaps in customer creation and timeline navigation.</p>
+    <h2>Audit Methodology</h2>
 
-    <h2>Feedback Items</h2>
+    <p>Ran 5 parallel audit subagents simultaneously to maximize coverage:</p>
+
+    <ul>
+      <li><strong>Visual Audit: Customer List</strong> &mdash; Checked layout, responsive design, design token usage, interactive states</li>
+      <li><strong>Visual Audit: Customer Detail</strong> &mdash; Checked all 7 tabs, header, badges, timeline, tables, modals</li>
+      <li><strong>Scope Coverage</strong> &mdash; Verified every CORE feature from the scope definition has a corresponding UI</li>
+      <li><strong>Cross-Vertical Navigation</strong> &mdash; Tested Customer &harr; Quoting links, URL params, data flow</li>
+      <li><strong>Playwright Verification</strong> &mdash; End-to-end browser testing of the full customer flow</li>
+    </ul>
+
+    <h2>Fixes Applied</h2>
 
     <table>
       <thead>
         <tr>
           <th>#</th>
-          <th>Feedback</th>
-          <th>Solution</th>
+          <th>Severity</th>
+          <th>Issue</th>
+          <th>Fix</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>1</td>
-          <td>Quotes search bar misaligned with Customers layout</td>
-          <td>Moved search left, added clear X button, matches Customers pattern</td>
+          <td class="severity-fail">FAIL</td>
+          <td><code>bg-bg-elevated</code> invalid Tailwind class (3 files)</td>
+          <td>Changed to <code>bg-elevated</code></td>
         </tr>
         <tr>
           <td>2</td>
-          <td>Filter chips too noisy &mdash; want filtering inside column headers</td>
-          <td>Created <code>ColumnHeaderMenu</code> component with sort + inline filter dropdown</td>
+          <td class="severity-fail">FAIL</td>
+          <td>"New Quote" sends <code>?customer=</code> but quotes/new doesn't read it</td>
+          <td>Added param consumption + pre-fill logic</td>
         </tr>
         <tr>
           <td>3</td>
-          <td>Type, Lifecycle, Health columns should be sortable</td>
-          <td>Added sort by Type (first tag alphabetical), Lifecycle/Health (ordinal)</td>
+          <td class="severity-fail">FAIL</td>
+          <td><code>?from=</code> vs <code>?duplicate=</code> param mismatch</td>
+          <td>Changed to <code>?duplicate=</code> to match</td>
         </tr>
         <tr>
           <td>4</td>
-          <td>Health column needs its own filter</td>
-          <td>Added <code>?health=</code> URL param with inline filter dropdown</td>
+          <td class="severity-fail">FAIL</td>
+          <td>Customer name on QuoteDetailView not clickable</td>
+          <td>Wrapped in <code>&lt;Link&gt;</code> to <code>/customers/:id</code></td>
         </tr>
         <tr>
           <td>5</td>
-          <td>"Add Customer" should have a "Save &amp; View Details" option</td>
-          <td>New button in AddCustomerModal, navigates to detail page using generated UUID</td>
+          <td class="severity-warn">WARN</td>
+          <td>AddContact/AddGroup buttons not wired</td>
+          <td>Imported sheets, added state + onClick handlers</td>
         </tr>
         <tr>
           <td>6</td>
-          <td>Activity timeline items should be clickable</td>
-          <td>Quote icons link to <code>/quotes/:id</code>, note icons switch to Notes tab</td>
+          <td class="severity-warn">WARN</td>
+          <td>Sort headers missing focus-visible rings</td>
+          <td>Added <code>focus-visible:ring-2</code> to all sort buttons</td>
         </tr>
         <tr>
           <td>7</td>
-          <td>Customer Quotes table &mdash; Date should come before Status</td>
-          <td>Reordered: Quote # | Date | Status | Total</td>
+          <td class="severity-warn">WARN</td>
+          <td>Table rows not keyboard-accessible</td>
+          <td>Added <code>tabIndex</code>, Enter/Space, <code>role="link"</code></td>
         </tr>
         <tr>
           <td>8</td>
-          <td>Contact "Other" role needs custom description field</td>
-          <td>Text input appears when role === "other"</td>
+          <td class="severity-warn">WARN</td>
+          <td>CustomerDetailsPanel missing referrer lookup</td>
+          <td>Threaded <code>customers</code> prop through Tabs</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td class="severity-warn">WARN</td>
+          <td>Future dates show "-10 days ago"</td>
+          <td>Fixed both <code>formatDaysAgo()</code> and <code>relativeDate()</code></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td class="severity-bonus">BONUS</td>
+          <td>CopyButton missing focus-visible ring</td>
+          <td>Added <code>focus-visible:ring-2</code></td>
         </tr>
       </tbody>
     </table>
 
-    <h2>New Component: ColumnHeaderMenu</h2>
+    <h2>Playwright Verification</h2>
 
-    <div class="card">
-      <div class="card-title">Reusable Column Header with Sort + Filter</div>
-      <div class="card-desc">
-        Click the header label to toggle sort direction. A small filter icon opens a Radix DropdownMenu with Sort Ascending/Descending items and optional checkbox filters. Active filters turn the icon cyan. Used across both Customers (7 columns, 3 with filters) and Quotes (6 columns, sort-only). Mobile-friendly: icon always visible, no hover dependency.
-      </div>
-    </div>
-
-    <h2>Code Quality Improvements</h2>
+    <p>After applying all fixes, verified end-to-end in the browser:</p>
 
     <ul>
-      <li><strong>CodeRabbit fixes</strong> &mdash; Added <code>focus-visible:ring-2</code> to 3 interactive timeline elements, changed sort menu items to pass explicit <code>"asc"</code>/<code>"desc"</code> direction</li>
-      <li><strong>Zod enum refactor</strong> &mdash; Replaced manual <code>type SortKey = "company" | ...</code> with <code>z.enum()</code> schemas and <code>z.infer</code> derived types. URL params now safely parsed with <code>.catch()</code> fallback.</li>
-      <li><strong>Generated customer ID</strong> &mdash; <code>AddCustomerModal</code> now generates a UUID via <code>crypto.randomUUID()</code> and passes it through <code>onSaveAndView</code>. Navigation uses the real ID instead of <code>customers[0].id</code>.</li>
+      <li><strong>Customer List</strong> &mdash; Mobile cards render with correct <code>bg-elevated</code> background</li>
+      <li><strong>Customer Detail</strong> &mdash; "Last Order: In 9 days" (future date fix confirmed)</li>
+      <li><strong>Contacts Tab</strong> &mdash; "Add Contact" button opens sheet with all fields (Name, Email, Phone, Role, Group, Primary)</li>
+      <li><strong>New Quote Flow</strong> &mdash; <code>/quotes/new?customer=...</code> pre-fills the customer in the combobox</li>
+      <li><strong>Activity Timeline</strong> &mdash; Future dates show "In X days" (not "-X days ago")</li>
     </ul>
 
-    <h2>Pull Requests</h2>
+    <h2>Pull Request</h2>
 
-    <ul>
-      <li><a href="https://github.com/cmbays/print-4ink/pull/33">PR #33</a> &mdash; Quality gate fixes (prerequisite, merged first)</li>
-      <li><a href="https://github.com/cmbays/print-4ink/pull/35">PR #35</a> &mdash; All 8 feedback items + CodeRabbit fixes + Zod enums + generated ID</li>
-    </ul>
+    <p><a href="https://github.com/cmbays/print-4ink/pull/33">PR #33</a> &mdash; <code>session/0210-customer-quality-gate</code> &rarr; <code>main</code></p>
 
     <hr>
-
-    <h2>Customer Management Vertical &mdash; Complete Chain</h2>
-
-    <p>The Customer Management vertical is now fully built, audited, and feedback-incorporated:</p>
-
-    <ol>
-      <li><strong>Data Foundation</strong> (PR #24) &mdash; Schemas, mock data, badge components, 264 tests</li>
-      <li><strong>Breadboard</strong> &mdash; 9 places, 102 UI affordances, 33 code affordances, 4-phase build order</li>
-      <li><strong>Customer List Page</strong> (PR #29) &mdash; SmartViewTabs, DataTable, StatsBar, mobile cards</li>
-      <li><strong>Customer Detail Page</strong> (PR #31) &mdash; Header, 7 tabs (Activity, Quotes, Jobs, Artwork, Contacts, Details, Notes)</li>
-      <li><strong>Quoting Interconnection</strong> (PR #28) &mdash; CustomerCombobox lifecycle badges, enriched context card</li>
-      <li><strong>Quality Gate</strong> (PR #33) &mdash; 5-subagent audit, 10 fixes across 11 files</li>
-      <li><strong>User Feedback</strong> (PR #35) &mdash; 8 items addressed, ColumnHeaderMenu, timeline interactivity</li>
-    </ol>
 
     <h2>What's Next</h2>
 
     <ul>
-      <li><strong>Demo both verticals</strong> (Quoting + Customer Management) to 4Ink owner</li>
-      <li><strong>Collect final feedback</strong> &mdash; target 8+ rating on Clarity, Speed, Polish, Value</li>
-      <li><strong>Address deferred tech debt</strong> (#15-#18) as needed</li>
-      <li><strong>Move to Invoicing vertical</strong></li>
+      <li><strong>Demo both verticals</strong> to 4Ink owner (Quoting + Customer Management)</li>
+      <li><strong>Collect feedback</strong> &mdash; target 8+ rating on Clarity, Speed, Polish, Value</li>
+      <li><strong>Iterate</strong> based on feedback</li>
+      <li><strong>Move to Invoicing vertical</strong> after validation</li>
     </ul>
 
     <footer>
-      Screen Print Pro &mdash; Customer Management Feedback &mdash; 2026-02-10
+      Screen Print Pro &mdash; Customer Management Quality Gate &mdash; 2026-02-10
     </footer>
   </div>
 </body>
