@@ -3,9 +3,9 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-09
-**Last Verified**: 2026-02-09
-**Status**: Quoting Patch v3 MERGED (PR #20). Sticky bar redesign (single-row with swatches), pricing formula with info tooltip, artwork-derived color counts, tooltip dark mode + hover fixes, review slide-out polish. All checks pass (tsc, lint 0 errors 0 warnings, 172 tests, build).
+**Last Updated**: 2026-02-10
+**Last Verified**: 2026-02-10
+**Status**: Customer Management data foundation MERGED (PR #24). New schemas (customer expanded, contact, group, address, note), 10 customers with full embedded data, badge components, reverse lookup helpers, 264 tests. All checks pass (tsc, lint 0 errors 0 warnings, 264 tests, build).
 
 ## What's Built
 
@@ -15,7 +15,7 @@
 - [x] shadcn/ui components: button, card, dialog, input, table, badge, dropdown-menu, tabs, separator, tooltip, label, select, textarea, sheet, breadcrumb, avatar, form, accordion, checkbox, command, popover, scroll-area, sonner
 - [x] Fonts: Inter + JetBrains Mono via `next/font`
 - [x] Dark mode default (`className="dark"` on `<html>`)
-- [x] Vitest setup with schema tests (66 tests, 6 test files)
+- [x] Vitest setup with schema tests (264 tests, 12 test files)
 - [x] GitHub Actions CI: type check + lint + test + build on push/PR to main
 
 ### Layout Shell
@@ -30,9 +30,10 @@
 - [x] Uses mock data from `lib/mock-data.ts`
 
 ### Data Layer
-- [x] Zod schemas: `job.ts`, `quote.ts`, `customer.ts`, `garment.ts`, `screen.ts`
-- [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels/colors
-- [x] Mock data: 5 customers, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garment catalog entries
+- [x] Zod schemas: `job.ts`, `quote.ts`, `customer.ts`, `garment.ts`, `screen.ts`, `color.ts`, `artwork.ts`, `contact.ts`, `group.ts`, `address.ts`, `note.ts`
+- [x] Constants: production state labels/colors, priority labels/colors, burn status labels, quote status labels/colors, lifecycle stage labels/colors, health status labels/colors, customer type tag labels/colors, payment terms labels, pricing tier labels
+- [x] Mock data: 10 customers (with embedded contacts/groups/addresses), 13 contacts, 2 groups, 20 addresses, 21 notes, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garment catalog entries, 8 artworks
+- [x] Reverse lookup helpers: `getCustomerQuotes()`, `getCustomerJobs()`, `getCustomerContacts()`, `getCustomerNotes()`, `getCustomerArtworks()`
 
 ### Quoting Vertical (PR #13)
 - [x] **Quotes List** (`/quotes`) — DataTable with status tab filters, debounced search, column sort, row actions, empty state
@@ -47,6 +48,24 @@
 - [x] **Quote schema** updated — 5 statuses, lineItems with sizes/locations/pricing, priceOverride, notes
 - [x] **Garment schema** updated — catalog with brand, SKU, basePrice, availableColors/Sizes
 - [x] **116 tests** across 7 test files — all passing
+
+### Customer Management Vertical — Data Foundation (PR #24, MERGED)
+- [x] **Customer schema expanded** — company, lifecycle stage (prospect/new/repeat/contract), health status (active/potentially-churning/churned), type tags (retail/sports-school/corporate/storefront-merch/wholesale), payment terms, pricing tier, tax exempt, referral tracking, embedded contacts/groups/addresses
+- [x] **Contact schema** — name, email, phone, role (ordering/art-approver/billing/owner/other), isPrimary, groupId
+- [x] **Group schema** — name, customerId (Company → Group → Contact hierarchy)
+- [x] **Address schema** — label, street/city/state/zip, type (billing/shipping), isDefault
+- [x] **Note schema** — content, channel (phone/email/text/social/in-person), entityType (customer/quote/artwork/job), isPinned
+- [x] **10 customers** with realistic Austin TX businesses, embedded contacts/groups/addresses
+- [x] **13 contacts** across 10 customers with various roles
+- [x] **20 addresses** (billing + shipping) with type-specific UUID prefixes
+- [x] **21 notes** (2+ per customer, 1+ pinned each) with channel tags
+- [x] **Badge components** — LifecycleBadge, HealthBadge, TypeTagBadges, CustomerQuickStats (bar + header variants)
+- [x] **CustomerStats type** exported for shared contract
+- [x] **Constants** — labels, colors, status mappings for lifecycle stages, health statuses, type tags, payment terms, pricing tiers
+- [x] **Reverse lookup helpers** — getCustomerQuotes, getCustomerJobs, getCustomerContacts, getCustomerNotes, getCustomerArtworks
+- [x] **Legacy field migration documented** — customer.name/.tag/.email/.phone/.address usage mapped across 4 quoting files for Step 13
+- [x] **264 tests** across 12 test files — schema validation, referential integrity (embedded contacts match standalone, addresses embedded in customers), data coverage
+- [x] **Code review fixes** — 3 critical (UUID collisions, invalid UUID, empty company bypass), 5 high (quote math x5, mutable counter), 7 CodeRabbit items (icon sizes, code block langs, blockquote formatting, compound adjective hyphenation, implicit event fix)
 
 ### Agent & Skill Infrastructure
 - [x] **5 agents** in `.claude/agents/`: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
@@ -136,19 +155,22 @@
 - [ ] **#17** — Sync garment category filter with URL query params (may be exception to rule)
 - [ ] **#18** — Extract shared formatCurrency/formatDate to lib/utils
 
-### Next Actions — DEMO & ITERATION PHASE
+### Next Actions — CUSTOMER MANAGEMENT BUILD PHASE
 
-**✅ Build phase COMPLETE.** PR #13 merged, PR #14 (patch v2 polish) merged.
+**✅ Quoting vertical COMPLETE.** PRs #13, #14, #20 merged.
+**✅ Customer Management data foundation COMPLETE.** PR #24 merged.
 
 **📅 Next Steps**:
 1. ~~Build Quoting vertical~~ — DONE (PR #13)
-2. ~~Merge PR #13 after review~~ — DONE
-3. ~~Address feedback, patch v2~~ — DONE (PR #14)
-4. Run quality-gate audit on all 3 screens
-5. Demo to user (4Ink owner), collect feedback
-6. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-7. Address deferred tech debt (#15-#18) as needed
-8. Move to Invoicing vertical
+2. ~~Quoting patch v2 polish~~ — DONE (PR #14)
+3. ~~Quoting patch v3 polish~~ — DONE (PR #20)
+4. ~~Customer Management data foundation~~ — DONE (PR #24)
+5. **Build Customer Management screens** — Customer List page, Customer Detail page (tabbed: Activity, Quotes, Jobs, Artwork, Contacts, Details, Notes)
+6. Run quality-gate audit on Customer Management screens
+7. Demo both verticals to user (4Ink owner), collect feedback
+8. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
+9. Address deferred tech debt (#15-#18) as needed
+10. Move to Invoicing vertical
 
 **Key Design Requirements** (from discovery):
 - Instant client-side pricing — never block input
@@ -212,3 +234,4 @@
 | 2026-02-08 | Quoting Patch v2 | Addressed 20 feedback items from 4Ink first-round review. **Phase A**: New artwork schema, customer tags (new/repeat/contract), service types (screen-print/dtf/embroidery), per-location print details (replaces flat locations), discount model (replaces priceOverride), shipping+tax fields, 8 mock artworks, 8 SVG placeholders. Updated all 6 mock quotes. 171 tests passing. **Phase B-F**: PricingSummary redesign (full breakdown with discounts/shipping/tax/savings), DiscountRow, LineItemRow rewrite (service type selector, per-location details with artwork assignment), ArtworkLibrary (customer-tag-aware), ArtworkUploadModal, ArtworkAssignmentPicker, ArtworkPreview, CollapsibleSection, QuoteDetailView (reusable detail/review), QuoteReviewSheet (slide-from-right), form restructure (5 collapsible sections), customer-aware defaults (contract=auto-discount+free-shipping, new=upload-only, repeat=recently-used-first), CustomerCombobox tags+phone, AddCustomerModal phone+tag, QuoteActions inline header bar. Fixed duplicate quote bug and search re-render loop. All checks pass: tsc 0 errors, lint 0 errors/2 warnings, 171/171 tests, production build success. |
 | 2026-02-09 | Quoting Patch v2 Polish (PR #14 MERGED) | Completed sticky top bar (controlled CollapsibleSection for Notes, scrollIntoView). Fixed artwork sync: deselecting from library now clears per-location assignments; switching customers clears artwork from printLocationDetails. Renamed "Duplicate" → "Copy as New" (4 files). Restructured setup fees: screen-print=$40/quote flat, embroidery=$20/line item, DTF=$0. Replaced SETUP_FEE_PER_COLOR with calculateLineItemSetupFee + calculateQuoteSetupFee. Fixed "per item" → "per line item" label. Created PR #14, addressed full CodeRabbit review (28 comments): fixed icon sizes to 16/20/24px (6 files), added Space key handler + aria-pressed tags + fixed nested interactives (a11y), replaced hardcoded px with Tailwind grid tokens, swapped text "✓" for Lucide Check icon, replaced raw input with shadcn Input, fixed originalTotal strike-through calc, fixed Q-1028 mock data total, eliminated all lint warnings (0 errors, 0 warnings). Merged PR #14 (squash). Created 4 GitHub issues for deferred tech debt: #15 (RHF+Zod migration), #16 (schema-derived types), #17 (URL query params for garment filter), #18 (shared format utils). 172 tests, all passing. |
 | 2026-02-09 | Quoting Patch v3 (PR #20 MERGED) | Sticky bar redesign: collapsed multi-row service types into single inline row with color swatches + qty labels. Tooltip system overhaul: dark mode (bg-elevated), shared TooltipProvider with skipDelayDuration/sideOffset, fixed hover/flickering bugs, swatch tooltips with garment details and 2-column location grid, artwork tooltips with large preview. Pricing formula in review view: `($X x qty) + setup = total` with info icon tooltip showing per-unit breakdown and setup fee rates. Per-location decoration fee display (+$X/unit). Auto-derived color count from artwork (removed manual input). Review slide-out: added grand total, removed Edit Quote button. Doubled CollapsibleSection summary max-width. CodeRabbit fixes: empty state icon sizes. |
+| 2026-02-10 | Customer Mgmt Foundation (PR #24 MERGED) | Built Customer Management data foundation. New schemas: customer (expanded with lifecycle/health/typeTags/financial/referral), contact, group, address, note. 10 customers with embedded contacts/groups/addresses. 13 contacts, 2 groups, 20 addresses, 21 notes. Badge components: LifecycleBadge, HealthBadge, TypeTagBadges, CustomerQuickStats. Constants for all new enums. Reverse lookup helpers (getCustomerQuotes, getCustomerJobs, etc.). Exported CustomerStats type. Legacy field migration scope documented. 264 tests (12 files). Code review: fixed 3 critical (UUID collisions across entity types, invalid UUID in QuoteForm, empty company bypass), 5 high (quote math x5, mutable counter), 5 architecture recommendations (exported type, referential integrity tests, reverse lookups, hardcoded px, migration docs), 7 CodeRabbit items (icon sizes, code block langs, blockquote format, hyphenation, implicit event). Rebased on main via `but pull`, squash-merged. |
