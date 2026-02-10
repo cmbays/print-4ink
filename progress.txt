@@ -5,8 +5,7 @@
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-10
 **Last Verified**: 2026-02-10
-**Status**: Customer Management data foundation MERGED (PR #24). New schemas (customer expanded, contact, group, address, note), 10 customers with full embedded data, badge components, reverse lookup helpers, 264 tests. All checks pass (tsc, lint 0 errors 0 warnings, 264 tests, build).
->>>>>>> theirs
+**Status**: Customer Management feedback round COMPLETE (PR #35). 8 user feedback items implemented + CodeRabbit fixes + Zod enum refactor + generated customer ID flow. Quality gate (PR #33) merged. Both verticals (Quoting + Customer Management) ready for demo.
 
 ## What's Built
 
@@ -67,6 +66,17 @@
 - [x] **Legacy field migration documented** — customer.name/.tag/.email/.phone/.address usage mapped across 4 quoting files for Step 13
 - [x] **264 tests** across 12 test files — schema validation, referential integrity (embedded contacts match standalone, addresses embedded in customers), data coverage
 - [x] **Code review fixes** — 3 critical (UUID collisions, invalid UUID, empty company bypass), 5 high (quote math x5, mutable counter), 7 CodeRabbit items (icon sizes, code block langs, blockquote formatting, compound adjective hyphenation, implicit event fix)
+
+### Customer Management Feedback (PR #35, MERGED)
+- [x] **ColumnHeaderMenu component** — Reusable column header with sort toggle + optional inline filter dropdown (Radix DropdownMenu). Replaces filter chips with clean column-level filtering.
+- [x] **CustomersDataTable refactor** — Removed filter chip rows, replaced all TableHead headers with ColumnHeaderMenu instances. Type/Lifecycle/Health columns have inline filter dropdowns. Added health filter (URL param). Sort by Type (first tag alphabetical) and Health (ordinal).
+- [x] **QuotesDataTable consistency** — Search bar moved to left (matches Customers layout). Added clear (X) button. Replaced inline sort with ColumnHeaderMenu instances.
+- [x] **CustomerQuotesTable column reorder** — Quote # | Date | Status | Total (was Quote # | Status | Total | Date)
+- [x] **AddContactSheet custom role** — "Other" role shows text input for role description
+- [x] **AddCustomerModal "Save & View Details"** — New button navigates to customer detail page using generated UUID (`crypto.randomUUID()`)
+- [x] **ActivityTimeline interactivity** — Quote icons are Links to `/quotes/{id}`, note icons switch to Notes tab. Controlled Tabs in CustomerTabs.
+- [x] **CodeRabbit fixes** — focus-visible states on interactive timeline elements, explicit sort direction in ColumnHeaderMenu dropdown items
+- [x] **Zod enum refactor** — SortKey/SortDir types derived from `z.enum()` schemas with `.catch()` fallback for safe URL param parsing
 
 ### Agent & Skill Infrastructure
 - [x] **5 agents** in `.claude/agents/`: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
@@ -166,10 +176,11 @@
 2. ~~Quoting patch v2 polish~~ — DONE (PR #14)
 3. ~~Quoting patch v3 polish~~ — DONE (PR #20)
 4. ~~Customer Management data foundation~~ — DONE (PR #24)
-5. **Build Customer Management screens** — Customer List page, Customer Detail page (tabbed: Activity, Quotes, Jobs, Artwork, Contacts, Details, Notes)
-6. Run quality-gate audit on Customer Management screens
-7. Demo both verticals to user (4Ink owner), collect feedback
-8. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
+5. ~~Build Customer Management screens~~ — DONE (Customer List + Customer Detail with 7 tabs)
+6. ~~Run quality-gate audit on Customer Management screens~~ — DONE (PR #33, 10 fixes across 11 files)
+7. ~~User feedback round on Customer Management~~ — DONE (PR #35, 8 items: layout consistency, ColumnHeaderMenu, timeline interactivity, Save & View Details, column reorder, custom role field, Zod enums, generated customer ID)
+8. Demo both verticals to user (4Ink owner), collect final feedback
+9. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
 9. Address deferred tech debt (#15-#18) as needed
 10. Move to Invoicing vertical
 
@@ -217,7 +228,7 @@
 ## Session Log
 
 | Date | Session | Work Done |
-|------|---------|-----------|
+|------|---------|-----------||
 | 2026-02-07 | Initial setup | Scaffolded project, installed deps, configured Tailwind v4 + shadcn/ui |
 | 2026-02-07 | Dashboard MVP | Built dashboard with summary cards, blocked/in-progress sections |
 | 2026-02-07 | Data layer | Created Zod schemas, constants, mock data |
@@ -236,3 +247,5 @@
 | 2026-02-09 | Quoting Patch v2 Polish (PR #14 MERGED) | Completed sticky top bar (controlled CollapsibleSection for Notes, scrollIntoView). Fixed artwork sync: deselecting from library now clears per-location assignments; switching customers clears artwork from printLocationDetails. Renamed "Duplicate" → "Copy as New" (4 files). Restructured setup fees: screen-print=$40/quote flat, embroidery=$20/line item, DTF=$0. Replaced SETUP_FEE_PER_COLOR with calculateLineItemSetupFee + calculateQuoteSetupFee. Fixed "per item" → "per line item" label. Created PR #14, addressed full CodeRabbit review (28 comments): fixed icon sizes to 16/20/24px (6 files), added Space key handler + aria-pressed tags + fixed nested interactives (a11y), replaced hardcoded px with Tailwind grid tokens, swapped text "✓" for Lucide Check icon, replaced raw input with shadcn Input, fixed originalTotal strike-through calc, fixed Q-1028 mock data total, eliminated all lint warnings (0 errors, 0 warnings). Merged PR #14 (squash). Created 4 GitHub issues for deferred tech debt: #15 (RHF+Zod migration), #16 (schema-derived types), #17 (URL query params for garment filter), #18 (shared format utils). 172 tests, all passing. |
 | 2026-02-09 | Quoting Patch v3 (PR #20 MERGED) | Sticky bar redesign: collapsed multi-row service types into single inline row with color swatches + qty labels. Tooltip system overhaul: dark mode (bg-elevated), shared TooltipProvider with skipDelayDuration/sideOffset, fixed hover/flickering bugs, swatch tooltips with garment details and 2-column location grid, artwork tooltips with large preview. Pricing formula in review view: `($X x qty) + setup = total` with info icon tooltip showing per-unit breakdown and setup fee rates. Per-location decoration fee display (+$X/unit). Auto-derived color count from artwork (removed manual input). Review slide-out: added grand total, removed Edit Quote button. Doubled CollapsibleSection summary max-width. CodeRabbit fixes: empty state icon sizes. |
 | 2026-02-10 | Customer Mgmt Foundation (PR #24 MERGED) | Built Customer Management data foundation. New schemas: customer (expanded with lifecycle/health/typeTags/financial/referral), contact, group, address, note. 10 customers with embedded contacts/groups/addresses. 13 contacts, 2 groups, 20 addresses, 21 notes. Badge components: LifecycleBadge, HealthBadge, TypeTagBadges, CustomerQuickStats. Constants for all new enums. Reverse lookup helpers (getCustomerQuotes, getCustomerJobs, etc.). Exported CustomerStats type. Legacy field migration scope documented. 264 tests (12 files). Code review: fixed 3 critical (UUID collisions across entity types, invalid UUID in QuoteForm, empty company bypass), 5 high (quote math x5, mutable counter), 5 architecture recommendations (exported type, referential integrity tests, reverse lookups, hardcoded px, migration docs), 7 CodeRabbit items (icon sizes, code block langs, blockquote format, hyphenation, implicit event). Rebased on main via `but pull`, squash-merged. |
+| 2026-02-10 | Customer Mgmt Quality Gate (PR #33) | Ran 5 parallel audit subagents (Visual List, Visual Detail, Scope Coverage, Cross-Vertical Navigation, Playwright). Found 4 FAILs + 5 WARNs + 1 bonus. Fixed all: bg-bg-elevated→bg-elevated (3 files), ?customer= param consumption in quotes/new, ?from→?duplicate param fix, clickable customer link in QuoteDetailView, wired AddContact/AddGroup sheets, focus-visible rings on sort headers + filter chips + CopyButton, keyboard accessibility on table rows (tabIndex/Enter/Space/role/aria-label), threaded customers prop through Tabs→DetailsPanel, future date display fix in formatDaysAgo + relativeDate. Verified with Playwright (AddContact sheet opens, New Quote pre-fills, "In X days" displays correctly). 264 tests, clean build. |
+| 2026-02-10 | Customer Mgmt Feedback (PR #35 MERGED) | Implemented 8 feedback items from 4Ink owner review. (1) Created ColumnHeaderMenu component — reusable column header with sort toggle + optional inline filter dropdown via Radix DropdownMenu. (2) Refactored CustomersDataTable — removed filter chip rows, replaced all 7 TableHead headers with ColumnHeaderMenu instances, added health filter URL param, sort by Type (first tag alphabetical) and Health (ordinal). (3) QuotesDataTable — search bar moved to left for layout consistency with Customers, added clear X button, replaced sort buttons with ColumnHeaderMenu. (4) CustomerQuotesTable — reordered columns to Quote # | Date | Status | Total. (5) AddContactSheet — "Other" role shows text input for role description. (6) AddCustomerModal "Save & View Details" — navigates to detail page using generated UUID. (7) ActivityTimeline interactivity — quote icons are Links, note icons switch tabs, controlled Tabs. (8) CodeRabbit fixes — focus-visible states on 3 timeline elements, explicit sort direction in ColumnHeaderMenu dropdown. Follow-up: replaced manual SortKey/SortDir union types with Zod enums + z.infer + .catch() for safe URL param parsing, AddCustomerModal now generates customer ID via crypto.randomUUID() and passes through onSaveAndView callback. Pushed via GitHub MCP API (GitButler bracket-path workaround). All checks pass: tsc 0 errors, lint 0 errors, Vercel deploy success, CodeRabbit approved. |
