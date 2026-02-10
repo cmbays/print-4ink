@@ -37,6 +37,15 @@ git worktree remove <path>           # Remove worktree after PR merges
 git push -u origin <branch>          # Push branch to remote
 gh pr create --title "..." --body "..."  # Create PR
 npm run gen:index                    # Regenerate for_human index (main only)
+
+# Session Orchestration (requires: source scripts/work.sh in .zshrc)
+work <topic>                     # New worktree + tmux session + Claude
+work <topic> <base-branch>      # Stacked worktree + window in parent session
+work --stack <topic>             # Stack from current branch
+work list                        # Show sessions, windows, ports
+work focus                       # Read-only tiled monitor of agents
+work unfocus                     # Close monitor, back to original
+work clean <topic>               # Remove worktree + tmux + branch
 ```
 
 ## Session Startup (Required)
@@ -72,7 +81,7 @@ Every Claude session that will modify code MUST create its own worktree.
 - **Main repo** (`~/Github/print-4ink/`) stays on `main` — never switch branches there
 - Branch name format: `session/<MMDD>-<kebab-case-topic>`
 - **NEVER push directly to main** — always branch + PR
-- **Max 4 concurrent worktrees** — clean up merged ones promptly
+- **Max 6 concurrent worktrees** — clean up merged ones promptly
 - **Dev server ports**: Each worktree uses a unique port (`PORT=3001`, `3002`, etc.)
 - If session is read-only (research, questions), no worktree needed
 
