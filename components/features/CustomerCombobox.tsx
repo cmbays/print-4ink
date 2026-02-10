@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, Plus, User, Building2, Mail, Phone } from "lucide-react";
+import { Check, ChevronsUpDown, Plus, User, Building2, Mail, Phone, ExternalLink } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,25 +20,30 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { CUSTOMER_TAG_LABELS, CUSTOMER_TAG_COLORS } from "@/lib/constants";
-import type { CustomerTag } from "@/lib/schemas/customer";
+import {
+  CUSTOMER_TYPE_TAG_LABELS,
+  CONTACT_ROLE_LABELS,
+  LIFECYCLE_STAGE_LABELS,
+} from "@/lib/constants";
+import { LifecycleBadge } from "@/components/features/LifecycleBadge";
+import { TypeTagBadges } from "@/components/features/TypeTagBadges";
+import type { Customer } from "@/lib/schemas/customer";
+import type { ContactRole } from "@/lib/schemas/contact";
 
 /** Subset of Customer fields needed by the combobox */
-export interface CustomerOption {
-  id: string;
-  name: string;
-  company: string;
-  email: string;
-  phone?: string;
-  tag?: CustomerTag;
-}
+export type CustomerOption = Pick<
+  Customer,
+  "id" | "name" | "company" | "email" | "phone" | "tag" | "lifecycleStage" | "typeTags"
+> & {
+  contactRole?: ContactRole;
+};
 
-export interface CustomerComboboxProps {
+export type CustomerComboboxProps = {
   customers: CustomerOption[];
   selectedCustomerId?: string;
   onSelect: (customerId: string) => void;
   onAddNew?: () => void;
-}
+};
 
 export function CustomerCombobox({
   customers,
@@ -74,8 +79,14 @@ export function CustomerCombobox({
             filter={(value, search) => {
               const customer = customers.find((c) => c.id === value);
               if (!customer) return 0;
+              const lifecycleLabel = customer.lifecycleStage
+                ? LIFECYCLE_STAGE_LABELS[customer.lifecycleStage]
+                : "";
+              const typeTagLabels = (customer.typeTags || [])
+                .map((t) => CUSTOMER_TYPE_TAG_LABELS[t])
+                .join(" ");
               const haystack =
-                `${customer.name} ${customer.company}`.toLowerCase();
+                `${customer.name} ${customer.company} ${lifecycleLabel} ${typeTagLabels}`.toLowerCase();
               return haystack.includes(search.toLowerCase()) ? 1 : 0;
             }}
           >
@@ -104,16 +115,11 @@ export function CustomerCombobox({
                       {customer.name}
                       <span className="text-muted-foreground"> — {customer.company}</span>
                     </span>
-                    {customer.tag && (
-                      <Badge
-                        variant="ghost"
-                        className={cn(
-                          "ml-auto text-xs shrink-0",
-                          CUSTOMER_TAG_COLORS[customer.tag]
-                        )}
-                      >
-                        {CUSTOMER_TAG_LABELS[customer.tag]}
-                      </Badge>
+                    {customer.lifecycleStage && (
+                      <LifecycleBadge
+                        stage={customer.lifecycleStage}
+                        className="ml-auto text-xs shrink-0"
+                      />
                     )}
                   </CommandItem>
                 ))}
@@ -140,26 +146,25 @@ export function CustomerCombobox({
       </Popover>
 
       {selectedCustomer && (
-        <div className="rounded-md border bg-elevated p-3 space-y-1.5 text-sm">
+        <div className="rounded-lg border bg-elevated p-3 space-y-2 text-sm">
+          {/* Company name — prominent */}
+          <div className="flex items-center gap-2 text-foreground">
+            <Building2 className="size-4 shrink-0 text-muted-foreground" />
+            <span className="font-medium">{selectedCustomer.company}</span>
+          </div>
+
+          {/* Primary contact name + role badge */}
           <div className="flex items-center gap-2 text-foreground">
             <User className="size-4 shrink-0 text-muted-foreground" />
             <span>{selectedCustomer.name}</span>
-            {selectedCustomer.tag && (
-              <Badge
-                variant="ghost"
-                className={cn(
-                  "text-xs",
-                  CUSTOMER_TAG_COLORS[selectedCustomer.tag]
-                )}
-              >
-                {CUSTOMER_TAG_LABELS[selectedCustomer.tag]}
+            {selectedCustomer.contactRole && (
+              <Badge variant="outline" className="text-xs text-muted-foreground">
+                {CONTACT_ROLE_LABELS[selectedCustomer.contactRole]}
               </Badge>
             )}
           </div>
-          <div className="flex items-center gap-2 text-foreground">
-            <Building2 className="size-4 shrink-0 text-muted-foreground" />
-            <span>{selectedCustomer.company}</span>
-          </div>
+
+          {/* Email + phone */}
           <div className="flex items-center gap-2 text-foreground">
             <Mail className="size-4 shrink-0 text-muted-foreground" />
             <span>{selectedCustomer.email}</span>
@@ -170,6 +175,25 @@ export function CustomerCombobox({
               <span>{selectedCustomer.phone}</span>
             </div>
           )}
+
+          {/* Lifecycle badge + type tag badges */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+            {selectedCustomer.lifecycleStage && (
+              <LifecycleBadge stage={selectedCustomer.lifecycleStage} className="text-xs" />
+            )}
+            <TypeTagBadges tags={selectedCustomer.typeTags ?? []} />
+          </div>
+
+          {/* View Customer link */}
+          <a
+            href={`/customers/${selectedCustomer.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 rounded-sm text-xs text-action hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 active:underline pt-0.5"
+          >
+            View Customer
+            <ExternalLink className="size-4" />
+          </a>
         </div>
       )}
     </div>

@@ -13,51 +13,56 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { CUSTOMER_TAG_LABELS } from "@/lib/constants";
-import type { CustomerTag } from "@/lib/schemas/customer";
+import { cn } from "@/lib/utils";
+import { CUSTOMER_TYPE_TAG_LABELS } from "@/lib/constants";
+import type { CustomerTypeTag } from "@/lib/schemas/customer";
 
 export interface AddCustomerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (customer: {
+    company: string;
     name: string;
-    email: string;
-    company?: string;
+    email?: string;
     phone?: string;
-    tag?: CustomerTag;
+    typeTags: CustomerTypeTag[];
+    lifecycleStage: "prospect" | "new";
   }) => void;
+  lifecycleStage?: "prospect" | "new";
 }
 
-const TAG_OPTIONS: CustomerTag[] = ["new", "repeat", "contract"];
+const TYPE_TAG_OPTIONS: CustomerTypeTag[] = [
+  "retail",
+  "sports-school",
+  "corporate",
+  "storefront-merch",
+  "wholesale",
+];
 
 export function AddCustomerModal({
   open,
   onOpenChange,
   onSave,
+  lifecycleStage,
 }: AddCustomerModalProps) {
+  const [company, setCompany] = React.useState("");
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [company, setCompany] = React.useState("");
   const [phone, setPhone] = React.useState("");
-  const [tag, setTag] = React.useState<CustomerTag>("new");
+  const [typeTags, setTypeTags] = React.useState<CustomerTypeTag[]>([]);
   const [errors, setErrors] = React.useState<{
+    company?: string;
     name?: string;
+    contact?: string;
     email?: string;
   }>({});
 
   function reset() {
+    setCompany("");
     setName("");
     setEmail("");
-    setCompany("");
     setPhone("");
-    setTag("new");
+    setTypeTags([]);
     setErrors({});
   }
 
@@ -68,14 +73,23 @@ export function AddCustomerModal({
     onOpenChange(nextOpen);
   }
 
+  function toggleTypeTag(tag: CustomerTypeTag) {
+    setTypeTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  }
+
   function validate(): boolean {
-    const next: { name?: string; email?: string } = {};
-    if (!name.trim()) {
-      next.name = "Name is required";
+    const next: { company?: string; name?: string; contact?: string; email?: string } = {};
+    if (!company.trim()) {
+      next.company = "Company is required";
     }
-    if (!email.trim()) {
-      next.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    if (!name.trim()) {
+      next.name = "Contact name is required";
+    }
+    if (!email.trim() && !phone.trim()) {
+      next.contact = "Email or phone is required";
+    } else if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       next.email = "Invalid email format";
     }
     setErrors(next);
@@ -85,11 +99,12 @@ export function AddCustomerModal({
   function handleSave() {
     if (!validate()) return;
     onSave({
+      company: company.trim(),
       name: name.trim(),
-      email: email.trim(),
-      company: company.trim() || undefined,
+      email: email.trim() || undefined,
       phone: phone.trim() || undefined,
-      tag,
+      typeTags,
+      lifecycleStage: lifecycleStage ?? "new",
     });
     reset();
     onOpenChange(false);
@@ -101,17 +116,38 @@ export function AddCustomerModal({
         <DialogHeader>
           <DialogTitle>Add New Customer</DialogTitle>
           <DialogDescription>
-            Create a new customer to add to this quote.
+            Create a new customer record.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
+          {/* Company (required, first) */}
           <div className="space-y-2">
-            <Label htmlFor="customer-name">
-              Name <span className="text-destructive">*</span>
+            <Label htmlFor="customer-company">
+              Company <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="customer-name"
-              placeholder="Customer name"
+              id="customer-company"
+              placeholder="Company name"
+              value={company}
+              onChange={(e) => {
+                setCompany(e.target.value);
+                if (errors.company) setErrors((prev) => ({ ...prev, company: undefined }));
+              }}
+              aria-invalid={!!errors.company}
+            />
+            {errors.company && (
+              <p className="text-sm text-destructive">{errors.company}</p>
+            )}
+          </div>
+
+          {/* Contact Name (required) */}
+          <div className="space-y-2">
+            <Label htmlFor="customer-contact-name">
+              Contact Name <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="customer-contact-name"
+              placeholder="Contact name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -123,10 +159,10 @@ export function AddCustomerModal({
               <p className="text-sm text-destructive">{errors.name}</p>
             )}
           </div>
+
+          {/* Email */}
           <div className="space-y-2">
-            <Label htmlFor="customer-email">
-              Email <span className="text-destructive">*</span>
-            </Label>
+            <Label htmlFor="customer-email">Email</Label>
             <Input
               id="customer-email"
               type="email"
@@ -134,23 +170,20 @@ export function AddCustomerModal({
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
+                if (errors.contact) setErrors((prev) => ({ ...prev, contact: undefined }));
                 if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
               }}
-              aria-invalid={!!errors.email}
+              aria-invalid={!!errors.contact || !!errors.email}
             />
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email}</p>
             )}
+            {errors.contact && !errors.email && (
+              <p className="text-sm text-destructive">{errors.contact}</p>
+            )}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="customer-company">Company</Label>
-            <Input
-              id="customer-company"
-              placeholder="Company name (optional)"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-            />
-          </div>
+
+          {/* Phone */}
           <div className="space-y-2">
             <Label htmlFor="customer-phone">Phone</Label>
             <Input
@@ -158,23 +191,42 @@ export function AddCustomerModal({
               type="tel"
               placeholder="(555) 123-4567"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                if (errors.contact) setErrors((prev) => ({ ...prev, contact: undefined }));
+              }}
+              aria-invalid={!!errors.contact}
             />
+            {!errors.contact && !email.trim() && !phone.trim() && (
+              <p className="text-sm text-muted-foreground">
+                At least one contact method (email or phone) is required.
+              </p>
+            )}
           </div>
+
+          {/* Type Tags (multi-select pills) */}
           <div className="space-y-2">
-            <Label htmlFor="customer-tag">Customer Type</Label>
-            <Select value={tag} onValueChange={(v) => setTag(v as CustomerTag)}>
-              <SelectTrigger id="customer-tag" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TAG_OPTIONS.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {CUSTOMER_TAG_LABELS[t]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label>Customer Type</Label>
+            <div className="flex flex-wrap gap-2">
+              {TYPE_TAG_OPTIONS.map((tagOption) => {
+                const isActive = typeTags.includes(tagOption);
+                return (
+                  <button
+                    key={tagOption}
+                    type="button"
+                    onClick={() => toggleTypeTag(tagOption)}
+                    className={cn(
+                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      isActive
+                        ? "bg-action/10 text-action border border-action/20"
+                        : "bg-muted text-muted-foreground border border-transparent hover:border-border"
+                    )}
+                  >
+                    {CUSTOMER_TYPE_TAG_LABELS[tagOption]}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
         <DialogFooter>

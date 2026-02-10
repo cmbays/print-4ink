@@ -15,7 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CustomerCombobox } from "@/components/features/CustomerCombobox";
+import { CustomerCombobox, type CustomerOption } from "@/components/features/CustomerCombobox";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { LineItemRow } from "./LineItemRow";
 import { PricingSummary } from "./PricingSummary";
@@ -33,7 +33,7 @@ import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount } from "@/lib/schemas/quote";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
-import type { Customer, CustomerTag } from "@/lib/schemas/customer";
+import type { Customer, CustomerTag, CustomerTypeTag } from "@/lib/schemas/customer";
 import { cn } from "@/lib/utils";
 
 interface QuoteFormProps {
@@ -126,6 +126,26 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Derived values
   const selectedCustomer = customers.find((c) => c.id === customerId);
   const customerTag: CustomerTag | undefined = selectedCustomer?.tag;
+
+  // Map full Customer objects to CustomerOption with derived contactRole
+  const customerOptions: CustomerOption[] = useMemo(
+    () =>
+      customers.map((c) => {
+        const primaryContact = c.contacts.find((ct) => ct.isPrimary);
+        return {
+          id: c.id,
+          name: c.name,
+          company: c.company,
+          email: c.email,
+          phone: c.phone,
+          tag: c.tag,
+          lifecycleStage: c.lifecycleStage,
+          typeTags: c.typeTags,
+          contactRole: primaryContact?.role,
+        };
+      }),
+    [customers]
+  );
 
   // Get artworks for selected customer
   const customerArtworks = useMemo(() => {
@@ -250,25 +270,26 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
 
   const handleAddNewCustomer = useCallback(
     (data: {
+      company: string;
       name: string;
-      email: string;
-      company?: string;
+      email?: string;
       phone?: string;
-      tag?: CustomerTag;
+      typeTags: CustomerTypeTag[];
+      lifecycleStage: "prospect" | "new";
     }) => {
       const now = new Date().toISOString();
       const newCustomer: Customer = {
         id: crypto.randomUUID(),
         name: data.name,
-        email: data.email,
-        company: data.company || data.name,
+        email: data.email || "",
+        company: data.company,
         phone: data.phone || "",
         address: "",
-        tag: (data.tag || "new") as CustomerTag,
-        lifecycleStage: "prospect",
+        tag: "new" as CustomerTag,
+        lifecycleStage: data.lifecycleStage,
         healthStatus: "active",
         isArchived: false,
-        typeTags: [],
+        typeTags: data.typeTags,
         contacts: [],
         groups: [],
         shippingAddresses: [],
@@ -757,7 +778,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         >
           <div className="space-y-2 pt-2">
             <CustomerCombobox
-              customers={customers}
+              customers={customerOptions}
               selectedCustomerId={customerId || undefined}
               onSelect={handleCustomerSelect}
               onAddNew={() => setShowAddCustomer(true)}
@@ -933,6 +954,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         open={showAddCustomer}
         onOpenChange={setShowAddCustomer}
         onSave={handleAddNewCustomer}
+        lifecycleStage="prospect"
       />
 
       <ArtworkUploadModal
