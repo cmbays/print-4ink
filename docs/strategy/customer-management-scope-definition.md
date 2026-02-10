@@ -36,6 +36,7 @@ The customer detail page is a **dashboard, not a form**. It answers five questio
 - **Speed over features**: Adding a customer < 30 seconds. Seeing their full picture < 5 seconds.
 - **Zero admin overhead**: Lifecycle transitions are automatic. Churn detection is automatic. The shop owner manages customers, not the software.
 - **Record of truth**: Every feature moves toward making Screen Print Pro the single source of truth for customer relationships.
+- **Mobile-friendly from day one**: Every screen in this vertical must be responsive and usable on mobile. Shop owners take calls on the shop floor, check customer history from their phone, and need quick lookups while away from their desk. Build with mobile breakpoints from the start — not as an afterthought. Future mobile app is on the roadmap; responsive web is the Phase 1 foundation.
 
 ---
 
@@ -97,6 +98,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] Interactive states: All rows have hover state, selected smart view is highlighted
 - [ ] Keyboard: Tab to customer, Enter to open
 - [ ] Accessibility: ARIA labels for lifecycle stages and health indicators
+- [ ] **Mobile**: Table collapses to card list on small screens. Search and smart view tabs remain accessible. Quick stats bar stacks vertically. Touch targets ≥ 44px.
 
 ---
 
@@ -155,6 +157,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] Interactive states: Tab hover/active states, action button states
 - [ ] Empty states: Designed for each tab (not generic "no data")
 - [ ] Accessibility: Tabs are keyboard navigable, ARIA labels on all badges
+- [ ] **Mobile**: Header compresses (stats row wraps to 2 rows). Tabs become horizontal scroll or dropdown. Quick stats are most critical on mobile — "Who is this and what's active?" in 3 seconds on a phone screen. Action buttons stack full-width.
 
 ---
 
