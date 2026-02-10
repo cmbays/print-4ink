@@ -34,8 +34,14 @@ but status                          # Workspace state overview
 but branch new <name>               # Create a new virtual branch
 but branch                          # List branches
 but diff                            # Show uncommitted changes
+but stage <file-ID> <branch>        # Stage ONE file to a branch
+but unstage <file-ID>               # Remove file from staging
 but commit <branch> -m "message"    # Commit to a specific branch
+but show <commit-sha>               # Verify commit file list (ALWAYS do this!)
+but uncommit <commit-sha>           # Extract commit back to unstaged (cleanup)
 but push <branch>                   # Push branch to remote
+but pull                            # Update all branches from main
+but apply <branch-name>             # Bring unapplied branch into workspace
 but pr new                          # Create a pull request
 but undo                            # Undo last operation
 ```
@@ -46,9 +52,11 @@ Every Claude session that will modify code MUST create its own branch before mak
 
 1. **Create a branch**: `but branch new session/MMDD-<topic>` (e.g., `session/0209-quoting-fixes`)
 2. **Work normally** — edit files, run tests, etc.
-3. **Commit to your branch**: `but commit session/MMDD-<topic> -m "description"`
-4. **Push when ready**: `but push session/MMDD-<topic>`
-5. **Open PR**: `but pr new` (targets `main`)
+3. **Stage files one at a time**: `but stage <ID> session/MMDD-<topic>` (re-check `but status` between each!)
+4. **Commit to your branch**: `but commit session/MMDD-<topic> -m "description"`
+5. **VERIFY the commit**: `but show <sha>` — check only your files are included
+6. **Push when ready**: `but push session/MMDD-<topic>`
+7. **Open PR**: `but pr new` (targets `main`)
 
 **Rules:**
 - Branch name format: `session/<MMDD>-<kebab-case-topic>` — date prefix + descriptive topic
@@ -56,6 +64,18 @@ Every Claude session that will modify code MUST create its own branch before mak
 - **NEVER use raw `git` commands** for branching, committing, or pushing — always use `but`
 - If the session is read-only (research, questions), no branch is needed
 - If multiple tasks arise in one session, use one branch for all related changes
+
+### GitButler Critical Warnings
+
+> **GitButler is NOT git.** Commits capture the full workspace diff vs main, not just staged files. Files from parallel sessions WILL bleed into your commits if you don't verify.
+
+- **Stage ONE file at a time**, run `but status` between each — IDs are positional and shift after every operation
+- **Always `but show <sha>` after committing** — verify only your files are in the commit
+- **NEVER commit hot files** (`progress.txt`, `for_human/index.html`, `for_human/README.md`) to feature branches — they cause rebase conflicts across parallel sessions. Defer doc updates to after merge.
+- **NEVER run `but resolve` from CLI** — it enters a broken edit mode with no escape. Use `but uncommit` to clean up conflicted commits instead.
+- **`but commit` silently fails on `[id]` paths** (Next.js dynamic routes) — use GitHub MCP API as workaround
+- **If your PR has duplicate files** from other sessions: ask user to merge other PRs first, `but pull`, `but uncommit`, re-stage only your files, recommit
+- **Cleanup tool**: `but uncommit <sha>` extracts all files from a commit back to unstaged. Works on conflicted commits too.
 
 ## Tech Stack
 
