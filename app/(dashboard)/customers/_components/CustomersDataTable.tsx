@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +46,7 @@ interface CustomersDataTableProps {
 }
 
 // ---------------------------------------------------------------------------
-// Revenue computation (Phase 1 \u2014 sum accepted quote totals per customer)
+// Revenue computation (Phase 1 — sum accepted quote totals per customer)
 // ---------------------------------------------------------------------------
 
 function getCustomerRevenue(customerId: string): number {
@@ -58,8 +59,11 @@ function getCustomerRevenue(customerId: string): number {
 // Helpers
 // ---------------------------------------------------------------------------
 
-type SortKey = "company" | "contact" | "type" | "lifecycle" | "health" | "lastOrder" | "revenue";
-type SortDir = "asc" | "desc";
+const sortKeySchema = z.enum(["company", "contact", "type", "lifecycle", "health", "lastOrder", "revenue"]);
+type SortKey = z.infer<typeof sortKeySchema>;
+
+const sortDirSchema = z.enum(["asc", "desc"]);
+type SortDir = z.infer<typeof sortDirSchema>;
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -145,8 +149,8 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   );
   const lifecycleFilter = searchParams.get("lifecycle") ?? "";
   const healthFilter = searchParams.get("health") ?? "";
-  const sortKeyParam = (searchParams.get("sort") as SortKey) ?? "company";
-  const sortDirParam = (searchParams.get("dir") as SortDir) ?? "asc";
+  const sortKeyParam = sortKeySchema.catch("company").parse(searchParams.get("sort") ?? "company");
+  const sortDirParam = sortDirSchema.catch("asc").parse(searchParams.get("dir") ?? "asc");
   const showArchived = searchParams.get("archived") === "true";
 
   // ---- Local state (for debounced search) -----------------------------------
@@ -300,7 +304,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       case "seasonal":
         result = result.filter((c) => c.typeTags.includes("sports-school"));
         break;
-      // "all" \u2014 no additional filter
+      // "all" — no additional filter
     }
 
     // 3. Global search (company, contact names, email, phone)
@@ -539,7 +543,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       {/* ---- Data Table (desktop) / Card List (mobile) ---- */}
       {filteredCustomers.length > 0 ? (
         <>
-          {/* Desktop table \u2014 hidden below md */}
+          {/* Desktop table — hidden below md */}
           <div className="hidden md:block rounded-md border border-border">
             <Table>
               <TableHeader>
@@ -688,7 +692,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             </Table>
           </div>
 
-          {/* Mobile card list \u2014 visible below md */}
+          {/* Mobile card list — visible below md */}
           <div className="flex flex-col gap-3 md:hidden">
             {filteredCustomers.map((customer) => {
               const contact = getPrimaryContact(customer);
@@ -787,12 +791,9 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
         onSave={() => {
           toast.success("Customer created successfully");
         }}
-        onSaveAndView={() => {
+        onSaveAndView={(newCustomer) => {
           toast.success("Customer created successfully");
-          // Phase 1: navigate to first customer as mock destination
-          if (customers.length > 0) {
-            router.push(`/customers/${customers[0].id}`);
-          }
+          router.push(`/customers/${newCustomer.id}`);
         }}
       />
     </div>

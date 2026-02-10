@@ -17,25 +17,21 @@ import { cn } from "@/lib/utils";
 import { CUSTOMER_TYPE_TAG_LABELS } from "@/lib/constants";
 import type { CustomerTypeTag } from "@/lib/schemas/customer";
 
+interface NewCustomerData {
+  id: string;
+  company: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  typeTags: CustomerTypeTag[];
+  lifecycleStage: "prospect" | "new";
+}
+
 export interface AddCustomerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (customer: {
-    company: string;
-    name: string;
-    email?: string;
-    phone?: string;
-    typeTags: CustomerTypeTag[];
-    lifecycleStage: "prospect" | "new";
-  }) => void;
-  onSaveAndView?: (customer: {
-    company: string;
-    name: string;
-    email?: string;
-    phone?: string;
-    typeTags: CustomerTypeTag[];
-    lifecycleStage: "prospect" | "new";
-  }) => void;
+  onSave: (customer: NewCustomerData) => void;
+  onSaveAndView?: (customer: NewCustomerData) => void;
   lifecycleStage?: "prospect" | "new";
 }
 
@@ -105,8 +101,9 @@ export function AddCustomerModal({
     return Object.keys(next).length === 0;
   }
 
-  function getFormData() {
+  function getFormData(): NewCustomerData {
     return {
+      id: crypto.randomUUID(),
       company: company.trim(),
       name: name.trim(),
       email: email.trim() || undefined,
