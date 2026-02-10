@@ -58,7 +58,7 @@ Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to 
 - Quality checklist is still accurate
 - Lessons Learned section is current
 
-**progress.txt**:
+**PROGRESS.md**:
 - "What's Built" matches actual built screens
 - "What's Next" matches IMPLEMENTATION_PLAN current step
 - Session log entries are chronological and accurate
@@ -93,7 +93,7 @@ Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to 
 
 - Update each doc with approved changes
 - Update "Last Verified" date on each checked doc
-- Log changes in `progress.txt`
+- Log changes in `PROGRESS.md`
 
 ### 6. Output
 

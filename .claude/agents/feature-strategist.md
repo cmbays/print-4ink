@@ -24,7 +24,7 @@ You think in user journeys, not feature lists. You think in compounding value, n
 4. Read `docs/IMPLEMENTATION_PLAN.md` — Build phases and current progress.
 5. Read `CLAUDE.md` — Design System section for visual constraints.
 6. Read `docs/reference/FRONTEND_GUIDELINES.md` — Component engineering rules.
-7. Read `progress.txt` — What's built and what's in flight.
+7. Read `PROGRESS.md` — What's built and what's in flight.
 8. Read `lib/schemas/` — Data model. Know what entities exist.
 
 You must understand the complete system — what exists, what was planned, what was built — before proposing a single new idea.

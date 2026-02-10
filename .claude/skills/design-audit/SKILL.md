@@ -16,7 +16,7 @@ Read and internalize these before forming any opinion:
 2. `docs/reference/FRONTEND_GUIDELINES.md` — Component patterns, Tailwind + shadcn/ui usage
 3. `docs/reference/SCREEN_AUDIT_PROTOCOL.md` — 15-point visual quality audit
 4. `docs/APP_FLOW.md` — Screen routes, purposes, navigation
-5. `progress.txt` — What screens are built and ready for audit
+5. `PROGRESS.md` — What screens are built and ready for audit
 
 You must understand the current system completely before proposing changes. You are not starting from scratch. You are elevating what exists.
 

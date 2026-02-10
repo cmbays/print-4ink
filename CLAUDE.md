@@ -4,8 +4,8 @@ description: "AI operating rules, design system, coding standards, and canonical
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-08
-last_verified: 2026-02-08
+last_updated: 2026-02-10
+last_verified: 2026-02-10
 depends_on: []
 ---
 
@@ -29,33 +29,70 @@ npm run test:watch   # Vitest in watch mode
 npx tsc --noEmit     # Type check
 npx shadcn@latest add <component>  # Add shadcn/ui component
 
-# Version Control (standard git)
-git status                          # Working tree status
-git checkout -b <name>              # Create and switch to new branch
-git branch                          # List branches
-git diff                            # Show uncommitted changes
-git add <file>                      # Stage files
-git commit -m "message"             # Commit staged changes
-git push -u origin <branch>         # Push branch to remote
-git pull                            # Pull latest from remote
-gh pr create --title "..." --body "..."  # Create a pull request
+# Version Control (git worktrees)
+git worktree list                    # List all active worktrees
+git worktree add <path> -b <branch>  # Create worktree + branch from main
+git worktree add <path> -b <branch> <base>  # Stacked: branch from another branch
+git worktree remove <path>           # Remove worktree after PR merges
+git push -u origin <branch>          # Push branch to remote
+gh pr create --title "..." --body "..."  # Create PR
+npm run gen:index                    # Regenerate for_human index (main only)
 ```
 
 ## Session Startup (Required)
 
-Every Claude session that will modify code MUST create its own branch before making changes.
+Every Claude session that will modify code MUST create its own worktree.
 
-1. **Create a branch**: `git checkout -b session/MMDD-<topic>` (e.g., `session/0209-quoting-fixes`)
-2. **Work normally** — edit files, run tests, etc.
-3. **Stage and commit**: `git add <files> && git commit -m "description"`
-4. **Push when ready**: `git push -u origin session/MMDD-<topic>`
-5. **Open PR**: `gh pr create --title "..." --body "..."`
+### Standard Session (branch from main)
 
-**Rules:**
-- Branch name format: `session/<MMDD>-<kebab-case-topic>` — date prefix + descriptive topic
-- **NEVER push directly to main** — always create a branch and open a PR
-- If the session is read-only (research, questions), no branch is needed
-- If multiple tasks arise in one session, use one branch for all related changes
+1. **Pull latest main**: `git -C ~/Github/print-4ink pull origin main`
+2. **Create worktree**: `git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/session-MMDD-topic -b session/MMDD-topic`
+3. **Install deps**: `cd ~/Github/print-4ink-worktrees/session-MMDD-topic && npm install`
+4. **Create scratchpad**: Write `.session-context.md` with task context (gitignored)
+5. **Work normally** — edit files, run tests, dev server (`PORT=300X npm run dev`)
+6. **Stage and commit**: `git add <files> && git commit -m "description"`
+7. **Push**: `git push -u origin session/MMDD-topic`
+8. **Open PR**: `gh pr create --title "..." --body "..."`
+
+### Stacked PR (branch from worktree branch)
+
+1. **Create worktree from branch**: `git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/session-MMDD-v2 -b session/MMDD-v2 session/MMDD-parent`
+2. **Install deps**: `cd ~/Github/print-4ink-worktrees/session-MMDD-v2 && npm install`
+3. When creating PR, set base to parent branch (not main)
+
+### Cleanup (after PR merges)
+
+1. `git -C ~/Github/print-4ink pull origin main`
+2. `git -C ~/Github/print-4ink worktree remove ~/Github/print-4ink-worktrees/session-MMDD-topic`
+3. `git -C ~/Github/print-4ink branch -d session/MMDD-topic`
+
+### Rules
+
+- **Worktree location**: Always `~/Github/print-4ink-worktrees/<branch-name>/`
+- **Main repo** (`~/Github/print-4ink/`) stays on `main` — never switch branches there
+- Branch name format: `session/<MMDD>-<kebab-case-topic>`
+- **NEVER push directly to main** — always branch + PR
+- **Max 4 concurrent worktrees** — clean up merged ones promptly
+- **Dev server ports**: Each worktree uses a unique port (`PORT=3001`, `3002`, etc.)
+- If session is read-only (research, questions), no worktree needed
+
+## Hot File Protocol
+
+These files cause merge conflicts in concurrent sessions. They are NEVER committed on feature branches.
+
+| Hot File | Update Rule |
+|----------|-------------|
+| `PROGRESS.md` | Update on main after PR merge |
+| `for_human/index.html` | Auto-generated via `npm run gen:index` — never hand-edit |
+| `for_human/README.md` | Auto-generated via `npm run gen:index` — never hand-edit |
+
+**What sessions CAN commit on their feature branch:**
+- All source code changes
+- New `for_human/YYYY-MM-DD-*.html` session doc (unique filename, no conflicts)
+- New docs (breadboards, spikes, strategy)
+- Schema and test changes
+
+**Per-worktree scratchpad**: Each session creates `.session-context.md` in its worktree root (gitignored). Task context, decisions, blockers, modified files.
 
 ## Tech Stack
 
@@ -191,7 +228,7 @@ For screens with high interaction complexity (e.g., New Quote Form, Kanban Board
    - Name: `spike-{topic}.md` (e.g., `spike-kanban-dnd.md`)
    - Questions should ask about mechanics ("How does X work?"), not effort ("How long?")
 2. **Ask 3-5 clarifying questions** before building (use AskUserQuestion)
-3. **Document answers** in progress.txt session log
+3. **Document answers** in `.session-context.md` scratchpad
 
 ## Development Workflow
 
@@ -223,13 +260,14 @@ These documents define the project. Reference them, keep them current, and never
 | `docs/PRD.md` | Features, scope, acceptance criteria | Scope changes or new features |
 | `docs/APP_FLOW.md` | Screens, routes, navigation paths | Adding/changing pages or flows |
 | `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
-| `progress.txt` | Session-to-session state | After every completed feature |
+| `PROGRESS.md` | Current state, what's built, what's next | After PR merges (on main only) |
+| `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
 
 **Rules:**
 - Before adding a dependency, check `TECH_STACK.md`. If it's not listed, ask first.
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
 - Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
-- After completing work, update `progress.txt` with what was built and what's next.
+- After PR merges, update `PROGRESS.md` on main with what was built and what's next.
 - After completing work, create or update the appropriate `for_human/` HTML doc (see For Human Docs below).
 - When a doc becomes stale, update it — don't ignore it.
 - Every canonical doc has a `Last Verified` date. Update it when you confirm the doc still matches reality.
@@ -311,8 +349,9 @@ After every feature build, plan, or decision, create or update an HTML doc in `f
 **Rules:**
 - **Bundle** related content into the same file (e.g., multi-session work on one screen)
 - **Separate** distinct features, standalone decisions, different project phases
-- **Update `for_human/index.html`** with a new entry card (insert above `<!-- NEW ENTRIES GO HERE -->`) with matching tags
-- **Update `for_human/README.md`** index table to match
+- Sessions commit only their individual `for_human/YYYY-MM-DD-*.html` file on the feature branch
+- `index.html` and `README.md` are auto-generated via `npm run gen:index` — never hand-edit
+- `gen:index` runs on main after PR merge
 - **Include**: session resume command, artifact links, PR links, decision rationale
 - **Session ID**: Find the current session ID by running `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — the filename (without `.jsonl`) is the ID. Never use IDs from plan text or prior sessions.
 - **Style**: use project design tokens (dark theme, cyan accent, Inter font) — copy from `_template.html`
@@ -328,4 +367,5 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Zod v4 UUID validation**: Validates full RFC-4122 format — version byte (3rd group must start with 1-8) AND variant byte (4th group must start with 8, 9, a, or b). Hand-crafted UUIDs often fail the variant check.
 - **Radix Tooltip hover bugs**: Adjacent tooltips need a single shared `<TooltipProvider>` with `skipDelayDuration={300}`, base `sideOffset >= 6`, `data-[state=closed]:pointer-events-none` on content, and `pointer-events-none` on arrow. Do NOT use `disableHoverableContent` — it causes flickering on small targets.
 - **shadcn/ui Tooltip dark mode**: Default `bg-foreground text-background` is invisible in dark mode. Override to `bg-elevated text-foreground border border-border shadow-lg`. Arrow: `bg-elevated fill-elevated`.
-- **Git workflow**: Always create a branch (`git checkout -b session/MMDD-topic`) before making changes. Never push directly to main.
+- **Git worktrees**: Main repo (`~/Github/print-4ink/`) always stays on `main`. Worktrees go in `~/Github/print-4ink-worktrees/`. Each worktree needs its own `npm install`. Max 4 concurrent worktrees — clean up after PR merges.
+- **Hot files**: Never commit `PROGRESS.md`, `for_human/index.html`, or `for_human/README.md` on feature branches. Update on main after merge.

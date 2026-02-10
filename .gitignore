@@ -54,3 +54,6 @@ quality-gate/
 
 # Playwright MCP logs
 .playwright-mcp/
+
+# Per-worktree session scratchpad (never committed)
+.session-context.md

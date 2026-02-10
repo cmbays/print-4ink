@@ -51,7 +51,7 @@ For each canonical doc, check these items against the actual codebase.
 - [ ] Canonical docs table lists all docs that actually exist
 - [ ] Skills table lists all skills in `.claude/skills/`
 
-## progress.txt
+## PROGRESS.md
 
 - [ ] "What's Built" section lists all actually built screens/features
 - [ ] "What's Next" matches current IMPLEMENTATION_PLAN step
@@ -66,4 +66,4 @@ For each canonical doc, check these items against the actual codebase.
 - [ ] Tech stack versions in TECH_STACK match CLAUDE.md summary
 - [ ] Design tokens in CLAUDE.md match FRONTEND_GUIDELINES
 - [ ] Schema entities in `lib/schemas/` match entities in APP_FLOW data sources
-- [ ] progress.txt step numbers match IMPLEMENTATION_PLAN step numbers
+- [ ] PROGRESS.md step numbers match IMPLEMENTATION_PLAN step numbers
