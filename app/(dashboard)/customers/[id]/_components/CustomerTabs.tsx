@@ -16,6 +16,7 @@ import type { Note } from "@/lib/schemas/note";
 
 interface CustomerTabsProps {
   customer: Customer;
+  customers: Customer[];
   quotes: Quote[];
   jobs: Job[];
   artworks: Artwork[];
@@ -24,6 +25,7 @@ interface CustomerTabsProps {
 
 export function CustomerTabs({
   customer,
+  customers,
   quotes,
   jobs,
   artworks,
@@ -84,7 +86,7 @@ export function CustomerTabs({
       </TabsContent>
 
       <TabsContent value="details" className="mt-4">
-        <CustomerDetailsPanel customer={customer} />
+        <CustomerDetailsPanel customer={customer} customers={customers} />
       </TabsContent>
 
       <TabsContent value="notes" className="mt-4">

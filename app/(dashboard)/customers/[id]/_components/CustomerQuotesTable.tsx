@@ -91,7 +91,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                     asChild
                     aria-label={`Copy quote ${quote.quoteNumber} as new`}
                   >
-                    <Link href={`/quotes/new?from=${quote.id}`}>
+                    <Link href={`/quotes/new?duplicate=${quote.id}`}>
                       <Copy className="size-3" />
                     </Link>
                   </Button>
@@ -108,7 +108,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
           <Link
             key={quote.id}
             href={`/quotes/${quote.id}`}
-            className="block rounded-lg border border-border bg-bg-elevated p-4 hover:border-action/30 transition-colors"
+            className="block rounded-lg border border-border bg-elevated p-4 hover:border-action/30 transition-colors"
             role="listitem"
           >
             <div className="flex items-center justify-between mb-2">

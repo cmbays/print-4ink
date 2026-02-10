@@ -7,6 +7,7 @@ import { DiscountRow } from "./DiscountRow";
 import { ArtworkPreview } from "./ArtworkPreview";
 import { QuoteActions } from "./QuoteActions";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Info, Send } from "lucide-react";
 import {
   Tooltip,
@@ -105,9 +106,12 @@ export function QuoteDetailView({
           <>
             <Separator className="my-3" />
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-foreground">
+              <Link
+                href={`/customers/${customer.id}`}
+                className="text-sm font-medium text-foreground hover:text-action transition-colors"
+              >
                 {customer.name} — {customer.company}
-              </p>
+              </Link>
               <LifecycleBadge stage={customer.lifecycleStage} className="text-xs" />
             </div>
             <p className="text-sm text-muted-foreground">{customer.email} · {customer.phone}</p>

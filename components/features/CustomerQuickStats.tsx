@@ -26,9 +26,14 @@ function formatCurrency(value: number): string {
 
 function formatDaysAgo(dateString: string | null): string {
   if (!dateString) return "No orders";
-  const days = Math.floor(
-    (Date.now() - new Date(dateString).getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const diffMs = Date.now() - new Date(dateString).getTime();
+  const days = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
+  if (diffMs < 0) {
+    // Future date
+    if (days === 0) return "Today";
+    if (days === 1) return "In 1 day";
+    return `In ${days} days`;
+  }
   if (days === 0) return "Today";
   if (days === 1) return "1 day ago";
   return `${days} days ago`;
