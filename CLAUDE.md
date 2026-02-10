@@ -29,53 +29,33 @@ npm run test:watch   # Vitest in watch mode
 npx tsc --noEmit     # Type check
 npx shadcn@latest add <component>  # Add shadcn/ui component
 
-# Version Control (GitButler CLI — use `but`, NOT `git`)
-but status                          # Workspace state overview
-but branch new <name>               # Create a new virtual branch
-but branch                          # List branches
-but diff                            # Show uncommitted changes
-but stage <file-ID> <branch>        # Stage ONE file to a branch
-but unstage <file-ID>               # Remove file from staging
-but commit <branch> -m "message"    # Commit to a specific branch
-but show <commit-sha>               # Verify commit file list (ALWAYS do this!)
-but uncommit <commit-sha>           # Extract commit back to unstaged (cleanup)
-but push <branch>                   # Push branch to remote
-but pull                            # Update all branches from main
-but apply <branch-name>             # Bring unapplied branch into workspace
-but pr new                          # Create a pull request
-but undo                            # Undo last operation
+# Version Control (standard git)
+git status                          # Working tree status
+git checkout -b <name>              # Create and switch to new branch
+git branch                          # List branches
+git diff                            # Show uncommitted changes
+git add <file>                      # Stage files
+git commit -m "message"             # Commit staged changes
+git push -u origin <branch>         # Push branch to remote
+git pull                            # Pull latest from remote
+gh pr create --title "..." --body "..."  # Create a pull request
 ```
 
 ## Session Startup (Required)
 
-Every Claude session that will modify code MUST create its own branch before making changes. This prevents conflicts when multiple sessions run in parallel.
+Every Claude session that will modify code MUST create its own branch before making changes.
 
-1. **Create a branch**: `but branch new session/MMDD-<topic>` (e.g., `session/0209-quoting-fixes`)
+1. **Create a branch**: `git checkout -b session/MMDD-<topic>` (e.g., `session/0209-quoting-fixes`)
 2. **Work normally** — edit files, run tests, etc.
-3. **Stage files one at a time**: `but stage <ID> session/MMDD-<topic>` (re-check `but status` between each!)
-4. **Commit to your branch**: `but commit session/MMDD-<topic> -m "description"`
-5. **VERIFY the commit**: `but show <sha>` — check only your files are included
-6. **Push when ready**: `but push session/MMDD-<topic>`
-7. **Open PR**: `but pr new` (targets `main`)
+3. **Stage and commit**: `git add <files> && git commit -m "description"`
+4. **Push when ready**: `git push -u origin session/MMDD-<topic>`
+5. **Open PR**: `gh pr create --title "..." --body "..."`
 
 **Rules:**
 - Branch name format: `session/<MMDD>-<kebab-case-topic>` — date prefix + descriptive topic
-- **NEVER commit to `gitbutler/workspace`** — it's a synthetic integration branch, not a real branch
-- **NEVER use raw `git` commands** for branching, committing, or pushing — always use `but`
+- **NEVER push directly to main** — always create a branch and open a PR
 - If the session is read-only (research, questions), no branch is needed
 - If multiple tasks arise in one session, use one branch for all related changes
-
-### GitButler Critical Warnings
-
-> **GitButler is NOT git.** Commits capture the full workspace diff vs main, not just staged files. Files from parallel sessions WILL bleed into your commits if you don't verify.
-
-- **Stage ONE file at a time**, run `but status` between each — IDs are positional and shift after every operation
-- **Always `but show <sha>` after committing** — verify only your files are in the commit
-- **NEVER commit hot files** (`progress.txt`, `for_human/index.html`, `for_human/README.md`) to feature branches — they cause rebase conflicts across parallel sessions. Defer doc updates to after merge.
-- **NEVER run `but resolve` from CLI** — it enters a broken edit mode with no escape. Use `but uncommit` to clean up conflicted commits instead.
-- **`but commit` silently fails on `[id]` paths** (Next.js dynamic routes) — use GitHub MCP API as workaround
-- **If your PR has duplicate files** from other sessions: ask user to merge other PRs first, `but pull`, `but uncommit`, re-stage only your files, recommit
-- **Cleanup tool**: `but uncommit <sha>` extracts all files from a commit back to unstaged. Works on conflicted commits too.
 
 ## Tech Stack
 
@@ -229,8 +209,7 @@ For screens with high interaction complexity (e.g., New Quote Form, Kanban Board
 - No colors outside the design token palette
 - No decorative gradients — color communicates meaning
 - No `className` string concatenation — use `cn()` from `@/lib/utils`
-- No raw `git` commands for version control — use `but` (GitButler CLI) for all branching, committing, pushing
-- No committing to `gitbutler/workspace` — always create a session branch first
+- No pushing directly to main — always branch + PR
 
 ## Canonical Documents
 
@@ -349,4 +328,4 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Zod v4 UUID validation**: Validates full RFC-4122 format — version byte (3rd group must start with 1-8) AND variant byte (4th group must start with 8, 9, a, or b). Hand-crafted UUIDs often fail the variant check.
 - **Radix Tooltip hover bugs**: Adjacent tooltips need a single shared `<TooltipProvider>` with `skipDelayDuration={300}`, base `sideOffset >= 6`, `data-[state=closed]:pointer-events-none` on content, and `pointer-events-none` on arrow. Do NOT use `disableHoverableContent` — it causes flickering on small targets.
 - **shadcn/ui Tooltip dark mode**: Default `bg-foreground text-background` is invisible in dark mode. Override to `bg-elevated text-foreground border border-border shadow-lg`. Arrow: `bg-elevated fill-elevated`.
-- **GitButler CLI**: Use `but`, not `git`. The `gitbutler/workspace` branch is synthetic — never commit to it directly. Always `but branch new session/MMDD-topic` first. Multiple virtual branches can coexist, which is how parallel Claude sessions avoid conflicts.
+- **Git workflow**: Always create a branch (`git checkout -b session/MMDD-topic`) before making changes. Never push directly to main.
