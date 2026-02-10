@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ChevronDown,
-  ChevronUp,
   Plus,
   Search,
   Users,
@@ -29,12 +27,14 @@ import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { HealthBadge } from "@/components/features/HealthBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
+import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { quotes } from "@/lib/mock-data";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   LIFECYCLE_STAGE_LABELS,
+  HEALTH_STATUS_LABELS,
 } from "@/lib/constants";
-import type { Customer, CustomerTypeTag, LifecycleStage } from "@/lib/schemas/customer";
+import type { Customer, CustomerTypeTag, LifecycleStage, HealthStatus } from "@/lib/schemas/customer";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -58,7 +58,7 @@ function getCustomerRevenue(customerId: string): number {
 // Helpers
 // ---------------------------------------------------------------------------
 
-type SortKey = "company" | "contact" | "lifecycle" | "lastOrder" | "revenue";
+type SortKey = "company" | "contact" | "type" | "lifecycle" | "health" | "lastOrder" | "revenue";
 type SortDir = "asc" | "desc";
 
 function formatCurrency(value: number): string {
@@ -117,6 +117,13 @@ const ALL_LIFECYCLE_STAGES: LifecycleStage[] = [
   "contract",
 ];
 
+// All health statuses for filter dropdown
+const ALL_HEALTH_STATUSES: HealthStatus[] = [
+  "active",
+  "potentially-churning",
+  "churned",
+];
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -137,6 +144,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
     [activeTagsRaw],
   );
   const lifecycleFilter = searchParams.get("lifecycle") ?? "";
+  const healthFilter = searchParams.get("health") ?? "";
   const sortKeyParam = (searchParams.get("sort") as SortKey) ?? "company";
   const sortDirParam = (searchParams.get("dir") as SortDir) ?? "asc";
   const showArchived = searchParams.get("archived") === "true";
@@ -218,6 +226,15 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       updateParam("lifecycle", stage === lifecycleFilter ? null : stage);
     },
     [lifecycleFilter, updateParam],
+  );
+
+  // ---- Health filter ---------------------------------------------------------
+
+  const handleHealthChange = useCallback(
+    (status: string) => {
+      updateParam("health", status === healthFilter ? null : status);
+    },
+    [healthFilter, updateParam],
   );
 
   // ---- Archived toggle ------------------------------------------------------
@@ -323,6 +340,13 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       );
     }
 
+    // 5b. Health filter
+    if (healthFilter) {
+      result = result.filter(
+        (c) => c.healthStatus === healthFilter,
+      );
+    }
+
     // 6. Sort
     const effectiveSortKey = view === "top" ? "revenue" as SortKey : sortKey;
     const effectiveSortDir = view === "top" ? "desc" as SortDir : sortDir;
@@ -339,9 +363,20 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
           cmp = aContact.localeCompare(bContact);
           break;
         }
+        case "type": {
+          const aTag = a.typeTags.length > 0 ? a.typeTags.slice().sort()[0] : "zzz";
+          const bTag = b.typeTags.length > 0 ? b.typeTags.slice().sort()[0] : "zzz";
+          cmp = aTag.localeCompare(bTag);
+          break;
+        }
         case "lifecycle": {
           const order: Record<string, number> = { prospect: 0, new: 1, repeat: 2, contract: 3 };
           cmp = (order[a.lifecycleStage] ?? 0) - (order[b.lifecycleStage] ?? 0);
+          break;
+        }
+        case "health": {
+          const healthOrder: Record<string, number> = { active: 0, "potentially-churning": 1, churned: 2 };
+          cmp = (healthOrder[a.healthStatus] ?? 0) - (healthOrder[b.healthStatus] ?? 0);
           break;
         }
         case "lastOrder": {
@@ -357,20 +392,58 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
     });
 
     return result;
-  }, [customers, showArchived, view, searchQuery, activeTags, lifecycleFilter, sortKey, sortDir, revenueMap]);
+  }, [customers, showArchived, view, searchQuery, activeTags, lifecycleFilter, healthFilter, sortKey, sortDir, revenueMap]);
 
-  // ---- Sort icon ------------------------------------------------------------
+  // ---- Effective sort (for "top" view override) ----------------------------
 
-  const renderSortIcon = (column: SortKey) => {
-    const effectiveKey = view === "top" ? "revenue" as SortKey : sortKey;
-    const effectiveDir = view === "top" ? "desc" as SortDir : sortDir;
-    if (effectiveKey !== column) return null;
-    return effectiveDir === "asc" ? (
-      <ChevronUp className="size-4" />
-    ) : (
-      <ChevronDown className="size-4" />
-    );
-  };
+  const effectiveSortKey = view === "top" ? "revenue" as SortKey : sortKey;
+  const effectiveSortDir = view === "top" ? "desc" as SortDir : sortDir;
+
+  // ---- Tag/Lifecycle/Health filter toggle helpers for ColumnHeaderMenu ------
+
+  const typeFilterOptions = ALL_TYPE_TAGS.map((tag) => ({
+    value: tag,
+    label: CUSTOMER_TYPE_TAG_LABELS[tag],
+  }));
+
+  const lifecycleFilterOptions = ALL_LIFECYCLE_STAGES.map((stage) => ({
+    value: stage,
+    label: LIFECYCLE_STAGE_LABELS[stage],
+  }));
+
+  const healthFilterOptions = ALL_HEALTH_STATUSES.map((status) => ({
+    value: status,
+    label: HEALTH_STATUS_LABELS[status],
+  }));
+
+  const handleTypeFilterToggle = useCallback(
+    (value: string) => toggleTag(value),
+    [toggleTag],
+  );
+
+  const handleTypeFilterClear = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("tags");
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [searchParams, router]);
+
+  const handleLifecycleFilterToggle = useCallback(
+    (value: string) => handleLifecycleChange(value),
+    [handleLifecycleChange],
+  );
+
+  const handleLifecycleFilterClear = useCallback(() => {
+    updateParam("lifecycle", null);
+  }, [updateParam]);
+
+  const handleHealthFilterToggle = useCallback(
+    (value: string) => handleHealthChange(value),
+    [handleHealthChange],
+  );
+
+  const handleHealthFilterClear = useCallback(() => {
+    updateParam("health", null);
+  }, [updateParam]);
 
   // ---- Check if any filters are active (for empty state messaging) ----------
 
@@ -378,6 +451,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
     searchQuery.length > 0 ||
     activeTags.length > 0 ||
     lifecycleFilter.length > 0 ||
+    healthFilter.length > 0 ||
     view !== "all" ||
     showArchived;
 
@@ -421,7 +495,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
               <button
                 type="button"
                 onClick={() => setLocalSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
                 <X className="size-4" />
@@ -435,6 +509,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             className={cn(
               "inline-flex items-center gap-1.5 text-sm font-medium transition-colors",
               "rounded-full px-3 py-1.5 border",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               showArchived
                 ? "bg-action/10 text-action border-action/20"
                 : "bg-transparent text-muted-foreground border-transparent hover:text-foreground hover:bg-muted",
@@ -445,72 +520,18 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
           </button>
         </div>
 
-        {/* Type tag filter chips */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Type
-          </span>
-          {ALL_TYPE_TAGS.map((tag) => {
-            const isActive = activeTags.includes(tag);
-            return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => toggleTag(tag)}
-                className={cn(
-                  "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-                  "border",
-                  isActive
-                    ? "bg-action/10 text-action border-action/20"
-                    : "bg-muted text-muted-foreground border-transparent hover:text-foreground",
-                )}
-                aria-pressed={isActive}
-                aria-label={`Filter by ${CUSTOMER_TYPE_TAG_LABELS[tag]}`}
-              >
-                {CUSTOMER_TYPE_TAG_LABELS[tag]}
-                {isActive && <X className="ml-1 size-3" />}
-              </button>
-            );
-          })}
-
-          {/* Lifecycle filter chips */}
-          <span className="ml-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Stage
-          </span>
-          {ALL_LIFECYCLE_STAGES.map((stage) => {
-            const isActive = lifecycleFilter === stage;
-            return (
-              <button
-                key={stage}
-                type="button"
-                onClick={() => handleLifecycleChange(stage)}
-                className={cn(
-                  "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
-                  "border",
-                  isActive
-                    ? "bg-action/10 text-action border-action/20"
-                    : "bg-muted text-muted-foreground border-transparent hover:text-foreground",
-                )}
-                aria-pressed={isActive}
-                aria-label={`Filter by ${LIFECYCLE_STAGE_LABELS[stage]} stage`}
-              >
-                {LIFECYCLE_STAGE_LABELS[stage]}
-                {isActive && <X className="ml-1 size-3" />}
-              </button>
-            );
-          })}
-
-          {/* Clear all filters */}
-          {hasFilters && (
+        {/* Clear all filters */}
+        {hasFilters && (
+          <div className="flex items-center">
             <button
               type="button"
               onClick={clearFilters}
-              className="ml-auto text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
-              Clear all
+              Clear all filters
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* ---- Data Table (desktop) / Card List (mobile) ---- */}
@@ -522,56 +543,79 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
               <TableHeader>
                 <TableRow>
                   <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                      onClick={() => handleSort("company")}
-                      aria-label="Sort by company"
-                    >
-                      Company {renderSortIcon("company")}
-                    </button>
+                    <ColumnHeaderMenu
+                      label="Company"
+                      sortKey="company"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("company")}
+                    />
                   </TableHead>
                   <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                      onClick={() => handleSort("contact")}
-                      aria-label="Sort by primary contact"
-                    >
-                      Primary Contact {renderSortIcon("contact")}
-                    </button>
-                  </TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                      onClick={() => handleSort("lifecycle")}
-                      aria-label="Sort by lifecycle stage"
-                    >
-                      Lifecycle {renderSortIcon("lifecycle")}
-                    </button>
-                  </TableHead>
-                  <TableHead>Health</TableHead>
-                  <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                      onClick={() => handleSort("lastOrder")}
-                      aria-label="Sort by last order"
-                    >
-                      Last Order {renderSortIcon("lastOrder")}
-                    </button>
+                    <ColumnHeaderMenu
+                      label="Primary Contact"
+                      sortKey="contact"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("contact")}
+                    />
                   </TableHead>
                   <TableHead>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                      onClick={() => handleSort("revenue")}
-                      aria-label="Sort by revenue"
-                    >
-                      Revenue {renderSortIcon("revenue")}
-                    </button>
+                    <ColumnHeaderMenu
+                      label="Type"
+                      sortKey="type"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("type")}
+                      filterOptions={typeFilterOptions}
+                      activeFilters={activeTags}
+                      onFilterToggle={handleTypeFilterToggle}
+                      onFilterClear={handleTypeFilterClear}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Lifecycle"
+                      sortKey="lifecycle"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("lifecycle")}
+                      filterOptions={lifecycleFilterOptions}
+                      activeFilters={lifecycleFilter ? [lifecycleFilter] : []}
+                      onFilterToggle={handleLifecycleFilterToggle}
+                      onFilterClear={handleLifecycleFilterClear}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Health"
+                      sortKey="health"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("health")}
+                      filterOptions={healthFilterOptions}
+                      activeFilters={healthFilter ? [healthFilter] : []}
+                      onFilterToggle={handleHealthFilterToggle}
+                      onFilterClear={handleHealthFilterClear}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Last Order"
+                      sortKey="lastOrder"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("lastOrder")}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Revenue"
+                      sortKey="revenue"
+                      currentSortKey={effectiveSortKey}
+                      currentSortDir={effectiveSortDir}
+                      onSort={() => handleSort("revenue")}
+                    />
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -583,8 +627,17 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   return (
                     <TableRow
                       key={customer.id}
-                      className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      className="cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
                       onClick={() => router.push(`/customers/${customer.id}`)}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          router.push(`/customers/${customer.id}`);
+                        }
+                      }}
+                      role="link"
+                      aria-label={`View ${customer.company}`}
                     >
                       <TableCell className="font-medium">
                         <span className="text-action hover:underline">
@@ -731,6 +784,13 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
         onOpenChange={setModalOpen}
         onSave={() => {
           toast.success("Customer created successfully");
+        }}
+        onSaveAndView={() => {
+          toast.success("Customer created successfully");
+          // Phase 1: navigate to first customer as mock destination
+          if (customers.length > 0) {
+            router.push(`/customers/${customers[0].id}`);
+          }
         }}
       />
     </div>

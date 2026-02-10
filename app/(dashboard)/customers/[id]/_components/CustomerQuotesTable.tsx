@@ -53,9 +53,9 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
           <thead>
             <tr className="border-b border-border text-left">
               <th className="pb-3 font-medium text-muted-foreground">Quote #</th>
+              <th className="pb-3 font-medium text-muted-foreground">Date</th>
               <th className="pb-3 font-medium text-muted-foreground">Status</th>
               <th className="pb-3 font-medium text-muted-foreground text-right">Total</th>
-              <th className="pb-3 font-medium text-muted-foreground">Date</th>
               <th className="pb-3 font-medium text-muted-foreground sr-only">Actions</th>
             </tr>
           </thead>
@@ -73,6 +73,9 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                     {quote.quoteNumber}
                   </Link>
                 </td>
+                <td className="py-3 text-muted-foreground">
+                  {formatDate(quote.createdAt)}
+                </td>
                 <td className="py-3">
                   <Badge variant="ghost" className={QUOTE_STATUS_COLORS[quote.status]}>
                     {QUOTE_STATUS_LABELS[quote.status]}
@@ -81,9 +84,6 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                 <td className="py-3 text-right font-mono text-foreground">
                   {formatCurrency(quote.total)}
                 </td>
-                <td className="py-3 text-muted-foreground">
-                  {formatDate(quote.createdAt)}
-                </td>
                 <td className="py-3">
                   <Button
                     variant="ghost"
@@ -91,7 +91,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                     asChild
                     aria-label={`Copy quote ${quote.quoteNumber} as new`}
                   >
-                    <Link href={`/quotes/new?from=${quote.id}`}>
+                    <Link href={`/quotes/new?duplicate=${quote.id}`}>
                       <Copy className="size-3" />
                     </Link>
                   </Button>
@@ -108,7 +108,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
           <Link
             key={quote.id}
             href={`/quotes/${quote.id}`}
-            className="block rounded-lg border border-border bg-bg-elevated p-4 hover:border-action/30 transition-colors"
+            className="block rounded-lg border border-border bg-elevated p-4 hover:border-action/30 transition-colors"
             role="listitem"
           >
             <div className="flex items-center justify-between mb-2">

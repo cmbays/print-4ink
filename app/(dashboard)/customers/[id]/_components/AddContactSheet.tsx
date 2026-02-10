@@ -39,6 +39,7 @@ export function AddContactSheet({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState<string>("ordering");
+  const [roleDescription, setRoleDescription] = useState("");
   const [groupId, setGroupId] = useState<string>("none");
   const [isPrimary, setIsPrimary] = useState(false);
 
@@ -49,6 +50,7 @@ export function AddContactSheet({
       email: email || undefined,
       phone: phone || undefined,
       role,
+      roleDescription: role === "other" ? roleDescription || undefined : undefined,
       groupId: groupId === "none" ? undefined : groupId,
       isPrimary,
     });
@@ -61,6 +63,7 @@ export function AddContactSheet({
     setEmail("");
     setPhone("");
     setRole("ordering");
+    setRoleDescription("");
     setGroupId("none");
     setIsPrimary(false);
   }
@@ -117,7 +120,13 @@ export function AddContactSheet({
 
           <div className="space-y-2">
             <Label htmlFor="contact-role">Role</Label>
-            <Select value={role} onValueChange={setRole}>
+            <Select
+              value={role}
+              onValueChange={(value) => {
+                setRole(value);
+                if (value !== "other") setRoleDescription("");
+              }}
+            >
               <SelectTrigger className="w-full" aria-label="Contact role">
                 <SelectValue />
               </SelectTrigger>
@@ -129,6 +138,15 @@ export function AddContactSheet({
                 ))}
               </SelectContent>
             </Select>
+            {role === "other" && (
+              <Input
+                id="contact-role-description"
+                value={roleDescription}
+                onChange={(e) => setRoleDescription(e.target.value)}
+                placeholder="e.g. Team Manager, Event Coordinator"
+                aria-label="Role description"
+              />
+            )}
           </div>
 
           {groups.length > 0 && (

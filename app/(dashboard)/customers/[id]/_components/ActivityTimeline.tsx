@@ -19,6 +19,7 @@ interface ActivityTimelineProps {
   quotes: Quote[];
   jobs: Job[];
   notes: Note[];
+  onSwitchTab?: (tab: string) => void;
 }
 
 type TimelineItem =
@@ -30,17 +31,29 @@ function relativeDate(dateStr: string): string {
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const absDays = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) {
-    const weeks = Math.floor(diffDays / 7);
+  if (diffMs < 0) {
+    // Future date
+    if (absDays === 0) return "Today";
+    if (absDays === 1) return "In 1 day";
+    if (absDays < 7) return `In ${absDays} days`;
+    if (absDays < 30) {
+      const weeks = Math.floor(absDays / 7);
+      return `In ${weeks} ${weeks === 1 ? "week" : "weeks"}`;
+    }
+    return date.toLocaleDateString();
+  }
+
+  if (absDays === 0) return "Today";
+  if (absDays === 1) return "Yesterday";
+  if (absDays < 7) return `${absDays} days ago`;
+  if (absDays < 30) {
+    const weeks = Math.floor(absDays / 7);
     return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
   }
-  if (diffDays < 365) {
-    const months = Math.floor(diffDays / 30);
+  if (absDays < 365) {
+    const months = Math.floor(absDays / 30);
     return `${months} ${months === 1 ? "month" : "months"} ago`;
   }
   return date.toLocaleDateString();
@@ -52,7 +65,7 @@ const ICON_CONFIG = {
   note: { icon: StickyNote, color: "text-warning" },
 } as const;
 
-export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps) {
+export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityTimelineProps) {
   const items: TimelineItem[] = [
     ...quotes.map((q) => ({ type: "quote" as const, date: q.createdAt, data: q })),
     ...jobs.map((j) => ({ type: "job" as const, date: j.dueDate, data: j })),
@@ -87,18 +100,45 @@ export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps)
             role="listitem"
           >
             {/* Icon node */}
-            <div
-              className={cn(
-                "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-elevated border border-border",
-                config.color
-              )}
-            >
-              <Icon className="size-4" aria-hidden="true" />
-            </div>
+            {item.type === "quote" ? (
+              <Link
+                href={`/quotes/${item.data.id}`}
+                className={cn(
+                  "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border transition-all",
+                  "hover:ring-2 hover:ring-action/30",
+                  config.color
+                )}
+                aria-label={`View quote ${item.data.quoteNumber}`}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </Link>
+            ) : item.type === "note" ? (
+              <button
+                type="button"
+                onClick={() => onSwitchTab?.("notes")}
+                className={cn(
+                  "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border transition-all",
+                  "hover:ring-2 hover:ring-action/30",
+                  config.color
+                )}
+                aria-label="Go to notes tab"
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </button>
+            ) : (
+              <div
+                className={cn(
+                  "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border",
+                  config.color
+                )}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </div>
+            )}
 
             {/* Content */}
             <div className="flex-1 min-w-0 pt-0.5">
-              <TimelineContent item={item} />
+              <TimelineContent item={item} onSwitchTab={onSwitchTab} />
               <p className="text-xs text-muted-foreground mt-1">
                 {relativeDate(item.date)}
               </p>
@@ -110,7 +150,7 @@ export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps)
   );
 }
 
-function TimelineContent({ item }: { item: TimelineItem }) {
+function TimelineContent({ item, onSwitchTab }: { item: TimelineItem; onSwitchTab?: (tab: string) => void }) {
   switch (item.type) {
     case "quote": {
       const quote = item.data;
@@ -149,7 +189,13 @@ function TimelineContent({ item }: { item: TimelineItem }) {
           : note.content;
       return (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-foreground">{truncated}</span>
+          <button
+            type="button"
+            onClick={() => onSwitchTab?.("notes")}
+            className="text-sm text-foreground hover:text-action transition-colors text-left"
+          >
+            {truncated}
+          </button>
           {note.channel && (
             <Badge variant="ghost" className="text-muted-foreground">
               {NOTE_CHANNEL_LABELS[note.channel]}
