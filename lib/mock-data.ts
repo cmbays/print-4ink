@@ -1,4 +1,8 @@
 import type { Customer } from "./schemas/customer";
+import type { Contact } from "./schemas/contact";
+import type { Group } from "./schemas/group";
+import type { Note } from "./schemas/note";
+import type { Address } from "./schemas/address";
 import type { Job } from "./schemas/job";
 import type { Quote } from "./schemas/quote";
 import type { Screen } from "./schemas/screen";
@@ -6,51 +10,381 @@ import type { Color } from "./schemas/color";
 import type { GarmentCatalog } from "./schemas/garment";
 import type { Artwork } from "./schemas/artwork";
 
+// ---------------------------------------------------------------------------
+// Customer IDs (stable — referenced by jobs, quotes, artworks)
+// ---------------------------------------------------------------------------
+
+const CUSTOMER_IDS = {
+  riverCity: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+  lonestar: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+  thompson: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
+  sunset5k: "f4d5e6f7-a8b9-4c0d-8e2f-3a4b5c6d7e8f",
+  lakeside: "a5e6f7a8-b9c0-4d1e-9f3a-4b5c6d7e8f9a",
+  metroYouth: "b6f7a8b9-c0d1-4e2f-9a4b-5c6d7e8f9a0b",
+  tiktokMerch: "c7a8b9c0-d1e2-4f3a-ab5c-6d7e8f9a0b1c",
+  riverside: "d8b9c0d1-e2f3-4a4b-bc6d-7e8f9a0b1c2d",
+  crosstown: "e9c0d1e2-f3a4-4b5c-8d7e-9f0a1b2c3d4e",
+  mountainView: "f0d1e2f3-a4b5-4c6d-9e8f-0a1b2c3d4e5f",
+} as const;
+
+// ---------------------------------------------------------------------------
+// Contacts
+// ---------------------------------------------------------------------------
+
+export const contacts: Contact[] = [
+  // River City Brewing — 2 contacts, 1 group
+  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", name: "Marcus Rivera", email: "marcus@rivercitybrewing.com", phone: "(512) 555-0147", role: "ordering", isPrimary: true, groupId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c" },
+  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", name: "Lisa Park", email: "lisa@rivercitybrewing.com", role: "art-approver", isPrimary: false, groupId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c" },
+  // Lonestar Lacrosse — 1 contact
+  { id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", name: "Sarah Chen", email: "sarah@lonestarlax.org", phone: "(512) 555-0298", role: "ordering", isPrimary: true },
+  // Thompson Family — 1 contact
+  { id: "04d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", name: "Jake Thompson", email: "jake.thompson@gmail.com", phone: "(737) 555-0412", role: "ordering", isPrimary: true },
+  // Sunset 5K — 1 contact
+  { id: "05e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", name: "Maria Gonzalez", email: "maria@sunset5k.org", phone: "(512) 555-0533", role: "ordering", isPrimary: true },
+  // Lakeside Music Festival — 2 contacts
+  { id: "06f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", name: "Chris Patel", email: "chris@lakesidefest.com", phone: "(737) 555-0671", role: "ordering", isPrimary: true },
+  { id: "07a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", name: "Amy Wong", email: "amy@lakesidefest.com", phone: "(737) 555-0672", role: "billing", isPrimary: false },
+  // Metro Youth Soccer — 2 contacts, 1 group
+  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", name: "Coach Williams", email: "coach@metroyouthsoccer.org", phone: "(512) 555-0801", role: "ordering", isPrimary: true, groupId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d" },
+  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", name: "Janet Lee", email: "janet@metroyouthsoccer.org", phone: "(512) 555-0802", role: "billing", isPrimary: false, groupId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d" },
+  // TikTok Merch Co — 1 contact
+  { id: "10d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", name: "Alex Kim", email: "alex@tiktokmerch.co", phone: "(737) 555-0910", role: "owner", isPrimary: true },
+  // Riverside Church — 1 contact
+  { id: "11e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", name: "Pastor James", email: "pastor.james@riversidechurch.org", phone: "(512) 555-1101", role: "ordering", isPrimary: true },
+  // CrossTown Printing — 1 contact
+  { id: "12f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", name: "Mike Davis", email: "mike@crosstownprinting.com", phone: "(512) 555-1201", role: "owner", isPrimary: true },
+  // Mountain View HS — 1 contact
+  { id: "13a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", name: "Tom Rodriguez", email: "t.rodriguez@mvhs.edu", phone: "(737) 555-1301", role: "ordering", isPrimary: true, notes: "Athletic Director" },
+];
+
+// ---------------------------------------------------------------------------
+// Groups
+// ---------------------------------------------------------------------------
+
+export const customerGroups: Group[] = [
+  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", name: "Marketing Dept", customerId: CUSTOMER_IDS.riverCity },
+  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", name: "Admin", customerId: CUSTOMER_IDS.metroYouth },
+];
+
+// ---------------------------------------------------------------------------
+// Addresses
+// ---------------------------------------------------------------------------
+
+export const customerAddresses: Address[] = [
+  // River City Brewing
+  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", label: "Main", street: "1200 E 6th St", city: "Austin", state: "TX", zip: "78702", country: "US", isDefault: true, type: "billing" },
+  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", label: "Taproom", street: "1200 E 6th St", city: "Austin", state: "TX", zip: "78702", country: "US", isDefault: true, type: "shipping" },
+  { id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", label: "Warehouse", street: "3400 Industrial Blvd", city: "Austin", state: "TX", zip: "78745", country: "US", isDefault: false, type: "shipping" },
+  // Lonestar Lacrosse
+  { id: "04d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", label: "Office", street: "4500 Mueller Blvd", city: "Austin", state: "TX", zip: "78723", country: "US", isDefault: true, type: "billing" },
+  { id: "05e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", label: "Fields", street: "4500 Mueller Blvd", city: "Austin", state: "TX", zip: "78723", country: "US", isDefault: true, type: "shipping" },
+  // Thompson Family
+  { id: "06f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", label: "Home", street: "789 Live Oak Dr", city: "Round Rock", state: "TX", zip: "78664", country: "US", isDefault: true, type: "billing" },
+  { id: "07a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", label: "Home", street: "789 Live Oak Dr", city: "Round Rock", state: "TX", zip: "78664", country: "US", isDefault: true, type: "shipping" },
+  // Sunset 5K
+  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", label: "Office", street: "2100 Barton Springs Rd", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
+  // Lakeside Music Festival
+  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", label: "Office", street: "500 E Cesar Chavez", city: "Austin", state: "TX", zip: "78701", country: "US", isDefault: true, type: "billing" },
+  { id: "10d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", label: "Festival Grounds", street: "2100 S Lakeshore Blvd", city: "Austin", state: "TX", zip: "78741", country: "US", isDefault: true, type: "shipping" },
+  // Metro Youth Soccer
+  { id: "11e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", label: "Office", street: "8200 N Lamar Blvd", city: "Austin", state: "TX", zip: "78753", country: "US", isDefault: true, type: "billing" },
+  { id: "12f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", label: "Fields", street: "8200 N Lamar Blvd", city: "Austin", state: "TX", zip: "78753", country: "US", isDefault: true, type: "shipping" },
+  // TikTok Merch Co
+  { id: "13a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", label: "Studio", street: "1100 S Congress Ave", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
+  { id: "14b5c6d7-e8f9-4a0b-812c-3d4e5f6a7b8c", label: "Studio", street: "1100 S Congress Ave", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "shipping" },
+  // Riverside Church
+  { id: "15c6d7e8-f9a0-4b1c-923d-4e5f6a7b8c9d", label: "Church", street: "600 W Riverside Dr", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "billing" },
+  { id: "16d7e8f9-a0b1-4c2d-a34e-5f6a7b8c9d0e", label: "Church", street: "600 W Riverside Dr", city: "Austin", state: "TX", zip: "78704", country: "US", isDefault: true, type: "shipping" },
+  // CrossTown Printing
+  { id: "17e8f9a0-b1c2-4d3e-b45f-6a7b8c9d0e1f", label: "Shop", street: "2200 Airport Blvd", city: "Austin", state: "TX", zip: "78722", country: "US", isDefault: true, type: "billing" },
+  { id: "18f9a0b1-c2d3-4e4f-860a-7b8c9d0e1f2a", label: "Shop", street: "2200 Airport Blvd", city: "Austin", state: "TX", zip: "78722", country: "US", isDefault: true, type: "shipping" },
+  // Mountain View HS
+  { id: "19a0b1c2-d3e4-4f5a-971b-8c9d0e1f2a3b", label: "School", street: "5300 Mountain View Dr", city: "Cedar Park", state: "TX", zip: "78613", country: "US", isDefault: true, type: "billing" },
+  { id: "20b1c2d3-e4f5-4a6b-a82c-9d0e1f2a3b4c", label: "Athletics", street: "5300 Mountain View Dr", city: "Cedar Park", state: "TX", zip: "78613", country: "US", isDefault: true, type: "shipping" },
+];
+
+// ---------------------------------------------------------------------------
+// Notes
+// ---------------------------------------------------------------------------
+
+export const customerNotes: Note[] = [
+  // River City Brewing — 3 notes (1 pinned)
+  { id: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c", content: "Prefers Comfort Colors for all casual wear. Always wants black or forest green.", createdAt: "2025-10-15T14:30:00Z", createdBy: "Gary", isPinned: true, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
+  { id: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d", content: "Marcus called about spring order. Wants same design as last year but with updated date.", createdAt: "2026-01-20T09:15:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
+  { id: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e", content: "Referred Jake Thompson — family reunion order.", createdAt: "2026-01-25T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.riverCity },
+  // Lonestar Lacrosse — 2 notes (1 pinned)
+  { id: "04d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f", content: "Tax exempt — certificate on file, expires 2027-03-31. Net 30 payment terms per contract.", createdAt: "2025-06-01T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.lonestar },
+  { id: "05e6f7a8-b9c0-4d1e-bf3a-4b5c6d7e8f9a", content: "Sarah confirmed tournament dates for Feb 22. Rush delivery needed by Feb 20.", createdAt: "2026-02-01T15:00:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.lonestar },
+  // Thompson Family — 2 notes (1 pinned)
+  { id: "06f7a8b9-c0d1-4e2f-8a4b-5c6d7e8f9a0b", content: "One-time order — family reunion. Referred by Marcus Rivera at River City Brewing.", createdAt: "2026-02-05T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.thompson },
+  { id: "07a8b9c0-d1e2-4f3a-9b5c-6d7e8f9a0b1c", content: "Jake approved the design over email. Wants youth sizes included.", createdAt: "2026-02-06T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.thompson },
+  // Sunset 5K — 2 notes (1 pinned)
+  { id: "08b9c0d1-e2f3-4a4b-ac6d-7e8f9a0b1c2d", content: "Budget-conscious — declined first quote at $4,500. Try to keep under $3,000.", createdAt: "2026-01-30T16:30:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.sunset5k },
+  { id: "09c0d1e2-f3a4-4b5c-bd7e-8f9a0b1c2d3e", content: "Maria asked about 1-color option to reduce cost. Sent revised quote.", createdAt: "2026-01-31T10:00:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.sunset5k },
+  // Lakeside Music Festival — 2 notes (1 pinned)
+  { id: "10d1e2f3-a4b5-4c6d-8e8f-9a0b1c2d3e4f", content: "Chris is the main decision-maker. Amy handles all billing. Always reach Chris first for creative decisions.", createdAt: "2025-09-10T14:00:00Z", createdBy: "Gary", isPinned: true, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.lakeside },
+  { id: "11e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a", content: "Haven't heard from Chris in a while. Last order was October. Should follow up about spring festival merch.", createdAt: "2026-02-05T08:30:00Z", createdBy: "Gary", isPinned: false, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.lakeside },
+  // Metro Youth Soccer — 2 notes (1 pinned)
+  { id: "12f3a4b5-c6d7-4e8f-a01b-2c3d4e5f6a7b", content: "Seasonal orders: spring jerseys (Feb-Mar) and fall tournament gear (Aug-Sep). Tax exempt — school district.", createdAt: "2025-08-01T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.metroYouth },
+  { id: "13a4b5c6-d7e8-4f9a-b12c-3d4e5f6a7b8c", content: "Coach Williams prefers to text for quick questions. Janet handles all POs and invoicing.", createdAt: "2025-09-15T11:00:00Z", createdBy: "Gary", isPinned: false, channel: "text", entityType: "customer", entityId: CUSTOMER_IDS.metroYouth },
+  // TikTok Merch Co — 2 notes (1 pinned)
+  { id: "14b5c6d7-e8f9-4a0b-812c-3d4e5f6a7b8c", content: "Storefront customer — has online merch store. Fast turnaround is critical for trending content.", createdAt: "2025-11-01T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.tiktokMerch },
+  { id: "15c6d7e8-f9a0-4b1c-923d-4e5f6a7b8c9d", content: "Alex wants to explore DTF for small batch runs. Schedule a sample session.", createdAt: "2026-01-15T14:00:00Z", createdBy: "Gary", isPinned: false, channel: "social", entityType: "customer", entityId: CUSTOMER_IDS.tiktokMerch },
+  // Riverside Church — 2 notes (1 pinned)
+  { id: "16d7e8f9-a0b1-4c2d-a34e-5f6a7b8c9d0e", content: "Referred by Lonestar Lacrosse (Sarah Chen). First order — VBS t-shirts.", createdAt: "2026-01-20T10:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.riverside },
+  { id: "17e8f9a0-b1c2-4d3e-b45f-6a7b8c9d0e1f", content: "Pastor James mentioned they do 3-4 events per year. Could become a repeat customer.", createdAt: "2026-02-01T11:30:00Z", createdBy: "Gary", isPinned: false, channel: "phone", entityType: "customer", entityId: CUSTOMER_IDS.riverside },
+  // CrossTown Printing — 2 notes (1 pinned)
+  { id: "18f9a0b1-c2d3-4e4f-860a-7b8c9d0e1f2a", content: "Wholesale account — another print shop. Contract pricing at 15% off. Overflow work for their large orders.", createdAt: "2025-05-01T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.crosstown },
+  { id: "19a0b1c2-d3e4-4f5a-971b-8c9d0e1f2a3b", content: "Mike sends work our way when they're at capacity. Good relationship — reliable payment.", createdAt: "2025-12-10T15:00:00Z", createdBy: "Gary", isPinned: false, channel: "in-person", entityType: "customer", entityId: CUSTOMER_IDS.crosstown },
+  // Mountain View HS — 2 notes (1 pinned)
+  { id: "20b1c2d3-e4f5-4a6b-a82c-9d0e1f2a3b4c", content: "Athletic director exploring new vendors. Currently uses a competitor. Tax exempt — ISD.", createdAt: "2026-02-03T09:00:00Z", createdBy: "Gary", isPinned: true, channel: null, entityType: "customer", entityId: CUSTOMER_IDS.mountainView },
+  { id: "21c2d3e4-f5a6-4b7c-b93d-0e1f2a3b4c5d", content: "Tom requested a sample quote for spring sports. Baseball and track teams.", createdAt: "2026-02-07T14:00:00Z", createdBy: "Gary", isPinned: false, channel: "email", entityType: "customer", entityId: CUSTOMER_IDS.mountainView },
+];
+
+// ---------------------------------------------------------------------------
+// Customers (10 — expanded with full schema)
+// ---------------------------------------------------------------------------
+
 export const customers: Customer[] = [
+  // 1. River City Brewing Co. — Repeat, Active, Retail, 2 referrals
   {
-    id: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    name: "Marcus Rivera",
+    id: CUSTOMER_IDS.riverCity,
     company: "River City Brewing Co.",
+    name: "Marcus Rivera",
     email: "marcus@rivercitybrewing.com",
     phone: "(512) 555-0147",
     address: "1200 E 6th St, Austin, TX 78702",
     tag: "repeat",
+    lifecycleStage: "repeat",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["retail"],
+    contacts: [contacts[0], contacts[1]],
+    groups: [customerGroups[0]],
+    billingAddress: customerAddresses[0],
+    shippingAddresses: [customerAddresses[1], customerAddresses[2]],
+    paymentTerms: "upfront",
+    pricingTier: "preferred",
+    discountPercentage: 5,
+    taxExempt: false,
+    createdAt: "2025-08-15T10:00:00Z",
+    updatedAt: "2026-02-07T16:00:00Z",
   },
+  // 2. Lonestar Lacrosse League — Contract, Active, Sports/School, Tax exempt
   {
-    id: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
-    name: "Sarah Chen",
+    id: CUSTOMER_IDS.lonestar,
     company: "Lonestar Lacrosse League",
+    name: "Sarah Chen",
     email: "sarah@lonestarlax.org",
     phone: "(512) 555-0298",
     address: "4500 Mueller Blvd, Austin, TX 78723",
     tag: "contract",
+    lifecycleStage: "contract",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["sports-school"],
+    contacts: [contacts[2]],
+    groups: [],
+    billingAddress: customerAddresses[3],
+    shippingAddresses: [customerAddresses[4]],
+    paymentTerms: "net-30",
+    pricingTier: "contract",
+    discountPercentage: 10,
+    taxExempt: true,
+    taxExemptCertExpiry: "2027-03-31T00:00:00Z",
+    createdAt: "2025-06-01T08:00:00Z",
+    updatedAt: "2026-02-02T09:00:00Z",
   },
+  // 3. Thompson Family Reunion 2026 — New, Active, Retail, referred by River City
   {
-    id: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
-    name: "Jake Thompson",
+    id: CUSTOMER_IDS.thompson,
     company: "Thompson Family Reunion 2026",
+    name: "Jake Thompson",
     email: "jake.thompson@gmail.com",
     phone: "(737) 555-0412",
     address: "789 Live Oak Dr, Round Rock, TX 78664",
     tag: "new",
+    lifecycleStage: "new",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["retail"],
+    contacts: [contacts[3]],
+    groups: [],
+    billingAddress: customerAddresses[5],
+    shippingAddresses: [customerAddresses[6]],
+    paymentTerms: "upfront",
+    pricingTier: "standard",
+    taxExempt: false,
+    referredByCustomerId: CUSTOMER_IDS.riverCity,
+    createdAt: "2026-02-05T09:15:00Z",
+    updatedAt: "2026-02-06T11:30:00Z",
   },
+  // 4. Sunset 5K Run — Prospect, Active, Retail (has quote, no order)
   {
-    id: "f4d5e6f7-a8b9-4c0d-8e2f-3a4b5c6d7e8f",
-    name: "Maria Gonzalez",
+    id: CUSTOMER_IDS.sunset5k,
     company: "Sunset 5K Run",
+    name: "Maria Gonzalez",
     email: "maria@sunset5k.org",
     phone: "(512) 555-0533",
     address: "2100 Barton Springs Rd, Austin, TX 78704",
     tag: "new",
+    lifecycleStage: "prospect",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["retail"],
+    contacts: [contacts[4]],
+    groups: [],
+    billingAddress: customerAddresses[7],
+    shippingAddresses: [],
+    paymentTerms: "upfront",
+    pricingTier: "standard",
+    taxExempt: false,
+    createdAt: "2026-01-28T08:00:00Z",
+    updatedAt: "2026-01-30T16:00:00Z",
   },
+  // 5. Lakeside Music Festival — Repeat, Potentially Churning, Corporate
   {
-    id: "a5e6f7a8-b9c0-4d1e-9f3a-4b5c6d7e8f9a",
-    name: "Chris Patel",
+    id: CUSTOMER_IDS.lakeside,
     company: "Lakeside Music Festival",
+    name: "Chris Patel",
     email: "chris@lakesidefest.com",
     phone: "(737) 555-0671",
     address: "500 E Cesar Chavez, Austin, TX 78701",
     tag: "repeat",
+    lifecycleStage: "repeat",
+    healthStatus: "potentially-churning",
+    isArchived: false,
+    typeTags: ["corporate"],
+    contacts: [contacts[5], contacts[6]],
+    groups: [],
+    billingAddress: customerAddresses[8],
+    shippingAddresses: [customerAddresses[9]],
+    paymentTerms: "net-15",
+    pricingTier: "preferred",
+    taxExempt: false,
+    createdAt: "2025-09-01T12:00:00Z",
+    updatedAt: "2026-02-04T15:45:00Z",
+  },
+  // 6. Metro Youth Soccer — Contract, Active, Sports/School, Tax exempt, seasonal
+  {
+    id: CUSTOMER_IDS.metroYouth,
+    company: "Metro Youth Soccer",
+    name: "Coach Williams",
+    email: "coach@metroyouthsoccer.org",
+    phone: "(512) 555-0801",
+    address: "8200 N Lamar Blvd, Austin, TX 78753",
+    tag: "contract",
+    lifecycleStage: "contract",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["sports-school"],
+    contacts: [contacts[7], contacts[8]],
+    groups: [customerGroups[1]],
+    billingAddress: customerAddresses[10],
+    shippingAddresses: [customerAddresses[11]],
+    paymentTerms: "net-30",
+    pricingTier: "contract",
+    discountPercentage: 8,
+    taxExempt: true,
+    taxExemptCertExpiry: "2027-08-31T00:00:00Z",
+    createdAt: "2025-08-01T09:00:00Z",
+    updatedAt: "2026-02-01T10:00:00Z",
+  },
+  // 7. TikTok Merch Co. — Repeat, Active, Storefront/Merch + Retail
+  {
+    id: CUSTOMER_IDS.tiktokMerch,
+    company: "TikTok Merch Co.",
+    name: "Alex Kim",
+    email: "alex@tiktokmerch.co",
+    phone: "(737) 555-0910",
+    address: "1100 S Congress Ave, Austin, TX 78704",
+    tag: "repeat",
+    lifecycleStage: "repeat",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["storefront-merch", "retail"],
+    contacts: [contacts[9]],
+    groups: [],
+    billingAddress: customerAddresses[12],
+    shippingAddresses: [customerAddresses[13]],
+    paymentTerms: "upfront",
+    pricingTier: "preferred",
+    discountPercentage: 5,
+    taxExempt: false,
+    createdAt: "2025-11-01T10:00:00Z",
+    updatedAt: "2026-01-15T14:00:00Z",
+  },
+  // 8. Riverside Church — New, Active, Retail, referred by Lonestar
+  {
+    id: CUSTOMER_IDS.riverside,
+    company: "Riverside Church",
+    name: "Pastor James",
+    email: "pastor.james@riversidechurch.org",
+    phone: "(512) 555-1101",
+    address: "600 W Riverside Dr, Austin, TX 78704",
+    tag: "new",
+    lifecycleStage: "new",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["retail"],
+    contacts: [contacts[10]],
+    groups: [],
+    billingAddress: customerAddresses[14],
+    shippingAddresses: [customerAddresses[15]],
+    paymentTerms: "upfront",
+    pricingTier: "standard",
+    taxExempt: false,
+    referredByCustomerId: CUSTOMER_IDS.lonestar,
+    createdAt: "2026-01-20T10:00:00Z",
+    updatedAt: "2026-02-01T11:30:00Z",
+  },
+  // 9. CrossTown Printing — Contract, Active, Wholesale
+  {
+    id: CUSTOMER_IDS.crosstown,
+    company: "CrossTown Printing",
+    name: "Mike Davis",
+    email: "mike@crosstownprinting.com",
+    phone: "(512) 555-1201",
+    address: "2200 Airport Blvd, Austin, TX 78722",
+    tag: "contract",
+    lifecycleStage: "contract",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["wholesale"],
+    contacts: [contacts[11]],
+    groups: [],
+    billingAddress: customerAddresses[16],
+    shippingAddresses: [customerAddresses[17]],
+    paymentTerms: "net-30",
+    pricingTier: "wholesale",
+    discountPercentage: 15,
+    taxExempt: false,
+    createdAt: "2025-05-01T09:00:00Z",
+    updatedAt: "2025-12-10T15:00:00Z",
+  },
+  // 10. Mountain View HS — Prospect, Active, Sports/School, Tax exempt
+  {
+    id: CUSTOMER_IDS.mountainView,
+    company: "Mountain View HS",
+    name: "Tom Rodriguez",
+    email: "t.rodriguez@mvhs.edu",
+    phone: "(737) 555-1301",
+    address: "5300 Mountain View Dr, Cedar Park, TX 78613",
+    tag: "new",
+    lifecycleStage: "prospect",
+    healthStatus: "active",
+    isArchived: false,
+    typeTags: ["sports-school"],
+    contacts: [contacts[12]],
+    groups: [],
+    billingAddress: customerAddresses[18],
+    shippingAddresses: [customerAddresses[19]],
+    paymentTerms: "net-30",
+    pricingTier: "standard",
+    taxExempt: true,
+    taxExemptCertExpiry: "2027-06-30T00:00:00Z",
+    createdAt: "2026-02-03T09:00:00Z",
+    updatedAt: "2026-02-07T14:00:00Z",
   },
 ];
 
