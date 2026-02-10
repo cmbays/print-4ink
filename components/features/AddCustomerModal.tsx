@@ -28,6 +28,14 @@ export interface AddCustomerModalProps {
     typeTags: CustomerTypeTag[];
     lifecycleStage: "prospect" | "new";
   }) => void;
+  onSaveAndView?: (customer: {
+    company: string;
+    name: string;
+    email?: string;
+    phone?: string;
+    typeTags: CustomerTypeTag[];
+    lifecycleStage: "prospect" | "new";
+  }) => void;
   lifecycleStage?: "prospect" | "new";
 }
 
@@ -43,6 +51,7 @@ export function AddCustomerModal({
   open,
   onOpenChange,
   onSave,
+  onSaveAndView,
   lifecycleStage,
 }: AddCustomerModalProps) {
   const [company, setCompany] = React.useState("");
@@ -96,16 +105,27 @@ export function AddCustomerModal({
     return Object.keys(next).length === 0;
   }
 
-  function handleSave() {
-    if (!validate()) return;
-    onSave({
+  function getFormData() {
+    return {
       company: company.trim(),
       name: name.trim(),
       email: email.trim() || undefined,
       phone: phone.trim() || undefined,
       typeTags,
-      lifecycleStage: lifecycleStage ?? "new",
-    });
+      lifecycleStage: lifecycleStage ?? ("new" as const),
+    };
+  }
+
+  function handleSave() {
+    if (!validate()) return;
+    onSave(getFormData());
+    reset();
+    onOpenChange(false);
+  }
+
+  function handleSaveAndView() {
+    if (!validate()) return;
+    onSaveAndView?.(getFormData());
     reset();
     onOpenChange(false);
   }
@@ -233,6 +253,11 @@ export function AddCustomerModal({
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
           </Button>
+          {onSaveAndView && (
+            <Button variant="outline" onClick={handleSaveAndView}>
+              Save & View Details
+            </Button>
+          )}
           <Button onClick={handleSave}>Save Customer</Button>
         </DialogFooter>
       </DialogContent>

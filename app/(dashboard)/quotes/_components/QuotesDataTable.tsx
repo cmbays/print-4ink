@@ -4,8 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ChevronDown,
-  ChevronUp,
   ClipboardList,
   Copy,
   Eye,
@@ -14,9 +12,9 @@ import {
   Plus,
   Search,
   Send,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
-
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { StatusBadge } from "@/components/features/StatusBadge";
+import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import type { QuoteStatus } from "@/lib/schemas/quote";
 import { quotes as rawQuotes, customers } from "@/lib/mock-data";
 
@@ -208,16 +207,6 @@ export function QuotesDataTable() {
     return result;
   }, [statusFilter, searchQuery, sortKey, sortDir]);
 
-  // Render sort indicator
-  const renderSortIcon = (column: SortKey) => {
-    if (sortKey !== column) return null;
-    return sortDir === "asc" ? (
-      <ChevronUp className="size-4" />
-    ) : (
-      <ChevronDown className="size-4" />
-    );
-  };
-
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
@@ -232,7 +221,30 @@ export function QuotesDataTable() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3">
+        {/* Search bar — left-aligned */}
+        <div className="relative w-full sm:max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search quotes or customers..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="pl-9"
+            aria-label="Search quotes"
+          />
+          {localSearch && (
+            <button
+              type="button"
+              onClick={() => setLocalSearch("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              aria-label="Clear search"
+            >
+              <X className="size-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Status tabs */}
         <Tabs
           value={statusFilter}
           onValueChange={handleStatusChange}
@@ -245,17 +257,6 @@ export function QuotesDataTable() {
             ))}
           </TabsList>
         </Tabs>
-
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search quotes or customers..."
-            value={localSearch}
-            onChange={(e) => setLocalSearch(e.target.value)}
-            className="pl-9"
-            aria-label="Search quotes"
-          />
-        </div>
       </div>
 
       {/* Table */}
@@ -265,64 +266,58 @@ export function QuotesDataTable() {
             <TableHeader>
               <TableRow>
                 <TableHead>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    onClick={() => handleSort("quoteNumber")}
-                    aria-label="Sort by quote number"
-                  >
-                    Quote # {renderSortIcon("quoteNumber")}
-                  </button>
+                  <ColumnHeaderMenu
+                    label="Quote #"
+                    sortKey="quoteNumber"
+                    currentSortKey={sortKey}
+                    currentSortDir={sortDir}
+                    onSort={() => handleSort("quoteNumber")}
+                  />
                 </TableHead>
                 <TableHead>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    onClick={() => handleSort("customerName")}
-                    aria-label="Sort by customer"
-                  >
-                    Customer {renderSortIcon("customerName")}
-                  </button>
+                  <ColumnHeaderMenu
+                    label="Customer"
+                    sortKey="customerName"
+                    currentSortKey={sortKey}
+                    currentSortDir={sortDir}
+                    onSort={() => handleSort("customerName")}
+                  />
                 </TableHead>
                 <TableHead>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    onClick={() => handleSort("status")}
-                    aria-label="Sort by status"
-                  >
-                    Status {renderSortIcon("status")}
-                  </button>
+                  <ColumnHeaderMenu
+                    label="Status"
+                    sortKey="status"
+                    currentSortKey={sortKey}
+                    currentSortDir={sortDir}
+                    onSort={() => handleSort("status")}
+                  />
                 </TableHead>
                 <TableHead>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    onClick={() => handleSort("lineItemCount")}
-                    aria-label="Sort by items"
-                  >
-                    Items {renderSortIcon("lineItemCount")}
-                  </button>
+                  <ColumnHeaderMenu
+                    label="Items"
+                    sortKey="lineItemCount"
+                    currentSortKey={sortKey}
+                    currentSortDir={sortDir}
+                    onSort={() => handleSort("lineItemCount")}
+                  />
                 </TableHead>
                 <TableHead>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    onClick={() => handleSort("total")}
-                    aria-label="Sort by total"
-                  >
-                    Total {renderSortIcon("total")}
-                  </button>
+                  <ColumnHeaderMenu
+                    label="Total"
+                    sortKey="total"
+                    currentSortKey={sortKey}
+                    currentSortDir={sortDir}
+                    onSort={() => handleSort("total")}
+                  />
                 </TableHead>
                 <TableHead>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    onClick={() => handleSort("createdAt")}
-                    aria-label="Sort by date"
-                  >
-                    Date {renderSortIcon("createdAt")}
-                  </button>
+                  <ColumnHeaderMenu
+                    label="Date"
+                    sortKey="createdAt"
+                    currentSortKey={sortKey}
+                    currentSortDir={sortDir}
+                    onSort={() => handleSort("createdAt")}
+                  />
                 </TableHead>
                 <TableHead className="w-10">
                   <span className="sr-only">Actions</span>

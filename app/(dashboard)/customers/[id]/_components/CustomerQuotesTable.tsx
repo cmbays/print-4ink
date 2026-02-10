@@ -53,9 +53,9 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
           <thead>
             <tr className="border-b border-border text-left">
               <th className="pb-3 font-medium text-muted-foreground">Quote #</th>
+              <th className="pb-3 font-medium text-muted-foreground">Date</th>
               <th className="pb-3 font-medium text-muted-foreground">Status</th>
               <th className="pb-3 font-medium text-muted-foreground text-right">Total</th>
-              <th className="pb-3 font-medium text-muted-foreground">Date</th>
               <th className="pb-3 font-medium text-muted-foreground sr-only">Actions</th>
             </tr>
           </thead>
@@ -73,6 +73,9 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                     {quote.quoteNumber}
                   </Link>
                 </td>
+                <td className="py-3 text-muted-foreground">
+                  {formatDate(quote.createdAt)}
+                </td>
                 <td className="py-3">
                   <Badge variant="ghost" className={QUOTE_STATUS_COLORS[quote.status]}>
                     {QUOTE_STATUS_LABELS[quote.status]}
@@ -80,9 +83,6 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                 </td>
                 <td className="py-3 text-right font-mono text-foreground">
                   {formatCurrency(quote.total)}
-                </td>
-                <td className="py-3 text-muted-foreground">
-                  {formatDate(quote.createdAt)}
                 </td>
                 <td className="py-3">
                   <Button
