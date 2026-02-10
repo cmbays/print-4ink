@@ -15,6 +15,8 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
+| [2026-02-10-customer-feedback.html](2026-02-10-customer-feedback.html) | Customer Management feedback: 8 items from 4Ink owner. ColumnHeaderMenu (sort + inline filter), timeline interactivity, Save & View Details, column reorder, custom contact role, Zod enum refactor. PR #35. | 2026-02-10 | Feature, Build |
+| [2026-02-10-customer-quality-gate.html](2026-02-10-customer-quality-gate.html) | Customer Management quality gate: 5-subagent audit, 10 fixes across 11 files (invalid Tailwind classes, broken cross-vertical params, unwired sheets, keyboard accessibility, future date bugs). Playwright verified. PR #33. | 2026-02-10 | Build, Feature |
 | [2026-02-10-quoting-interconnection.html](2026-02-10-quoting-interconnection.html) | Quoting-Customer interconnection: lifecycle badges in combobox, enriched customer card, expanded search, View Customer link. 3 files, PR #28. | 2026-02-10 | Feature, Build |
 | [2026-02-10-customer-list-page.html](2026-02-10-customer-list-page.html) | Customer List page: SmartViewTabs, CustomersDataTable (desktop + mobile), StatsBar, enhanced AddCustomerModal. URL-driven filters. 4 parallel subagents. | 2026-02-10 | Feature, Build |
 | [2026-02-10-customer-mgmt-breadboard.html](2026-02-10-customer-mgmt-breadboard.html) | Customer Management breadboard: interactive visualization of Places, Components, Wiring, and Build Order. 4 tabbed views. | 2026-02-10 | Plan, Build |
