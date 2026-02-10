@@ -1,0 +1,162 @@
+"use client";
+
+import Link from "next/link";
+import { FileText, Briefcase, StickyNote, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import {
+  QUOTE_STATUS_LABELS,
+  QUOTE_STATUS_COLORS,
+  PRODUCTION_STATE_LABELS,
+  PRODUCTION_STATE_COLORS,
+  NOTE_CHANNEL_LABELS,
+} from "@/lib/constants";
+import type { Quote } from "@/lib/schemas/quote";
+import type { Job } from "@/lib/schemas/job";
+import type { Note } from "@/lib/schemas/note";
+
+interface ActivityTimelineProps {
+  quotes: Quote[];
+  jobs: Job[];
+  notes: Note[];
+}
+
+type TimelineItem =
+  | { type: "quote"; date: string; data: Quote }
+  | { type: "job"; date: string; data: Job }
+  | { type: "note"; date: string; data: Note };
+
+function relativeDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
+  }
+  if (diffDays < 365) {
+    const months = Math.floor(diffDays / 30);
+    return `${months} ${months === 1 ? "month" : "months"} ago`;
+  }
+  return date.toLocaleDateString();
+}
+
+const ICON_CONFIG = {
+  quote: { icon: FileText, color: "text-action" },
+  job: { icon: Briefcase, color: "text-success" },
+  note: { icon: StickyNote, color: "text-warning" },
+} as const;
+
+export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps) {
+  const items: TimelineItem[] = [
+    ...quotes.map((q) => ({ type: "quote" as const, date: q.createdAt, data: q })),
+    ...jobs.map((j) => ({ type: "job" as const, date: j.dueDate, data: j })),
+    ...notes.map((n) => ({ type: "note" as const, date: n.createdAt, data: n })),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  if (items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+        <Clock className="size-10 mb-3" aria-hidden="true" />
+        <p className="text-sm font-medium">No activity yet</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative space-y-0" role="list" aria-label="Activity timeline">
+      {/* Vertical connector line */}
+      <div
+        className="absolute left-4 top-4 bottom-4 w-px bg-border"
+        aria-hidden="true"
+      />
+
+      {items.map((item, index) => {
+        const config = ICON_CONFIG[item.type];
+        const Icon = config.icon;
+
+        return (
+          <div
+            key={`${item.type}-${index}`}
+            className="relative flex gap-4 py-3 first:pt-0 last:pb-0"
+            role="listitem"
+          >
+            {/* Icon node */}
+            <div
+              className={cn(
+                "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-elevated border border-border",
+                config.color
+              )}
+            >
+              <Icon className="size-4" aria-hidden="true" />
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0 pt-0.5">
+              <TimelineContent item={item} />
+              <p className="text-xs text-muted-foreground mt-1">
+                {relativeDate(item.date)}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function TimelineContent({ item }: { item: TimelineItem }) {
+  switch (item.type) {
+    case "quote": {
+      const quote = item.data;
+      return (
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href={`/quotes/${quote.id}`}
+            className="text-sm font-medium text-foreground hover:text-action transition-colors"
+          >
+            Quote {quote.quoteNumber} created
+          </Link>
+          <Badge variant="ghost" className={QUOTE_STATUS_COLORS[quote.status]}>
+            {QUOTE_STATUS_LABELS[quote.status]}
+          </Badge>
+        </div>
+      );
+    }
+    case "job": {
+      const job = item.data;
+      return (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-foreground">
+            Job {job.jobNumber} — {job.title}
+          </span>
+          <Badge variant="ghost" className={PRODUCTION_STATE_COLORS[job.status]}>
+            {PRODUCTION_STATE_LABELS[job.status]}
+          </Badge>
+        </div>
+      );
+    }
+    case "note": {
+      const note = item.data;
+      const truncated =
+        note.content.length > 80
+          ? note.content.slice(0, 80) + "..."
+          : note.content;
+      return (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-foreground">{truncated}</span>
+          {note.channel && (
+            <Badge variant="ghost" className="text-muted-foreground">
+              {NOTE_CHANNEL_LABELS[note.channel]}
+            </Badge>
+          )}
+        </div>
+      );
+    }
+  }
+}
