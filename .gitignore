@@ -48,3 +48,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# Quality gate screenshots (ephemeral, regenerated per audit)
+quality-gate/
+
+# Playwright MCP logs
+.playwright-mcp/
