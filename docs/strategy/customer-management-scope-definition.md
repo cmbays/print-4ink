@@ -435,6 +435,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 - [ ] Default shipping address flag (used on new quotes)
 - [ ] Add/edit/remove addresses
 - [ ] Address inherits to quotes when customer is selected (default shipping address)
+- [ ] **Phase 2 (backend)**: Google Maps-style address autocomplete — as user types, suggest matching addresses. Phase 1 is manual entry only.
 
 ---
 
@@ -454,20 +455,15 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 
 ---
 
-### 🟡 "Start Similar Quote" Button
+### 🟡 Reorder from Customer Detail (Leverages Existing "Copy as New")
 
 **Purpose**: Reduce reorder friction — the #1 revenue killer identified in research
 
 **Implementation**:
-- [ ] Button on each quote row in customer detail Quotes tab
-- [ ] Creates new quote at `/quotes/new` pre-filled with:
-  - Same customer (auto-selected)
-  - Same artwork (pre-loaded)
-  - Same line items (garments, colors, locations)
-  - Quantities reset to 0 (user fills in new amounts)
-  - Pricing recalculated based on current rates
-- [ ] Not an exact duplicate — a template for a similar order
-- [ ] Different from "Duplicate Quote" on quotes page (which copies everything including quantities)
+- [ ] Quote rows in customer detail Quotes tab include "Copy as New" action (already built in quoting vertical)
+- [ ] This reuses the existing "Duplicate Quote" / "Copy as New" functionality from the quoting vertical
+- [ ] No new functionality needed — just surface the existing action within the customer detail context
+- [ ] **Already built**: "Copy as New" on quotes list and quote detail page
 
 ---
 
@@ -554,14 +550,25 @@ These features touch other verticals but won't be fully built yet. Show them in 
 - [ ] **Don't build**: Storefront creation, management, or customer-facing stores
 - **Phase 2**: Storefront vertical will build on customer records tagged as Storefront
 
+### → Customer Portal: Shared Data Model
+
+**Current State**: Customer Portal will be a separate Phase 1 vertical (external-facing)
+**Preparation**:
+- [ ] Customer schema designed to support both internal (this vertical) and external (portal) access
+- [ ] Contact records include email for portal login credentials (future)
+- [ ] Quote/job data linkable to portal views
+- [ ] **Don't build**: Any portal UI in this vertical
+- **Separate vertical**: Customer Portal will have its own scope definition and discovery
+
 ---
 
 ## What We're Explicitly NOT Building
 
-### ❌ Customer Portal / Self-Service
+### ❌ Customer Portal / Self-Service (Separate Vertical)
 
-**Why**: Requires auth, login, customer-facing UI — Phase 2 feature
-**What we do instead**: Show "Customer Portal" as a disabled menu item or "Coming Soon" badge
+**Why**: The Customer Portal is a distinct vertical — the external-facing view that a shop's customers experience. It will be built as a Phase 1 mock demo, but under its own scope definition and discovery process.
+**Relationship**: Customer Management (this vertical) = internal shop-side tool. Customer Portal = external customer-facing tool. They share the same customer data model and will have significant overlap, but are scoped and built separately.
+**What we do in this vertical**: Design the customer schema and data model to support portal access. The portal vertical will read from the same customer records.
 
 ### ❌ Communication Auto-Import
 
@@ -624,7 +631,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 | Tax Exempt Tracking | PERIPHERAL | Toggle + status + expiry + mock upload area |
 | Multiple Shipping Addresses | PERIPHERAL | Named addresses with default flag |
 | Customer Statistics | PERIPHERAL | Computed metrics in header and list |
-| "Start Similar Quote" | PERIPHERAL | Pre-fill new quote from past order |
+| Reorder from detail | PERIPHERAL | Surface existing "Copy as New" in customer context |
 | Payment Terms | PERIPHERAL | Customer-level default, cascading to invoices |
 | Pricing Tier / Discount | PERIPHERAL | Customer-level, replaces hardcoded contract discount |
 | Quoting integration | INTERCONNECTION | Enhanced combobox, auto-load customer context |
@@ -632,7 +639,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 | Artwork library | INTERCONNECTION | Gallery on detail page, notes surfacing |
 | Reporting preparation | INTERCONNECTION | Stats computed, list sortable by revenue |
 | Storefront placeholder | INTERCONNECTION | Type tag only, no storefront functionality |
-| Customer Portal | ❌ NOT BUILDING | Phase 2 |
+| Customer Portal | ❌ SEPARATE VERTICAL | Phase 1 mock demo, scoped independently |
 | Communication auto-import | ❌ NOT BUILDING | Phase 2+ |
 | Custom tags with attributes | ❌ NOT BUILDING | Phase 2-3 |
 | CSV import/export | ❌ NOT BUILDING | Phase 2 |
