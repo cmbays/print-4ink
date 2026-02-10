@@ -1,7 +1,16 @@
 import type { ProductionState, Priority } from "./schemas/job";
 import type { BurnStatus } from "./schemas/screen";
 import type { QuoteStatus, ServiceType } from "./schemas/quote";
-import type { CustomerTag } from "./schemas/customer";
+import type {
+  CustomerTag,
+  LifecycleStage,
+  HealthStatus,
+  CustomerTypeTag,
+  PaymentTerms,
+  PricingTier,
+} from "./schemas/customer";
+import type { ContactRole } from "./schemas/contact";
+import type { NoteChannel } from "./schemas/note";
 import type { ArtworkTag } from "./schemas/artwork";
 import type { GarmentCategory } from "./schemas/garment";
 
@@ -98,4 +107,81 @@ export const ARTWORK_TAG_LABELS: Record<ArtworkTag, string> = {
   promotional: "Promotional",
   sports: "Sports",
   custom: "Custom",
+};
+
+// ---------------------------------------------------------------------------
+// Customer Management — Lifecycle, Health, Type Tags, Financial
+// ---------------------------------------------------------------------------
+
+export const LIFECYCLE_STAGE_LABELS: Record<LifecycleStage, string> = {
+  prospect: "Prospect",
+  new: "New",
+  repeat: "Repeat",
+  contract: "Contract",
+};
+
+export const LIFECYCLE_STAGE_COLORS: Record<LifecycleStage, string> = {
+  prospect: "bg-action/10 text-action border border-action/20",
+  new: "bg-muted text-muted-foreground",
+  repeat: "bg-success/10 text-success border border-success/20",
+  contract: "bg-warning/10 text-warning border border-warning/20",
+};
+
+export const HEALTH_STATUS_LABELS: Record<HealthStatus, string> = {
+  active: "Active",
+  "potentially-churning": "Needs Attention",
+  churned: "Inactive",
+};
+
+export const HEALTH_STATUS_COLORS: Record<HealthStatus, string> = {
+  active: "",
+  "potentially-churning": "bg-warning/10 text-warning border border-warning/20",
+  churned: "bg-error/10 text-error border border-error/20",
+};
+
+export const CUSTOMER_TYPE_TAG_LABELS: Record<CustomerTypeTag, string> = {
+  retail: "Retail",
+  "sports-school": "Sports/School",
+  corporate: "Corporate",
+  "storefront-merch": "Storefront/Merch",
+  wholesale: "Wholesale",
+};
+
+export const CUSTOMER_TYPE_TAG_COLORS: Record<CustomerTypeTag, string> = {
+  retail: "bg-muted text-muted-foreground",
+  "sports-school": "bg-action/10 text-action border border-action/20",
+  corporate: "bg-success/10 text-success border border-success/20",
+  "storefront-merch": "bg-warning/10 text-warning border border-warning/20",
+  wholesale: "bg-muted text-foreground border border-border",
+};
+
+export const CONTACT_ROLE_LABELS: Record<ContactRole, string> = {
+  ordering: "Ordering",
+  "art-approver": "Art Approver",
+  billing: "Billing",
+  owner: "Owner",
+  other: "Other",
+};
+
+export const PAYMENT_TERMS_LABELS: Record<PaymentTerms, string> = {
+  cod: "COD",
+  upfront: "Payment Upfront",
+  "net-15": "Net 15",
+  "net-30": "Net 30",
+  "net-60": "Net 60",
+};
+
+export const PRICING_TIER_LABELS: Record<PricingTier, string> = {
+  standard: "Standard",
+  preferred: "Preferred",
+  contract: "Contract",
+  wholesale: "Wholesale",
+};
+
+export const NOTE_CHANNEL_LABELS: Record<NoteChannel, string> = {
+  phone: "Phone",
+  email: "Email",
+  text: "Text",
+  social: "Social",
+  "in-person": "In Person",
 };

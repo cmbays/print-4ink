@@ -33,7 +33,7 @@ import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount } from "@/lib/schemas/quote";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
-import type { CustomerTag } from "@/lib/schemas/customer";
+import type { Customer, CustomerTag } from "@/lib/schemas/customer";
 import { cn } from "@/lib/utils";
 
 interface QuoteFormProps {
@@ -50,11 +50,9 @@ interface QuoteFormProps {
   quoteId?: string;
 }
 
-let lineItemCounter = 0;
 function createEmptyLineItem(): LineItemData {
-  lineItemCounter += 1;
   return {
-    id: `li-${Date.now()}-${lineItemCounter}`,
+    id: crypto.randomUUID(),
     garmentId: "",
     colorId: "",
     sizes: {},
@@ -73,16 +71,9 @@ function formatCurrency(value: number): string {
 export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   const router = useRouter();
 
-  // Customer state
+  // Customer state — keep full Customer objects for backwards compat
   const [customers, setCustomers] = useState(
-    mockCustomers.map((c) => ({
-      id: c.id,
-      name: c.name,
-      company: c.company,
-      email: c.email,
-      phone: c.phone,
-      tag: c.tag,
-    }))
+    [...mockCustomers]
   );
   const [customerId, setCustomerId] = useState(
     initialData?.customerId || ""
@@ -265,13 +256,27 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       phone?: string;
       tag?: CustomerTag;
     }) => {
-      const newCustomer = {
-        id: `new-${Date.now()}`,
+      const now = new Date().toISOString();
+      const newCustomer: Customer = {
+        id: crypto.randomUUID(),
         name: data.name,
         email: data.email,
-        company: data.company || "",
+        company: data.company || data.name,
         phone: data.phone || "",
+        address: "",
         tag: (data.tag || "new") as CustomerTag,
+        lifecycleStage: "prospect",
+        healthStatus: "active",
+        isArchived: false,
+        typeTags: [],
+        contacts: [],
+        groups: [],
+        shippingAddresses: [],
+        paymentTerms: "upfront",
+        pricingTier: "standard",
+        taxExempt: false,
+        createdAt: now,
+        updatedAt: now,
       };
       setCustomers((prev) => [...prev, newCustomer]);
       handleCustomerSelect(newCustomer.id);
@@ -941,15 +946,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         open={showReview}
         onOpenChange={setShowReview}
         quote={buildQuoteForReview()}
-        customer={selectedCustomer ? {
-          id: selectedCustomer.id,
-          name: selectedCustomer.name,
-          company: selectedCustomer.company,
-          email: selectedCustomer.email,
-          phone: selectedCustomer.phone || "",
-          address: "",
-          tag: selectedCustomer.tag || "new",
-        } : null}
+        customer={selectedCustomer ?? null}
         artworks={quoteArtworks}
       />}
     </>

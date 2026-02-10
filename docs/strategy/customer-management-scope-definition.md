@@ -129,7 +129,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] **Jobs**: All jobs for this customer. Columns: Job #, Status, Due Date, Total. Click → `/jobs/[id]` (Phase 2 link).
 - [ ] **Artwork**: Smart artwork gallery (see Artwork Gallery section below).
 - [ ] **Contacts**: Company → Group → Contact hierarchy view (see Hierarchy section below).
-- [ ] **Details**: Full profile — billing/shipping addresses, tax exempt status, payment terms, pricing tier, referral source, all editable.
+- [ ] **Details**: Full profile — billing/shipping addresses, tax-exempt status, payment terms, pricing tier, referral source, all editable.
 - [ ] **Notes**: All notes (customer-level + linked from quotes/artwork). Pinned notes at top. Channel-tagged (phone/email/text/social/in-person).
 
 **Adaptive Behavior**:
@@ -270,7 +270,7 @@ Company (River City Brewing Co.)
 **Starter Set**:
 - Retail (general retail customers)
 - Sports/School (leagues, teams, schools)
-- Corporate (company branded apparel)
+- Corporate (company-branded apparel)
 - Storefront/Merch (influencers, content creators — has a storefront, Phase 2 feature)
 - Wholesale (other print shops, decorators, brokers)
 
@@ -419,7 +419,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: Legal requirement for schools, nonprofits, and reseller accounts
 
 **Implementation**:
-- [ ] Tax exempt toggle (boolean) on customer Details tab
+- [ ] Tax-exempt toggle (boolean) on customer Details tab
 - [ ] Certificate status: Exempt / Not Exempt / Expired
 - [ ] Expiration date field (with visual warning when approaching/past expiry)
 - [ ] "Upload Certificate" area (mock — shows placeholder, doesn't store files)

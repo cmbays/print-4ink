@@ -1,0 +1,28 @@
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { HEALTH_STATUS_LABELS, HEALTH_STATUS_COLORS } from "@/lib/constants";
+import type { HealthStatus } from "@/lib/schemas/customer";
+
+interface HealthBadgeProps {
+  status: HealthStatus;
+  className?: string;
+}
+
+export function HealthBadge({ status, className }: HealthBadgeProps) {
+  // Active = healthy, no indicator needed
+  if (status === "active") return null;
+
+  return (
+    <Badge
+      variant="ghost"
+      className={cn(
+        HEALTH_STATUS_COLORS[status],
+        "transition-colors",
+        className
+      )}
+      aria-label={`Health status: ${HEALTH_STATUS_LABELS[status]}`}
+    >
+      {HEALTH_STATUS_LABELS[status]}
+    </Badge>
+  );
+}

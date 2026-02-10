@@ -427,10 +427,10 @@
 
     <!-- VIEW TABS -->
     <div class="view-tabs">
-      <button class="view-tab active" onclick="switchView('places')">Place Map</button>
-      <button class="view-tab" onclick="switchView('components')">Component Map</button>
-      <button class="view-tab" onclick="switchView('build')">Build Order</button>
-      <button class="view-tab" onclick="switchView('data')">Data Flow</button>
+      <button class="view-tab active" onclick="switchView('places', this)">Place Map</button>
+      <button class="view-tab" onclick="switchView('components', this)">Component Map</button>
+      <button class="view-tab" onclick="switchView('build', this)">Build Order</button>
+      <button class="view-tab" onclick="switchView('data', this)">Data Flow</button>
     </div>
 
     <!-- ==========================================
@@ -1042,11 +1042,11 @@
   </div>
 
   <script>
-    function switchView(id) {
+    function switchView(id, el) {
       document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.view-content').forEach(c => c.classList.remove('active'));
       document.getElementById('view-' + id).classList.add('active');
-      event.target.classList.add('active');
+      el.classList.add('active');
     }
   </script>
 </body>

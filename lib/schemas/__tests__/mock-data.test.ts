@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { customerSchema } from "../customer";
+import { contactSchema } from "../contact";
+import { groupSchema } from "../group";
+import { noteSchema } from "../note";
+import { addressSchema } from "../address";
 import { jobSchema } from "../job";
 import { quoteSchema } from "../quote";
 import { screenSchema } from "../screen";
@@ -8,6 +12,10 @@ import { garmentCatalogSchema } from "../garment";
 import { artworkSchema } from "../artwork";
 import {
   customers,
+  contacts,
+  customerGroups,
+  customerNotes,
+  customerAddresses,
   jobs,
   quotes,
   screens,
@@ -20,6 +28,30 @@ describe("mock data validates against schemas", () => {
   it("all customers are valid", () => {
     for (const customer of customers) {
       expect(() => customerSchema.parse(customer)).not.toThrow();
+    }
+  });
+
+  it("all contacts are valid", () => {
+    for (const contact of contacts) {
+      expect(() => contactSchema.parse(contact)).not.toThrow();
+    }
+  });
+
+  it("all groups are valid", () => {
+    for (const group of customerGroups) {
+      expect(() => groupSchema.parse(group)).not.toThrow();
+    }
+  });
+
+  it("all notes are valid", () => {
+    for (const note of customerNotes) {
+      expect(() => noteSchema.parse(note)).not.toThrow();
+    }
+  });
+
+  it("all addresses are valid", () => {
+    for (const address of customerAddresses) {
+      expect(() => addressSchema.parse(address)).not.toThrow();
     }
   });
 
@@ -137,11 +169,82 @@ describe("referential integrity", () => {
       }
     }
   });
+
+  it("all group customerIds reference existing customers", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const group of customerGroups) {
+      expect(customerIds.has(group.customerId)).toBe(true);
+    }
+  });
+
+  it("all note entityIds reference existing entities", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    const quoteIds = new Set(quotes.map((q) => q.id));
+    const artworkIds = new Set(artworks.map((a) => a.id));
+    const jobIds = new Set(jobs.map((j) => j.id));
+
+    for (const note of customerNotes) {
+      switch (note.entityType) {
+        case "customer":
+          expect(customerIds.has(note.entityId)).toBe(true);
+          break;
+        case "quote":
+          expect(quoteIds.has(note.entityId)).toBe(true);
+          break;
+        case "artwork":
+          expect(artworkIds.has(note.entityId)).toBe(true);
+          break;
+        case "job":
+          expect(jobIds.has(note.entityId)).toBe(true);
+          break;
+      }
+    }
+  });
+
+  it("all referredByCustomerIds reference existing customers", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const customer of customers) {
+      if (customer.referredByCustomerId) {
+        expect(customerIds.has(customer.referredByCustomerId)).toBe(true);
+      }
+    }
+  });
+
+  it("all contact groupIds reference existing groups", () => {
+    const groupIds = new Set(customerGroups.map((g) => g.id));
+    for (const contact of contacts) {
+      if (contact.groupId) {
+        expect(groupIds.has(contact.groupId)).toBe(true);
+      }
+    }
+  });
+
+  it("embedded customer.contacts match standalone contacts array", () => {
+    for (const customer of customers) {
+      for (const embedded of customer.contacts) {
+        const standalone = contacts.find((c) => c.id === embedded.id);
+        expect(standalone).toBeDefined();
+        expect(standalone?.name).toBe(embedded.name);
+        expect(standalone?.role).toBe(embedded.role);
+      }
+    }
+  });
+
+  it("all addresses are embedded in a customer record", () => {
+    for (const address of customerAddresses) {
+      const ownerExists = customers.some(
+        (c) =>
+          c.billingAddress?.id === address.id ||
+          c.shippingAddresses.some((sa) => sa.id === address.id)
+      );
+      expect(ownerExists).toBe(true);
+    }
+  });
 });
 
 describe("data coverage", () => {
-  it("has at least 5 customers", () => {
-    expect(customers.length).toBeGreaterThanOrEqual(5);
+  it("has at least 10 customers", () => {
+    expect(customers.length).toBeGreaterThanOrEqual(10);
   });
 
   it("has at least 6 quotes", () => {
@@ -193,5 +296,76 @@ describe("data coverage", () => {
     expect(types).toContain("manual");
     expect(types).toContain("contract");
     expect(types).toContain("volume");
+  });
+
+  // Customer Management data coverage
+  it("covers all lifecycle stages", () => {
+    const stages = new Set(customers.map((c) => c.lifecycleStage));
+    expect(stages).toContain("prospect");
+    expect(stages).toContain("new");
+    expect(stages).toContain("repeat");
+    expect(stages).toContain("contract");
+  });
+
+  it("has at least 1 potentially-churning customer", () => {
+    const churning = customers.filter(
+      (c) => c.healthStatus === "potentially-churning"
+    );
+    expect(churning.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("has at least 2 referral chains", () => {
+    const referred = customers.filter((c) => c.referredByCustomerId);
+    expect(referred.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("has at least 1 pinned note per customer", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const customerId of customerIds) {
+      const pinned = customerNotes.filter(
+        (n) =>
+          n.entityType === "customer" &&
+          n.entityId === customerId &&
+          n.isPinned
+      );
+      expect(pinned.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it("has at least 2 notes per customer", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const customerId of customerIds) {
+      const notes = customerNotes.filter(
+        (n) => n.entityType === "customer" && n.entityId === customerId
+      );
+      expect(notes.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("has contacts with various roles", () => {
+    const roles = new Set(contacts.map((c) => c.role));
+    expect(roles).toContain("ordering");
+    expect(roles).toContain("art-approver");
+    expect(roles).toContain("billing");
+    expect(roles).toContain("owner");
+  });
+
+  it("has tax exempt customers", () => {
+    const exempt = customers.filter((c) => c.taxExempt);
+    expect(exempt.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("has customers with multiple type tags", () => {
+    const multiTag = customers.filter((c) => c.typeTags.length > 1);
+    expect(multiTag.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("covers various type tags", () => {
+    const allTags = new Set(customers.flatMap((c) => c.typeTags));
+    expect(allTags).toContain("retail");
+    expect(allTags).toContain("sports-school");
+    expect(allTags).toContain("corporate");
+    expect(allTags).toContain("storefront-merch");
+    expect(allTags).toContain("wholesale");
   });
 });
