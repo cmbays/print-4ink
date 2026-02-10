@@ -19,6 +19,7 @@ interface ActivityTimelineProps {
   quotes: Quote[];
   jobs: Job[];
   notes: Note[];
+  onSwitchTab?: (tab: string) => void;
 }
 
 type TimelineItem =
@@ -64,7 +65,7 @@ const ICON_CONFIG = {
   note: { icon: StickyNote, color: "text-warning" },
 } as const;
 
-export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps) {
+export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityTimelineProps) {
   const items: TimelineItem[] = [
     ...quotes.map((q) => ({ type: "quote" as const, date: q.createdAt, data: q })),
     ...jobs.map((j) => ({ type: "job" as const, date: j.dueDate, data: j })),
@@ -99,18 +100,45 @@ export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps)
             role="listitem"
           >
             {/* Icon node */}
-            <div
-              className={cn(
-                "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border",
-                config.color
-              )}
-            >
-              <Icon className="size-4" aria-hidden="true" />
-            </div>
+            {item.type === "quote" ? (
+              <Link
+                href={`/quotes/${item.data.id}`}
+                className={cn(
+                  "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border transition-all",
+                  "hover:ring-2 hover:ring-action/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  config.color
+                )}
+                aria-label={`View quote ${item.data.quoteNumber}`}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </Link>
+            ) : item.type === "note" ? (
+              <button
+                type="button"
+                onClick={() => onSwitchTab?.("notes")}
+                className={cn(
+                  "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border transition-all",
+                  "hover:ring-2 hover:ring-action/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  config.color
+                )}
+                aria-label="Go to notes tab"
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </button>
+            ) : (
+              <div
+                className={cn(
+                  "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border",
+                  config.color
+                )}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+              </div>
+            )}
 
             {/* Content */}
             <div className="flex-1 min-w-0 pt-0.5">
-              <TimelineContent item={item} />
+              <TimelineContent item={item} onSwitchTab={onSwitchTab} />
               <p className="text-xs text-muted-foreground mt-1">
                 {relativeDate(item.date)}
               </p>
@@ -122,7 +150,7 @@ export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps)
   );
 }
 
-function TimelineContent({ item }: { item: TimelineItem }) {
+function TimelineContent({ item, onSwitchTab }: { item: TimelineItem; onSwitchTab?: (tab: string) => void }) {
   switch (item.type) {
     case "quote": {
       const quote = item.data;
@@ -161,7 +189,13 @@ function TimelineContent({ item }: { item: TimelineItem }) {
           : note.content;
       return (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-foreground">{truncated}</span>
+          <button
+            type="button"
+            onClick={() => onSwitchTab?.("notes")}
+            className="text-sm text-foreground hover:text-action transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
+            {truncated}
+          </button>
           {note.channel && (
             <Badge variant="ghost" className="text-muted-foreground">
               {NOTE_CHANNEL_LABELS[note.channel]}
