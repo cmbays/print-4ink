@@ -103,7 +103,7 @@ Source: [Extreme Screen Prints: Contract, Wholesale, & Custom](https://www.extre
 
 ### Customer Lifecycle
 
-```
+```text
 Lead ──────────► Prospect ──────────► Customer ──────────► Repeat
 (initial       (quoted,              (first order         (2+ orders,
  contact)       not yet ordered)      completed)           loyalty)
@@ -226,7 +226,7 @@ Based on analysis of Printavo, ShopVox, DecoNetwork, and Ordant customer profile
 
 ### Data Relationships (Critical for Print Shops)
 
-```
+```text
 Customer
   ├── Contacts[] (multiple people per company)
   ├── Addresses[] (billing + multiple shipping)
@@ -263,7 +263,6 @@ The art approval process is the most communication-intensive part of the custome
 6. **Final approval** — documented, timestamped, legally binding
 
 > "The way you attach your quote and send your art proof to the customer -- and the verbiage you use to communicate expectations -- will set the tone for how positive or negative the complicated art approval process becomes." — Printavo Blog
-
 > "Let clients know how many revisions are included in their quote and clearly explain that additional changes will come at an extra cost." — Industry best practice
 
 **Key insight for Screen Print Pro**: Art approval communication should be visible in the customer profile. "When did Sarah last approve? What version? Who sent the proof?"
@@ -283,7 +282,6 @@ The art approval process is the most communication-intensive part of the custome
 ### Customer Follow-Up & Retention
 
 > "Following up with past customers is one of the best ways to get returning customers and repeat business. This can include reminders about seasonal services and special offers on past services."
-
 > "It's critical to find out as much as you can about your clients, both as professionals and as people, use both human engagement and a good CRM platform to collect and analyze purchasing habits."
 
 **What successful shops do:**
@@ -329,7 +327,6 @@ Sources:
 - Sales forecasting dashboards
 
 > "Small teams often lose more money in reprints, rush freight, and late invoices than the monthly fee of a management platform." — SoftwareConnect
-
 > "Small shops actually see the fastest ROI because every saved hour translates straight to billable production or sales time." — Industry analysis
 
 ### Large Shop (10-20+ people)
@@ -591,7 +588,7 @@ Fields to add for Customer Management vertical:
 
 ### Address Schema (New)
 
-```
+```ts
 addressSchema = {
   label: string       // "HQ", "Warehouse", "Main"
   street: string
@@ -606,7 +603,7 @@ addressSchema = {
 
 ### Contact Schema (New)
 
-```
+```ts
 contactSchema = {
   id: uuid
   name: string
@@ -620,7 +617,7 @@ contactSchema = {
 
 ### Note Schema (New)
 
-```
+```ts
 noteSchema = {
   id: uuid
   content: string

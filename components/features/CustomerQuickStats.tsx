@@ -116,7 +116,7 @@ export function CustomerQuickStats({
       {statItems.map(({ key, label, icon: Icon, format }) => (
         <div key={key} className="flex flex-col gap-0.5">
           <span className="text-xs text-muted-foreground flex items-center gap-1">
-            <Icon className="size-3" aria-hidden="true" />
+            <Icon className="size-4" aria-hidden="true" />
             {label}
           </span>
           <span className="text-sm font-semibold text-foreground">
@@ -127,7 +127,7 @@ export function CustomerQuickStats({
       {showReferrals && (
         <div className="flex flex-col gap-0.5">
           <span className="text-xs text-muted-foreground flex items-center gap-1">
-            <Users className="size-3" aria-hidden="true" />
+            <Users className="size-4" aria-hidden="true" />
             Referrals
           </span>
           <span className="text-sm font-semibold text-foreground">
