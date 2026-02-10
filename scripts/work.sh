@@ -82,8 +82,16 @@ _work_new() {
     local TOPIC="$1"
     local BASE="${2:-main}"
 
-    # Validate
+    # Validate topic
     [[ -z "$TOPIC" ]] && { echo "Error: topic required"; return 1; }
+
+    # Validate topic format (kebab-case: lowercase letters, numbers, hyphens)
+    if [[ ! "$TOPIC" =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$ ]]; then
+        echo "Error: Topic must be kebab-case (lowercase letters, numbers, hyphens)."
+        echo "  Got: '$TOPIC'"
+        echo "  Example: work invoicing-schema"
+        return 1
+    fi
 
     local MMDD
     MMDD=$(date +%m%d)
@@ -316,7 +324,7 @@ _work_clean() {
 
     # Find the branch matching this topic
     local BRANCH
-    BRANCH=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *' | head -1)
+    BRANCH=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *+' | head -1)
 
     if [[ -z "$BRANCH" ]]; then
         echo "Error: No branch found matching 'session/*-${TOPIC}'."
