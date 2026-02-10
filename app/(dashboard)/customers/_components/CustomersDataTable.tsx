@@ -151,6 +151,12 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
     setLocalSearch(searchQuery);
   }, [searchQuery]);
 
+  // Sync sort from URL when navigating back/forward
+  useEffect(() => {
+    setSortKey(sortKeyParam);
+    setSortDir(sortDirParam);
+  }, [sortKeyParam, sortDirParam]);
+
   // ---- Debounced search -> URL ----------------------------------------------
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -356,8 +362,10 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   // ---- Sort icon ------------------------------------------------------------
 
   const renderSortIcon = (column: SortKey) => {
-    if (sortKey !== column) return null;
-    return sortDir === "asc" ? (
+    const effectiveKey = view === "top" ? "revenue" as SortKey : sortKey;
+    const effectiveDir = view === "top" ? "desc" as SortDir : sortDir;
+    if (effectiveKey !== column) return null;
+    return effectiveDir === "asc" ? (
       <ChevronUp className="size-4" />
     ) : (
       <ChevronDown className="size-4" />
