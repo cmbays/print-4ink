@@ -20,6 +20,8 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
+import { AddContactSheet } from "./AddContactSheet";
+import { AddGroupSheet } from "./AddGroupSheet";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Contact } from "@/lib/schemas/contact";
 import type { ContactRole } from "@/lib/schemas/contact";
@@ -147,6 +149,9 @@ function GroupSection({
 export function ContactHierarchy({ customer }: ContactHierarchyProps) {
   const { contacts, groups, company } = customer;
 
+  const [addContactOpen, setAddContactOpen] = useState(false);
+  const [addGroupOpen, setAddGroupOpen] = useState(false);
+
   const showAddGroup = contacts.length >= 2;
 
   // Partition contacts: those with a groupId vs ungrouped
@@ -196,6 +201,7 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
           size="sm"
           className="gap-1.5 text-xs"
           aria-label="Add a new contact"
+          onClick={() => setAddContactOpen(true)}
         >
           <UserPlus className="h-3.5 w-3.5" />
           Add Contact
@@ -206,6 +212,7 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
             size="sm"
             className="gap-1.5 text-xs"
             aria-label="Add a new group"
+            onClick={() => setAddGroupOpen(true)}
           >
             <FolderPlus className="h-3.5 w-3.5" />
             Add Group
@@ -243,6 +250,17 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
           />
         );
       })}
+
+      {/* Sheets */}
+      <AddContactSheet
+        open={addContactOpen}
+        onOpenChange={setAddContactOpen}
+        groups={groups}
+      />
+      <AddGroupSheet
+        open={addGroupOpen}
+        onOpenChange={setAddGroupOpen}
+      />
     </div>
   );
 }

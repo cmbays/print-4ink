@@ -99,6 +99,7 @@ export default async function CustomerDetailPage({
       {/* Tabs */}
       <CustomerTabs
         customer={customer}
+        customers={customers}
         quotes={customerQuotes}
         jobs={customerJobs}
         artworks={customerArtworks}

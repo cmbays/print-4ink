@@ -13,9 +13,9 @@ import type { LineItemData } from "../_components/LineItemRow";
 export default async function NewQuotePage({
   searchParams,
 }: {
-  searchParams: Promise<{ duplicate?: string }>;
+  searchParams: Promise<{ duplicate?: string; customer?: string }>;
 }) {
-  const { duplicate } = await searchParams;
+  const { duplicate, customer: customerParam } = await searchParams;
 
   let initialData: {
     customerId?: string;
@@ -28,6 +28,11 @@ export default async function NewQuotePage({
   } | undefined;
 
   let isDuplicate = false;
+
+  // Pre-fill customer if coming from customer detail page
+  if (customerParam && !duplicate) {
+    initialData = { customerId: customerParam };
+  }
 
   if (duplicate) {
     const sourceQuote = quotes.find((q) => q.id === duplicate);

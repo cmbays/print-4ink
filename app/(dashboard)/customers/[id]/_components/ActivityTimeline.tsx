@@ -30,17 +30,29 @@ function relativeDate(dateStr: string): string {
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const absDays = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) {
-    const weeks = Math.floor(diffDays / 7);
+  if (diffMs < 0) {
+    // Future date
+    if (absDays === 0) return "Today";
+    if (absDays === 1) return "In 1 day";
+    if (absDays < 7) return `In ${absDays} days`;
+    if (absDays < 30) {
+      const weeks = Math.floor(absDays / 7);
+      return `In ${weeks} ${weeks === 1 ? "week" : "weeks"}`;
+    }
+    return date.toLocaleDateString();
+  }
+
+  if (absDays === 0) return "Today";
+  if (absDays === 1) return "Yesterday";
+  if (absDays < 7) return `${absDays} days ago`;
+  if (absDays < 30) {
+    const weeks = Math.floor(absDays / 7);
     return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
   }
-  if (diffDays < 365) {
-    const months = Math.floor(diffDays / 30);
+  if (absDays < 365) {
+    const months = Math.floor(absDays / 30);
     return `${months} ${months === 1 ? "month" : "months"} ago`;
   }
   return date.toLocaleDateString();
@@ -89,7 +101,7 @@ export function ActivityTimeline({ quotes, jobs, notes }: ActivityTimelineProps)
             {/* Icon node */}
             <div
               className={cn(
-                "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-bg-elevated border border-border",
+                "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border",
                 config.color
               )}
             >

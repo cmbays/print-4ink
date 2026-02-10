@@ -84,7 +84,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
         {sorted.map((job) => (
           <div
             key={job.id}
-            className="rounded-lg border border-border bg-bg-elevated p-4"
+            className="rounded-lg border border-border bg-elevated p-4"
             role="listitem"
           >
             <div className="flex items-center justify-between mb-2">
