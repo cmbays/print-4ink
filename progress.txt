@@ -6,6 +6,7 @@
 **Last Updated**: 2026-02-10
 **Last Verified**: 2026-02-10
 **Status**: Customer Management data foundation MERGED (PR #24). New schemas (customer expanded, contact, group, address, note), 10 customers with full embedded data, badge components, reverse lookup helpers, 264 tests. All checks pass (tsc, lint 0 errors 0 warnings, 264 tests, build).
+>>>>>>> theirs
 
 ## What's Built
 

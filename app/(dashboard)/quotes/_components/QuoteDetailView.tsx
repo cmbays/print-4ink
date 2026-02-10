@@ -18,7 +18,8 @@ import type { Quote } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Artwork } from "@/lib/schemas/artwork";
 import { garmentCatalog, colors as allColors } from "@/lib/mock-data";
-import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, CUSTOMER_TAG_LABELS, CUSTOMER_TAG_COLORS } from "@/lib/constants";
+import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@/lib/constants";
+import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import { cn } from "@/lib/utils";
 
@@ -107,7 +108,7 @@ export function QuoteDetailView({
               <p className="text-sm font-medium text-foreground">
                 {customer.name} — {customer.company}
               </p>
-              <Badge variant="ghost" className={cn("text-xs", CUSTOMER_TAG_COLORS[customer.tag])}>{CUSTOMER_TAG_LABELS[customer.tag]}</Badge>
+              <LifecycleBadge stage={customer.lifecycleStage} className="text-xs" />
             </div>
             <p className="text-sm text-muted-foreground">{customer.email} · {customer.phone}</p>
           </>

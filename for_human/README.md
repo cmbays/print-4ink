@@ -15,6 +15,8 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
+| [2026-02-10-quoting-interconnection.html](2026-02-10-quoting-interconnection.html) | Quoting-Customer interconnection: lifecycle badges in combobox, enriched customer card, expanded search, View Customer link. 3 files, PR #28. | 2026-02-10 | Feature, Build |
+| [2026-02-10-customer-list-page.html](2026-02-10-customer-list-page.html) | Customer List page: SmartViewTabs, CustomersDataTable (desktop + mobile), StatsBar, enhanced AddCustomerModal. URL-driven filters. 4 parallel subagents. | 2026-02-10 | Feature, Build |
 | [2026-02-10-customer-mgmt-breadboard.html](2026-02-10-customer-mgmt-breadboard.html) | Customer Management breadboard: interactive visualization of Places, Components, Wiring, and Build Order. 4 tabbed views. | 2026-02-10 | Plan, Build |
 | [2026-02-08-quoting-build.html](2026-02-08-quoting-build.html) | Quoting vertical: 3 pages, 15+ components, artwork system, flat pricing, collapsible form. PR #13 + #14 + #20 merged. 172 tests, 0 warnings. | 2026-02-08/09 | Feature, Build |
 | [2026-02-08-vercel-setup.html](2026-02-08-vercel-setup.html) | Vercel deployment with access code protection (env var: DEMO_ACCESS_CODE), middleware, login page, API validation | 2026-02-08 | Build |
