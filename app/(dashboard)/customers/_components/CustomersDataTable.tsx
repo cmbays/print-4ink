@@ -45,7 +45,7 @@ interface CustomersDataTableProps {
 }
 
 // ---------------------------------------------------------------------------
-// Revenue computation (Phase 1 — sum accepted quote totals per customer)
+// Revenue computation (Phase 1 \u2014 sum accepted quote totals per customer)
 // ---------------------------------------------------------------------------
 
 function getCustomerRevenue(customerId: string): number {
@@ -246,9 +246,11 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   // ---- Sort -----------------------------------------------------------------
 
   const handleSort = useCallback(
-    (key: SortKey) => {
+    (key: SortKey, explicitDir?: SortDir) => {
       let nextDir: SortDir;
-      if (sortKey === key) {
+      if (explicitDir) {
+        nextDir = explicitDir;
+      } else if (sortKey === key) {
         nextDir = sortDir === "asc" ? "desc" : "asc";
       } else {
         nextDir = "asc";
@@ -298,7 +300,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       case "seasonal":
         result = result.filter((c) => c.typeTags.includes("sports-school"));
         break;
-      // "all" — no additional filter
+      // "all" \u2014 no additional filter
     }
 
     // 3. Global search (company, contact names, email, phone)
@@ -537,7 +539,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       {/* ---- Data Table (desktop) / Card List (mobile) ---- */}
       {filteredCustomers.length > 0 ? (
         <>
-          {/* Desktop table — hidden below md */}
+          {/* Desktop table \u2014 hidden below md */}
           <div className="hidden md:block rounded-md border border-border">
             <Table>
               <TableHeader>
@@ -548,7 +550,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="company"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("company")}
+                      onSort={(_k, dir) => handleSort("company", dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -557,7 +559,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="contact"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("contact")}
+                      onSort={(_k, dir) => handleSort("contact", dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -566,7 +568,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="type"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("type")}
+                      onSort={(_k, dir) => handleSort("type", dir)}
                       filterOptions={typeFilterOptions}
                       activeFilters={activeTags}
                       onFilterToggle={handleTypeFilterToggle}
@@ -579,7 +581,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="lifecycle"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("lifecycle")}
+                      onSort={(_k, dir) => handleSort("lifecycle", dir)}
                       filterOptions={lifecycleFilterOptions}
                       activeFilters={lifecycleFilter ? [lifecycleFilter] : []}
                       onFilterToggle={handleLifecycleFilterToggle}
@@ -592,7 +594,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="health"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("health")}
+                      onSort={(_k, dir) => handleSort("health", dir)}
                       filterOptions={healthFilterOptions}
                       activeFilters={healthFilter ? [healthFilter] : []}
                       onFilterToggle={handleHealthFilterToggle}
@@ -605,7 +607,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="lastOrder"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("lastOrder")}
+                      onSort={(_k, dir) => handleSort("lastOrder", dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -614,7 +616,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                       sortKey="revenue"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={() => handleSort("revenue")}
+                      onSort={(_k, dir) => handleSort("revenue", dir)}
                     />
                   </TableHead>
                 </TableRow>
@@ -686,7 +688,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             </Table>
           </div>
 
-          {/* Mobile card list — visible below md */}
+          {/* Mobile card list \u2014 visible below md */}
           <div className="flex flex-col gap-3 md:hidden">
             {filteredCustomers.map((customer) => {
               const contact = getPrimaryContact(customer);

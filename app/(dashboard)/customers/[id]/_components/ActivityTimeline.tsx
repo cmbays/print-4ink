@@ -105,7 +105,7 @@ export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityT
                 href={`/quotes/${item.data.id}`}
                 className={cn(
                   "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border transition-all",
-                  "hover:ring-2 hover:ring-action/30",
+                  "hover:ring-2 hover:ring-action/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   config.color
                 )}
                 aria-label={`View quote ${item.data.quoteNumber}`}
@@ -118,7 +118,7 @@ export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityT
                 onClick={() => onSwitchTab?.("notes")}
                 className={cn(
                   "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated border border-border transition-all",
-                  "hover:ring-2 hover:ring-action/30",
+                  "hover:ring-2 hover:ring-action/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   config.color
                 )}
                 aria-label="Go to notes tab"
@@ -192,7 +192,7 @@ function TimelineContent({ item, onSwitchTab }: { item: TimelineItem; onSwitchTa
           <button
             type="button"
             onClick={() => onSwitchTab?.("notes")}
-            className="text-sm text-foreground hover:text-action transition-colors text-left"
+            className="text-sm text-foreground hover:text-action transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           >
             {truncated}
           </button>

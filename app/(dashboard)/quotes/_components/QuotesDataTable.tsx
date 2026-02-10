@@ -117,7 +117,7 @@ export function QuotesDataTable() {
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
-  // Debounced search → URL
+  // Debounced search \u2192 URL
   useEffect(() => {
     const timer = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString());
@@ -132,7 +132,7 @@ export function QuotesDataTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally omitting searchParams to avoid re-render loop
   }, [localSearch, router]);
 
-  // Status filter → URL
+  // Status filter \u2192 URL
   const handleStatusChange = useCallback(
     (value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -148,8 +148,11 @@ export function QuotesDataTable() {
 
   // Sort toggle
   const handleSort = useCallback(
-    (key: SortKey) => {
-      if (sortKey === key) {
+    (key: SortKey, explicitDir?: SortDir) => {
+      if (explicitDir) {
+        setSortKey(key);
+        setSortDir(explicitDir);
+      } else if (sortKey === key) {
         setSortDir((d) => (d === "asc" ? "desc" : "asc"));
       } else {
         setSortKey(key);
@@ -222,7 +225,7 @@ export function QuotesDataTable() {
 
       {/* Filters */}
       <div className="flex flex-col gap-3">
-        {/* Search bar — left-aligned */}
+        {/* Search bar \u2014 left-aligned */}
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -271,7 +274,7 @@ export function QuotesDataTable() {
                     sortKey="quoteNumber"
                     currentSortKey={sortKey}
                     currentSortDir={sortDir}
-                    onSort={() => handleSort("quoteNumber")}
+                    onSort={(_k, dir) => handleSort("quoteNumber", dir)}
                   />
                 </TableHead>
                 <TableHead>
@@ -280,7 +283,7 @@ export function QuotesDataTable() {
                     sortKey="customerName"
                     currentSortKey={sortKey}
                     currentSortDir={sortDir}
-                    onSort={() => handleSort("customerName")}
+                    onSort={(_k, dir) => handleSort("customerName", dir)}
                   />
                 </TableHead>
                 <TableHead>
@@ -289,7 +292,7 @@ export function QuotesDataTable() {
                     sortKey="status"
                     currentSortKey={sortKey}
                     currentSortDir={sortDir}
-                    onSort={() => handleSort("status")}
+                    onSort={(_k, dir) => handleSort("status", dir)}
                   />
                 </TableHead>
                 <TableHead>
@@ -298,7 +301,7 @@ export function QuotesDataTable() {
                     sortKey="lineItemCount"
                     currentSortKey={sortKey}
                     currentSortDir={sortDir}
-                    onSort={() => handleSort("lineItemCount")}
+                    onSort={(_k, dir) => handleSort("lineItemCount", dir)}
                   />
                 </TableHead>
                 <TableHead>
@@ -307,7 +310,7 @@ export function QuotesDataTable() {
                     sortKey="total"
                     currentSortKey={sortKey}
                     currentSortDir={sortDir}
-                    onSort={() => handleSort("total")}
+                    onSort={(_k, dir) => handleSort("total", dir)}
                   />
                 </TableHead>
                 <TableHead>
@@ -316,7 +319,7 @@ export function QuotesDataTable() {
                     sortKey="createdAt"
                     currentSortKey={sortKey}
                     currentSortDir={sortDir}
-                    onSort={() => handleSort("createdAt")}
+                    onSort={(_k, dir) => handleSort("createdAt", dir)}
                   />
                 </TableHead>
                 <TableHead className="w-10">

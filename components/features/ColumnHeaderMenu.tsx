@@ -24,7 +24,7 @@ interface ColumnHeaderMenuProps {
   sortKey: string;
   currentSortKey: string;
   currentSortDir: SortDir;
-  onSort: (key: string) => void;
+  onSort: (key: string, dir?: SortDir) => void;
   filterOptions?: FilterOption[];
   activeFilters?: string[];
   onFilterToggle?: (value: string) => void;
@@ -84,11 +84,11 @@ export function ColumnHeaderMenu({
             <DropdownMenuLabel className="text-xs">
               Sort
             </DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onSort(sortKey)}>
+            <DropdownMenuItem onClick={() => onSort(sortKey, "asc")}>
               <ChevronUp className="size-3.5" />
               Sort Ascending
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSort(sortKey)}>
+            <DropdownMenuItem onClick={() => onSort(sortKey, "desc")}>
               <ChevronDown className="size-3.5" />
               Sort Descending
             </DropdownMenuItem>
