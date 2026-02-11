@@ -442,6 +442,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       shipping,
       tax,
       artworkIds: quoteArtworks.map((a) => a.id),
+      isArchived: false,
       status: "draft" as const,
       internalNotes: internalNotes || undefined,
       customerNotes: customerNotes || undefined,

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Topbar } from "@/components/layout/topbar";
 import {
   PRODUCTION_STATE_LABELS,
   PRIORITY_LABELS,
@@ -28,6 +29,8 @@ const recentlyShipped = jobs.filter((j) => j.status === "shipped");
 
 export default function DashboardPage() {
   return (
+    <>
+    <Topbar />
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
@@ -150,5 +153,6 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
