@@ -254,6 +254,16 @@ describe("quoteSchema", () => {
     expect(result.artworkIds).toEqual([]);
   });
 
+  it("defaults isArchived to false", () => {
+    const result = quoteSchema.parse(validQuote);
+    expect(result.isArchived).toBe(false);
+  });
+
+  it("accepts isArchived as true", () => {
+    const result = quoteSchema.parse({ ...validQuote, isArchived: true });
+    expect(result.isArchived).toBe(true);
+  });
+
   it("accepts discounts, shipping, tax, artworkIds", () => {
     const result = quoteSchema.parse({
       ...validQuote,

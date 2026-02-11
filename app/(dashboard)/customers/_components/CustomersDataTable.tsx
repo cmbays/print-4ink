@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+  Archive,
   Plus,
   Search,
   Users,
   X,
-  Archive,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,6 +24,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { HealthBadge } from "@/components/features/HealthBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";
@@ -189,7 +195,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   const updateParam = useCallback(
     (key: string, value: string | null) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (value) {
+      if (value !== null) {
         params.set(key, value);
       } else {
         params.delete(key);
@@ -472,23 +478,16 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ---- Page Header ---- */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight">Customers</h1>
-        <Button
-          onClick={() => setModalOpen(true)}
-          className="bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-        >
-          <Plus className="size-4" />
-          Add Customer
-        </Button>
-      </div>
+      {/* ---- Sticky header area ---- */}
+      <div className="sticky top-0 z-10 bg-[var(--color-bg-primary)] pb-2">
+        {/* Header row: title + search + archive toggle + action button */}
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight shrink-0">Customers</h1>
 
-      {/* ---- Search + Filters ---- */}
-      <div className="flex flex-col gap-3">
-        {/* Search bar + archived toggle row */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative w-full sm:max-w-xs">
+          <div className="flex-1" />
+
+          {/* Search bar */}
+          <div className="relative w-full max-w-xs">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search company, contact, email, phone..."
@@ -509,26 +508,43 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={toggleArchived}
-            className={cn(
-              "inline-flex items-center gap-1.5 text-sm font-medium transition-colors",
-              "rounded-full px-3 py-1.5 border",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              showArchived
-                ? "bg-action/10 text-action border-action/20"
-                : "bg-transparent text-muted-foreground border-transparent hover:text-foreground hover:bg-muted",
-            )}
+          {/* Archive toggle — icon only with tooltip */}
+          <TooltipProvider skipDelayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={toggleArchived}
+                  className={cn(
+                    "inline-flex items-center justify-center rounded-md p-2 transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    showArchived
+                      ? "bg-action/10 text-action border border-action/20"
+                      : "bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-muted",
+                  )}
+                  aria-label={showArchived ? "Hide Archived" : "Show Archived"}
+                >
+                  <Archive className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {showArchived ? "Hide Archived" : "Show Archived"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <Button
+            onClick={() => setModalOpen(true)}
+            className="bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
           >
-            <Archive className="size-3.5" />
-            Show Archived
-          </button>
+            <Plus className="size-4" />
+            Add Customer
+          </Button>
         </div>
 
         {/* Clear all filters */}
         {hasFilters && (
-          <div className="flex items-center">
+          <div className="flex items-center mt-2">
             <button
               type="button"
               onClick={clearFilters}
@@ -642,7 +658,6 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                           router.push(`/customers/${customer.id}`);
                         }
                       }}
-                      role="link"
                       aria-label={`View ${customer.company}`}
                     >
                       <TableCell className="font-medium">

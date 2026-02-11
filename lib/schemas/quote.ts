@@ -49,6 +49,7 @@ export const quoteSchema = z.object({
   shipping: z.number().nonnegative().default(0),
   tax: z.number().nonnegative().default(0),
   artworkIds: z.array(z.string()).default([]),
+  isArchived: z.boolean().default(false),
   status: quoteStatusEnum,
   internalNotes: z.string().optional(),
   customerNotes: z.string().optional(),
