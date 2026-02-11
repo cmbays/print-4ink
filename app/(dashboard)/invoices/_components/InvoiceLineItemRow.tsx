@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@/lib/constants";
+import { money, round2, toNumber } from "@/lib/helpers/money";
 import type { InvoiceLineItemType } from "@/lib/schemas/invoice";
 
 const LINE_ITEM_TYPES: InvoiceLineItemType[] = [
@@ -54,7 +55,7 @@ export function InvoiceLineItemRow({
   canRemove,
   errors,
 }: InvoiceLineItemRowProps) {
-  const lineTotal = item.quantity * item.unitPrice;
+  const lineTotal = toNumber(round2(money(item.quantity).times(item.unitPrice)));
 
   function updateField(partial: Partial<InvoiceLineItemData>) {
     onChange(index, { ...item, ...partial });

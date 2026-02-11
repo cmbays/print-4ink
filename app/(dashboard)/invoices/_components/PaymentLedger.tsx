@@ -11,6 +11,7 @@ import {
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
 import type { Payment } from "@/lib/schemas/invoice";
 import { CreditCard } from "lucide-react";
+import { money, toNumber } from "@/lib/helpers/money";
 
 interface PaymentLedgerProps {
   payments: Payment[];
@@ -52,10 +53,10 @@ export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
 
   const runningTotals: number[] = [];
   sorted.reduce((acc, payment) => {
-    const next = acc + payment.amount;
-    runningTotals.push(next);
+    const next = acc.plus(money(payment.amount));
+    runningTotals.push(toNumber(next));
     return next;
-  }, 0);
+  }, money(0));
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">

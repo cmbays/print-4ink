@@ -41,6 +41,7 @@ import {
   calculateDueDate,
   convertQuoteToInvoiceLineItems,
 } from "@/lib/helpers/invoice-utils";
+import { money, round2, toNumber } from "@/lib/helpers/money";
 import type { PaymentTerms, PricingTier } from "@/lib/schemas/customer";
 import type { Invoice } from "@/lib/schemas/invoice";
 
@@ -178,7 +179,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
   // Computed pricing
   const pricing = useMemo(() => {
     const items = lineItems.map((li) => ({
-      lineTotal: li.quantity * li.unitPrice,
+      lineTotal: toNumber(round2(money(li.quantity).times(li.unitPrice))),
     }));
     return calculateInvoiceTotal(items, [], shipping, taxRate);
   }, [lineItems, shipping, taxRate]);
@@ -294,7 +295,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
         <div className="sticky top-0 z-20 -mx-1 rounded-lg border border-border bg-card/95 backdrop-blur-sm px-4 py-2 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-1.5 min-w-0">
-              <FileText size={14} className="shrink-0 text-muted-foreground" />
+              <FileText size={16} className="shrink-0 text-muted-foreground" />
               <span className="text-sm font-medium text-foreground">
                 {invoiceNumber}
               </span>

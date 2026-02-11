@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CREDIT_MEMO_REASON_LABELS } from "@/lib/constants";
+import { money, round2, toNumber } from "@/lib/helpers/money";
 import { creditMemoReasonEnum } from "@/lib/schemas/credit-memo";
 import type { CreditMemoReason, CreditMemo } from "@/lib/schemas/credit-memo";
 import type { Invoice } from "@/lib/schemas/invoice";
@@ -71,21 +72,34 @@ export function CreateCreditMemoModal({
   // so it unmounts on close and remounts fresh on open.
 
   const existingCreditTotal = useMemo(
-    () => existingCreditMemos.reduce((sum, cm) => sum + cm.totalCredit, 0),
+    () =>
+      toNumber(
+        existingCreditMemos.reduce(
+          (sum, cm) => sum.plus(money(cm.totalCredit)),
+          money(0),
+        ),
+      ),
     [existingCreditMemos]
   );
 
-  const maxAllowedCredit = invoice.total - existingCreditTotal;
+  const maxAllowedCredit = toNumber(money(invoice.total).minus(money(existingCreditTotal)));
 
   const totalCredit = useMemo(
     () =>
-      lineItems
-        .filter((item) => item.selected)
-        .reduce((sum, item) => sum + (parseFloat(item.creditAmount) || 0), 0),
+      toNumber(
+        round2(
+          lineItems
+            .filter((item) => item.selected)
+            .reduce(
+              (sum, item) => sum.plus(money(parseFloat(item.creditAmount) || 0)),
+              money(0),
+            ),
+        ),
+      ),
     [lineItems]
   );
 
-  const isOverLimit = totalCredit > maxAllowedCredit;
+  const isOverLimit = money(totalCredit).gt(money(maxAllowedCredit));
   const hasSelectedItems = lineItems.some((item) => item.selected);
   const isValid = reason !== "" && hasSelectedItems && totalCredit > 0 && !isOverLimit;
 

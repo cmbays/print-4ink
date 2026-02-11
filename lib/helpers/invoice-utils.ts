@@ -1,4 +1,5 @@
 import { money, round2, toNumber } from "@/lib/helpers/money";
+import { DEPOSIT_DEFAULTS_BY_TIER } from "@/lib/constants";
 import type { InvoiceStatus } from "@/lib/schemas/invoice";
 import type { Quote } from "@/lib/schemas/quote";
 import type { PricingTier } from "@/lib/schemas/customer";
@@ -96,13 +97,6 @@ export function calculateInvoiceTotal(
 // ---------------------------------------------------------------------------
 // Smart deposit defaults
 // ---------------------------------------------------------------------------
-
-const DEPOSIT_DEFAULTS_BY_TIER: Record<PricingTier, number> = {
-  standard: 50,
-  preferred: 50,
-  contract: 0,
-  wholesale: 100,
-};
 
 export function calculateSmartDeposit(
   pricingTier: PricingTier,

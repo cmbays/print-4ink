@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { DEPOSIT_DEFAULTS_BY_TIER } from "@/lib/constants";
 import { calculateSmartDeposit } from "@/lib/helpers/invoice-utils";
+import { money, toNumber } from "@/lib/helpers/money";
 import type { PricingTier } from "@/lib/schemas/customer";
 
 interface DepositSectionProps {
@@ -21,7 +22,9 @@ export function DepositSection({
   customerTier,
 }: DepositSectionProps) {
   const isEnabled = depositAmount > 0;
-  const percentage = total > 0 ? Math.round((depositAmount / total) * 100) : 0;
+  const percentage = total > 0
+    ? toNumber(money(depositAmount).div(money(total)).times(100).round(0))
+    : 0;
   const defaultPercent = DEPOSIT_DEFAULTS_BY_TIER[customerTier];
 
   function handleToggle(checked: boolean) {

@@ -7,6 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { money, toNumber } from "@/lib/helpers/money";
 import type { PricingSnapshot } from "@/lib/schemas/invoice";
 
 interface ChangeDiffPanelProps {
@@ -36,8 +37,8 @@ function DiffRow({
   snapshotValue: number;
   currentValue: number;
 }) {
-  const diff = currentValue - snapshotValue;
-  if (Math.abs(diff) < 0.01) return null;
+  const diff = toNumber(money(currentValue).minus(money(snapshotValue)));
+  if (money(diff).abs().lt(money("0.01"))) return null;
 
   return (
     <div className="flex items-center justify-between text-sm">
@@ -68,21 +69,22 @@ export function ChangeDiffPanel({
   if (!pricingSnapshot) return null;
 
   // Check if anything actually changed
+  const hasDiff = (a: number, b: number) => !money(a).eq(money(b));
   const hasChanges =
-    Math.abs(pricingSnapshot.subtotal - currentPricing.subtotal) >= 0.01 ||
-    Math.abs(pricingSnapshot.discountTotal - currentPricing.discountTotal) >= 0.01 ||
-    Math.abs(pricingSnapshot.shipping - currentPricing.shipping) >= 0.01 ||
-    Math.abs(pricingSnapshot.taxAmount - currentPricing.taxAmount) >= 0.01 ||
-    Math.abs(pricingSnapshot.total - currentPricing.total) >= 0.01;
+    hasDiff(pricingSnapshot.subtotal, currentPricing.subtotal) ||
+    hasDiff(pricingSnapshot.discountTotal, currentPricing.discountTotal) ||
+    hasDiff(pricingSnapshot.shipping, currentPricing.shipping) ||
+    hasDiff(pricingSnapshot.taxAmount, currentPricing.taxAmount) ||
+    hasDiff(pricingSnapshot.total, currentPricing.total);
 
   if (!hasChanges) return null;
 
   return (
     <div className="rounded-lg border border-border bg-card">
       <Collapsible>
-        <CollapsibleTrigger className="flex w-full items-center justify-between p-4 text-sm font-medium text-foreground hover:bg-surface transition-colors rounded-lg">
+        <CollapsibleTrigger className="group flex w-full items-center justify-between p-4 text-sm font-medium text-foreground hover:bg-surface transition-colors rounded-lg">
           <span>View Quote Changes</span>
-          <ChevronDown className="size-4 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-180" />
+          <ChevronDown className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div className="space-y-2 border-t border-border px-4 pb-4 pt-3">

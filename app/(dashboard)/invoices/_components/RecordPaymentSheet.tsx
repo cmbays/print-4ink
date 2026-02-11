@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
+import { money } from "@/lib/helpers/money";
 import { paymentMethodEnum } from "@/lib/schemas/invoice";
 import type { Invoice, PaymentMethod } from "@/lib/schemas/invoice";
 
@@ -54,11 +55,11 @@ export function RecordPaymentSheet({
 
   const isTerminal = invoice.status === "void" || invoice.status === "paid";
   const parsedAmount = parseFloat(amount) || 0;
-  const isOverpayment = parsedAmount > invoice.balanceDue;
-  const isValid = parsedAmount > 0 && parsedAmount <= invoice.balanceDue && method !== "" && date !== "";
+  const isOverpayment = money(parsedAmount).gt(money(invoice.balanceDue));
+  const isValid = parsedAmount > 0 && money(parsedAmount).lte(money(invoice.balanceDue)) && method !== "" && date !== "";
 
   const nextStatus =
-    parsedAmount >= invoice.balanceDue ? "Paid" : "Partial";
+    money(parsedAmount).gte(money(invoice.balanceDue)) ? "Paid" : "Partial";
 
   function handleSubmit() {
     toast.success(

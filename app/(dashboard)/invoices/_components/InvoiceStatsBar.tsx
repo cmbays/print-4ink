@@ -3,6 +3,7 @@
 import { invoices } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { money, toNumber } from "@/lib/helpers/money";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -22,17 +23,21 @@ function computeStats() {
   const outstandingInvoices = invoices.filter(
     (inv) => inv.status === "sent" || inv.status === "partial",
   );
-  const totalOutstanding = outstandingInvoices.reduce(
-    (sum, inv) => sum + inv.balanceDue,
-    0,
+  const totalOutstanding = toNumber(
+    outstandingInvoices.reduce(
+      (sum, inv) => sum.plus(money(inv.balanceDue)),
+      money(0),
+    ),
   );
 
   // 2. Overdue — count and total of overdue invoices
   const overdueInvoices = invoices.filter((inv) => computeIsOverdue(inv));
   const overdueCount = overdueInvoices.length;
-  const overdueTotal = overdueInvoices.reduce(
-    (sum, inv) => sum + inv.balanceDue,
-    0,
+  const overdueTotal = toNumber(
+    overdueInvoices.reduce(
+      (sum, inv) => sum.plus(money(inv.balanceDue)),
+      money(0),
+    ),
   );
 
   // 3. Paid This Month — invoices with paidAt in current month

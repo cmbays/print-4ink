@@ -30,6 +30,7 @@ import {
   CREDIT_MEMO_REASON_LABELS,
 } from "@/lib/constants";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
+import { money, toNumber } from "@/lib/helpers/money";
 import type { Invoice, Payment } from "@/lib/schemas/invoice";
 import type { Customer } from "@/lib/schemas/customer";
 import type { CreditMemo } from "@/lib/schemas/credit-memo";
@@ -96,7 +97,9 @@ export function InvoiceDetailView({
   payments,
   creditMemos,
 }: InvoiceDetailViewProps) {
-  const totalDiscounts = invoice.discounts.reduce((sum, d) => sum + d.amount, 0);
+  const totalDiscounts = toNumber(
+    invoice.discounts.reduce((sum, d) => sum.plus(money(d.amount)), money(0)),
+  );
 
   return (
     <div className="space-y-6">

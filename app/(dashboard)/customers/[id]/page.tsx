@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { customers, quotes, jobs, invoices, artworks, customerNotes } from "@/lib/mock-data";
+import { money, round2, toNumber } from "@/lib/helpers/money";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -51,11 +52,15 @@ export default async function CustomerDetailPage({
   );
 
   // Compute stats for the header
-  const lifetimeRevenue = customerQuotes
-    .filter((q) => q.status === "accepted")
-    .reduce((sum, q) => sum + q.total, 0);
+  const lifetimeRevenue = toNumber(
+    customerQuotes
+      .filter((q) => q.status === "accepted")
+      .reduce((sum, q) => sum.plus(money(q.total)), money(0)),
+  );
   const totalOrders = customerJobs.length;
-  const avgOrderValue = totalOrders > 0 ? lifetimeRevenue / totalOrders : 0;
+  const avgOrderValue = totalOrders > 0
+    ? toNumber(round2(money(lifetimeRevenue).div(totalOrders)))
+    : 0;
   const lastOrderDate =
     customerJobs.length > 0
       ? customerJobs
