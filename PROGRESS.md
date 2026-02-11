@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-11
-**Status**: Quoting + Customer Management verticals built and demo-ready. Price Matrix vertical research complete — 36 features prioritized, ready for build.
+**Status**: Quoting + Customer Management verticals built and demo-ready. Price Matrix research complete (36 features prioritized). Invoicing vertical research complete — 19 key decisions captured, ready for breadboarding and build.
 
 ## What's Built
 
@@ -69,6 +69,19 @@
 - For-human summary: `for_human/2026-02-10-price-matrix-research.html`
 </details>
 
+<details><summary>Invoicing Vertical Research (PR #46 — merged)</summary>
+
+- 5-agent research team: industry practices, competitor analysis (PrintLife focus), integration architecture, UX patterns, legal/compliance
+- 6 competitors analyzed: PrintLife, Printavo, shopVOX, DecoNetwork, InkSoft, GraphicsFlow
+- User interview captured 19 critical business decisions
+- Key decisions: single invoice with partial payments (not two invoices), Square payment processing (4Ink's existing), customer portal as separate vertical, smart deposit defaults (tier + history + contract), configurable line items (itemized vs bundled toggle), QB-matching invoice numbers
+- Integration map: schema dependencies for 5 existing verticals + 4 future ones, build order (Phase 1a–1e, 19 steps)
+- UX patterns: 3 screen designs (list, detail, new), 7 reusable components + 6 new, status badge tokens, user journeys
+- Compliance: tax treatment (IN 7%, KY 6%), required invoice elements, 7-year retention, PCI via tokenized Square, credit memo workflow
+- Research docs: `docs/spikes/invoicing-{industry-practices,competitor-analysis,integration-map,ux-patterns,compliance,decisions}.md`
+- For-human summary: `for_human/2026-02-10-invoicing-vertical-research.html`
+</details>
+
 <details><summary>Agent & Skill Infrastructure</summary>
 
 - 5 agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
@@ -86,8 +99,9 @@
 
 1. Demo Quoting + Customer Management to user (4Ink owner), collect final feedback
 2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-3. **Price Matrix vertical**: Run vertical-discovery skill, breadboard UI, build Phase 1a (P0 engine + wizard + quote integration)
-4. Address deferred tech debt (#15-#18) as needed
+3. **Invoicing vertical**: Breadboard UI from research docs, build Phase 1a (schema + mock data), then Phase 1b–1e (list, detail, quote-to-invoice, payments, customer integration)
+4. **Price Matrix vertical**: Run vertical-discovery skill, breadboard UI, build Phase 1a (P0 engine + wizard + quote integration)
+5. Address deferred tech debt (#15-#18) as needed
 
 ## Document Map
 
@@ -106,6 +120,9 @@
 | `docs/strategy/STRATEGY_README.md` | Index of all strategy docs |
 | `docs/research/price-matrix-research.md` | Price Matrix synthesis report (P0/P1/P2 features) |
 | `for_human/2026-02-10-price-matrix-research.html` | Price Matrix research summary for humans |
+| `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
+| `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
+| `for_human/2026-02-10-invoicing-vertical-research.html` | Invoicing research summary for humans |
 
 ## Key Design Requirements
 
