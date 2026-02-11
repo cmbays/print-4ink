@@ -31,8 +31,8 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Tools**: Read, Write, Edit, Bash, Grep, Glob
 **Preloaded skills**: breadboarding, screen-builder, quality-gate
 **Reads**: Breadboard docs, scope definitions, all frontend code, schemas, mock data, design system docs
-**Writes**: Screen files in `app/(dashboard)/`, component files in `components/features/`, `progress.txt`
-**Never touches**: Backend, docs (except progress.txt)
+**Writes**: Screen files in `app/(dashboard)/`, component files in `components/features/`, `PROGRESS.md`
+**Never touches**: Backend, docs (except PROGRESS.md)
 
 **When to use**:
 - Building any screen within a vertical (uses breadboard as build blueprint)

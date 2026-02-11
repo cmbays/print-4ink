@@ -16,7 +16,7 @@ Read these files in order before doing anything:
 2. `docs/strategy/quoting-scope-definition.md` — **The BUILD spec.** CORE features, acceptance criteria, quality checklists per component. This is your primary reference.
 3. `docs/strategy/screen-print-pro-journey-quoting.md` — The improved journey design. Explains WHY each design decision was made and what friction points from Print Life we're solving.
 4. `docs/reference/ss-activewear-api-reference.md` — S&S Activewear API field shapes. Our mock data MUST mirror these field names and structures so Phase 2 integration is a data source swap, not a refactor.
-5. `progress.txt` — Current state, what's already built (dashboard, sidebar, schemas, mock data)
+5. `PROGRESS.md` — Current state, what's already built (dashboard, sidebar, schemas, mock data)
 6. `lib/schemas/` — Existing Zod schemas (quote.ts, garment.ts, customer.ts) that need updating
 7. `lib/mock-data.ts` — Existing mock data that needs expanding
 8. `app/globals.css` — Design tokens (`@theme inline` block)
@@ -139,5 +139,5 @@ Every component must pass the quality checklist in `CLAUDE.md`:
 4. Run `npm run build` — production build succeeds
 5. Run quality-gate audit on each page
 6. Create a single PR with all changes to `main`
-7. Update `progress.txt` with build completion
+7. Update `PROGRESS.md` with build completion
 8. Create `for_human/2026-02-XX-quoting-build.html` session summary

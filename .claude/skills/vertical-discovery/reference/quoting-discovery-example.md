@@ -132,7 +132,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 - Updated mock data requirements
 
 **Created**: `for_human/2026-02-08-quoting-discovery.html` (session summary)
-**Updated**: `progress.txt` (session log entry)
+**Updated**: `PROGRESS.md` (session log entry)
 **Updated**: `for_human/index.html` and `for_human/README.md`
 
 ## What Worked Well

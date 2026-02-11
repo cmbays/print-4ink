@@ -119,7 +119,7 @@ npm run build
 
 ### Step 5: Update Progress
 
-1. Update `progress.txt` — add to "What's Built", update session log
+1. Update `PROGRESS.md` — add to "What's Built", update session log
 2. Note any issues or deferred items
 
 ## Output Format

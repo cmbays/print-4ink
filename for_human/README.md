@@ -15,21 +15,22 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
-| [2026-02-10-customer-feedback.html](2026-02-10-customer-feedback.html) | Customer Management feedback: 8 items from 4Ink owner. ColumnHeaderMenu (sort + inline filter), timeline interactivity, Save & View Details, column reorder, custom contact role, Zod enum refactor. PR #35. | 2026-02-10 | Feature, Build |
-| [2026-02-10-customer-quality-gate.html](2026-02-10-customer-quality-gate.html) | Customer Management quality gate: 5-subagent audit, 10 fixes across 11 files (invalid Tailwind classes, broken cross-vertical params, unwired sheets, keyboard accessibility, future date bugs). Playwright verified. PR #33. | 2026-02-10 | Build, Feature |
-| [2026-02-10-quoting-interconnection.html](2026-02-10-quoting-interconnection.html) | Quoting-Customer interconnection: lifecycle badges in combobox, enriched customer card, expanded search, View Customer link. 3 files, PR #28. | 2026-02-10 | Feature, Build |
-| [2026-02-10-customer-list-page.html](2026-02-10-customer-list-page.html) | Customer List page: SmartViewTabs, CustomersDataTable (desktop + mobile), StatsBar, enhanced AddCustomerModal. URL-driven filters. 4 parallel subagents. | 2026-02-10 | Feature, Build |
-| [2026-02-10-customer-mgmt-breadboard.html](2026-02-10-customer-mgmt-breadboard.html) | Customer Management breadboard: interactive visualization of Places, Components, Wiring, and Build Order. 4 tabbed views. | 2026-02-10 | Plan, Build |
-| [2026-02-08-quoting-build.html](2026-02-08-quoting-build.html) | Quoting vertical: 3 pages, 15+ components, artwork system, flat pricing, collapsible form. PR #13 + #14 + #20 merged. 172 tests, 0 warnings. | 2026-02-08/09 | Feature, Build |
-| [2026-02-08-vercel-setup.html](2026-02-08-vercel-setup.html) | Vercel deployment with access code protection (env var: DEMO_ACCESS_CODE), middleware, login page, API validation | 2026-02-08 | Build |
-| [2026-02-08-quoting-breadboard.html](2026-02-08-quoting-breadboard.html) | Quoting breadboard: 7 Places, 65 UI affordances, 32 code affordances, Mermaid diagrams, build order | 2026-02-08 | Plan, Build |
-| [2026-02-08-breadboarding-skill.html](2026-02-08-breadboarding-skill.html) | Breadboarding skill created, integrated into vertical workflow as Phase 2.5, skill count 6 to 8 | 2026-02-08 | Feature, Decision |
-| [2026-02-08-quoting-discovery.html](2026-02-08-quoting-discovery.html) | Quoting discovery complete: Playwright exploration, user interview, 10 friction points, improved journey design, S&S color swatch request | 2026-02-08 | Feature, Research |
-| [2026-02-08-strategic-pivot.html](2026-02-08-strategic-pivot.html) | Strategic pivot to vertical-by-vertical approach, 4-phase methodology, discovery docs | 2026-02-08 | Plan, Decision |
-| [session-2026-02-08-agent-architecture.html](session-2026-02-08-agent-architecture.html) | 5 agents, 4 skills, orchestration patterns, agent registry | 2026-02-08 | Feature, Build |
-| [session-2026-02-07-shaping-skills.html](session-2026-02-07-shaping-skills.html) | Shaping skills evaluation, pre-build ritual, Phase 1 workflow | 2026-02-07 | Decision, Research |
-| [session-2026-02-07-skills-implementation.html](session-2026-02-07-skills-implementation.html) | Built screen-builder + quality-gate skills (20 files) | 2026-02-07 | Feature, Build |
-| [session-2026-02-07-ci-testing.html](session-2026-02-07-ci-testing.html) | GitHub Actions CI, Vitest schema tests (66), mock data UUID fix | 2026-02-07 | Feature, Build, Learning |
+| [Git Worktree Migration + Memory Refactoring](2026-02-10-worktree-migration.html) | Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%. | 2026-02-10 | Build, Decision |
+| [Quoting–Customer Interconnection](2026-02-10-quoting-interconnection.html) | Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search. | 2026-02-10 | Feature, Build |
+| [Customer Management Quality Gate](2026-02-10-customer-quality-gate.html) | Comprehensive 5-subagent audit of Customer List + Customer Detail pages. 10 fixes across 11 files. | 2026-02-10 | Build, Feature |
+| [Customer Management Breadboard](2026-02-10-customer-mgmt-breadboard.html) | Interactive visualization of Places, Components, Wiring, and Build Order for the Customer Management vertical | 2026-02-10 | Plan, Build |
+| [Customer List Page](2026-02-10-customer-list-page.html) | Smart views, search, filters, stats bar, responsive table — the /customers browse experience | 2026-02-10 | Feature, Build |
+| [Customer Management Feedback](2026-02-10-customer-feedback.html) | 8 feedback items from 4Ink owner review. Layout consistency, inline column filters, timeline interactivity, workflow improvements, and code quality refinements. | 2026-02-10 | Feature, Build |
+| [Agent Architecture](session-2026-02-08-agent-architecture.html) | 5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows. | 2026-02-08 | Feature, Build |
+| [Vercel Setup with Access Code Protection](2026-02-08-vercel-setup.html) |  | 2026-02-08 | Build |
+| [Strategic Pivot: Vertical-by-Vertical](2026-02-08-strategic-pivot.html) | Moving from linear 10-step implementation plan to user-validated vertical development focused on 4Ink's core pain points. | 2026-02-08 | Plan, Decision |
+| [Quoting Discovery: Complete](2026-02-08-quoting-discovery.html) | Full competitive analysis, user interview, and improved journey design for the Quoting vertical | 2026-02-08 | Feature, Research |
+| [Quoting Vertical Build](2026-02-08-quoting-build.html) | Complete implementation of the Quoting vertical — 3 pages, 15+ components, artwork system, flat pricing model, collapsible form sections. Built with parallel agents, polished via CodeRabbit review. | February 8–9, 2026 | Feature, Build |
+| [Quoting Breadboard](2026-02-08-quoting-breadboard.html) | Visual blueprint mapping all Places, UI affordances, code affordances, and wiring for the Quoting vertical. Produced by the breadboarding skill as input to the frontend-builder agent. | 2026-02-08 | Plan, Build |
+| [Breadboarding Skill](2026-02-08-breadboarding-skill.html) | Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Maps UI affordances, code affordances, data stores, and wiring before any code is written. | 2026-02-08 | Feature, Decision |
+| [Skills Implementation](session-2026-02-07-skills-implementation.html) | Built two project-specific Claude Code skills — <code>screen-builder</code> and <code>quality-gate</code> — encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens. | 2026-02-07 | Feature, Build |
+| [Shaping Skills Evaluation](session-2026-02-07-shaping-skills.html) | Evaluated Ryan Singer's shaping-skills methodology and extracted three high-value patterns for Screen Print Pro's build process. | 2026-02-07 | Decision, Research |
+| [CI & Testing Setup](session-2026-02-07-ci-testing.html) | GitHub Actions CI workflow, Vitest schema tests, and mock data UUID fix. Catches build/lint/type/test failures on every push and PR. | 2026-02-07 | Feature, Build, Learning |
 
 ## How to Use
 
@@ -37,6 +38,14 @@ Open any `.html` file in your browser, or start with `index.html` for a navigabl
 - What was discussed and decided
 - Links to artifacts created or modified
 - The `claude --resume` command to continue that session
+
+## Regenerating This Index
+
+This file and `index.html` are auto-generated. To regenerate after adding a new session doc:
+
+```bash
+npm run gen:index
+```
 
 ## Finding the Session ID
 
@@ -47,33 +56,11 @@ Each session doc includes a `claude --resume <session-id>` command. To find the 
 ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1
 ```
 
-The filename (without `.jsonl`) is the session ID. For example:
-```text
-58358bf9-61aa-4451-a184-c3d91d1871bd.jsonl
-→ claude --resume 58358bf9-61aa-4451-a184-c3d91d1871bd
-```
-
-> **Note**: The project path is derived from the absolute path with `/` replaced by `-`. For this project at `/Users/cmbays/Github/print-4ink`, the directory is `-Users-cmbays-Github-print-4ink`.
-
-You can also list recent sessions to find a specific one:
-```bash
-# Show 5 most recent sessions with dates
-ls -lt ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -5
-```
+The filename (without `.jsonl`) is the session ID.
 
 ## Template
 
 Every HTML file uses a standardized header template. See `_template.html` for the reference implementation.
-
-### Header Structure
-
-1. **Back navigation** — `← Back to Index` link at the top
-2. **Tags** — One or more tag pills describing the session type
-3. **Title + subtitle** — What was done, one-line summary
-4. **Meta grid** — Date, Branch, Phase, Vertical (2x2 grid)
-5. **Session resume** — Copyable `claude --resume <id>` command
-6. **Related sessions** — Navigation buttons to related `for_human/` docs (optional)
-7. **Divider** — Separates the header from body content
 
 ### Tags
 
@@ -86,7 +73,7 @@ Every HTML file uses a standardized header template. See `_template.html` for th
 | `Research` | Purple | Competitive analysis, exploration, or investigation |
 | `Learning` | Amber | A lesson was learned or gotcha documented |
 
-Apply 1-3 tags per session. Most sessions combine two (e.g., Feature + Build, Decision + Research).
+Apply 1-3 tags per session.
 
 ## Bundling Rules
 

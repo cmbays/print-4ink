@@ -19,7 +19,7 @@ The cost of building the wrong thing is 10x the cost of asking one more question
 3. Read `docs/PRD.md` — find the feature's acceptance criteria and user stories
 4. Read `lib/schemas/` — understand the data model for relevant entities
 5. Read `lib/mock-data.ts` — understand available data shapes and relationships
-6. Read `progress.txt` — understand what's already built and what this step can depend on
+6. Read `PROGRESS.md` — understand what's already built and what this step can depend on
 
 ## Workflow
 

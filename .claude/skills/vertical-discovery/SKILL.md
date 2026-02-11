@@ -64,7 +64,7 @@ Each vertical discovery produces exactly 4 documents (+ updates to 2 existing do
 | 2 | Journey Map | `docs/competitive-analysis/{competitor}-{vertical}-journey.md` | Step-by-step workflow, click/time metrics |
 | 3 | Improved Journey | `docs/strategy/screen-print-pro-journey-{vertical}.md` | Our redesigned workflow with targets |
 | 4 | Scope Definition | `docs/strategy/{vertical}-scope-definition.md` | CORE/PERIPHERAL/INTERCONNECTIONS |
-| 5 | progress.txt | `progress.txt` | Session log entry |
+| 5 | PROGRESS.md | `PROGRESS.md` | Session log entry |
 | 6 | for_human doc | `for_human/{date}-{vertical}-discovery.html` | Human-readable summary |
 
 ## Workflow: 7 Steps
@@ -210,7 +210,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 1. Update `docs/strategy/{vertical}-scope-definition.md` with findings
 2. Add phase indicators (Phase 1/Phase 2) to every feature
 3. Ensure CORE/PERIPHERAL/INTERCONNECTIONS are accurate
-4. Update `progress.txt` with session log entry
+4. Update `PROGRESS.md` with session log entry
 5. Create `for_human/{date}-{vertical}-discovery.html` summary
 6. Update `for_human/index.html` and `for_human/README.md`
 
@@ -224,7 +224,7 @@ Before marking discovery as complete, verify:
 - [ ] Click/time targets are set for both simple and complex flows
 - [ ] Build order is defined and numbered
 - [ ] Scope definition has acceptance criteria per CORE feature
-- [ ] progress.txt is updated with discovery session log
+- [ ] PROGRESS.md is updated with discovery session log
 - [ ] for_human doc is created and indexed
 
 ## Worked Example

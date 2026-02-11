@@ -17,7 +17,7 @@ Read these files to understand what's planned:
 3. `docs/PRD.md` — find the feature's acceptance criteria
 4. `lib/schemas/` — understand the data model
 5. `lib/mock-data.ts` — understand available data shapes
-6. `progress.txt` — understand what's already built
+6. `PROGRESS.md` — understand what's already built
 
 ### 2. Interrogate
 

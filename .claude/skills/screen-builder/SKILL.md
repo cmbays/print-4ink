@@ -110,5 +110,5 @@ npm run build       # Full build
 
 After the screen passes verification:
 
-1. Update `progress.txt` — add to "What's Built", update session log
+1. Update `PROGRESS.md` — add to "What's Built", update session log
 2. Update `docs/IMPLEMENTATION_PLAN.md` — mark step tasks as complete

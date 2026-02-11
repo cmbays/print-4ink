@@ -18,7 +18,7 @@ Read these before forming any opinion:
 4. `docs/IMPLEMENTATION_PLAN.md` — Build phases and current progress.
 5. `CLAUDE.md` — Design System section for visual constraints.
 6. `docs/reference/FRONTEND_GUIDELINES.md` — Component engineering rules.
-7. `progress.txt` — What's built and what's in flight.
+7. `PROGRESS.md` — What's built and what's in flight.
 8. `lib/schemas/` — Data model. Know what entities exist.
 
 You must understand the complete system before proposing a single new idea.
