@@ -22,12 +22,21 @@ import {
   Trash2,
   Printer,
   AlertTriangle,
+  FlaskConical,
+  GitCompareArrows,
+  Undo2,
+  X,
+  Zap,
+  LayoutGrid,
+  Settings2,
 } from "lucide-react";
 import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
-import { calculateTemplateHealth } from "@/lib/pricing-engine";
+import { calculateTemplateHealth, getColorUpcharge } from "@/lib/pricing-engine";
 import { cn } from "@/lib/utils";
 import type {
   PricingTemplate,
+  CostConfig,
+  EditorMode,
   QuantityTier,
   LocationUpcharge,
   GarmentTypePricing,
@@ -41,6 +50,9 @@ import { QuantityTierEditor } from "../../_components/QuantityTierEditor";
 import { LocationUpchargeEditor } from "../../_components/LocationUpchargeEditor";
 import { GarmentTypePricingEditor } from "../../_components/GarmentTypePricingEditor";
 import { SetupFeeEditor } from "../../_components/SetupFeeEditor";
+import { ComparisonView } from "../../_components/ComparisonView";
+import { PowerModeGrid } from "../../_components/PowerModeGrid";
+import { CostConfigSheet } from "../../_components/CostConfigSheet";
 
 const DEFAULT_GARMENT_COST = 3.5;
 
@@ -78,6 +90,17 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   );
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  // Sandbox mode state
+  const [sandboxSnapshot, setSandboxSnapshot] = useState<PricingTemplate | null>(null);
+  const isSandboxMode = sandboxSnapshot !== null;
+  const [showComparison, setShowComparison] = useState(false);
+
+  // Editor mode state (Simple vs Power)
+  const [editorMode, setEditorMode] = useState<EditorMode>("simple");
+
+  // Cost config sheet state
+  const [showCostSheet, setShowCostSheet] = useState(false);
 
   // Template not found
   if (!template) {
@@ -174,6 +197,33 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     setIsEditing(true);
   };
 
+  const updateCostConfig = (config: CostConfig) => {
+    setTemplate((prev) => {
+      if (!prev) return prev;
+      return { ...prev, costConfig: config };
+    });
+    setIsEditing(true);
+    toast.success("Cost configuration updated", {
+      description: "Margin indicators have been recalculated.",
+    });
+  };
+
+  // Power mode cell edit: reverse-calculate base price from new price
+  const handlePowerCellEdit = (tierIndex: number, colorCount: number, newPrice: number) => {
+    setTemplate((prev) => {
+      if (!prev) return prev;
+      const colorUpcharge = getColorUpcharge(prev.matrix, colorCount);
+      const newBasePrice = Math.max(0, Math.round((newPrice - colorUpcharge) * 100) / 100);
+      const basePriceByTier = [...prev.matrix.basePriceByTier];
+      basePriceByTier[tierIndex] = newBasePrice;
+      return {
+        ...prev,
+        matrix: { ...prev.matrix, basePriceByTier },
+      };
+    });
+    setIsEditing(true);
+  };
+
   // Actions
   const handleSave = () => {
     setTemplate((prev) =>
@@ -199,6 +249,41 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
       description: `"${template.name}" has been removed.`,
     });
     setTimeout(() => router.push("/settings/pricing"), 500);
+  };
+
+  // Sandbox actions
+  const enterSandbox = () => {
+    setSandboxSnapshot(deepCopy(template));
+    toast.info("Sandbox mode enabled", {
+      description: "Changes won't affect live pricing until you save.",
+    });
+  };
+
+  const exitSandbox = () => {
+    setSandboxSnapshot(null);
+    setShowComparison(false);
+  };
+
+  const discardSandboxChanges = () => {
+    if (sandboxSnapshot) {
+      setTemplate(deepCopy(sandboxSnapshot));
+      setIsEditing(false);
+    }
+    exitSandbox();
+    toast.info("Changes discarded", {
+      description: "Template restored to original state.",
+    });
+  };
+
+  const saveSandboxChanges = () => {
+    exitSandbox();
+    setIsEditing(false);
+    setTemplate((prev) =>
+      prev ? { ...prev, updatedAt: new Date().toISOString() } : prev
+    );
+    toast.success("Sandbox changes applied", {
+      description: `"${template.name}" has been updated with your changes.`,
+    });
   };
 
   return (
@@ -251,40 +336,145 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
         {/* Action buttons */}
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDuplicate}
-          >
-            <Copy className="size-3.5" />
-            Duplicate
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-error hover:text-error"
-            onClick={() => setShowDeleteDialog(true)}
-          >
-            <Trash2 className="size-3.5" />
-            Delete
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleSave}
-            disabled={!isEditing}
-          >
-            <Save className="size-3.5" />
-            Save Template
-          </Button>
+          {!isSandboxMode ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={enterSandbox}
+              className="text-warning hover:text-warning"
+            >
+              <FlaskConical className="size-3.5" />
+              Sandbox
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowComparison(true)}
+              >
+                <GitCompareArrows className="size-3.5" />
+                Compare
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={discardSandboxChanges}
+                className="text-error hover:text-error"
+              >
+                <Undo2 className="size-3.5" />
+                Discard
+              </Button>
+              <Button
+                size="sm"
+                onClick={saveSandboxChanges}
+              >
+                <Save className="size-3.5" />
+                Save Changes
+              </Button>
+            </>
+          )}
+
+          {!isSandboxMode && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowCostSheet(true)}
+              >
+                <Settings2 className="size-3.5" />
+                Edit Costs
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDuplicate}
+              >
+                <Copy className="size-3.5" />
+                Duplicate
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-error hover:text-error"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <Trash2 className="size-3.5" />
+                Delete
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={!isEditing}
+              >
+                <Save className="size-3.5" />
+                Save Template
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Pricing Matrix Grid */}
-      <ColorPricingGrid
-        template={template}
-        colorHitRate={colorHitRate}
-        onColorHitRateChange={updateColorHitRate}
-      />
+      {/* Sandbox mode banner */}
+      {isSandboxMode && (
+        <div className="flex items-center justify-between rounded-lg border border-warning/30 bg-warning/10 p-3">
+          <div className="flex items-center gap-2">
+            <FlaskConical className="size-4 text-warning" />
+            <span className="text-sm font-medium text-warning">
+              Sandbox Mode
+            </span>
+            <span className="text-sm text-warning/80">
+              &mdash; Changes won&apos;t affect live pricing until saved
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={discardSandboxChanges}
+            className="h-7 text-warning/70 hover:text-warning hover:bg-warning/10"
+          >
+            <X className="size-3.5" />
+            Exit
+          </Button>
+        </div>
+      )}
+
+      {/* Mode toggle */}
+      <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-1 self-start">
+        <Button
+          variant={editorMode === "simple" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 gap-1.5 text-xs"
+          onClick={() => setEditorMode("simple")}
+        >
+          <LayoutGrid className="size-3.5" />
+          Simple
+        </Button>
+        <Button
+          variant={editorMode === "power" ? "default" : "ghost"}
+          size="sm"
+          className="h-7 gap-1.5 text-xs"
+          onClick={() => setEditorMode("power")}
+        >
+          <Zap className="size-3.5" />
+          Power
+        </Button>
+      </div>
+
+      {/* Pricing Matrix Grid — mode-dependent */}
+      {editorMode === "simple" ? (
+        <ColorPricingGrid
+          template={template}
+          colorHitRate={colorHitRate}
+          onColorHitRateChange={updateColorHitRate}
+        />
+      ) : (
+        <PowerModeGrid
+          template={template}
+          garmentBaseCost={DEFAULT_GARMENT_COST}
+          onCellEdit={handlePowerCellEdit}
+        />
+      )}
 
       {/* Two-column layout for smaller editors */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -341,6 +531,28 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Comparison view modal (sandbox mode) */}
+      {sandboxSnapshot && (
+        <ComparisonView
+          original={sandboxSnapshot}
+          proposed={template}
+          onApply={saveSandboxChanges}
+          onKeepEditing={() => setShowComparison(false)}
+          onDiscardAll={discardSandboxChanges}
+          open={showComparison}
+          onOpenChange={setShowComparison}
+        />
+      )}
+
+      {/* Cost configuration sheet */}
+      <CostConfigSheet
+        open={showCostSheet}
+        onOpenChange={setShowCostSheet}
+        costConfig={template.costConfig}
+        template={template}
+        onSave={updateCostConfig}
+      />
     </div>
   );
 }
