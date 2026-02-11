@@ -300,7 +300,7 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 
 **UI Elements**:
 - **"Save as Draft"** — secondary button, saves quote with Draft status
-- **"Save & Send to Customer"** — primary CTA (cyan, neobrutalist shadow), saves + opens send confirmation
+- **"Save & Send to Customer"** — primary CTA (action blue, neobrutalist shadow), saves + opens send confirmation
 - **"Cancel"** — text link, confirms before discarding
 
 **Send Flow**:
@@ -320,7 +320,7 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 
 **Status Badges**:
 - Draft (gray) — editable, not sent
-- Sent (blue/cyan) — sent to customer, awaiting response
+- Sent (blue) — sent to customer, awaiting response
 - Accepted (green) — customer accepted
 - Declined (red) — customer declined or expired
 - Revised (amber) — customer requested changes

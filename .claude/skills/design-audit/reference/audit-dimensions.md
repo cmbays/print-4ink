@@ -42,7 +42,7 @@
 - Are all colors from the design token palette?
 
 **Pass**: Monochrome base, `text-action` for CTAs, `text-success`/`text-error`/`text-warning` for states only.
-**Fail**: Random cyan accents, status colors used decoratively, hardcoded hex values.
+**Fail**: Random color accents, status colors used decoratively, hardcoded hex values.
 
 ## 5. Alignment & Grid
 

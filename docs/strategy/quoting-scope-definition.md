@@ -59,7 +59,7 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
 - [ ] Visual hierarchy: "New Quote" button is primary action
 - [ ] Spacing: Tailwind tokens only
 - [ ] Typography: Max 3 sizes (header, body, small)
-- [ ] Color: Status badges only (Draft gray, Sent cyan, Accepted green, Declined red, Revised amber)
+- [ ] Color: Status badges only (Draft gray, Sent blue, Accepted green, Declined red, Revised gold)
 - [ ] Interactive states: All rows have hover state
 - [ ] Keyboard: Tab to quote, Enter to open
 - [ ] Accessibility: ARIA labels for status, sortable headers labeled
@@ -165,10 +165,10 @@ These workflows are critical to demonstrating 10x better UX and will be fully fu
 - ✅ Color swatch grid uses S&S-style dense layout with white text overlay
 
 **Quality Checklist**:
-- [ ] Visual hierarchy: "Save & Send" is primary action (cyan, neobrutalist shadow), "Save as Draft" is secondary
+- [ ] Visual hierarchy: "Save & Send" is primary action (action blue, neobrutalist shadow), "Save as Draft" is secondary
 - [ ] Spacing: Clear section breaks, 8px base scale
 - [ ] Typography: Field labels clear, helper text for price formula
-- [ ] Color: Error messages red, success green, calculation feedback cyan
+- [ ] Color: Error messages red, success green, calculation feedback blue
 - [ ] Interactive states: Required field indicators (*), hover states on inputs
 - [ ] Empty state: One blank line item ready to fill
 - [ ] Loading: N/A (instant client-side calculations)
