@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
+  AlertTriangle,
   ArrowLeft,
   Save,
   Copy,
@@ -206,8 +207,9 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
 
   if (!template) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-12 text-center">
-        <p className="text-lg font-semibold">Template Not Found</p>
+      <div className="flex flex-col items-center justify-center gap-4 p-12 text-center" role="alert">
+        <AlertTriangle className="size-12 text-muted-foreground/50" />
+        <p className="text-lg font-semibold tracking-tight">Template Not Found</p>
         <p className="text-sm text-muted-foreground">
           No DTF template with ID &quot;{templateId}&quot; exists.
         </p>

@@ -32,17 +32,17 @@ import type { DTFPricingTemplate } from "@/lib/schemas/dtf-pricing";
 const ALL_TAGS = customerTypeTagEnum.options;
 
 const TAG_DISPLAY: Record<string, { label: string; color: string }> = {
-  retail: { label: "Retail", color: "bg-blue-500/15 text-blue-400" },
+  retail: { label: "Retail", color: "bg-action/15 text-action" },
   "sports-school": {
     label: "Sports / School",
-    color: "bg-green-500/15 text-green-400",
+    color: "bg-success/15 text-success",
   },
-  corporate: { label: "Corporate", color: "bg-purple-500/15 text-purple-400" },
+  corporate: { label: "Corporate", color: "bg-muted/50 text-foreground" },
   "storefront-merch": {
     label: "Storefront Merch",
-    color: "bg-amber-500/15 text-amber-400",
+    color: "bg-warning/15 text-warning",
   },
-  wholesale: { label: "Wholesale", color: "bg-cyan-500/15 text-cyan-400" },
+  wholesale: { label: "Wholesale", color: "bg-muted/80 text-foreground" },
 };
 
 // ---------------------------------------------------------------------------
@@ -72,9 +72,10 @@ export function TagTemplateMapper({
 }: TagTemplateMapperProps) {
   // Draft state — clone on open, only persist on Save
   const [draft, setDraft] = useState<TagTemplateMapping[]>([]);
-  const [initialized, setInitialized] = useState(false);
 
-  // Initialize draft when sheet opens (useEffect handles controlled Radix open)
+  // Initialize draft when sheet opens.
+  // Radix controlled mode does NOT fire onOpenChange when the `open` prop
+  // transitions externally, so we must use useEffect to detect open → true.
   useEffect(() => {
     if (open) {
       const draftMappings = ALL_TAGS.map((tag) => {
@@ -87,12 +88,14 @@ export function TagTemplateMapper({
           }
         );
       });
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Radix controlled mode workaround
       setDraft(draftMappings);
-      setInitialized(true);
     } else {
-      setInitialized(false);
+      setDraft([]);
     }
   }, [open, mappings]);
+
+  const initialized = open && draft.length > 0;
 
   const updateMapping = useCallback(
     (

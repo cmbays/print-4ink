@@ -171,7 +171,7 @@ export function QuoteDetailView({
                         setPeekLineItem(item);
                         setPeekOpen(true);
                       }}
-                      title="View pricing matrix"
+                      aria-label="View pricing matrix"
                     >
                       <DollarSign className="size-3.5" />
                     </Button>

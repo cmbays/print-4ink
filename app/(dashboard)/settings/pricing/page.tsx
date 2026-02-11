@@ -207,7 +207,7 @@ export default function PricingHubPage() {
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold">Pricing Templates</h1>
+            <h1 className="text-lg font-semibold tracking-tight">Pricing Templates</h1>
             <p className="text-sm text-muted-foreground">
               Configure pricing matrices for screen print and DTF services
             </p>
@@ -224,6 +224,7 @@ export default function PricingHubPage() {
             <Button
               size="sm"
               onClick={() => setWizardOpen(true)}
+              className="bg-action text-black font-semibold border-2 border-current shadow-[4px_4px_0px] shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px] transition-all"
             >
               <Plus className="size-4" />
               New Template
@@ -289,7 +290,7 @@ export default function PricingHubPage() {
             ))}
             {filteredSPTemplates.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-                <Printer className="size-8 text-muted-foreground" />
+                <Printer className="size-12 text-muted-foreground/50" />
                 <p className="text-sm text-muted-foreground">
                   {searchQuery
                     ? "No templates match your search"
@@ -329,7 +330,7 @@ export default function PricingHubPage() {
             ))}
             {filteredDTFTemplates.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-                <Layers className="size-8 text-muted-foreground" />
+                <Layers className="size-12 text-muted-foreground/50" />
                 <p className="text-sm text-muted-foreground">
                   {searchQuery
                     ? "No templates match your search"

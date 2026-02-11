@@ -105,9 +105,9 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   // Template not found
   if (!template) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-12 text-center">
-        <AlertTriangle className="size-8 text-warning" />
-        <p className="text-lg font-semibold">Template Not Found</p>
+      <div className="flex flex-col items-center justify-center gap-4 p-12 text-center" role="alert">
+        <AlertTriangle className="size-12 text-muted-foreground/50" />
+        <p className="text-lg font-semibold tracking-tight">Template Not Found</p>
         <p className="text-sm text-muted-foreground">
           No template with ID &ldquo;{templateId}&rdquo; exists.
         </p>
