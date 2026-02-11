@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoicing Vertical Research &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --purple: #a78bfa;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tag-feature,
+    .tag-build    { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-decision,
+    .tag-learning { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .meta-item {
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .session-resume {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+
+    .session-resume code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--action);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    .header-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 32px 0;
+    }
+
+    /* --- BODY STYLES --- */
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    td:first-child { color: var(--text-primary); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    pre {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .count-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--action);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .callout {
+      background: var(--bg-elevated);
+      border-left: 3px solid var(--action);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+
+    .callout-warning {
+      border-left-color: var(--warning);
+    }
+
+    .callout-success {
+      border-left-color: var(--success);
+    }
+
+    .callout-error {
+      border-left-color: var(--error);
+    }
+
+    .callout p { margin-bottom: 0; }
+
+    .section-intro {
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .competitor-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+    .badge-strong { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+    .badge-weak { background: rgba(248, 113, 113, 0.15); color: var(--error); }
+    .badge-neutral { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+
+    .toc {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .toc ol { margin-bottom: 0; }
+    .toc li { margin-bottom: 4px; }
+    .toc a { font-size: 13px; }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-research">Research</span>
+        <span class="tag tag-plan">Plan</span>
+      </div>
+
+      <h1>Invoicing Vertical Research</h1>
+      <p class="subtitle">Comprehensive competitive, UX, integration, compliance, and industry research for the Screen Print Pro invoicing vertical</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-10</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>session/0210-invoicing-research</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Pre-Build Research</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Invoicing</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume 2e017579-35ba-4702-9fa6-428c2bbcec28</code>
+      </div>
+    </header>
+
+    <hr class="header-divider">
+
+    <!-- ========== RESEARCH OVERVIEW ========== -->
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Research Agents</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Competitors Analyzed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">80+</div>
+        <div class="stat-label">Sources Cited</div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <span class="card-label">Table of Contents</span>
+      <ol>
+        <li><a href="#executive-summary">Executive Summary</a></li>
+        <li><a href="#industry">Industry Best Practices</a></li>
+        <li><a href="#competitors">Competitive Landscape</a></li>
+        <li><a href="#integration">Integration Architecture</a></li>
+        <li><a href="#ux">UX Recommendations</a></li>
+        <li><a href="#compliance">Legal &amp; Compliance</a></li>
+        <li><a href="#schemas">Proposed Data Model</a></li>
+        <li><a href="#build-plan">Build Sequence</a></li>
+        <li><a href="#differentiation">Differentiation Strategy</a></li>
+        <li><a href="#decisions">Key Decisions (Interview)</a></li>
+        <li><a href="#sources">Research Source Documents</a></li>
+      </ol>
+    </div>
+
+    <!-- ========== 1. EXECUTIVE SUMMARY ========== -->
+    <h2 id="executive-summary">1. Executive Summary</h2>
+
+    <div class="callout">
+      <p><strong>The invoicing vertical is the natural next step for Screen Print Pro.</strong> The existing quote schema already contains 90% of the data an invoice needs. The competitive landscape reveals fragmented solutions where every platform excels in 1&ndash;2 areas but has significant blind spots. Our opportunity: production-aware invoicing that feels as simple as Printavo on day one but grows with the shop.</p>
+    </div>
+
+    <h3>Key Findings Across All Research Tracks</h3>
+
+    <div class="card">
+      <div class="card-label">Industry</div>
+      <div class="card-title">Screen printing invoicing is well-established but poorly served</div>
+      <div class="card-desc">The quote-to-cash pipeline (Quote &rarr; Deposit &rarr; Production &rarr; Final Invoice) is standard. Shops charge for garments, print costs per color/location, screen setup, art, rush fees, and shipping. 50% deposit is the norm. The #1 pain point is chasing late payments &mdash; 87% of invoices are paid after the due date.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Competitive</div>
+      <div class="card-title">PrintLife has strong supplier integration but no multi-user support</div>
+      <div class="card-desc">PrintLife leads on supplier catalog integration (S&amp;S, SanMar, Alphabroder) and has a unique ink change-out guardrail. But it's single-user only with no G2/Capterra presence. Printavo dominates small shops but users outgrow it. shopVOX has the deepest features but is overly complex. No one nails both simplicity and power.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Integration</div>
+      <div class="card-title">Existing schemas are 90% ready for invoicing</div>
+      <div class="card-desc">The quote schema's line items, customer payment terms, tax-exempt fields, and pricing tiers map directly to invoice fields. Only two new schema files needed: <code>invoice.ts</code> and <code>credit-memo.ts</code>. Five existing verticals (Quotes, Customers, Artwork, Screen Room, Production) connect to invoicing. Four future verticals (Jobs, Reporting, Shipping, Inventory) consume invoice data.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">UX</div>
+      <div class="card-title">Mirror the existing quote form pattern</div>
+      <div class="card-desc">The invoice creation UX should use the same collapsible section form + sticky summary bar as the Quote Form. Invoice list follows the Customers page pattern (stats bar + smart view tabs + data table). Component reuse is extensive: StatusBadge, ColumnHeaderMenu, CustomerCombobox, LineItemRow, PricingSummary, EmailPreviewModal.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Compliance</div>
+      <div class="card-title">Screen printing is taxable as fabrication in virtually all states</div>
+      <div class="card-desc">The entire charge (materials + labor + setup + design) is taxable. The only common exemption is resale certificates. Invoices must be immutable once issued (void, never delete). 7-year data retention. QuickBooks Online is the primary accounting integration target. PCI compliance handled by using tokenized processors (Stripe/Square).</div>
+    </div>
+
+    <!-- ========== 2. INDUSTRY BEST PRACTICES ========== -->
+    <h2 id="industry">2. Industry Best Practices</h2>
+
+    <h3>The 8-Step Quote-to-Cash Pipeline</h3>
+    <p>Every screen printing shop follows this fundamental workflow, with variations in deposit percentage and payment terms:</p>
+
+    <pre>Estimate/Quote  &rarr;  Customer Approval  &rarr;  Deposit (50%)  &rarr;  Work Order
+     &darr;                                                            &darr;
+  Production  &rarr;  Quality Check  &rarr;  Invoice (balance)  &rarr;  Delivery + Payment</pre>
+
+    <h3>Standard Invoice Line Item Categories</h3>
+    <table>
+      <tr><th>Category</th><th>Description</th><th>Typical Pricing</th></tr>
+      <tr><td>Garment Cost</td><td>Wholesale with 150-200% markup</td><td>$5 wholesale &rarr; $7.50-$10</td></tr>
+      <tr><td>Print Cost</td><td>Per piece, per color, per location</td><td>$1.80-$5.00/piece</td></tr>
+      <tr><td>Screen Setup</td><td>Per screen (per color per location)</td><td>$10-$30/screen</td></tr>
+      <tr><td>Art/Design</td><td>Custom artwork or modifications</td><td>$25 (text) to $65/hr (custom)</td></tr>
+      <tr><td>Color Change</td><td>Switching ink mid-run</td><td>$10-$15/change</td></tr>
+      <tr><td>Rush Fee</td><td>Tiered by turnaround time</td><td>10-50% surcharge</td></tr>
+      <tr><td>Shipping</td><td>Carrier charges + handling</td><td>Actual + $6/box handling</td></tr>
+      <tr><td>Film Output</td><td>Cost of film positives</td><td>$12-$15 per spot color</td></tr>
+      <tr><td>Pantone Match</td><td>Custom color mixing</td><td>$10-$15 per color</td></tr>
+      <tr><td>Sample/Pre-prod</td><td>Test prints before full run</td><td>$150+ minimum</td></tr>
+    </table>
+
+    <h3>Payment Terms by Customer Type</h3>
+    <table>
+      <tr><th>Term</th><th>Who Gets It</th><th>Notes</th></tr>
+      <tr><td>100% Upfront</td><td>New/unknown customers</td><td>Full payment before production</td></tr>
+      <tr><td>50% Deposit + Balance</td><td>Standard for most jobs</td><td>Industry standard</td></tr>
+      <tr><td>COD</td><td>Walk-in customers</td><td>Payment at pickup</td></tr>
+      <tr><td>Net 15</td><td>Established customers</td><td>Requires credit application</td></tr>
+      <tr><td>Net 30</td><td>Large/corporate accounts</td><td>1.5%/month late fee standard</td></tr>
+      <tr><td>Net 60</td><td>Rare, large contracts only</td><td>High risk for small shops</td></tr>
+    </table>
+
+    <h3>Industry Spoilage Standards</h3>
+    <p>Spoilage affects invoicing through credit memos and adjustments:</p>
+    <ul>
+      <li><strong>Standard:</strong> 2% acceptable spoilage rate</li>
+      <li><strong>100+ pieces:</strong> Up to 3%</li>
+      <li><strong>Under 100 pieces:</strong> Up to 10% (higher due to setup proportion)</li>
+      <li><strong>Best-in-class target:</strong> Under 2%</li>
+    </ul>
+
+    <h3>Top 10 Invoicing Pain Points (Ranked by Frequency)</h3>
+    <ol>
+      <li><strong>Chasing late payments</strong> &mdash; 87% of invoices paid late; over 50% of B2B invoices in US are past due</li>
+      <li><strong>Cash flow gaps</strong> &mdash; fronting materials with Net 30 terms devastating for small shops</li>
+      <li><strong>Quote-to-invoice disconnection</strong> &mdash; manual re-entry introduces errors</li>
+      <li><strong>Accounting sync issues</strong> &mdash; one-directional sync, credit memos don't export</li>
+      <li><strong>Deposit tracking</strong> &mdash; which deposits collected, applied, what balance remains</li>
+      <li><strong>Tax complexity</strong> &mdash; resale certificates, expirations, multi-state nexus</li>
+      <li><strong>Change order management</strong> &mdash; mid-production changes hard to track on invoices</li>
+      <li><strong>Overrun/underrun reconciliation</strong> &mdash; actual vs ordered quantities</li>
+      <li><strong>Multiple payment methods</strong> &mdash; cash + check + Venmo + card = reconciliation nightmare</li>
+      <li><strong>Professional appearance</strong> &mdash; generic templates undermine credibility</li>
+    </ol>
+
+    <!-- ========== 3. COMPETITIVE LANDSCAPE ========== -->
+    <h2 id="competitors">3. Competitive Landscape</h2>
+
+    <h3>Feature Comparison Matrix</h3>
+    <table>
+      <tr>
+        <th>Feature</th>
+        <th>PrintLife</th>
+        <th>Printavo</th>
+        <th>shopVOX</th>
+        <th>DecoNetwork</th>
+        <th>InkSoft</th>
+      </tr>
+      <tr>
+        <td>Quote &rarr; Invoice</td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">3-step</span></td>
+        <td><span class="badge-strong">1-click</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Progress invoicing</td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-neutral">Partial</span></td>
+        <td><span class="badge-strong">Best</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-neutral">Partial</span></td>
+      </tr>
+      <tr>
+        <td>Multi-invoice payment</td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-strong">Unique</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+      </tr>
+      <tr>
+        <td>Invoice read receipts</td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-strong">Unique</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+      </tr>
+      <tr>
+        <td>Stripe</td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">DecoPay</span></td>
+        <td><span class="badge-neutral">Own</span></td>
+      </tr>
+      <tr>
+        <td>QuickBooks Online</td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-neutral">2hr sync</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-weak">No</span></td>
+      </tr>
+      <tr>
+        <td>Xero / Sage</td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-strong">Both</span></td>
+        <td><span class="badge-strong">Both</span></td>
+        <td><span class="badge-weak">No</span></td>
+      </tr>
+      <tr>
+        <td>SMS invoicing</td>
+        <td><span class="badge-strong">Twilio</span></td>
+        <td><span class="badge-neutral">Premium</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+      </tr>
+      <tr>
+        <td>Customer portal</td>
+        <td><span class="badge-strong">Strong</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">cPortal</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Multi-user / roles</td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-neutral">Limited</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Supplier catalogs</td>
+        <td><span class="badge-strong">Best</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-weak">No</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+        <td><span class="badge-strong">Yes</span></td>
+      </tr>
+      <tr>
+        <td>AR / Sales reports</td>
+        <td><span class="badge-neutral">Basic</span></td>
+        <td><span class="badge-strong">Full</span></td>
+        <td><span class="badge-strong">Best</span></td>
+        <td><span class="badge-neutral">Limited</span></td>
+        <td><span class="badge-neutral">Basic</span></td>
+      </tr>
+    </table>
+
+    <h3>Pricing Comparison</h3>
+    <table>
+      <tr><th>Platform</th><th>Entry</th><th>Mid Tier</th><th>Top Tier</th><th>Model</th></tr>
+      <tr><td>PrintLife</td><td>Not public</td><td>Not public</td><td>Not public</td><td>Subscription</td></tr>
+      <tr><td>Printavo</td><td>$49/mo</td><td>$149/mo</td><td>$199/mo + $99 Merch</td><td>Tiered flat</td></tr>
+      <tr><td>shopVOX</td><td>$99 + $19/user</td><td>$199 + $39/user</td><td>Custom</td><td>Base + per-user</td></tr>
+      <tr><td>DecoNetwork</td><td>$199/mo</td><td>Custom</td><td>Custom</td><td>Tiered + license</td></tr>
+      <tr><td>InkSoft</td><td>$314/mo</td><td>$419/mo</td><td>&mdash;</td><td>Flat rate</td></tr>
+    </table>
+
+    <h3>PrintLife Deep Assessment</h3>
+
+    <div class="card">
+      <div class="card-label">PrintLife Strengths (Match or Exceed)</div>
+      <ul style="margin-bottom: 0;">
+        <li><strong>Supplier integration</strong> &mdash; S&amp;S, SanMar, Alphabroder directly in project builder</li>
+        <li><strong>Ink change-out guardrail</strong> &mdash; unique production safeguard, no competitor has this</li>
+        <li><strong>Triple payment processor</strong> &mdash; only platform with Stripe + PayPal + Square</li>
+        <li><strong>SMS via Twilio</strong> &mdash; quotes and invoices via text</li>
+        <li><strong>Customer portal</strong> &mdash; self-ordering within shop-defined parameters</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label">PrintLife Weaknesses (Our Opportunity)</div>
+      <ul style="margin-bottom: 0;">
+        <li><strong>Single-user only</strong> &mdash; dealbreaker for growing shops; role-based permissions undelivered</li>
+        <li><strong>No G2/Capterra presence</strong> &mdash; invisible to buyers researching options</li>
+        <li><strong>Only QuickBooks Online</strong> &mdash; no Xero, Sage, QB Desktop</li>
+        <li><strong>No progress invoicing</strong> &mdash; can't invoice partial deliveries</li>
+        <li><strong>Limited reporting</strong> &mdash; basic compared to Printavo/shopVOX</li>
+        <li><strong>Small dev team</strong> &mdash; roadmap items slip; bug fixes take priority</li>
+      </ul>
+    </div>
+
+    <!-- ========== 4. INTEGRATION ARCHITECTURE ========== -->
+    <h2 id="integration">4. Integration Architecture</h2>
+
+    <h3>Master Data Flow: Quote-to-Cash Lifecycle</h3>
+    <pre>
+ QUOTE (Estimate)          JOB (Production)          INVOICE (Billing)
+ ┌──────────────┐   Accept  ┌──────────────┐  Convert  ┌──────────────┐
+ │ Line items   │ ────────&gt; │ Actual costs │ ────────&gt; │ Locked prices│
+ │ Pricing      │           │ tracked here │           │ Payments     │
+ │ Discounts    │           │              │           │ Balance due  │
+ └──────┬───────┘           └──────┬───────┘           └──────┬───────┘
+        │                          │                          │
+        │ Price Matrix             │ Variance                 │ Revenue
+        ▼                          ▼                          ▼
+   ┌──────────┐             ┌──────────┐              ┌──────────────┐
+   │ CUSTOMER │             │ COSTING  │              │  REPORTING   │
+   │ terms    │             │ actual   │              │  AR aging    │
+   │ tax info │             │ vs quote │              │  revenue     │
+   └──────────┘             └──────────┘              └──────────────┘</pre>
+
+    <h3>Integration with Existing Verticals</h3>
+
+    <table>
+      <tr><th>Vertical</th><th>Integration Point</th><th>Data Flow</th></tr>
+      <tr>
+        <td>Quotes</td>
+        <td>Quote &rarr; Invoice conversion</td>
+        <td>Line items, pricing, discounts snapshot &amp; lock. Only accepted quotes can generate invoices.</td>
+      </tr>
+      <tr>
+        <td>Customers</td>
+        <td>Financial context</td>
+        <td><code>paymentTerms</code> &rarr; due date calc, <code>taxExempt</code> &rarr; tax rate, <code>billingAddress</code> &rarr; invoice address, <code>pricingTier</code> &rarr; default discount</td>
+      </tr>
+      <tr>
+        <td>Artwork</td>
+        <td>Billable charges</td>
+        <td>Art creation ($40 flat), revisions ($65/hr), complex custom (quoted). Referenced via <code>artworkId</code></td>
+      </tr>
+      <tr>
+        <td>Screen Room</td>
+        <td>Setup fee itemization</td>
+        <td>Screen burn ($15-35/screen), reclaim ($5-10), color change ($5/screen). Linked via <code>jobId</code></td>
+      </tr>
+      <tr>
+        <td>Production</td>
+        <td>Invoice triggers</td>
+        <td>"design" &rarr; deposit invoice, "shipped" &rarr; final invoice. Auto-flag shipped jobs with unpaid invoices</td>
+      </tr>
+    </table>
+
+    <h3>Integration with Future Verticals</h3>
+
+    <table>
+      <tr><th>Vertical</th><th>Invoice Data Consumed</th></tr>
+      <tr>
+        <td>Jobs</td>
+        <td>Quoted vs actual vs billed comparison. Profitability per job. Margin analysis.</td>
+      </tr>
+      <tr>
+        <td>Reporting</td>
+        <td>AR aging (0-30, 31-60, 61-90, 90+), payment velocity, customer lifetime value, revenue trends, discount impact</td>
+      </tr>
+      <tr>
+        <td>Shipping</td>
+        <td>Shipping line items, delivery confirmation triggers final invoice, tracking numbers attached to invoices</td>
+      </tr>
+      <tr>
+        <td>Inventory</td>
+        <td>Garment COGS flows to job costing. Size upcharges through to invoice. Spoilage absorbed in margin.</td>
+      </tr>
+    </table>
+
+    <h3>Schema Dependencies</h3>
+    <div class="callout">
+      <p><strong>Existing schemas that feed invoicing:</strong> <code>customer.ts</code> (payment terms, tax-exempt, billing address, pricing tier), <code>quote.ts</code> (line items, discounts, shipping, tax), <code>job.ts</code> (production state triggers), <code>artwork.ts</code> (billable art charges), <code>screen.ts</code> (setup fees). <strong>One existing schema needs update:</strong> <code>note.ts</code> needs "invoice" added to <code>noteEntityTypeEnum</code>.</p>
+    </div>
+
+    <!-- ========== 5. UX RECOMMENDATIONS ========== -->
+    <h2 id="ux">5. UX Recommendations</h2>
+
+    <h3>Information Architecture</h3>
+    <p>Add "Invoices" to sidebar between Quotes and Customers, reflecting the natural workflow order:</p>
+    <pre>Dashboard    /
+Jobs         /jobs
+Quotes       /quotes
+Invoices     /invoices       &lt;-- NEW
+Customers    /customers
+Screen Room  /screens
+Garments     /garments</pre>
+
+    <h3>Key Screens</h3>
+
+    <div class="card">
+      <div class="card-title">Screen 1: Invoices List <code>/invoices</code></div>
+      <div class="card-desc">
+        <strong>Pattern:</strong> Mirrors Customers page &mdash; Stats Bar + Smart View Tabs + Data Table<br><br>
+        <strong>Stats bar (4 KPIs):</strong> Total Outstanding, Overdue Count &amp; Amount, Paid This Month, Avg Days to Pay<br><br>
+        <strong>Smart view tabs:</strong> All | Draft | Outstanding | Overdue | Paid<br><br>
+        <strong>Table columns:</strong> Invoice #, Customer, Status, Amount, Due Date, Balance Due, Date Created<br><br>
+        <strong>Batch operations:</strong> Send Selected, Mark as Paid, Send Reminder
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Screen 2: Invoice Detail <code>/invoices/[id]</code></div>
+      <div class="card-desc">
+        <strong>Pattern:</strong> Mirrors QuoteDetailView<br><br>
+        <strong>Layout:</strong> Sticky header (invoice # + status + actions) &rarr; Customer info card &rarr; Source links (quote, job) &rarr; Line items table &rarr; Pricing summary &rarr; Payment ledger + "Record Payment" &rarr; Reminder timeline &rarr; Notes<br><br>
+        <strong>Actions by status:</strong><br>
+        Draft: Edit, Send, Delete<br>
+        Sent/Open: Record Payment, Send Reminder, Void, Duplicate<br>
+        Overdue: Record Payment, Send Reminder (escalated), Void<br>
+        Paid: View Receipt, Duplicate
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Screen 3: New Invoice <code>/invoices/new</code></div>
+      <div class="card-desc">
+        <strong>Pattern:</strong> Mirrors QuoteForm with collapsible sections + sticky summary bar<br><br>
+        <strong>Primary flow:</strong> "Create Invoice" from accepted quote auto-populates everything<br><br>
+        <strong>Sections:</strong> Customer (auto-filled) &rarr; Line Items (from quote, editable) &rarr; Pricing (auto-calculated) &rarr; Payment Terms (from customer default) &rarr; Notes<br><br>
+        <strong>Actions:</strong> Cancel | Save as Draft | Review &amp; Send
+      </div>
+    </div>
+
+    <h3>Status Badges</h3>
+    <table>
+      <tr><th>Status</th><th>Style</th><th>Token</th></tr>
+      <tr><td>Draft</td><td><code>bg-muted text-muted-foreground</code></td><td>Neutral, low emphasis</td></tr>
+      <tr><td>Sent / Open</td><td><code>bg-action/10 text-action</code></td><td>Niji blue &mdash; awaiting action</td></tr>
+      <tr><td>Partially Paid</td><td><code>bg-warning/10 text-warning</code></td><td>Gold &mdash; in progress</td></tr>
+      <tr><td>Paid</td><td><code>bg-success/10 text-success</code></td><td>Green &mdash; complete</td></tr>
+      <tr><td>Overdue</td><td><code>bg-error/10 text-error</code></td><td>Red &mdash; needs attention</td></tr>
+      <tr><td>Void</td><td><code>bg-muted text-muted-foreground</code></td><td>Struck through, dimmed</td></tr>
+    </table>
+
+    <h3>Component Reuse Strategy</h3>
+    <p>Extensive reuse from existing components minimizes build effort:</p>
+    <table>
+      <tr><th>Existing Component</th><th>Reuse For</th></tr>
+      <tr><td><code>StatusBadge</code></td><td>Extend to support InvoiceStatus</td></tr>
+      <tr><td><code>ColumnHeaderMenu</code></td><td>Invoice table column sorting/filtering</td></tr>
+      <tr><td><code>CustomerCombobox</code></td><td>Customer selection on invoice form</td></tr>
+      <tr><td><code>CollapsibleSection</code></td><td>Invoice form sections</td></tr>
+      <tr><td><code>LineItemRow</code></td><td>Invoice line items (from quotes)</td></tr>
+      <tr><td><code>PricingSummary</code></td><td>Invoice pricing section</td></tr>
+      <tr><td><code>EmailPreviewModal</code></td><td>Invoice email preview</td></tr>
+    </table>
+
+    <h3>New Components Needed</h3>
+    <table>
+      <tr><th>Component</th><th>Purpose</th></tr>
+      <tr><td><code>InvoiceStatsBar</code></td><td>4 KPI cards for invoice list page</td></tr>
+      <tr><td><code>PaymentLedger</code></td><td>Table of recorded payments on invoice detail</td></tr>
+      <tr><td><code>RecordPaymentSheet</code></td><td>Slide-out form for recording payments</td></tr>
+      <tr><td><code>InvoiceActions</code></td><td>Context-aware action buttons per status</td></tr>
+      <tr><td><code>PaymentReminderTimeline</code></td><td>Visual timeline of sent/scheduled reminders</td></tr>
+      <tr><td><code>OverdueBadge</code></td><td>Badge with days overdue + pulse animation</td></tr>
+    </table>
+
+    <!-- ========== 6. LEGAL & COMPLIANCE ========== -->
+    <h2 id="compliance">6. Legal &amp; Compliance</h2>
+
+    <h3>Tax Treatment: Screen Printing Is Fabrication</h3>
+
+    <div class="callout callout-warning">
+      <p><strong>Critical:</strong> In virtually all major US states, screen printing is classified as <strong>fabrication of tangible personal property</strong>. The <em>entire</em> charge (materials + labor + setup + design) is taxable. Separately stating labor does NOT make it exempt. The only common exemption is a valid resale certificate.</p>
+    </div>
+
+    <table>
+      <tr><th>State</th><th>Tax Rate (State)</th><th>Treatment</th></tr>
+      <tr><td>California</td><td>7.25% + local</td><td>Fabrication. Setup/rush fees included in taxable amount.</td></tr>
+      <tr><td>Texas</td><td>6.25% + local (8.25% max)</td><td>Fabrication. Total sales price including all expenses.</td></tr>
+      <tr><td>Florida</td><td>6% + local</td><td>Fully taxable. All charges even when separately stated.</td></tr>
+      <tr><td>New York</td><td>4% + local (8.875% NYC)</td><td>Fabrication under Section 1105(c)(2).</td></tr>
+      <tr><td>Ohio</td><td>5.75% + local</td><td>Services to tangible personal property are taxable.</td></tr>
+      <tr><td>North Carolina</td><td>4.75% + local</td><td>Creative design charges included in taxable sales price.</td></tr>
+    </table>
+
+    <h3>Required Invoice Elements (US)</h3>
+    <ul>
+      <li>Seller's legal business name and DBA</li>
+      <li>Seller's business address</li>
+      <li>Buyer's name and address</li>
+      <li>Unique sequential invoice number</li>
+      <li>Invoice date and due date</li>
+      <li>Itemized description with quantities and unit prices</li>
+      <li>Sales tax separately stated</li>
+      <li>Total amount due</li>
+      <li>Tax ID (EIN/TIN) for 1099 reporting thresholds</li>
+      <li>Payment terms and accepted methods</li>
+    </ul>
+
+    <h3>Data Integrity Requirements</h3>
+    <table>
+      <tr><th>Requirement</th><th>Implementation</th></tr>
+      <tr><td>Invoice immutability</td><td>Never modify issued invoices. Use credit memos + new invoices for corrections.</td></tr>
+      <tr><td>Sequential numbering</td><td>Auto-increment, never skip or reuse voided numbers</td></tr>
+      <tr><td>Audit trail</td><td>Log every action: who, what, when, before/after values. Append-only.</td></tr>
+      <tr><td>Data retention</td><td>7 years minimum (covers bad debt deductions, underreporting)</td></tr>
+      <tr><td>Never hard-delete</td><td>Void invoices, never delete. Keep all financial records.</td></tr>
+      <tr><td>PCI compliance</td><td>Never store card numbers. Use tokenized processors (Stripe/Square).</td></tr>
+    </table>
+
+    <h3>Accounting Integration: QuickBooks Online</h3>
+    <table>
+      <tr><th>Entity</th><th>Direction</th><th>Notes</th></tr>
+      <tr><td>Customers</td><td>Bidirectional</td><td>Name, email, address, tax-exempt</td></tr>
+      <tr><td>Invoices</td><td>App &rarr; QBO</td><td>Line items, tax, totals, due dates</td></tr>
+      <tr><td>Payments</td><td>App &rarr; QBO</td><td>Method, amount, applied to invoice</td></tr>
+      <tr><td>Tax Rates</td><td>QBO &rarr; App</td><td>Pull configured rates</td></tr>
+      <tr><td>Credit Memos</td><td>App &rarr; QBO</td><td>For refunds and adjustments</td></tr>
+    </table>
+
+    <div class="callout callout-error">
+      <p><strong>Top integration pitfalls:</strong> Duplicate entries (biggest risk), 2-hour sync delays (Printavo), tax rounding differences, orphan records from deleted-not-voided invoices, OAuth token expiration. Use idempotency keys and always void (never delete).</p>
+    </div>
+
+    <!-- ========== 7. DATA MODEL ========== -->
+    <h2 id="schemas">7. Proposed Data Model</h2>
+
+    <h3>Invoice Status State Machine</h3>
+    <pre>
+ draft ──&gt; sent ──&gt; viewed ──&gt; paid
+                ──&gt; partial ──&gt; paid
+ draft ──&gt; cancelled
+ (any except paid) ──&gt; void
+ (overdue is computed, not stored &mdash; past dueDate + unpaid)</pre>
+
+    <h3>Core Enums</h3>
+    <table>
+      <tr><th>Enum</th><th>Values</th></tr>
+      <tr><td><code>invoiceStatusEnum</code></td><td>draft, sent, viewed, partial, paid, void, cancelled</td></tr>
+      <tr><td><code>billingTypeEnum</code></td><td>full, deposit, progress, final</td></tr>
+      <tr><td><code>paymentMethodEnum</code></td><td>cash, check, credit-card, debit-card, ach, venmo, zelle, paypal, other</td></tr>
+      <tr><td><code>invoiceLineItemTypeEnum</code></td><td>garment, decoration, setup, artwork, shipping, rush, discount, tax, adjustment, other</td></tr>
+      <tr><td><code>creditMemoReasonEnum</code></td><td>overpayment, return, defect, pricing-error, void-partial-paid, goodwill, other</td></tr>
+    </table>
+
+    <h3>Invoice Schema (Key Fields)</h3>
+    <pre>
+invoiceSchema = z.object({
+  id: z.string().uuid(),
+  invoiceNumber: z.string(),        // INV-1001
+  customerId: z.string().uuid(),
+  quoteId: z.string().uuid().optional(),
+  jobId: z.string().uuid().optional(),
+  billingType: billingTypeEnum,
+
+  // Addresses (snapshot at creation)
+  billingAddress: addressSchema.optional(),
+  shippingAddress: addressSchema.optional(),
+
+  // Line items
+  lineItems: z.array(invoiceLineItemSchema),
+
+  // Financial summary
+  subtotal, discounts, taxRate, taxAmount,
+  shipping, total, amountPaid, amountDue,
+  payments: z.array(paymentSchema),
+
+  // Dates
+  invoiceDate, dueDate, paidDate?,
+
+  // Price locking
+  pricingSnapshot: { quoteTotal, lockedAt },
+
+  // Status + lifecycle
+  status: invoiceStatusEnum,
+  sentAt?, viewedAt?, voidedAt?, voidReason?,
+
+  // Notes
+  internalNotes?, customerNotes?,
+  termsAndConditions?,
+})</pre>
+
+    <h3>New Files Needed</h3>
+    <table>
+      <tr><th>File</th><th>Purpose</th></tr>
+      <tr><td><code>lib/schemas/invoice.ts</code></td><td>Invoice schema + line item, payment, discount sub-schemas + all enums</td></tr>
+      <tr><td><code>lib/schemas/credit-memo.ts</code></td><td>Credit memo schema for adjustments and voids</td></tr>
+      <tr><td>Update <code>lib/constants.ts</code></td><td>Add status labels, colors, billing type labels, payment method labels</td></tr>
+      <tr><td>Update <code>lib/schemas/note.ts</code></td><td>Add "invoice" to <code>noteEntityTypeEnum</code></td></tr>
+    </table>
+
+    <!-- ========== 8. BUILD SEQUENCE ========== -->
+    <h2 id="build-plan">8. Build Sequence</h2>
+
+    <div class="card">
+      <div class="card-label">Phase 1a: Schema &amp; Data Layer</div>
+      <div class="card-desc">
+        <ol>
+          <li>Define <code>invoice.ts</code> schema (Zod)</li>
+          <li>Define <code>credit-memo.ts</code> schema</li>
+          <li>Update <code>note.ts</code> to include "invoice" entity type</li>
+          <li>Add invoice constants to <code>constants.ts</code></li>
+          <li>Create mock invoice data in <code>mock-data.ts</code></li>
+          <li>Write schema tests (Vitest)</li>
+          <li>Add reverse lookup helpers</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Phase 1b: Invoice List &amp; Detail (Read-Only Views)</div>
+      <div class="card-desc">
+        <ol start="8">
+          <li>Invoice List page (<code>/invoices</code>) with DataTable, stats bar, smart view tabs</li>
+          <li>Invoice Detail page (<code>/invoices/[id]</code>) with header, line items, pricing summary, payment history</li>
+          <li>Add sidebar navigation link</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Phase 1c: Quote-to-Invoice Conversion</div>
+      <div class="card-desc">
+        <ol start="11">
+          <li>"Create Invoice" button on Quote Detail (accepted quotes only)</li>
+          <li>CreateInvoiceModal: billing type, deposit %, line item review, tax/shipping adjustment, preview</li>
+          <li>Invoice creation logic (client-side mock data mutation)</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Phase 1d: Payment Recording</div>
+      <div class="card-desc">
+        <ol start="14">
+          <li>RecordPaymentSheet: amount (pre-filled), method, reference, date, notes</li>
+          <li>Payment list on invoice detail</li>
+          <li>Auto-status update: partial &rarr; paid when fully paid</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Phase 1e: Customer Integration</div>
+      <div class="card-desc">
+        <ol start="17">
+          <li>Add "Invoices" tab to Customer Detail page</li>
+          <li>Customer financial summary: total billed, total paid, outstanding balance</li>
+          <li>Payment history on customer page</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Phase 2: Automation &amp; Polish</div>
+      <div class="card-desc">
+        <ol start="20">
+          <li>Dashboard integration (overdue invoices, AR summary)</li>
+          <li>Invoice email preview</li>
+          <li>Void/cancel workflow with credit memo generation</li>
+          <li>Progress billing workflow (deposit &rarr; progress &rarr; final)</li>
+          <li>Invoice duplication</li>
+          <li>PDF preview/download</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Phase 3: Backend &amp; Integrations</div>
+      <div class="card-desc">
+        <ol start="26">
+          <li>Database persistence</li>
+          <li>Email delivery</li>
+          <li>QuickBooks Online integration (OAuth 2.0)</li>
+          <li>Payment gateway (Square)</li>
+          <li>Automated recurring invoices</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ========== 9. DIFFERENTIATION ========== -->
+    <h2 id="differentiation">9. Differentiation Strategy</h2>
+
+    <p class="section-intro">Gaps no competitor fills well, or features we can execute better:</p>
+
+    <div class="card">
+      <div class="card-title">1. Real-Time QuickBooks Sync</div>
+      <div class="card-desc">Printavo syncs every 2 hours. shopVOX requires manual config. Real-time, bidirectional sync is a headline differentiator that eliminates the #4 industry pain point.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">2. Invoice Read Receipts + Smart Follow-Up</div>
+      <div class="card-desc">Only shopVOX Pro has read receipts ($199+/user). We build it as core: know when customers open invoices, auto-trigger follow-up if they view but don't pay within X days. Multi-channel (SMS + email).</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">3. Production-Aware Line Items</div>
+      <div class="card-desc">No competitor auto-populates invoice line items from the production workflow. If a job has 3 print locations with 4 colors each, plus garment data, the invoice auto-generates with all items pre-filled. Zero re-entry from quote to invoice.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">4. First-Class Deposit Workflow</div>
+      <div class="card-desc">Configurable deposit % per customer or job type, automatic balance calculation, deposit receipt to customer, remaining balance prominently displayed on final invoice. Most competitors treat deposits as an afterthought.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">5. Batch Operations for High-Volume Shops</div>
+      <div class="card-desc">Generate invoices for all completed jobs this week, batch send, batch mark as paid. For shops processing 50+ jobs/week, this is transformative. Only Printavo has multi-invoice payment (no one has batch operations).</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">6. Progressive Disclosure</div>
+      <div class="card-desc">shopVOX and DecoNetwork criticized for overwhelming complexity. We nail progressive disclosure: simple invoice creation under 5 minutes on day one, with advanced features (progress invoicing, PO numbers, custom fields) revealed as the shop grows.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">7. Job Profitability Dashboard</div>
+      <div class="card-desc">Only Printavo offers basic P&amp;L per order. We show real-time margin: garment cost + ink cost + screen cost + labor vs. invoice total. Immediate visibility into which jobs make money.</div>
+    </div>
+
+    <!-- ========== 10. KEY DECISIONS ========== -->
+    <h2 id="decisions">10. Key Decisions (Interview)</h2>
+
+    <p class="section-intro">Critical decisions made during user interview with 4Ink owner. These override research recommendations where they differ.</p>
+
+    <table>
+      <tr><th>#</th><th>Decision</th><th>Answer</th><th>Rationale</th></tr>
+      <tr><td>1</td><td>Current invoicing state</td><td>QuickBooks (manual entry)</td><td>Eliminating double-entry is the core value prop</td></tr>
+      <tr><td>2</td><td>Line item display</td><td>Configurable per invoice</td><td>Toggle between itemized and bundled views</td></tr>
+      <tr><td>3</td><td>Deposit policy</td><td>Varies by customer</td><td>Smart defaults from tier + history</td></tr>
+      <tr><td>4</td><td>Accounting software</td><td>QuickBooks (Online or Desktop TBD)</td><td>Need to confirm with Chris</td></tr>
+      <tr><td>5</td><td>Quote-to-invoice conversion</td><td>Manual one-click</td><td>Allows production changes before invoicing</td></tr>
+      <tr><td>6</td><td>Payment processor</td><td><strong>Square</strong> (4Ink's existing)</td><td>Don't fix what isn't broken</td></tr>
+      <tr><td>7</td><td>Customer-facing view</td><td>Separate vertical (customer portal)</td><td>All external views handled in portal vertical</td></tr>
+      <tr><td>8</td><td>Progress billing</td><td>Deposit + final only</td><td>Single invoice, deposits as partial payments</td></tr>
+      <tr><td>9</td><td>Deposit UX</td><td>Smart default with manual override</td><td>% or flat amount, driven by customer context</td></tr>
+      <tr><td>10</td><td>Invoice numbering</td><td>Match QuickBooks scheme</td><td>Ensures clean sync when integrated</td></tr>
+      <tr><td>11</td><td>Read receipts</td><td>Phase 2 (with customer portal)</td><td>Build status infrastructure now</td></tr>
+      <tr><td>12</td><td>Change tracking</td><td>Lightweight diff log</td><td>Track quote-to-invoice divergence internally</td></tr>
+      <tr><td>13</td><td>Payment reminders</td><td>Gentle cadence</td><td>3 days before, on due, 3/7 days overdue</td></tr>
+      <tr><td>14</td><td>Late fees</td><td>Yes, configurable per customer</td><td>Auto-calculate, separate line item</td></tr>
+      <tr><td>15</td><td>Credit memos</td><td>Formal CM documents</td><td>Linked to original invoice, needed for QB sync</td></tr>
+      <tr><td>16</td><td>Phase 1 scope</td><td>Full internal flow</td><td>Schema + list + detail + create + payments + customer tab</td></tr>
+      <tr><td>17</td><td>Customer-furnished garments</td><td>Supported</td><td>Print/setup only, no garment charge</td></tr>
+      <tr><td>18</td><td>Multi-state tax</td><td>Mostly IN, some KY</td><td>Tax rate per invoice (not hardcoded)</td></tr>
+      <tr><td>19</td><td>AR aging</td><td>Stats bar on list page</td><td>Detailed report deferred to reporting vertical</td></tr>
+    </table>
+
+    <h3>Key Design Decision: Single Invoice with Partial Payments</h3>
+    <div class="callout">
+      <p>Research initially recommended two separate invoices (deposit + final) as the "textbook" approach. 4Ink owner pushed back &mdash; wanted linked tracking, not independent documents. <strong>Final decision:</strong> Single invoice for the full amount. Deposits recorded as partial payments. Balance due updates automatically.</p>
+    </div>
+
+    <pre>
+ Step                    Status          Balance Due
+ ─────────────────────────────────────────────────────
+ Invoice created         Draft           $1,000
+ Invoice sent            Sent            $1,000
+ Deposit received ($500) Partial         $500
+ Production happens      Partial         $500
+ Final payment ($500)    Paid            $0</pre>
+
+    <h3>Key Design Decision: Smart Deposit Defaults</h3>
+    <div class="callout">
+      <p>Default deposit amount driven by: <strong>customer tier</strong> (standard/preferred/contract/wholesale sets baseline %), <strong>payment history</strong> (revenue, on-time record adjusts recommendation), <strong>contract terms</strong> (fixed negotiated amounts for contract customers). UX: pre-filled "Recommended Deposit" with manual override supporting both percentage and flat dollar amount.</p>
+    </div>
+
+    <h3>Key Correction: Square Over Stripe</h3>
+    <div class="callout callout-warning">
+      <p>Research recommended Stripe. <strong>4Ink already uses Square.</strong> Default to Square for payment processing integration (Phase 2+). Only consider Stripe if there's a compelling reason to switch.</p>
+    </div>
+
+    <h3>Open Items for Future Resolution</h3>
+    <ol>
+      <li>Confirm QuickBooks version &mdash; Online vs Desktop affects API approach (REST vs QBXML)</li>
+      <li>Invoice template branding &mdash; Does 4Ink want custom logo/colors on invoices?</li>
+      <li>Recurring invoices &mdash; Needed for contract customers with monthly orders? (Defer to Phase 2)</li>
+      <li>Multi-currency &mdash; International customers? (Likely not relevant for IN/KY market)</li>
+      <li>Commission tracking &mdash; Does 4Ink pay sales commissions? (Defer to reporting vertical)</li>
+    </ol>
+
+    <!-- ========== 11. RESEARCH SOURCE DOCUMENTS ========== -->
+    <h2 id="sources">11. Research Source Documents</h2>
+
+    <p class="section-intro">All agent research was captured in detailed markdown documents. These are the primary sources for this synthesis.</p>
+
+    <table>
+      <tr><th>Document</th><th>Path</th><th>Contents</th></tr>
+      <tr>
+        <td>Industry Best Practices</td>
+        <td><code>docs/spikes/invoicing-industry-practices.md</code></td>
+        <td>8-step quote-to-cash pipeline, line item categories &amp; pricing, payment terms, rush fee tiers, spoilage standards, top 10 pain points</td>
+      </tr>
+      <tr>
+        <td>Competitor Analysis</td>
+        <td><code>docs/spikes/invoicing-competitor-analysis.md</code></td>
+        <td>Deep dive on PrintLife, Printavo, shopVOX, DecoNetwork, InkSoft, GraphicsFlow. Feature matrix, pricing comparison, differentiation opportunities</td>
+      </tr>
+      <tr>
+        <td>Integration Architecture</td>
+        <td><code>docs/spikes/invoicing-integration-map.md</code></td>
+        <td>Data flow diagrams, schema dependency map, field mapping (quote &rarr; invoice), integration with 5 existing + 4 future verticals, build order</td>
+      </tr>
+      <tr>
+        <td>UX Patterns</td>
+        <td><code>docs/spikes/invoicing-ux-patterns.md</code></td>
+        <td>Route map, 3 key screen designs (list, detail, new), status badges, component reuse (7 existing + 6 new), user journeys, anti-patterns</td>
+      </tr>
+      <tr>
+        <td>Legal &amp; Compliance</td>
+        <td><code>docs/spikes/invoicing-compliance.md</code></td>
+        <td>State tax treatment (8 states), required invoice elements, data integrity, record retention, PCI DSS, ACH, QB integration entity mapping</td>
+      </tr>
+      <tr>
+        <td>Decision Record</td>
+        <td><code>docs/spikes/invoicing-decisions.md</code></td>
+        <td>Full 19-decision record from user interview with detailed rationale for key decisions, open items for future resolution</td>
+      </tr>
+    </table>
+
+    <hr>
+
+    <h2>Table-Stakes Checklist</h2>
+    <p>Every feature listed below is required to be competitive. Missing any one creates a dealbreaker for some segment of users:</p>
+    <ol>
+      <li>One-click quote-to-invoice conversion with all data carrying over</li>
+      <li>Custom line items with categories, descriptions, quantities, unit prices</li>
+      <li>Setup fees and custom fees (rush, ink changes, screen reclaim)</li>
+      <li>Tax calculation with override and tax-exempt support</li>
+      <li>Deposits and partial payments (50% deposit is industry standard)</li>
+      <li>PDF export with professional formatting</li>
+      <li>Email delivery with embedded payment link</li>
+      <li>QuickBooks Online integration</li>
+      <li>At least one payment processor (Square for 4Ink)</li>
+      <li>Customer-facing invoice view with online payment</li>
+      <li>Payment status tracking (paid, partial, overdue)</li>
+      <li>Basic sales reporting (revenue, outstanding, by customer)</li>
+      <li>Invoice duplication for repeat orders</li>
+      <li>Discounts (fixed amount and percentage)</li>
+    </ol>
+
+    <footer>
+      Screen Print Pro &mdash; Invoicing Vertical Research &mdash; 2026-02-10
+    </footer>
+  </div>
+</body>
+</html>
