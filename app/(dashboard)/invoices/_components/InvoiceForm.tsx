@@ -295,7 +295,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
         <div className="sticky top-0 z-20 -mx-1 rounded-lg border border-border bg-card/95 backdrop-blur-sm px-4 py-2 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-1.5 min-w-0">
-              <FileText size={16} className="shrink-0 text-muted-foreground" />
+              <FileText size={16} className="shrink-0 text-muted-foreground" aria-hidden="true" />
               <span className="text-sm font-medium text-foreground">
                 {invoiceNumber}
               </span>

@@ -100,7 +100,7 @@ export function InvoiceStatsBar() {
           className="rounded-lg border border-border bg-elevated p-4"
         >
           <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-muted-foreground" />
+            <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <span className="text-xs text-muted-foreground">{label}</span>
           </div>
           <p className="mt-1 text-lg font-semibold text-foreground">
