@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Tag, Search, Printer, Layers } from "lucide-react";
 import { SetupWizard } from "./_components/SetupWizard";
+import { TagTemplateMapper } from "./_components/TagTemplateMapper";
 import {
   allScreenPrintTemplates,
   allDTFTemplates,
   tagTemplateMappings,
 } from "@/lib/mock-data-pricing";
+import type { TagTemplateMapping } from "@/lib/schemas/tag-template-mapping";
 import { customers } from "@/lib/mock-data";
 import {
   calculateTemplateHealth,
@@ -32,10 +34,11 @@ type ServiceTypeTab = "screen-print" | "dtf";
 
 function countCustomersUsingTemplate(
   templateId: string,
-  serviceType: ServiceTypeTab
+  serviceType: ServiceTypeTab,
+  currentMappings: TagTemplateMapping[]
 ): number {
   // Count customers whose type tags map to this template
-  const mappedTags = tagTemplateMappings
+  const mappedTags = currentMappings
     .filter((m) =>
       serviceType === "screen-print"
         ? m.screenPrintTemplateId === templateId
@@ -60,6 +63,8 @@ export default function PricingHubPage() {
   const [activeTab, setActiveTab] = useState<ServiceTypeTab>("screen-print");
   const [searchQuery, setSearchQuery] = useState("");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [tagMapperOpen, setTagMapperOpen] = useState(false);
+  const [mappings, setMappings] = useState<TagTemplateMapping[]>(tagTemplateMappings);
 
   // Mutable template state (for Phase 1 client-side operations)
   const [spTemplates, setSpTemplates] = useState<PricingTemplate[]>(
@@ -168,6 +173,23 @@ export default function PricingHubPage() {
     return map;
   }, [dtfTemplates]);
 
+  // Customer counts per template (memoized)
+  const spCustomerCountMap = useMemo(() => {
+    const map = new Map<string, number>();
+    spTemplates.forEach((t) => {
+      map.set(t.id, countCustomersUsingTemplate(t.id, "screen-print", mappings));
+    });
+    return map;
+  }, [spTemplates, mappings]);
+
+  const dtfCustomerCountMap = useMemo(() => {
+    const map = new Map<string, number>();
+    dtfTemplates.forEach((t) => {
+      map.set(t.id, countCustomersUsingTemplate(t.id, "dtf", mappings));
+    });
+    return map;
+  }, [dtfTemplates, mappings]);
+
   // Total template count per tab
   const spCount = spTemplates.length;
   const dtfCount = dtfTemplates.length;
@@ -194,9 +216,7 @@ export default function PricingHubPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                // TODO: Open P1.2 Tag-Template Mapping Sheet
-              }}
+              onClick={() => setTagMapperOpen(true)}
             >
               <Tag className="size-4" />
               Manage Mappings
@@ -260,10 +280,7 @@ export default function PricingHubPage() {
                 key={template.id}
                 template={template}
                 healthIndicator={spHealthMap.get(template.id) ?? "caution"}
-                customersUsing={countCustomersUsingTemplate(
-                  template.id,
-                  "screen-print"
-                )}
+                customersUsing={spCustomerCountMap.get(template.id) ?? 0}
                 onEdit={() => handleEditSP(template.id)}
                 onDuplicate={() => handleDuplicateSP(template)}
                 onDelete={() => handleDeleteSP(template.id)}
@@ -303,10 +320,7 @@ export default function PricingHubPage() {
                   pricingTier: template.isDefault ? "default" : "custom",
                 }}
                 healthIndicator={dtfHealthMap.get(template.id) ?? "caution"}
-                customersUsing={countCustomersUsingTemplate(
-                  template.id,
-                  "dtf"
-                )}
+                customersUsing={dtfCustomerCountMap.get(template.id) ?? 0}
                 onEdit={() => handleEditDTF(template.id)}
                 onDuplicate={() => handleDuplicateDTF(template)}
                 onDelete={() => handleDeleteDTF(template.id)}
@@ -341,6 +355,15 @@ export default function PricingHubPage() {
         open={wizardOpen}
         onOpenChange={setWizardOpen}
         onSave={handleWizardSave}
+      />
+
+      <TagTemplateMapper
+        open={tagMapperOpen}
+        onOpenChange={setTagMapperOpen}
+        spTemplates={spTemplates}
+        dtfTemplates={dtfTemplates}
+        mappings={mappings}
+        onSave={setMappings}
       />
     </>
   );

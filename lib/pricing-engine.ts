@@ -1,3 +1,4 @@
+import Big from "big.js";
 import type {
   PricingTemplate,
   CostConfig,
@@ -14,6 +15,16 @@ import type {
 } from "./schemas/dtf-pricing";
 import type { PricingTier } from "./schemas/customer";
 import type { GarmentCategory } from "./schemas/garment";
+
+// ---------------------------------------------------------------------------
+// Decimal-safe currency helper — all financial math goes through Big
+// ---------------------------------------------------------------------------
+
+/** Round to 2 decimal places using Big.js (banker's rounding avoided — half-up). */
+function money(value: number | Big): number {
+  const b = value instanceof Big ? value : new Big(value);
+  return Number(b.round(2, Big.roundHalfUp));
+}
 
 // ---------------------------------------------------------------------------
 // Margin thresholds (from breadboard: ≥30% healthy, 15–30% caution, <15% unprofitable)
@@ -43,10 +54,16 @@ export function calculateMargin(
     laborCost?: number;
   }
 ): MarginBreakdown {
-  const totalCost =
-    costs.garmentCost + costs.inkCost + costs.overheadCost + (costs.laborCost ?? 0);
-  const profit = revenue - totalCost;
-  const percentage = revenue > 0 ? (profit / revenue) * 100 : 0;
+  const totalCost = money(
+    new Big(costs.garmentCost)
+      .plus(costs.inkCost)
+      .plus(costs.overheadCost)
+      .plus(costs.laborCost ?? 0)
+  );
+  const profit = money(new Big(revenue).minus(totalCost));
+  const percentage = revenue > 0
+    ? Number(new Big(profit).div(revenue).times(100).round(2))
+    : 0;
 
   return {
     revenue,
@@ -91,7 +108,9 @@ export function getColorUpcharge(
   // Colors = 1 means base rate (no upcharge from additional colors)
   // Each additional color adds the per-hit rate
   const colorConfig = matrix.colorPricing.find((c) => c.colors === colorCount);
-  if (colorConfig) return colorConfig.ratePerHit * colorCount;
+  if (colorConfig) {
+    return money(new Big(colorConfig.ratePerHit).times(colorCount));
+  }
 
   // If exact match not found, find highest configured and extrapolate
   const maxConfig = matrix.colorPricing.reduce(
@@ -99,7 +118,7 @@ export function getColorUpcharge(
     matrix.colorPricing[0]
   );
   if (!maxConfig) return 0;
-  return maxConfig.ratePerHit * colorCount;
+  return money(new Big(maxConfig.ratePerHit).times(colorCount));
 }
 
 /** Get location upcharge for a specific print location. */
@@ -119,7 +138,7 @@ export function getGarmentTypeMultiplier(
   const config = matrix.garmentTypePricing.find(
     (g) => g.garmentCategory === garmentCategory
   );
-  return config ? 1 + config.baseMarkup / 100 : 1;
+  return config ? Number(new Big(1).plus(new Big(config.baseMarkup).div(100))) : 1;
 }
 
 /** Calculate total setup fees for a job. */
@@ -135,14 +154,14 @@ export function calculateSetupFees(
   // Waive setup for bulk orders
   if (quantity >= bulkWaiverThreshold && bulkWaiverThreshold > 0) return 0;
 
-  let totalSetup = perScreenFee * totalScreens;
+  let totalSetup = new Big(perScreenFee).times(totalScreens);
 
   // Apply reorder discount
   if (isReorder && reorderDiscountPercent > 0) {
-    totalSetup *= 1 - reorderDiscountPercent / 100;
+    totalSetup = totalSetup.times(new Big(1).minus(new Big(reorderDiscountPercent).div(100)));
   }
 
-  return Math.round(totalSetup * 100) / 100;
+  return money(totalSetup);
 }
 
 /**
@@ -166,28 +185,35 @@ export function calculateScreenPrintPrice(
   const colorUpcharge = getColorUpcharge(matrix, colorCount);
 
   // Location upcharges (sum of all secondary locations)
-  const locationUpcharge = locations.reduce(
-    (sum, loc) => sum + getLocationUpcharge(matrix, loc),
-    0
+  const locationUpcharge = money(
+    locations.reduce(
+      (sum, loc) => sum.plus(getLocationUpcharge(matrix, loc)),
+      new Big(0)
+    )
   );
 
   // Garment type multiplier
   const garmentMultiplier = getGarmentTypeMultiplier(matrix, garmentCategory);
 
   // Final price per piece
-  const pricePerPiece =
-    Math.round((basePrice + colorUpcharge + locationUpcharge) * garmentMultiplier * 100) / 100;
+  const pricePerPiece = money(
+    new Big(basePrice).plus(colorUpcharge).plus(locationUpcharge).times(garmentMultiplier)
+  );
 
   // Cost calculation for margin
   const garmentCost =
     costConfig.garmentCostSource === "catalog"
       ? 0 // Will be filled from garment catalog at call site
       : (costConfig.manualGarmentCost ?? 0);
-  const inkCost = costConfig.inkCostPerHit * colorCount * locations.length;
-  const overheadCost = pricePerPiece * (costConfig.shopOverheadRate / 100);
+  const inkCost = money(
+    new Big(costConfig.inkCostPerHit).times(colorCount).times(locations.length)
+  );
+  const overheadCost = money(
+    new Big(pricePerPiece).times(new Big(costConfig.shopOverheadRate).div(100))
+  );
   // Labor: amortize hourly rate to per-piece (~30 sec per piece for screen print)
   const laborCost = costConfig.laborRate
-    ? costConfig.laborRate * (30 / 3600)
+    ? money(new Big(costConfig.laborRate).times(30).div(3600))
     : undefined;
 
   const margin = calculateMargin(pricePerPiece, {
@@ -214,18 +240,20 @@ export function calculateCellMargin(
 
   const basePrice = getBasePriceForTier(matrix, tierIndex);
   const colorUpcharge = getColorUpcharge(matrix, colorCount);
-  const revenue = basePrice + colorUpcharge;
+  const revenue = money(new Big(basePrice).plus(colorUpcharge));
 
   const garmentCost =
     costConfig.garmentCostSource === "catalog"
       ? garmentBaseCost
       : (costConfig.manualGarmentCost ?? 0);
-  const inkCost = costConfig.inkCostPerHit * colorCount;
-  const overheadCost = revenue * (costConfig.shopOverheadRate / 100);
+  const inkCost = money(new Big(costConfig.inkCostPerHit).times(colorCount));
+  const overheadCost = money(
+    new Big(revenue).times(new Big(costConfig.shopOverheadRate).div(100))
+  );
 
   // Labor: amortize hourly rate to per-piece (~30 sec per piece)
   const laborCost = costConfig.laborRate
-    ? costConfig.laborRate * (30 / 3600)
+    ? money(new Big(costConfig.laborRate).times(30).div(3600))
     : undefined;
 
   return calculateMargin(revenue, {
@@ -255,7 +283,7 @@ export function buildFullMatrixData(
       const colorCount = i + 1;
       const basePrice = getBasePriceForTier(matrix, tierIndex);
       const colorUpcharge = getColorUpcharge(matrix, colorCount);
-      const price = Math.round((basePrice + colorUpcharge) * 100) / 100;
+      const price = money(new Big(basePrice).plus(colorUpcharge));
       const margin = calculateCellMargin(tierIndex, colorCount, template, garmentBaseCost);
       return { price, margin };
     });
@@ -279,7 +307,9 @@ export function calculateTemplateHealth(
 
   if (allMargins.length === 0) return "caution";
 
-  const avgMargin = allMargins.reduce((sum, m) => sum + m, 0) / allMargins.length;
+  const avgMargin = Number(
+    allMargins.reduce((sum, m) => sum.plus(m), new Big(0)).div(allMargins.length).round(2)
+  );
   return getMarginIndicator(avgMargin);
 }
 
@@ -289,7 +319,7 @@ export function calculateTemplateHealth(
 
 /** Calculate area of a DTF sheet in square feet. */
 function dtfSheetAreaSqFt(width: number, length: number): number {
-  return (width * length) / 144; // sq inches to sq feet
+  return Number(new Big(width).times(length).div(144)); // sq inches to sq feet
 }
 
 /** Calculate DTF production cost for a sheet. */
@@ -308,23 +338,21 @@ export function calculateDTFProductionCost(
   const areaSqFt = dtfSheetAreaSqFt(width, length);
   const areaSqIn = width * length;
 
-  const filmCost = costConfig.filmCostPerSqFt * areaSqFt;
-  const inkCost = costConfig.inkCostPerSqIn * areaSqIn;
-  const powderCost = costConfig.powderCostPerSqFt * areaSqFt;
+  const filmCost = money(new Big(costConfig.filmCostPerSqFt).times(areaSqFt));
+  const inkCost = money(new Big(costConfig.inkCostPerSqIn).times(areaSqIn));
+  const powderCost = money(new Big(costConfig.powderCostPerSqFt).times(areaSqFt));
   // Estimate labor: ~2 min per sq ft
-  const laborCost = costConfig.laborRatePerHour * (areaSqFt * 2) / 60;
-  const equipmentCost = costConfig.equipmentOverheadPerSqFt * areaSqFt;
+  const laborCost = money(
+    new Big(costConfig.laborRatePerHour).times(areaSqFt).times(2).div(60)
+  );
+  const equipmentCost = money(new Big(costConfig.equipmentOverheadPerSqFt).times(areaSqFt));
 
-  const totalCost = filmCost + inkCost + powderCost + laborCost + equipmentCost;
+  // Total from already-rounded components so display is consistent
+  const totalCost = money(
+    new Big(filmCost).plus(inkCost).plus(powderCost).plus(laborCost).plus(equipmentCost)
+  );
 
-  return {
-    filmCost: Math.round(filmCost * 100) / 100,
-    inkCost: Math.round(inkCost * 100) / 100,
-    powderCost: Math.round(powderCost * 100) / 100,
-    laborCost: Math.round(laborCost * 100) / 100,
-    equipmentCost: Math.round(equipmentCost * 100) / 100,
-    totalCost: Math.round(totalCost * 100) / 100,
-  };
+  return { filmCost, inkCost, powderCost, laborCost, equipmentCost, totalCost };
 }
 
 /**
@@ -351,12 +379,12 @@ export function calculateDTFPrice(
   }
 
   // Base price (use contract price if available and customer is contract tier)
-  let basePrice = sheetTier.retailPrice;
+  let basePrice = new Big(sheetTier.retailPrice);
   if (
     customerTier === "contract" &&
     sheetTier.contractPrice !== undefined
   ) {
-    basePrice = sheetTier.contractPrice;
+    basePrice = new Big(sheetTier.contractPrice);
   }
 
   // Apply customer tier discount
@@ -364,23 +392,27 @@ export function calculateDTFPrice(
     (d) => d.tier === customerTier
   );
   if (tierDiscount && tierDiscount.discountPercent > 0) {
-    basePrice *= 1 - tierDiscount.discountPercent / 100;
+    basePrice = basePrice.times(
+      new Big(1).minus(new Big(tierDiscount.discountPercent).div(100))
+    );
   }
 
   // Apply rush fee
   const rushFee = template.rushFees.find((r) => r.turnaround === rushType);
   if (rushFee) {
-    basePrice *= 1 + rushFee.percentageUpcharge / 100;
-    if (rushFee.flatFee) basePrice += rushFee.flatFee;
+    basePrice = basePrice.times(
+      new Big(1).plus(new Big(rushFee.percentageUpcharge).div(100))
+    );
+    if (rushFee.flatFee) basePrice = basePrice.plus(rushFee.flatFee);
   }
 
   // Apply film type multiplier
   const filmConfig = template.filmTypes.find((f) => f.type === filmType);
   if (filmConfig) {
-    basePrice *= filmConfig.multiplier;
+    basePrice = basePrice.times(filmConfig.multiplier);
   }
 
-  const price = Math.round(basePrice * 100) / 100;
+  const price = money(basePrice);
 
   // Calculate production cost for margin
   const prodCost = calculateDTFProductionCost(
@@ -392,10 +424,9 @@ export function calculateDTFPrice(
   const margin = calculateMargin(price, {
     garmentCost: 0, // no garment for DTF (it's a transfer)
     inkCost: prodCost.inkCost,
-    overheadCost:
-      prodCost.filmCost +
-      prodCost.powderCost +
-      prodCost.equipmentCost,
+    overheadCost: money(
+      new Big(prodCost.filmCost).plus(prodCost.powderCost).plus(prodCost.equipmentCost)
+    ),
     laborCost: prodCost.laborCost,
   });
 
@@ -419,10 +450,9 @@ export function calculateDTFTierMargin(
   return calculateMargin(sheetTier.retailPrice, {
     garmentCost: 0,
     inkCost: prodCost.inkCost,
-    overheadCost:
-      prodCost.filmCost +
-      prodCost.powderCost +
-      prodCost.equipmentCost,
+    overheadCost: money(
+      new Big(prodCost.filmCost).plus(prodCost.powderCost).plus(prodCost.equipmentCost)
+    ),
     laborCost: prodCost.laborCost,
   });
 }
@@ -439,8 +469,9 @@ export function calculateDTFTemplateHealth(
 
   if (margins.length === 0) return "caution";
 
-  const avgMargin =
-    margins.reduce((sum, m) => sum + m.percentage, 0) / margins.length;
+  const avgMargin = Number(
+    margins.reduce((sum, m) => sum.plus(m.percentage), new Big(0)).div(margins.length).round(2)
+  );
   return getMarginIndicator(avgMargin);
 }
 
@@ -453,7 +484,9 @@ export function applyCustomerTierDiscount(
   discountPercentage?: number
 ): number {
   if (!discountPercentage || discountPercentage <= 0) return basePrice;
-  return Math.round(basePrice * (1 - discountPercentage / 100) * 100) / 100;
+  return money(
+    new Big(basePrice).times(new Big(1).minus(new Big(discountPercentage).div(100)))
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -473,7 +506,7 @@ export function calculateDiff(
 
   let changedCells = 0;
   let totalCells = 0;
-  let marginDeltaSum = 0;
+  let marginDeltaSum = new Big(0);
 
   origData.forEach((origRow, rowIdx) => {
     const propRow = propData[rowIdx];
@@ -486,7 +519,9 @@ export function calculateDiff(
       totalCells++;
       if (origCell.price !== propCell.price) {
         changedCells++;
-        marginDeltaSum += propCell.margin.percentage - origCell.margin.percentage;
+        marginDeltaSum = marginDeltaSum.plus(
+          new Big(propCell.margin.percentage).minus(origCell.margin.percentage)
+        );
       }
     });
   });
@@ -494,7 +529,9 @@ export function calculateDiff(
   return {
     changedCells,
     totalCells,
-    avgMarginChange: changedCells > 0 ? marginDeltaSum / changedCells : 0,
+    avgMarginChange: changedCells > 0
+      ? Number(marginDeltaSum.div(changedCells).round(2))
+      : 0,
   };
 }
 
@@ -511,5 +548,5 @@ export function formatCurrency(amount: number): string {
 }
 
 export function formatPercent(value: number): string {
-  return `${Math.round(value * 10) / 10}%`;
+  return `${Number(new Big(value).round(1))}%`;
 }
