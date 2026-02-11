@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-11
-**Status**: Both verticals (Quoting + Customer Management) built, polished, and UI-aligned. Ready for demo.
+**Status**: Quoting + Customer Management verticals built and demo-ready. Price Matrix vertical research complete — 36 features prioritized, ready for build.
 
 ## What's Built
 
@@ -55,6 +55,20 @@
 - Fixed `updateParam` truthy check, removed `role="link"` from table rows (accessibility)
 </details>
 
+<details><summary>Price Matrix Research (PR #45 — merged)</summary>
+
+- 4-agent research team: industry practices, competitor analysis, integration mapping, UX patterns
+- 10 competitors analyzed across 7 criteria (capabilities, satisfaction, ease, flexibility, simplicity, integration, automation)
+- PrintLife baseline: 74% (26/35) — strong automation (5/5) + simplicity (5/5), weak flexibility (2/5)
+- Top competitors tied at 74%: YoPrint (breakless pricing), Teesom (max flexibility), PriceIt (best integration)
+- 36 features prioritized: 12 P0, 14 P1, 10 P2
+- Integration architecture: pricing as centralized engine consumed by Customer, Quoting, Invoicing, Reporting, Production
+- UX strategy: Simple Mode wizard (5-min setup) + Power Mode grid (TanStack Table inline editing)
+- 10x differentiators: real-time margin indicators, what-if scenarios, progressive disclosure
+- Research docs: `docs/research/01-industry-practices.md`, `02-competitor-analysis.md`, `03-integration-map.md`, `04-ux-patterns.md`, `price-matrix-research.md`
+- For-human summary: `for_human/2026-02-10-price-matrix-research.html`
+</details>
+
 <details><summary>Agent & Skill Infrastructure</summary>
 
 - 5 agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
@@ -70,10 +84,10 @@
 
 ## Next Actions
 
-1. Demo both verticals to user (4Ink owner), collect final feedback
+1. Demo Quoting + Customer Management to user (4Ink owner), collect final feedback
 2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-3. Address deferred tech debt (#15-#18) as needed
-4. Move to Invoicing vertical
+3. **Price Matrix vertical**: Run vertical-discovery skill, breadboard UI, build Phase 1a (P0 engine + wizard + quote integration)
+4. Address deferred tech debt (#15-#18) as needed
 
 ## Document Map
 
@@ -90,6 +104,8 @@
 | `docs/strategy/quoting-scope-definition.md` | Quoting scope + acceptance criteria |
 | `docs/strategy/screen-print-pro-journey-quoting.md` | Improved journey design |
 | `docs/strategy/STRATEGY_README.md` | Index of all strategy docs |
+| `docs/research/price-matrix-research.md` | Price Matrix synthesis report (P0/P1/P2 features) |
+| `for_human/2026-02-10-price-matrix-research.html` | Price Matrix research summary for humans |
 
 ## Key Design Requirements
 
