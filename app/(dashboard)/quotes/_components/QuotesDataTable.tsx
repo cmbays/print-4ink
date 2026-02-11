@@ -324,6 +324,7 @@ export function QuotesDataTable() {
                   className={cn(
                     "inline-flex items-center justify-center rounded-md p-2 transition-colors",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
                       ? "bg-action/10 text-action border border-action/20"
                       : "bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-muted",
