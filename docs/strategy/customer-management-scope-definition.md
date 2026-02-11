@@ -94,7 +94,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] Visual hierarchy: Smart view tabs most prominent, "Add Customer" is primary CTA
 - [ ] Spacing: Tailwind tokens only
 - [ ] Typography: Max 3-4 sizes (header, column headers, body, small stats)
-- [ ] Color: Lifecycle badges (Prospect cyan, New neutral, Repeat green, Contract amber), Health indicators (Active none, Churning amber pulse, Churned red)
+- [ ] Color: Lifecycle badges (Prospect blue, New neutral, Repeat green, Contract gold), Health indicators (Active none, Churning gold pulse, Churned red)
 - [ ] Interactive states: All rows have hover state, selected smart view is highlighted
 - [ ] Keyboard: Tab to customer, Enter to open
 - [ ] Accessibility: ARIA labels for lifecycle stages and health indicators
@@ -212,10 +212,10 @@ Company (River City Brewing Co.)
 
 | Stage | Trigger | Display |
 |-------|---------|---------|
-| **Prospect** | Created from quoting or manually added without a completed order | Cyan badge |
+| **Prospect** | Created from quoting or manually added without a completed order | Blue badge |
 | **New Customer** | First completed and paid order | Neutral/white badge |
 | **Repeat** | 2+ completed orders OR orders spanning 2+ distinct months | Green badge |
-| **Contract** | Manual promotion by shop owner (formal agreement) OR configurable spend threshold | Amber badge |
+| **Contract** | Manual promotion by shop owner (formal agreement) OR configurable spend threshold | Gold badge |
 
 **Features**:
 - [ ] Auto-transition: Prospect → New (on first completed order), New → Repeat (on 2nd order or 2+ months of orders)

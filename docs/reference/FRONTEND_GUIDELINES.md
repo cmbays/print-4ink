@@ -113,11 +113,11 @@ Defined in `app/globals.css` via `@theme inline`:
 
 ```css
 @theme inline {
-  /* Background - Near-black foundation */
-  --color-bg-primary: #09090b;
-  --color-bg-secondary: #0f0f11;
-  --color-bg-elevated: #18181b;
-  --color-bg-surface: #1c1c1f;
+  /* Background - Ghostty Niji warm dark */
+  --color-bg-primary: #141515;
+  --color-bg-secondary: #111213;
+  --color-bg-elevated: #1c1d1e;
+  --color-bg-surface: #232425;
 
   /* Text - Opacity-based hierarchy */
   --color-text-primary: rgba(255, 255, 255, 0.87);
@@ -129,15 +129,15 @@ Defined in `app/globals.css` via `@theme inline`:
   --color-border-default: rgba(255, 255, 255, 0.12);
   --color-border-strong: rgba(255, 255, 255, 0.20);
 
-  /* Status colors - attention layer */
-  --color-action: #22d3ee;       /* Cyan - primary CTAs */
-  --color-action-hover: #06b6d4;
-  --color-success: #34d399;      /* Green - completions */
-  --color-success-hover: #10b981;
-  --color-error: #f87171;        /* Red - failures */
-  --color-error-hover: #ef4444;
-  --color-warning: #fbbf24;      /* Amber - cautions */
-  --color-warning-hover: #f59e0b;
+  /* Status colors - Niji palette attention layer */
+  --color-action: #2ab9ff;       /* Niji blue - primary CTAs */
+  --color-action-hover: #1da0e0;
+  --color-success: #54ca74;      /* Niji green - completions */
+  --color-success-hover: #43a860;
+  --color-error: #d23e08;        /* Niji red - failures */
+  --color-error-hover: #b33407;
+  --color-warning: #ffc663;      /* Niji gold - cautions */
+  --color-warning-hover: #e6b050;
 
   /* Effects */
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -157,14 +157,14 @@ Defined in `app/globals.css` via `@theme inline`:
 
 | Use Case | Tailwind Class | Notes |
 |----------|---------------|-------|
-| Page background | `bg-background` | Near-black (#09090b) |
-| Card/panel | `bg-card` | Elevated (#18181b) |
+| Page background | `bg-background` | Niji dark (#141515) |
+| Card/panel | `bg-card` | Elevated (#1c1d1e) |
 | Body text | `text-foreground` | 87% opacity white |
 | Secondary text | `text-muted-foreground` | 60% opacity white |
-| Primary CTA | `text-action` / `bg-action` | Cyan |
-| Success | `text-success` | Green |
-| Error | `text-error` | Red |
-| Warning | `text-warning` | Amber |
+| Primary CTA | `text-action` / `bg-action` | Niji blue |
+| Success | `text-success` | Niji green |
+| Error | `text-error` | Niji red |
+| Warning | `text-warning` | Niji gold |
 
 ### When to Use Color
 
@@ -175,10 +175,10 @@ Defined in `app/globals.css` via `@theme inline`:
 - Secondary buttons
 
 **Use status colors for:**
-- Primary action buttons (cyan)
+- Primary action buttons (Niji blue)
 - Production state badges (varies by state)
-- Error messages (red)
-- Warnings and pending states (amber)
+- Error messages (Niji red)
+- Warnings and pending states (Niji gold)
 - Completions and shipped states (green)
 
 ---
@@ -267,7 +267,7 @@ Always check `components/ui/` before creating custom components. shadcn/ui provi
 
 #### Primary Button (Neobrutalist)
 
-The primary CTA gets the neobrutalist treatment: bold shadow, spring hover, dark text on cyan.
+The primary CTA gets the neobrutalist treatment: bold shadow, spring hover, dark text on Niji blue.
 
 ```tsx
 <Button className="bg-action text-black font-semibold border-2 border-current shadow-[4px_4px_0px] shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px] transition-all">
@@ -428,10 +428,10 @@ All interactive elements must have visible `:focus-visible` states. shadcn/ui ha
 
 | Combination | Ratio | Status |
 |-------------|-------|--------|
-| White (87%) on #09090b | 16:1 | AAA |
-| White (60%) on #09090b | 11:1 | AAA |
-| White (38%) on #09090b | 7:1 | AAA |
-| Cyan (#22d3ee) on #09090b | 11:1 | AAA |
+| White (87%) on #141515 | 15:1 | AAA |
+| White (60%) on #141515 | 10:1 | AAA |
+| White (38%) on #141515 | 6.5:1 | AAA |
+| Niji blue (#2ab9ff) on #141515 | 9:1 | AAA |
 
 ### Keyboard Navigation
 

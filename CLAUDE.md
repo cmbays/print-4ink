@@ -161,20 +161,20 @@ agent-outputs/              # Structured output from agent runs (audit trail)
 - **Polish layer** (Raycast): Glass effects, responsive transitions, OS-native feel
 - **Attention layer** (Neobrutalist): Bold borders, vibrant status colors, springy animations
 
-### Color Tokens
+### Color Tokens (Ghostty Niji theme)
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `--color-bg-primary` | `#09090b` | Main background |
-| `--color-bg-elevated` | `#18181b` | Cards, panels |
-| `--color-bg-surface` | `#1c1c1f` | Interactive surfaces |
+| `--color-bg-primary` | `#141515` | Main background |
+| `--color-bg-elevated` | `#1c1d1e` | Cards, panels |
+| `--color-bg-surface` | `#232425` | Interactive surfaces |
 | `--color-text-primary` | `rgba(255,255,255,0.87)` | High-emphasis text |
 | `--color-text-secondary` | `rgba(255,255,255,0.60)` | Medium-emphasis text |
 | `--color-text-muted` | `rgba(255,255,255,0.38)` | Hints, disabled |
-| `--color-action` | `#22d3ee` (cyan) | Primary CTAs |
-| `--color-success` | `#34d399` (green) | Completions |
-| `--color-error` | `#f87171` (red) | Failures |
-| `--color-warning` | `#fbbf24` (amber) | Cautions |
+| `--color-action` | `#2ab9ff` (Niji blue) | Primary CTAs |
+| `--color-success` | `#54ca74` (Niji green) | Completions |
+| `--color-error` | `#d23e08` (Niji red) | Failures |
+| `--color-warning` | `#ffc663` (Niji gold) | Cautions |
 
 ### Typography & Spacing
 
@@ -353,7 +353,7 @@ After every feature build, plan, or decision, create or update an HTML doc in `f
 |-----|-------|----------|
 | Feature | Green | New functionality built |
 | Build | Green | Infrastructure, tooling, scaffold |
-| Plan | Cyan | Strategy or roadmap created |
+| Plan | Blue | Strategy or roadmap created |
 | Decision | Amber | Choice made between alternatives |
 | Research | Purple | Competitive analysis, exploration |
 | Learning | Amber | Lesson learned or gotcha documented |
@@ -366,7 +366,7 @@ After every feature build, plan, or decision, create or update an HTML doc in `f
 - `gen:index` runs on main after PR merge
 - **Include**: session resume command, artifact links, PR links, decision rationale
 - **Session ID**: Find the current session ID by running `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — the filename (without `.jsonl`) is the ID. Never use IDs from plan text or prior sessions.
-- **Style**: use project design tokens (dark theme, cyan accent, Inter font) — copy from `_template.html`
+- **Style**: use project design tokens (dark theme, Niji blue accent, Inter font) — copy from `_template.html`
 - **Related sessions**: Link to other `for_human/` docs that share the same workflow chain (e.g., discovery → build → demo)
 
 ## Lessons Learned

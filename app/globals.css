@@ -75,83 +75,84 @@
 
 /* =====================
    DARK MODE (Default)
+   Ghostty Niji theme palette
    "Linear Calm + Raycast Polish + Neobrutalist Delight"
    ===================== */
 
 :root {
   --radius: 0.5rem;
 
-  /* Background — near-black monochrome */
-  --background: #09090b;
+  /* Background — Niji warm dark */
+  --background: #141515;
   --foreground: rgba(255, 255, 255, 0.87);
-  --surface: #1c1c1f;
-  --elevated: #18181b;
+  --surface: #232425;
+  --elevated: #1c1d1e;
 
   /* Card */
-  --card: #18181b;
+  --card: #1c1d1e;
   --card-foreground: rgba(255, 255, 255, 0.87);
 
   /* Popover */
-  --popover: #18181b;
+  --popover: #1c1d1e;
   --popover-foreground: rgba(255, 255, 255, 0.87);
 
-  /* Primary — cyan action */
-  --primary: #22d3ee;
+  /* Primary — Niji blue */
+  --primary: #2ab9ff;
   --primary-foreground: #000000;
 
-  /* Secondary — elevated surface */
-  --secondary: #1c1c1f;
+  /* Secondary — surface */
+  --secondary: #232425;
   --secondary-foreground: rgba(255, 255, 255, 0.87);
 
   /* Muted */
-  --muted: #0f0f11;
+  --muted: #111213;
   --muted-foreground: rgba(255, 255, 255, 0.60);
 
   /* Accent */
-  --accent: #1c1c1f;
+  --accent: #232425;
   --accent-foreground: rgba(255, 255, 255, 0.87);
 
-  /* Destructive — error red */
-  --destructive: #f87171;
+  /* Destructive — Niji red */
+  --destructive: #d23e08;
 
   /* Borders — subtle opacity */
   --border: rgba(255, 255, 255, 0.12);
   --input: rgba(255, 255, 255, 0.12);
-  --ring: #22d3ee;
+  --ring: #2ab9ff;
 
-  /* Status colors — Neobrutalist attention layer */
-  --action: #22d3ee;
-  --action-hover: #06b6d4;
-  --action-bold: #00e5ff;
+  /* Status colors — Niji palette, Neobrutalist attention layer */
+  --action: #2ab9ff;
+  --action-hover: #1da0e0;
+  --action-bold: #8efff3;
 
-  --success: #34d399;
-  --success-hover: #10b981;
-  --success-bold: #00ff88;
+  --success: #54ca74;
+  --success-hover: #43a860;
+  --success-bold: #c1ffae;
 
-  --error: #f87171;
-  --error-hover: #ef4444;
-  --error-bold: #ff4444;
+  --error: #d23e08;
+  --error-hover: #b33407;
+  --error-bold: #ffb7b7;
 
-  --warning: #fbbf24;
-  --warning-hover: #f59e0b;
-  --warning-bold: #ffcc00;
+  --warning: #ffc663;
+  --warning-hover: #e6b050;
+  --warning-bold: #fff700;
 
-  /* Charts */
-  --chart-1: #22d3ee;
-  --chart-2: #34d399;
-  --chart-3: #fbbf24;
-  --chart-4: #f87171;
-  --chart-5: #a78bfa;
+  /* Charts — Niji rainbow */
+  --chart-1: #2ab9ff;
+  --chart-2: #54ca74;
+  --chart-3: #ffc663;
+  --chart-4: #d23e08;
+  --chart-5: #ff50da;
 
   /* Sidebar */
-  --sidebar: #0f0f11;
+  --sidebar: #111213;
   --sidebar-foreground: rgba(255, 255, 255, 0.87);
-  --sidebar-primary: #22d3ee;
+  --sidebar-primary: #2ab9ff;
   --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #1c1c1f;
+  --sidebar-accent: #232425;
   --sidebar-accent-foreground: rgba(255, 255, 255, 0.87);
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #22d3ee;
+  --sidebar-ring: #2ab9ff;
 }
 
 @layer base {

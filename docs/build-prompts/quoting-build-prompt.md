@@ -114,7 +114,7 @@ Every component must pass the quality checklist in `CLAUDE.md`:
 - Visual hierarchy clear — primary action most prominent
 - Spacing uses Tailwind tokens only (no hardcoded px)
 - Colors use semantic tokens (`text-action`, `bg-action`, `shadow-action`) — never palette colors
-- Status colors: Draft gray, Sent cyan, Accepted green, Declined red, Revised amber
+- Status colors: Draft gray, Sent blue, Accepted green, Declined red, Revised gold
 - All interactive elements: hover, focus-visible, active, disabled states
 - Icons: Lucide only, consistent sizes (16/20/24px)
 - Empty, loading, and error states designed
@@ -127,7 +127,7 @@ Every component must pass the quality checklist in `CLAUDE.md`:
 - **Server components default**: Only add `"use client"` when using hooks/events/browser APIs.
 - **Phase 1 = mock data only**: No API calls, no backend. All data from `lib/mock-data.ts`.
 - **URL state**: Filters, search, pagination in URL query params. No global state libraries.
-- **Semantic tokens**: Use `text-action`, `bg-elevated`, `shadow-action` — never `text-cyan-400`.
+- **Semantic tokens**: Use `text-action`, `bg-elevated`, `shadow-action` — never raw Tailwind palette colors.
 - **`cn()` utility**: For all className merging. Never concatenate strings.
 - **Existing components**: Always check `components/ui/` before building from scratch.
 

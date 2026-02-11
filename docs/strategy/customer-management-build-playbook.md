@@ -146,7 +146,7 @@ ALL must pass before committing.
 
 ## Quality Standards
 - Zod-first types (no separate interfaces)
-- Semantic design tokens only (text-action, not text-cyan-400)
+- Semantic design tokens only (text-action, not raw Tailwind palette colors)
 - All badge components must have hover states and ARIA labels
 - Mobile-friendly: badges must be readable at small sizes
 - Follow existing component patterns (look at StatusBadge.tsx for reference)

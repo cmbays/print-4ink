@@ -56,7 +56,7 @@ Follow these rules strictly:
 - Tables: Use shared `DataTable` component or shadcn `<Table>` directly
 - Badges: Use shared `StatusBadge`/`PriorityBadge` or shadcn `<Badge>`
 - Icons: Lucide React only, sizes `h-4 w-4` / `h-5 w-5` / `h-6 w-6`
-- Status colors: `text-action` (cyan), `text-success` (green), `text-error` (red), `text-warning` (amber)
+- Status colors: `text-action` (Niji blue), `text-success` (Niji green), `text-error` (Niji red), `text-warning` (Niji gold)
 - Background: `bg-background` (page), `bg-card` (cards), `bg-surface` (interactive)
 - Text: `text-foreground` (primary), `text-muted-foreground` (secondary)
 - Spacing: Tailwind utilities only, no hardcoded px. Use `space-y-6` for page sections, `gap-4` for grids.

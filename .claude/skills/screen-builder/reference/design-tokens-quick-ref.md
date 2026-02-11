@@ -6,10 +6,10 @@ Use these Tailwind classes. Do NOT use raw hex/rgb values in components.
 
 | Use | Class | Value |
 |-----|-------|-------|
-| Page background | `bg-background` | #09090b |
-| Card / panel | `bg-card` | #18181b |
-| Interactive surface | `bg-surface` | #1c1c1f |
-| Muted / sidebar bg | `bg-muted` | #0f0f11 |
+| Page background | `bg-background` | #141515 |
+| Card / panel | `bg-card` | #1c1d1e |
+| Interactive surface | `bg-surface` | #232425 |
+| Muted / sidebar bg | `bg-muted` | #111213 |
 
 ## Text
 
