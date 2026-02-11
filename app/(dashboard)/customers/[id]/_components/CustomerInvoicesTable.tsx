@@ -37,7 +37,7 @@ export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) 
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-        <Receipt className="size-10 mb-3" aria-hidden="true" />
+        <Receipt className="size-12 mb-3" aria-hidden="true" />
         <p className="text-sm font-medium">No invoices yet</p>
         <p className="text-xs mt-1">Invoices will appear here once created</p>
       </div>

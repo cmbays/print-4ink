@@ -519,11 +519,11 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <FileText className="size-6 text-muted-foreground/50" />
+          <FileText className="size-12 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No invoices found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
-              ? "Try adjusting your filters or search term"
+              ? `No results for "${searchQuery || "current filters"}"`
               : "Create your first invoice to get started"}
           </p>
           {hasFilters ? (
