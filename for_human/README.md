@@ -15,6 +15,8 @@ This directory stores session summaries, decision logs, and reference materials 
 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
+| [Price Matrix Breadboard](2026-02-11-price-matrix-breadboard.html) | UI affordance map, wiring, component boundaries, and parallelized build order for the Price Matrix vertical | 2026-02-11 | Plan, Decision |
+| [Invoicing Breadboard](2026-02-11-invoicing-breadboard.html) | UI affordances, code affordances, wiring, and component boundaries for the invoicing vertical — the buildable blueprint before code. | 2026-02-11 | Plan, Research |
 | [Git Worktree Migration + Memory Refactoring](2026-02-10-worktree-migration.html) | Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%. | 2026-02-10 | Build, Decision |
 | [work() — Worktree Orchestrator](2026-02-10-work-orchestrator.html) | Single command to create worktrees, tmux sessions, and launch Claude — with Agent Teams integration via tmux hook. | 2026-02-10 | Build, Feature |
 | [Quoting–Customer Interconnection](2026-02-10-quoting-interconnection.html) | Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search. | 2026-02-10 | Feature, Build |
