@@ -16,7 +16,7 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           {breadcrumbs?.map((crumb) => (
             <span key={crumb.label} className="contents">
