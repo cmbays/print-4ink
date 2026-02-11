@@ -298,7 +298,7 @@ export function InvoiceDetailView({
         <p className="text-sm text-muted-foreground">Balance Due</p>
         <p
           className={cn(
-            "mt-1 text-3xl font-bold font-mono",
+            "mt-1 text-3xl font-semibold font-mono",
             getBalanceColor(invoice),
           )}
         >

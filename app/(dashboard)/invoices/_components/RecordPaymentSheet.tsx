@@ -86,7 +86,7 @@ export function RecordPaymentSheet({
 
         <div className="flex-1 space-y-4 px-4">
           {isTerminal && (
-            <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3">
+            <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3" role="alert">
               <AlertTriangle className="size-4 mt-0.5 text-warning shrink-0" />
               <p className="text-sm text-warning">
                 This invoice is{" "}

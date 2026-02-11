@@ -220,7 +220,7 @@ export function CreateCreditMemoModal({
           )}
 
           {isOverLimit && (
-            <div className="flex items-start gap-2 rounded-md border border-error/30 bg-error/10 p-3">
+            <div className="flex items-start gap-2 rounded-md border border-error/30 bg-error/10 p-3" role="alert">
               <AlertTriangle className="size-4 mt-0.5 text-error shrink-0" />
               <p className="text-sm text-error">
                 Total credit ({formatCurrency(totalCredit)}) exceeds the maximum
