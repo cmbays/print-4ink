@@ -205,103 +205,10 @@ CONTEXT
     echo "  Dev:       PORT=$PORT npm run dev"
 
     # ── Tmux Integration ────────────────────────────────────────────────────
-    if [[ -n "$TMUX" ]]; then
-        if [[ "$BASE" == "main" ]]; then
-            # ── New workstream: detached tmux session ───────────────────────
-            # Creates session in background. User attaches from a new Ghostty pane.
-            tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
-
-            # Set hook to auto-convert Agent Teams panes → windows
-            tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
-
-            # Launch Claude in the new session
-            tmux send-keys -t "$TOPIC" "claude" Enter
-
-            # Seed with initial prompt if provided
-            if [[ -n "$PROMPT" ]]; then
-                sleep 3
-                tmux send-keys -t "$TOPIC" "$PROMPT" Enter
-            fi
-
-            echo "  Session:   $TOPIC (detached)"
-            echo ""
-            echo "  Attach from a new Ghostty pane:"
-            echo "    tmux attach -t $TOPIC"
-
-        else
-            # ── Related work: new window in parent's tmux session ───────────
-            # Finds the parent session and adds a window tab. No pane splitting.
-            local PARENT_SESSION=""
-            local sess
-
-            # Strategy 1: Check if any session's windows are in the base branch worktree
-            for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-                [[ "$sess" == focus-* ]] && continue
-                local win_paths
-                win_paths=$(tmux list-windows -t "$sess" -F '#{pane_current_path}' 2>/dev/null)
-                if echo "$win_paths" | grep -q "${PRINT4INK_WORKTREES}/${BASE}" 2>/dev/null; then
-                    PARENT_SESSION="$sess"
-                    break
-                fi
-            done
-
-            # Strategy 2: Match session name to base branch slug
-            if [[ -z "$PARENT_SESSION" ]]; then
-                local base_slug
-                base_slug=$(echo "$BASE" | sed 's|session/[0-9]*-||')
-                for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-                    [[ "$sess" == focus-* ]] && continue
-                    if [[ "$sess" == "$base_slug" ]]; then
-                        PARENT_SESSION="$sess"
-                        break
-                    fi
-                done
-            fi
-
-            # Strategy 3: Check current session (Claude calling work for related work)
-            if [[ -z "$PARENT_SESSION" ]]; then
-                local current_session
-                current_session=$(tmux display-message -p '#S' 2>/dev/null)
-                if [[ -n "$current_session" && "$current_session" != focus-* ]]; then
-                    PARENT_SESSION="$current_session"
-                fi
-            fi
-
-            if [[ -n "$PARENT_SESSION" ]]; then
-                # Create window WITHOUT switching to it (-d flag)
-                tmux new-window -d -t "$PARENT_SESSION" -n "$TOPIC" -c "$WORKTREE_DIR"
-
-                # Launch Claude
-                tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "claude" Enter
-
-                # Seed with initial prompt if provided
-                if [[ -n "$PROMPT" ]]; then
-                    sleep 3
-                    tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "$PROMPT" Enter
-                fi
-
-                echo "  Window:    $TOPIC in session '$PARENT_SESSION'"
-                echo "  Navigate:  Ctrl+b n (next) or Ctrl+b w (tree)"
-            else
-                # Fallback: create detached session if parent not found
-                tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
-                tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
-                tmux send-keys -t "$TOPIC" "claude" Enter
-
-                if [[ -n "$PROMPT" ]]; then
-                    sleep 3
-                    tmux send-keys -t "$TOPIC" "$PROMPT" Enter
-                fi
-
-                echo "  Session:   $TOPIC (parent not found, created detached session)"
-                echo ""
-                echo "  Attach from a new Ghostty pane:"
-                echo "    tmux attach -t $TOPIC"
-            fi
-        fi
-    else
-        # ── Not in tmux: still create a detached session ────────────────
-        # tmux new-session -d works fine outside tmux
+    # All tmux commands (new-session -d, new-window -d, send-keys, etc.)
+    # work from both inside and outside tmux. We only need a running server.
+    if ! tmux info &>/dev/null; then
+        # No tmux server — start one with the new session
         tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
         tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
         tmux send-keys -t "$TOPIC" "claude" Enter
@@ -315,6 +222,101 @@ CONTEXT
         echo ""
         echo "  Attach from a new Ghostty pane:"
         echo "    tmux attach -t $TOPIC"
+        return 0
+    fi
+
+    if [[ "$BASE" == "main" ]]; then
+        # ── New workstream: detached tmux session ───────────────────────
+        # Creates session in background. User attaches from a new Ghostty pane.
+        tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
+
+        # Set hook to auto-convert Agent Teams panes → windows
+        tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+
+        # Launch Claude in the new session
+        tmux send-keys -t "$TOPIC" "claude" Enter
+
+        # Seed with initial prompt if provided
+        if [[ -n "$PROMPT" ]]; then
+            sleep 3
+            tmux send-keys -t "$TOPIC" "$PROMPT" Enter
+        fi
+
+        echo "  Session:   $TOPIC (detached)"
+        echo ""
+        echo "  Attach from a new Ghostty pane:"
+        echo "    tmux attach -t $TOPIC"
+
+    else
+        # ── Related work: new window in parent's tmux session ───────────
+        # Finds the parent session and adds a window tab. No pane splitting.
+        local PARENT_SESSION=""
+        local sess
+        local win_paths
+
+        # Strategy 1: Check if any session's windows are in the base branch worktree
+        for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
+            [[ "$sess" == focus-* ]] && continue
+            win_paths=$(tmux list-windows -t "$sess" -F '#{pane_current_path}' 2>/dev/null)
+            if echo "$win_paths" | grep -q "${PRINT4INK_WORKTREES}/${BASE}" 2>/dev/null; then
+                PARENT_SESSION="$sess"
+                break
+            fi
+        done
+
+        # Strategy 2: Match session name to base branch slug
+        if [[ -z "$PARENT_SESSION" ]]; then
+            local base_slug
+            base_slug=$(echo "$BASE" | sed 's|session/[0-9]*-||')
+            for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
+                [[ "$sess" == focus-* ]] && continue
+                if [[ "$sess" == "$base_slug" ]]; then
+                    PARENT_SESSION="$sess"
+                    break
+                fi
+            done
+        fi
+
+        # Strategy 3: Check current tmux session (only works when called from inside tmux)
+        if [[ -z "$PARENT_SESSION" && -n "$TMUX" ]]; then
+            local current_session
+            current_session=$(tmux display-message -p '#S' 2>/dev/null)
+            if [[ -n "$current_session" && "$current_session" != focus-* ]]; then
+                PARENT_SESSION="$current_session"
+            fi
+        fi
+
+        if [[ -n "$PARENT_SESSION" ]]; then
+            # Create window WITHOUT switching to it (-d flag)
+            tmux new-window -d -t "$PARENT_SESSION" -n "$TOPIC" -c "$WORKTREE_DIR"
+
+            # Launch Claude
+            tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "claude" Enter
+
+            # Seed with initial prompt if provided
+            if [[ -n "$PROMPT" ]]; then
+                sleep 3
+                tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "$PROMPT" Enter
+            fi
+
+            echo "  Window:    $TOPIC in session '$PARENT_SESSION'"
+            echo "  Navigate:  Ctrl+b n (next) or Ctrl+b w (tree)"
+        else
+            # Fallback: create detached session if parent not found
+            tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
+            tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+            tmux send-keys -t "$TOPIC" "claude" Enter
+
+            if [[ -n "$PROMPT" ]]; then
+                sleep 3
+                tmux send-keys -t "$TOPIC" "$PROMPT" Enter
+            fi
+
+            echo "  Session:   $TOPIC (parent not found, created detached session)"
+            echo ""
+            echo "  Attach from a new Ghostty pane:"
+            echo "    tmux attach -t $TOPIC"
+        fi
     fi
 }
 
@@ -324,7 +326,7 @@ _work_list() {
     git -C "$PRINT4INK_REPO" worktree list
     echo ""
 
-    if [[ -n "$TMUX" ]]; then
+    if tmux info &>/dev/null; then
         echo "=== Tmux Sessions ==="
         local sess
         for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
@@ -337,9 +339,8 @@ _work_list() {
 
     echo ""
     echo "=== Dev Server Ports ==="
-    local port
+    local port pid
     for port in $(seq $PRINT4INK_PORT_MIN $PRINT4INK_PORT_MAX); do
-        local pid
         pid=$(lsof -iTCP:$port -sTCP:LISTEN -t 2>/dev/null)
         if [[ -n "$pid" ]]; then
             echo "  :$port  IN USE (pid $pid)"
@@ -436,31 +437,28 @@ _work_clean() {
     echo "Will clean up:"
     echo "  Branch:    $BRANCH"
     echo "  Worktree:  $WORKTREE_DIR"
-    [[ -n "$TMUX" ]] && echo "  Tmux:      session/window '$TOPIC'"
+    tmux has-session -t "$TOPIC" 2>/dev/null && echo "  Tmux:      session '$TOPIC'"
     echo ""
     echo -n "Proceed? [y/N] "
     read -r CONFIRM
     [[ "$CONFIRM" != [yY] ]] && { echo "Cancelled."; return 0; }
 
-    # Close tmux window or session
-    if [[ -n "$TMUX" ]]; then
-        # Try closing as a session first
-        if tmux has-session -t "$TOPIC" 2>/dev/null; then
-            # Kill focus session if it exists
-            tmux kill-session -t "focus-${TOPIC}" 2>/dev/null
-            tmux kill-session -t "$TOPIC" 2>/dev/null
-            echo "  Closed tmux session '$TOPIC'"
-        else
-            # Try finding it as a window in any session
-            local sess
-            for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-                if tmux list-windows -t "$sess" -F '#W' | grep -q "^${TOPIC}$"; then
-                    tmux kill-window -t "${sess}:${TOPIC}" 2>/dev/null
-                    echo "  Closed tmux window '$TOPIC' in session '$sess'"
-                    break
-                fi
-            done
-        fi
+    # Close tmux session or window (works from both inside and outside tmux)
+    if tmux has-session -t "$TOPIC" 2>/dev/null; then
+        # Kill focus session if it exists
+        tmux kill-session -t "focus-${TOPIC}" 2>/dev/null
+        tmux kill-session -t "$TOPIC" 2>/dev/null
+        echo "  Closed tmux session '$TOPIC'"
+    elif tmux info &>/dev/null; then
+        # Try finding it as a window in any session
+        local sess
+        for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
+            if tmux list-windows -t "$sess" -F '#W' | grep -q "^${TOPIC}$"; then
+                tmux kill-window -t "${sess}:${TOPIC}" 2>/dev/null
+                echo "  Closed tmux window '$TOPIC' in session '$sess'"
+                break
+            fi
+        done
     fi
 
     # Remove worktree
