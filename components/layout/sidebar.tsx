@@ -9,6 +9,7 @@ import {
   Users,
   Layers,
   Package,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,10 @@ const navigation = [
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Screen Room", href: "/screens", icon: Layers },
   { name: "Garments", href: "/garments", icon: Package },
+];
+
+const settingsNavigation = [
+  { name: "Pricing", href: "/settings/pricing", icon: Settings },
 ];
 
 export function Sidebar() {
@@ -32,28 +37,56 @@ export function Sidebar() {
           Screen Print Pro
         </span>
       </div>
-      <nav className="flex-1 space-y-1 px-2 py-3">
-        {navigation.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-sidebar-accent text-sidebar-primary"
-                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.name}
-            </Link>
-          );
-        })}
+      <nav className="flex flex-1 flex-col px-2 py-3">
+        <div className="flex-1 space-y-1">
+          {navigation.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-primary"
+                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="mx-3 my-3 border-t border-sidebar-border" />
+
+        <div className="space-y-1">
+          <span className="px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Settings
+          </span>
+          {settingsNavigation.map((item) => {
+            const isActive = pathname.startsWith("/settings");
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-primary"
+                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </aside>
   );
