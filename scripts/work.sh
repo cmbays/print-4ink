@@ -383,8 +383,8 @@ _work_focus() {
         "watch -n 0.5 -t 'tmux capture-pane -p -t \"${SESSION}:${FIRST_WIN}\" -S -50'"
 
     # Add remaining windows as panes (no hook — we WANT panes for tiled view)
+    local WIN_IDX
     echo "$WINDOWS" | tail -n +2 | while IFS= read -r line; do
-        local WIN_IDX
         WIN_IDX=$(echo "$line" | cut -d: -f1)
         tmux split-window -t "$FOCUS" \
             "watch -n 0.5 -t 'tmux capture-pane -p -t \"${SESSION}:${WIN_IDX}\" -S -50'"
@@ -393,28 +393,45 @@ _work_focus() {
 
     tmux select-layout -t "$FOCUS" tiled
     tmux switch-client -t "$FOCUS"
-    echo "Focus mode: $COUNT windows tiled. 'work unfocus' to exit."
+    echo "Focus mode: $COUNT windows tiled."
+    echo "  Exit:  Ctrl+b s → pick original session → 'work unfocus'"
+    echo "         Or just: Ctrl+b s → pick original session (focus dies on its own when you 'work clean')"
 }
 
-# ── Unfocus: Return to Original Session ─────────────────────────────────────
+# ── Unfocus: Kill Focus Sessions ─────────────────────────────────────────────
 _work_unfocus() {
-    if [[ -z "$TMUX" ]]; then
-        echo "Error: Not in a tmux session."
+    # If inside tmux AND in a focus session, switch back first
+    if [[ -n "$TMUX" ]]; then
+        local SESSION
+        SESSION=$(tmux display-message -p '#S' 2>/dev/null)
+        if [[ "$SESSION" == focus-* ]]; then
+            local ORIGINAL="${SESSION#focus-}"
+            tmux switch-client -t "$ORIGINAL" 2>/dev/null
+            tmux kill-session -t "$SESSION" 2>/dev/null
+            echo "Exited focus mode. Back to '$ORIGINAL'."
+            return 0
+        fi
+    fi
+
+    # From any context: find and kill all focus-* sessions
+    if ! tmux info &>/dev/null; then
+        echo "No tmux server running."
         return 1
     fi
 
-    local SESSION
-    SESSION=$(tmux display-message -p '#S')
+    local focus_sessions found=0
+    focus_sessions=$(tmux list-sessions -F '#S' 2>/dev/null | grep '^focus-' || true)
 
-    if [[ "$SESSION" != focus-* ]]; then
-        echo "Not in focus mode."
+    if [[ -z "$focus_sessions" ]]; then
+        echo "No focus sessions found."
         return 1
     fi
 
-    local ORIGINAL="${SESSION#focus-}"
-    tmux switch-client -t "$ORIGINAL"
-    tmux kill-session -t "$SESSION"
-    echo "Exited focus mode. Back to '$ORIGINAL'."
+    echo "$focus_sessions" | while IFS= read -r fs; do
+        tmux kill-session -t "$fs" 2>/dev/null
+        echo "  Killed: $fs"
+    done
+    echo "Focus sessions cleaned up."
 }
 
 # ── Clean: Remove Worktree + Tmux + Branch ──────────────────────────────────
