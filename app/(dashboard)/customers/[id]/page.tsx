@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { customers, quotes, jobs, artworks, customerNotes } from "@/lib/mock-data";
+import { customers, quotes, jobs, invoices, artworks, customerNotes } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -44,6 +44,7 @@ export default async function CustomerDetailPage({
 
   const customerQuotes = quotes.filter((q) => q.customerId === id);
   const customerJobs = jobs.filter((j) => j.customerId === id);
+  const customerInvoices = invoices.filter((inv) => inv.customerId === id);
   const customerArtworks = artworks.filter((a) => a.customerId === id);
   const notes = customerNotes.filter(
     (n) => n.entityType === "customer" && n.entityId === id
@@ -102,6 +103,7 @@ export default async function CustomerDetailPage({
         customers={customers}
         quotes={customerQuotes}
         jobs={customerJobs}
+        invoices={customerInvoices}
         artworks={customerArtworks}
         notes={notes}
       />

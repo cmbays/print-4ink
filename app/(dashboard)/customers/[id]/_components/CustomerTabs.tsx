@@ -13,13 +13,16 @@ import type { Customer } from "@/lib/schemas/customer";
 import type { Quote } from "@/lib/schemas/quote";
 import type { Job } from "@/lib/schemas/job";
 import type { Artwork } from "@/lib/schemas/artwork";
+import type { Invoice } from "@/lib/schemas/invoice";
 import type { Note } from "@/lib/schemas/note";
+import { CustomerInvoicesTable } from "./CustomerInvoicesTable";
 
 interface CustomerTabsProps {
   customer: Customer;
   customers: Customer[];
   quotes: Quote[];
   jobs: Job[];
+  invoices: Invoice[];
   artworks: Artwork[];
   notes: Note[];
 }
@@ -29,6 +32,7 @@ export function CustomerTabs({
   customers,
   quotes,
   jobs,
+  invoices,
   artworks,
   notes,
 }: CustomerTabsProps) {
@@ -47,6 +51,9 @@ export function CustomerTabs({
         </TabsTrigger>
         <TabsTrigger value="jobs" className="px-2 text-xs sm:text-sm sm:px-3">
           Jobs{jobs.length > 0 && ` (${jobs.length})`}
+        </TabsTrigger>
+        <TabsTrigger value="invoices" className="px-2 text-xs sm:text-sm sm:px-3">
+          Invoices{invoices.length > 0 && ` (${invoices.length})`}
         </TabsTrigger>
         <TabsTrigger value="artwork" className="px-2 text-xs sm:text-sm sm:px-3">
           Artwork{artworks.length > 0 && ` (${artworks.length})`}
@@ -75,6 +82,10 @@ export function CustomerTabs({
 
       <TabsContent value="jobs" className="mt-4">
         <CustomerJobsTable jobs={jobs} />
+      </TabsContent>
+
+      <TabsContent value="invoices" className="mt-4">
+        <CustomerInvoicesTable invoices={invoices} />
       </TabsContent>
 
       <TabsContent value="artwork" className="mt-4">

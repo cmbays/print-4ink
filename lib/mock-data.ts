@@ -9,6 +9,8 @@ import type { Screen } from "./schemas/screen";
 import type { Color } from "./schemas/color";
 import type { GarmentCatalog } from "./schemas/garment";
 import type { Artwork } from "./schemas/artwork";
+import type { Invoice, Payment } from "./schemas/invoice";
+import type { CreditMemo } from "./schemas/credit-memo";
 
 // ---------------------------------------------------------------------------
 // Customer IDs (stable — referenced by jobs, quotes, artworks)
@@ -1099,6 +1101,400 @@ export const screens: Screen[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Invoice IDs (stable — referenced by payments, credit memos)
+// ---------------------------------------------------------------------------
+
+const INVOICE_IDS = {
+  inv0001: "b1a10001-e5f6-4a01-8b01-0d1e2f3a4b01",
+  inv0002: "b1a10002-e5f6-4a02-8b02-0d1e2f3a4b02",
+  inv0003: "b1a10003-e5f6-4a03-8b03-0d1e2f3a4b03",
+  inv0004: "b1a10004-e5f6-4a04-8b04-0d1e2f3a4b04",
+  inv0005: "b1a10005-e5f6-4a05-8b05-0d1e2f3a4b05",
+  inv0006: "b1a10006-e5f6-4a06-8b06-0d1e2f3a4b06",
+  inv0007: "b1a10007-e5f6-4a07-8b07-0d1e2f3a4b07",
+  inv0008: "b1a10008-e5f6-4a08-8b08-0d1e2f3a4b08",
+} as const;
+
+// ---------------------------------------------------------------------------
+// Invoices — 8 invoices covering all statuses + overdue
+// ---------------------------------------------------------------------------
+
+export const invoices: Invoice[] = [
+  // INV-0001: River City Brewing, from Q-1024, PAID ($765), 2 payments
+  {
+    id: INVOICE_IDS.inv0001,
+    invoiceNumber: "INV-0001",
+    customerId: CUSTOMER_IDS.riverCity,
+    quoteId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    lineItems: [
+      { id: "d3c30101-e5f6-4a01-8b01-0d1e2f3a4d01", type: "garment", description: "Gildan 5000 — Black (50 pcs)", quantity: 50, unitPrice: 14.50, lineTotal: 725 },
+      { id: "d3c30102-e5f6-4a01-8b02-0d1e2f3a4d02", type: "setup", description: "Screen setup — front + back (5 colors)", quantity: 1, unitPrice: 40, lineTotal: 40 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 765,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 0,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 765,
+    amountPaid: 765,
+    balanceDue: 0,
+    status: "paid",
+    isVoid: false,
+    paymentTerms: "upfront",
+    dueDate: "2026-01-12",
+    createdAt: "2026-01-10T10:00:00Z",
+    sentAt: "2026-01-12T09:00:00Z",
+    paidAt: "2026-01-20T14:00:00Z",
+    internalNotes: "Quick turnaround — Marcus needed shirts for tap takeover event.",
+    pricingSnapshot: {
+      subtotal: 765,
+      discountTotal: 0,
+      shipping: 0,
+      taxRate: 0,
+      taxAmount: 0,
+      total: 765,
+      snapshotDate: "2026-01-10T10:00:00Z",
+    },
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2026-01-10T10:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2026-01-12T09:00:00Z" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-01-15T10:00:00Z", details: "Check #1042 — $400.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-01-18T14:00:00Z", details: "Square — $365.00" },
+    ],
+    reminders: [],
+  },
+
+  // INV-0002: Lonestar Lacrosse, from Q-1025, SENT / OVERDUE (27 days), $2,614
+  {
+    id: INVOICE_IDS.inv0002,
+    invoiceNumber: "INV-0002",
+    customerId: CUSTOMER_IDS.lonestar,
+    quoteId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+    lineItems: [
+      { id: "d3c30201-e5f6-4a01-8b03-0d1e2f3a4d03", type: "garment", description: "Bella+Canvas 3001 — White (65 pcs)", quantity: 65, unitPrice: 22.00, lineTotal: 1430 },
+      { id: "d3c30202-e5f6-4a01-8b04-0d1e2f3a4d04", type: "garment", description: "Bella+Canvas 3001 — Navy (65 pcs)", quantity: 65, unitPrice: 22.00, lineTotal: 1430 },
+      { id: "d3c30203-e5f6-4a01-8b05-0d1e2f3a4d05", type: "setup", description: "Screen setup — 3 locations (4 colors)", quantity: 1, unitPrice: 40, lineTotal: 40 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 2900,
+    discounts: [{ label: "Contract Pricing — 10% off", amount: 286, type: "contract" }],
+    discountTotal: 286,
+    shipping: 0,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 2614,
+    amountPaid: 0,
+    balanceDue: 2614,
+    status: "sent",
+    isVoid: false,
+    paymentTerms: "net-30",
+    dueDate: "2026-01-15",
+    createdAt: "2025-12-16T14:00:00Z",
+    sentAt: "2025-12-17T09:00:00Z",
+    customerNotes: "Tournament jerseys — need delivery by Feb 20.",
+    pricingSnapshot: {
+      subtotal: 2900,
+      discountTotal: 286,
+      shipping: 0,
+      taxRate: 0,
+      taxAmount: 0,
+      total: 2614,
+      snapshotDate: "2025-12-16T14:00:00Z",
+    },
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2025-12-16T14:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2025-12-17T09:00:00Z" },
+    ],
+    reminders: [
+      { id: "e4d40001-e5f6-4a01-ab01-0d1e2f3a4e01", sentAt: "2026-01-20T09:00:00Z", sentTo: "sarah@lonestarlax.org", message: "Friendly reminder: Invoice INV-0002 for $2,614.00 was due on Jan 15." },
+    ],
+  },
+
+  // INV-0003: Thompson Family, from Q-1026, DRAFT, $855
+  {
+    id: INVOICE_IDS.inv0003,
+    invoiceNumber: "INV-0003",
+    customerId: CUSTOMER_IDS.thompson,
+    quoteId: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
+    lineItems: [
+      { id: "d3c30301-e5f6-4a01-8b06-0d1e2f3a4d06", type: "garment", description: "Bella+Canvas 3001 — Heather Grey (65 pcs)", quantity: 65, unitPrice: 12.00, lineTotal: 780 },
+      { id: "d3c30302-e5f6-4a01-8b07-0d1e2f3a4d07", type: "setup", description: "Screen setup — front (4 colors)", quantity: 1, unitPrice: 40, lineTotal: 40 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 820,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 35,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 855,
+    amountPaid: 0,
+    balanceDue: 855,
+    depositRequested: 427.50,
+    status: "draft",
+    isVoid: false,
+    paymentTerms: "upfront",
+    dueDate: "2026-02-08",
+    createdAt: "2026-02-08T09:00:00Z",
+    internalNotes: "Family reunion tees — Jake wants youth sizes included. Deposit requested.",
+    pricingSnapshot: {
+      subtotal: 820,
+      discountTotal: 0,
+      shipping: 35,
+      taxRate: 0,
+      taxAmount: 0,
+      total: 855,
+      snapshotDate: "2026-02-08T09:00:00Z",
+    },
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2026-02-08T09:00:00Z" },
+    ],
+    reminders: [],
+  },
+
+  // INV-0004: River City Brewing, standalone (Holiday Merch), PAID ($1,850), 3 payments
+  {
+    id: INVOICE_IDS.inv0004,
+    invoiceNumber: "INV-0004",
+    customerId: CUSTOMER_IDS.riverCity,
+    lineItems: [
+      { id: "d3c30401-e5f6-4a01-8b08-0d1e2f3a4d08", type: "garment", description: "Gildan 18500 Hoodie — Forest Green (53 pcs)", quantity: 53, unitPrice: 32.00, lineTotal: 1696 },
+      { id: "d3c30402-e5f6-4a01-8b09-0d1e2f3a4d09", type: "setup", description: "Screen setup — front + back (6 colors)", quantity: 1, unitPrice: 54, lineTotal: 54 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 1750,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 100,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 1850,
+    amountPaid: 1850,
+    balanceDue: 0,
+    status: "paid",
+    isVoid: false,
+    paymentTerms: "upfront",
+    dueDate: "2025-12-02",
+    createdAt: "2025-12-01T10:00:00Z",
+    sentAt: "2025-12-02T09:00:00Z",
+    paidAt: "2025-12-18T16:00:00Z",
+    internalNotes: "Holiday merch — Forest Green hoodies with full color print.",
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2025-12-01T10:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2025-12-02T09:00:00Z" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2025-12-10T10:00:00Z", details: "Cash — $600.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2025-12-15T14:00:00Z", details: "Venmo — $500.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2025-12-18T16:00:00Z", details: "Credit Card — $750.00" },
+      { action: "credit_memo_issued", performedBy: "Gary", timestamp: "2026-01-05T10:00:00Z", details: "CM-0001 shortage — $96.00" },
+    ],
+    reminders: [],
+  },
+
+  // INV-0005: Lonestar Lacrosse, standalone, PARTIAL ($840, $500 paid, $340 due)
+  {
+    id: INVOICE_IDS.inv0005,
+    invoiceNumber: "INV-0005",
+    customerId: CUSTOMER_IDS.lonestar,
+    lineItems: [
+      { id: "d3c30501-e5f6-4a01-8b0a-0d1e2f3a4d0a", type: "garment", description: "New Balance Dry Fit — White (40 pcs)", quantity: 40, unitPrice: 18.00, lineTotal: 720 },
+      { id: "d3c30502-e5f6-4a01-8b0b-0d1e2f3a4d0b", type: "setup", description: "Screen setup — 2 locations", quantity: 1, unitPrice: 40, lineTotal: 40 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 760,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 80,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 840,
+    amountPaid: 500,
+    balanceDue: 340,
+    status: "partial",
+    isVoid: false,
+    paymentTerms: "net-30",
+    dueDate: "2026-02-15",
+    createdAt: "2026-01-16T14:00:00Z",
+    sentAt: "2026-01-17T09:00:00Z",
+    internalNotes: "Deposit received. Remainder due on delivery.",
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2026-01-16T14:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2026-01-17T09:00:00Z" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-02-05T10:00:00Z", details: "Check #2088 — $300.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-02-07T11:00:00Z", details: "Zelle — $200.00" },
+    ],
+    reminders: [],
+  },
+
+  // INV-0006: CrossTown Printing, standalone, SENT ($3,200, due in 17d)
+  {
+    id: INVOICE_IDS.inv0006,
+    invoiceNumber: "INV-0006",
+    customerId: CUSTOMER_IDS.crosstown,
+    lineItems: [
+      { id: "d3c30601-e5f6-4a01-8b0c-0d1e2f3a4d0c", type: "garment", description: "Gildan 5000 — Black (200 pcs)", quantity: 200, unitPrice: 15.00, lineTotal: 3000 },
+      { id: "d3c30602-e5f6-4a01-8b0d-0d1e2f3a4d0d", type: "setup", description: "Screen setup — bulk run (2 colors)", quantity: 1, unitPrice: 100, lineTotal: 100 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 3100,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 100,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 3200,
+    amountPaid: 0,
+    balanceDue: 3200,
+    status: "sent",
+    isVoid: false,
+    paymentTerms: "net-30",
+    dueDate: "2026-02-28",
+    createdAt: "2026-01-29T10:00:00Z",
+    sentAt: "2026-01-29T11:00:00Z",
+    internalNotes: "Wholesale overflow order for CrossTown. Standard black tees.",
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2026-01-29T10:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2026-01-29T11:00:00Z" },
+    ],
+    reminders: [],
+  },
+
+  // INV-0007: Metro Youth Soccer, standalone, PARTIAL ($2,100, $1,050 paid, due in 9d)
+  {
+    id: INVOICE_IDS.inv0007,
+    invoiceNumber: "INV-0007",
+    customerId: CUSTOMER_IDS.metroYouth,
+    lineItems: [
+      { id: "d3c30701-e5f6-4a01-8b0e-0d1e2f3a4d0e", type: "garment", description: "Bella+Canvas 3001 — Royal Blue (100 pcs)", quantity: 100, unitPrice: 20.00, lineTotal: 2000 },
+      { id: "d3c30702-e5f6-4a01-8b0f-0d1e2f3a4d0f", type: "setup", description: "Screen setup — front (2 colors)", quantity: 1, unitPrice: 100, lineTotal: 100 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 2100,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 0,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 2100,
+    amountPaid: 1050,
+    balanceDue: 1050,
+    status: "partial",
+    isVoid: false,
+    paymentTerms: "net-30",
+    dueDate: "2026-02-20",
+    createdAt: "2026-01-21T09:00:00Z",
+    sentAt: "2026-01-21T10:00:00Z",
+    internalNotes: "Spring jerseys. 50% deposit received via ACH + Zelle.",
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2026-01-21T09:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2026-01-21T10:00:00Z" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-02-01T10:00:00Z", details: "ACH — $500.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-02-05T14:00:00Z", details: "Zelle — $300.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-02-08T10:00:00Z", details: "ACH — $150.00" },
+      { action: "payment_recorded", performedBy: "Gary", timestamp: "2026-02-10T10:00:00Z", details: "Check #3301 — $100.00" },
+    ],
+    reminders: [],
+  },
+
+  // INV-0008: TikTok Merch Co., standalone, VOID ($450)
+  {
+    id: INVOICE_IDS.inv0008,
+    invoiceNumber: "INV-0008",
+    customerId: CUSTOMER_IDS.tiktokMerch,
+    lineItems: [
+      { id: "d3c30801-e5f6-4a01-9b01-0d1e2f3a4d10", type: "garment", description: "Bella+Canvas 3001 — Black (30 pcs)", quantity: 30, unitPrice: 12.50, lineTotal: 375 },
+      { id: "d3c30802-e5f6-4a01-9b02-0d1e2f3a4d11", type: "setup", description: "Screen setup — front (1 color)", quantity: 1, unitPrice: 40, lineTotal: 40 },
+    ],
+    itemizationMode: "itemized",
+    subtotal: 415,
+    discounts: [],
+    discountTotal: 0,
+    shipping: 35,
+    taxRate: 0,
+    taxAmount: 0,
+    total: 450,
+    amountPaid: 0,
+    balanceDue: 450,
+    status: "void",
+    isVoid: true,
+    paymentTerms: "upfront",
+    dueDate: "2026-02-01",
+    createdAt: "2026-02-01T10:00:00Z",
+    sentAt: "2026-02-02T09:00:00Z",
+    internalNotes: "Customer cancelled — trend passed. Voided before production.",
+    auditLog: [
+      { action: "created", performedBy: "Gary", timestamp: "2026-02-01T10:00:00Z" },
+      { action: "sent", performedBy: "Gary", timestamp: "2026-02-02T09:00:00Z" },
+      { action: "voided", performedBy: "Gary", timestamp: "2026-02-05T14:00:00Z", details: "Customer cancelled order" },
+    ],
+    reminders: [],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Payments — 11 records covering check, cash, square, venmo, zelle, ach, credit_card
+// ---------------------------------------------------------------------------
+
+export const payments: Payment[] = [
+  // INV-0001 payments (2) — total $765
+  { id: "c2b20001-e5f6-4a01-9b01-0d1e2f3a4c01", invoiceId: INVOICE_IDS.inv0001, amount: 400, method: "check", reference: "Check #1042", date: "2026-01-15T10:00:00Z", createdAt: "2026-01-15T10:00:00Z" },
+  { id: "c2b20002-e5f6-4a02-9b02-0d1e2f3a4c02", invoiceId: INVOICE_IDS.inv0001, amount: 365, method: "square", reference: "SQ-4821", date: "2026-01-18T14:00:00Z", createdAt: "2026-01-18T14:00:00Z" },
+
+  // INV-0004 payments (3) — total $1,850
+  { id: "c2b20003-e5f6-4a03-9b03-0d1e2f3a4c03", invoiceId: INVOICE_IDS.inv0004, amount: 600, method: "cash", date: "2025-12-10T10:00:00Z", createdAt: "2025-12-10T10:00:00Z" },
+  { id: "c2b20004-e5f6-4a04-9b04-0d1e2f3a4c04", invoiceId: INVOICE_IDS.inv0004, amount: 500, method: "venmo", reference: "@rivercitybrewing", date: "2025-12-15T14:00:00Z", createdAt: "2025-12-15T14:00:00Z" },
+  { id: "c2b20005-e5f6-4a05-9b05-0d1e2f3a4c05", invoiceId: INVOICE_IDS.inv0004, amount: 750, method: "credit_card", reference: "Visa ending 4821", date: "2025-12-18T16:00:00Z", createdAt: "2025-12-18T16:00:00Z" },
+
+  // INV-0005 payments (2) — total $500
+  { id: "c2b20006-e5f6-4a06-9b06-0d1e2f3a4c06", invoiceId: INVOICE_IDS.inv0005, amount: 300, method: "check", reference: "Check #2088", date: "2026-02-05T10:00:00Z", createdAt: "2026-02-05T10:00:00Z" },
+  { id: "c2b20007-e5f6-4a07-9b07-0d1e2f3a4c07", invoiceId: INVOICE_IDS.inv0005, amount: 200, method: "zelle", reference: "sarah@lonestarlax.org", date: "2026-02-07T11:00:00Z", createdAt: "2026-02-07T11:00:00Z" },
+
+  // INV-0007 payments (4) — total $1,050
+  { id: "c2b20008-e5f6-4a08-9b08-0d1e2f3a4c08", invoiceId: INVOICE_IDS.inv0007, amount: 500, method: "ach", reference: "ACH-20260201", date: "2026-02-01T10:00:00Z", createdAt: "2026-02-01T10:00:00Z" },
+  { id: "c2b20009-e5f6-4a09-9b09-0d1e2f3a4c09", invoiceId: INVOICE_IDS.inv0007, amount: 300, method: "zelle", reference: "coach@metroyouthsoccer.org", date: "2026-02-05T14:00:00Z", createdAt: "2026-02-05T14:00:00Z" },
+  { id: "c2b2000a-e5f6-4a0a-9b0a-0d1e2f3a4c0a", invoiceId: INVOICE_IDS.inv0007, amount: 150, method: "ach", reference: "ACH-20260208", date: "2026-02-08T10:00:00Z", createdAt: "2026-02-08T10:00:00Z" },
+  { id: "c2b2000b-e5f6-4a0b-9b0b-0d1e2f3a4c0b", invoiceId: INVOICE_IDS.inv0007, amount: 100, method: "check", reference: "Check #3301", date: "2026-02-10T10:00:00Z", createdAt: "2026-02-10T10:00:00Z" },
+];
+
+// ---------------------------------------------------------------------------
+// Credit Memos — 2 records
+// ---------------------------------------------------------------------------
+
+export const creditMemos: CreditMemo[] = [
+  // CM-0001: Shortage on INV-0004 (River City Holiday Merch)
+  {
+    id: "f5e50001-e5f6-4a01-8b01-0d1e2f3a4f01",
+    creditMemoNumber: "CM-0001",
+    invoiceId: INVOICE_IDS.inv0004,
+    customerId: CUSTOMER_IDS.riverCity,
+    reason: "shortage",
+    lineItems: [
+      { id: "f6e60001-e5f6-4a01-8b01-0d1e2f3a5001", description: "Gildan 18500 Hoodie — Forest Green (3 short)", quantity: 3, unitCredit: 32, lineTotal: 96 },
+    ],
+    totalCredit: 96,
+    notes: "3 hoodies missing from delivery. Customer confirmed count.",
+    createdAt: "2026-01-05T10:00:00Z",
+    createdBy: "Gary",
+  },
+  // CM-0002: Misprint on INV-0001 (River City Staff Tees)
+  {
+    id: "f5e50002-e5f6-4a02-8b02-0d1e2f3a4f02",
+    creditMemoNumber: "CM-0002",
+    invoiceId: INVOICE_IDS.inv0001,
+    customerId: CUSTOMER_IDS.riverCity,
+    reason: "misprint",
+    lineItems: [
+      { id: "f6e60002-e5f6-4a02-8b02-0d1e2f3a5002", description: "Gildan 5000 — Black (5 misprinted)", quantity: 5, unitCredit: 14.50, lineTotal: 72.50 },
+    ],
+    totalCredit: 72.50,
+    notes: "5 tees with off-center front print. Reprinted at no charge.",
+    createdAt: "2026-01-25T11:00:00Z",
+    createdBy: "Gary",
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Reverse lookup helpers
 // ---------------------------------------------------------------------------
 
@@ -1125,4 +1521,20 @@ export function getCustomerNotes(customerId: string): Note[] {
 
 export function getCustomerArtworks(customerId: string): Artwork[] {
   return artworks.filter((a) => a.customerId === customerId);
+}
+
+export function getCustomerInvoices(customerId: string): Invoice[] {
+  return invoices.filter((inv) => inv.customerId === customerId);
+}
+
+export function getInvoicePayments(invoiceId: string): Payment[] {
+  return payments.filter((p) => p.invoiceId === invoiceId);
+}
+
+export function getInvoiceCreditMemos(invoiceId: string): CreditMemo[] {
+  return creditMemos.filter((cm) => cm.invoiceId === invoiceId);
+}
+
+export function getQuoteInvoice(quoteId: string): Invoice | undefined {
+  return invoices.find((inv) => inv.quoteId === quoteId);
 }

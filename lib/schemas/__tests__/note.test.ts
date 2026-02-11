@@ -15,7 +15,7 @@ describe("noteChannelEnum", () => {
 });
 
 describe("noteEntityTypeEnum", () => {
-  it.each(["customer", "quote", "artwork", "job"])(
+  it.each(["customer", "quote", "artwork", "job", "invoice", "credit_memo"])(
     "accepts '%s'",
     (type) => {
       expect(noteEntityTypeEnum.parse(type)).toBe(type);
@@ -23,7 +23,7 @@ describe("noteEntityTypeEnum", () => {
   );
 
   it("rejects invalid entity type", () => {
-    expect(() => noteEntityTypeEnum.parse("invoice")).toThrow();
+    expect(() => noteEntityTypeEnum.parse("order")).toThrow();
   });
 });
 
@@ -80,7 +80,7 @@ describe("noteSchema", () => {
 
   it("rejects invalid entityType", () => {
     expect(() =>
-      noteSchema.parse({ ...validNote, entityType: "invoice" })
+      noteSchema.parse({ ...validNote, entityType: "order" })
     ).toThrow();
   });
 

@@ -1,0 +1,231 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { CreditCard, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CREDIT_MEMO_REASON_LABELS } from "@/lib/constants";
+import { creditMemoReasonEnum } from "@/lib/schemas/credit-memo";
+import type { CreditMemoReason, CreditMemo } from "@/lib/schemas/credit-memo";
+import type { Invoice } from "@/lib/schemas/invoice";
+
+interface CreateCreditMemoModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  invoice: Invoice;
+  existingCreditMemos: CreditMemo[];
+}
+
+interface LineItemCredit {
+  id: string;
+  description: string;
+  maxCredit: number;
+  creditAmount: string;
+  selected: boolean;
+}
+
+function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
+
+export function CreateCreditMemoModal({
+  open,
+  onOpenChange,
+  invoice,
+  existingCreditMemos,
+}: CreateCreditMemoModalProps) {
+  const [reason, setReason] = useState<CreditMemoReason | "">("");
+  const [lineItems, setLineItems] = useState<LineItemCredit[]>(() =>
+    invoice.lineItems.map((item) => ({
+      id: item.id,
+      description: item.description,
+      maxCredit: item.lineTotal,
+      creditAmount: item.lineTotal.toFixed(2),
+      selected: false,
+    }))
+  );
+
+  // State resets naturally: parent must conditionally render
+  // this component ({showCM && <CreateCreditMemoModal />})
+  // so it unmounts on close and remounts fresh on open.
+
+  const existingCreditTotal = useMemo(
+    () => existingCreditMemos.reduce((sum, cm) => sum + cm.totalCredit, 0),
+    [existingCreditMemos]
+  );
+
+  const maxAllowedCredit = invoice.total - existingCreditTotal;
+
+  const totalCredit = useMemo(
+    () =>
+      lineItems
+        .filter((item) => item.selected)
+        .reduce((sum, item) => sum + (parseFloat(item.creditAmount) || 0), 0),
+    [lineItems]
+  );
+
+  const isOverLimit = totalCredit > maxAllowedCredit;
+  const hasSelectedItems = lineItems.some((item) => item.selected);
+  const isValid = reason !== "" && hasSelectedItems && totalCredit > 0 && !isOverLimit;
+
+  function toggleItem(id: string) {
+    setLineItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, selected: !item.selected } : item
+      )
+    );
+  }
+
+  function updateCreditAmount(id: string, value: string) {
+    setLineItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+        const parsed = parseFloat(value);
+        const clamped = isNaN(parsed) ? value : String(Math.min(parsed, item.maxCredit));
+        return { ...item, creditAmount: clamped };
+      })
+    );
+  }
+
+  function handleSubmit() {
+    toast.success(
+      `Credit memo for ${formatCurrency(totalCredit)} created on ${invoice.invoiceNumber}`
+    );
+    onOpenChange(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <CreditCard className="size-5 text-action" />
+            Create Credit Memo
+          </DialogTitle>
+          <DialogDescription>
+            Issue a credit against {invoice.invoiceNumber}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="credit-reason">Reason</Label>
+            <Select
+              value={reason}
+              onValueChange={(v) => setReason(v as CreditMemoReason)}
+            >
+              <SelectTrigger className="w-full" id="credit-reason">
+                <SelectValue placeholder="Select reason" />
+              </SelectTrigger>
+              <SelectContent>
+                {creditMemoReasonEnum.options.map((r) => (
+                  <SelectItem key={r} value={r}>
+                    {CREDIT_MEMO_REASON_LABELS[r]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Line Items</Label>
+            <div className="rounded-md border border-border divide-y divide-border">
+              {lineItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 px-3 py-2"
+                >
+                  <Checkbox
+                    checked={item.selected}
+                    onCheckedChange={() => toggleItem(item.id)}
+                    aria-label={`Select ${item.description}`}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-foreground truncate">
+                      {item.description}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Max: {formatCurrency(item.maxCredit)}
+                    </p>
+                  </div>
+                  <div className="relative w-24">
+                    <span className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">
+                      $
+                    </span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max={item.maxCredit}
+                      value={item.creditAmount}
+                      onChange={(e) => updateCreditAmount(item.id, e.target.value)}
+                      className="pl-5 h-8 text-sm font-mono"
+                      disabled={!item.selected}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between rounded-md border border-border bg-elevated px-3 py-2">
+            <span className="text-sm font-medium text-muted-foreground">
+              Total Credit
+            </span>
+            <span className="text-sm font-mono font-medium text-foreground">
+              {formatCurrency(totalCredit)}
+            </span>
+          </div>
+
+          {existingCreditTotal > 0 && (
+            <p className="text-xs text-muted-foreground">
+              Existing credits: {formatCurrency(existingCreditTotal)} &mdash;
+              Maximum remaining: {formatCurrency(maxAllowedCredit)}
+            </p>
+          )}
+
+          {isOverLimit && (
+            <div className="flex items-start gap-2 rounded-md border border-error/30 bg-error/10 p-3">
+              <AlertTriangle className="size-4 mt-0.5 text-error shrink-0" />
+              <p className="text-sm text-error">
+                Total credit ({formatCurrency(totalCredit)}) exceeds the maximum
+                allowed ({formatCurrency(maxAllowedCredit)})
+              </p>
+            </div>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={!isValid}>
+            <CreditCard className="size-4" />
+            Issue Credit Memo
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
