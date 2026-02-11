@@ -372,11 +372,11 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                   </TableHead>
                   <TableHead>
                     <ColumnHeaderMenu
-                      label="Amount"
-                      sortKey="total"
+                      label="Created"
+                      sortKey="createdAt"
                       currentSortKey={sortKey}
                       currentSortDir={sortDir}
-                      onSort={(_k, dir) => handleSort("total", dir)}
+                      onSort={(_k, dir) => handleSort("createdAt", dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -390,20 +390,20 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                   </TableHead>
                   <TableHead>
                     <ColumnHeaderMenu
+                      label="Amount"
+                      sortKey="total"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort("total", dir)}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
                       label="Balance Due"
                       sortKey="balanceDue"
                       currentSortKey={sortKey}
                       currentSortDir={sortDir}
                       onSort={(_k, dir) => handleSort("balanceDue", dir)}
-                    />
-                  </TableHead>
-                  <TableHead>
-                    <ColumnHeaderMenu
-                      label="Created"
-                      sortKey="createdAt"
-                      currentSortKey={sortKey}
-                      currentSortDir={sortDir}
-                      onSort={(_k, dir) => handleSort("createdAt", dir)}
                     />
                   </TableHead>
                 </TableRow>
@@ -441,11 +441,14 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm font-medium tabular-nums">
-                      {formatCurrency(invoice.total)}
+                    <TableCell className="text-sm text-muted-foreground">
+                      {formatDate(invoice.createdAt)}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {formatDate(invoice.dueDate)}
+                    </TableCell>
+                    <TableCell className="text-sm font-medium tabular-nums">
+                      {formatCurrency(invoice.total)}
                     </TableCell>
                     <TableCell className="text-sm font-medium tabular-nums">
                       {invoice.balanceDue > 0 ? (
@@ -453,9 +456,6 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                       ) : (
                         <span className="text-muted-foreground">--</span>
                       )}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(invoice.createdAt)}
                     </TableCell>
                   </TableRow>
                 ))}

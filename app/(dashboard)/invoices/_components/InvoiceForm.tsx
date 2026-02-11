@@ -244,7 +244,12 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
   }
 
   function handleSaveDraft() {
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors above", {
+        description: "Some required fields are missing or invalid.",
+      });
+      return;
+    }
     toast.success(isEdit ? "Invoice updated" : "Invoice saved as draft", {
       description: isEdit
         ? `${invoiceNumber} has been updated.`
@@ -254,12 +259,20 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
   }
 
   function handleReviewAndSend() {
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Please fix the errors above", {
+        description: "Some required fields are missing or invalid.",
+      });
+      return;
+    }
     setShowReview(true);
   }
 
   function handleSendFromReview() {
     // Mock: set status to sent
+    toast.success("Invoice sent", {
+      description: `${invoiceNumber} has been sent to ${selectedCustomer?.email ?? "the customer"}.`,
+    });
     router.push("/invoices");
   }
 
