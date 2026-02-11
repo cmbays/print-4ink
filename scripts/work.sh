@@ -300,9 +300,21 @@ CONTEXT
             fi
         fi
     else
+        # ── Not in tmux: still create a detached session ────────────────
+        # tmux new-session -d works fine outside tmux
+        tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
+        tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+        tmux send-keys -t "$TOPIC" "claude" Enter
+
+        if [[ -n "$PROMPT" ]]; then
+            sleep 3
+            tmux send-keys -t "$TOPIC" "$PROMPT" Enter
+        fi
+
+        echo "  Session:   $TOPIC (detached)"
         echo ""
-        echo "  Not in tmux. Start with:"
-        echo "    cd $WORKTREE_DIR && tmux new-session -s $TOPIC && claude"
+        echo "  Attach from a new Ghostty pane:"
+        echo "    tmux attach -t $TOPIC"
     fi
 }
 
