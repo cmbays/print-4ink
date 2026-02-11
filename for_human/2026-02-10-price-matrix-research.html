@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Price Matrix Vertical Research &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --purple: #a78bfa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    .back-btn:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-decision { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .meta-item {
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+    }
+    .meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .session-resume {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+    .session-resume code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--action);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    .related-nav { margin-bottom: 32px; }
+    .related-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .related-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .related-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      transition: all 0.15s ease;
+    }
+    .related-link:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+    .related-link .related-desc {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .header-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 32px 0;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    td:first-child { color: var(--text-primary); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    .code-block {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      color: var(--text-primary);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+    .stat-value-success { color: var(--success); }
+    .stat-value-warning { color: var(--warning); }
+    .stat-value-purple { color: var(--purple); }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .count-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--action);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .priority-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+    .p0 { background: rgba(248, 113, 113, 0.15); color: var(--error); }
+    .p1 { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .p2 { background: rgba(167, 139, 250, 0.12); color: var(--purple); }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-row:last-child { border-bottom: none; }
+    .feature-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .feature-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .competitor-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .competitor-bar:last-child { border-bottom: none; }
+    .competitor-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      width: 110px;
+      flex-shrink: 0;
+    }
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-surface);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    .competitor-score {
+      font-size: 13px;
+      font-weight: 600;
+      width: 44px;
+      text-align: right;
+      color: var(--text-secondary);
+    }
+
+    .doc-link-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .doc-link-card:hover {
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+    .doc-icon {
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .doc-icon-industry { background: rgba(34, 211, 238, 0.1); color: var(--action); }
+    .doc-icon-competitor { background: rgba(52, 211, 153, 0.1); color: var(--success); }
+    .doc-icon-integration { background: rgba(251, 191, 36, 0.1); color: var(--warning); }
+    .doc-icon-ux { background: rgba(167, 139, 250, 0.1); color: var(--purple); }
+    .doc-icon-synthesis { background: rgba(248, 113, 113, 0.1); color: var(--error); }
+    .doc-info { flex: 1; }
+    .doc-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .doc-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .doc-arrow {
+      color: var(--text-muted);
+      font-size: 16px;
+      transition: color 0.15s;
+    }
+    .doc-link-card:hover .doc-arrow { color: var(--action); }
+
+    .callout {
+      background: var(--bg-elevated);
+      border-left: 3px solid var(--action);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .callout-warning { border-left-color: var(--warning); }
+    .callout-success { border-left-color: var(--success); }
+    .callout p { margin-bottom: 0; }
+    .callout strong { color: var(--text-primary); }
+
+    .quadrant {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .quadrant .highlight { color: var(--action); font-weight: 700; }
+    .quadrant .baseline { color: var(--warning); }
+    .quadrant .dim { color: var(--text-muted); }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <!-- HEADER -->
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-research">Research</span>
+        <span class="tag tag-plan">Plan</span>
+        <span class="tag tag-decision">Decision</span>
+      </div>
+
+      <h1>Price Matrix Vertical Research</h1>
+      <p class="subtitle">Comprehensive market research, competitor analysis, and prioritized feature recommendations for the pricing engine vertical</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-10</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>session/0210-price-matrix</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Pre-build Research</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Price Matrix</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume c2b2fb1b-b94a-4b17-bab0-3616c520c716</code>
+      </div>
+    </header>
+
+    <!-- RELATED SESSIONS -->
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="2026-02-08-quoting-discovery.html">
+          &larr; Quoting Discovery <span class="related-desc">&mdash; First vertical research</span>
+        </a>
+        <a class="related-link" href="2026-02-10-customer-mgmt-breadboard.html">
+          Customer Mgmt &rarr; <span class="related-desc">&mdash; Previous vertical</span>
+        </a>
+      </div>
+    </nav>
+
+    <hr class="header-divider">
+
+    <!-- ========== BODY CONTENT ========== -->
+
+    <!-- RESEARCH AT A GLANCE -->
+    <h2>Research at a Glance</h2>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value">10</div>
+        <div class="stat-label">Competitors Analyzed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value stat-value-purple">80+</div>
+        <div class="stat-label">Industry Sources</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value stat-value-warning">4</div>
+        <div class="stat-label">Research Agents</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value stat-value-success">36</div>
+        <div class="stat-label">Features Prioritized</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>The Opportunity:</strong> No competitor has pulled away &mdash; PrintLife, YoPrint, Teesom, and PriceIt are all tied at 74%. Screen Print Pro can leapfrog everyone by combining PrintLife's automation with Teesom's flexibility, YoPrint's innovation, and a 10x better UX.</p>
+    </div>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <h2>Executive Summary</h2>
+
+    <p>Four research agents worked in parallel to analyze the screen printing price matrix landscape: industry best practices, competitor solutions, cross-vertical integration requirements, and UX/UI innovation patterns.</p>
+
+    <h3>How Screen Printing Pricing Works</h3>
+    <p>Pricing is a <strong>multi-dimensional matrix</strong> where per-piece cost is calculated from:</p>
+    <div class="code-block">Price = (Garment Cost &times; Markup) + (Setup Fees &divide; Quantity) + (Colors &times; Locations &times; Per-Hit Rate) + Surcharges</div>
+
+    <p style="margin-top: 16px;">The primary drivers are <strong>quantity breaks</strong> (12, 24, 48, 72, 144+), <strong>color count</strong> (each color = one screen), <strong>print locations</strong> (front, back, sleeves), and <strong>garment type</strong> (t-shirt vs. hoodie). Secondary factors include setup fees ($15&ndash;35/screen), specialty inks (+$0.50&ndash;1.50/print), and rush orders (+10&ndash;100%).</p>
+
+    <h3>The 10x Strategy</h3>
+    <p>PrintLife optimizes for <em>automation at the expense of visibility</em>. We optimize for <strong>both</strong>. Three pillars:</p>
+    <ol>
+      <li><strong>Simplicity</strong> &mdash; Wizard setup in 5 minutes with smart defaults (match PrintLife's 5/5)</li>
+      <li><strong>Transparency</strong> &mdash; Real-time margin % per price cell with green/yellow/red indicators (PrintLife's blind spot)</li>
+      <li><strong>Flexibility</strong> &mdash; Unlimited matrices, power mode grid, CSV import/export (PrintLife's 2/5 &rarr; our 5/5)</li>
+    </ol>
+
+    <!-- COMPETITOR LANDSCAPE -->
+    <h2>Competitor Landscape</h2>
+
+    <h3>The Print Life &mdash; Our Baseline</h3>
+    <div class="card">
+      <p class="card-label">4Ink's Current Tool &mdash; 74% (26/35)</p>
+      <table>
+        <tr><th>Criterion</th><th>Rating</th><th>Assessment</th></tr>
+        <tr><td>Capabilities</td><td>3/5</td><td>Basic matrix types, recently added measurement-based pricing</td></tr>
+        <tr><td>User Satisfaction</td><td>3/5</td><td>Positive on automation, limited public reviews</td></tr>
+        <tr><td>Ease of Use</td><td>4/5</td><td>Designed to "just work" with low learning curve</td></tr>
+        <tr><td><strong>Flexibility</strong></td><td style="color: var(--error)"><strong>2/5</strong></td><td>Basic structures only. No custom rules, no breakless pricing</td></tr>
+        <tr><td>Simplicity</td><td style="color: var(--success)"><strong>5/5</strong></td><td>Core strength &mdash; prevents overwhelm</td></tr>
+        <tr><td>Integration</td><td>4/5</td><td>All-in-one: quoting &rarr; production &rarr; shipping</td></tr>
+        <tr><td>Automation</td><td style="color: var(--success)"><strong>5/5</strong></td><td>Prevents common errors (forgetting setup fees, ink charges)</td></tr>
+      </table>
+    </div>
+
+    <h3>Competitive Ratings</h3>
+    <div class="card" style="padding: 16px 20px;">
+      <div class="competitor-bar">
+        <span class="competitor-name" style="color: var(--warning)">Print Life</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 74%; background: var(--warning);"></div></div>
+        <span class="competitor-score">74%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">YoPrint</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 74%; background: var(--action);"></div></div>
+        <span class="competitor-score">74%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">Teesom</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 74%; background: var(--action);"></div></div>
+        <span class="competitor-score">74%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">PriceIt</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 74%; background: var(--action);"></div></div>
+        <span class="competitor-score">74%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">DecoNetwork</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 69%; background: var(--text-muted);"></div></div>
+        <span class="competitor-score">69%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">Printavo</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 69%; background: var(--text-muted);"></div></div>
+        <span class="competitor-score">69%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">ShopWorx</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 69%; background: var(--text-muted);"></div></div>
+        <span class="competitor-score">69%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name">OrderMyGear</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 66%; background: var(--text-muted);"></div></div>
+        <span class="competitor-score">66%</span>
+      </div>
+      <div class="competitor-bar">
+        <span class="competitor-name" style="color: var(--error)">InkSoft</span>
+        <div class="bar-track"><div class="bar-fill" style="width: 60%; background: var(--error);"></div></div>
+        <span class="competitor-score">60%</span>
+      </div>
+    </div>
+
+    <h3>Where We Win</h3>
+    <div class="quadrant"><span class="dim">                    High Flexibility</span>
+<span class="dim">                         |</span>
+<span class="dim">              Teesom</span> <span class="dim">o</span>   <span class="dim">|</span>   <span class="highlight">&#9679; Screen Print Pro</span>
+<span class="dim">                         |      (TARGET)</span>
+<span class="dim">                         |</span>
+<span class="dim"> Low Automation ──────────┼──────── High Automation</span>
+<span class="dim">                         |</span>
+<span class="dim">          ShopWorx</span> <span class="dim">o</span>     <span class="dim">|</span>     <span class="baseline">o Print Life</span>
+<span class="dim">                         |     o Printavo</span>
+<span class="dim">                         |</span>
+<span class="dim">                    Low Flexibility</span></div>
+    <p>No current competitor occupies the <strong>high automation + high flexibility</strong> quadrant. That's our target.</p>
+
+    <h3>Key Innovations to Adopt</h3>
+    <table>
+      <tr><th>Innovation</th><th>Source</th><th>Impact</th></tr>
+      <tr><td>Breakless pricing</td><td>YoPrint</td><td>Eliminates quantity break gaming, fairer pricing</td></tr>
+      <tr><td>Vendor cost sync</td><td>YoPrint</td><td>Auto-update garment costs from SanMar, AlphaBroder</td></tr>
+      <tr><td>Size matrix entry</td><td>ShopWorx</td><td>S:10, M:25, L:15 in one line &mdash; 3x faster</td></tr>
+      <tr><td>Production variables</td><td>ShopWorx</td><td>Price by mesh count, ink type, squeegee</td></tr>
+      <tr><td>Area-based pricing</td><td>DecoNetwork</td><td>Per-square-inch pricing by color count</td></tr>
+      <tr><td>Unlimited matrices</td><td>Teesom</td><td>No artificial limits on pricing configs</td></tr>
+    </table>
+
+    <!-- INTEGRATION ARCHITECTURE -->
+    <h2>Integration Architecture</h2>
+
+    <p>Industry leaders treat pricing as a <strong>centralized calculation engine</strong> consumed by all verticals &mdash; not a lookup table embedded in the quote form.</p>
+
+    <div class="card">
+      <p class="card-label">Data Flow</p>
+      <p><strong>Customer Context</strong> &rarr; <strong>Price Matrix Engine</strong> &rarr; <strong>Quote</strong> (with margin) &rarr; <strong>Price Lock on Approval</strong> &rarr; <strong>Invoice</strong> (honors locked prices) &rarr; <strong>Production</strong> (tracks actual costs) &rarr; <strong>Reporting</strong> (margin analysis) &rarr; feedback to Price Matrix calibration</p>
+    </div>
+
+    <h3>Five Integration Points</h3>
+    <ol>
+      <li><strong>Customer</strong> &mdash; Contract pricing, loyalty tiers, manual discount authority with approval workflow</li>
+      <li><strong>Quoting</strong> &mdash; Primary consumer. Auto-calculated quotes, margin visibility, price locking, quote versioning</li>
+      <li><strong>Invoicing</strong> &mdash; Quote-to-invoice conversion with price locking, progress billing (50% deposit), tax, audit trail</li>
+      <li><strong>Reporting</strong> &mdash; Margin by job/customer/product, pricing trends, discount impact analysis</li>
+      <li><strong>Production</strong> &mdash; Actual vs. estimated costs, variance tracking, realized margin per job</li>
+    </ol>
+
+    <!-- UX STRATEGY -->
+    <h2>UX Strategy &mdash; 10x Better</h2>
+
+    <h3>Progressive Disclosure</h3>
+    <div class="card">
+      <p class="card-title">Simple Mode (Default)</p>
+      <p class="card-desc">5-step wizard &mdash; enter shop basics, choose structure, set breakpoints, auto-calculate with smart defaults, preview with sample orders. New shop gets pricing in 5 minutes.</p>
+    </div>
+    <div class="card">
+      <p class="card-title">Power Mode (Advanced Toggle)</p>
+      <p class="card-desc">TanStack Table with inline editing, keyboard shortcuts (arrow keys, Ctrl+C/V), bulk actions, CSV import/export, fill handle for dragging values. Excel-like power without leaving the app.</p>
+    </div>
+
+    <h3>Real-Time Margin Indicators</h3>
+    <p>Every price cell gets a color indicator using our Niji palette:</p>
+    <table>
+      <tr><th>Margin</th><th>Color</th><th>Meaning</th></tr>
+      <tr><td>&ge; 30%</td><td style="color: var(--success)">Green (#54ca74)</td><td>Healthy profit</td></tr>
+      <tr><td>15&ndash;30%</td><td style="color: var(--warning)">Yellow (#ffc663)</td><td>Low profit, caution</td></tr>
+      <tr><td>&lt; 15%</td><td style="color: var(--error)">Red (#d23e08)</td><td>Unprofitable</td></tr>
+    </table>
+    <p>Tooltip on hover: <em>"Margin: 32% ($450 revenue - $306 cost = $144 profit)"</em></p>
+
+    <h3>Pain Points We Solve</h3>
+    <table>
+      <tr><th>Industry Pain Point</th><th>Our Solution</th></tr>
+      <tr><td>"Don't understand pricing after 3 years" (Shopvox)</td><td>Wizard setup, done in 5 minutes</td></tr>
+      <tr><td>No profitability reporting</td><td>Real-time margin % per cell + dashboard</td></tr>
+      <tr><td>No labor cost tracking</td><td>Factor hourly rate, setup time, press time</td></tr>
+      <tr><td>Can't experiment with pricing</td><td>What-if scenarios, undo/redo, version history</td></tr>
+      <tr><td>Manual Excel workflows</td><td>CSV import/export, inline editing</td></tr>
+    </table>
+
+    <!-- FEATURE RECOMMENDATIONS -->
+    <h2>Feature Recommendations</h2>
+
+    <div class="stat-grid-3">
+      <div class="stat">
+        <div class="stat-value" style="color: var(--error)">12</div>
+        <div class="stat-label">P0 &mdash; Critical</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">14</div>
+        <div class="stat-label">P1 &mdash; Surpass 4Ink</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value stat-value-purple">10</div>
+        <div class="stat-label">P2 &mdash; Top Market</div>
+      </div>
+    </div>
+
+    <!-- P0 -->
+    <h3>P0 &mdash; Critical (Table Stakes + PrintLife Parity)</h3>
+    <p>Must-have for any viable price matrix. We cannot demo without these.</p>
+    <div class="card" style="padding: 10px 20px;">
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Multi-dimensional pricing engine</div>
+          <div class="feature-desc">Calculate price from qty &times; colors &times; locations &times; garment type. Real-time, no "Calculate" button.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Quantity break configuration</div>
+          <div class="feature-desc">Custom break points (default: 12, 24, 48, 72, 144+). Auto-calculate per-tier pricing.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Color count pricing</div>
+          <div class="feature-desc">Per-color-hit rate ($0.50&ndash;1.00). Supports 1&ndash;8+ colors. Each color = one screen.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Print location pricing</div>
+          <div class="feature-desc">Front (base), back (+$2), sleeves (+$3), pocket (+$5). Per-location upcharges.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Setup fee management</div>
+          <div class="feature-desc">Per-screen fees ($15&ndash;35), bulk waiver rules (72+ pieces), reorder discounts.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Garment type &amp; cost library</div>
+          <div class="feature-desc">Garment types with wholesale costs, configurable markup %. Brand/style/color variants.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Real-time price preview</div>
+          <div class="feature-desc">Update entire pricing table instantly as user changes any input. No page reload.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Price breakdown display</div>
+          <div class="feature-desc">Show: Garment + Setup allocation + Print fees = Total. Collapsible detail view.</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Simple Mode wizard</div>
+          <div class="feature-desc">5-step setup with smart defaults. New shop gets pricing configured in 5 minutes.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Smart defaults</div>
+          <div class="feature-desc">Pre-fill with industry averages ($60/hr, $25/screen, 2x markup, standard tiers).</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Auto-error prevention</div>
+          <div class="feature-desc">Match PrintLife: auto-include setup fees, prevent forgetting ink and location charges.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p0">P0</span>
+        <div>
+          <div class="feature-name">Quote integration</div>
+          <div class="feature-desc">Quote form calls price matrix API for all calculations. Pricing flows to quotes seamlessly.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+    </div>
+
+    <!-- P1 -->
+    <h3>P1 &mdash; Phase 1 (Surpass PrintLife, Wow the Demo)</h3>
+    <p>Features that make Screen Print Pro clearly superior to PrintLife. This is the 10x demo moment.</p>
+    <div class="card" style="padding: 10px 20px;">
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Real-time margin indicators</div>
+          <div class="feature-desc">Green/yellow/red per price cell. Tooltip shows full cost/margin breakdown. <strong>PrintLife has ZERO margin visibility &mdash; this alone is 10x.</strong></div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Contract vs. retail pricing toggle</div>
+          <div class="feature-desc">Switch pricing modes per customer. Contract = lower margin, waived setup fees.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Customer-specific price sheets</div>
+          <div class="feature-desc">Assign custom pricing to contract customers. Override base matrix per customer relationship.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Rush order upcharges</div>
+          <div class="feature-desc">+10% (5&ndash;7 days), +25% (3&ndash;4 days), +50% (24&ndash;48hr). Auto-calculate from turnaround time.</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Specialty ink surcharges</div>
+          <div class="feature-desc">Water-based (+$0.50), discharge (+$0.75), metallic (+$1.00), glow (+$1.50) per print.</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Size matrix entry</div>
+          <div class="feature-desc">Single line: S:10, M:25, L:15, XL:8 instead of per-size rows. 3x faster data entry.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Unlimited price matrices</div>
+          <div class="feature-desc">No artificial limits. Create seasonal, customer-tier, event-specific matrices.</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">What-if scenarios</div>
+          <div class="feature-desc">"What if I raise prices 10%?" Side-by-side current vs. proposed with margin impact. <strong>No competitor offers this.</strong></div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Power Mode grid</div>
+          <div class="feature-desc">TanStack Table with inline editing, bulk actions, keyboard shortcuts. Toggle from Simple Mode.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">CSV import/export</div>
+          <div class="feature-desc">Export to CSV, import with column mapping wizard, inline validation, template download.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Margin threshold alerts</div>
+          <div class="feature-desc">Flag quotes below 30% margin for review. Configurable threshold per shop.</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Duplicate/template pricing</div>
+          <div class="feature-desc">One-click duplicate matrix. "Standard 2026" &rarr; "Black Friday 2026" in seconds.</div>
+        </div>
+        <span class="feature-meta">S</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Price locking on approval</div>
+          <div class="feature-desc">Freeze pricing when customer approves quote. Invoice honors locked price even if matrix changes.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p1">P1</span>
+        <div>
+          <div class="feature-name">Discount authority controls</div>
+          <div class="feature-desc">Max % per role, approval workflow for discounts exceeding threshold. Full audit trail.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <h3>P2 &mdash; Phase 2 (Match/Surpass Top Competitors)</h3>
+    <p>Features that position Screen Print Pro at or above every competitor in the market.</p>
+    <div class="card" style="padding: 10px 20px;">
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Breakless pricing</div>
+          <div class="feature-desc">Linear pricing without quantity break jumps. Eliminates gaming. Offer alongside traditional breaks.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Vendor cost integration</div>
+          <div class="feature-desc">Auto-sync garment costs from SanMar, AlphaBroder, S&amp;S Activewear APIs.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Version history + rollback</div>
+          <div class="feature-desc">Full audit trail with timestamps. Click to preview, "Restore This Version" button.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Profitability dashboard</div>
+          <div class="feature-desc">Margin by job, customer, product type. Discount impact analysis. Pricing trends.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Production cost tracking</div>
+          <div class="feature-desc">Actual vs. estimated costs. Labor hours, ink usage, variance analysis per job.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Area-based pricing</div>
+          <div class="feature-desc">Price per square inch by color count. Alternate mode to per-piece pricing.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Loyalty tier automation</div>
+          <div class="feature-desc">Auto-promote customers based on lifetime volume. Standard &rarr; Silver &rarr; Gold &rarr; Platinum.</div>
+        </div>
+        <span class="feature-meta">M</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">QuickBooks integration</div>
+          <div class="feature-desc">Two-way invoice sync, automatic tax calculation, payment reconciliation.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">AI pricing suggestions</div>
+          <div class="feature-desc">Suggest pricing based on historical quotes, margins, and win rates. Flag unprofitable patterns.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+      <div class="feature-row">
+        <span class="priority-badge p2">P2</span>
+        <div>
+          <div class="feature-name">Capacity-based pricing</div>
+          <div class="feature-desc">Adjust prices based on current shop load and press availability.</div>
+        </div>
+        <span class="feature-meta">L</span>
+      </div>
+    </div>
+
+    <!-- DEMO SUCCESS CRITERIA -->
+    <h2>Demo Success Criteria</h2>
+
+    <div class="callout callout-success">
+      <p><strong>Goal:</strong> Make 4Ink say "This is so much better than PrintLife."</p>
+    </div>
+
+    <h3>Must Demonstrate</h3>
+    <ol>
+      <li><strong>5-minute setup</strong> &mdash; Create a new price matrix from scratch using the wizard</li>
+      <li><strong>Instant margins</strong> &mdash; Green/yellow/red margin indicators per price cell</li>
+      <li><strong>What-if power</strong> &mdash; "What if I raise prices 10%?" with side-by-side comparison</li>
+      <li><strong>Quote flow</strong> &mdash; Create a quote that auto-pulls from the price matrix</li>
+      <li><strong>Contract pricing</strong> &mdash; Show different prices for contract vs. retail</li>
+      <li><strong>Price breakdown</strong> &mdash; Transparent garment + setup + print = total</li>
+    </ol>
+
+    <!-- RESEARCH DOCUMENTS -->
+    <h2>Research Documents</h2>
+    <p>Full research reports are available as rendered markdown on GitHub:</p>
+
+    <a class="doc-link-card" href="https://github.com/cmbays/print-4ink/blob/session/0210-price-matrix/docs/research/price-matrix-research.md" target="_blank">
+      <div class="doc-icon doc-icon-synthesis">&#9733;</div>
+      <div class="doc-info">
+        <div class="doc-title">Final Synthesis Report</div>
+        <div class="doc-meta">price-matrix-research.md &mdash; Executive summary, all findings, P0/P1/P2 recommendations</div>
+      </div>
+      <span class="doc-arrow">&rarr;</span>
+    </a>
+
+    <a class="doc-link-card" href="https://github.com/cmbays/print-4ink/blob/session/0210-price-matrix/docs/research/01-industry-practices.md" target="_blank">
+      <div class="doc-icon doc-icon-industry">&#9881;</div>
+      <div class="doc-info">
+        <div class="doc-title">Industry Best Practices</div>
+        <div class="doc-meta">01-industry-practices.md &mdash; Pricing dimensions, formulas, setup fees, MOQs, specialty inks</div>
+      </div>
+      <span class="doc-arrow">&rarr;</span>
+    </a>
+
+    <a class="doc-link-card" href="https://github.com/cmbays/print-4ink/blob/session/0210-price-matrix/docs/research/02-competitor-analysis.md" target="_blank">
+      <div class="doc-icon doc-icon-competitor">&#9878;</div>
+      <div class="doc-info">
+        <div class="doc-title">Competitor Analysis</div>
+        <div class="doc-meta">02-competitor-analysis.md &mdash; 10 platforms rated on 7 criteria, PrintLife baseline, innovation gaps</div>
+      </div>
+      <span class="doc-arrow">&rarr;</span>
+    </a>
+
+    <a class="doc-link-card" href="https://github.com/cmbays/print-4ink/blob/session/0210-price-matrix/docs/research/03-integration-map.md" target="_blank">
+      <div class="doc-icon doc-icon-integration">&#9854;</div>
+      <div class="doc-info">
+        <div class="doc-title">Integration Map</div>
+        <div class="doc-meta">03-integration-map.md &mdash; 5 vertical integrations, TypeScript schemas, API surfaces, data flows</div>
+      </div>
+      <span class="doc-arrow">&rarr;</span>
+    </a>
+
+    <a class="doc-link-card" href="https://github.com/cmbays/print-4ink/blob/session/0210-price-matrix/docs/research/04-ux-patterns.md" target="_blank">
+      <div class="doc-icon doc-icon-ux">&#9998;</div>
+      <div class="doc-info">
+        <div class="doc-title">UX/UI Patterns &amp; Innovations</div>
+        <div class="doc-meta">04-ux-patterns.md &mdash; Progressive disclosure, margin indicators, what-if, CSV UX, smart defaults</div>
+      </div>
+      <span class="doc-arrow">&rarr;</span>
+    </a>
+
+    <!-- NEXT STEPS -->
+    <h2>Next Steps</h2>
+    <ol>
+      <li><strong>Review report</strong> with domain knowledge of 4Ink &mdash; flag anything that doesn't match reality</li>
+      <li><strong>Run vertical-discovery skill</strong> to formalize scope from this research</li>
+      <li><strong>Breadboard</strong> the price matrix UI (places, affordances, wiring)</li>
+      <li><strong>Build Phase 1a</strong> (P0: pricing engine + wizard + quote integration)</li>
+      <li><strong>Build Phase 1b</strong> (P1 highlights: margin indicators, what-if, power mode)</li>
+      <li><strong>Demo to 4Ink</strong> with the wow features</li>
+    </ol>
+
+    <footer>
+      Screen Print Pro &mdash; Price Matrix Vertical Research &mdash; 2026-02-10
+    </footer>
+  </div>
+</body>
+</html>
