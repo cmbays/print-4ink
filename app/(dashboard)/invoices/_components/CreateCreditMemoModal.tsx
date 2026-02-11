@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CREDIT_MEMO_REASON_LABELS } from "@/lib/constants";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { creditMemoReasonEnum } from "@/lib/schemas/credit-memo";
 import type { CreditMemoReason, CreditMemo } from "@/lib/schemas/credit-memo";
 import type { Invoice } from "@/lib/schemas/invoice";
@@ -41,13 +41,6 @@ interface LineItemCredit {
   maxCredit: number;
   creditAmount: string;
   selected: boolean;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 }
 
 export function CreateCreditMemoModal({
@@ -168,7 +161,7 @@ export function CreateCreditMemoModal({
               {lineItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3 px-3 py-2"
+                  className="flex items-center gap-2 px-4 py-2"
                 >
                   <Checkbox
                     checked={item.selected}
@@ -194,6 +187,7 @@ export function CreateCreditMemoModal({
                       max={item.maxCredit}
                       value={item.creditAmount}
                       onChange={(e) => updateCreditAmount(item.id, e.target.value)}
+                      aria-label={`Credit amount for ${item.description}`}
                       className="pl-5 h-8 text-sm font-mono"
                       disabled={!item.selected}
                     />
@@ -203,7 +197,7 @@ export function CreateCreditMemoModal({
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-md border border-border bg-elevated px-3 py-2">
+          <div className="flex items-center justify-between rounded-md border border-border bg-elevated px-4 py-2">
             <span className="text-sm font-medium text-muted-foreground">
               Total Credit
             </span>

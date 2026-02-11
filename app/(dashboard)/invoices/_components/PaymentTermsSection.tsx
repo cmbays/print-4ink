@@ -47,7 +47,7 @@ export function PaymentTermsSection({
       <div className="grid grid-cols-2 gap-4">
         {/* Payment Terms */}
         <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">
+          <Label htmlFor="payment-terms" className="text-xs text-muted-foreground">
             Payment Terms
           </Label>
           <Select
@@ -56,7 +56,7 @@ export function PaymentTermsSection({
               handleTermsChange(value as PaymentTerms)
             }
           >
-            <SelectTrigger className="h-9 text-sm">
+            <SelectTrigger id="payment-terms" className="h-9 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

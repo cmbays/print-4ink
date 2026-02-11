@@ -11,22 +11,21 @@ import {
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
 import type { Payment } from "@/lib/schemas/invoice";
 import { CreditCard } from "lucide-react";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 
 interface PaymentLedgerProps {
   payments: Payment[];
   total: number;
 }
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
-}
-
 function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
+  const date = dateString.includes("T")
+    ? new Date(dateString)
+    : (() => {
+        const [year, month, day] = dateString.split("-").map(Number);
+        return new Date(year, month - 1, day);
+      })();
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -39,7 +38,7 @@ export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
       <div className="rounded-lg border border-border bg-card p-6">
         <h3 className="text-base font-semibold text-foreground">Payments</h3>
         <div className="mt-4 flex flex-col items-center gap-2 py-6 text-center">
-          <CreditCard className="size-8 text-muted-foreground" />
+          <CreditCard className="size-12 text-muted-foreground" aria-hidden="true" />
           <p className="text-sm text-muted-foreground">No payments recorded</p>
         </div>
       </div>

@@ -1,22 +1,11 @@
-"use client";
-
 import { invoices } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber, formatCurrencyCompact } from "@/lib/helpers/money";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function computeStats() {
   // 1. Total Outstanding — sum of balanceDue for sent + partial invoices
@@ -83,8 +72,8 @@ export function InvoiceStatsBar() {
   const { totalOutstanding, overdueCount, overdueTotal, paidThisMonth, avgDays } = computeStats();
 
   const values: Record<(typeof stats)[number]["key"], string> = {
-    outstanding: formatCurrency(totalOutstanding),
-    overdue: `${overdueCount} (${formatCurrency(overdueTotal)})`,
+    outstanding: formatCurrencyCompact(totalOutstanding),
+    overdue: `${overdueCount} (${formatCurrencyCompact(overdueTotal)})`,
     paidThisMonth: String(paidThisMonth),
     avgDays: `${avgDays}d`,
   };

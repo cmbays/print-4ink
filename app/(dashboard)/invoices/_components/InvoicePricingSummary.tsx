@@ -1,13 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
+import { formatCurrency } from "@/lib/helpers/money";
 
 interface InvoicePricingSummaryProps {
   subtotal: number;

@@ -82,7 +82,7 @@ depends_on: []
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| **big.js** | ^6 | Arbitrary-precision decimal arithmetic for all monetary calculations |
+| **big.js** | ^7.0.1 | Arbitrary-precision decimal arithmetic for all monetary calculations |
 
 **Why big.js**: JavaScript's IEEE 754 floating-point causes silent errors in financial math (`0.1 + 0.2 ≠ 0.3`). big.js provides exact decimal arithmetic in 6KB — the smallest of the three libraries by the same author (big.js < bignumber.js < decimal.js). It covers exactly what we need: add, subtract, multiply, divide, compare.
 

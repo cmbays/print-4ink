@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
-import { money } from "@/lib/helpers/money";
+import { money, formatCurrency } from "@/lib/helpers/money";
 import { paymentMethodEnum } from "@/lib/schemas/invoice";
 import type { Invoice, PaymentMethod } from "@/lib/schemas/invoice";
 
@@ -30,13 +30,6 @@ interface RecordPaymentSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   invoice: Invoice;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 }
 
 export function RecordPaymentSheet({

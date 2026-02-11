@@ -30,7 +30,7 @@ import {
   CREDIT_MEMO_REASON_LABELS,
 } from "@/lib/constants";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { Invoice, Payment } from "@/lib/schemas/invoice";
 import type { Customer } from "@/lib/schemas/customer";
 import type { CreditMemo } from "@/lib/schemas/credit-memo";
@@ -42,15 +42,15 @@ interface InvoiceDetailViewProps {
   creditMemos: CreditMemo[];
 }
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
-}
-
 function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
+  // Date-only strings ("YYYY-MM-DD") parse as UTC — construct local to avoid day shift
+  const date = dateString.includes("T")
+    ? new Date(dateString)
+    : (() => {
+        const [year, month, day] = dateString.split("-").map(Number);
+        return new Date(year, month - 1, day);
+      })();
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",

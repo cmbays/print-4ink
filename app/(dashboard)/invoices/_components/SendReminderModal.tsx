@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { computeIsOverdue, computeDaysOverdue } from "@/lib/helpers/invoice-utils";
+import { formatCurrency } from "@/lib/helpers/money";
 import type { Invoice } from "@/lib/schemas/invoice";
 
 interface SendReminderModalProps {
@@ -19,13 +20,6 @@ interface SendReminderModalProps {
   onOpenChange: (open: boolean) => void;
   invoice: Invoice;
   customerEmail: string;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 }
 
 export function SendReminderModal({
@@ -43,7 +37,7 @@ export function SendReminderModal({
 
   const body = isOverdue
     ? `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} was due ${daysOverdue} ${daysOverdue === 1 ? "day" : "days"} ago.\n\nPlease arrange payment at your earliest convenience.\n\nThank you,\n4Ink Screen Printing`
-    : `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} is due on ${new Date(invoice.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}.\n\nPlease let us know if you have any questions.\n\nThank you,\n4Ink Screen Printing`;
+    : `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} is due on ${new Date(invoice.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}.\n\nPlease let us know if you have any questions.\n\nThank you,\n4Ink Screen Printing`;
 
   function handleSend() {
     toast.success(`Reminder sent to ${customerEmail}`);

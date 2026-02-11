@@ -13,14 +13,8 @@ import {
 } from "@/components/ui/sheet";
 import { InvoicePricingSummary } from "./InvoicePricingSummary";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@/lib/constants";
+import { formatCurrency } from "@/lib/helpers/money";
 import type { InvoiceLineItemData } from "./InvoiceLineItemRow";
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
 
 interface ReviewSendSheetProps {
   open: boolean;
@@ -199,7 +193,7 @@ export function ReviewSendSheet({
             </Button>
             <Button
               onClick={handleSend}
-              className="bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              className="bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-[4px_4px_0px]"
             >
               <Send size={16} className="mr-2" />
               Send Invoice

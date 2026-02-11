@@ -7,7 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { PricingSnapshot } from "@/lib/schemas/invoice";
 
 interface ChangeDiffPanelProps {
@@ -19,13 +19,6 @@ interface ChangeDiffPanelProps {
     taxAmount: number;
     total: number;
   };
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 }
 
 function DiffRow({

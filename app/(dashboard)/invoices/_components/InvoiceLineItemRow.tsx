@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@/lib/constants";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { InvoiceLineItemType } from "@/lib/schemas/invoice";
 
 const LINE_ITEM_TYPES: InvoiceLineItemType[] = [
@@ -22,13 +22,6 @@ const LINE_ITEM_TYPES: InvoiceLineItemType[] = [
   "rush",
   "other",
 ];
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
 
 export interface InvoiceLineItemData {
   id: string;

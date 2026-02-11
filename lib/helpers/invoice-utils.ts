@@ -25,6 +25,16 @@ export function isValidStatusTransition(
 }
 
 // ---------------------------------------------------------------------------
+// Date parsing — "YYYY-MM-DD" must parse as local, not UTC
+// ---------------------------------------------------------------------------
+
+function parseDateLocal(dateString: string): Date {
+  const [datePart] = dateString.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+// ---------------------------------------------------------------------------
 // Overdue computation (always computed at render time, never stored)
 // ---------------------------------------------------------------------------
 
@@ -38,7 +48,7 @@ export function computeIsOverdue(invoice: {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const due = new Date(invoice.dueDate);
+  const due = parseDateLocal(invoice.dueDate);
   due.setHours(0, 0, 0, 0);
 
   return due < today;
@@ -47,7 +57,7 @@ export function computeIsOverdue(invoice: {
 export function computeDaysOverdue(dueDate: string): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
+  const due = parseDateLocal(dueDate);
   due.setHours(0, 0, 0, 0);
 
   const diffMs = today.getTime() - due.getTime();

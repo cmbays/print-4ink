@@ -35,4 +35,22 @@ export function toFixed2(value: Big): string {
   return value.toFixed(2);
 }
 
+/** Format a number as USD currency string. */
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
+
+/** Format a number as USD with no decimals (for stats display). */
+export function formatCurrencyCompact(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 export { Big };

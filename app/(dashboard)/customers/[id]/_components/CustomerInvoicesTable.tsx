@@ -8,21 +8,21 @@ import {
   INVOICE_STATUS_BADGE_COLORS,
   INVOICE_STATUS_LABELS,
 } from "@/lib/constants";
+import { formatCurrency } from "@/lib/helpers/money";
 import type { Invoice } from "@/lib/schemas/invoice";
 
 interface CustomerInvoicesTableProps {
   invoices: Invoice[];
 }
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
-}
-
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
+  const date = dateStr.includes("T")
+    ? new Date(dateStr)
+    : (() => {
+        const [year, month, day] = dateStr.split("-").map(Number);
+        return new Date(year, month - 1, day);
+      })();
+  return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",

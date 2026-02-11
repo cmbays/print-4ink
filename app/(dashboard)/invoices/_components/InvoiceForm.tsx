@@ -41,7 +41,7 @@ import {
   calculateDueDate,
   convertQuoteToInvoiceLineItems,
 } from "@/lib/helpers/invoice-utils";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { PaymentTerms, PricingTier } from "@/lib/schemas/customer";
 import type { Invoice } from "@/lib/schemas/invoice";
 
@@ -61,13 +61,6 @@ function createEmptyLineItem(): InvoiceLineItemData {
     quantity: 1,
     unitPrice: 0,
   };
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
 }
 
 function generateInvoiceNumber(): string {
