@@ -9,7 +9,7 @@
 # UX Model:
 #   - New workstream (work <topic>) → detached tmux session. You attach from a new Ghostty pane.
 #   - Related work (work <topic> <base>) → new window in parent's tmux session. Appears as a tab.
-#   - Agent Teams → hook converts pane splits to windows in the same session.
+#   - Agent Teams → agents spawn as tmux panes. Use Ctrl+b z to zoom, Ctrl+b o to cycle.
 #   - work focus → read-only tiled monitor of all windows in current session.
 
 # ── Config ──────────────────────────────────────────────────────────────────
@@ -90,9 +90,9 @@ WORKFLOW
     3. Navigate: Ctrl+b n (next window) or Ctrl+b w (window tree)
 
   Agent Teams (automatic):
-    1. Claude uses TeamCreate → agents spawn via split-window
-    2. after-split-window hook converts each pane to a window
-    3. All agents appear as tabs in the same session
+    1. Claude uses TeamCreate → agents spawn as tmux panes
+    2. Use Ctrl+b z to zoom a pane, Ctrl+b o to cycle between them
+    3. Ctrl+b q shows pane numbers — press a number to jump
 
 EXAMPLES
   work invoicing-schema                                     # New workstream
@@ -104,10 +104,12 @@ EXAMPLES
 
 TMUX NAVIGATION
   Ctrl+b s   Session picker (switch between workstreams)
-  Ctrl+b n   Next window (cycle agents/branches in session)
+  Ctrl+b n   Next window (cycle branches in session)
   Ctrl+b p   Previous window
   Ctrl+b w   Window tree (all sessions + windows)
-  Ctrl+b z   Zoom pane (in focus view)
+  Ctrl+b z   Zoom/unzoom pane (fullscreen toggle)
+  Ctrl+b o   Cycle to next pane (agent teams)
+  Ctrl+b q   Flash pane numbers, press number to jump
 
 NOTES
   - New workstreams create detached sessions — attach from a new Ghostty pane
@@ -210,7 +212,7 @@ CONTEXT
     if ! tmux info &>/dev/null; then
         # No tmux server — start one with the new session
         tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
-        tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+
         tmux send-keys -t "$TOPIC" "claude" Enter
 
         if [[ -n "$PROMPT" ]]; then
@@ -230,8 +232,7 @@ CONTEXT
         # Creates session in background. User attaches from a new Ghostty pane.
         tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
 
-        # Set hook to auto-convert Agent Teams panes → windows
-        tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+
 
         # Launch Claude in the new session
         tmux send-keys -t "$TOPIC" "claude" Enter
@@ -304,7 +305,7 @@ CONTEXT
         else
             # Fallback: create detached session if parent not found
             tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
-            tmux set-hook -t "$TOPIC" after-split-window 'break-pane -t "#{hook_pane}"'
+    
             tmux send-keys -t "$TOPIC" "claude" Enter
 
             if [[ -n "$PROMPT" ]]; then
