@@ -1,7 +1,6 @@
 "use client";
 
 import { Send, X } from "lucide-react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -56,11 +55,8 @@ export function ReviewSendSheet({
   onSend,
 }: ReviewSendSheetProps) {
   function handleSend() {
-    onSend();
-    toast.success("Invoice sent", {
-      description: `${invoiceNumber} has been sent to ${customerEmail}.`,
-    });
     onOpenChange(false);
+    onSend();
   }
 
   return (

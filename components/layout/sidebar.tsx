@@ -15,11 +15,11 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Jobs", href: "/jobs", icon: ClipboardList },
   { name: "Quotes", href: "/quotes", icon: Calculator },
   { name: "Invoices", href: "/invoices", icon: Receipt },
-  { name: "Customers", href: "/customers", icon: Users },
+  { name: "Jobs", href: "/jobs", icon: ClipboardList },
   { name: "Screen Room", href: "/screens", icon: Layers },
+  { name: "Customers", href: "/customers", icon: Users },
   { name: "Garments", href: "/garments", icon: Package },
 ];
 
