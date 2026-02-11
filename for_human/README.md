@@ -16,6 +16,7 @@ This directory stores session summaries, decision logs, and reference materials 
 | File | Topic | Date | Tags |
 |------|-------|------|------|
 | [Git Worktree Migration + Memory Refactoring](2026-02-10-worktree-migration.html) | Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%. | 2026-02-10 | Build, Decision |
+| [work() — Worktree Orchestrator](2026-02-10-work-orchestrator.html) | Single command to create worktrees, tmux sessions, and launch Claude — with Agent Teams integration via tmux hook. | 2026-02-10 | Build, Feature |
 | [Quoting–Customer Interconnection](2026-02-10-quoting-interconnection.html) | Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search. | 2026-02-10 | Feature, Build |
 | [Customer Management Quality Gate](2026-02-10-customer-quality-gate.html) | Comprehensive 5-subagent audit of Customer List + Customer Detail pages. 10 fixes across 11 files. | 2026-02-10 | Build, Feature |
 | [Customer Management Breadboard](2026-02-10-customer-mgmt-breadboard.html) | Interactive visualization of Places, Components, Wiring, and Build Order for the Customer Management vertical | 2026-02-10 | Plan, Build |
