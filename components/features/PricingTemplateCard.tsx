@@ -43,6 +43,7 @@ interface PricingTemplateCardProps {
     updatedAt: string;
   };
   healthIndicator: MarginIndicatorType;
+  healthPercentage?: number;
   customersUsing: number;
   onEdit: () => void;
   onDuplicate: () => void;
@@ -88,6 +89,7 @@ const serviceTypeConfig = {
 export function PricingTemplateCard({
   template,
   healthIndicator,
+  healthPercentage = 0,
   customersUsing,
   onEdit,
   onDuplicate,
@@ -109,7 +111,7 @@ export function PricingTemplateCard({
           {/* Title + health dot */}
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <MarginIndicator
-              percentage={0}
+              percentage={healthPercentage}
               indicator={healthIndicator}
               size="md"
             />

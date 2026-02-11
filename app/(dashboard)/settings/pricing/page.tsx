@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Tag, Search, Printer, Layers } from "lucide-react";
+import { SetupWizard } from "./_components/SetupWizard";
 import {
   allScreenPrintTemplates,
   allDTFTemplates,
@@ -58,6 +59,7 @@ export default function PricingHubPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<ServiceTypeTab>("screen-print");
   const [searchQuery, setSearchQuery] = useState("");
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   // Mutable template state (for Phase 1 client-side operations)
   const [spTemplates, setSpTemplates] = useState<PricingTemplate[]>(
@@ -141,6 +143,14 @@ export default function PricingHubPage() {
     );
   };
 
+  const handleWizardSave = (template: PricingTemplate | DTFPricingTemplate) => {
+    if (template.serviceType === "screen-print") {
+      setSpTemplates((prev) => [...prev, template as PricingTemplate]);
+    } else {
+      setDtfTemplates((prev) => [...prev, template as DTFPricingTemplate]);
+    }
+  };
+
   // Health indicators (memoized)
   const spHealthMap = useMemo(() => {
     const map = new Map<string, MarginIndicator>();
@@ -193,9 +203,7 @@ export default function PricingHubPage() {
             </Button>
             <Button
               size="sm"
-              onClick={() => {
-                // TODO: Open P1.1 New Template Wizard
-              }}
+              onClick={() => setWizardOpen(true)}
             >
               <Plus className="size-4" />
               New Template
@@ -274,9 +282,7 @@ export default function PricingHubPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      // TODO: Open wizard
-                    }}
+                    onClick={() => setWizardOpen(true)}
                   >
                     <Plus className="size-4" />
                     Create Template
@@ -319,9 +325,7 @@ export default function PricingHubPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      // TODO: Open wizard
-                    }}
+                    onClick={() => setWizardOpen(true)}
                   >
                     <Plus className="size-4" />
                     Create Template
@@ -332,6 +336,12 @@ export default function PricingHubPage() {
           </div>
         )}
       </div>
+
+      <SetupWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        onSave={handleWizardSave}
+      />
     </>
   );
 }
