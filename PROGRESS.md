@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-11
-**Status**: Quoting + Customer Management verticals built and demo-ready. Price Matrix research complete (36 features prioritized). Invoicing vertical research complete — 19 key decisions captured, ready for breadboarding and build.
+**Status**: Quoting + Customer Management verticals built and demo-ready. Price Matrix breadboarded and ready to build (8 places, 167 affordances, 4-phase parallelized build plan). Invoicing vertical research complete — 19 key decisions captured, ready for breadboarding and build.
 
 ## What's Built
 
@@ -69,6 +69,24 @@
 - For-human summary: `for_human/2026-02-10-price-matrix-research.html`
 </details>
 
+<details><summary>Price Matrix Breadboard + Interview (PR #47 — merged)</summary>
+
+- Owner interview: 30 decisions covering pricing dimensions, customer tiers, navigation, quote integration, what-if UX, template system
+- DTF gang sheet pricing research: production costs ($0.10–$0.30/sq.in), industry pricing models, 4Ink competitive positioning
+- PrintLife export research: confirmed no export capability exists — pivoted to wizard-first approach, CSV import deferred to Phase 2
+- Breadboard: 8 places, 167 UI affordances, 80 code affordances, 14 data stores
+- Places: Pricing Hub (`/settings/pricing`), Setup Wizard (5-step modal), Tag-Template Mapping, Screen Print Matrix Editor, Side-by-Side Comparison, Cost Configuration, DTF Matrix Editor, Matrix Peek Sheet (from quotes)
+- Build order: 11 steps across 4 phases with 3 parallelization windows (up to 3 concurrent agents)
+  - Phase A: Schemas → Pricing Engine → Mock Data → Shared Components → Sidebar → Hub (sequential)
+  - Phase B: Wizard + SP Editor + DTF Editor (3 parallel agents)
+  - Phase C: Sandbox/Comparison + Power Mode Grid + Cost Config Sheet (3 parallel agents)
+  - Phase D: Matrix Peek Sheet + Tag-Template Mapping (2 parallel agents)
+- Key decisions: Settings-first nav (not top-level sidebar), separate matrices for SP vs DTF, tag→template customer mapping, wizard over import
+- Research docs: `docs/research/05-dtf-gang-sheet-pricing.md`, `06-owner-interview-findings.md`, `printlife-data-export-research.md`
+- Breadboard: `docs/breadboards/price-matrix-breadboard.md`
+- For-human summary: `for_human/2026-02-11-price-matrix-breadboard.html`
+</details>
+
 <details><summary>Invoicing Vertical Research (PR #46 — merged)</summary>
 
 - 5-agent research team: industry practices, competitor analysis (PrintLife focus), integration architecture, UX patterns, legal/compliance
@@ -99,8 +117,8 @@
 
 1. Demo Quoting + Customer Management to user (4Ink owner), collect final feedback
 2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-3. **Invoicing vertical**: Breadboard UI from research docs, build Phase 1a (schema + mock data), then Phase 1b–1e (list, detail, quote-to-invoice, payments, customer integration)
-4. **Price Matrix vertical**: Run vertical-discovery skill, breadboard UI, build Phase 1a (P0 engine + wizard + quote integration)
+3. **Price Matrix vertical — BUILD**: Execute 4-phase build plan from breadboard. Phase A (schemas, engine, mock data, shared components, sidebar, hub), then Phase B–D with parallel agents. Breadboard: `docs/breadboards/price-matrix-breadboard.md`
+4. **Invoicing vertical**: Breadboard UI from research docs, build Phase 1a (schema + mock data), then Phase 1b–1e (list, detail, quote-to-invoice, payments, customer integration)
 5. Address deferred tech debt (#15-#18) as needed
 
 ## Document Map
@@ -119,7 +137,10 @@
 | `docs/strategy/screen-print-pro-journey-quoting.md` | Improved journey design |
 | `docs/strategy/STRATEGY_README.md` | Index of all strategy docs |
 | `docs/research/price-matrix-research.md` | Price Matrix synthesis report (P0/P1/P2 features) |
+| `docs/breadboards/price-matrix-breadboard.md` | Price Matrix breadboard (8 places, 167 affordances, build order) |
+| `docs/research/06-owner-interview-findings.md` | Price Matrix owner interview decisions (30 findings) |
 | `for_human/2026-02-10-price-matrix-research.html` | Price Matrix research summary for humans |
+| `for_human/2026-02-11-price-matrix-breadboard.html` | Price Matrix breadboard summary for humans |
 | `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
 | `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
 | `for_human/2026-02-10-invoicing-vertical-research.html` | Invoicing research summary for humans |
