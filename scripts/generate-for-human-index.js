@@ -13,6 +13,7 @@
  * Zero external dependencies. Uses only Node.js built-ins (fs, path).
  */
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 const path = require('path');
 
