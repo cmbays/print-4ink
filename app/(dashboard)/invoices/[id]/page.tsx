@@ -18,7 +18,6 @@ export default async function InvoiceDetailPage({
       <>
         <Topbar
           breadcrumbs={[
-            { label: "Dashboard", href: "/" },
             { label: "Invoices", href: "/invoices" },
             { label: "Not Found" },
           ]}
@@ -56,7 +55,6 @@ export default async function InvoiceDetailPage({
     <>
       <Topbar
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
           { label: "Invoices", href: "/invoices" },
           { label: invoice.invoiceNumber },
         ]}
