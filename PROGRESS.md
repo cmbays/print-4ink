@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-11
-**Status**: Quoting + Customer Management verticals built and demo-ready. Price Matrix breadboarded and ready to build (8 places, 167 affordances, 4-phase parallelized build plan). Invoicing vertical research complete — 19 key decisions captured, ready for breadboarding and build.
+**Status**: Quoting + Customer Management + Invoicing verticals built and demo-ready. Price Matrix breadboarded and ready to build (8 places, 167 affordances, 4-phase parallelized build plan).
 
 ## What's Built
 
@@ -14,17 +14,18 @@
 - Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
 - shadcn/ui components (24 primitives)
 - Fonts: Inter + JetBrains Mono via `next/font`, dark mode default
-- Vitest (266 tests, 12 test files), GitHub Actions CI
-- Layout shell: sidebar (6 nav links) + per-page Topbar breadcrumbs + main content area
+- Vitest (314 tests, 14 test files), GitHub Actions CI
+- Layout shell: sidebar (7 nav links incl. Invoices) + per-page Topbar breadcrumbs + main content area
 - Dashboard: summary cards, "Needs Attention", "In Progress" sections
 </details>
 
-<details><summary>Data Layer (11 Zod schemas)</summary>
+<details><summary>Data Layer (13 Zod schemas)</summary>
 
-- Schemas: job, quote, customer, garment, screen, color, artwork, contact, group, address, note
-- Constants: production states, priorities, burn status, quote status, lifecycle, health, type tags, payment terms, pricing tiers
-- Mock data: 10 customers, 13 contacts, 2 groups, 20 addresses, 21 notes, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garments, 8 artworks
-- Reverse lookup helpers: getCustomerQuotes/Jobs/Contacts/Notes/Artworks
+- Schemas: job, quote, customer, garment, screen, color, artwork, contact, group, address, note, invoice, credit-memo
+- Constants: production states, priorities, burn status, quote status, invoice status, payment methods, credit memo reasons, lifecycle, health, type tags, payment terms, pricing tiers
+- Mock data: 10 customers, 13 contacts, 2 groups, 20 addresses, 21 notes, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garments, 8 artworks, 8 invoices, 11 payments, 2 credit memos
+- Reverse lookup helpers: getCustomerQuotes/Jobs/Contacts/Notes/Artworks/Invoices, getInvoicePayments/CreditMemos, getQuoteInvoice
+- Financial arithmetic: big.js via `lib/helpers/money.ts` (money, round2, toNumber, formatCurrency)
 </details>
 
 <details><summary>Quoting Vertical (PRs #13, #14, #20, #44 — all merged)</summary>
@@ -87,6 +88,24 @@
 - For-human summary: `for_human/2026-02-11-price-matrix-breadboard.html`
 </details>
 
+<details><summary>Invoicing Vertical Build (PRs #48, #50 — merged)</summary>
+
+- Breadboard (PR #48): 9 places, 99 UI affordances, 44 code affordances, 13-step build order
+- Full build (PR #50): 30 new files, 8 modified, 314 tests passing, 10/10 quality gate
+- Schemas: `invoice.ts` (5 status enums, 6 sub-schemas, refinement invariant), `credit-memo.ts` (6 reasons, bounded totals)
+- Helpers: `invoice-utils.ts` (status state machine, overdue computation, financial calculators, smart deposit, due date, quote→invoice conversion)
+- Financial precision: all monetary calculations use big.js via `lib/helpers/money.ts` — zero floating-point
+- Invoices List (`/invoices`) — StatsBar (4 cards), SmartViewTabs (5 views), DataTable with sort/search/batch ops, desktop+mobile, OverdueBadge with pulse
+- Invoice Form (`/invoices/new`, `/invoices/[id]/edit`) — Customer selection, line items, pricing summary, deposit section, payment terms, review & send sheet
+- Invoice Detail (`/invoices/[id]`) — Status-aware actions, payment ledger with running totals, reminder timeline, change diff panel, audit log, credit memo display
+- Overlays: RecordPaymentSheet (amount validation, auto-transitions), SendReminderModal (email preview), VoidInvoiceDialog (destructive + permanent), CreateCreditMemoModal (line-item selection, bounded by total)
+- Edit guard: non-draft invoices redirect to detail view
+- Integration: Sidebar nav (Receipt icon), Customer detail Invoices tab, Quote "Create Invoice" button (accepted only)
+- Quality gate: 10/10 categories pass (visual hierarchy, spacing, typography, color, interactive states, icons, motion, empty/error states, accessibility, density)
+- CodeRabbit review: all 7 actionable issues + key nitpicks addressed (timezone-safe dates, shared formatCurrency, motion-reduce, aria labels, big.js version sync)
+- For-human docs: `for_human/2026-02-11-invoicing-breadboard.html`, `for_human/2026-02-11-invoicing-build.html`
+</details>
+
 <details><summary>Invoicing Vertical Research (PR #46 — merged)</summary>
 
 - 5-agent research team: industry practices, competitor analysis (PrintLife focus), integration architecture, UX patterns, legal/compliance
@@ -111,15 +130,14 @@
 - [ ] **#15** — Migrate forms to React Hook Form + Zod
 - [ ] **#16** — Replace local LineItemRow interfaces with schema-derived types
 - [ ] **#17** — Sync garment category filter with URL query params
-- [ ] **#18** — Extract shared formatCurrency/formatDate to lib/utils
+- [ ] **#18** — Extract shared formatCurrency/formatDate to lib/utils (invoicing done via `lib/helpers/money.ts`, quotes/customers still have local copies)
 
 ## Next Actions
 
-1. Demo Quoting + Customer Management to user (4Ink owner), collect final feedback
+1. Demo Quoting + Customer Management + Invoicing to user (4Ink owner), collect final feedback
 2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
 3. **Price Matrix vertical — BUILD**: Execute 4-phase build plan from breadboard. Phase A (schemas, engine, mock data, shared components, sidebar, hub), then Phase B–D with parallel agents. Breadboard: `docs/breadboards/price-matrix-breadboard.md`
-4. **Invoicing vertical**: Breadboard UI from research docs, build Phase 1a (schema + mock data), then Phase 1b–1e (list, detail, quote-to-invoice, payments, customer integration)
-5. Address deferred tech debt (#15-#18) as needed
+4. Address deferred tech debt (#15-#18) as needed
 
 ## Document Map
 
@@ -143,7 +161,10 @@
 | `for_human/2026-02-11-price-matrix-breadboard.html` | Price Matrix breadboard summary for humans |
 | `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
 | `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
+| `docs/breadboards/invoicing-breadboard.md` | Invoicing breadboard (9 places, 99 UI + 44 code affordances) |
 | `for_human/2026-02-10-invoicing-vertical-research.html` | Invoicing research summary for humans |
+| `for_human/2026-02-11-invoicing-breadboard.html` | Invoicing breadboard summary for humans |
+| `for_human/2026-02-11-invoicing-build.html` | Invoicing build summary for humans |
 
 ## Key Design Requirements
 
