@@ -102,9 +102,18 @@ export function PricingTemplateCard({
     <Card
       className={cn(
         "cursor-pointer transition-colors hover:border-border/80 hover:bg-card/80",
-        "group relative"
+        "group relative",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       )}
+      role="button"
+      tabIndex={0}
       onClick={onEdit}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onEdit();
+        }
+      }}
     >
       <CardHeader className="gap-1.5">
         <div className="flex items-start gap-2">

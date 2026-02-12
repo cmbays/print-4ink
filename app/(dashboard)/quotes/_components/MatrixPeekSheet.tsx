@@ -106,7 +106,8 @@ export function MatrixPeekSheet({
   const highlightTierIdx = template
     ? findQuantityTierIndex(template.matrix.quantityTiers, totalQty)
     : -1;
-  const highlightColorIdx = Math.min(colorCount, 8) - 1; // 0-indexed
+  const maxColors = template?.matrix?.maxColors ?? 8;
+  const highlightColorIdx = Math.min(colorCount, maxColors) - 1; // 0-indexed
 
   if (!template || !matrixData) {
     return (
@@ -213,7 +214,7 @@ export function MatrixPeekSheet({
                 <th className="sticky left-0 bg-card px-2 py-1.5 text-left text-muted-foreground font-medium">
                   Qty Tier
                 </th>
-                {Array.from({ length: 8 }, (_, i) => (
+                {Array.from({ length: maxColors }, (_, i) => (
                   <th
                     key={i}
                     className={cn(

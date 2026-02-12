@@ -12,7 +12,9 @@ import { Grid3x3 } from "lucide-react";
 
 const DEFAULT_GARMENT_COST = 3.5;
 
-const COLOR_COLUMNS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+function buildColorColumns(maxColors: number): number[] {
+  return Array.from({ length: maxColors }, (_, i) => i + 1);
+}
 
 const dotColors: Record<MarginIndicator, string> = {
   healthy: "bg-success",
@@ -31,6 +33,9 @@ export function ColorPricingGrid({
   colorHitRate,
   onColorHitRateChange,
 }: ColorPricingGridProps) {
+  const maxColors = template.matrix.maxColors ?? 8;
+  const colorColumns = useMemo(() => buildColorColumns(maxColors), [maxColors]);
+
   const matrixData = useMemo(
     () => buildFullMatrixData(template, DEFAULT_GARMENT_COST),
     [template]
@@ -93,7 +98,7 @@ export function ColorPricingGrid({
                 <th className="border border-border bg-surface px-3 py-2 text-left font-medium text-muted-foreground">
                   Qty Tier
                 </th>
-                {COLOR_COLUMNS.map((col) => (
+                {colorColumns.map((col) => (
                   <th
                     key={col}
                     className="border border-border bg-surface px-3 py-2 text-center font-medium text-muted-foreground"

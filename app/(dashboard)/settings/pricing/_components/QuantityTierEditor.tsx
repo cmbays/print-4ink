@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/pricing-engine";
+import { money } from "@/lib/helpers/money";
 import type { QuantityTier } from "@/lib/schemas/price-matrix";
 import { Layers, Plus, Trash2 } from "lucide-react";
 
@@ -48,7 +49,7 @@ export function QuantityTierEditor({
     });
 
     const lastPrice = basePrices[basePrices.length - 1] ?? 5;
-    onTiersChange([...updatedTiers, newTier], [...basePrices, Math.max(lastPrice - 1, 1)]);
+    onTiersChange([...updatedTiers, newTier], [...basePrices, Math.max(money(lastPrice - 1), 1)]);
   };
 
   const removeTier = (index: number) => {
@@ -115,12 +116,17 @@ export function QuantityTierEditor({
               />
               <Input
                 type="number"
-                min={1}
+                min={tier.minQty}
                 placeholder="Unlimited"
                 value={tier.maxQty ?? ""}
                 onChange={(e) => {
                   const val = e.target.value;
-                  updateTier(index, "maxQty", val === "" ? null : parseInt(val) || 1);
+                  if (val === "") {
+                    updateTier(index, "maxQty", null);
+                  } else {
+                    const parsed = parseInt(val) || tier.minQty;
+                    updateTier(index, "maxQty", Math.max(parsed, tier.minQty));
+                  }
                 }}
                 className="h-8 text-xs"
               />
