@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/pricing-engine";
-import { money } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@/lib/helpers/money";
 import type { QuantityTier } from "@/lib/schemas/price-matrix";
 import { Layers, Plus, Trash2 } from "lucide-react";
 
@@ -49,7 +49,7 @@ export function QuantityTierEditor({
     });
 
     const lastPrice = basePrices[basePrices.length - 1] ?? 5;
-    onTiersChange([...updatedTiers, newTier], [...basePrices, Math.max(money(lastPrice - 1), 1)]);
+    onTiersChange([...updatedTiers, newTier], [...basePrices, Math.max(toNumber(round2(money(lastPrice).minus(1))), 1)]);
   };
 
   const removeTier = (index: number) => {

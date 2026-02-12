@@ -12,7 +12,7 @@ interface TopbarProps {
 
 export function Topbar({ breadcrumbs }: TopbarProps) {
   return (
-    <header className="flex h-14 items-center border-b border-border px-6">
+    <header className="-mx-6 -mt-6 mb-6 flex h-14 items-center border-b border-border px-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

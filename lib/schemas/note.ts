@@ -13,6 +13,8 @@ export const noteEntityTypeEnum = z.enum([
   "quote",
   "artwork",
   "job",
+  "invoice",
+  "credit_memo",
 ]);
 
 export const noteSchema = z.object({

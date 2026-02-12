@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoicing Vertical Build &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tag-feature,
+    .tag-build    { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-decision,
+    .tag-learning { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .meta-item {
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .session-resume {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+
+    .session-resume code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--action);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    .related-nav { margin-bottom: 32px; }
+
+    .related-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .related-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .related-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      transition: all 0.15s ease;
+    }
+
+    .related-link:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    .related-link .related-desc {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .header-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 32px 0;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    td:first-child { color: var(--text-primary); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    .code-block {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      color: var(--text-primary);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .count-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--action);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .phase-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 8px;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .phase-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--action);
+      background: rgba(34, 211, 238, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .phase-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .phase-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .check { color: var(--success); }
+    .warn { color: var(--warning); }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ========== TOP NAV ========== -->
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <!-- ========== HEADER ========== -->
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-feature">Feature</span>
+        <span class="tag tag-build">Build</span>
+      </div>
+
+      <h1>Invoicing Vertical Build</h1>
+      <p class="subtitle">Full invoicing system &mdash; schemas, list page, form, detail view, overlays, and integrations. 30 new files, 8 modified, 314 tests passing.</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-11</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>session/0211-invoicing-build</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Mockup</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Invoicing</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume ba5ae290-306e-47a6-b09b-c2c10320dad0</code>
+      </div>
+    </header>
+
+    <!-- ========== RELATED SESSIONS ========== -->
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="2026-02-10-invoicing-vertical-research.html">
+          &larr; Research <span class="related-desc">&mdash; Industry analysis, competitor deep-dive, 19 decisions</span>
+        </a>
+        <a class="related-link" href="2026-02-11-invoicing-breadboard.html">
+          &larr; Breadboard <span class="related-desc">&mdash; 9 places, 99 UI affordances, 44 code affordances</span>
+        </a>
+      </div>
+    </nav>
+
+    <hr class="header-divider">
+
+    <!-- ========== BODY CONTENT ========== -->
+
+    <h2>Build Summary</h2>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value">30</div>
+        <div class="stat-label">New Files</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">8</div>
+        <div class="stat-label">Modified Files</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">314</div>
+        <div class="stat-label">Tests Passing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">10/10</div>
+        <div class="stat-label">Quality Gate</div>
+      </div>
+    </div>
+
+    <h2>Build Phases</h2>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-number">Phase 0</span>
+        <span class="phase-title">Data Foundation</span>
+      </div>
+      <p class="phase-desc">Zod schemas for invoices and credit memos. Status state machine (<code>isValidStatusTransition</code>), financial calculators with big.js precision, mock data (8 invoices, 11 payments, 2 credit memos). All math uses <code>money()</code> / <code>round2()</code> / <code>toNumber()</code> &mdash; zero floating-point.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-number">Phase 1</span>
+        <span class="phase-title">List Page</span>
+      </div>
+      <p class="phase-desc">Stats bar (outstanding, overdue, paid this month, avg days to pay), smart view tabs (All/Draft/Outstanding/Overdue/Paid), data table with sort, search, batch ops, desktop table + mobile cards, and overdue badge with pulse animation.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-number">Phase 2</span>
+        <span class="phase-title">Form + Detail View</span>
+      </div>
+      <p class="phase-desc">Full invoice form (customer, line items, pricing summary, deposit, payment terms), detail view with payment ledger, reminder timeline, change diff panel, audit log, and context-aware action buttons per status.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-number">Phase 3</span>
+        <span class="phase-title">Overlays + Edit</span>
+      </div>
+      <p class="phase-desc">Record Payment sheet, Send Reminder modal, Void Invoice dialog (destructive, permanent), Create Credit Memo modal (line-item selection, bounded by invoice total), and edit page (draft-only guard).</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-number">Phase 4</span>
+        <span class="phase-title">Integration Points</span>
+      </div>
+      <p class="phase-desc">Sidebar navigation (Receipt icon), Customer detail invoices tab, Quote detail "Create Invoice" button (accepted quotes only), and all cross-vertical navigation wiring.</p>
+    </div>
+
+    <h2>Key Architecture Decisions</h2>
+
+    <div class="card">
+      <div class="card-title">big.js for All Financial Arithmetic</div>
+      <p class="card-desc">Every monetary calculation goes through <code>lib/helpers/money.ts</code>. Schema invariants use <code>Big.eq()</code> for exact comparison. IEEE 754 floating-point is never used for money &mdash; not even for simple addition.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Status State Machine</div>
+      <p class="card-desc"><code>isValidStatusTransition()</code> enforces: draft&rarr;sent&rarr;partial&rarr;paid, with void as terminal from any non-paid state. All UI actions check transitions before enabling buttons.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Immutability After Send</div>
+      <p class="card-desc">Edit page redirects to detail view for non-draft invoices. InvoiceForm rejects non-draft mode. No backdoor to modify sent/partial/paid invoices.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Overdue Is Computed, Never Stored</div>
+      <p class="card-desc">Single <code>computeIsOverdue()</code> function used everywhere (stats, table, detail, badge). Compares <code>dueDate &lt; today AND balanceDue &gt; 0 AND status in [sent, partial]</code>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Conditional Rendering for Dialog State</div>
+      <p class="card-desc">React 19 ESLint forbids <code>setState</code> in effects. All sheet/dialog components use conditional rendering (<code>{show && &lt;Component /&gt;}</code>) so React unmounts/remounts, naturally resetting useState hooks.</p>
+    </div>
+
+    <h2>Quality Gate Results</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Visual Hierarchy</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>2</td><td>Spacing &amp; Layout</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>3</td><td>Typography</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>4</td><td>Color Usage</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>5</td><td>Interactive States</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>6</td><td>Icons</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>7</td><td>Motion &amp; Animation</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>8</td><td>Empty &amp; Error States</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>9</td><td>Accessibility</td><td><span class="check">Pass</span></td></tr>
+        <tr><td>10</td><td>Jobs Filter (Density)</td><td><span class="check">Pass</span></td></tr>
+      </tbody>
+    </table>
+
+    <p>Fixes applied during quality gate: <code>font-bold</code>&rarr;<code>font-semibold</code> (1), <code>role="alert"</code> additions (2), <code>aria-hidden="true"</code> on decorative icons (3), empty state icon sizes to <code>size-12</code> (2), search no-results now quotes query.</p>
+
+    <h2>Files Created</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Phase</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>lib/schemas/invoice.ts</code></td><td>0</td></tr>
+        <tr><td><code>lib/schemas/credit-memo.ts</code></td><td>0</td></tr>
+        <tr><td><code>lib/helpers/invoice-utils.ts</code></td><td>0</td></tr>
+        <tr><td><code>lib/helpers/money.ts</code></td><td>0</td></tr>
+        <tr><td><code>lib/schemas/__tests__/invoice.test.ts</code></td><td>0</td></tr>
+        <tr><td><code>lib/schemas/__tests__/credit-memo.test.ts</code></td><td>0</td></tr>
+        <tr><td><code>components/features/OverdueBadge.tsx</code></td><td>1</td></tr>
+        <tr><td><code>invoices/page.tsx</code></td><td>1</td></tr>
+        <tr><td><code>invoices/_components/InvoiceStatsBar.tsx</code></td><td>1</td></tr>
+        <tr><td><code>invoices/_components/InvoicesSmartViewTabs.tsx</code></td><td>1</td></tr>
+        <tr><td><code>invoices/_components/InvoicesDataTable.tsx</code></td><td>1</td></tr>
+        <tr><td><code>invoices/_components/InvoiceForm.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/InvoiceLineItemRow.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/InvoicePricingSummary.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/DepositSection.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/PaymentTermsSection.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/new/page.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/ReviewSendSheet.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/[id]/page.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/InvoiceDetailView.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/InvoiceActions.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/PaymentLedger.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/ChangeDiffPanel.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/ReminderTimeline.tsx</code></td><td>2</td></tr>
+        <tr><td><code>invoices/_components/RecordPaymentSheet.tsx</code></td><td>3</td></tr>
+        <tr><td><code>invoices/_components/SendReminderModal.tsx</code></td><td>3</td></tr>
+        <tr><td><code>invoices/_components/VoidInvoiceDialog.tsx</code></td><td>3</td></tr>
+        <tr><td><code>invoices/_components/CreateCreditMemoModal.tsx</code></td><td>3</td></tr>
+        <tr><td><code>invoices/[id]/edit/page.tsx</code></td><td>3</td></tr>
+        <tr><td><code>customers/[id]/_components/CustomerInvoicesTable.tsx</code></td><td>4</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Mock Data Coverage</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Invoice</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>INV-0001</td><td>Paid</td><td>$765</td><td>2 payments (check + square)</td></tr>
+        <tr><td>INV-0002</td><td>Sent/Overdue</td><td>$2,614</td><td>Past due 27 days, 1 reminder</td></tr>
+        <tr><td>INV-0003</td><td>Draft</td><td>$855</td><td>Deposit requested $427.50</td></tr>
+        <tr><td>INV-0004</td><td>Paid</td><td>$1,850</td><td>Holiday merch, 2 payments</td></tr>
+        <tr><td>INV-0005</td><td>Partial</td><td>$840</td><td>Deposit received, due in 4d</td></tr>
+        <tr><td>INV-0006</td><td>Sent</td><td>$3,200</td><td>Wholesale, due in 17d</td></tr>
+        <tr><td>INV-0007</td><td>Partial</td><td>$2,100</td><td>ACH + Zelle, due in 9d</td></tr>
+        <tr><td>INV-0008</td><td>Void</td><td>$450</td><td>Customer cancelled</td></tr>
+      </tbody>
+    </table>
+
+    <p>Plus 11 payment records and 2 credit memos covering check, cash, square, venmo, zelle, and ACH methods.</p>
+
+    <h2>Lessons Learned</h2>
+
+    <div class="card">
+      <div class="card-title">big.js Is Non-Negotiable for Financial UI</div>
+      <p class="card-desc">Even "display-only" components that compute stats (sums, averages) must use big.js. Floating-point errors compound across 8 invoices with multi-payment ledgers. The <code>money()</code> wrapper makes it painless.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Quality Gate Catches Real Issues</div>
+      <p class="card-desc">The 10-category audit found 8 fixable issues across typography (<code>font-bold</code>), accessibility (<code>role="alert"</code>, <code>aria-hidden</code>), and empty states (icon sizing). All fixed in 3 commits with zero regressions.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Conditional Rendering Beats useEffect Reset</div>
+      <p class="card-desc">React 19 ESLint flags <code>setState</code> in effects. The pattern <code>{show && &lt;Sheet /&gt;}</code> is cleaner &mdash; unmount/remount naturally resets all hooks. Applied to RecordPaymentSheet, SendReminderModal, VoidInvoiceDialog, and CreateCreditMemoModal.</p>
+    </div>
+
+    <hr>
+
+    <h2>Artifacts</h2>
+
+    <ul>
+      <li><strong>PR</strong>: <a href="https://github.com/cmbays/print-4ink/pull/50">#50 &mdash; Invoicing vertical build</a></li>
+      <li><strong>Breadboard</strong>: <code>docs/breadboards/invoicing-breadboard.md</code></li>
+      <li><strong>Research spikes</strong>: <code>docs/spikes/invoicing-*.md</code> (6 files)</li>
+      <li><strong>Plan</strong>: <code>.claude/plans/zesty-wibbling-river.md</code></li>
+    </ul>
+
+    <footer>
+      Screen Print Pro &mdash; Invoicing Vertical Build &mdash; 2026-02-11
+    </footer>
+  </div>
+</body>
+</html>

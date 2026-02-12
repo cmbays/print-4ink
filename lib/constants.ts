@@ -13,6 +13,8 @@ import type { ContactRole } from "./schemas/contact";
 import type { NoteChannel } from "./schemas/note";
 import type { ArtworkTag } from "./schemas/artwork";
 import type { GarmentCategory } from "./schemas/garment";
+import type { InvoiceStatus, PaymentMethod, InvoiceLineItemType } from "./schemas/invoice";
+import type { CreditMemoReason } from "./schemas/credit-memo";
 
 export const PRODUCTION_STATE_LABELS: Record<ProductionState, string> = {
   design: "Design",
@@ -184,4 +186,67 @@ export const NOTE_CHANNEL_LABELS: Record<NoteChannel, string> = {
   text: "Text",
   social: "Social",
   "in-person": "In Person",
+};
+
+// ---------------------------------------------------------------------------
+// Invoicing — Status, Payment Methods, Line Item Types, Credit Memos
+// ---------------------------------------------------------------------------
+
+export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
+  draft: "Draft",
+  sent: "Sent",
+  partial: "Partial",
+  paid: "Paid",
+  void: "Void",
+};
+
+export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, string> = {
+  draft: "text-muted-foreground",
+  sent: "text-action",
+  partial: "text-warning",
+  paid: "text-success",
+  void: "text-error",
+};
+
+export const INVOICE_STATUS_BADGE_COLORS: Record<InvoiceStatus, string> = {
+  draft: "bg-muted text-muted-foreground",
+  sent: "bg-action/10 text-action border border-action/20",
+  partial: "bg-warning/10 text-warning border border-warning/20",
+  paid: "bg-success/10 text-success border border-success/20",
+  void: "bg-error/10 text-error border border-error/20",
+};
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  check: "Check",
+  cash: "Cash",
+  square: "Square",
+  venmo: "Venmo",
+  zelle: "Zelle",
+  credit_card: "Credit Card",
+  ach: "ACH",
+  other: "Other",
+};
+
+export const INVOICE_LINE_ITEM_TYPE_LABELS: Record<InvoiceLineItemType, string> = {
+  garment: "Garment",
+  setup: "Setup",
+  artwork: "Artwork",
+  rush: "Rush",
+  other: "Other",
+};
+
+export const CREDIT_MEMO_REASON_LABELS: Record<CreditMemoReason, string> = {
+  shortage: "Shortage",
+  misprint: "Misprint",
+  defect: "Defect",
+  overcharge: "Overcharge",
+  return: "Return",
+  other: "Other",
+};
+
+export const DEPOSIT_DEFAULTS_BY_TIER: Record<PricingTier, number> = {
+  standard: 50,
+  preferred: 50,
+  contract: 0,
+  wholesale: 100,
 };

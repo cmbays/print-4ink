@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Pencil, Copy, Send } from "lucide-react";
+import { Pencil, Copy, Send, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import type { Quote } from "@/lib/schemas/quote";
@@ -16,9 +16,18 @@ interface QuoteActionsProps {
 export function QuoteActions({ quote, customer }: QuoteActionsProps) {
   const [emailOpen, setEmailOpen] = useState(false);
   const isDraft = quote.status === "draft";
+  const isAccepted = quote.status === "accepted";
 
   return (
     <div className="flex flex-wrap items-center gap-2">
+      {isAccepted && (
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/invoices/new?quoteId=${quote.id}`}>
+            <Receipt className="size-4" />
+            Create Invoice
+          </Link>
+        </Button>
+      )}
       {isDraft && (
         <Button variant="outline" size="sm" asChild>
           <Link href={`/quotes/${quote.id}/edit`}>

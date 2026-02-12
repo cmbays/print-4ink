@@ -10,6 +10,8 @@ import { screenSchema } from "../screen";
 import { colorSchema } from "../color";
 import { garmentCatalogSchema } from "../garment";
 import { artworkSchema } from "../artwork";
+import { invoiceSchema } from "../invoice";
+import { creditMemoSchema } from "../credit-memo";
 import {
   customers,
   contacts,
@@ -22,6 +24,9 @@ import {
   colors,
   garmentCatalog,
   artworks,
+  invoices,
+  payments,
+  creditMemos,
 } from "@/lib/mock-data";
 
 describe("mock data validates against schemas", () => {
@@ -88,6 +93,18 @@ describe("mock data validates against schemas", () => {
   it("all artworks are valid", () => {
     for (const artwork of artworks) {
       expect(() => artworkSchema.parse(artwork)).not.toThrow();
+    }
+  });
+
+  it("all invoices are valid", () => {
+    for (const invoice of invoices) {
+      expect(() => invoiceSchema.parse(invoice)).not.toThrow();
+    }
+  });
+
+  it("all credit memos are valid", () => {
+    for (const cm of creditMemos) {
+      expect(() => creditMemoSchema.parse(cm)).not.toThrow();
     }
   });
 });
@@ -240,6 +257,63 @@ describe("referential integrity", () => {
       expect(ownerExists).toBe(true);
     }
   });
+
+  // Invoice referential integrity
+  it("all invoice customerIds reference existing customers", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const invoice of invoices) {
+      expect(customerIds.has(invoice.customerId)).toBe(true);
+    }
+  });
+
+  it("all invoice quoteIds reference existing quotes", () => {
+    const quoteIds = new Set(quotes.map((q) => q.id));
+    for (const invoice of invoices) {
+      if (invoice.quoteId) {
+        expect(quoteIds.has(invoice.quoteId)).toBe(true);
+      }
+    }
+  });
+
+  it("all payment invoiceIds reference existing invoices", () => {
+    const invoiceIds = new Set(invoices.map((inv) => inv.id));
+    for (const payment of payments) {
+      expect(invoiceIds.has(payment.invoiceId)).toBe(true);
+    }
+  });
+
+  it("all credit memo invoiceIds reference existing invoices", () => {
+    const invoiceIds = new Set(invoices.map((inv) => inv.id));
+    for (const cm of creditMemos) {
+      expect(invoiceIds.has(cm.invoiceId)).toBe(true);
+    }
+  });
+
+  it("all credit memo customerIds reference existing customers", () => {
+    const customerIds = new Set(customers.map((c) => c.id));
+    for (const cm of creditMemos) {
+      expect(customerIds.has(cm.customerId)).toBe(true);
+    }
+  });
+
+  it("invoice numbers are unique", () => {
+    const numbers = invoices.map((inv) => inv.invoiceNumber);
+    expect(new Set(numbers).size).toBe(numbers.length);
+  });
+
+  it("credit memo numbers are unique", () => {
+    const numbers = creditMemos.map((cm) => cm.creditMemoNumber);
+    expect(new Set(numbers).size).toBe(numbers.length);
+  });
+
+  it("invoice amountPaid matches sum of payments", () => {
+    for (const invoice of invoices) {
+      const totalPaid = payments
+        .filter((p) => p.invoiceId === invoice.id)
+        .reduce((sum, p) => sum + p.amount, 0);
+      expect(Math.abs(invoice.amountPaid - totalPaid)).toBeLessThan(0.01);
+    }
+  });
 });
 
 describe("data coverage", () => {
@@ -367,5 +441,43 @@ describe("data coverage", () => {
     expect(allTags).toContain("corporate");
     expect(allTags).toContain("storefront-merch");
     expect(allTags).toContain("wholesale");
+  });
+
+  // Invoice data coverage
+  it("has at least 8 invoices", () => {
+    expect(invoices.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it("has at least 11 payments", () => {
+    expect(payments.length).toBeGreaterThanOrEqual(11);
+  });
+
+  it("has at least 2 credit memos", () => {
+    expect(creditMemos.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("covers all invoice statuses", () => {
+    const statuses = new Set(invoices.map((inv) => inv.status));
+    expect(statuses).toContain("draft");
+    expect(statuses).toContain("sent");
+    expect(statuses).toContain("partial");
+    expect(statuses).toContain("paid");
+    expect(statuses).toContain("void");
+  });
+
+  it("has invoices with quote links", () => {
+    const withQuotes = invoices.filter((inv) => inv.quoteId);
+    expect(withQuotes.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("covers various payment methods", () => {
+    const methods = new Set(payments.map((p) => p.method));
+    expect(methods).toContain("check");
+    expect(methods).toContain("cash");
+    expect(methods).toContain("square");
+    expect(methods).toContain("venmo");
+    expect(methods).toContain("zelle");
+    expect(methods).toContain("ach");
+    expect(methods).toContain("credit_card");
   });
 });

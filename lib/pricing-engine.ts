@@ -14,7 +14,13 @@ import type {
 } from "./schemas/dtf-pricing";
 import type { PricingTier } from "./schemas/customer";
 import type { GarmentCategory } from "./schemas/garment";
-import { money } from "./helpers/money";
+import { money as bigMoney, round2, toNumber } from "./helpers/money";
+
+// Local wrapper: pricing-engine uses money() → number throughout.
+// Main's money() returns Big, so wrap with round2 + toNumber.
+function money(value: number | Big): number {
+  return toNumber(round2(bigMoney(value)));
+}
 
 // ---------------------------------------------------------------------------
 // Margin thresholds (from breadboard: ≥30% healthy, 15–30% caution, <15% unprofitable)

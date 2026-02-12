@@ -3,9 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import Big from "big.js";
 import { formatCurrency } from "@/lib/pricing-engine";
-import { money } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@/lib/helpers/money";
 import type { LocationUpcharge } from "@/lib/schemas/price-matrix";
 import { MapPin } from "lucide-react";
 
@@ -84,7 +83,7 @@ export function LocationUpchargeEditor({
             Max location surcharge (all locations):{" "}
             <span className="text-foreground font-medium">
               {formatCurrency(
-                money(locations.reduce((sum, loc) => sum.plus(loc.upcharge), new Big(0)))
+                toNumber(round2(locations.reduce((sum, loc) => sum.plus(loc.upcharge), money(0))))
               )}
             </span>
           </div>
