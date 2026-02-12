@@ -70,33 +70,45 @@ export const setupFeeConfigSchema = z.object({
 // Cost Configuration (for margin calculations)
 // ---------------------------------------------------------------------------
 
-export const costConfigSchema = z.object({
-  garmentCostSource: z.enum(["catalog", "manual"]),
-  manualGarmentCost: z.number().nonnegative().optional(), // used when source is "manual"
-  inkCostPerHit: z.number().nonnegative(),
-  shopOverheadRate: z.number().nonnegative(), // percentage of revenue
-  laborRate: z.number().nonnegative().optional(), // per hour (optional)
-});
+export const costConfigSchema = z
+  .object({
+    garmentCostSource: z.enum(["catalog", "manual"]),
+    manualGarmentCost: z.number().nonnegative().optional(), // used when source is "manual"
+    inkCostPerHit: z.number().nonnegative(),
+    shopOverheadRate: z.number().nonnegative(), // percentage of revenue
+    laborRate: z.number().nonnegative().optional(), // per hour (optional)
+  })
+  .refine(
+    (data) =>
+      data.garmentCostSource !== "manual" ||
+      (data.manualGarmentCost !== undefined && data.manualGarmentCost >= 0),
+    { message: "Manual garment cost is required when source is 'manual'", path: ["manualGarmentCost"] }
+  );
 
 // ---------------------------------------------------------------------------
 // Screen Print Matrix — the core pricing data structure
 // ---------------------------------------------------------------------------
 
-export const screenPrintMatrixSchema = z.object({
-  quantityTiers: z.array(quantityTierSchema),
-  colorPricing: z.array(colorPricingSchema),
-  locationUpcharges: z.array(locationUpchargeSchema),
-  garmentTypePricing: z.array(garmentTypePricingSchema),
-  setupFeeConfig: setupFeeConfigSchema,
-  // Base price grid: quantity tier index → base price per piece
-  basePriceByTier: z.array(z.number().nonnegative()),
-  // Per-cell price overrides: key = "tierIndex-colIndex", value = price.
-  // When set, the override takes precedence over basePriceByTier + colorUpcharge.
-  // Power mode sets these when the user explicitly types a value into a cell.
-  priceOverrides: z.record(z.string(), z.number().nonnegative()).default({}),
-  // Max number of color columns shown in the pricing matrix (1–12, default 8).
-  maxColors: z.number().int().min(1).max(12).default(8),
-});
+export const screenPrintMatrixSchema = z
+  .object({
+    quantityTiers: z.array(quantityTierSchema),
+    colorPricing: z.array(colorPricingSchema),
+    locationUpcharges: z.array(locationUpchargeSchema),
+    garmentTypePricing: z.array(garmentTypePricingSchema),
+    setupFeeConfig: setupFeeConfigSchema,
+    // Base price grid: quantity tier index → base price per piece
+    basePriceByTier: z.array(z.number().nonnegative()),
+    // Per-cell price overrides: key = "tierIndex-colIndex", value = price.
+    // When set, the override takes precedence over basePriceByTier + colorUpcharge.
+    // Power mode sets these when the user explicitly types a value into a cell.
+    priceOverrides: z.record(z.string(), z.number().nonnegative()).default({}),
+    // Max number of color columns shown in the pricing matrix (1–12, default 8).
+    maxColors: z.number().int().min(1).max(12).default(8),
+  })
+  .refine(
+    (data) => data.basePriceByTier.length === data.quantityTiers.length,
+    { message: "basePriceByTier must have the same length as quantityTiers" }
+  );
 
 // ---------------------------------------------------------------------------
 // Pricing Template — wraps a matrix with metadata

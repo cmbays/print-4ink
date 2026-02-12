@@ -14,16 +14,7 @@ import type {
 } from "./schemas/dtf-pricing";
 import type { PricingTier } from "./schemas/customer";
 import type { GarmentCategory } from "./schemas/garment";
-
-// ---------------------------------------------------------------------------
-// Decimal-safe currency helper — all financial math goes through Big
-// ---------------------------------------------------------------------------
-
-/** Round to 2 decimal places using Big.js (banker's rounding avoided — half-up). */
-function money(value: number | Big): number {
-  const b = value instanceof Big ? value : new Big(value);
-  return Number(b.round(2, Big.roundHalfUp));
-}
+import { money } from "./helpers/money";
 
 // ---------------------------------------------------------------------------
 // Margin thresholds (from breadboard: ≥30% healthy, 15–30% caution, <15% unprofitable)
@@ -355,7 +346,7 @@ export function calculateDTFProductionCost(
   totalCost: number;
 } {
   const areaSqFt = dtfSheetAreaSqFt(width, length);
-  const areaSqIn = width * length;
+  const areaSqIn = Number(new Big(width).times(length));
 
   const filmCost = money(new Big(costConfig.filmCostPerSqFt).times(areaSqFt));
   const inkCost = money(new Big(costConfig.inkCostPerSqIn).times(areaSqIn));
@@ -536,7 +527,7 @@ export function calculateDiff(
       if (!propCell) return;
 
       totalCells++;
-      if (origCell.price !== propCell.price) {
+      if (!new Big(origCell.price).eq(new Big(propCell.price))) {
         changedCells++;
         marginDeltaSum = marginDeltaSum.plus(
           new Big(propCell.margin.percentage).minus(origCell.margin.percentage)

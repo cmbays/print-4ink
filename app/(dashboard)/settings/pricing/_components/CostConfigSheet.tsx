@@ -21,12 +21,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Save, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Big from "big.js";
 import {
   calculateCellMargin,
   formatCurrency,
   formatPercent,
   getMarginIndicator,
 } from "@/lib/pricing-engine";
+import { money } from "@/lib/helpers/money";
 import type { CostConfig, PricingTemplate, MarginIndicator } from "@/lib/schemas/price-matrix";
 
 // ---------------------------------------------------------------------------
@@ -113,8 +115,9 @@ export function CostConfigSheet({
       draft.garmentCostSource === "catalog"
         ? SAMPLE_ORDER.garmentBaseCost
         : (draft.manualGarmentCost ?? 0);
-    const inkCost = draft.inkCostPerHit * SAMPLE_ORDER.colors * SAMPLE_ORDER.locations;
-    const overheadRate = draft.shopOverheadRate / 100;
+    const inkCost = money(
+      new Big(draft.inkCostPerHit).times(SAMPLE_ORDER.colors).times(SAMPLE_ORDER.locations)
+    );
     // Use tier index 1 (24-47 range) for 48 pcs as sample — find the right tier
     const tierIndex = draftTemplate.matrix.quantityTiers.findIndex(
       (t) =>
@@ -126,9 +129,13 @@ export function CostConfigSheet({
       : null;
 
     const revenue = margin?.revenue ?? 0;
-    const overheadCost = revenue * overheadRate;
-    const laborCost = draft.laborRate ? draft.laborRate * (30 / 3600) : 0;
-    const totalCost = garmentCost + inkCost + overheadCost + laborCost;
+    const overheadCost = money(new Big(revenue).times(new Big(draft.shopOverheadRate).div(100)));
+    const laborCost = draft.laborRate
+      ? money(new Big(draft.laborRate).times(30).div(3600))
+      : 0;
+    const totalCost = money(
+      new Big(garmentCost).plus(inkCost).plus(overheadCost).plus(laborCost)
+    );
 
     return {
       garmentCost,

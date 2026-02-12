@@ -31,6 +31,7 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import Big from "big.js";
 import { cn } from "@/lib/utils";
 import { PRICING_TIER_LABELS, GARMENT_CATEGORY_LABELS } from "@/lib/constants";
 import {
@@ -1156,7 +1157,7 @@ function SPPreviewStep({
             <div>
               <p className="text-xs text-muted-foreground">Total</p>
               <p className="text-sm font-semibold">
-                {formatCurrency(sampleCalc.pricePerPiece * sampleQty)}
+                {formatCurrency(Number(new Big(sampleCalc.pricePerPiece).times(sampleQty)))}
               </p>
             </div>
             <div>

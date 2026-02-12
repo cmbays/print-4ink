@@ -187,7 +187,10 @@ export function TagTemplateMapper({
                     <div className="grid grid-cols-2 gap-2">
                       {/* Screen Print */}
                       <div className="space-y-1">
-                        <label className="text-xs text-muted-foreground">
+                        <label
+                          id={`sp-label-${mapping.customerTypeTag}`}
+                          className="text-xs text-muted-foreground"
+                        >
                           Screen Print
                         </label>
                         <Select
@@ -200,7 +203,10 @@ export function TagTemplateMapper({
                             )
                           }
                         >
-                          <SelectTrigger className="h-8 text-xs">
+                          <SelectTrigger
+                            className="h-8 text-xs"
+                            aria-labelledby={`sp-label-${mapping.customerTypeTag}`}
+                          >
                             <SelectValue placeholder="Select template" />
                           </SelectTrigger>
                           <SelectContent>
@@ -220,7 +226,10 @@ export function TagTemplateMapper({
 
                       {/* DTF */}
                       <div className="space-y-1">
-                        <label className="text-xs text-muted-foreground">
+                        <label
+                          id={`dtf-label-${mapping.customerTypeTag}`}
+                          className="text-xs text-muted-foreground"
+                        >
                           DTF
                         </label>
                         <Select
@@ -233,7 +242,10 @@ export function TagTemplateMapper({
                             )
                           }
                         >
-                          <SelectTrigger className="h-8 text-xs">
+                          <SelectTrigger
+                            className="h-8 text-xs"
+                            aria-labelledby={`dtf-label-${mapping.customerTypeTag}`}
+                          >
                             <SelectValue placeholder="Select template" />
                           </SelectTrigger>
                           <SelectContent>

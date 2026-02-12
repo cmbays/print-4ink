@@ -153,6 +153,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
   const removeSheetTier = (index: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
+      if (prev.sheetTiers.length <= 1) return prev;
       return {
         ...prev,
         sheetTiers: prev.sheetTiers.filter((_, i) => i !== index),

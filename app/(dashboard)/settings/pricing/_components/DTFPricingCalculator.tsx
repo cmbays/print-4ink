@@ -56,9 +56,15 @@ export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
   const [rushType, setRushType] = useState<DTFRushTurnaround>("standard");
   const [filmType, setFilmType] = useState<DTFFilmType>("standard");
 
+  // Clamp sheetLength to a valid tier when tiers change (e.g. tier removed)
+  const effectiveSheetLength = useMemo(() => {
+    const validLengths = template.sheetTiers.map((t) => t.length);
+    return validLengths.includes(sheetLength) ? sheetLength : (validLengths[0] ?? 24);
+  }, [template.sheetTiers, sheetLength]);
+
   const result = useMemo(
-    () => calculateDTFPrice(sheetLength, customerTier, rushType, filmType, template),
-    [sheetLength, customerTier, rushType, filmType, template]
+    () => calculateDTFPrice(effectiveSheetLength, customerTier, rushType, filmType, template),
+    [effectiveSheetLength, customerTier, rushType, filmType, template]
   );
 
   return (
@@ -78,7 +84,7 @@ export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Sheet Length</Label>
             <Select
-              value={String(sheetLength)}
+              value={String(effectiveSheetLength)}
               onValueChange={(v) => setSheetLength(Number(v))}
             >
               <SelectTrigger className="w-full">
