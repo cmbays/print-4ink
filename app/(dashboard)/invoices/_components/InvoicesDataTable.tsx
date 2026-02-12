@@ -26,6 +26,7 @@ import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { customers } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
+import { formatDate } from "@/lib/helpers/format";
 import { formatCurrency } from "@/lib/helpers/money";
 import { INVOICE_STATUS_LABELS } from "@/lib/constants";
 import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
@@ -47,20 +48,6 @@ type SortKey = z.infer<typeof sortKeySchema>;
 
 const sortDirSchema = z.enum(["asc", "desc"]);
 type SortDir = z.infer<typeof sortDirSchema>;
-
-function formatDate(iso: string): string {
-  const date = iso.includes("T")
-    ? new Date(iso)
-    : (() => {
-        const [year, month, day] = iso.split("-").map(Number);
-        return new Date(year, month - 1, day);
-      })();
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 function getCustomerName(customerId: string): string {
   const customer = customers.find((c) => c.id === customerId);

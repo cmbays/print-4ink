@@ -1,16 +1,9 @@
 import type { Reminder } from "@/lib/schemas/invoice";
 import { Bell } from "lucide-react";
+import { formatDate } from "@/lib/helpers/format";
 
 interface ReminderTimelineProps {
   reminders: Reminder[];
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 }
 
 export function ReminderTimeline({ reminders }: ReminderTimelineProps) {

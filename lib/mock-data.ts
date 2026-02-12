@@ -3,8 +3,10 @@ import type { Contact } from "./schemas/contact";
 import type { Group } from "./schemas/group";
 import type { Note } from "./schemas/note";
 import type { Address } from "./schemas/address";
-import type { Job } from "./schemas/job";
+import type { Job, JobTask, JobNote } from "./schemas/job";
 import type { Quote } from "./schemas/quote";
+import type { ScratchNote } from "./schemas/scratch-note";
+import type { QuoteCard } from "./schemas/board-card";
 import type { Screen } from "./schemas/screen";
 import type { Color } from "./schemas/color";
 import type { GarmentCatalog } from "./schemas/garment";
@@ -391,142 +393,501 @@ export const customers: Customer[] = [
 ];
 
 export const jobs: Job[] = [
+  // -----------------------------------------------------------------------
+  // J-1024: River City Staff Tees — screen-print, in_progress, on_track
+  // -----------------------------------------------------------------------
   {
-    id: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    id: "f1a00001-e5f6-4a01-8b01-0d1e2f3a4b01",
     jobNumber: "J-1024",
     title: "River City Staff Tees — Spring 2026",
-    customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    status: "press",
-    priority: "high",
+    customerId: CUSTOMER_IDS.riverCity,
+    lane: "in_progress",
+    serviceType: "screen-print",
+    startDate: "2026-02-03",
     dueDate: "2026-02-14",
-    garments: [
-      {
-        sku: "G500-BLK",
-        style: "Gildan 5000",
-        brand: "Gildan",
-        color: "Black",
-        sizes: { S: 5, M: 15, L: 20, XL: 10 },
-      },
+    createdAt: "2026-02-01T10:00:00Z",
+    priority: "high",
+    riskLevel: "on_track",
+    quantity: 200,
+    garmentDetails: [
+      { garmentId: "gc-002", colorId: "clr-black", sizes: { S: 20, M: 60, L: 70, XL: 50 } },
     ],
     printLocations: [
       { position: "Front Center", colorCount: 3, artworkApproved: true },
       { position: "Back Full", colorCount: 2, artworkApproved: true },
     ],
+    complexity: { locationCount: 2, screenCount: 5, garmentVariety: 1 },
+    tasks: [
+      { id: "d1a00001-e5f6-4a01-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-02T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1a00002-e5f6-4a01-8b01-0d1e2f3a4b02", label: "Film positives printed", isCompleted: true, completedAt: "2026-02-03T14:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1a00003-e5f6-4a01-8b01-0d1e2f3a4b03", label: "Screens burned", isCompleted: true, completedAt: "2026-02-04T11:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1a00004-e5f6-4a01-8b01-0d1e2f3a4b04", label: "Screens registered on press", isCompleted: true, completedAt: "2026-02-05T09:00:00Z", isCanonical: true, sortOrder: 3 },
+      { id: "d1a00005-e5f6-4a01-8b01-0d1e2f3a4b05", label: "Blanks received and counted", isCompleted: true, completedAt: "2026-02-04T16:00:00Z", isCanonical: true, sortOrder: 4 },
+      { id: "d1a00006-e5f6-4a01-8b01-0d1e2f3a4b06", label: "Press run complete", isCompleted: false, isCanonical: true, sortOrder: 5 },
+      { id: "d1a00007-e5f6-4a01-8b01-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 6 },
+      { id: "d1a00008-e5f6-4a01-8b01-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 7 },
+    ],
+    sourceQuoteId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    artworkIds: ["art-001", "art-002"],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
+    ],
+    notes: [
+      { id: "e1a00001-e5f6-4a01-8b01-0d1e2f3a4b01", type: "system", content: "Job created from Quote Q-1024", author: "System", createdAt: "2026-02-01T10:00:00Z" },
+      { id: "e1a00002-e5f6-4a01-8b01-0d1e2f3a4b02", type: "internal", content: "Using 230 mesh for detail work on front center", author: "Gary", createdAt: "2026-02-04T11:30:00Z" },
+      { id: "e1a00003-e5f6-4a01-8b01-0d1e2f3a4b03", type: "internal", content: "Marcus wants same design as spring 2025 run", author: "Gary", createdAt: "2026-02-02T09:00:00Z" },
+    ],
+    isArchived: false,
   },
+
+  // -----------------------------------------------------------------------
+  // J-1025: TikTok Merch DTF Rush — dtf, in_progress, getting_tight
+  // -----------------------------------------------------------------------
   {
-    id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+    id: "f1a00002-e5f6-4a02-8b02-0d1e2f3a4b02",
     jobNumber: "J-1025",
-    title: "Lonestar Lacrosse Tournament Jerseys",
-    customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
-    status: "approval",
+    title: "TikTok Merch — Viral Drop DTF",
+    customerId: CUSTOMER_IDS.tiktokMerch,
+    lane: "in_progress",
+    serviceType: "dtf",
+    startDate: "2026-02-08",
+    dueDate: "2026-02-13",
+    createdAt: "2026-02-07T16:00:00Z",
     priority: "rush",
-    dueDate: "2026-02-10",
-    garments: [
-      {
-        sku: "NB-DRY-WHT",
-        style: "New Balance Dry Fit",
-        brand: "New Balance",
-        color: "White",
-        sizes: { S: 8, M: 20, L: 25, XL: 12 },
-      },
-      {
-        sku: "NB-DRY-NVY",
-        style: "New Balance Dry Fit",
-        brand: "New Balance",
-        color: "Navy",
-        sizes: { S: 8, M: 20, L: 25, XL: 12 },
-      },
+    riskLevel: "getting_tight",
+    quantity: 50,
+    garmentDetails: [
+      { garmentId: "gc-001", colorId: "clr-black", sizes: { S: 5, M: 15, L: 20, XL: 10 } },
     ],
     printLocations: [
-      { position: "Front Left Chest", colorCount: 2, artworkApproved: false },
-      { position: "Back Number", colorCount: 1, artworkApproved: true },
-      { position: "Left Sleeve", colorCount: 1, artworkApproved: false },
+      { position: "Front Center", colorCount: 6, artworkApproved: true },
     ],
+    complexity: { locationCount: 1, garmentVariety: 1 },
+    tasks: [
+      { id: "d1b00001-e5f6-4a02-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-08T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1b00002-e5f6-4a02-8b02-0d1e2f3a4b02", label: "Gang sheet prepared", isCompleted: true, completedAt: "2026-02-09T09:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1b00003-e5f6-4a02-8b03-0d1e2f3a4b03", label: "DTF printed", isCompleted: true, completedAt: "2026-02-10T14:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1b00004-e5f6-4a02-8b04-0d1e2f3a4b04", label: "Transfers pressed", isCompleted: false, isCanonical: true, sortOrder: 3 },
+      { id: "d1b00005-e5f6-4a02-8b05-0d1e2f3a4b05", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1b00006-e5f6-4a02-8b06-0d1e2f3a4b06", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 5 },
+    ],
+    artworkIds: [],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-08T10:00:00Z" },
+    ],
+    notes: [
+      { id: "e1b00001-e5f6-4a02-8b01-0d1e2f3a4b01", type: "internal", content: "Rush job — Alex needs these for pop-up this weekend", author: "Gary", createdAt: "2026-02-07T16:30:00Z" },
+      { id: "e1b00002-e5f6-4a02-8b02-0d1e2f3a4b02", type: "customer", content: "Can we add 10 more? Same design, XL only", author: "Alex Kim", createdAt: "2026-02-09T11:00:00Z" },
+    ],
+    isArchived: false,
   },
+
+  // -----------------------------------------------------------------------
+  // J-1026: Lonestar Lacrosse Jerseys — screen-print, ready, on_track
+  // -----------------------------------------------------------------------
   {
-    id: "c3d4e5f6-a7b8-4c9d-8e1f-2a3b4c5d6e7f",
+    id: "f1a00003-e5f6-4a03-8b03-0d1e2f3a4b03",
     jobNumber: "J-1026",
-    title: "Thompson Family Reunion Tees",
-    customerId: "e3c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
-    status: "design",
-    priority: "low",
-    dueDate: "2026-03-15",
-    garments: [
-      {
-        sku: "BC3001-HTR",
-        style: "Bella+Canvas 3001",
-        brand: "Bella+Canvas",
-        color: "Heather Grey",
-        sizes: { YM: 5, YL: 5, S: 10, M: 15, L: 15, XL: 10, "2XL": 5 },
-      },
+    title: "Lonestar Lacrosse — Tournament Jerseys",
+    customerId: CUSTOMER_IDS.lonestar,
+    lane: "ready",
+    serviceType: "screen-print",
+    startDate: "2026-02-12",
+    dueDate: "2026-02-22",
+    createdAt: "2026-02-06T14:00:00Z",
+    priority: "high",
+    riskLevel: "on_track",
+    quantity: 300,
+    garmentDetails: [
+      { garmentId: "gc-001", colorId: "clr-white", sizes: { S: 30, M: 80, L: 100, XL: 60, "2XL": 30 } },
     ],
     printLocations: [
-      { position: "Front Center", colorCount: 4, artworkApproved: false },
+      { position: "Front Left Chest", colorCount: 2, artworkApproved: true },
+      { position: "Back Number", colorCount: 1, artworkApproved: true },
+      { position: "Left Sleeve", colorCount: 1, artworkApproved: true },
     ],
+    complexity: { locationCount: 3, screenCount: 4, garmentVariety: 1 },
+    tasks: [
+      { id: "d1c00001-e5f6-4a03-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-07T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1c00002-e5f6-4a03-8b02-0d1e2f3a4b02", label: "Film positives printed", isCompleted: false, isCanonical: true, sortOrder: 1 },
+      { id: "d1c00003-e5f6-4a03-8b03-0d1e2f3a4b03", label: "Screens burned", isCompleted: false, isCanonical: true, sortOrder: 2 },
+      { id: "d1c00004-e5f6-4a03-8b04-0d1e2f3a4b04", label: "Screens registered on press", isCompleted: false, isCanonical: true, sortOrder: 3 },
+      { id: "d1c00005-e5f6-4a03-8b05-0d1e2f3a4b05", label: "Blanks received and counted", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1c00006-e5f6-4a03-8b06-0d1e2f3a4b06", label: "Press run complete", isCompleted: false, isCanonical: true, sortOrder: 5 },
+      { id: "d1c00007-e5f6-4a03-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 6 },
+      { id: "d1c00008-e5f6-4a03-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 7 },
+    ],
+    sourceQuoteId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+    artworkIds: ["art-005", "art-006"],
+    history: [],
+    notes: [
+      { id: "e1c00001-e5f6-4a03-8b01-0d1e2f3a4b01", type: "system", content: "Job created from Quote Q-1025", author: "System", createdAt: "2026-02-06T14:00:00Z" },
+      { id: "e1c00002-e5f6-4a03-8b02-0d1e2f3a4b02", type: "internal", content: "Large order — 300 pcs. Need to confirm blank availability with supplier", author: "Gary", createdAt: "2026-02-07T08:30:00Z" },
+    ],
+    isArchived: false,
   },
+
+  // -----------------------------------------------------------------------
+  // J-1027: Metro Youth Soccer — embroidery, blocked, at_risk
+  // -----------------------------------------------------------------------
   {
-    id: "d4e5f6a7-b8c9-4d0e-9f2a-3b4c5d6e7f8a",
+    id: "f1a00004-e5f6-4a04-8b04-0d1e2f3a4b04",
     jobNumber: "J-1027",
+    title: "Metro Youth Soccer — Spring Jerseys",
+    customerId: CUSTOMER_IDS.metroYouth,
+    lane: "blocked",
+    serviceType: "embroidery",
+    startDate: "2026-02-03",
+    dueDate: "2026-02-18",
+    createdAt: "2026-02-01T09:00:00Z",
+    priority: "high",
+    riskLevel: "at_risk",
+    quantity: 150,
+    garmentDetails: [
+      { garmentId: "gc-001", colorId: "clr-royal", sizes: { YS: 10, YM: 30, YL: 30, S: 30, M: 25, L: 15, XL: 10 } },
+    ],
+    printLocations: [
+      { position: "Left Chest", colorCount: 3, artworkApproved: false },
+    ],
+    complexity: { locationCount: 1, garmentVariety: 1 },
+    tasks: [
+      { id: "d1d00001-e5f6-4a04-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-02T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1d00002-e5f6-4a04-8b02-0d1e2f3a4b02", label: "Design digitized", detail: "Stitch file created", isCompleted: false, isCanonical: true, sortOrder: 1 },
+      { id: "d1d00003-e5f6-4a04-8b03-0d1e2f3a4b03", label: "Digitizer machine set up", isCompleted: false, isCanonical: true, sortOrder: 2 },
+      { id: "d1d00004-e5f6-4a04-8b04-0d1e2f3a4b04", label: "Blanks received and counted", isCompleted: true, completedAt: "2026-02-05T15:00:00Z", isCanonical: true, sortOrder: 3 },
+      { id: "d1d00005-e5f6-4a04-8b05-0d1e2f3a4b05", label: "Embroidery run complete", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1d00006-e5f6-4a04-8b06-0d1e2f3a4b06", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 5 },
+      { id: "d1d00007-e5f6-4a04-8b07-0d1e2f3a4b07", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 6 },
+    ],
+    blockReason: "Waiting on digitized stitch file from vendor",
+    blockedAt: "2026-02-06T09:00:00Z",
+    blockedBy: "Gary",
+    artworkIds: [],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
+      { fromLane: "in_progress", toLane: "blocked", timestamp: "2026-02-06T09:00:00Z", note: "Vendor delayed digitized file" },
+    ],
+    notes: [
+      { id: "e1d00001-e5f6-4a04-8b01-0d1e2f3a4b01", type: "system", content: "Job moved to Blocked — waiting on vendor", author: "System", createdAt: "2026-02-06T09:00:00Z" },
+      { id: "e1d00002-e5f6-4a04-8b02-0d1e2f3a4b02", type: "internal", content: "Called vendor, stitch file promised by Wed 2/12", author: "Gary", createdAt: "2026-02-10T11:00:00Z" },
+      { id: "e1d00003-e5f6-4a04-8b03-0d1e2f3a4b03", type: "customer", content: "Coach Williams asked for status update — told him we're waiting on vendor", author: "Gary", createdAt: "2026-02-10T14:00:00Z" },
+    ],
+    isArchived: false,
+  },
+
+  // -----------------------------------------------------------------------
+  // J-1028: River City QC Review — screen-print, review, on_track
+  // -----------------------------------------------------------------------
+  {
+    id: "f1a00005-e5f6-4a05-8b05-0d1e2f3a4b05",
+    jobNumber: "J-1028",
     title: "River City Brewing — Pint Night Promo",
-    customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    status: "burning",
+    customerId: CUSTOMER_IDS.riverCity,
+    lane: "review",
+    serviceType: "screen-print",
+    startDate: "2026-02-03",
+    dueDate: "2026-02-15",
+    createdAt: "2026-02-01T14:00:00Z",
     priority: "medium",
-    dueDate: "2026-02-20",
-    garments: [
-      {
-        sku: "AS1301-BLK",
-        style: "AS Colour 1301",
-        brand: "AS Colour",
-        color: "Black",
-        sizes: { S: 10, M: 20, L: 20, XL: 10 },
-      },
+    riskLevel: "on_track",
+    quantity: 100,
+    garmentDetails: [
+      { garmentId: "gc-002", colorId: "clr-black", sizes: { S: 10, M: 30, L: 35, XL: 25 } },
     ],
     printLocations: [
       { position: "Front Center", colorCount: 2, artworkApproved: true },
     ],
+    complexity: { locationCount: 1, screenCount: 2, garmentVariety: 1 },
+    tasks: [
+      { id: "d1e00001-e5f6-4a05-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-02T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1e00002-e5f6-4a05-8b02-0d1e2f3a4b02", label: "Film positives printed", isCompleted: true, completedAt: "2026-02-03T11:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1e00003-e5f6-4a05-8b03-0d1e2f3a4b03", label: "Screens burned", isCompleted: true, completedAt: "2026-02-04T09:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1e00004-e5f6-4a05-8b04-0d1e2f3a4b04", label: "Screens registered on press", isCompleted: true, completedAt: "2026-02-04T14:00:00Z", isCanonical: true, sortOrder: 3 },
+      { id: "d1e00005-e5f6-4a05-8b05-0d1e2f3a4b05", label: "Blanks received and counted", isCompleted: true, completedAt: "2026-02-03T16:00:00Z", isCanonical: true, sortOrder: 4 },
+      { id: "d1e00006-e5f6-4a05-8b06-0d1e2f3a4b06", label: "Press run complete", isCompleted: true, completedAt: "2026-02-08T17:00:00Z", isCanonical: true, sortOrder: 5 },
+      { id: "d1e00007-e5f6-4a05-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: true, completedAt: "2026-02-10T10:00:00Z", isCanonical: true, sortOrder: 6 },
+      { id: "d1e00008-e5f6-4a05-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: true, completedAt: "2026-02-10T15:00:00Z", isCanonical: true, sortOrder: 7 },
+    ],
+    artworkIds: ["art-003"],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
+      { fromLane: "in_progress", toLane: "review", timestamp: "2026-02-10T15:30:00Z" },
+    ],
+    notes: [
+      { id: "e1e00001-e5f6-4a05-8b01-0d1e2f3a4b01", type: "system", content: "All tasks complete — moved to Review", author: "System", createdAt: "2026-02-10T15:30:00Z" },
+      { id: "e1e00002-e5f6-4a05-8b02-0d1e2f3a4b02", type: "internal", content: "Pint Night promo — Marcus wants these for Friday event", author: "Gary", createdAt: "2026-02-01T14:30:00Z" },
+    ],
+    isArchived: false,
   },
+
+  // -----------------------------------------------------------------------
+  // J-1029: Thompson Family Reunion — screen-print, done, on_track
+  // -----------------------------------------------------------------------
   {
-    id: "e5f6a7b8-c9d0-4e1f-aa3b-4c5d6e7f8a9b",
-    jobNumber: "J-1028",
-    title: "Lonestar Lax — Coach Polos",
-    customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
-    status: "finishing",
-    priority: "medium",
-    dueDate: "2026-02-08",
-    garments: [
-      {
-        sku: "K500-NVY",
-        style: "Port Authority K500",
-        brand: "Port Authority",
-        color: "Navy",
-        sizes: { M: 4, L: 6, XL: 4 },
-      },
+    id: "f1a00006-e5f6-4a06-8b06-0d1e2f3a4b06",
+    jobNumber: "J-1029",
+    title: "Thompson Family Reunion Tees",
+    customerId: CUSTOMER_IDS.thompson,
+    lane: "done",
+    serviceType: "screen-print",
+    startDate: "2026-01-27",
+    dueDate: "2026-02-07",
+    createdAt: "2026-01-25T09:00:00Z",
+    completedAt: "2026-02-06T16:00:00Z",
+    priority: "low",
+    riskLevel: "on_track",
+    quantity: 25,
+    garmentDetails: [
+      { garmentId: "gc-001", colorId: "clr-heather-grey", sizes: { YM: 3, YL: 3, S: 4, M: 5, L: 5, XL: 3, "2XL": 2 } },
     ],
     printLocations: [
-      { position: "Left Chest", colorCount: 1, artworkApproved: true },
+      { position: "Front Center", colorCount: 4, artworkApproved: true },
     ],
+    complexity: { locationCount: 1, screenCount: 4, garmentVariety: 1 },
+    tasks: [
+      { id: "d1f00001-e5f6-4a06-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-01-26T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1f00002-e5f6-4a06-8b02-0d1e2f3a4b02", label: "Film positives printed", isCompleted: true, completedAt: "2026-01-27T09:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1f00003-e5f6-4a06-8b03-0d1e2f3a4b03", label: "Screens burned", isCompleted: true, completedAt: "2026-01-28T10:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1f00004-e5f6-4a06-8b04-0d1e2f3a4b04", label: "Screens registered on press", isCompleted: true, completedAt: "2026-01-28T14:00:00Z", isCanonical: true, sortOrder: 3 },
+      { id: "d1f00005-e5f6-4a06-8b05-0d1e2f3a4b05", label: "Blanks received and counted", isCompleted: true, completedAt: "2026-01-27T14:00:00Z", isCanonical: true, sortOrder: 4 },
+      { id: "d1f00006-e5f6-4a06-8b06-0d1e2f3a4b06", label: "Press run complete", isCompleted: true, completedAt: "2026-02-03T17:00:00Z", isCanonical: true, sortOrder: 5 },
+      { id: "d1f00007-e5f6-4a06-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: true, completedAt: "2026-02-05T10:00:00Z", isCanonical: true, sortOrder: 6 },
+      { id: "d1f00008-e5f6-4a06-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: true, completedAt: "2026-02-05T15:00:00Z", isCanonical: true, sortOrder: 7 },
+    ],
+    sourceQuoteId: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
+    invoiceId: "b1a10003-e5f6-4a03-8b03-0d1e2f3a4b03",
+    artworkIds: [],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-01-27T09:00:00Z" },
+      { fromLane: "in_progress", toLane: "review", timestamp: "2026-02-05T15:30:00Z" },
+      { fromLane: "review", toLane: "done", timestamp: "2026-02-06T16:00:00Z" },
+    ],
+    notes: [
+      { id: "e1f00001-e5f6-4a06-8b01-0d1e2f3a4b01", type: "system", content: "Job created from Quote Q-1026", author: "System", createdAt: "2026-01-25T09:00:00Z" },
+      { id: "e1f00002-e5f6-4a06-8b02-0d1e2f3a4b02", type: "internal", content: "Shipped via UPS, tracking #1Z999AA10123456784", author: "Gary", createdAt: "2026-02-06T16:00:00Z" },
+    ],
+    isArchived: false,
   },
+
+  // -----------------------------------------------------------------------
+  // J-1030: Lakeside Festival — screen-print, in_progress, at_risk
+  // -----------------------------------------------------------------------
   {
-    id: "f6a7b8c9-d0e1-4f2a-bb4c-5d6e7f8a9b0c",
-    jobNumber: "J-1022",
-    title: "River City Brewing — Holiday Merch",
-    customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    status: "shipped",
+    id: "f1a00007-e5f6-4a07-8b07-0d1e2f3a4b07",
+    jobNumber: "J-1030",
+    title: "Lakeside Music Festival — Crew & Volunteer Tees",
+    customerId: CUSTOMER_IDS.lakeside,
+    lane: "in_progress",
+    serviceType: "screen-print",
+    startDate: "2026-02-01",
+    dueDate: "2026-02-16",
+    createdAt: "2026-01-28T10:00:00Z",
     priority: "high",
-    dueDate: "2025-12-20",
-    garments: [
-      {
-        sku: "G185-FGR",
-        style: "Gildan 18500 Hoodie",
-        brand: "Gildan",
-        color: "Forest Green",
-        sizes: { S: 8, M: 15, L: 15, XL: 10, "2XL": 5 },
-      },
+    riskLevel: "at_risk",
+    quantity: 500,
+    garmentDetails: [
+      { garmentId: "gc-005", colorId: "clr-black", sizes: { S: 50, M: 125, L: 150, XL: 100, "2XL": 50, "3XL": 25 } },
     ],
     printLocations: [
       { position: "Front Center", colorCount: 3, artworkApproved: true },
       { position: "Back Full", colorCount: 3, artworkApproved: true },
+      { position: "Left Sleeve", colorCount: 1, artworkApproved: true },
     ],
+    complexity: { locationCount: 3, screenCount: 7, garmentVariety: 1 },
+    tasks: [
+      { id: "d1000001-e5f6-4a07-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-01-29T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1000002-e5f6-4a07-8b02-0d1e2f3a4b02", label: "Film positives printed", isCompleted: true, completedAt: "2026-01-31T14:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1000003-e5f6-4a07-8b03-0d1e2f3a4b03", label: "Screens burned", isCompleted: true, completedAt: "2026-02-01T11:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1000004-e5f6-4a07-8b04-0d1e2f3a4b04", label: "Screens registered on press", isCompleted: false, isCanonical: true, sortOrder: 3 },
+      { id: "d1000005-e5f6-4a07-8b05-0d1e2f3a4b05", label: "Blanks received and counted", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1000006-e5f6-4a07-8b06-0d1e2f3a4b06", label: "Press run complete", isCompleted: false, isCanonical: true, sortOrder: 5 },
+      { id: "d1000007-e5f6-4a07-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 6 },
+      { id: "d1000008-e5f6-4a07-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 7 },
+    ],
+    artworkIds: ["art-007", "art-008"],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-01T09:00:00Z" },
+    ],
+    notes: [
+      { id: "e1000001-e5f6-4a07-8b01-0d1e2f3a4b01", type: "internal", content: "Behind schedule — blanks delayed from supplier, ETA 2/13", author: "Gary", createdAt: "2026-02-10T09:00:00Z" },
+      { id: "e1000002-e5f6-4a07-8b02-0d1e2f3a4b02", type: "customer", content: "Chris asking daily for update. Festival is 2/22, needs buffer for volunteer distribution", author: "Gary", createdAt: "2026-02-11T10:00:00Z" },
+      { id: "e1000003-e5f6-4a07-8b03-0d1e2f3a4b03", type: "internal", content: "May need overtime weekend press run to make deadline", author: "Gary", createdAt: "2026-02-11T14:00:00Z" },
+    ],
+    isArchived: false,
+  },
+
+  // -----------------------------------------------------------------------
+  // J-1031: Sunset 5K — dtf, ready, on_track
+  // -----------------------------------------------------------------------
+  {
+    id: "f1a00008-e5f6-4a08-8b08-0d1e2f3a4b08",
+    jobNumber: "J-1031",
+    title: "Sunset 5K — Race Day Tees",
+    customerId: CUSTOMER_IDS.sunset5k,
+    lane: "ready",
+    serviceType: "dtf",
+    startDate: "2026-02-14",
+    dueDate: "2026-02-25",
+    createdAt: "2026-02-10T10:00:00Z",
+    priority: "medium",
+    riskLevel: "on_track",
+    quantity: 75,
+    garmentDetails: [
+      { garmentId: "gc-004", colorId: "clr-red", sizes: { S: 10, M: 20, L: 25, XL: 15, "2XL": 5 } },
+    ],
+    printLocations: [
+      { position: "Front Center", colorCount: 4, artworkApproved: true },
+      { position: "Back Full", colorCount: 2, artworkApproved: true },
+    ],
+    complexity: { locationCount: 2, garmentVariety: 1 },
+    tasks: [
+      { id: "d1100001-e5f6-4a08-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-11T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1100002-e5f6-4a08-8b02-0d1e2f3a4b02", label: "Gang sheet prepared", isCompleted: false, isCanonical: true, sortOrder: 1 },
+      { id: "d1100003-e5f6-4a08-8b03-0d1e2f3a4b03", label: "DTF printed", isCompleted: false, isCanonical: true, sortOrder: 2 },
+      { id: "d1100004-e5f6-4a08-8b04-0d1e2f3a4b04", label: "Transfers pressed", isCompleted: false, isCanonical: true, sortOrder: 3 },
+      { id: "d1100005-e5f6-4a08-8b05-0d1e2f3a4b05", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1100006-e5f6-4a08-8b06-0d1e2f3a4b06", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 5 },
+    ],
+    sourceQuoteId: "14d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f",
+    artworkIds: [],
+    history: [],
+    notes: [
+      { id: "e1100001-e5f6-4a08-8b01-0d1e2f3a4b01", type: "system", content: "Job created from accepted Quote Q-1027", author: "System", createdAt: "2026-02-10T10:00:00Z" },
+    ],
+    isArchived: false,
+  },
+
+  // -----------------------------------------------------------------------
+  // J-1032: CrossTown Wholesale — embroidery, in_progress, on_track
+  // -----------------------------------------------------------------------
+  {
+    id: "f1a00009-e5f6-4a09-8b09-0d1e2f3a4b09",
+    jobNumber: "J-1032",
+    title: "CrossTown Printing — Wholesale Polos",
+    customerId: CUSTOMER_IDS.crosstown,
+    lane: "in_progress",
+    serviceType: "embroidery",
+    startDate: "2026-02-03",
+    dueDate: "2026-02-20",
+    createdAt: "2026-02-01T10:00:00Z",
+    priority: "medium",
+    riskLevel: "on_track",
+    quantity: 200,
+    garmentDetails: [
+      { garmentId: "gc-002", colorId: "clr-navy", sizes: { S: 20, M: 50, L: 60, XL: 40, "2XL": 20, "3XL": 10 } },
+    ],
+    printLocations: [
+      { position: "Left Chest", colorCount: 2, artworkApproved: true },
+    ],
+    complexity: { locationCount: 1, garmentVariety: 1 },
+    tasks: [
+      { id: "d1200001-e5f6-4a09-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-02T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1200002-e5f6-4a09-8b02-0d1e2f3a4b02", label: "Design digitized", detail: "Stitch file created", isCompleted: true, completedAt: "2026-02-04T14:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1200003-e5f6-4a09-8b03-0d1e2f3a4b03", label: "Digitizer machine set up", isCompleted: true, completedAt: "2026-02-05T09:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1200004-e5f6-4a09-8b04-0d1e2f3a4b04", label: "Blanks received and counted", isCompleted: true, completedAt: "2026-02-06T15:00:00Z", isCanonical: true, sortOrder: 3 },
+      { id: "d1200005-e5f6-4a09-8b05-0d1e2f3a4b05", label: "Embroidery run complete", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1200006-e5f6-4a09-8b06-0d1e2f3a4b06", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 5 },
+      { id: "d1200007-e5f6-4a09-8b07-0d1e2f3a4b07", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 6 },
+    ],
+    artworkIds: [],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
+    ],
+    notes: [
+      { id: "e1200001-e5f6-4a09-8b01-0d1e2f3a4b01", type: "internal", content: "Wholesale overflow order for CrossTown. Standard logo placement", author: "Gary", createdAt: "2026-02-01T10:30:00Z" },
+      { id: "e1200002-e5f6-4a09-8b02-0d1e2f3a4b02", type: "internal", content: "Running 200 pcs in batches of 50, currently on batch 2", author: "Gary", createdAt: "2026-02-10T11:00:00Z" },
+    ],
+    isArchived: false,
+  },
+
+  // -----------------------------------------------------------------------
+  // J-1033: Riverside Church — screen-print, done, on_track
+  // -----------------------------------------------------------------------
+  {
+    id: "f1a00010-e5f6-4a10-8b10-0d1e2f3a4b10",
+    jobNumber: "J-1033",
+    title: "Riverside Church — Volunteer Tees",
+    customerId: CUSTOMER_IDS.riverside,
+    lane: "done",
+    serviceType: "screen-print",
+    startDate: "2026-01-20",
+    dueDate: "2026-02-01",
+    createdAt: "2026-01-18T09:00:00Z",
+    completedAt: "2026-01-31T16:00:00Z",
+    priority: "medium",
+    riskLevel: "on_track",
+    quantity: 80,
+    garmentDetails: [
+      { garmentId: "gc-002", colorId: "clr-white", sizes: { S: 8, M: 20, L: 25, XL: 17, "2XL": 10 } },
+    ],
+    printLocations: [
+      { position: "Front Center", colorCount: 2, artworkApproved: true },
+      { position: "Back Full", colorCount: 1, artworkApproved: true },
+    ],
+    complexity: { locationCount: 2, screenCount: 3, garmentVariety: 1 },
+    tasks: [
+      { id: "d1300001-e5f6-4a10-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-01-19T10:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1300002-e5f6-4a10-8b02-0d1e2f3a4b02", label: "Film positives printed", isCompleted: true, completedAt: "2026-01-20T11:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1300003-e5f6-4a10-8b03-0d1e2f3a4b03", label: "Screens burned", isCompleted: true, completedAt: "2026-01-21T09:00:00Z", isCanonical: true, sortOrder: 2 },
+      { id: "d1300004-e5f6-4a10-8b04-0d1e2f3a4b04", label: "Screens registered on press", isCompleted: true, completedAt: "2026-01-22T09:00:00Z", isCanonical: true, sortOrder: 3 },
+      { id: "d1300005-e5f6-4a10-8b05-0d1e2f3a4b05", label: "Blanks received and counted", isCompleted: true, completedAt: "2026-01-21T14:00:00Z", isCanonical: true, sortOrder: 4 },
+      { id: "d1300006-e5f6-4a10-8b06-0d1e2f3a4b06", label: "Press run complete", isCompleted: true, completedAt: "2026-01-27T17:00:00Z", isCanonical: true, sortOrder: 5 },
+      { id: "d1300007-e5f6-4a10-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: true, completedAt: "2026-01-28T10:00:00Z", isCanonical: true, sortOrder: 6 },
+      { id: "d1300008-e5f6-4a10-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: true, completedAt: "2026-01-30T15:00:00Z", isCanonical: true, sortOrder: 7 },
+    ],
+    invoiceId: "b1a10001-e5f6-4a01-8b01-0d1e2f3a4b01",
+    artworkIds: [],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-01-20T09:00:00Z" },
+      { fromLane: "in_progress", toLane: "review", timestamp: "2026-01-30T15:30:00Z" },
+      { fromLane: "review", toLane: "done", timestamp: "2026-01-31T16:00:00Z" },
+    ],
+    notes: [
+      { id: "e1300001-e5f6-4a10-8b01-0d1e2f3a4b01", type: "internal", content: "Simple 2+1 color job. Pastor James very happy with result", author: "Gary", createdAt: "2026-01-31T16:00:00Z" },
+    ],
+    isArchived: false,
+  },
+
+  // -----------------------------------------------------------------------
+  // J-1034: TikTok DTF Rush Interrupt — dtf, in_progress, getting_tight
+  // -----------------------------------------------------------------------
+  {
+    id: "f1a00011-e5f6-4a11-8b11-0d1e2f3a4b11",
+    jobNumber: "J-1034",
+    title: "TikTok Merch — DTF Rush Interrupt",
+    customerId: CUSTOMER_IDS.tiktokMerch,
+    lane: "in_progress",
+    serviceType: "dtf",
+    startDate: "2026-02-10",
+    dueDate: "2026-02-14",
+    createdAt: "2026-02-10T08:00:00Z",
+    priority: "rush",
+    riskLevel: "getting_tight",
+    quantity: 30,
+    garmentDetails: [
+      { garmentId: "gc-001", colorId: "clr-white", sizes: { S: 3, M: 8, L: 10, XL: 6, "2XL": 3 } },
+    ],
+    printLocations: [
+      { position: "Front Center", colorCount: 4, artworkApproved: true },
+    ],
+    complexity: { locationCount: 1, garmentVariety: 1 },
+    tasks: [
+      { id: "d1400001-e5f6-4a11-8b01-0d1e2f3a4b01", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-10T09:00:00Z", isCanonical: true, sortOrder: 0 },
+      { id: "d1400002-e5f6-4a11-8b02-0d1e2f3a4b02", label: "Gang sheet prepared", isCompleted: true, completedAt: "2026-02-10T14:00:00Z", isCanonical: true, sortOrder: 1 },
+      { id: "d1400003-e5f6-4a11-8b03-0d1e2f3a4b03", label: "DTF printed", isCompleted: false, isCanonical: true, sortOrder: 2 },
+      { id: "d1400004-e5f6-4a11-8b04-0d1e2f3a4b04", label: "Transfers pressed", isCompleted: false, isCanonical: true, sortOrder: 3 },
+      { id: "d1400005-e5f6-4a11-8b05-0d1e2f3a4b05", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 4 },
+      { id: "d1400006-e5f6-4a11-8b06-0d1e2f3a4b06", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 5 },
+    ],
+    artworkIds: [],
+    history: [
+      { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-10T09:00:00Z" },
+    ],
+    notes: [
+      { id: "e1400001-e5f6-4a11-8b01-0d1e2f3a4b01", type: "internal", content: "Rush interrupt — Alex needs another batch ASAP, different design on white blanks", author: "Gary", createdAt: "2026-02-10T08:00:00Z" },
+      { id: "e1400002-e5f6-4a11-8b02-0d1e2f3a4b02", type: "customer", content: "This is for the Saturday Austin pop-up, same booth as the black tees", author: "Alex Kim", createdAt: "2026-02-10T08:30:00Z" },
+    ],
+    isArchived: false,
   },
 ];
 
@@ -1068,35 +1429,35 @@ export const screens: Screen[] = [
     meshCount: 160,
     emulsionType: "Dual Cure",
     burnStatus: "burned",
-    jobId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    jobId: "f1a00001-e5f6-4a01-8b01-0d1e2f3a4b01",
   },
   {
     id: "52b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
     meshCount: 230,
     emulsionType: "Dual Cure",
     burnStatus: "burned",
-    jobId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    jobId: "f1a00001-e5f6-4a01-8b01-0d1e2f3a4b01",
   },
   {
     id: "53c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     meshCount: 110,
     emulsionType: "Photopolymer",
     burnStatus: "pending",
-    jobId: "d4e5f6a7-b8c9-4d0e-9f2a-3b4c5d6e7f8a",
+    jobId: "f1a00003-e5f6-4a03-8b03-0d1e2f3a4b03",
   },
   {
     id: "54d5e6f7-a8b9-4c0d-9e2f-3a4b5c6d7e8f",
     meshCount: 160,
     emulsionType: "Dual Cure",
     burnStatus: "pending",
-    jobId: "d4e5f6a7-b8c9-4d0e-9f2a-3b4c5d6e7f8a",
+    jobId: "f1a00003-e5f6-4a03-8b03-0d1e2f3a4b03",
   },
   {
     id: "55e6f7a8-b9c0-4d1e-af3a-4b5c6d7e8f9a",
     meshCount: 200,
     emulsionType: "Dual Cure",
     burnStatus: "reclaimed",
-    jobId: "f6a7b8c9-d0e1-4f2a-bb4c-5d6e7f8a9b0c",
+    jobId: "f1a00005-e5f6-4a05-8b05-0d1e2f3a4b05",
   },
 ];
 
@@ -1495,6 +1856,120 @@ export const creditMemos: CreditMemo[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Quote Board Cards — view model cards for the Quotes lane board
+// ---------------------------------------------------------------------------
+
+export const quoteCards: QuoteCard[] = [
+  // Q-1035: Ready — new phone lead, no quote yet
+  {
+    type: "quote",
+    quoteId: "ac100001-e5f6-4a01-8b01-0d1e2f3a4b01",
+    customerId: CUSTOMER_IDS.mountainView,
+    customerName: "Mountain View HS",
+    description: "Phone lead — Coach Rodriguez interested in fall football jerseys",
+    lane: "ready",
+    quoteStatus: "draft",
+    isNew: false,
+  },
+  // Q-1036: In Progress — Mountain View HS, building quote
+  {
+    type: "quote",
+    quoteId: "ac100002-e5f6-4a02-8b02-0d1e2f3a4b02",
+    customerId: CUSTOMER_IDS.mountainView,
+    customerName: "Mountain View HS",
+    description: "Varsity basketball warm-up shirts — 500 pcs, 2-color front",
+    serviceType: "screen-print",
+    quantity: 500,
+    dueDate: "2026-03-01",
+    lane: "in_progress",
+    quoteStatus: "draft",
+    isNew: false,
+  },
+  // Q-1037: Blocked — Sunset 5K, waiting on customer to pick color
+  {
+    type: "quote",
+    quoteId: "ac100003-e5f6-4a03-8b03-0d1e2f3a4b03",
+    customerId: CUSTOMER_IDS.sunset5k,
+    customerName: "Sunset 5K Run",
+    description: "Race day volunteer shirts — waiting on customer color choice",
+    serviceType: "dtf",
+    quantity: 100,
+    dueDate: "2026-03-10",
+    lane: "blocked",
+    quoteStatus: "sent",
+    isNew: false,
+  },
+  // Q-1038: Done — Lonestar Lacrosse, accepted, "New" badge
+  {
+    type: "quote",
+    quoteId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+    customerId: CUSTOMER_IDS.lonestar,
+    customerName: "Lonestar Lacrosse",
+    description: "Tournament jerseys — accepted, ready for job creation",
+    serviceType: "screen-print",
+    quantity: 300,
+    total: 2614,
+    dueDate: "2026-02-22",
+    lane: "done",
+    quoteStatus: "accepted",
+    isNew: true,
+  },
+  // Q-1039: Done — Thompson Family, accepted, job already created (J-1029)
+  {
+    type: "quote",
+    quoteId: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
+    customerId: CUSTOMER_IDS.thompson,
+    customerName: "Thompson Family Reunion",
+    description: "Family reunion tees — accepted, job J-1029 created",
+    serviceType: "screen-print",
+    quantity: 25,
+    total: 855,
+    lane: "done",
+    quoteStatus: "accepted",
+    isNew: false,
+  },
+  // Q-1040: Done — declined lead
+  {
+    type: "quote",
+    quoteId: "14d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f",
+    customerId: CUSTOMER_IDS.sunset5k,
+    customerName: "Sunset 5K Run",
+    description: "Original race tees — declined, over budget",
+    serviceType: "screen-print",
+    quantity: 450,
+    total: 4390,
+    lane: "done",
+    quoteStatus: "declined",
+    isNew: false,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Scratch Notes — quick capture pad for incoming leads/ideas
+// ---------------------------------------------------------------------------
+
+export const scratchNotes: ScratchNote[] = [
+  {
+    id: "5a100001-e5f6-4a01-8b01-0d1e2f3a4b01",
+    content: "John called, 200 black tees with front print, wants by next Friday",
+    createdAt: "2026-02-11T09:15:00Z",
+    isArchived: false,
+  },
+  {
+    id: "5a100002-e5f6-4a02-8b02-0d1e2f3a4b02",
+    content: "Email from sports league — 150 jerseys, need quote for 3-color front + back number",
+    createdAt: "2026-02-11T14:30:00Z",
+    isArchived: false,
+  },
+  {
+    id: "5a100003-e5f6-4a03-8b03-0d1e2f3a4b03",
+    content: "Walk-in asked about DTF pricing for 50 custom transfers",
+    createdAt: "2026-02-12T10:00:00Z",
+    isArchived: false,
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Reverse lookup helpers
 // ---------------------------------------------------------------------------
 
@@ -1537,4 +2012,22 @@ export function getInvoiceCreditMemos(invoiceId: string): CreditMemo[] {
 
 export function getQuoteInvoice(quoteId: string): Invoice | undefined {
   return invoices.find((inv) => inv.quoteId === quoteId);
+}
+
+export function getJobsByLane(lane: string): Job[] {
+  return jobs.filter((j) => j.lane === lane);
+}
+
+export function getJobsByServiceType(serviceType: string): Job[] {
+  return jobs.filter((j) => j.serviceType === serviceType);
+}
+
+export function getJobTasks(jobId: string): JobTask[] {
+  const job = jobs.find((j) => j.id === jobId);
+  return job?.tasks ?? [];
+}
+
+export function getJobNotes(jobId: string): JobNote[] {
+  const job = jobs.find((j) => j.id === jobId);
+  return job?.notes ?? [];
 }

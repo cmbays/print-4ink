@@ -1,4 +1,4 @@
-import type { ProductionState, Priority } from "./schemas/job";
+import type { ProductionState, Priority, Lane, RiskLevel } from "./schemas/job";
 import type { BurnStatus } from "./schemas/screen";
 import type { QuoteStatus, ServiceType } from "./schemas/quote";
 import type {
@@ -249,4 +249,98 @@ export const DEPOSIT_DEFAULTS_BY_TIER: Record<PricingTier, number> = {
   preferred: 50,
   contract: 0,
   wholesale: 100,
+};
+
+// ---------------------------------------------------------------------------
+// Jobs & Production — Lane Status
+// ---------------------------------------------------------------------------
+
+export const LANE_LABELS: Record<Lane, string> = {
+  ready: "Ready",
+  in_progress: "In Progress",
+  review: "Review",
+  blocked: "Blocked",
+  done: "Done",
+};
+
+export const LANE_COLORS: Record<Lane, string> = {
+  ready: "text-muted-foreground",
+  in_progress: "text-action",
+  review: "text-warning",
+  blocked: "text-error",
+  done: "text-success",
+};
+
+export const LANE_BADGE_COLORS: Record<Lane, string> = {
+  ready: "bg-muted text-muted-foreground",
+  in_progress: "bg-action/10 text-action border border-action/20",
+  review: "bg-warning/10 text-warning border border-warning/20",
+  blocked: "bg-error/10 text-error border border-error/20",
+  done: "bg-success/10 text-success border border-success/20",
+};
+
+// ---------------------------------------------------------------------------
+// Jobs & Production — Risk Indicators
+// ---------------------------------------------------------------------------
+
+export const RISK_LABELS: Record<RiskLevel, string> = {
+  on_track: "On Track",
+  getting_tight: "Getting Tight",
+  at_risk: "At Risk",
+};
+
+export const RISK_COLORS: Record<RiskLevel, string> = {
+  on_track: "",
+  getting_tight: "text-warning",
+  at_risk: "text-error",
+};
+
+// ---------------------------------------------------------------------------
+// Jobs & Production — Service Type Visual Encoding
+// ---------------------------------------------------------------------------
+
+export const SERVICE_TYPE_BORDER_COLORS: Record<ServiceType, string> = {
+  "screen-print": "border-action",
+  dtf: "border-warning",
+  embroidery: "border-success",
+};
+
+export const SERVICE_TYPE_ICONS: Record<ServiceType, string> = {
+  "screen-print": "Printer",
+  dtf: "Palette",
+  embroidery: "Scissors",
+};
+
+// ---------------------------------------------------------------------------
+// Jobs & Production — Canonical Task Templates
+// ---------------------------------------------------------------------------
+
+export const CANONICAL_TASKS: Record<ServiceType, Array<{ label: string; detail?: string }>> = {
+  "screen-print": [
+    { label: "Art files finalized" },
+    { label: "Film positives printed" },
+    { label: "Screens burned" },
+    { label: "Screens registered on press" },
+    { label: "Blanks received and counted" },
+    { label: "Press run complete" },
+    { label: "QC inspection passed" },
+    { label: "Packed and labeled" },
+  ],
+  dtf: [
+    { label: "Art files finalized" },
+    { label: "Gang sheet prepared" },
+    { label: "DTF printed" },
+    { label: "Transfers pressed" },
+    { label: "QC inspection passed" },
+    { label: "Packed and labeled" },
+  ],
+  embroidery: [
+    { label: "Art files finalized" },
+    { label: "Design digitized", detail: "Stitch file created" },
+    { label: "Digitizer machine set up" },
+    { label: "Blanks received and counted" },
+    { label: "Embroidery run complete" },
+    { label: "QC inspection passed" },
+    { label: "Packed and labeled" },
+  ],
 };

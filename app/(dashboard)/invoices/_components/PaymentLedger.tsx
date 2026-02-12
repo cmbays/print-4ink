@@ -11,25 +11,12 @@ import {
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
 import type { Payment } from "@/lib/schemas/invoice";
 import { CreditCard } from "lucide-react";
+import { formatDate } from "@/lib/helpers/format";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 
 interface PaymentLedgerProps {
   payments: Payment[];
   total: number;
-}
-
-function formatDate(dateString: string): string {
-  const date = dateString.includes("T")
-    ? new Date(dateString)
-    : (() => {
-        const [year, month, day] = dateString.split("-").map(Number);
-        return new Date(year, month - 1, day);
-      })();
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 }
 
 export function PaymentLedger({ payments, total }: PaymentLedgerProps) {

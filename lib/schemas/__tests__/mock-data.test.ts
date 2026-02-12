@@ -12,6 +12,8 @@ import { garmentCatalogSchema } from "../garment";
 import { artworkSchema } from "../artwork";
 import { invoiceSchema } from "../invoice";
 import { creditMemoSchema } from "../credit-memo";
+import { scratchNoteSchema } from "../scratch-note";
+import { quoteCardSchema } from "../board-card";
 import {
   customers,
   contacts,
@@ -27,6 +29,8 @@ import {
   invoices,
   payments,
   creditMemos,
+  scratchNotes,
+  quoteCards,
 } from "@/lib/mock-data";
 
 describe("mock data validates against schemas", () => {
@@ -105,6 +109,18 @@ describe("mock data validates against schemas", () => {
   it("all credit memos are valid", () => {
     for (const cm of creditMemos) {
       expect(() => creditMemoSchema.parse(cm)).not.toThrow();
+    }
+  });
+
+  it("all scratch notes are valid", () => {
+    for (const note of scratchNotes) {
+      expect(() => scratchNoteSchema.parse(note)).not.toThrow();
+    }
+  });
+
+  it("all quote cards are valid", () => {
+    for (const card of quoteCards) {
+      expect(() => quoteCardSchema.parse(card)).not.toThrow();
     }
   });
 });
@@ -255,6 +271,24 @@ describe("referential integrity", () => {
           c.shippingAddresses.some((sa) => sa.id === address.id)
       );
       expect(ownerExists).toBe(true);
+    }
+  });
+
+  it("all job sourceQuoteIds reference existing quotes", () => {
+    const quoteIds = new Set(quotes.map((q) => q.id));
+    for (const job of jobs) {
+      if (job.sourceQuoteId) {
+        expect(quoteIds.has(job.sourceQuoteId)).toBe(true);
+      }
+    }
+  });
+
+  it("all job invoiceIds reference existing invoices", () => {
+    const invoiceIds = new Set(invoices.map((inv) => inv.id));
+    for (const job of jobs) {
+      if (job.invoiceId) {
+        expect(invoiceIds.has(job.invoiceId)).toBe(true);
+      }
     }
   });
 
@@ -479,5 +513,53 @@ describe("data coverage", () => {
     expect(methods).toContain("zelle");
     expect(methods).toContain("ach");
     expect(methods).toContain("credit_card");
+  });
+
+  // Job data coverage
+  it("covers all lanes", () => {
+    const lanes = new Set(jobs.map((j) => j.lane));
+    expect(lanes).toContain("ready");
+    expect(lanes).toContain("in_progress");
+    expect(lanes).toContain("review");
+    expect(lanes).toContain("blocked");
+    expect(lanes).toContain("done");
+  });
+
+  it("covers all service types", () => {
+    const types = new Set(jobs.map((j) => j.serviceType));
+    expect(types).toContain("screen-print");
+    expect(types).toContain("dtf");
+    expect(types).toContain("embroidery");
+  });
+
+  it("covers all risk levels", () => {
+    const levels = new Set(jobs.map((j) => j.riskLevel));
+    expect(levels).toContain("on_track");
+    expect(levels).toContain("getting_tight");
+    expect(levels).toContain("at_risk");
+  });
+
+  it("covers all priorities", () => {
+    const priorities = new Set(jobs.map((j) => j.priority));
+    expect(priorities).toContain("low");
+    expect(priorities).toContain("medium");
+    expect(priorities).toContain("high");
+    expect(priorities).toContain("rush");
+  });
+
+  it("has blocked jobs with blockReason", () => {
+    const blocked = jobs.filter((j) => j.lane === "blocked");
+    expect(blocked.length).toBeGreaterThanOrEqual(1);
+    for (const job of blocked) {
+      expect(job.blockReason).toBeTruthy();
+    }
+  });
+
+  it("has done jobs with completedAt", () => {
+    const done = jobs.filter((j) => j.lane === "done");
+    expect(done.length).toBeGreaterThanOrEqual(1);
+    for (const job of done) {
+      expect(job.completedAt).toBeTruthy();
+    }
   });
 });

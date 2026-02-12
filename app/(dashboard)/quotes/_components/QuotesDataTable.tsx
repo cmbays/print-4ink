@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { formatDate } from "@/lib/helpers/format";
 import type { QuoteStatus } from "@/lib/schemas/quote";
 import { quotes as rawQuotes, customers } from "@/lib/mock-data";
 
@@ -89,14 +90,6 @@ function formatCurrency(value: number) {
     style: "currency",
     currency: "USD",
   }).format(value);
-}
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 }
 
 // ---------------------------------------------------------------------------

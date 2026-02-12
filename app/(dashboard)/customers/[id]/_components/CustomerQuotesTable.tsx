@@ -9,6 +9,7 @@ import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_COLORS,
 } from "@/lib/constants";
+import { formatDate } from "@/lib/helpers/format";
 import type { Quote } from "@/lib/schemas/quote";
 
 interface CustomerQuotesTableProps {
@@ -20,14 +21,6 @@ function formatCurrency(amount: number): string {
     style: "currency",
     currency: "USD",
   }).format(amount);
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 }
 
 export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {

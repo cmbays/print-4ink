@@ -3,23 +3,16 @@
 import { Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
-  PRODUCTION_STATE_LABELS,
-  PRODUCTION_STATE_COLORS,
+  LANE_LABELS,
+  LANE_COLORS,
   PRIORITY_LABELS,
   PRIORITY_COLORS,
 } from "@/lib/constants";
+import { formatDate } from "@/lib/helpers/format";
 import type { Job } from "@/lib/schemas/job";
 
 interface CustomerJobsTableProps {
   jobs: Job[];
-}
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 }
 
 export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
@@ -45,7 +38,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
             <tr className="border-b border-border text-left">
               <th className="pb-3 font-medium text-muted-foreground">Job #</th>
               <th className="pb-3 font-medium text-muted-foreground">Title</th>
-              <th className="pb-3 font-medium text-muted-foreground">Status</th>
+              <th className="pb-3 font-medium text-muted-foreground">Lane</th>
               <th className="pb-3 font-medium text-muted-foreground">Priority</th>
               <th className="pb-3 font-medium text-muted-foreground">Due Date</th>
             </tr>
@@ -61,8 +54,8 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
                 </td>
                 <td className="py-3 text-foreground">{job.title}</td>
                 <td className="py-3">
-                  <Badge variant="ghost" className={PRODUCTION_STATE_COLORS[job.status]}>
-                    {PRODUCTION_STATE_LABELS[job.status]}
+                  <Badge variant="ghost" className={LANE_COLORS[job.lane]}>
+                    {LANE_LABELS[job.lane]}
                   </Badge>
                 </td>
                 <td className="py-3">
@@ -89,8 +82,8 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
           >
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium text-foreground">{job.jobNumber}</span>
-              <Badge variant="ghost" className={PRODUCTION_STATE_COLORS[job.status]}>
-                {PRODUCTION_STATE_LABELS[job.status]}
+              <Badge variant="ghost" className={LANE_COLORS[job.lane]}>
+                {LANE_LABELS[job.lane]}
               </Badge>
             </div>
             <p className="text-sm text-foreground mb-2">{job.title}</p>
