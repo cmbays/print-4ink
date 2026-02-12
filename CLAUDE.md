@@ -97,6 +97,9 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 | `PROGRESS.md` | Update on main after PR merge |
 | `for_human/index.html` | Auto-generated via `npm run gen:index` — never hand-edit |
 | `for_human/README.md` | Auto-generated via `npm run gen:index` — never hand-edit |
+| `for_human/manifest.json` | Auto-generated via `npm run gen:index` — never hand-edit |
+| `for_human/gary-tracker.html` | Auto-generated via `npm run gen:index` — never hand-edit |
+| `for_human/_stage/*.html` | Auto-generated via `npm run gen:index` — never hand-edit |
 
 **What sessions CAN commit on their feature branch:**
 - All source code changes
@@ -338,14 +341,38 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 After every feature build, plan, or decision, create or update an HTML doc in `for_human/`.
 
-**Template**: Use `for_human/_template.html` as the reference. Every file must have the standardized header:
-1. Back navigation (`← Back to Index`)
-2. Tag pills (1-3 per session)
-3. Title + subtitle
-4. Meta grid: Date, Branch, Phase, Vertical
-5. Session resume: `claude --resume <id>`
-6. Related sessions (navigation buttons to related `for_human/` docs, if any)
-7. Divider before body content
+**Template**: Use `for_human/_template.html` as the reference. Every file must have:
+1. `data-*` attributes on `<html>` tag (structured metadata)
+2. Back navigation (`← Back to Index`)
+3. Tag pills (1-3 per session)
+4. Title + subtitle
+5. Meta grid: Date, Branch, Phase, Vertical, Stage, Status
+6. Session resume: `claude --resume <id>`
+7. Related sessions (optional navigation buttons)
+8. Divider before body content
+
+**Required `data-*` attributes on `<html>` tag:**
+```html
+<html lang="en"
+  data-doc-id="YYYY-MM-DD-kebab-topic"
+  data-title="Document Title"
+  data-subtitle="Short description"
+  data-date="YYYY-MM-DD"
+  data-phase="1"
+  data-vertical="VERTICAL_SLUG"
+  data-vertical-secondary=""
+  data-stage="STAGE_SLUG"
+  data-tags="feature,build"
+  data-session-id="UUID"
+  data-branch="session/MMDD-topic"
+  data-pr=""
+  data-status="complete"
+>
+```
+
+**Vertical slugs:** `quoting`, `customer-management`, `invoicing`, `price-matrix`, `jobs`, `screen-room`, `garments`, `dashboard`, `meta`
+
+**Stage slugs:** `research`, `interview`, `breadboarding`, `implementation-planning`, `build`, `review`, `learnings`
 
 **Tags** (apply 1-3 per session):
 
@@ -358,11 +385,29 @@ After every feature build, plan, or decision, create or update an HTML doc in `f
 | Research | Purple | Competitive analysis, exploration |
 | Learning | Amber | Lesson learned or gotcha documented |
 
+**Gary Questions** — to add a question for Gary in any session doc:
+```html
+<div class="gary-question" data-question-id="VERTICAL-q1" data-vertical="VERTICAL_SLUG" data-status="unanswered">
+  <p class="gary-question-text">Your question here?</p>
+  <p class="gary-question-context">Why this matters</p>
+  <div class="gary-answer" data-answered-date=""></div>
+</div>
+```
+
+**Review Checklists** — for review-stage docs, use structured pass/fail:
+```html
+<table class="review-checklist">
+  <tr><th>Check</th><th>Result</th><th>Notes</th></tr>
+  <tr class="review-item"><td>Visual hierarchy</td><td class="review-pass">Pass</td><td></td></tr>
+  <tr class="review-item"><td>Color tokens</td><td class="review-fail">Fail</td><td>Needs fix</td></tr>
+</table>
+```
+
 **Rules:**
 - **Bundle** related content into the same file (e.g., multi-session work on one screen)
 - **Separate** distinct features, standalone decisions, different project phases
 - Sessions commit only their individual `for_human/YYYY-MM-DD-*.html` file on the feature branch
-- `index.html` and `README.md` are auto-generated via `npm run gen:index` — never hand-edit
+- `index.html`, `README.md`, `manifest.json`, `gary-tracker.html`, `_stage/*.html` are auto-generated — never hand-edit
 - `gen:index` runs on main after PR merge
 - **Include**: session resume command, artifact links, PR links, decision rationale
 - **Session ID**: Find the current session ID by running `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — the filename (without `.jsonl`) is the ID. Never use IDs from plan text or prior sessions.
@@ -380,6 +425,6 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Radix Tooltip hover bugs**: Adjacent tooltips need a single shared `<TooltipProvider>` with `skipDelayDuration={300}`, base `sideOffset >= 6`, `data-[state=closed]:pointer-events-none` on content, and `pointer-events-none` on arrow. Do NOT use `disableHoverableContent` — it causes flickering on small targets.
 - **shadcn/ui Tooltip dark mode**: Default `bg-foreground text-background` is invisible in dark mode. Override to `bg-elevated text-foreground border border-border shadow-lg`. Arrow: `bg-elevated fill-elevated`.
 - **Git worktrees**: Main repo (`~/Github/print-4ink/`) always stays on `main`. Worktrees go in `~/Github/print-4ink-worktrees/`. Each worktree needs its own `npm install`. Max 4 concurrent worktrees — clean up after PR merges.
-- **Hot files**: Never commit `PROGRESS.md`, `for_human/index.html`, or `for_human/README.md` on feature branches. Update on main after merge.
+- **Hot files**: Never commit `PROGRESS.md`, `for_human/index.html`, `for_human/README.md`, `for_human/manifest.json`, `for_human/gary-tracker.html`, or `for_human/_stage/*.html` on feature branches. Update on main after merge.
 - **CRITICAL — Financial arithmetic**: NEVER use JavaScript floating-point (`+`, `-`, `*`, `/`) for monetary calculations. IEEE 754 causes silent errors (e.g., `0.1 + 0.2 = 0.30000000000000004`). Use `big.js` via the `lib/helpers/money.ts` wrapper (`money()`, `round2()`, `toNumber()`). Schema invariants use `Big.eq()` for exact comparison — no tolerance hacks. Integer-cents workarounds still fail on multiplication/division (tax rates, percentage deposits).
 - **React 19 ESLint — no setState in effects**: Don't use `useEffect` to reset form state when a dialog opens. Instead, have the parent conditionally render the dialog (`{showDialog && <Dialog />}`) so React unmounts/remounts the component, naturally resetting all `useState` hooks.

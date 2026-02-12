@@ -1,5 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+  data-doc-id="2026-02-10-worktree-migration"
+  data-title="Git Worktree Migration + Memory Refactoring"
+  data-subtitle="Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%."
+  data-date="2026-02-10"
+  data-phase="1"
+  data-vertical="meta"
+  data-vertical-secondary=""
+  data-stage="build"
+  data-tags="build,decision"
+  data-session-id="8a3b9d7b-461c-48a8-bdbc-7b4361c6260a"
+  data-branch="session/0210-worktree-migration"
+  data-pr=""
+  data-status="complete"
+>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,6 +128,18 @@
       background: var(--bg-surface); padding: 2px 6px; border-radius: 4px; color: var(--action);
     }
 
+    .stage-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--action);
+    }
+
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
     .stat {
       background: var(--bg-elevated); border: 1px solid var(--border);
@@ -164,6 +190,14 @@
         <div class="meta-item">
           <span class="meta-label">Vertical</span>
           <span class="meta-value">Cross-cutting</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Stage</span>
+          <span class="meta-value"><span class="stage-tag">Build</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value">Complete</span>
         </div>
       </div>
 

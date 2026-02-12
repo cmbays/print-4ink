@@ -1,0 +1,534 @@
+{
+  "generated": "2026-02-12T23:33:59.946Z",
+  "verticals": [
+    {
+      "slug": "quoting",
+      "label": "Quoting",
+      "order": 1,
+      "category": "domain",
+      "phases": {
+        "1": {
+          "stages": {
+            "build": {
+              "status": "complete",
+              "docCount": 2
+            },
+            "research": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "breadboarding": {
+              "status": "complete",
+              "docCount": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "slug": "customer-management",
+      "label": "Customer Management",
+      "order": 2,
+      "category": "domain",
+      "phases": {
+        "1": {
+          "stages": {
+            "review": {
+              "status": "complete",
+              "docCount": 2
+            },
+            "breadboarding": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "build": {
+              "status": "complete",
+              "docCount": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "slug": "invoicing",
+      "label": "Invoicing",
+      "order": 3,
+      "category": "domain",
+      "phases": {
+        "1": {
+          "stages": {
+            "build": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "breadboarding": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "research": {
+              "status": "complete",
+              "docCount": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "slug": "price-matrix",
+      "label": "Price Matrix",
+      "order": 4,
+      "category": "domain",
+      "phases": {
+        "1": {
+          "stages": {
+            "build": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "breadboarding": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "research": {
+              "status": "complete",
+              "docCount": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "slug": "meta",
+      "label": "Meta / Infrastructure",
+      "order": 99,
+      "category": "infra",
+      "phases": {
+        "1": {
+          "stages": {
+            "build": {
+              "status": "complete",
+              "docCount": 7
+            },
+            "implementation-planning": {
+              "status": "complete",
+              "docCount": 1
+            },
+            "research": {
+              "status": "complete",
+              "docCount": 1
+            }
+          }
+        }
+      }
+    }
+  ],
+  "documents": [
+    {
+      "id": "2026-02-12-price-matrix-build",
+      "file": "2026-02-12-price-matrix-build.html",
+      "title": "Price Matrix Build",
+      "subtitle": "Full implementation of the pricing engine vertical — schemas, editors, Power Grid, sandbox mode, and the useSpreadsheetEditor data grid widget",
+      "date": "2026-02-12",
+      "phase": 1,
+      "vertical": "price-matrix",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build",
+        "learning"
+      ],
+      "sessionId": "c564ffea-778c-43d0-a35f-2bb32431d23b",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-11-price-matrix-breadboard",
+      "file": "2026-02-11-price-matrix-breadboard.html",
+      "title": "Price Matrix Breadboard",
+      "subtitle": "UI affordance map, wiring, component boundaries, and parallelized build order for the Price Matrix vertical",
+      "date": "2026-02-11",
+      "phase": 1,
+      "vertical": "price-matrix",
+      "verticalSecondary": [],
+      "stage": "breadboarding",
+      "tags": [
+        "plan",
+        "decision"
+      ],
+      "sessionId": "ac42f9fb-92e3-4d10-971d-bec20c749009",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-11-invoicing-build",
+      "file": "2026-02-11-invoicing-build.html",
+      "title": "Invoicing Vertical Build",
+      "subtitle": "Full invoicing system — schemas, list page, form, detail view, overlays, and integrations. 30 new files, 8 modified, 314 tests passing.",
+      "date": "2026-02-11",
+      "phase": 1,
+      "vertical": "invoicing",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "ba5ae290-306e-47a6-b09b-c2c10320dad0",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-11-invoicing-breadboard",
+      "file": "2026-02-11-invoicing-breadboard.html",
+      "title": "Invoicing Breadboard",
+      "subtitle": "UI affordances, code affordances, wiring, and component boundaries for the invoicing vertical — the buildable blueprint before code.",
+      "date": "2026-02-11",
+      "phase": 1,
+      "vertical": "invoicing",
+      "verticalSecondary": [],
+      "stage": "breadboarding",
+      "tags": [
+        "plan",
+        "research"
+      ],
+      "sessionId": "ba5ae290-306e-47a6-b09b-c2c10320dad0",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-worktree-migration",
+      "file": "2026-02-10-worktree-migration.html",
+      "title": "Git Worktree Migration + Memory Refactoring",
+      "subtitle": "Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%.",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "build",
+        "decision"
+      ],
+      "sessionId": "8a3b9d7b-461c-48a8-bdbc-7b4361c6260a",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-work-orchestrator",
+      "file": "2026-02-10-work-orchestrator.html",
+      "title": "work() — Worktree Orchestrator",
+      "subtitle": "Single command to create worktrees, tmux sessions, and launch Claude — with Agent Teams integration via tmux hook.",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "build",
+        "feature"
+      ],
+      "sessionId": "c2b2fb1b-b94a-4b17-bab0-3616c520c716",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-quoting-interconnection",
+      "file": "2026-02-10-quoting-interconnection.html",
+      "title": "Quoting–Customer Interconnection",
+      "subtitle": "Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search.",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "quoting",
+      "verticalSecondary": [
+        "customer-management",
+        "invoicing"
+      ],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "633cdbe3-a795-443a-b712-f03c868b4c2e",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-price-matrix-research",
+      "file": "2026-02-10-price-matrix-research.html",
+      "title": "Price Matrix Vertical Research",
+      "subtitle": "Comprehensive market research, competitor analysis, and prioritized feature recommendations for the pricing engine vertical",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "price-matrix",
+      "verticalSecondary": [],
+      "stage": "research",
+      "tags": [
+        "research",
+        "plan",
+        "decision"
+      ],
+      "sessionId": "c2b2fb1b-b94a-4b17-bab0-3616c520c716",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-invoicing-vertical-research",
+      "file": "2026-02-10-invoicing-vertical-research.html",
+      "title": "Invoicing Vertical Research",
+      "subtitle": "Comprehensive competitive, UX, integration, compliance, and industry research for the Screen Print Pro invoicing vertical",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "invoicing",
+      "verticalSecondary": [],
+      "stage": "research",
+      "tags": [
+        "research",
+        "plan"
+      ],
+      "sessionId": "2e017579-35ba-4702-9fa6-428c2bbcec28",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-customer-quality-gate",
+      "file": "2026-02-10-customer-quality-gate.html",
+      "title": "Customer Management Quality Gate",
+      "subtitle": "Comprehensive 5-subagent audit of Customer List + Customer Detail pages. 10 fixes across 11 files.",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "customer-management",
+      "verticalSecondary": [],
+      "stage": "review",
+      "tags": [
+        "build",
+        "feature"
+      ],
+      "sessionId": "fb57182f-1dee-41b4-be8c-173b629bb9b1",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-customer-mgmt-breadboard",
+      "file": "2026-02-10-customer-mgmt-breadboard.html",
+      "title": "Customer Management Breadboard",
+      "subtitle": "Interactive visualization of Places, Components, Wiring, and Build Order for the Customer Management vertical",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "customer-management",
+      "verticalSecondary": [],
+      "stage": "breadboarding",
+      "tags": [
+        "plan",
+        "build"
+      ],
+      "sessionId": "69497710-9bb5-46d9-8e49-949cda0e9d65",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-customer-list-page",
+      "file": "2026-02-10-customer-list-page.html",
+      "title": "Customer List Page",
+      "subtitle": "Smart views, search, filters, stats bar, responsive table — the /customers browse experience",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "customer-management",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "b11a4feb-edb5-44ec-89a2-cedd0cb9c591",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-10-customer-feedback",
+      "file": "2026-02-10-customer-feedback.html",
+      "title": "Customer Management Feedback",
+      "subtitle": "8 feedback items from 4Ink owner review. Layout consistency, inline column filters, timeline interactivity, workflow improvements, and code quality refinements.",
+      "date": "2026-02-10",
+      "phase": 1,
+      "vertical": "customer-management",
+      "verticalSecondary": [],
+      "stage": "review",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "0ba68ef8-1b02-40be-a039-2c63d6d15cd1",
+      "status": "complete"
+    },
+    {
+      "id": "session-2026-02-08-agent-architecture",
+      "file": "session-2026-02-08-agent-architecture.html",
+      "title": "Agent Architecture",
+      "subtitle": "5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows.",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "5799011a-0503-4ea3-b856-2d19cf66b9ac",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-08-vercel-setup",
+      "file": "2026-02-08-vercel-setup.html",
+      "title": "Vercel Setup with Access Code Protection",
+      "subtitle": "4Ink demo deployment infrastructure",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "build"
+      ],
+      "sessionId": "09b70260-83ac-4830-9b02-ed8c0683f699",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-08-strategic-pivot",
+      "file": "2026-02-08-strategic-pivot.html",
+      "title": "Strategic Pivot: Vertical-by-Vertical",
+      "subtitle": "Moving from linear 10-step implementation plan to user-validated vertical development focused on 4Ink's core pain points.",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [
+        "quoting"
+      ],
+      "stage": "implementation-planning",
+      "tags": [
+        "plan",
+        "decision"
+      ],
+      "sessionId": "7b394c57-f392-4fb2-87da-1583c256b010",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-08-quoting-discovery",
+      "file": "2026-02-08-quoting-discovery.html",
+      "title": "Quoting Discovery: Complete",
+      "subtitle": "Full competitive analysis, user interview, and improved journey design for the Quoting vertical",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "quoting",
+      "verticalSecondary": [],
+      "stage": "research",
+      "tags": [
+        "feature",
+        "research"
+      ],
+      "sessionId": "0fe71069-b9c2-45f3-9a06-5c57de8a013d",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-08-quoting-build",
+      "file": "2026-02-08-quoting-build.html",
+      "title": "Quoting Vertical Build",
+      "subtitle": "Complete implementation of the Quoting vertical — 3 pages, 15+ components, artwork system, flat pricing model, collapsible form sections. Built with parallel agents, polished via CodeRabbit review.",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "quoting",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "13546e08-2ee1-4de3-94a7-c2a596a15e1a",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-08-quoting-breadboard",
+      "file": "2026-02-08-quoting-breadboard.html",
+      "title": "Quoting Breadboard",
+      "subtitle": "Visual blueprint mapping all Places, UI affordances, code affordances, and wiring for the Quoting vertical. Produced by the breadboarding skill as input to the frontend-builder agent.",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "quoting",
+      "verticalSecondary": [],
+      "stage": "breadboarding",
+      "tags": [
+        "plan",
+        "build"
+      ],
+      "sessionId": "09b70260-83ac-4830-9b02-ed8c0683f699",
+      "status": "complete"
+    },
+    {
+      "id": "2026-02-08-breadboarding-skill",
+      "file": "2026-02-08-breadboarding-skill.html",
+      "title": "Breadboarding Skill",
+      "subtitle": "Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Maps UI affordances, code affordances, data stores, and wiring before any code is written.",
+      "date": "2026-02-08",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [
+        "quoting"
+      ],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "decision"
+      ],
+      "sessionId": "09b70260-83ac-4830-9b02-ed8c0683f699",
+      "status": "complete"
+    },
+    {
+      "id": "session-2026-02-07-skills-implementation",
+      "file": "session-2026-02-07-skills-implementation.html",
+      "title": "Skills Implementation",
+      "subtitle": "Built two project-specific Claude Code skills — screen-builder and quality-gate — encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens.",
+      "date": "2026-02-07",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build"
+      ],
+      "sessionId": "58358bf9-61aa-4451-a184-c3d91d1871bd",
+      "status": "complete"
+    },
+    {
+      "id": "session-2026-02-07-shaping-skills",
+      "file": "session-2026-02-07-shaping-skills.html",
+      "title": "Shaping Skills Evaluation",
+      "subtitle": "Evaluated Ryan Singer's shaping-skills methodology and extracted three high-value patterns for Screen Print Pro's build process.",
+      "date": "2026-02-07",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "research",
+      "tags": [
+        "decision",
+        "research"
+      ],
+      "sessionId": "b8b97fce-ca40-4f39-972f-420469febfc5",
+      "status": "complete"
+    },
+    {
+      "id": "session-2026-02-07-ci-testing",
+      "file": "session-2026-02-07-ci-testing.html",
+      "title": "CI & Testing Setup",
+      "subtitle": "GitHub Actions CI workflow, Vitest schema tests, and mock data UUID fix. Catches build/lint/type/test failures on every push and PR.",
+      "date": "2026-02-07",
+      "phase": 1,
+      "vertical": "meta",
+      "verticalSecondary": [],
+      "stage": "build",
+      "tags": [
+        "feature",
+        "build",
+        "learning"
+      ],
+      "sessionId": "29d21a39-94a9-4cb3-8ac1-bcc442a85d68",
+      "status": "complete"
+    }
+  ],
+  "garyQuestions": [],
+  "stats": {
+    "totalDocs": 23,
+    "totalVerticals": 5,
+    "garyQuestionsOpen": 0,
+    "garyQuestionsTotal": 0
+  }
+}

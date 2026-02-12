@@ -1,12 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+  data-doc-id="{{DOC_ID}}"
+  data-title="{{TITLE}}"
+  data-subtitle="{{SUBTITLE}}"
+  data-date="{{DATE}}"
+  data-phase="{{PHASE}}"
+  data-vertical="{{VERTICAL}}"
+  data-vertical-secondary="{{VERTICAL_SECONDARY}}"
+  data-stage="{{STAGE}}"
+  data-tags="{{TAGS}}"
+  data-session-id="{{SESSION_ID}}"
+  data-branch="{{BRANCH}}"
+  data-pr="{{PR}}"
+  data-status="{{STATUS}}"
+>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{TITLE}} &mdash; Screen Print Pro</title>
   <style>
     /* ========================================
-       FOR_HUMAN TEMPLATE v1
+       FOR_HUMAN TEMPLATE v2
        Standard design tokens & header layout
        ======================================== */
     :root {
@@ -368,6 +382,91 @@
       color: var(--text-muted);
       text-align: center;
     }
+
+    /* --- STAGE TAG --- */
+    .stage-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--action);
+    }
+
+    /* --- GARY QUESTIONS --- */
+    .gary-question {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid #a78bfa;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+
+    .gary-question-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .gary-question-context {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .gary-answer {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .gary-answer:empty { display: none; }
+
+    /* --- REVIEW CHECKLIST --- */
+    .review-checklist {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .review-checklist th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .review-item td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .review-pass {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .review-fail {
+      color: var(--error);
+      font-weight: 600;
+    }
+
+    .review-skip {
+      color: var(--text-muted);
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -405,6 +504,14 @@
         <div class="meta-item">
           <span class="meta-label">Vertical</span>
           <span class="meta-value">{{VERTICAL}}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Stage</span>
+          <span class="meta-value"><span class="stage-tag">{{STAGE}}</span></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value">{{STATUS}}</span>
         </div>
       </div>
 
