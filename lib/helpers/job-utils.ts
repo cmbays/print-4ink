@@ -58,10 +58,20 @@ export function computeRiskLevel(job: {
   const completedCount = tasks.filter((t) => t.isCompleted).length;
   const completionRatio = completedCount / tasks.length;
 
+  // All tasks complete = always on_track regardless of deadline
+  if (completionRatio === 1) {
+    return "on_track";
+  }
+
   const now = new Date();
   const due = new Date(dueDate);
   const diffMs = due.getTime() - now.getTime();
   const daysUntilDue = diffMs / (1000 * 60 * 60 * 24);
+
+  // Past due and incomplete = at_risk
+  if (daysUntilDue < 0) {
+    return "at_risk";
+  }
 
   // >50% tasks done AND >3 days to due = on_track
   if (completionRatio > 0.5 && daysUntilDue > 3) {
@@ -132,14 +142,8 @@ export function computeFilteredCards(
 
     // Service type filter
     if (filters.serviceType) {
-      if (card.type === "job") {
-        if (card.serviceType !== filters.serviceType) return false;
-      } else if (card.type === "quote") {
-        if (card.serviceType !== filters.serviceType) return false;
-      } else {
-        // scratch_notes have no service type — exclude them from service type filter
-        return false;
-      }
+      if (card.type === "scratch_note") return false;
+      if (card.serviceType !== filters.serviceType) return false;
     }
 
     // Section (lane) filter
@@ -157,7 +161,7 @@ export function computeFilteredCards(
     if (filters.horizon) {
       if (card.type === "scratch_note") return false;
 
-      const dueDate = card.type === "job" ? card.dueDate : card.dueDate;
+      const dueDate = card.dueDate;
       if (!dueDate) return false;
 
       const due = new Date(dueDate);
@@ -168,10 +172,10 @@ export function computeFilteredCards(
           if (diffDays >= 0) return false;
           break;
         case "this_week":
-          if (diffDays < 0 || diffDays > 7) return false;
+          if (diffDays < 0 || diffDays >= 7) return false;
           break;
         case "next_week":
-          if (diffDays < 7 || diffDays > 14) return false;
+          if (diffDays < 7 || diffDays >= 14) return false;
           break;
       }
     }
