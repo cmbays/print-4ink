@@ -305,6 +305,12 @@ export const SERVICE_TYPE_BORDER_COLORS: Record<ServiceType, string> = {
   embroidery: "border-success",
 };
 
+export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
+  "screen-print": "border-l-action",
+  dtf: "border-l-warning",
+  embroidery: "border-l-success",
+};
+
 export const SERVICE_TYPE_ICONS: Record<ServiceType, string> = {
   "screen-print": "Printer",
   dtf: "Palette",

@@ -43,6 +43,7 @@ export const jobCardSchema = z.object({
   lane: laneEnum,
   serviceType: serviceTypeEnum,
   quantity: z.number().int().positive(),
+  locationCount: z.number().int().nonnegative(),
   startDate: z.string().date(),
   dueDate: z.string().date(),
   riskLevel: riskLevelEnum,
@@ -55,7 +56,7 @@ export const jobCardSchema = z.object({
   sourceQuoteId: z.string().uuid().optional(),
   invoiceId: z.string().uuid().optional(),
   invoiceStatus: invoiceStatusEnum.optional(),
-  blockReason: z.string().optional(),
+  blockReason: z.string().max(500).optional(),
 });
 
 // ---------------------------------------------------------------------------

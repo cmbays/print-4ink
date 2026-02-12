@@ -1,0 +1,71 @@
+import { Printer, Palette, Scissors } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { SERVICE_TYPE_BORDER_COLORS, SERVICE_TYPE_LABELS } from "@/lib/constants";
+import type { ServiceType } from "@/lib/schemas/quote";
+import type { LucideIcon } from "lucide-react";
+
+const SERVICE_TYPE_ICON_COMPONENTS: Record<ServiceType, LucideIcon> = {
+  "screen-print": Printer,
+  dtf: Palette,
+  embroidery: Scissors,
+};
+
+export interface ServiceTypeBadgeProps {
+  serviceType: ServiceType;
+  variant?: "badge" | "border" | "icon-only";
+  className?: string;
+}
+
+export function ServiceTypeBadge({
+  serviceType,
+  variant = "badge",
+  className,
+}: ServiceTypeBadgeProps) {
+  const Icon = SERVICE_TYPE_ICON_COMPONENTS[serviceType];
+  const borderColor = SERVICE_TYPE_BORDER_COLORS[serviceType];
+  const label = SERVICE_TYPE_LABELS[serviceType];
+
+  if (variant === "icon-only") {
+    return (
+      <span
+        className={cn("inline-flex items-center", borderColor, className)}
+        aria-label={label}
+      >
+        <Icon className="size-4" />
+      </span>
+    );
+  }
+
+  if (variant === "border") {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5 border-l-2 pl-2 text-xs text-secondary-foreground",
+          borderColor,
+          className
+        )}
+        aria-label={label}
+      >
+        <Icon className="size-3.5" />
+        {label}
+      </span>
+    );
+  }
+
+  // Default: "badge" variant
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium",
+        "border-l-2",
+        borderColor,
+        "bg-elevated text-secondary-foreground",
+        className
+      )}
+      aria-label={label}
+    >
+      <Icon className="size-3.5" />
+      {label}
+    </span>
+  );
+}
