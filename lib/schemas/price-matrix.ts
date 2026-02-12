@@ -94,6 +94,8 @@ export const screenPrintMatrixSchema = z.object({
   // When set, the override takes precedence over basePriceByTier + colorUpcharge.
   // Power mode sets these when the user explicitly types a value into a cell.
   priceOverrides: z.record(z.string(), z.number().nonnegative()).default({}),
+  // Max number of color columns shown in the pricing matrix (1–12, default 8).
+  maxColors: z.number().int().min(1).max(12).default(8),
 });
 
 // ---------------------------------------------------------------------------

@@ -10,6 +10,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
 import { cn } from "@/lib/utils";
 import {
@@ -22,9 +27,7 @@ import type {
   MarginBreakdown,
 } from "@/lib/schemas/price-matrix";
 import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
-import { Grid3x3, X, ToggleRight, ToggleLeft } from "lucide-react";
-
-const COLOR_COLUMNS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+import { Grid3x3, X, ToggleRight, ToggleLeft, Settings2, Minus, Plus } from "lucide-react";
 
 const dotColors: Record<MarginIndicator, string> = {
   healthy: "bg-success",
@@ -43,6 +46,7 @@ interface PowerModeGridProps {
   garmentBaseCost: number;
   onCellEdit: (tierIndex: number, colIndex: number, newPrice: number) => void;
   onBulkEdit: (cells: Array<{ row: number; col: number }>, value: number) => void;
+  onMaxColorsChange: (maxColors: number) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -131,35 +135,38 @@ function PriceCell({
 }
 
 // ---------------------------------------------------------------------------
-// Stable column definitions — defined at module level, NO interaction state.
-// PriceCell reads state from SpreadsheetCtx at render time.
+// Column builder — creates columns for a given maxColors count.
+// NO interaction state in closures. PriceCell reads state from context.
 // ---------------------------------------------------------------------------
 
 const columnHelper = createColumnHelper<MatrixRow>();
 
-const stableColumns = [
-  columnHelper.accessor("tierLabel", {
-    header: "Qty Tier",
-    cell: (info) => (
-      <span className="font-medium text-foreground whitespace-nowrap">
-        {info.getValue()}
-      </span>
-    ),
-    enableSorting: false,
-  }),
-  ...COLOR_COLUMNS.map((colorCount, colIdx) =>
-    columnHelper.accessor((row) => row.cells[colIdx]?.price ?? 0, {
-      id: `color-${colorCount}`,
-      header: () => `${colorCount} ${colorCount === 1 ? "Color" : "Colors"}`,
-      cell: (info) => {
-        const cell = info.row.original.cells[colIdx];
-        if (!cell) return null;
-        return <PriceCell rowIdx={info.row.index} colIdx={colIdx} cell={cell} />;
-      },
+function buildColumns(maxColors: number) {
+  return [
+    columnHelper.accessor("tierLabel", {
+      header: "Qty Tier",
+      cell: (info) => (
+        <span className="font-medium text-foreground whitespace-nowrap">
+          {info.getValue()}
+        </span>
+      ),
       enableSorting: false,
-    })
-  ),
-];
+    }),
+    ...Array.from({ length: maxColors }, (_, colIdx) => {
+      const colorCount = colIdx + 1;
+      return columnHelper.accessor((row) => row.cells[colIdx]?.price ?? 0, {
+        id: `color-${colorCount}`,
+        header: () => `${colorCount} ${colorCount === 1 ? "Color" : "Colors"}`,
+        cell: (info) => {
+          const cell = info.row.original.cells[colIdx];
+          if (!cell) return null;
+          return <PriceCell rowIdx={info.row.index} colIdx={colIdx} cell={cell} />;
+        },
+        enableSorting: false,
+      });
+    }),
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // PowerModeGrid — thin rendering layer over useSpreadsheetEditor
@@ -170,8 +177,11 @@ export function PowerModeGrid({
   garmentBaseCost,
   onCellEdit,
   onBulkEdit,
+  onMaxColorsChange,
 }: PowerModeGridProps) {
   const [bulkValue, setBulkValue] = useState("");
+
+  const maxColors = template.matrix.maxColors ?? 8;
 
   const matrixData: MatrixRow[] = useMemo(
     () =>
@@ -183,6 +193,8 @@ export function PowerModeGrid({
     [template, garmentBaseCost]
   );
 
+  const columns = useMemo(() => buildColumns(maxColors), [maxColors]);
+
   const getCellValue = useCallback(
     (row: number, col: number) => matrixData[row]?.cells[col]?.price ?? 0,
     [matrixData]
@@ -190,7 +202,7 @@ export function PowerModeGrid({
 
   const ss = useSpreadsheetEditor({
     rowCount: matrixData.length,
-    colCount: COLOR_COLUMNS.length,
+    colCount: maxColors,
     getCellValue,
     onCellEdit,
     onBulkEdit,
@@ -207,93 +219,140 @@ export function PowerModeGrid({
 
   const table = useReactTable({
     data: matrixData,
-    columns: stableColumns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
     <SpreadsheetCtx.Provider value={ss}>
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between gap-3">
+        <CardHeader className="pb-3">
+          {/* Row 1: Title + legend (inline) + controls */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/* Title */}
             <div className="flex items-center gap-2">
               <Grid3x3 className="size-4 text-action" />
               <CardTitle className="text-base">Full Pricing Matrix</CardTitle>
             </div>
-            <div className="flex items-center gap-2">
-              {/* Inline bulk edit controls — visible when cells are selected */}
-              {ss.selectedCells.size > 1 && ss.isManualEditOn && (
-                <div className="flex items-center gap-2 rounded-md border border-border bg-elevated px-2 py-1">
-                  <span className="text-xs tabular-nums text-muted-foreground">
-                    {ss.selectedCells.size} cells
-                  </span>
-                  <div className="relative w-20">
-                    <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                      $
-                    </span>
-                    <Input
-                      inputMode="decimal"
-                      pattern="[0-9.]*"
-                      placeholder="0.00"
-                      value={bulkValue}
-                      onChange={(e) => setBulkValue(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleBulkApply();
-                        if (e.key === "Escape") {
-                          setBulkValue("");
-                          ss.wrapperRef.current?.focus();
-                        }
-                      }}
-                      className="h-6 pl-4 pr-1 text-xs"
-                    />
-                  </div>
-                  <Button size="xs" className="h-6 text-xs" onClick={handleBulkApply} disabled={!bulkValue}>
-                    Set
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="size-5"
-                    onClick={ss.clearSelection}
-                    aria-label="Clear selection"
-                  >
-                    <X className="size-3" />
-                  </Button>
-                </div>
-              )}
-              <Button
-                variant={ss.isManualEditOn ? "default" : "outline"}
-                size="sm"
-                className="h-7 gap-1.5 text-xs"
-                onClick={ss.toggleManualEdit}
-              >
-                {ss.isManualEditOn ? (
-                  <ToggleRight className="size-3.5" />
-                ) : (
-                  <ToggleLeft className="size-3.5" />
-                )}
-                Manual Edit
-              </Button>
+
+            {/* Legend — inline with title */}
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <span className="inline-block size-1.5 rounded-full bg-success" />
+                Healthy
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="inline-block size-1.5 rounded-full bg-warning" />
+                Caution
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="inline-block size-1.5 rounded-full bg-error" />
+                Unprofitable
+              </div>
             </div>
+
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* Bulk edit controls — visible when cells selected */}
+            {ss.selectedCells.size > 1 && ss.isManualEditOn && (
+              <div className="flex items-center gap-2 rounded-md border border-border bg-elevated px-2 py-1">
+                <span className="text-xs tabular-nums text-muted-foreground">
+                  {ss.selectedCells.size} cells
+                </span>
+                <div className="relative w-20">
+                  <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                    $
+                  </span>
+                  <Input
+                    inputMode="decimal"
+                    pattern="[0-9.]*"
+                    placeholder="0.00"
+                    value={bulkValue}
+                    onChange={(e) => setBulkValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleBulkApply();
+                      if (e.key === "Escape") {
+                        setBulkValue("");
+                        ss.wrapperRef.current?.focus();
+                      }
+                    }}
+                    className="h-6 pl-4 pr-1 text-xs"
+                  />
+                </div>
+                <Button size="xs" className="h-6 text-xs" onClick={handleBulkApply} disabled={!bulkValue}>
+                  Set
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="size-5"
+                  onClick={ss.clearSelection}
+                  aria-label="Clear selection"
+                >
+                  <X className="size-3" />
+                </Button>
+              </div>
+            )}
+
+            {/* Settings popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
+                  <Settings2 className="size-3.5" />
+                  {maxColors} Colors
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-3" align="end">
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-foreground">Max Colors</p>
+                  <p className="text-xs text-muted-foreground">
+                    Number of color columns in the matrix (1–12).
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon-xs"
+                      className="size-6"
+                      disabled={maxColors <= 1}
+                      onClick={() => onMaxColorsChange(maxColors - 1)}
+                    >
+                      <Minus className="size-3" />
+                    </Button>
+                    <span className="w-8 text-center text-sm font-medium tabular-nums">
+                      {maxColors}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="icon-xs"
+                      className="size-6"
+                      disabled={maxColors >= 12}
+                      onClick={() => onMaxColorsChange(maxColors + 1)}
+                    >
+                      <Plus className="size-3" />
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Manual Edit toggle */}
+            <Button
+              variant={ss.isManualEditOn ? "default" : "outline"}
+              size="sm"
+              className="h-7 gap-1.5 text-xs"
+              onClick={ss.toggleManualEdit}
+            >
+              {ss.isManualEditOn ? (
+                <ToggleRight className="size-3.5" />
+              ) : (
+                <ToggleLeft className="size-3.5" />
+              )}
+              Manual Edit
+            </Button>
           </div>
         </CardHeader>
-        <CardContent>
-          {/* Legend */}
-          <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <span className="inline-block size-2 rounded-full bg-success" />
-              Healthy (&ge;30%)
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-block size-2 rounded-full bg-warning" />
-              Caution (15&ndash;30%)
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="inline-block size-2 rounded-full bg-error" />
-              Unprofitable (&lt;15%)
-            </div>
-          </div>
-
+        <CardContent className="pt-0">
           {/* Grid wrapper — captures keyboard events for the entire spreadsheet */}
           <div
             ref={ss.wrapperRef}
@@ -311,7 +370,7 @@ export function PowerModeGrid({
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header, headerIdx) => {
-                      // colIdx for color columns: header 0 is "Qty Tier", 1..8 are colors
+                      // colIdx for color columns: header 0 is "Qty Tier", 1..N are colors
                       const colIdx = headerIdx - 1;
                       const isColorHeader = header.id.startsWith("color-");
                       return (
@@ -373,7 +432,6 @@ export function PowerModeGrid({
               </tbody>
             </table>
           </div>
-
         </CardContent>
       </Card>
     </SpreadsheetCtx.Provider>

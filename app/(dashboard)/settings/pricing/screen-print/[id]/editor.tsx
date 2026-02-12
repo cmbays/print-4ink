@@ -197,6 +197,17 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     setIsEditing(true);
   };
 
+  const updateMaxColors = (maxColors: number) => {
+    setTemplate((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        matrix: { ...prev.matrix, maxColors },
+      };
+    });
+    setIsEditing(true);
+  };
+
   const updateCostConfig = (config: CostConfig) => {
     setTemplate((prev) => {
       if (!prev) return prev;
@@ -492,6 +503,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           garmentBaseCost={DEFAULT_GARMENT_COST}
           onCellEdit={handlePowerCellEdit}
           onBulkEdit={handlePowerBulkEdit}
+          onMaxColorsChange={updateMaxColors}
         />
       )}
 

@@ -274,7 +274,7 @@ export function calculateCellMargin(
 
 /**
  * Build the full pricing matrix data for the grid view.
- * Returns a 2D array: rows = quantity tiers, columns = color counts (1–8).
+ * Returns a 2D array: rows = quantity tiers, columns = color counts (1–maxColors).
  */
 export function buildFullMatrixData(
   template: PricingTemplate,
@@ -284,7 +284,7 @@ export function buildFullMatrixData(
   cells: { price: number; margin: MarginBreakdown }[];
 }[] {
   const { matrix } = template;
-  const maxColors = 8;
+  const maxColors = matrix.maxColors ?? 8;
 
   const overrides = matrix.priceOverrides ?? {};
 

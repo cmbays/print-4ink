@@ -74,6 +74,7 @@ function defaultSPMatrix(): ScreenPrintMatrix {
     ],
     basePriceByTier: [14.0, 11.0, 8.5, 7.0, 5.5],
     priceOverrides: {},
+    maxColors: 8,
     colorPricing: [
       { colors: 1, ratePerHit: 0 },
       { colors: 2, ratePerHit: 1.5 },
