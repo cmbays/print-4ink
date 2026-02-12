@@ -8,14 +8,17 @@ import { ArtworkPreview } from "./ArtworkPreview";
 import { QuoteActions } from "./QuoteActions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Info, Send } from "lucide-react";
+import { useState } from "react";
+import { DollarSign, Info, Send } from "lucide-react";
+import { toast } from "sonner";
+import { MatrixPeekSheet } from "./MatrixPeekSheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Quote } from "@/lib/schemas/quote";
+import type { Quote, QuoteLineItem } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Artwork } from "@/lib/schemas/artwork";
 import { garmentCatalog, colors as allColors } from "@/lib/mock-data";
@@ -51,6 +54,9 @@ export function QuoteDetailView({
   mode,
   onSend,
 }: QuoteDetailViewProps) {
+  const [peekOpen, setPeekOpen] = useState(false);
+  const [peekLineItem, setPeekLineItem] = useState<QuoteLineItem | null>(null);
+
   const totalDiscounts = quote.discounts.reduce((sum, d) => sum + d.amount, 0);
   const artworkMap = new Map(artworks.map((a) => [a.id, a]));
 
@@ -155,9 +161,25 @@ export function QuoteDetailView({
                     </div>
                   )}
                 </div>
-                <p className="text-right text-sm font-medium text-foreground whitespace-nowrap">
-                  {formatCurrency(item.lineTotal)}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  {item.serviceType === "screen-print" && customer && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 text-muted-foreground hover:text-action"
+                      onClick={() => {
+                        setPeekLineItem(item);
+                        setPeekOpen(true);
+                      }}
+                      aria-label="View pricing matrix"
+                    >
+                      <DollarSign className="size-3.5" />
+                    </Button>
+                  )}
+                  <p className="text-right text-sm font-medium text-foreground whitespace-nowrap">
+                    {formatCurrency(item.lineTotal)}
+                  </p>
+                </div>
               </div>
 
               {/* Sizes */}
@@ -309,6 +331,19 @@ export function QuoteDetailView({
             </div>
           )}
         </div>
+      )}
+
+      {/* Matrix Peek Sheet */}
+      {customer && peekLineItem && (
+        <MatrixPeekSheet
+          open={peekOpen}
+          onOpenChange={setPeekOpen}
+          customer={customer}
+          lineItem={peekLineItem}
+          onOverride={() => {
+            toast.success("Override mode enabled for this quote");
+          }}
+        />
       )}
     </div>
   );
