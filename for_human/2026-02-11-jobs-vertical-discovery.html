@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jobs Vertical Discovery &mdash; Screen Print Pro</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tag-feature,
+    .tag-build    { background: rgba(52, 211, 153, 0.12); color: var(--success); }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-decision,
+    .tag-learning { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .meta-item {
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .session-resume {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+
+    .session-resume code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--action);
+      user-select: all;
+      cursor: pointer;
+    }
+
+    .related-nav { margin-bottom: 32px; }
+
+    .related-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .related-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .related-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      transition: all 0.15s ease;
+    }
+
+    .related-link:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    .related-link .related-desc {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .header-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 32px 0;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    td:first-child { color: var(--text-primary); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    .code-block {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .step-list { list-style: none; padding-left: 0; }
+    .step-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .step-partial {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--warning);
+    }
+
+    .principle-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .principle {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .principle-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--action);
+      margin-bottom: 4px;
+    }
+
+    .principle-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .friction-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+    .friction-critical { background: rgba(248, 113, 113, 0.15); color: var(--error); }
+    .friction-high { background: rgba(251, 191, 36, 0.15); color: var(--warning); }
+    .friction-medium { background: rgba(34, 211, 238, 0.1); color: var(--action); }
+
+    .board-ascii {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-research">Research</span>
+        <span class="tag tag-plan">Plan</span>
+        <span class="tag tag-decision">Decision</span>
+      </div>
+
+      <h1>Jobs & Production Vertical Discovery</h1>
+      <p class="subtitle">Full 7-step discovery: competitive analysis, user interview, journey mapping, and scope definition for the production board backbone</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-11</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>session/0211-jobs-vertical</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Phase</span>
+          <span class="meta-value">Phase 1 &mdash; Discovery</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Vertical</span>
+          <span class="meta-value">Jobs & Production (F2, F3, F4)</span>
+        </div>
+      </div>
+
+      <div class="session-resume">
+        <span class="meta-label">Resume Session</span>
+        <code>claude --resume f57faf88-1a5e-476b-9463-0ef70c82f5ba</code>
+      </div>
+    </header>
+
+    <nav class="related-nav">
+      <span class="related-label">Related Sessions</span>
+      <div class="related-links">
+        <a class="related-link" href="2026-02-08-quoting-discovery.html">
+          &larr; Quoting Discovery <span class="related-desc">&mdash; Previous vertical</span>
+        </a>
+        <a class="related-link" href="2026-02-11-invoicing-build.html">
+          Invoicing Build &rarr; <span class="related-desc">&mdash; Adjacent vertical</span>
+        </a>
+      </div>
+    </nav>
+
+    <hr class="header-divider">
+
+    <!-- ========== BODY CONTENT ========== -->
+
+    <h2>Discovery Overview</h2>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Steps Complete</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">25</div>
+        <div class="stat-label">Screenshots</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Interview Qs</div>
+      </div>
+    </div>
+
+    <p>Complete vertical discovery for the Jobs & Production vertical &mdash; the core production backbone of Screen Print Pro covering F2 (Jobs List), F3 (Job Detail), and F4 (Production Board/Kanban).</p>
+
+    <h2>7-Step Discovery Process</h2>
+
+    <ul class="step-list">
+      <li><span class="step-check">&#10003;</span> <strong>Step 1:</strong> Web Research &mdash; Printavo + PrintLife competitor deep-dive</li>
+      <li><span class="step-check">&#10003;</span> <strong>Step 2a:</strong> Playwright Exploration &mdash; Printavo (18 screenshots)</li>
+      <li><span class="step-check step-partial">~</span> <strong>Step 2b:</strong> Playwright Exploration &mdash; PrintLife (7 screenshots, ~70%)</li>
+      <li><span class="step-check">&#10003;</span> <strong>Step 3:</strong> User Interview &mdash; 12 questions, one at a time</li>
+      <li><span class="step-check">&#10003;</span> <strong>Step 4:</strong> Competitive Analysis Synthesis</li>
+      <li><span class="step-check">&#10003;</span> <strong>Step 5:</strong> Current Journey Friction Map</li>
+      <li><span class="step-check">&#10003;</span> <strong>Step 6:</strong> Improved Journey Design</li>
+      <li><span class="step-check">&#10003;</span> <strong>Step 7:</strong> Scope Definition</li>
+    </ul>
+
+    <h2>Competitors Analyzed</h2>
+
+    <div class="card">
+      <div class="card-title">Printavo</div>
+      <div class="card-desc">Market leader ($109-399/mo, 3,000+ shops). Calendar-centric, 13 customizable statuses, dual dates, preset task lists. <strong>Gap:</strong> No true Kanban board (gated behind $399 Premium), no capacity planning, no QC gates, no production analytics.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">PrintLife</div>
+      <div class="card-desc">Indie product by former shop owner. 4-lane fixed Kanban, quote=invoice conflation, customer portal strength. <strong>Gap:</strong> No sub-stages, no urgency indicators, single-user only, no service type visibility.</div>
+    </div>
+
+    <h2>Key Friction Points (From Journey Map)</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Severity</th>
+          <th>Friction</th>
+          <th>Frequency</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="friction-badge friction-critical">Critical</span></td>
+          <td>No quick capture &mdash; opportunities lost when busy</td>
+          <td>Daily</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-critical">Critical</span></td>
+          <td>No capacity awareness &mdash; can't confidently commit dates</td>
+          <td>Multiple times/week</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-critical">Critical</span></td>
+          <td>No quality gate &mdash; shipped bad work (embroidery incident)</td>
+          <td>Occasional but devastating</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-critical">Critical</span></td>
+          <td>Screen prep invisible &mdash; only Gary knows status</td>
+          <td>Every screen printing job</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-high">High</span></td>
+          <td>Wall calendar is single source of truth</td>
+          <td>Constant</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-high">High</span></td>
+          <td>DTF interrupts disrupt planned work</td>
+          <td>Several times/day</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-high">High</span></td>
+          <td>No "what do I work on today?" view</td>
+          <td>Every morning</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-high">High</span></td>
+          <td>Quote pipeline has no states</td>
+          <td>Multiple times/week</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-medium">Medium</span></td>
+          <td>No blocked-item visibility</td>
+          <td>Weekly</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-medium">Medium</span></td>
+          <td>Customer communication outside system</td>
+          <td>Constant</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-medium">Medium</span></td>
+          <td>No production analytics</td>
+          <td>Ongoing blind spot</td>
+        </tr>
+        <tr>
+          <td><span class="friction-badge friction-medium">Medium</span></td>
+          <td>Payment disconnected from production</td>
+          <td>Per job</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Board Architecture (User-Designed)</h2>
+
+    <p>Through the 12-question interview, the user collaboratively designed the entire board architecture. Key decisions:</p>
+
+    <div class="board-ascii">              Ready       In Progress    Review       Blocked       Done
+           +------------+--------------+------------+--------------+------------+
+  Quotes   | scratch    | drafting     | customer   | waiting on   | accepted   |
+           | new leads  | building     | reviewing  | customer     | auto-clear |
+           +------------+--------------+------------+--------------+------------+
+  Jobs     | approved   | screen prep  | QC check   | blanks not   | shipped    |
+           | not started| printing     | sign-off   | arrived      | awaiting   |
+           |            | embroidery   |            | art issue    | payment    |
+           +------------+--------------+------------+--------------+------------+</div>
+
+    <div class="principle-grid">
+      <div class="principle">
+        <div class="principle-num">01</div>
+        <div class="principle-text">Board is single source of truth &mdash; Today is a filter, not a dashboard</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">02</div>
+        <div class="principle-text">Universal lanes for all service types &mdash; Ready / In Progress / Review / Blocked / Done</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">03</div>
+        <div class="principle-text">Service type = primary visual &mdash; color + icon, instantly scannable</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">04</div>
+        <div class="principle-text">Cards are command centers &mdash; tasks, actions, history, links</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">05</div>
+        <div class="principle-text">Quick capture over forced structure &mdash; scratch notes for lightweight logging</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">06</div>
+        <div class="principle-text">Guardrails, not gates &mdash; quality checkpoints that help without burdening</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">07</div>
+        <div class="principle-text">Conservative warnings only &mdash; never false positives on capacity</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">08</div>
+        <div class="principle-text">Inferred intelligence &mdash; productivity from state transitions, not manual logging</div>
+      </div>
+    </div>
+
+    <h2>Scope Definition Summary</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Scope</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Production Board</td>
+          <td>CORE &mdash; 2 sections, 5 lanes, drag-drop, filters, capacity bar</td>
+        </tr>
+        <tr>
+          <td>Jobs List</td>
+          <td>CORE &mdash; Table view, search, filter, sort, quick actions</td>
+        </tr>
+        <tr>
+          <td>Job Detail</td>
+          <td>CORE &mdash; Tasks, notes, actions, linked entities, block tracking</td>
+        </tr>
+        <tr>
+          <td>Scratch Notes</td>
+          <td>CORE &mdash; Quick text capture on board</td>
+        </tr>
+        <tr>
+          <td>Canonical Tasks</td>
+          <td>CORE &mdash; 3 service type templates, auto-populate</td>
+        </tr>
+        <tr>
+          <td>Review Lane (QC)</td>
+          <td>CORE &mdash; Mandatory checkpoint, pass/fail</td>
+        </tr>
+        <tr>
+          <td>Quote-to-Job</td>
+          <td>PERIPHERAL &mdash; Conversion button with auto-inherit</td>
+        </tr>
+        <tr>
+          <td>Capacity Summary</td>
+          <td>PERIPHERAL &mdash; Basic stats above board</td>
+        </tr>
+        <tr>
+          <td>What-If Picker</td>
+          <td>NOT BUILDING &mdash; Phase 2</td>
+        </tr>
+        <tr>
+          <td>Notifications</td>
+          <td>NOT BUILDING &mdash; Phase 2</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Documents Produced</h2>
+
+    <div class="card">
+      <div class="card-label">Competitive Analysis</div>
+      <div class="card-desc">
+        <code>docs/competitive-analysis/jobs-vertical-synthesis.md</code><br>
+        <code>docs/competitive-analysis/printavo-jobs-exploration.md</code><br>
+        <code>docs/competitive-analysis/printlife-jobs-exploration.md</code>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Journey Maps</div>
+      <div class="card-desc">
+        <code>docs/competitive-analysis/jobs-journey-map.md</code><br>
+        12-step happy path + DTF rush + embroidery variants + 12 ranked friction points
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Strategy</div>
+      <div class="card-desc">
+        <code>docs/strategy/jobs-improved-journey.md</code><br>
+        <code>docs/strategy/jobs-scope-definition.md</code><br>
+        Board architecture, card design, task lists, capacity, scope boundaries
+      </div>
+    </div>
+
+    <h2>Next Steps</h2>
+
+    <ol>
+      <li><strong>Breadboard document</strong> &mdash; Map UI/code affordances into buildable blueprint</li>
+      <li><strong>Schema revision</strong> &mdash; Expand job.ts per scope definition</li>
+      <li><strong>Mock data</strong> &mdash; 10-12 jobs across all lanes and service types</li>
+      <li><strong>Build</strong> &mdash; Board &rarr; Job Detail &rarr; Jobs List &rarr; Polish</li>
+    </ol>
+
+    <footer>
+      Screen Print Pro &mdash; Jobs Vertical Discovery &mdash; 2026-02-11
+    </footer>
+  </div>
+</body>
+</html>
