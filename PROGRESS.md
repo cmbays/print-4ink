@@ -3,8 +3,8 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-11
-**Status**: Quoting + Customer Management + Invoicing verticals built and demo-ready. Price Matrix breadboarded and ready to build (8 places, 167 affordances, 4-phase parallelized build plan).
+**Last Updated**: 2026-02-12
+**Status**: Quoting + Customer Management + Invoicing + Price Matrix verticals built and demo-ready. Price Matrix fully implemented: pricing engine, 2 editors (Screen Print + DTF), Power Grid spreadsheet, sandbox mode, cost config, tag-template mapping.
 
 ## What's Built
 
@@ -88,6 +88,28 @@
 - For-human summary: `for_human/2026-02-11-price-matrix-breadboard.html`
 </details>
 
+<details><summary>Price Matrix Build (PR #49 — merged)</summary>
+
+- 5-phase build: Foundation → Editors → Advanced Features → Integration → Polish
+- 29 files changed, 8,552 lines added, 10 commits
+- **Schemas**: `price-matrix.ts` (161 lines), `dtf-pricing.ts` (107 lines), `tag-template-mapping.ts` (23 lines)
+- **Pricing Engine**: `lib/pricing-engine.ts` (568 lines) — pure functions for SP + DTF price calculations, margin computation, cost breakdowns
+- **Pricing Hub** (`/settings/pricing`) — Template cards with service type tabs (Screen Print / DTF), search, create new template CTA
+- **Setup Wizard** — 4-step guided flow with industry defaults pre-filled (12/24/48/72/144+ tiers, $25/screen, $0.50/color-hit)
+- **Screen Print Editor** (`/settings/pricing/screen-print/[id]`) — Simple Mode with 5 sections: ColorPricingGrid, QuantityTierEditor, LocationUpchargeEditor, GarmentTypePricingEditor, SetupFeeEditor. Real-time margin indicators (green/yellow/red)
+- **DTF Editor** (`/settings/pricing/dtf/[id]`) — DTFSheetTierEditor + DTFPricingCalculator with sheet-size tiers, film types, customer discounts, rush fees
+- **Power Grid** — TanStack Table spreadsheet with `useSpreadsheetEditor` hook (777 lines): inline cell editing, keyboard navigation (arrow keys, Tab, Enter, Escape), cell selection. React Context + stable column defs architecture to prevent DOM recreation
+- **Sandbox Mode** — Toggle for experimental pricing. ComparisonView modal shows side-by-side diff of current vs. proposed values
+- **Cost Configuration Sheet** — Slide-in panel for garment/ink/overhead costs feeding real-time margin calculations
+- **Tag-Template Mapper** — Map customer type tags to pricing templates for auto-application during quoting
+- **Matrix Peek Sheet** — Read-only pricing preview from Quote Detail page
+- **big.js migration**: All monetary calculations use `lib/helpers/money.ts` wrapper
+- **Dependency added**: `@tanstack/react-table`
+- Key learnings: TanStack column def stability (Context pattern), rAF race conditions, skipNextBlur pattern, parallel agent builds
+- CodeRabbit: 2 review rounds addressed (money helper, schema validation, a11y, maxColors consistency, input validation)
+- For-human summary: `for_human/2026-02-12-price-matrix-build.html`
+</details>
+
 <details><summary>Invoicing Vertical Build (PRs #48, #50 — merged)</summary>
 
 - Breadboard (PR #48): 9 places, 99 UI affordances, 44 code affordances, 13-step build order
@@ -134,10 +156,12 @@
 
 ## Next Actions
 
-1. Demo Quoting + Customer Management + Invoicing to user (4Ink owner), collect final feedback
+1. Demo all 4 verticals (Quoting + Customer Management + Invoicing + Price Matrix) to user (4Ink owner), collect feedback
 2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-3. **Price Matrix vertical — BUILD**: Execute 4-phase build plan from breadboard. Phase A (schemas, engine, mock data, shared components, sidebar, hub), then Phase B–D with parallel agents. Breadboard: `docs/breadboards/price-matrix-breadboard.md`
-4. Address deferred tech debt (#15-#18) as needed
+3. Wire Matrix Peek Sheet into Quote Detail page for full pricing integration
+4. Connect Tag-Template Mapper to Customer Management for auto-apply during quoting
+5. Full 15-dimension design audit on Price Matrix screens
+6. Address deferred tech debt (#15-#18) as needed
 
 ## Document Map
 
@@ -159,6 +183,7 @@
 | `docs/research/06-owner-interview-findings.md` | Price Matrix owner interview decisions (30 findings) |
 | `for_human/2026-02-10-price-matrix-research.html` | Price Matrix research summary for humans |
 | `for_human/2026-02-11-price-matrix-breadboard.html` | Price Matrix breadboard summary for humans |
+| `for_human/2026-02-12-price-matrix-build.html` | Price Matrix build summary — architecture, learnings, useSpreadsheetEditor guide |
 | `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
 | `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
 | `docs/breadboards/invoicing-breadboard.md` | Invoicing breadboard (9 places, 99 UI + 44 code affordances) |
