@@ -73,6 +73,7 @@ function defaultSPMatrix(): ScreenPrintMatrix {
       { minQty: 144, maxQty: null, label: "144+" },
     ],
     basePriceByTier: [14.0, 11.0, 8.5, 7.0, 5.5],
+    priceOverrides: {},
     colorPricing: [
       { colors: 1, ratePerHit: 0 },
       { colors: 2, ratePerHit: 1.5 },

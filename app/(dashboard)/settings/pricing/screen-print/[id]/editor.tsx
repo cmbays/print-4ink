@@ -31,7 +31,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
-import { calculateTemplateHealth, getColorUpcharge } from "@/lib/pricing-engine";
+import { calculateTemplateHealth } from "@/lib/pricing-engine";
 import { cn } from "@/lib/utils";
 import type {
   PricingTemplate,
@@ -208,17 +208,35 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     });
   };
 
-  // Power mode cell edit: reverse-calculate base price from new price
-  const handlePowerCellEdit = (tierIndex: number, colorCount: number, newPrice: number) => {
+  // Power mode cell edit: stores the exact price the user typed as an override.
+  // colIndex is 0-based (0 = 1 Color, 7 = 8 Colors)
+  const handlePowerCellEdit = (tierIndex: number, colIndex: number, newPrice: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
-      const colorUpcharge = getColorUpcharge(prev.matrix, colorCount);
-      const newBasePrice = Math.max(0, Math.round((newPrice - colorUpcharge) * 100) / 100);
-      const basePriceByTier = [...prev.matrix.basePriceByTier];
-      basePriceByTier[tierIndex] = newBasePrice;
+      const overrides = { ...(prev.matrix.priceOverrides ?? {}) };
+      overrides[`${tierIndex}-${colIndex}`] = newPrice;
       return {
         ...prev,
-        matrix: { ...prev.matrix, basePriceByTier },
+        matrix: { ...prev.matrix, priceOverrides: overrides },
+      };
+    });
+    setIsEditing(true);
+  };
+
+  // Power mode bulk edit: sets an override for every selected cell.
+  const handlePowerBulkEdit = (
+    cells: Array<{ row: number; col: number }>,
+    value: number
+  ) => {
+    setTemplate((prev) => {
+      if (!prev) return prev;
+      const overrides = { ...(prev.matrix.priceOverrides ?? {}) };
+      for (const { row, col } of cells) {
+        overrides[`${row}-${col}`] = value;
+      }
+      return {
+        ...prev,
+        matrix: { ...prev.matrix, priceOverrides: overrides },
       };
     });
     setIsEditing(true);
@@ -473,6 +491,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           template={template}
           garmentBaseCost={DEFAULT_GARMENT_COST}
           onCellEdit={handlePowerCellEdit}
+          onBulkEdit={handlePowerBulkEdit}
         />
       )}
 

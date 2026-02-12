@@ -90,6 +90,10 @@ export const screenPrintMatrixSchema = z.object({
   setupFeeConfig: setupFeeConfigSchema,
   // Base price grid: quantity tier index → base price per piece
   basePriceByTier: z.array(z.number().nonnegative()),
+  // Per-cell price overrides: key = "tierIndex-colIndex", value = price.
+  // When set, the override takes precedence over basePriceByTier + colorUpcharge.
+  // Power mode sets these when the user explicitly types a value into a cell.
+  priceOverrides: z.record(z.string(), z.number().nonnegative()).default({}),
 });
 
 // ---------------------------------------------------------------------------

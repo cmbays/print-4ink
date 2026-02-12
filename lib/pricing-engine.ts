@@ -236,10 +236,19 @@ export function calculateCellMargin(
   garmentBaseCost: number
 ): MarginBreakdown {
   const { matrix, costConfig } = template;
+  const overrides = matrix.priceOverrides ?? {};
+  const colIndex = colorCount - 1;
+  const overrideKey = `${tierIndex}-${colIndex}`;
+  const overridePrice = overrides[overrideKey];
 
-  const basePrice = getBasePriceForTier(matrix, tierIndex);
-  const colorUpcharge = getColorUpcharge(matrix, colorCount);
-  const revenue = money(new Big(basePrice).plus(colorUpcharge));
+  let revenue: number;
+  if (overridePrice !== undefined) {
+    revenue = overridePrice;
+  } else {
+    const basePrice = getBasePriceForTier(matrix, tierIndex);
+    const colorUpcharge = getColorUpcharge(matrix, colorCount);
+    revenue = money(new Big(basePrice).plus(colorUpcharge));
+  }
 
   const garmentCost =
     costConfig.garmentCostSource === "catalog"
@@ -277,12 +286,23 @@ export function buildFullMatrixData(
   const { matrix } = template;
   const maxColors = 8;
 
+  const overrides = matrix.priceOverrides ?? {};
+
   return matrix.quantityTiers.map((tier, tierIndex) => {
     const cells = Array.from({ length: maxColors }, (_, i) => {
       const colorCount = i + 1;
-      const basePrice = getBasePriceForTier(matrix, tierIndex);
-      const colorUpcharge = getColorUpcharge(matrix, colorCount);
-      const price = money(new Big(basePrice).plus(colorUpcharge));
+      const overrideKey = `${tierIndex}-${i}`;
+      const overridePrice = overrides[overrideKey];
+
+      let price: number;
+      if (overridePrice !== undefined) {
+        price = overridePrice;
+      } else {
+        const basePrice = getBasePriceForTier(matrix, tierIndex);
+        const colorUpcharge = getColorUpcharge(matrix, colorCount);
+        price = money(new Big(basePrice).plus(colorUpcharge));
+      }
+
       const margin = calculateCellMargin(tierIndex, colorCount, template, garmentBaseCost);
       return { price, margin };
     });

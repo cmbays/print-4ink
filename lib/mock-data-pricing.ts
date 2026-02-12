@@ -46,6 +46,7 @@ export const spStandardTemplate: PricingTemplate = {
       { minQty: 144, maxQty: null, label: "144+" },
     ],
     basePriceByTier: [14.0, 11.0, 8.5, 7.0, 5.5],
+    priceOverrides: {},
     colorPricing: [
       { colors: 1, ratePerHit: 0 },
       { colors: 2, ratePerHit: 1.5 },
@@ -108,6 +109,7 @@ export const spContractTemplate: PricingTemplate = {
     ],
     // ~12% lower across the board
     basePriceByTier: [12.25, 9.5, 7.25, 6.0, 4.75],
+    priceOverrides: {},
     colorPricing: [
       { colors: 1, ratePerHit: 0 },
       { colors: 2, ratePerHit: 1.3 },
@@ -170,6 +172,7 @@ export const spSchoolsTemplate: PricingTemplate = {
     ],
     // ~10% lower than standard
     basePriceByTier: [12.75, 10.0, 7.75, 6.35, 5.0],
+    priceOverrides: {},
     colorPricing: [
       { colors: 1, ratePerHit: 0 },
       { colors: 2, ratePerHit: 1.35 },
