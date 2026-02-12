@@ -17,11 +17,11 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Quotes", href: "/quotes", icon: Calculator },
   { name: "Invoices", href: "/invoices", icon: Receipt },
-  { name: "Jobs", href: "/jobs", icon: ClipboardList },
+  { name: "Jobs", href: "/jobs/board", icon: ClipboardList, activePrefix: "/jobs" },
   { name: "Screen Room", href: "/screens", icon: Layers },
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Garments", href: "/garments", icon: Package },
-];
+] satisfies Array<{ name: string; href: string; icon: typeof LayoutDashboard; activePrefix?: string }>;
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -36,10 +36,11 @@ export function Sidebar() {
       </div>
       <nav className="flex-1 space-y-1 px-2 py-3">
         {navigation.map((item) => {
+          const prefix = item.activePrefix ?? item.href;
           const isActive =
-            item.href === "/"
+            prefix === "/"
               ? pathname === "/"
-              : pathname.startsWith(item.href);
+              : pathname.startsWith(prefix);
           return (
             <Link
               key={item.name}
