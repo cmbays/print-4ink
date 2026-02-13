@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { formatShortDate } from "@/lib/helpers/format";
+import { formatCurrencyCompact } from "@/lib/helpers/money";
 import {
   SERVICE_TYPE_LABELS,
   SERVICE_TYPE_LEFT_BORDER_COLORS,
@@ -19,15 +20,6 @@ import type { QuoteCard } from "@/lib/schemas/board-card";
 
 function truncate(text: string, max: number): string {
   return text.length > max ? text.slice(0, max).trimEnd() + "\u2026" : text;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
 }
 
 // ---------------------------------------------------------------------------
@@ -109,7 +101,7 @@ export function QuoteBoardCard({ card, onCreateJob, onMoveLane }: QuoteBoardCard
           {card.total != null && (
             <span className="inline-flex items-center gap-1 font-medium text-foreground">
               <DollarSign className="size-3" />
-              {formatCurrency(card.total)}
+              {formatCurrencyCompact(card.total)}
             </span>
           )}
         </div>

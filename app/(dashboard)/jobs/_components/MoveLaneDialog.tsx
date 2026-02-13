@@ -74,7 +74,7 @@ export function MoveLaneDialog({
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      handleCancel();
+      resetState();
     }
     onOpenChange(nextOpen);
   }

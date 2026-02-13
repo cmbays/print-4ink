@@ -337,9 +337,9 @@ function ProductionBoardInner() {
   // Move Lane dialog handlers
   // ===========================================================================
 
-  function openMoveLaneDialog(card: BoardCard) {
+  const openMoveLaneDialog = useCallback((card: BoardCard) => {
     setMoveLaneDialog({ open: true, card });
-  }
+  }, []);
 
   function confirmMoveLane(targetLane: Lane, blockReason?: string) {
     if (moveLaneDialog.card) {
@@ -369,9 +369,9 @@ function ProductionBoardInner() {
     setShowScratchCapture(false);
   }
 
-  function dismissScratchNote(noteId: string) {
+  const dismissScratchNote = useCallback((noteId: string) => {
     setScratchNoteCards((prev) => prev.filter((n) => n.id !== noteId));
-  }
+  }, []);
 
   // ===========================================================================
   // Card renderer (dispatches by type, wraps in DraggableCard)
@@ -417,7 +417,7 @@ function ProductionBoardInner() {
           );
       }
     },
-    [],
+    [openMoveLaneDialog, dismissScratchNote],
   );
 
   // ===========================================================================

@@ -2014,11 +2014,11 @@ export function getQuoteInvoice(quoteId: string): Invoice | undefined {
   return invoices.find((inv) => inv.quoteId === quoteId);
 }
 
-export function getJobsByLane(lane: string): Job[] {
+export function getJobsByLane(lane: Job["lane"]): Job[] {
   return jobs.filter((j) => j.lane === lane);
 }
 
-export function getJobsByServiceType(serviceType: string): Job[] {
+export function getJobsByServiceType(serviceType: Job["serviceType"]): Job[] {
   return jobs.filter((j) => j.serviceType === serviceType);
 }
 

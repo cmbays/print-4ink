@@ -56,7 +56,7 @@ export function ScratchNoteCard({
           <Button
             variant="ghost"
             size="icon-xs"
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-error"
+            className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity text-muted-foreground hover:text-error"
             onClick={onDismiss}
             aria-label="Dismiss note"
           >

@@ -1,5 +1,3 @@
-"use client";
-
 import { Zap, Package, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LANE_LABELS, LANE_COLORS } from "@/lib/constants";

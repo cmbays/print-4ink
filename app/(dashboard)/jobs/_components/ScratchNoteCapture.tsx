@@ -34,6 +34,7 @@ export function ScratchNoteCapture({
       <Input
         ref={inputRef}
         placeholder="Quick note… (Enter to save, Esc to cancel)"
+        aria-label="Scratch note"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}

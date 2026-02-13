@@ -156,7 +156,7 @@ depends-on:
 
 ### Card Entity (Universal)
 
-```
+```text
 Card
 ├── type: "scratch_note" | "quote" | "job"
 ├── serviceType: "screen_printing" | "dtf" | "embroidery"
@@ -176,7 +176,7 @@ Card
 
 ### Board Configuration
 
-```
+```text
 BoardConfig
 ├── lanes: ["ready", "in_progress", "review", "blocked", "done"]
 ├── reviewLaneEnabled: boolean (configurable)

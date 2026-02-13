@@ -41,7 +41,7 @@ depends-on:
 
 ## Journey: New Screen Printing Job (Happy Path)
 
-```
+```text
 TRIGGER: Customer calls/emails requesting 200 black tees with front print
 
 PHASE 1: CAPTURE & QUOTE
@@ -153,7 +153,7 @@ END: Job completed. No record of actual production time or throughput.
 
 ### DTF Rush Order (Interrupt-Driven)
 
-```
+```text
 TRIGGER: Customer walks in or calls needing DTF prints today
 
 Step 1: Quick intake (verbal/phone)
@@ -183,7 +183,7 @@ Much simpler flow but competes for capacity with screen printing.
 
 ### Embroidery Job
 
-```
+```text
 TRIGGER: Customer requests embroidered hats/jackets/etc.
 
 Step 1-4: Same as Screen Printing (quote, accept, art)

@@ -20,11 +20,14 @@ import {
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
 } from "@/lib/constants";
+import { z } from "zod";
 import { laneEnum, riskLevelEnum } from "@/lib/schemas/job";
 import { serviceTypeEnum } from "@/lib/schemas/quote";
 import type { Lane, RiskLevel } from "@/lib/schemas/job";
 import type { ServiceType } from "@/lib/schemas/quote";
 import type { CardFilters } from "@/lib/helpers/job-utils";
+
+const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
 
 // ---------------------------------------------------------------------------
 // Filter options
@@ -68,16 +71,11 @@ export function useFiltersFromURL(): CardFilters {
 
   const today = searchParams.get("today") === "true";
   const serviceType = serviceTypeEnum.safeParse(searchParams.get("serviceType")).data;
-  const section = laneEnum.safeParse(searchParams.get("section")).data;
+  const lane = laneEnum.safeParse(searchParams.get("lane")).data;
   const risk = riskLevelEnum.safeParse(searchParams.get("risk")).data;
+  const horizon = horizonEnum.safeParse(searchParams.get("horizon")).data;
 
-  const rawHorizon = searchParams.get("horizon");
-  const horizon =
-    rawHorizon === "past_due" || rawHorizon === "this_week" || rawHorizon === "next_week"
-      ? rawHorizon
-      : undefined;
-
-  return { today: today || undefined, serviceType, section, risk, horizon };
+  return { today: today || undefined, serviceType, lane, risk, horizon };
 }
 
 // ---------------------------------------------------------------------------
@@ -93,7 +91,7 @@ export function BoardFilterBar() {
   const activeCount = [
     filters.today,
     filters.serviceType,
-    filters.section,
+    filters.lane,
     filters.risk,
     filters.horizon,
   ].filter(Boolean).length;
@@ -174,15 +172,15 @@ export function BoardFilterBar() {
         </SelectContent>
       </Select>
 
-      {/* Lane (Section) filter */}
+      {/* Lane filter */}
       <Select
-        value={filters.section ?? "all"}
-        onValueChange={(v) => setParam("section", v === "all" ? null : v)}
+        value={filters.lane ?? "all"}
+        onValueChange={(v) => setParam("lane", v === "all" ? null : v)}
       >
         <SelectTrigger
           className={cn(
             "h-7 w-auto gap-1 rounded-md border-border/50 bg-transparent px-2 text-xs",
-            filters.section && "border-action/40 text-action",
+            filters.lane && "border-action/40 text-action",
           )}
         >
           <SelectValue placeholder="Lane" />

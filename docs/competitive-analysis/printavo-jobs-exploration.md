@@ -80,7 +80,7 @@ Statuses are the **core workflow engine**. They are:
 - **Default** — gray "Quote" status (not editable) is default for new quotes
 
 **Typical Status Flow**:
-```
+```text
 Quote (gray, default)
   → Quote Sent / Out for Approval
   → Quote Approved
@@ -175,6 +175,7 @@ A Gantt-style production board for multi-department tracking:
 **Location**: My Account > Automation
 
 **Available Triggers**:
+
 | Trigger | Example |
 |---------|---------|
 | If status changed to... | "Artwork Approved" |
@@ -185,6 +186,7 @@ A Gantt-style production board for multi-department tracking:
 | If quote/invoice paid in full... | Payment received |
 
 **Available Actions**:
+
 | Action | Example |
 |--------|---------|
 | Change status to... | Move to "In Production" |
@@ -263,7 +265,7 @@ Dynamic content injection for emails/messages:
 
 ### Core Entities
 
-```
+```text
 OrderUnion (Quote | Invoice)
 ├── id, visualId
 ├── contact / owner
@@ -319,6 +321,7 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 ## 6. Friction Points
 
 ### Critical
+
 | Issue | Description |
 |-------|-------------|
 | **Accounting inaccuracies** | Doesn't handle customer overpayments, sales tax reporting has "horror stories", QuickBooks sync requires manual review of every invoice |
@@ -326,6 +329,7 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 | **Mobile app reliability** | Periods where app won't open for months; won't load on some current iPhones |
 
 ### High
+
 | Issue | Description |
 |-------|-------------|
 | **No role-based permissions** | No read/write permission system; problematic for shops with 20+ employees |
@@ -334,6 +338,7 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 | **Slow feature development** | Known for promising fixes and ignoring them "for literally years" |
 
 ### Medium
+
 | Issue | Description |
 |-------|-------------|
 | **Status skipping bypasses automations** | Jumping statuses means associated automations don't fire |
@@ -343,6 +348,7 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 | **Power Scheduler premium-only** | Core production feature locked behind highest tier |
 
 ### Low
+
 | Issue | Description |
 |-------|-------------|
 | **Scalability ceiling** | Works well for small shops; users report outgrowing it at 20-30 people |

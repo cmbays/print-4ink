@@ -68,7 +68,7 @@ These workflows are critical to demonstrating the production board experience. F
 **Purpose**: The primary production view — two-section Kanban with universal lanes, replacing wall calendars and memory
 
 **Layout**:
-```
+```text
               Ready       In Progress    Review       Blocked       Done
            ┌───────────┬──────────────┬───────────┬──────────────┬───────────┐
   Quotes   │ cards...  │  cards...    │ cards...  │  cards...    │ cards...  │
@@ -98,7 +98,7 @@ These workflows are critical to demonstrating the production board experience. F
 - [ ] Breadcrumb: Dashboard > Jobs > Board
 
 **Card Design (Closed — On Board)**:
-```
+```text
 ┌──────────────────────────────────┐
 │ 🟢 Screen Printing    [JD]      │  ← Service type color + icon, Assignee initials
 │                                  │
@@ -567,7 +567,7 @@ jobSchema = {
 ```
 
 **New** (`lib/schemas/job.ts` — revised):
-```
+```typescript
 jobSchema = {
   id: uuid
   jobNumber: string         // "J-1024"
@@ -641,7 +641,7 @@ jobSchema = {
 
 ### New Schema: Job Task
 
-```
+```typescript
 jobTaskSchema = {
   id: uuid
   label: string              // "Screens burned"
@@ -657,7 +657,7 @@ jobTaskSchema = {
 
 The board displays three types of cards. A union/discriminated type handles this:
 
-```
+```typescript
 boardCardSchema = discriminatedUnion("type", [
   scratchNoteCardSchema,   // type: "scratch_note"
   quoteCardSchema,         // type: "quote" (projected from existing quote)
@@ -720,7 +720,7 @@ Each job includes:
 
 ### Scratch Notes (2-3 examples)
 
-```
+```text
 - "John called, 200 black tees with front print, wants by next Friday"
 - "Email from sports league — 150 jerseys, need quote for 3-color front + back number"
 - "Walk-in asked about DTF pricing for 50 custom transfers"

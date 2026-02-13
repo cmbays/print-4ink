@@ -101,6 +101,7 @@ export function computeTaskProgress(tasks: JobTask[]): TaskProgress {
   const total = tasks.length;
 
   if (total === 0) {
+    // No tasks means nothing to complete — treat as vacuously incomplete
     return { completed: 0, total: 0, percentage: 0, allComplete: false };
   }
 
@@ -117,7 +118,7 @@ export function computeTaskProgress(tasks: JobTask[]): TaskProgress {
 export interface CardFilters {
   today?: boolean;
   serviceType?: ServiceType;
-  section?: Lane;
+  lane?: Lane;
   risk?: RiskLevel;
   horizon?: "past_due" | "this_week" | "next_week";
 }
@@ -146,9 +147,9 @@ export function computeFilteredCards(
       if (card.serviceType !== filters.serviceType) return false;
     }
 
-    // Section (lane) filter
-    if (filters.section) {
-      if (card.lane !== filters.section) return false;
+    // Lane filter
+    if (filters.lane) {
+      if (card.lane !== filters.lane) return false;
     }
 
     // Risk filter (only applies to job cards)

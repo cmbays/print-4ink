@@ -39,7 +39,7 @@ depends-on:
 
 ### Layout
 
-```
+```text
                  Ready          In Progress       Review         Blocked         Done
               ┌─────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
   Quotes      │ [scratch]   │ [drafting]   │ [customer    │ [waiting on  │ [accepted →  │
@@ -82,7 +82,7 @@ Configurable via settings (enabled by default). When enabled:
 
 ### Card (Closed — On Board)
 
-```
+```text
 ┌──────────────────────────────────┐
 │ 🟢 Screen Printing    [JD]      │  ← Service type color + icon, Assignee initials
 │                                  │
@@ -107,7 +107,7 @@ Configurable via settings (enabled by default). When enabled:
 
 ### Card (Open — Detail View / Command Center)
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │ ← Back to Board                                    [···] │
 │                                                          │
@@ -166,7 +166,7 @@ Configurable via settings (enabled by default). When enabled:
 
 ### Quote Lifecycle
 
-```
+```text
 ENTRY: Quick capture (scratch note) or "New Quote" button
 
 1. SCRATCH NOTE → Ready lane (Quotes row)
@@ -194,7 +194,7 @@ ENTRY: Quick capture (scratch note) or "New Quote" button
 
 ### Job Lifecycle
 
-```
+```text
 ENTRY: Created from accepted quote (manual gate — configurable)
 
 1. PREP NEEDED → Ready lane (Jobs row)

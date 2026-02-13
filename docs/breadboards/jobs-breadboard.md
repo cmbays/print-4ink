@@ -839,7 +839,7 @@ Code affordances that will be added/replaced in Phase 2:
 ### Sidebar Navigation
 
 Update sidebar "Jobs" link:
-```
+```text
 Dashboard    /
 Quotes       /quotes
 Invoices     /invoices

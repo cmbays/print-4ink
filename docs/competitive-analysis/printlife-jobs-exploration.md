@@ -59,7 +59,7 @@ Three tabs observed at the top:
 
 The Invoice Dashboard is the production nerve center. It displays **4 production lanes** arranged left-to-right:
 
-```
+```text
 ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
 │   DESIGN     │  │    P.O.      │  │  PRODUCTION  │  │   SHIPPING   │
 │              │  │              │  │              │  │              │
@@ -397,7 +397,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 
 ### Proposed Stage Model for Screen Print Pro
 
-```
+```text
 ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
 │  DESIGN  │  │  SCREEN  │  │PRODUCTION│  │ FINISHING │  │ SHIPPING │
 │          │  │   ROOM   │  │          │  │          │  │          │
