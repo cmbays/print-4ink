@@ -1,0 +1,106 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  date: Date;
+  vertical: string;
+  verticalSecondary?: string[];
+  stage: string;
+  tags: string[];
+  status: string;
+  slug: string;
+}
+
+const { title, subtitle, date, vertical, verticalSecondary = [], stage, tags, status, slug } = Astro.props;
+
+const dateStr = date.toISOString().split('T')[0];
+
+function tagColor(tag: string): string {
+  switch (tag) {
+    case 'feature':
+    case 'build':
+      return 'bg-success/12 text-success';
+    case 'plan':
+      return 'bg-action/12 text-action';
+    case 'decision':
+    case 'learning':
+      return 'bg-warning/12 text-warning';
+    case 'research':
+      return 'bg-purple/12 text-purple';
+    default:
+      return 'bg-bg-surface text-text-muted';
+  }
+}
+
+function stageLabel(s: string): string {
+  return s
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+function verticalLabel(v: string): string {
+  const labels: Record<string, string> = {
+    quoting: 'Quoting',
+    'customer-management': 'Customer Mgmt',
+    invoicing: 'Invoicing',
+    'price-matrix': 'Price Matrix',
+    jobs: 'Jobs',
+    'screen-room': 'Screen Room',
+    garments: 'Garments',
+    dashboard: 'Dashboard',
+    meta: 'Meta',
+  };
+  return labels[v] || v;
+}
+---
+
+<a
+  href={`/sessions/${slug}`}
+  class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group"
+>
+  <!-- Tags row -->
+  <div class="flex items-center gap-1.5 mb-1.5">
+    {tags.map((tag) => (
+      <span class={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${tagColor(tag)}`}>
+        {tag}
+      </span>
+    ))}
+    {status === 'in-progress' && (
+      <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-warning/12 text-warning ml-auto">
+        In Progress
+      </span>
+    )}
+    {status === 'superseded' && (
+      <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-error/12 text-error ml-auto">
+        Superseded
+      </span>
+    )}
+  </div>
+
+  <!-- Title -->
+  <h3 class="text-[14px] font-semibold text-text-primary leading-snug group-hover:text-action transition-colors">
+    {title}
+  </h3>
+
+  <!-- Subtitle -->
+  <p class="text-[13px] text-text-secondary mt-0.5 line-clamp-2 leading-relaxed">
+    {subtitle}
+  </p>
+
+  <!-- Meta row -->
+  <div class="flex items-center gap-1.5 mt-2 text-[11px] text-text-muted">
+    <span>{dateStr}</span>
+    <span class="opacity-40">&middot;</span>
+    <span>{verticalLabel(vertical)}</span>
+    {verticalSecondary.length > 0 && verticalSecondary.map((v) => (
+      <span class="px-1.5 py-0.5 rounded bg-purple/10 text-purple text-[10px]">
+        +{verticalLabel(v)}
+      </span>
+    ))}
+    <span class="opacity-40">&middot;</span>
+    <span class="px-1.5 py-0.5 rounded bg-bg-surface text-text-muted text-[10px]">
+      {stageLabel(stage)}
+    </span>
+  </div>
+</a>

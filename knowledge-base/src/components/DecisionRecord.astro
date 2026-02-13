@@ -1,0 +1,30 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  date: Date;
+  vertical: string;
+  slug: string;
+}
+
+const { title, subtitle, date, vertical, slug } = Astro.props;
+
+const dateStr = date.toISOString().split('T')[0];
+
+function verticalLabel(v: string): string {
+  return v.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+---
+
+<a
+  href={`/sessions/${slug}`}
+  class="block bg-bg-elevated border border-border border-l-[3px] border-l-warning rounded-lg p-4 hover:border-action/30 transition-colors"
+>
+  <div class="text-sm font-semibold text-text-primary mb-1">{title}</div>
+  <p class="text-[13px] text-text-secondary leading-relaxed mb-3">{subtitle}</p>
+  <div class="flex items-center gap-3 text-xs text-text-muted">
+    <span>{dateStr}</span>
+    <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+    <span>{verticalLabel(vertical)}</span>
+  </div>
+</a>

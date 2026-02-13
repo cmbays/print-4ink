@@ -1,0 +1,426 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import DocCard from '../components/DocCard.astro';
+import PhaseFilter from '../components/PhaseFilter.astro';
+import { getCollection } from 'astro:content';
+
+// Fetch all sessions
+const allSessions = await getCollection('sessions');
+
+// Compute vertical counts for sidebar
+const verticalCounts: Record<string, number> = {};
+for (const s of allSessions) {
+  const v = s.data.vertical;
+  verticalCounts[v] = (verticalCounts[v] || 0) + 1;
+}
+
+// Sort by date descending
+const sorted = allSessions.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Vertical display names
+const verticalLabels: Record<string, string> = {
+  quoting: 'Quoting',
+  'customer-management': 'Customer Management',
+  invoicing: 'Invoicing',
+  'price-matrix': 'Price Matrix',
+  jobs: 'Jobs',
+  'screen-room': 'Screen Room',
+  garments: 'Garments',
+  dashboard: 'Dashboard',
+  meta: 'Meta',
+};
+
+// Pipeline stages in order
+const pipelineStages = [
+  { slug: 'research', label: 'Research' },
+  { slug: 'interview', label: 'Interview' },
+  { slug: 'breadboarding', label: 'Breadboard' },
+  { slug: 'implementation-planning', label: 'Impl Plan' },
+  { slug: 'build', label: 'Build' },
+  { slug: 'review', label: 'Review' },
+  { slug: 'learnings', label: 'Learnings' },
+];
+
+// Pre-compute which verticals have which stages
+const verticalStageMap: Record<string, string[]> = {};
+for (const s of allSessions) {
+  if (!verticalStageMap[s.data.vertical]) {
+    verticalStageMap[s.data.vertical] = [];
+  }
+  if (!verticalStageMap[s.data.vertical].includes(s.data.stage)) {
+    verticalStageMap[s.data.vertical].push(s.data.stage);
+  }
+}
+---
+
+<Layout title="Knowledge Base">
+  <div class="flex min-h-screen">
+    <Sidebar
+      activeView="all"
+      sessionCount={allSessions.length}
+      verticalCounts={verticalCounts}
+    />
+
+    <main class="flex-1 min-w-0 px-6 md:px-10 py-8">
+      <!-- Pipeline stepper (shown when vertical is selected) -->
+      <div id="pipeline-stepper" class="mb-6 hidden">
+        <div class="flex items-center gap-0">
+          {pipelineStages.map((stage, i) => (
+            <div class="flex items-center">
+              <div
+                class="pipeline-stage flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-medium transition-colors text-text-muted"
+                data-stage={stage.slug}
+              >
+                <span class="pipeline-step-num w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold bg-bg-surface text-text-muted">
+                  {i + 1}
+                </span>
+                <span class="hidden sm:inline">{stage.label}</span>
+              </div>
+              {i < pipelineStages.length - 1 && (
+                <div class="w-4 h-px mx-0.5 bg-border pipeline-connector" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Header row -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 id="page-title" class="text-lg font-bold tracking-tight text-text-primary">
+            All Sessions
+          </h1>
+          <p id="page-subtitle" class="text-[12px] text-text-muted mt-0.5">
+            {sorted.length} sessions
+          </p>
+        </div>
+        <PhaseFilter />
+      </div>
+
+      <!-- Mobile vertical filter -->
+      <div class="md:hidden mb-4">
+        <select
+          id="mobile-vertical-select"
+          class="w-full bg-bg-elevated border border-border rounded-md px-3 py-2 text-[13px] text-text-primary"
+        >
+          <option value="">All Verticals</option>
+          {Object.entries(verticalLabels).map(([slug, label]) => (
+            <option value={slug}>
+              {label} ({verticalCounts[slug] || 0})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Status filter -->
+      <div class="flex items-center gap-1.5 mb-4" id="status-filter">
+        <span class="text-[11px] text-text-muted mr-1">Status:</span>
+        <button type="button" data-status-value="" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors bg-action/15 text-action border-action/30">All</button>
+        <button type="button" data-status-value="complete" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors text-text-muted border-border hover:text-text-secondary">Complete</button>
+        <button type="button" data-status-value="in-progress" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors text-text-muted border-border hover:text-text-secondary">In Progress</button>
+        <button type="button" data-status-value="superseded" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors text-text-muted border-border hover:text-text-secondary">Superseded</button>
+      </div>
+
+      <!-- Doc cards -->
+      <div id="doc-list" class="space-y-2.5">
+        {sorted.map((session) => (
+          <div
+            class="doc-card-wrapper"
+            data-vertical={session.data.vertical}
+            data-phase={session.data.phase}
+            data-stage={session.data.stage}
+            data-status={session.data.status}
+          >
+            <DocCard
+              title={session.data.title}
+              subtitle={session.data.subtitle}
+              date={session.data.date}
+              vertical={session.data.vertical}
+              verticalSecondary={session.data.verticalSecondary}
+              stage={session.data.stage}
+              tags={session.data.tags}
+              status={session.data.status}
+              slug={session.id}
+            />
+          </div>
+        ))}
+      </div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+        <p class="text-text-muted text-sm">No sessions match the current filters.</p>
+        <button type="button" id="clear-filters-btn" class="text-action text-[13px] mt-2 hover:underline">
+          Clear filters
+        </button>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<!-- Embed vertical-stage map as JSON for client JS -->
+<script is:inline define:vars={{ verticalStageMap, verticalLabels }}>
+  window.__KB_DATA__ = { verticalStageMap, verticalLabels };
+</script>
+
+<script>
+  // ── Client-side filtering ──────────────────────────────────────────
+
+  let activeVertical: string | null = null;
+  let activePhase: string | null = null;
+  let activeStatus: string | null = null;
+
+  const cards = document.querySelectorAll<HTMLElement>('.doc-card-wrapper');
+  const pageTitle = document.getElementById('page-title');
+  const pageSubtitle = document.getElementById('page-subtitle');
+  const pipelineStepper = document.getElementById('pipeline-stepper');
+  const emptyState = document.getElementById('empty-state');
+  const docList = document.getElementById('doc-list');
+  const verticalBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-vertical-btn');
+  const phasePills = document.querySelectorAll<HTMLButtonElement>('.phase-pill');
+  const statusPills = document.querySelectorAll<HTMLButtonElement>('.status-pill');
+  const sidebarPhaseBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-phase-btn');
+  const mobileSelect = document.getElementById('mobile-vertical-select') as HTMLSelectElement | null;
+  const clearBtn = document.getElementById('clear-filters-btn');
+
+  const data = (window as any).__KB_DATA__ as {
+    verticalStageMap: Record<string, string[]>;
+    verticalLabels: Record<string, string>;
+  };
+
+  function applyFilters() {
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const cardVertical = card.dataset.vertical;
+      const cardPhase = card.dataset.phase;
+      const cardStatus = card.dataset.status;
+
+      const matchVertical = !activeVertical || cardVertical === activeVertical;
+      const matchPhase = !activePhase || cardPhase === activePhase;
+      const matchStatus = !activeStatus || cardStatus === activeStatus;
+
+      if (matchVertical && matchPhase && matchStatus) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Update header
+    if (pageTitle) {
+      pageTitle.textContent = activeVertical
+        ? data.verticalLabels[activeVertical] || activeVertical
+        : 'All Sessions';
+    }
+    if (pageSubtitle) {
+      let text = `${visibleCount} session${visibleCount === 1 ? '' : 's'}`;
+      if (activePhase) text += ` in Phase ${activePhase}`;
+      pageSubtitle.textContent = text;
+    }
+
+    // Pipeline stepper
+    if (pipelineStepper) {
+      if (activeVertical) {
+        pipelineStepper.classList.remove('hidden');
+        const stages = data.verticalStageMap[activeVertical] || [];
+        pipelineStepper.querySelectorAll<HTMLElement>('.pipeline-stage').forEach((el) => {
+          const stage = el.dataset.stage;
+          const has = stage && stages.includes(stage);
+          const numEl = el.querySelector('.pipeline-step-num');
+          if (has) {
+            el.classList.remove('text-text-muted');
+            el.classList.add('bg-action/10', 'text-action');
+            if (numEl) {
+              numEl.classList.remove('bg-bg-surface', 'text-text-muted');
+              numEl.classList.add('bg-action', 'text-bg-primary');
+            }
+          } else {
+            el.classList.add('text-text-muted');
+            el.classList.remove('bg-action/10', 'text-action');
+            if (numEl) {
+              numEl.classList.add('bg-bg-surface', 'text-text-muted');
+              numEl.classList.remove('bg-action', 'text-bg-primary');
+            }
+          }
+        });
+      } else {
+        pipelineStepper.classList.add('hidden');
+      }
+    }
+
+    // Empty state
+    if (emptyState && docList) {
+      if (visibleCount === 0) {
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+      } else {
+        emptyState.classList.add('hidden');
+        emptyState.classList.remove('flex');
+      }
+    }
+
+    // Highlight active sidebar vertical
+    verticalBtns.forEach((btn) => {
+      const slug = btn.dataset.verticalFilter;
+      if (slug === activeVertical) {
+        btn.classList.remove('text-text-secondary');
+        btn.classList.add('text-action', 'bg-action/5', 'font-medium');
+      } else {
+        btn.classList.add('text-text-secondary');
+        btn.classList.remove('text-action', 'bg-action/5', 'font-medium');
+      }
+    });
+
+    // Highlight active sidebar view
+    document.querySelectorAll<HTMLElement>('.sidebar-view-link').forEach((link) => {
+      if (!activeVertical && link.dataset.view === 'all') {
+        link.classList.remove('text-text-secondary');
+        link.classList.add('text-action', 'bg-action/5', 'font-medium');
+      } else {
+        link.classList.add('text-text-secondary');
+        link.classList.remove('text-action', 'bg-action/5', 'font-medium');
+      }
+    });
+
+    // Phase pills
+    const activeClass = 'bg-action/15 text-action border-action/30';
+    const inactiveClass = 'text-text-muted border-border';
+
+    phasePills.forEach((pill) => {
+      const val = pill.dataset.phaseValue;
+      const isActive = (val === '' && !activePhase) || val === activePhase;
+      if (isActive) {
+        pill.className = pill.className
+          .replace(/text-text-muted/g, '')
+          .replace(/border-border/g, '');
+        activeClass.split(' ').forEach((c) => pill.classList.add(c));
+        inactiveClass.split(' ').forEach((c) => pill.classList.remove(c));
+      } else {
+        activeClass.split(' ').forEach((c) => pill.classList.remove(c));
+        inactiveClass.split(' ').forEach((c) => pill.classList.add(c));
+      }
+    });
+
+    // Status pills
+    statusPills.forEach((pill) => {
+      const val = pill.dataset.statusValue;
+      const isActive = (val === '' && !activeStatus) || val === activeStatus;
+      if (isActive) {
+        activeClass.split(' ').forEach((c) => pill.classList.add(c));
+        inactiveClass.split(' ').forEach((c) => pill.classList.remove(c));
+      } else {
+        activeClass.split(' ').forEach((c) => pill.classList.remove(c));
+        inactiveClass.split(' ').forEach((c) => pill.classList.add(c));
+      }
+    });
+
+    // Sidebar phase buttons
+    sidebarPhaseBtns.forEach((btn) => {
+      const val = btn.dataset.phaseFilter;
+      if (val === activePhase) {
+        btn.classList.add('bg-action/15', 'text-action', 'border-action/30');
+        btn.classList.remove('text-text-muted', 'border-border');
+      } else {
+        btn.classList.remove('bg-action/15', 'text-action', 'border-action/30');
+        btn.classList.add('text-text-muted', 'border-border');
+      }
+    });
+
+    // Sync mobile select
+    if (mobileSelect) {
+      mobileSelect.value = activeVertical || '';
+    }
+
+    // Update URL without reload
+    const url = new URL(window.location.href);
+    if (activeVertical) {
+      url.searchParams.set('vertical', activeVertical);
+    } else {
+      url.searchParams.delete('vertical');
+    }
+    if (activePhase) {
+      url.searchParams.set('phase', activePhase);
+    } else {
+      url.searchParams.delete('phase');
+    }
+    if (activeStatus) {
+      url.searchParams.set('status', activeStatus);
+    } else {
+      url.searchParams.delete('status');
+    }
+    history.replaceState(null, '', url.toString());
+  }
+
+  // ── Event listeners ────────────────────────────────────────────────
+
+  // Sidebar vertical buttons
+  verticalBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const slug = btn.dataset.verticalFilter || null;
+      activeVertical = activeVertical === slug ? null : slug;
+      applyFilters();
+    });
+  });
+
+  // Phase pills (top)
+  phasePills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const val = pill.dataset.phaseValue || null;
+      activePhase = val || null;
+      applyFilters();
+    });
+  });
+
+  // Status pills
+  statusPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const val = pill.dataset.statusValue || null;
+      activeStatus = val || null;
+      applyFilters();
+    });
+  });
+
+  // Sidebar phase buttons
+  sidebarPhaseBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.phaseFilter || null;
+      activePhase = activePhase === val ? null : val;
+      applyFilters();
+    });
+  });
+
+  // Mobile select
+  if (mobileSelect) {
+    mobileSelect.addEventListener('change', () => {
+      activeVertical = mobileSelect.value || null;
+      applyFilters();
+    });
+  }
+
+  // Clear filters
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      activeVertical = null;
+      activePhase = null;
+      activeStatus = null;
+      applyFilters();
+    });
+  }
+
+  // ── Init from URL params ───────────────────────────────────────────
+
+  const params = new URLSearchParams(window.location.search);
+  const initVertical = params.get('vertical');
+  const initPhase = params.get('phase');
+  const initStatus = params.get('status');
+
+  if (initVertical) activeVertical = initVertical;
+  if (initPhase) activePhase = initPhase;
+  if (initStatus) activeStatus = initStatus;
+
+  if (activeVertical || activePhase || activeStatus) {
+    applyFilters();
+  }
+</script>

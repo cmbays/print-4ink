@@ -1,0 +1,185 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WorkflowChain from '../../components/WorkflowChain.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const sessions = await getCollection('sessions');
+  return sessions.map((session) => ({
+    params: { slug: session.id },
+    props: { session },
+  }));
+}
+
+const { session } = Astro.props;
+
+const allSessions = await getCollection('sessions');
+const workflowSessions = allSessions
+  .filter((s) => s.data.vertical === session.data.vertical)
+  .map((s) => ({
+    slug: s.id,
+    title: s.data.title,
+    stage: s.data.stage,
+    date: s.data.date,
+  }));
+const { Content } = await render(session);
+
+const { title, subtitle, date, phase, vertical, verticalSecondary, stage, tags, sessionId, branch, pr, status } = session.data;
+
+const dateStr = date.toISOString().split('T')[0];
+
+function tagColor(tag: string): string {
+  if (tag === 'feature' || tag === 'build') return 'bg-success/12 text-success';
+  if (tag === 'plan') return 'bg-action/12 text-action';
+  if (tag === 'decision' || tag === 'learning') return 'bg-warning/12 text-warning';
+  if (tag === 'research') return 'bg-purple/12 text-purple';
+  return 'bg-bg-surface text-text-muted';
+}
+
+function stageLabel(s: string): string {
+  return s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+function statusColor(s: string): string {
+  if (s === 'complete') return 'text-success';
+  if (s === 'in-progress') return 'text-action';
+  if (s === 'superseded') return 'text-text-muted';
+  return 'text-text-secondary';
+}
+
+function statusLabel(s: string): string {
+  if (s === 'in-progress') return 'In Progress';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+---
+
+<Layout title={title} description={subtitle}>
+  <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
+    <!-- Back link -->
+    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
+      <span>&larr;</span> Back to Index
+    </a>
+
+    <!-- Tag pills -->
+    <div class="flex items-center gap-2 mb-4">
+      {tags.map((tag) => (
+        <span class={`text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ${tagColor(tag)}`} data-pagefind-filter={`tag:${tag}`}>
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{title}</h1>
+    <span data-pagefind-meta={`vertical:${stageLabel(vertical)}`} class="hidden"></span>
+    <span data-pagefind-meta={`stage:${stageLabel(stage)}`} class="hidden"></span>
+
+    <!-- Subtitle -->
+    <p class="text-[15px] text-text-secondary leading-relaxed mb-6">{subtitle}</p>
+
+    <!-- Meta grid -->
+    <div class="border border-border rounded-lg overflow-hidden mb-6">
+      <div class="grid grid-cols-2">
+        <!-- Row 1 -->
+        <div class="px-4 py-3 border-b border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Date</div>
+          <div class="text-sm text-text-primary">{dateStr}</div>
+        </div>
+        <div class="px-4 py-3 border-b border-border border-l border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Branch</div>
+          <div class="text-sm">
+            {branch ? (
+              <code class="font-mono text-xs bg-bg-surface px-1.5 py-0.5 rounded text-action">{branch}</code>
+            ) : (
+              <span class="text-text-muted">--</span>
+            )}
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="px-4 py-3 border-b border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Phase</div>
+          <div class="text-sm text-text-primary">Phase {phase}</div>
+        </div>
+        <div class="px-4 py-3 border-b border-border border-l border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Vertical</div>
+          <div class="text-sm text-text-primary">
+            <a href={`/verticals/${vertical}`} class="text-action hover:underline">{stageLabel(vertical)}</a>
+            {verticalSecondary && verticalSecondary.length > 0 && (
+              <span class="text-text-muted">
+                {' '}+ {verticalSecondary.map(v => stageLabel(v)).join(', ')}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="px-4 py-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Stage</div>
+          <div class="text-sm">
+            <a href={`/verticals/${vertical}/${stage}`} class="inline-flex items-center bg-bg-surface text-action text-xs font-medium px-2 py-0.5 rounded hover:bg-action/10 transition-colors">
+              {stageLabel(stage)}
+            </a>
+          </div>
+        </div>
+        <div class="px-4 py-3 border-l border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Status</div>
+          <div class={`text-sm font-medium ${statusColor(status)}`}>
+            {statusLabel(status)}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow chain -->
+    {workflowSessions.length > 1 && (
+      <div class="mb-6" data-pagefind-ignore>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Workflow Chain</div>
+        <div class="bg-bg-elevated border border-border rounded-lg px-4 py-2">
+          <WorkflowChain
+            currentSlug={session.id}
+            vertical={vertical}
+            allSessions={workflowSessions}
+          />
+        </div>
+      </div>
+    )}
+
+    <!-- Session resume -->
+    {sessionId && (
+      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 mb-6" data-pagefind-ignore>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Resume Session</div>
+        <code class="font-mono text-xs text-action select-all">claude --resume {sessionId}</code>
+      </div>
+    )}
+
+    <!-- PR link -->
+    {pr && (
+      <div class="mb-6" data-pagefind-ignore>
+        <a
+          href={pr}
+          class="inline-flex items-center gap-1.5 text-sm text-action hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Pull Request &rarr;
+        </a>
+      </div>
+    )}
+
+    <!-- Divider -->
+    <hr class="border-t border-border mb-8" />
+
+    <!-- Body content -->
+    <div class="prose">
+      <Content />
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 pt-6 border-t border-border">
+      <p class="text-xs text-text-muted text-center">
+        Screen Print Pro &mdash; {title} &mdash; {dateStr}
+      </p>
+    </footer>
+  </main>
+</Layout>

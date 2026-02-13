@@ -36,7 +36,9 @@ git worktree add <path> -b <branch> <base>  # Stacked: branch from another branc
 git worktree remove <path>           # Remove worktree after PR merges
 git push -u origin <branch>          # Push branch to remote
 gh pr create --title "..." --body "..."  # Create PR
-npm run gen:index                    # Regenerate for_human index (main only)
+npm run kb:dev                       # Knowledge base dev server (Astro)
+npm run kb:build                     # Knowledge base production build
+npm run kb:preview                   # Knowledge base preview
 
 # Session Orchestration (requires: source scripts/work.sh in .zshrc)
 work <topic>                          # New workstream: detached tmux session + worktree
@@ -95,12 +97,11 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 | Hot File | Update Rule |
 |----------|-------------|
 | `PROGRESS.md` | Update on main after PR merge |
-| `for_human/index.html` | Auto-generated via `npm run gen:index` — never hand-edit |
-| `for_human/README.md` | Auto-generated via `npm run gen:index` — never hand-edit |
+| `knowledge-base/dist/` | Build output — gitignored, never commit |
 
 **What sessions CAN commit on their feature branch:**
 - All source code changes
-- New `for_human/YYYY-MM-DD-*.html` session doc (unique filename, no conflicts)
+- New `knowledge-base/src/content/sessions/YYYY-MM-DD-*.md` session doc (unique filename, no conflicts)
 - New docs (breadboards, spikes, strategy)
 - Schema and test changes
 
@@ -280,7 +281,7 @@ These documents define the project. Reference them, keep them current, and never
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
 - Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
 - After PR merges, update `PROGRESS.md` on main with what was built and what's next.
-- After completing work, create or update the appropriate `for_human/` HTML doc (see For Human Docs below).
+- After completing work, create or update a session doc in `knowledge-base/src/content/sessions/` (see Knowledge Base section below).
 - When a doc becomes stale, update it — don't ignore it.
 - Every canonical doc has a `Last Verified` date. Update it when you confirm the doc still matches reality.
 
@@ -334,40 +335,98 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 - **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → frontend-builder (fixes) → quality-gate`
 - **Competitive Analysis**: `feature-strategist → feature plan → user approval → update IMPLEMENTATION_PLAN`
 
-## For Human Docs
+## Knowledge Base (Astro)
 
-After every feature build, plan, or decision, create or update an HTML doc in `for_human/`.
+After every feature build, plan, or decision, create or update a Markdown file in `knowledge-base/src/content/sessions/`.
 
-**Template**: Use `for_human/_template.html` as the reference. Every file must have the standardized header:
-1. Back navigation (`← Back to Index`)
-2. Tag pills (1-3 per session)
-3. Title + subtitle
-4. Meta grid: Date, Branch, Phase, Vertical
-5. Session resume: `claude --resume <id>`
-6. Related sessions (navigation buttons to related `for_human/` docs, if any)
-7. Divider before body content
+### File Format
+
+Create `knowledge-base/src/content/sessions/YYYY-MM-DD-kebab-topic.md` with YAML frontmatter:
+
+```yaml
+---
+title: "Document Title"
+subtitle: "Short description"
+date: YYYY-MM-DD
+phase: 1
+vertical: VERTICAL_SLUG
+verticalSecondary: []
+stage: STAGE_SLUG
+tags: [feature, build]
+sessionId: "UUID"
+branch: "session/MMDD-topic"
+status: complete
+---
+
+## Body Content
+
+Write Markdown content here. Standard Markdown: headers, lists, tables, code blocks.
+```
+
+### Commands
+
+```bash
+npm run kb:dev       # Astro dev server (knowledge-base)
+npm run kb:build     # Production build (50+ static pages + Pagefind search index)
+npm run kb:preview   # Preview production build locally
+```
+
+Or from within `knowledge-base/`:
+```bash
+npm run dev          # Astro dev server
+npm run build        # Production build
+npm run preview      # Preview
+```
+
+### Schema
+
+All frontmatter is validated by Zod at build time (`knowledge-base/src/content.config.ts`).
+
+**Vertical slugs:** `quoting`, `customer-management`, `invoicing`, `price-matrix`, `jobs`, `screen-room`, `garments`, `dashboard`, `meta`
+
+**Stage slugs:** `research`, `interview`, `breadboarding`, `implementation-planning`, `build`, `review`, `learnings`
 
 **Tags** (apply 1-3 per session):
 
 | Tag | Color | Use When |
 |-----|-------|----------|
-| Feature | Green | New functionality built |
-| Build | Green | Infrastructure, tooling, scaffold |
-| Plan | Blue | Strategy or roadmap created |
-| Decision | Amber | Choice made between alternatives |
-| Research | Purple | Competitive analysis, exploration |
-| Learning | Amber | Lesson learned or gotcha documented |
+| feature | Green | New functionality built |
+| build | Green | Infrastructure, tooling, scaffold |
+| plan | Blue | Strategy or roadmap created |
+| decision | Amber | Choice made between alternatives |
+| research | Purple | Competitive analysis, exploration |
+| learning | Amber | Lesson learned or gotcha documented |
 
-**Rules:**
-- **Bundle** related content into the same file (e.g., multi-session work on one screen)
-- **Separate** distinct features, standalone decisions, different project phases
-- Sessions commit only their individual `for_human/YYYY-MM-DD-*.html` file on the feature branch
-- `index.html` and `README.md` are auto-generated via `npm run gen:index` — never hand-edit
-- `gen:index` runs on main after PR merge
+**Status:** `complete`, `in-progress`, `superseded`
+
+### Features
+
+- **Full-text search** (Pagefind): Indexes all session content, sub-results link to headings, tag facet filters
+- **Client-side filtering**: Vertical, phase, and status filters on the index page
+- **Pipeline stepper**: 7-stage pipeline visualization per vertical
+- **Workflow chains**: Auto-computed related sessions by vertical+stage on detail pages
+- **Gary Tracker**: Aggregated questions from all sessions (embed HTML blocks in Markdown)
+- **Decision log**: All sessions tagged with `decision`
+- **Vertical health**: Stats per vertical with progress indicators
+
+### Gary Questions
+
+Embed in any session Markdown file:
+```html
+<div class="gary-question" data-question-id="VERTICAL-q1" data-vertical="VERTICAL_SLUG" data-status="unanswered">
+  <p class="gary-question-text">Your question here?</p>
+  <p class="gary-question-context">Why this matters</p>
+  <div class="gary-answer" data-answered-date=""></div>
+</div>
+```
+
+### Rules
+
+- **One file per session**: `YYYY-MM-DD-kebab-topic.md` in `knowledge-base/src/content/sessions/`
+- **Build validates**: `npm run kb:build` catches schema errors at build time
+- **Session ID**: Find via `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — filename (without `.jsonl`) is the ID
 - **Include**: session resume command, artifact links, PR links, decision rationale
-- **Session ID**: Find the current session ID by running `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — the filename (without `.jsonl`) is the ID. Never use IDs from plan text or prior sessions.
-- **Style**: use project design tokens (dark theme, Niji blue accent, Inter font) — copy from `_template.html`
-- **Related sessions**: Link to other `for_human/` docs that share the same workflow chain (e.g., discovery → build → demo)
+- **Related sessions**: Workflow chains are auto-computed — no manual linking needed
 
 ## Lessons Learned
 
@@ -380,6 +439,6 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Radix Tooltip hover bugs**: Adjacent tooltips need a single shared `<TooltipProvider>` with `skipDelayDuration={300}`, base `sideOffset >= 6`, `data-[state=closed]:pointer-events-none` on content, and `pointer-events-none` on arrow. Do NOT use `disableHoverableContent` — it causes flickering on small targets.
 - **shadcn/ui Tooltip dark mode**: Default `bg-foreground text-background` is invisible in dark mode. Override to `bg-elevated text-foreground border border-border shadow-lg`. Arrow: `bg-elevated fill-elevated`.
 - **Git worktrees**: Main repo (`~/Github/print-4ink/`) always stays on `main`. Worktrees go in `~/Github/print-4ink-worktrees/`. Each worktree needs its own `npm install`. Max 4 concurrent worktrees — clean up after PR merges.
-- **Hot files**: Never commit `PROGRESS.md`, `for_human/index.html`, or `for_human/README.md` on feature branches. Update on main after merge.
+- **Hot files**: Never commit `PROGRESS.md` on feature branches. Update on main after merge. `knowledge-base/dist/` is gitignored.
 - **CRITICAL — Financial arithmetic**: NEVER use JavaScript floating-point (`+`, `-`, `*`, `/`) for monetary calculations. IEEE 754 causes silent errors (e.g., `0.1 + 0.2 = 0.30000000000000004`). Use `big.js` via the `lib/helpers/money.ts` wrapper (`money()`, `round2()`, `toNumber()`). Schema invariants use `Big.eq()` for exact comparison — no tolerance hacks. Integer-cents workarounds still fail on multiplication/division (tax rates, percentage deposits).
 - **React 19 ESLint — no setState in effects**: Don't use `useEffect` to reset form state when a dialog opens. Instead, have the parent conditionally render the dialog (`{showDialog && <Dialog />}`) so React unmounts/remounts the component, naturally resetting all `useState` hooks.
