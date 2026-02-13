@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { useDroppable } from "@dnd-kit/core";
+import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { LANE_LABELS, LANE_COLORS } from "@/lib/constants";
 import type { Lane } from "@/lib/schemas/job";
 import type { BoardCard } from "@/lib/schemas/board-card";
@@ -13,74 +15,124 @@ import type { BoardCard } from "@/lib/schemas/board-card";
 
 interface BoardLaneProps {
   lane: Lane;
+  section: "quotes" | "jobs";
   cards: BoardCard[];
   renderCard: (card: BoardCard) => React.ReactNode;
+  onAddScratchNote?: () => void;
+  /** Extra element rendered after cards (e.g. ScratchNoteCapture input) */
+  footer?: React.ReactNode;
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export function BoardLane({ lane, cards, renderCard }: BoardLaneProps) {
+export function BoardLane({
+  lane,
+  section,
+  cards,
+  renderCard,
+  onAddScratchNote,
+  footer,
+}: BoardLaneProps) {
   const isDone = lane === "done";
   const [collapsed, setCollapsed] = useState(isDone);
   const count = cards.length;
 
+  // Droppable — unique ID per section + lane
+  const droppableId = `${section}:${lane}`;
+  const { isOver, setNodeRef } = useDroppable({ id: droppableId });
+
+  // Show + button for scratch note capture in Quotes Ready lane
+  const showAddButton = section === "quotes" && lane === "ready" && onAddScratchNote;
+
   return (
     <div
+      ref={setNodeRef}
       className={cn(
         "flex min-w-[200px] flex-1 flex-col rounded-lg",
         "bg-background border border-border/50",
+        "transition-colors duration-150",
+        isOver && "border-action/60 bg-action/5",
       )}
     >
       {/* Lane header */}
-      <button
-        type="button"
-        onClick={isDone ? () => setCollapsed((prev) => !prev) : undefined}
+      <div
         className={cn(
           "flex items-center justify-between gap-2 px-3 py-2",
           "rounded-t-lg border-b border-border/50",
-          isDone && "hover:bg-surface/50 cursor-pointer",
           "transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+          isOver && "border-b-action/40",
         )}
-        aria-expanded={isDone ? !collapsed : undefined}
         aria-label={`${LANE_LABELS[lane]} lane, ${count} card${count !== 1 ? "s" : ""}`}
       >
-        <div className="flex items-center gap-2">
-          <span
+        {/* Label + count — clickable only for Done lane */}
+        {isDone ? (
+          <button
+            type="button"
+            onClick={() => setCollapsed((prev) => !prev)}
             className={cn(
-              "text-xs font-semibold uppercase tracking-wider",
-              LANE_COLORS[lane],
+              "flex flex-1 items-center justify-between gap-2",
+              "hover:bg-surface/50 -m-1 rounded-md p-1 cursor-pointer",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             )}
+            aria-expanded={!collapsed}
           >
-            {LANE_LABELS[lane]}
-          </span>
-          <span className="rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-            {count}
-          </span>
-        </div>
-        {isDone &&
-          (collapsed ? (
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="size-3.5 text-muted-foreground" />
-          ))}
-      </button>
+            <div className="flex items-center gap-2">
+              <span className={cn("text-xs font-semibold uppercase tracking-wider", LANE_COLORS[lane])}>
+                {LANE_LABELS[lane]}
+              </span>
+              <span className="rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {count}
+              </span>
+            </div>
+            {collapsed ? (
+              <ChevronRight className="size-3.5 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="size-3.5 text-muted-foreground" />
+            )}
+          </button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className={cn("text-xs font-semibold uppercase tracking-wider", LANE_COLORS[lane])}>
+              {LANE_LABELS[lane]}
+            </span>
+            <span className="rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+              {count}
+            </span>
+          </div>
+        )}
+
+        {/* Add scratch note button (separate from any button ancestor) */}
+        {showAddButton && (
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            className="text-muted-foreground hover:text-action"
+            onClick={onAddScratchNote}
+            aria-label="Add scratch note"
+          >
+            <Plus className="size-3" />
+          </Button>
+        )}
+      </div>
 
       {/* Card list */}
       {!collapsed && (
         <div className="flex flex-col gap-2 p-2">
-          {count === 0 ? (
+          {count === 0 && !footer ? (
             <div className="flex items-center justify-center rounded-md border border-dashed border-border/50 py-8 text-xs text-muted-foreground">
               No cards
             </div>
           ) : (
-            cards.map((card) => (
-              <div key={card.type === "quote" ? card.quoteId : card.id}>
-                {renderCard(card)}
-              </div>
-            ))
+            <>
+              {cards.map((card) => (
+                <div key={card.type === "quote" ? card.quoteId : card.id}>
+                  {renderCard(card)}
+                </div>
+              ))}
+              {footer}
+            </>
           )}
         </div>
       )}

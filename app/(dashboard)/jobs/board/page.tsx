@@ -1,8 +1,18 @@
 "use client";
 
-import { useMemo, Suspense } from "react";
+import { useState, useMemo, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { Plus, LayoutGrid, List } from "lucide-react";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragStartEvent,
+  type DragEndEvent,
+} from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -22,21 +32,24 @@ import { BoardSection } from "../_components/BoardSection";
 import { JobBoardCard } from "../_components/JobBoardCard";
 import { QuoteBoardCard } from "../_components/QuoteBoardCard";
 import { ScratchNoteCard } from "../_components/ScratchNoteCard";
+import { DraggableCard } from "../_components/DraggableCard";
+import { BlockReasonDialog } from "../_components/BlockReasonDialog";
+import { MoveLaneDialog } from "../_components/MoveLaneDialog";
+import { ScratchNoteCapture } from "../_components/ScratchNoteCapture";
 import {
   computeCapacitySummary,
   computeFilteredCards,
   computeTaskProgress,
 } from "@/lib/helpers/job-utils";
 import {
-  jobs,
-  quoteCards,
-  scratchNotes,
+  jobs as initialJobs,
+  quoteCards as initialQuoteCards,
+  scratchNotes as initialScratchNotes,
   customers,
   invoices,
 } from "@/lib/mock-data";
-import type { BoardCard } from "@/lib/schemas/board-card";
-import type { JobCard, ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
-import type { Job } from "@/lib/schemas/job";
+import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
+import type { Job, Lane } from "@/lib/schemas/job";
 
 // ---------------------------------------------------------------------------
 // Projection: Job → JobCard view model
@@ -91,17 +104,42 @@ function projectScratchNoteToCard(
 }
 
 // ---------------------------------------------------------------------------
-// Card renderer (dispatches by type)
+// Helpers: parse drag IDs
 // ---------------------------------------------------------------------------
 
-function renderCard(card: BoardCard): React.ReactNode {
+/** Drag IDs are "job:{uuid}", "quote:{quoteId}", "scratch:{uuid}" */
+function parseDragId(dragId: string): { cardType: string; cardId: string } {
+  const idx = dragId.indexOf(":");
+  return { cardType: dragId.slice(0, idx), cardId: dragId.slice(idx + 1) };
+}
+
+/** Droppable IDs are "{section}:{lane}" */
+function parseDroppableId(droppableId: string): { section: string; lane: Lane } {
+  const idx = droppableId.indexOf(":");
+  return {
+    section: droppableId.slice(0, idx),
+    lane: droppableId.slice(idx + 1) as Lane,
+  };
+}
+
+/** Map card type to section for same-row constraint */
+function cardTypeToSection(cardType: string): string {
+  if (cardType === "job") return "jobs";
+  return "quotes"; // quote and scratch are in quotes section
+}
+
+// ---------------------------------------------------------------------------
+// Card label for dialogs
+// ---------------------------------------------------------------------------
+
+function getCardLabel(card: BoardCard): string {
   switch (card.type) {
     case "job":
-      return <JobBoardCard card={card} />;
+      return `${card.jobNumber}: ${card.customerName}`;
     case "quote":
-      return <QuoteBoardCard card={card} />;
+      return `Quote: ${card.customerName}`;
     case "scratch_note":
-      return <ScratchNoteCard card={card} />;
+      return `Note: ${card.content.slice(0, 40)}`;
   }
 }
 
@@ -112,37 +150,59 @@ function renderCard(card: BoardCard): React.ReactNode {
 function ProductionBoardInner() {
   const filters = useFiltersFromURL();
 
-  // Build all board cards
-  const allJobCards = useMemo(
-    () => jobs.filter((j) => !j.isArchived).map(projectJobToCard),
-    [],
+  // ---- Mutable state (Phase 1 client-side only) ----
+  const [jobCards, setJobCards] = useState<JobCard[]>(() =>
+    initialJobs.filter((j) => !j.isArchived).map(projectJobToCard),
   );
-  const allQuoteCards = useMemo(() => quoteCards, []);
-  const allScratchNoteCards = useMemo(
-    () =>
-      scratchNotes
-        .filter((n) => !n.isArchived)
-        .map(projectScratchNoteToCard),
-    [],
+  const [quoteCardState, setQuoteCardState] = useState<QuoteCard[]>(() => [...initialQuoteCards]);
+  const [scratchNoteCards, setScratchNoteCards] = useState<ScratchNoteCardType[]>(() =>
+    initialScratchNotes
+      .filter((n) => !n.isArchived)
+      .map(projectScratchNoteToCard),
   );
 
-  // Combine quote-row cards: quoteCards + scratchNotes
+  // ---- DnD state ----
+  const [activeCard, setActiveCard] = useState<BoardCard | null>(null);
+
+  // ---- Block dialog state ----
+  const [blockDialog, setBlockDialog] = useState<{
+    open: boolean;
+    card: BoardCard | null;
+  }>({ open: false, card: null });
+
+  // ---- Move Lane dialog state ----
+  const [moveLaneDialog, setMoveLaneDialog] = useState<{
+    open: boolean;
+    card: BoardCard | null;
+  }>({ open: false, card: null });
+
+  // ---- Scratch note capture state ----
+  const [showScratchCapture, setShowScratchCapture] = useState(false);
+
+  // ---- Sensors ----
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: { distance: 5 },
+  });
+  const keyboardSensor = useSensor(KeyboardSensor);
+  const sensors = useSensors(pointerSensor, keyboardSensor);
+
+  // ---- Combine quote-row cards ----
   const quoteRowCards: BoardCard[] = useMemo(
-    () => [...allQuoteCards, ...allScratchNoteCards],
-    [allQuoteCards, allScratchNoteCards],
+    () => [...quoteCardState, ...scratchNoteCards],
+    [quoteCardState, scratchNoteCards],
   );
 
-  // Apply filters
+  // ---- Apply filters ----
   const filteredJobCards = useMemo(
-    () => computeFilteredCards(allJobCards, filters),
-    [allJobCards, filters],
+    () => computeFilteredCards(jobCards, filters),
+    [jobCards, filters],
   );
   const filteredQuoteCards = useMemo(
     () => computeFilteredCards(quoteRowCards, filters),
     [quoteRowCards, filters],
   );
 
-  // Capacity summary (from all visible cards)
+  // ---- Capacity summary ----
   const allFilteredCards: BoardCard[] = useMemo(
     () => [...filteredJobCards, ...filteredQuoteCards],
     [filteredJobCards, filteredQuoteCards],
@@ -152,8 +212,241 @@ function ProductionBoardInner() {
     [allFilteredCards],
   );
 
-  // Empty board state
   const isEmpty = allFilteredCards.length === 0;
+
+  // ---- Find a card by drag ID ----
+  const findCard = useCallback(
+    (dragId: string): BoardCard | undefined => {
+      const { cardType, cardId } = parseDragId(dragId);
+      if (cardType === "job") return jobCards.find((c) => c.id === cardId);
+      if (cardType === "quote") return quoteCardState.find((c) => c.quoteId === cardId);
+      if (cardType === "scratch") return scratchNoteCards.find((c) => c.id === cardId);
+      return undefined;
+    },
+    [jobCards, quoteCardState, scratchNoteCards],
+  );
+
+  // ---- Move card to a new lane in state ----
+  const moveCard = useCallback(
+    (card: BoardCard, newLane: Lane, blockReason?: string) => {
+      switch (card.type) {
+        case "job":
+          setJobCards((prev) =>
+            prev.map((c) =>
+              c.id === card.id
+                ? {
+                    ...c,
+                    lane: newLane,
+                    blockReason: newLane === "blocked" ? blockReason : undefined,
+                  }
+                : c,
+            ),
+          );
+          break;
+        case "quote":
+          setQuoteCardState((prev) =>
+            prev.map((c) =>
+              c.quoteId === card.quoteId ? { ...c, lane: newLane } : c,
+            ),
+          );
+          break;
+        // scratch_note cards are always in "ready" — they can't be moved
+      }
+    },
+    [],
+  );
+
+  // ===========================================================================
+  // Drag handlers
+  // ===========================================================================
+
+  function handleDragStart(event: DragStartEvent) {
+    const card = findCard(event.active.id as string);
+    if (card) {
+      setActiveCard(card);
+
+    }
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    setActiveCard(null);
+
+    if (!over || !active) {
+
+      return;
+    }
+
+    const { cardType } = parseDragId(active.id as string);
+    const { section: targetSection, lane: targetLane } = parseDroppableId(over.id as string);
+    const sourceSection = cardTypeToSection(cardType);
+
+    // Same-row constraint: quotes stay in quotes, jobs stay in jobs
+    if (sourceSection !== targetSection) {
+
+      return;
+    }
+
+    // Scratch notes can't be moved
+    if (cardType === "scratch") {
+
+      return;
+    }
+
+    const card = findCard(active.id as string);
+    if (!card || card.lane === targetLane) {
+
+      return;
+    }
+
+    // If target is blocked → open block reason dialog
+    if (targetLane === "blocked") {
+      setBlockDialog({ open: true, card });
+      return;
+    }
+
+    // Direct move
+    moveCard(card, targetLane);
+
+  }
+
+  function handleDragCancel() {
+    setActiveCard(null);
+
+  }
+
+  // ===========================================================================
+  // Block dialog handlers
+  // ===========================================================================
+
+  function confirmBlock(reason: string) {
+    if (blockDialog.card) {
+      moveCard(blockDialog.card, "blocked", reason);
+    }
+    setBlockDialog({ open: false, card: null });
+
+  }
+
+  function cancelBlock() {
+    // Card stays in original position (no state change needed)
+    setBlockDialog({ open: false, card: null });
+
+  }
+
+  // ===========================================================================
+  // Move Lane dialog handlers
+  // ===========================================================================
+
+  function openMoveLaneDialog(card: BoardCard) {
+    setMoveLaneDialog({ open: true, card });
+  }
+
+  function confirmMoveLane(targetLane: Lane, blockReason?: string) {
+    if (moveLaneDialog.card) {
+      moveCard(moveLaneDialog.card, targetLane, blockReason);
+    }
+    setMoveLaneDialog({ open: false, card: null });
+  }
+
+  function cancelMoveLane() {
+    setMoveLaneDialog({ open: false, card: null });
+  }
+
+  // ===========================================================================
+  // Scratch note CRUD
+  // ===========================================================================
+
+  function createScratchNote(content: string) {
+    const newNote: ScratchNoteCardType = {
+      type: "scratch_note",
+      id: crypto.randomUUID(),
+      content,
+      createdAt: new Date().toISOString(),
+      isArchived: false,
+      lane: "ready",
+    };
+    setScratchNoteCards((prev) => [newNote, ...prev]);
+    setShowScratchCapture(false);
+  }
+
+  function dismissScratchNote(noteId: string) {
+    setScratchNoteCards((prev) => prev.filter((n) => n.id !== noteId));
+  }
+
+  // ===========================================================================
+  // Card renderer (dispatches by type, wraps in DraggableCard)
+  // ===========================================================================
+
+  const renderCard = useCallback(
+    (card: BoardCard): React.ReactNode => {
+      switch (card.type) {
+        case "job": {
+          const dragId = `job:${card.id}`;
+          return (
+            <DraggableCard
+              dragId={dragId}
+              data={{ cardType: "job", cardId: card.id, section: "jobs" }}
+            >
+              <JobBoardCard
+                card={card}
+                onMoveLane={() => openMoveLaneDialog(card)}
+              />
+            </DraggableCard>
+          );
+        }
+        case "quote": {
+          const dragId = `quote:${card.quoteId}`;
+          return (
+            <DraggableCard
+              dragId={dragId}
+              data={{ cardType: "quote", cardId: card.quoteId, section: "quotes" }}
+            >
+              <QuoteBoardCard
+                card={card}
+                onMoveLane={() => openMoveLaneDialog(card)}
+              />
+            </DraggableCard>
+          );
+        }
+        case "scratch_note":
+          return (
+            <ScratchNoteCard
+              card={card}
+              onDismiss={() => dismissScratchNote(card.id)}
+            />
+          );
+      }
+    },
+    [],
+  );
+
+  // ===========================================================================
+  // Drag overlay renderer
+  // ===========================================================================
+
+  function renderDragOverlay() {
+    if (!activeCard) return null;
+    switch (activeCard.type) {
+      case "job":
+        return (
+          <div className="w-[200px] rotate-2 opacity-90 shadow-xl">
+            <JobBoardCard card={activeCard} />
+          </div>
+        );
+      case "quote":
+        return (
+          <div className="w-[200px] rotate-2 opacity-90 shadow-xl">
+            <QuoteBoardCard card={activeCard} />
+          </div>
+        );
+      case "scratch_note":
+        return (
+          <div className="w-[200px] rotate-2 opacity-90 shadow-xl">
+            <ScratchNoteCard card={activeCard} />
+          </div>
+        );
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -174,23 +467,72 @@ function ProductionBoardInner() {
           </p>
         </div>
       ) : (
-        <TooltipProvider skipDelayDuration={300}>
-          <div className="flex flex-col gap-6">
-            {/* Quotes section */}
-            <BoardSection
-              label="Quotes"
-              cards={filteredQuoteCards}
-              renderCard={renderCard}
-            />
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
+        >
+          <TooltipProvider skipDelayDuration={300}>
+            <div className="flex flex-col gap-6">
+              {/* Quotes section */}
+              <BoardSection
+                label="Quotes"
+                section="quotes"
+                cards={filteredQuoteCards}
+                renderCard={renderCard}
+                onAddScratchNote={() => setShowScratchCapture(true)}
+                readyLaneFooter={
+                  showScratchCapture ? (
+                    <ScratchNoteCapture
+                      onSubmit={createScratchNote}
+                      onCancel={() => setShowScratchCapture(false)}
+                    />
+                  ) : undefined
+                }
+              />
 
-            {/* Jobs section */}
-            <BoardSection
-              label="Jobs"
-              cards={filteredJobCards}
-              renderCard={renderCard}
-            />
-          </div>
-        </TooltipProvider>
+              {/* Jobs section */}
+              <BoardSection
+                label="Jobs"
+                section="jobs"
+                cards={filteredJobCards}
+                renderCard={renderCard}
+              />
+            </div>
+          </TooltipProvider>
+
+          <DragOverlay dropAnimation={null}>
+            {renderDragOverlay()}
+          </DragOverlay>
+        </DndContext>
+      )}
+
+      {/* Block Reason Dialog */}
+      {blockDialog.card && (
+        <BlockReasonDialog
+          open={blockDialog.open}
+          onOpenChange={(open) => {
+            if (!open) cancelBlock();
+          }}
+          cardLabel={getCardLabel(blockDialog.card)}
+          onConfirm={confirmBlock}
+          onCancel={cancelBlock}
+        />
+      )}
+
+      {/* Move Lane Dialog */}
+      {moveLaneDialog.card && (
+        <MoveLaneDialog
+          open={moveLaneDialog.open}
+          onOpenChange={(open) => {
+            if (!open) cancelMoveLane();
+          }}
+          cardLabel={getCardLabel(moveLaneDialog.card)}
+          currentLane={moveLaneDialog.card.lane}
+          onConfirm={confirmMoveLane}
+          onCancel={cancelMoveLane}
+        />
       )}
     </div>
   );

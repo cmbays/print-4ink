@@ -18,8 +18,12 @@ const LANE_ORDER: Lane[] = ["ready", "in_progress", "review", "blocked", "done"]
 
 interface BoardSectionProps {
   label: string;
+  section: "quotes" | "jobs";
   cards: BoardCard[];
   renderCard: (card: BoardCard) => React.ReactNode;
+  onAddScratchNote?: () => void;
+  /** Footer rendered inside the Ready lane (e.g. ScratchNoteCapture) */
+  readyLaneFooter?: React.ReactNode;
   className?: string;
 }
 
@@ -29,8 +33,11 @@ interface BoardSectionProps {
 
 export function BoardSection({
   label,
+  section,
   cards,
   renderCard,
+  onAddScratchNote,
+  readyLaneFooter,
   className,
 }: BoardSectionProps) {
   // Bucket cards by lane
@@ -61,8 +68,11 @@ export function BoardSection({
           <BoardLane
             key={lane}
             lane={lane}
+            section={section}
             cards={cardsByLane[lane]}
             renderCard={renderCard}
+            onAddScratchNote={lane === "ready" ? onAddScratchNote : undefined}
+            footer={lane === "ready" ? readyLaneFooter : undefined}
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Package, Calendar, DollarSign, Plus } from "lucide-react";
+import { FileText, Package, Calendar, DollarSign, Plus, ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,9 +37,10 @@ function formatCurrency(amount: number): string {
 interface QuoteBoardCardProps {
   card: QuoteCard;
   onCreateJob?: () => void;
+  onMoveLane?: () => void;
 }
 
-export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
+export function QuoteBoardCard({ card, onCreateJob, onMoveLane }: QuoteBoardCardProps) {
   const isDone = card.lane === "done";
   const showCreateJob =
     isDone && card.quoteStatus === "accepted" && onCreateJob;
@@ -112,6 +113,25 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
             </span>
           )}
         </div>
+
+        {/* Quick action: Move Lane */}
+        {onMoveLane && (
+          <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button
+              variant="ghost"
+              size="xs"
+              className="text-muted-foreground hover:text-action"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onMoveLane();
+              }}
+            >
+              <ArrowRightLeft className="size-3" />
+              Move Lane
+            </Button>
+          </div>
+        )}
 
         {/* Create Job action (accepted quotes in Done lane) */}
         {showCreateJob && (

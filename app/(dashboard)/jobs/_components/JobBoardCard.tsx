@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Package, Calendar } from "lucide-react";
+import { Package, Calendar, ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -27,9 +28,10 @@ import type { JobCard } from "@/lib/schemas/board-card";
 interface JobBoardCardProps {
   card: JobCard;
   onClick?: () => void;
+  onMoveLane?: () => void;
 }
 
-export function JobBoardCard({ card, onClick }: JobBoardCardProps) {
+export function JobBoardCard({ card, onClick, onMoveLane }: JobBoardCardProps) {
   const isBlocked = !!card.blockReason;
   const isRush = card.priority === "rush";
   const isDone = card.lane === "done";
@@ -105,6 +107,25 @@ export function JobBoardCard({ card, onClick }: JobBoardCardProps) {
           total={card.taskProgress.total}
         />
       </div>
+
+      {/* Quick action: Move Lane */}
+      {onMoveLane && (
+        <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="xs"
+            className="text-muted-foreground hover:text-action"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onMoveLane();
+            }}
+          >
+            <ArrowRightLeft className="size-3" />
+            Move Lane
+          </Button>
+        </div>
+      )}
 
       {/* Payment status badge (Done lane only) */}
       {isDone && card.invoiceStatus && (
