@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_COLORS,
-  PRODUCTION_STATE_LABELS,
-  PRODUCTION_STATE_COLORS,
+  LANE_LABELS,
+  LANE_COLORS,
   NOTE_CHANNEL_LABELS,
 } from "@/lib/constants";
 import type { Quote } from "@/lib/schemas/quote";
@@ -95,7 +95,7 @@ export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityT
 
         return (
           <div
-            key={`${item.type}-${index}`}
+            key={`${item.type}-${item.data.id}`}
             className="relative flex gap-4 py-3 first:pt-0 last:pb-0"
             role="listitem"
           >
@@ -175,8 +175,8 @@ function TimelineContent({ item, onSwitchTab }: { item: TimelineItem; onSwitchTa
           <span className="text-sm font-medium text-foreground">
             Job {job.jobNumber} — {job.title}
           </span>
-          <Badge variant="ghost" className={PRODUCTION_STATE_COLORS[job.status]}>
-            {PRODUCTION_STATE_LABELS[job.status]}
+          <Badge variant="ghost" className={LANE_COLORS[job.lane]}>
+            {LANE_LABELS[job.lane]}
           </Badge>
         </div>
       );

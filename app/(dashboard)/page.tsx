@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Topbar } from "@/components/layout/topbar";
 import {
-  PRODUCTION_STATE_LABELS,
+  LANE_LABELS,
   PRIORITY_LABELS,
 } from "@/lib/constants";
 import { jobs, customers } from "@/lib/mock-data";
@@ -17,15 +17,11 @@ function getCustomerName(customerId: string) {
   return customers.find((c) => c.id === customerId)?.company ?? "Unknown";
 }
 
-const blockedJobs = jobs.filter(
-  (j) =>
-    j.status === "approval" &&
-    j.printLocations.some((loc) => !loc.artworkApproved)
-);
+const blockedJobs = jobs.filter((j) => j.lane === "blocked");
 const inProgressJobs = jobs.filter(
-  (j) => !["shipped", "design"].includes(j.status) && !blockedJobs.includes(j)
+  (j) => j.lane === "in_progress" || j.lane === "review"
 );
-const recentlyShipped = jobs.filter((j) => j.status === "shipped");
+const completedJobs = jobs.filter((j) => j.lane === "done");
 
 export default function DashboardPage() {
   return (
@@ -66,12 +62,12 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Shipped
+              Completed
             </CardTitle>
             <CheckCircle2 className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{recentlyShipped.length}</p>
+            <p className="text-2xl font-bold">{completedJobs.length}</p>
           </CardContent>
         </Card>
         <Card>
@@ -112,9 +108,11 @@ export default function DashboardPage() {
                   <Badge variant="outline" className="text-warning border-warning">
                     {PRIORITY_LABELS[job.priority]}
                   </Badge>
-                  <Badge variant="secondary">
-                    Awaiting Artwork Approval
-                  </Badge>
+                  {job.blockReason && (
+                    <Badge variant="secondary">
+                      {job.blockReason}
+                    </Badge>
+                  )}
                 </div>
               </div>
             ))}
@@ -142,7 +140,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="outline">
-                  {PRODUCTION_STATE_LABELS[job.status]}
+                  {LANE_LABELS[job.lane]}
                 </Badge>
                 <Badge variant="secondary">
                   {PRIORITY_LABELS[job.priority]}

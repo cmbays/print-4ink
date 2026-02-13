@@ -22,6 +22,7 @@ import type { Quote, QuoteLineItem } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Artwork } from "@/lib/schemas/artwork";
 import { garmentCatalog, colors as allColors } from "@/lib/mock-data";
+import { formatDate } from "@/lib/helpers/format";
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@/lib/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
@@ -37,10 +38,6 @@ interface QuoteDetailViewProps {
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 function getTotalQty(sizes: Record<string, number>): number {
