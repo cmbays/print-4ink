@@ -3,8 +3,8 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-12
-**Status**: Quoting + Customer Management + Invoicing + Price Matrix verticals built and demo-ready. Price Matrix fully implemented: pricing engine, 2 editors (Screen Print + DTF), Power Grid spreadsheet, sandbox mode, cost config, tag-template mapping.
+**Last Updated**: 2026-02-13
+**Status**: Quoting + Customer Management + Invoicing + Price Matrix verticals built and demo-ready. Knowledge base migrated from static HTML to Astro 5.3 with Pagefind search.
 
 ## What's Built
 
@@ -67,7 +67,6 @@
 - UX strategy: Simple Mode wizard (5-min setup) + Power Mode grid (TanStack Table inline editing)
 - 10x differentiators: real-time margin indicators, what-if scenarios, progressive disclosure
 - Research docs: `docs/research/01-industry-practices.md`, `02-competitor-analysis.md`, `03-integration-map.md`, `04-ux-patterns.md`, `price-matrix-research.md`
-- For-human summary: `for_human/2026-02-10-price-matrix-research.html`
 </details>
 
 <details><summary>Price Matrix Breadboard + Interview (PR #47 — merged)</summary>
@@ -85,7 +84,6 @@
 - Key decisions: Settings-first nav (not top-level sidebar), separate matrices for SP vs DTF, tag→template customer mapping, wizard over import
 - Research docs: `docs/research/05-dtf-gang-sheet-pricing.md`, `06-owner-interview-findings.md`, `printlife-data-export-research.md`
 - Breadboard: `docs/breadboards/price-matrix-breadboard.md`
-- For-human summary: `for_human/2026-02-11-price-matrix-breadboard.html`
 </details>
 
 <details><summary>Price Matrix Build (PR #49 — merged)</summary>
@@ -107,7 +105,6 @@
 - **Dependency added**: `@tanstack/react-table`
 - Key learnings: TanStack column def stability (Context pattern), rAF race conditions, skipNextBlur pattern, parallel agent builds
 - CodeRabbit: 2 review rounds addressed (money helper, schema validation, a11y, maxColors consistency, input validation)
-- For-human summary: `for_human/2026-02-12-price-matrix-build.html`
 </details>
 
 <details><summary>Invoicing Vertical Build (PRs #48, #50 — merged)</summary>
@@ -125,7 +122,6 @@
 - Integration: Sidebar nav (Receipt icon), Customer detail Invoices tab, Quote "Create Invoice" button (accepted only)
 - Quality gate: 10/10 categories pass (visual hierarchy, spacing, typography, color, interactive states, icons, motion, empty/error states, accessibility, density)
 - CodeRabbit review: all 7 actionable issues + key nitpicks addressed (timezone-safe dates, shared formatCurrency, motion-reduce, aria labels, big.js version sync)
-- For-human docs: `for_human/2026-02-11-invoicing-breadboard.html`, `for_human/2026-02-11-invoicing-build.html`
 </details>
 
 <details><summary>Invoicing Vertical Research (PR #46 — merged)</summary>
@@ -138,7 +134,20 @@
 - UX patterns: 3 screen designs (list, detail, new), 7 reusable components + 6 new, status badge tokens, user journeys
 - Compliance: tax treatment (IN 7%, KY 6%), required invoice elements, 7-year retention, PCI via tokenized Square, credit memo workflow
 - Research docs: `docs/spikes/invoicing-{industry-practices,competitor-analysis,integration-map,ux-patterns,compliance,decisions}.md`
-- For-human summary: `for_human/2026-02-10-invoicing-vertical-research.html`
+</details>
+
+<details><summary>Knowledge Base — Astro Migration (PR #62 — merged)</summary>
+
+- Replaced `for_human/` (25k lines of HTML/JS generator) with `knowledge-base/` powered by Astro 5.3
+- 24 Markdown session docs with Zod-validated YAML frontmatter (build-time schema enforcement)
+- 8 Astro components: Sidebar, DocCard, Pipeline, PhaseFilter, VerticalHealth, WorkflowChain, GaryQuestion, DecisionRecord
+- 6 page templates generating 51 static pages: index, session detail, vertical overview, vertical/stage, gary-tracker, decisions
+- Pagefind full-text search with highlighted snippets, sub-results, and tag facet filters
+- Client-side filtering: vertical, phase, status filters with URL state sync
+- Cross-vertical badges, pipeline stepper, workflow chains (auto-computed)
+- Dark theme matching project design tokens (Niji palette)
+- CodeRabbit review: 8 actionable issues fixed, remaining nitpicks tracked in #63
+- Deleted: 43 HTML files, 1445-line generator script
 </details>
 
 <details><summary>Agent & Skill Infrastructure</summary>
@@ -153,6 +162,7 @@
 - [ ] **#16** — Replace local LineItemRow interfaces with schema-derived types
 - [ ] **#17** — Sync garment category filter with URL query params
 - [ ] **#18** — Extract shared formatCurrency/formatDate to lib/utils (invoicing done via `lib/helpers/money.ts`, quotes/customers still have local copies)
+- [ ] **#63** — KB: Remaining CodeRabbit review feedback (a11y, code quality, markdown lint, CI astro sync)
 
 ## Next Actions
 
@@ -181,15 +191,10 @@
 | `docs/research/price-matrix-research.md` | Price Matrix synthesis report (P0/P1/P2 features) |
 | `docs/breadboards/price-matrix-breadboard.md` | Price Matrix breadboard (8 places, 167 affordances, build order) |
 | `docs/research/06-owner-interview-findings.md` | Price Matrix owner interview decisions (30 findings) |
-| `for_human/2026-02-10-price-matrix-research.html` | Price Matrix research summary for humans |
-| `for_human/2026-02-11-price-matrix-breadboard.html` | Price Matrix breadboard summary for humans |
-| `for_human/2026-02-12-price-matrix-build.html` | Price Matrix build summary — architecture, learnings, useSpreadsheetEditor guide |
 | `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
 | `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
 | `docs/breadboards/invoicing-breadboard.md` | Invoicing breadboard (9 places, 99 UI + 44 code affordances) |
-| `for_human/2026-02-10-invoicing-vertical-research.html` | Invoicing research summary for humans |
-| `for_human/2026-02-11-invoicing-breadboard.html` | Invoicing breadboard summary for humans |
-| `for_human/2026-02-11-invoicing-build.html` | Invoicing build summary for humans |
+| `knowledge-base/src/content/sessions/` | 24 Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
