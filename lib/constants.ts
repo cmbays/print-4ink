@@ -78,8 +78,8 @@ export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
 
 export const SERVICE_TYPE_COLORS: Record<ServiceType, string> = {
   "screen-print": "text-action",
-  dtf: "text-warning",
-  embroidery: "text-success",
+  dtf: "text-brown",
+  embroidery: "text-lime",
 };
 
 export const CUSTOMER_TAG_LABELS: Record<CustomerTag, string> = {
@@ -302,20 +302,24 @@ export const RISK_COLORS: Record<RiskLevel, string> = {
 export const SERVICE_TYPE_BORDER_COLORS: Record<ServiceType, string> = {
   "screen-print": "border-action",
   dtf: "border-warning",
-  embroidery: "border-success",
+  embroidery: "border-lime",
 };
 
 export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
   "screen-print": "border-l-action",
   dtf: "border-l-warning",
-  embroidery: "border-l-success",
+  embroidery: "border-l-lime",
 };
 
-export const SERVICE_TYPE_ICONS: Record<ServiceType, string> = {
-  "screen-print": "Printer",
-  dtf: "Palette",
-  embroidery: "Scissors",
-};
+// ---------------------------------------------------------------------------
+// Card Type — Visual Encoding (neobrutalist accent: left border)
+// ---------------------------------------------------------------------------
+
+export const CARD_TYPE_BORDER_COLORS = {
+  job: "border-l-purple",
+  quote: "border-l-magenta",
+  scratch_note: "border-l-magenta",
+} as const;
 
 // ---------------------------------------------------------------------------
 // Jobs & Production — Canonical Task Templates

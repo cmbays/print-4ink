@@ -12,7 +12,7 @@ import { invoiceStatusEnum } from "./invoice";
 export const scratchNoteCardSchema = z.object({
   type: z.literal("scratch_note"),
   id: z.string().uuid(),
-  content: z.string().min(1),
+  content: z.string().min(1).max(500),
   createdAt: z.string().datetime(),
   isArchived: z.boolean(),
   lane: z.literal("ready"), // scratch notes always in Ready
@@ -26,11 +26,17 @@ export const quoteCardSchema = z.object({
   description: z.string().min(1),
   serviceType: serviceTypeEnum.optional(),
   quantity: z.number().int().nonnegative().optional(),
+  colorCount: z.number().int().nonnegative().optional(),
+  locationCount: z.number().int().nonnegative().optional(),
   dueDate: z.string().date().optional(),
   total: z.number().nonnegative().optional(),
   quoteStatus: quoteStatusEnum,
   lane: laneEnum,
   isNew: z.boolean().default(false), // "New" badge for recently accepted
+  notes: z.array(z.object({
+    content: z.string().max(1000),
+    type: z.enum(["internal", "customer"]),
+  })).default([]),
 });
 
 export const jobCardSchema = z.object({
@@ -44,6 +50,7 @@ export const jobCardSchema = z.object({
   serviceType: serviceTypeEnum,
   quantity: z.number().int().positive(),
   locationCount: z.number().int().nonnegative(),
+  colorCount: z.number().int().nonnegative(),
   startDate: z.string().date(),
   dueDate: z.string().date(),
   riskLevel: riskLevelEnum,
@@ -52,11 +59,16 @@ export const jobCardSchema = z.object({
     completed: z.number().int().nonnegative(),
     total: z.number().int().nonnegative(),
   }),
+  tasks: z.array(z.object({
+    label: z.string().max(200),
+    isCompleted: z.boolean(),
+  })).default([]),
   assigneeInitials: z.string().max(3).optional(),
   sourceQuoteId: z.string().uuid().optional(),
   invoiceId: z.string().uuid().optional(),
   invoiceStatus: invoiceStatusEnum.optional(),
   blockReason: z.string().max(500).optional(),
+  orderTotal: z.number().positive(),
 });
 
 // ---------------------------------------------------------------------------

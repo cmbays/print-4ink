@@ -23,16 +23,16 @@ const ACTIVE_LANES: Lane[] = ["ready", "in_progress", "review", "blocked"];
 // ---------------------------------------------------------------------------
 
 export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
-  const { rushCount, totalQuantity, cardsByLane } = summary;
+  const { rushQuantity, totalQuantity, cardsByLane } = summary;
 
   return (
     <div className="flex flex-wrap items-center gap-4 rounded-lg bg-elevated border border-border/50 px-4 py-2.5">
       {/* Rush orders */}
-      {rushCount > 0 && (
+      {rushQuantity > 0 && (
         <div className="flex items-center gap-1.5">
           <Zap className="size-3.5 text-error" />
           <span className="text-xs font-medium text-error">
-            {rushCount} rush
+            {rushQuantity.toLocaleString()} pcs rush
           </span>
         </div>
       )}

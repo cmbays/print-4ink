@@ -1,7 +1,6 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DraggableCardProps {
@@ -21,29 +20,24 @@ export function DraggableCard({ dragId, data, children }: DraggableCardProps) {
   return (
     <div
       ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      aria-roledescription="draggable card"
+      aria-describedby="dnd-instructions"
       className={cn(
-        "relative group/drag",
-        isDragging && "opacity-30",
+        "relative",
+        "cursor-grab active:cursor-grabbing",
+        "transition-[transform,opacity] duration-200",
+        isDragging
+          ? "opacity-30 scale-[1.03] rotate-1 shadow-xl"
+          : "active:scale-[0.98]",
       )}
+      style={{
+        transitionTimingFunction: isDragging
+          ? "var(--transition-timing-spring)"
+          : undefined,
+      }}
     >
-      {/* Drag handle — visible on hover */}
-      <button
-        {...listeners}
-        {...attributes}
-        className={cn(
-          "absolute -left-1 top-1/2 -translate-y-1/2 z-10",
-          "flex items-center justify-center rounded-sm p-0.5",
-          "text-muted-foreground/0 group-hover/drag:text-muted-foreground",
-          "hover:text-foreground hover:bg-surface",
-          "cursor-grab active:cursor-grabbing",
-          "transition-colors duration-100",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        )}
-        aria-label="Drag to move"
-      >
-        <GripVertical className="size-3.5" />
-      </button>
-
       {children}
     </div>
   );

@@ -126,6 +126,9 @@ export const jobSchema = z.object({
   assigneeName: z.string().optional(),
   assigneeInitials: z.string().max(3).optional(),
 
+  // Financial
+  orderTotal: z.number().positive(),
+
   // Linked entities
   sourceQuoteId: z.string().uuid().optional(),
   invoiceId: z.string().uuid().optional(),

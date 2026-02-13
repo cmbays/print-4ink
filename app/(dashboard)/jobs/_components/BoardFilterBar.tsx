@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X } from "lucide-react";
+import { Filter, X, Layers, SplitSquareHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,18 +16,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  LANE_LABELS,
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
 } from "@/lib/constants";
 import { z } from "zod";
-import { laneEnum, riskLevelEnum } from "@/lib/schemas/job";
+import { riskLevelEnum } from "@/lib/schemas/job";
 import { serviceTypeEnum } from "@/lib/schemas/quote";
-import type { Lane, RiskLevel } from "@/lib/schemas/job";
+import type { RiskLevel } from "@/lib/schemas/job";
 import type { ServiceType } from "@/lib/schemas/quote";
 import type { CardFilters } from "@/lib/helpers/job-utils";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
+const layoutEnum = z.enum(["combined", "split"]);
+
+export type BoardLayout = z.infer<typeof layoutEnum>;
 
 // ---------------------------------------------------------------------------
 // Filter options
@@ -37,14 +39,6 @@ const SERVICE_TYPE_OPTIONS: { value: ServiceType; label: string }[] = [
   { value: "screen-print", label: SERVICE_TYPE_LABELS["screen-print"] },
   { value: "dtf", label: SERVICE_TYPE_LABELS["dtf"] },
   { value: "embroidery", label: SERVICE_TYPE_LABELS["embroidery"] },
-];
-
-const LANE_OPTIONS: { value: Lane; label: string }[] = [
-  { value: "ready", label: LANE_LABELS["ready"] },
-  { value: "in_progress", label: LANE_LABELS["in_progress"] },
-  { value: "review", label: LANE_LABELS["review"] },
-  { value: "blocked", label: LANE_LABELS["blocked"] },
-  { value: "done", label: LANE_LABELS["done"] },
 ];
 
 const RISK_OPTIONS: { value: RiskLevel; label: string }[] = [
@@ -58,8 +52,8 @@ const HORIZON_OPTIONS: {
   label: string;
 }[] = [
   { value: "past_due", label: "Past Due" },
-  { value: "this_week", label: "This Week" },
-  { value: "next_week", label: "Next Week" },
+  { value: "this_week", label: "Due This Week" },
+  { value: "next_week", label: "Due Next Week" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -71,11 +65,15 @@ export function useFiltersFromURL(): CardFilters {
 
   const today = searchParams.get("today") === "true";
   const serviceType = serviceTypeEnum.safeParse(searchParams.get("serviceType")).data;
-  const lane = laneEnum.safeParse(searchParams.get("lane")).data;
   const risk = riskLevelEnum.safeParse(searchParams.get("risk")).data;
   const horizon = horizonEnum.safeParse(searchParams.get("horizon")).data;
 
-  return { today: today || undefined, serviceType, lane, risk, horizon };
+  return { today: today || undefined, serviceType, risk, horizon };
+}
+
+export function useLayoutFromURL(): BoardLayout {
+  const searchParams = useSearchParams();
+  return layoutEnum.safeParse(searchParams.get("layout")).data ?? "combined";
 }
 
 // ---------------------------------------------------------------------------
@@ -91,7 +89,6 @@ export function BoardFilterBar() {
   const activeCount = [
     filters.today,
     filters.serviceType,
-    filters.lane,
     filters.risk,
     filters.horizon,
   ].filter(Boolean).length;
@@ -111,11 +108,57 @@ export function BoardFilterBar() {
   );
 
   const clearAll = useCallback(() => {
-    router.replace("?", { scroll: false });
-  }, [router]);
+    const params = new URLSearchParams();
+    const currentLayout = searchParams.get("layout");
+    if (currentLayout) params.set("layout", currentLayout);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [router, searchParams]);
+
+  const layout = useLayoutFromURL();
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div role="group" aria-label="Board filters" className="flex flex-wrap items-center gap-3">
+      {/* Layout toggle: Combined / Split */}
+      <div
+        role="group"
+        aria-label="Board layout"
+        className="flex items-center rounded-md border border-border/50 p-0.5"
+      >
+        <Button
+          variant="ghost"
+          size="xs"
+          className={cn(
+            "gap-1 rounded-sm px-2 py-1 text-xs",
+            layout === "combined"
+              ? "bg-surface text-foreground"
+              : "text-muted-foreground",
+          )}
+          aria-pressed={layout === "combined"}
+          onClick={() => setParam("layout", null)}
+        >
+          <Layers className="size-3" />
+          Combined
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
+          className={cn(
+            "gap-1 rounded-sm px-2 py-1 text-xs",
+            layout === "split"
+              ? "bg-surface text-foreground"
+              : "text-muted-foreground",
+          )}
+          aria-pressed={layout === "split"}
+          onClick={() => setParam("layout", "split")}
+        >
+          <SplitSquareHorizontal className="size-3" />
+          Split
+        </Button>
+      </div>
+
+      {/* Divider */}
+      <div className="h-4 w-px bg-border/50" />
+
       {/* Filter icon + count */}
       <div className="flex items-center gap-1.5 text-muted-foreground">
         <Filter className="size-4" />
@@ -163,31 +206,8 @@ export function BoardFilterBar() {
           <SelectValue placeholder="Service Type" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
+          <SelectItem value="all">All Service Types</SelectItem>
           {SERVICE_TYPE_OPTIONS.map((opt) => (
-            <SelectItem key={opt.value} value={opt.value}>
-              {opt.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {/* Lane filter */}
-      <Select
-        value={filters.lane ?? "all"}
-        onValueChange={(v) => setParam("lane", v === "all" ? null : v)}
-      >
-        <SelectTrigger
-          className={cn(
-            "h-7 w-auto gap-1 rounded-md border-border/50 bg-transparent px-2 text-xs",
-            filters.lane && "border-action/40 text-action",
-          )}
-        >
-          <SelectValue placeholder="Lane" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Lanes</SelectItem>
-          {LANE_OPTIONS.map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>
               {opt.label}
             </SelectItem>
@@ -232,7 +252,7 @@ export function BoardFilterBar() {
           <SelectValue placeholder="Horizon" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Dates</SelectItem>
+          <SelectItem value="all">All Due Dates</SelectItem>
           {HORIZON_OPTIONS.map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>
               {opt.label}

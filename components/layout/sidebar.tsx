@@ -4,25 +4,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  ClipboardList,
-  Calculator,
+  Hammer,
+  FileSignature,
   Receipt,
   Users,
   Layers,
-  Package,
+  Printer,
+  Shirt,
   Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Quotes", href: "/quotes", icon: Calculator },
-  { name: "Invoices", href: "/invoices", icon: Receipt },
-  { name: "Jobs", href: "/jobs/board", icon: ClipboardList, activePrefix: "/jobs" },
-  { name: "Screen Room", href: "/screens", icon: Layers },
+  { name: "Quotes", href: "/quotes", icon: FileSignature, iconColor: "text-magenta" },
+  { name: "Invoices", href: "/invoices", icon: Receipt, iconColor: "text-success" },
+  { name: "Jobs", href: "/jobs/board", icon: Hammer, activePrefix: "/jobs", iconColor: "text-purple" },
+  { name: "Screen Room", href: "/screens", icon: Printer, iconColor: "text-action" },
   { name: "Customers", href: "/customers", icon: Users },
-  { name: "Garments", href: "/garments", icon: Package },
-] satisfies Array<{ name: string; href: string; icon: typeof LayoutDashboard; activePrefix?: string }>;
+  { name: "Garments", href: "/garments", icon: Shirt },
+] satisfies Array<{ name: string; href: string; icon: typeof LayoutDashboard; activePrefix?: string; iconColor?: string }>;
 
 const settingsNavigation = [
   { name: "Pricing", href: "/settings/pricing", icon: Settings },
@@ -59,7 +60,7 @@ export function Sidebar() {
                     : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon className={cn("h-4 w-4", item.iconColor)} />
                 {item.name}
               </Link>
             );

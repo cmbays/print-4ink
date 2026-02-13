@@ -427,6 +427,7 @@ export const jobs: Job[] = [
       { id: "d1a00007-e5f6-4a01-8b01-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 6 },
       { id: "d1a00008-e5f6-4a01-8b01-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 7 },
     ],
+    orderTotal: 1850,
     sourceQuoteId: "01a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
     artworkIds: ["art-001", "art-002"],
     history: [
@@ -471,6 +472,7 @@ export const jobs: Job[] = [
       { id: "d1b00005-e5f6-4a02-8b05-0d1e2f3a4b05", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 4 },
       { id: "d1b00006-e5f6-4a02-8b06-0d1e2f3a4b06", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 5 },
     ],
+    orderTotal: 750,
     artworkIds: [],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-08T10:00:00Z" },
@@ -517,6 +519,7 @@ export const jobs: Job[] = [
       { id: "d1c00007-e5f6-4a03-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 6 },
       { id: "d1c00008-e5f6-4a03-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 7 },
     ],
+    orderTotal: 3450,
     sourceQuoteId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
     artworkIds: ["art-005", "art-006"],
     history: [],
@@ -562,6 +565,7 @@ export const jobs: Job[] = [
     blockReason: "Waiting on digitized stitch file from vendor",
     blockedAt: "2026-02-06T09:00:00Z",
     blockedBy: "Gary",
+    orderTotal: 2625,
     artworkIds: [],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
@@ -608,6 +612,7 @@ export const jobs: Job[] = [
       { id: "d1e00007-e5f6-4a05-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: true, completedAt: "2026-02-10T10:00:00Z", isCanonical: true, sortOrder: 6 },
       { id: "d1e00008-e5f6-4a05-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: true, completedAt: "2026-02-10T15:00:00Z", isCanonical: true, sortOrder: 7 },
     ],
+    orderTotal: 975,
     artworkIds: ["art-003"],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
@@ -654,6 +659,7 @@ export const jobs: Job[] = [
       { id: "d1f00007-e5f6-4a06-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: true, completedAt: "2026-02-05T10:00:00Z", isCanonical: true, sortOrder: 6 },
       { id: "d1f00008-e5f6-4a06-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: true, completedAt: "2026-02-05T15:00:00Z", isCanonical: true, sortOrder: 7 },
     ],
+    orderTotal: 425,
     sourceQuoteId: "03c4d5e6-f7a8-4b9c-8d1e-2f3a4b5c6d7e",
     invoiceId: "b1a10003-e5f6-4a03-8b03-0d1e2f3a4b03",
     artworkIds: [],
@@ -704,6 +710,7 @@ export const jobs: Job[] = [
       { id: "d1000007-e5f6-4a07-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 6 },
       { id: "d1000008-e5f6-4a07-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 7 },
     ],
+    orderTotal: 5250,
     artworkIds: ["art-007", "art-008"],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-01T09:00:00Z" },
@@ -748,6 +755,7 @@ export const jobs: Job[] = [
       { id: "d1100005-e5f6-4a08-8b05-0d1e2f3a4b05", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 4 },
       { id: "d1100006-e5f6-4a08-8b06-0d1e2f3a4b06", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 5 },
     ],
+    orderTotal: 1125,
     sourceQuoteId: "14d5e6f7-a8b9-4c0d-ae2f-3a4b5c6d7e8f",
     artworkIds: [],
     history: [],
@@ -789,6 +797,7 @@ export const jobs: Job[] = [
       { id: "d1200006-e5f6-4a09-8b06-0d1e2f3a4b06", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 5 },
       { id: "d1200007-e5f6-4a09-8b07-0d1e2f3a4b07", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 6 },
     ],
+    orderTotal: 3200,
     artworkIds: [],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },
@@ -835,6 +844,7 @@ export const jobs: Job[] = [
       { id: "d1300007-e5f6-4a10-8b07-0d1e2f3a4b07", label: "QC inspection passed", isCompleted: true, completedAt: "2026-01-28T10:00:00Z", isCanonical: true, sortOrder: 6 },
       { id: "d1300008-e5f6-4a10-8b08-0d1e2f3a4b08", label: "Packed and labeled", isCompleted: true, completedAt: "2026-01-30T15:00:00Z", isCanonical: true, sortOrder: 7 },
     ],
+    orderTotal: 880,
     invoiceId: "b1a10001-e5f6-4a01-8b01-0d1e2f3a4b01",
     artworkIds: [],
     history: [
@@ -879,6 +889,7 @@ export const jobs: Job[] = [
       { id: "d1400005-e5f6-4a11-8b05-0d1e2f3a4b05", label: "QC inspection passed", isCompleted: false, isCanonical: true, sortOrder: 4 },
       { id: "d1400006-e5f6-4a11-8b06-0d1e2f3a4b06", label: "Packed and labeled", isCompleted: false, isCanonical: true, sortOrder: 5 },
     ],
+    orderTotal: 525,
     artworkIds: [],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-10T09:00:00Z" },
@@ -1870,6 +1881,9 @@ export const quoteCards: QuoteCard[] = [
     lane: "ready",
     quoteStatus: "draft",
     isNew: false,
+    notes: [
+      { content: "Coach called during lunch — wants pricing for 60+ varsity jerseys", type: "internal" },
+    ],
   },
   // Q-1036: In Progress — Mountain View HS, building quote
   {
@@ -1880,10 +1894,16 @@ export const quoteCards: QuoteCard[] = [
     description: "Varsity basketball warm-up shirts — 500 pcs, 2-color front",
     serviceType: "screen-print",
     quantity: 500,
+    colorCount: 2,
+    locationCount: 1,
     dueDate: "2026-03-01",
     lane: "in_progress",
     quoteStatus: "draft",
     isNew: false,
+    notes: [
+      { content: "Coach wants Gildan 5000 specifically — check stock", type: "internal" },
+      { content: "Can we do a metallic gold ink? Budget is flexible", type: "customer" },
+    ],
   },
   // Q-1037: Blocked — Sunset 5K, waiting on customer to pick color
   {
@@ -1894,10 +1914,16 @@ export const quoteCards: QuoteCard[] = [
     description: "Race day volunteer shirts — waiting on customer color choice",
     serviceType: "dtf",
     quantity: 100,
+    colorCount: 3,
+    locationCount: 1,
     dueDate: "2026-03-10",
     lane: "blocked",
     quoteStatus: "sent",
     isNew: false,
+    notes: [
+      { content: "Emailed color swatches Tuesday — no response yet", type: "internal" },
+      { content: "We're between neon yellow and safety orange, will decide by Friday", type: "customer" },
+    ],
   },
   // Q-1038: Done — Lonestar Lacrosse, accepted, "New" badge
   {
@@ -1908,11 +1934,17 @@ export const quoteCards: QuoteCard[] = [
     description: "Tournament jerseys — accepted, ready for job creation",
     serviceType: "screen-print",
     quantity: 300,
+    colorCount: 4,
+    locationCount: 2,
     total: 2614,
     dueDate: "2026-02-22",
     lane: "done",
     quoteStatus: "accepted",
     isNew: true,
+    notes: [
+      { content: "Need separate numbering for each team — confirm roster by Feb 18", type: "internal" },
+      { content: "Approved! Go ahead with the dark green option", type: "customer" },
+    ],
   },
   // Q-1039: Done — Thompson Family, accepted, job already created (J-1029)
   {
@@ -1923,10 +1955,13 @@ export const quoteCards: QuoteCard[] = [
     description: "Family reunion tees — accepted, job J-1029 created",
     serviceType: "screen-print",
     quantity: 25,
+    colorCount: 3,
+    locationCount: 1,
     total: 855,
     lane: "done",
     quoteStatus: "accepted",
     isNew: false,
+    notes: [],
   },
   // Q-1040: Done — declined lead
   {
@@ -1937,10 +1972,13 @@ export const quoteCards: QuoteCard[] = [
     description: "Original race tees — declined, over budget",
     serviceType: "screen-print",
     quantity: 450,
+    colorCount: 5,
+    locationCount: 2,
     total: 4390,
     lane: "done",
     quoteStatus: "declined",
     isNew: false,
+    notes: [],
   },
 ];
 

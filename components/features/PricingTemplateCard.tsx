@@ -27,6 +27,7 @@ import {
   Pencil,
   Users,
 } from "lucide-react";
+import { formatRelativeTime } from "@/lib/helpers/format";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -51,35 +52,9 @@ interface PricingTemplateCardProps {
   onSetDefault: () => void;
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatRelativeTime(dateString: string): string {
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHr = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHr / 24);
-  const diffWeek = Math.floor(diffDay / 7);
-  const diffMonth = Math.floor(diffDay / 30);
-
-  if (diffSec < 60) return "just now";
-  if (diffMin < 60) return `${diffMin} min ago`;
-  if (diffHr < 24) return `${diffHr} hr ago`;
-  if (diffDay === 1) return "1 day ago";
-  if (diffDay < 7) return `${diffDay} days ago`;
-  if (diffWeek === 1) return "1 week ago";
-  if (diffWeek < 5) return `${diffWeek} weeks ago`;
-  if (diffMonth === 1) return "1 month ago";
-  return `${diffMonth} months ago`;
-}
-
 const serviceTypeConfig = {
   "screen-print": { label: "Screen Print", colorClass: "text-action" },
-  dtf: { label: "DTF", colorClass: "text-warning" },
+  dtf: { label: "DTF", colorClass: "text-brown" },
 } as const;
 
 // ---------------------------------------------------------------------------
