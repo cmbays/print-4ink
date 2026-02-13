@@ -1,0 +1,144 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GaryQuestion from '../components/GaryQuestion.astro';
+
+// Read all session markdown files and extract Gary questions from HTML blocks
+const sessionFiles = import.meta.glob('/src/content/sessions/*.md', { query: '?raw', import: 'default', eager: true });
+
+interface GaryQuestionData {
+  questionId: string;
+  vertical: string;
+  status: 'unanswered' | 'answered';
+  questionText: string;
+  context: string;
+  answer?: string;
+  answeredDate?: string;
+  sourceFile: string;
+}
+
+const allQuestions: GaryQuestionData[] = [];
+
+for (const [path, raw] of Object.entries(sessionFiles)) {
+  const content = raw as string;
+  const filename = path.split('/').pop() || '';
+
+  // Match gary-question div blocks embedded in Markdown
+  const questionRegex = /<div\s+class="gary-question"\s+data-question-id="([^"]+)"\s+data-vertical="([^"]+)"\s+data-status="([^"]+)"[^>]*>([\s\S]*?)<\/div>\s*(?=<div\s+class="gary-question"|$)/g;
+
+  let match;
+  while ((match = questionRegex.exec(content)) !== null) {
+    const [, questionId, vertical, status, innerHtml] = match;
+
+    // Extract question text
+    const questionTextMatch = innerHtml.match(/<p\s+class="gary-question-text">([\s\S]*?)<\/p>/);
+    const questionText = questionTextMatch ? questionTextMatch[1].trim() : '';
+
+    // Extract context
+    const contextMatch = innerHtml.match(/<p\s+class="gary-question-context">([\s\S]*?)<\/p>/);
+    const context = contextMatch ? contextMatch[1].trim() : '';
+
+    // Extract answer if present
+    const answerMatch = innerHtml.match(/<div\s+class="gary-answer"\s+data-answered-date="([^"]*)"[^>]*>([\s\S]*?)<\/div>/);
+    const answeredDate = answerMatch?.[1] || undefined;
+    const answerContent = answerMatch?.[2]?.trim() || undefined;
+    const answer = answerContent && answerContent.length > 0 ? answerContent : undefined;
+
+    allQuestions.push({
+      questionId,
+      vertical,
+      status: status === 'answered' ? 'answered' : 'unanswered',
+      questionText,
+      context,
+      answer,
+      answeredDate: answeredDate || undefined,
+      sourceFile: filename,
+    });
+  }
+}
+
+// Group by vertical
+const byVertical = allQuestions.reduce<Record<string, GaryQuestionData[]>>((acc, q) => {
+  if (!acc[q.vertical]) acc[q.vertical] = [];
+  acc[q.vertical].push(q);
+  return acc;
+}, {});
+
+const verticalNames = Object.keys(byVertical).sort();
+
+const totalQuestions = allQuestions.length;
+const answeredCount = allQuestions.filter(q => q.status === 'answered').length;
+const unansweredCount = totalQuestions - answeredCount;
+
+function verticalLabel(v: string): string {
+  return v.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+---
+
+<Layout title="Gary Tracker" description="Questions for Gary across all sessions">
+  <main class="max-w-[720px] mx-auto px-6 py-12">
+    <!-- Back link -->
+    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
+      <span>&larr;</span> Back to Index
+    </a>
+
+    <!-- Header -->
+    <h1 class="text-2xl font-bold tracking-tight mb-2">Gary Tracker</h1>
+    <p class="text-text-secondary text-sm mb-6">Questions for Gary across all sessions</p>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-3 mb-8">
+      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 text-center">
+        <div class="text-2xl font-bold text-text-primary">{totalQuestions}</div>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mt-1">Total</div>
+      </div>
+      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 text-center">
+        <div class="text-2xl font-bold text-success">{answeredCount}</div>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mt-1">Answered</div>
+      </div>
+      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 text-center">
+        <div class="text-2xl font-bold text-warning">{unansweredCount}</div>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mt-1">Unanswered</div>
+      </div>
+    </div>
+
+    {totalQuestions === 0 ? (
+      <div class="text-center py-16">
+        <p class="text-text-muted text-sm mb-2">No questions for Gary yet.</p>
+        <p class="text-text-muted text-xs">
+          Add questions in session docs using the <code class="font-mono text-xs bg-bg-surface px-1.5 py-0.5 rounded text-action">gary-question</code> HTML block format.
+        </p>
+      </div>
+    ) : (
+      <div class="space-y-8">
+        {verticalNames.map((vertical) => (
+          <section>
+            <h2 class="text-[11px] font-semibold uppercase tracking-[0.05em] text-text-muted mb-4">
+              {verticalLabel(vertical)}
+              <span class="ml-2 text-text-muted font-normal">({byVertical[vertical].length})</span>
+            </h2>
+            <div class="space-y-3">
+              {byVertical[vertical].map((q) => (
+                <GaryQuestion
+                  questionId={q.questionId}
+                  vertical={q.vertical}
+                  status={q.status}
+                  questionText={q.questionText}
+                  context={q.context}
+                  answer={q.answer}
+                  answeredDate={q.answeredDate}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    )}
+
+    <!-- Footer -->
+    <footer class="mt-16 pt-6 border-t border-border">
+      <p class="text-xs text-text-muted text-center">
+        Screen Print Pro &mdash; Gary Tracker
+      </p>
+    </footer>
+  </main>
+</Layout>

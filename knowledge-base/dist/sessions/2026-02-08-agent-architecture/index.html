@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows."><title>Agent Architecture &mdash; Screen Print Pro KB</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/decisions.DGAibQh0.css"></head> <body>  <main class="max-w-[720px] mx-auto px-6 py-12"> <!-- Back link --> <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8"> <span>&larr;</span> Back to Index
+</a> <!-- Tag pills --> <div class="flex items-center gap-2 mb-4"> <span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded bg-success/12 text-success"> feature </span><span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded bg-success/12 text-success"> build </span> </div> <!-- Title --> <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">Agent Architecture</h1> <!-- Subtitle --> <p class="text-[15px] text-text-secondary leading-relaxed mb-6">5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows.</p> <!-- Meta grid --> <div class="border border-border rounded-lg overflow-hidden mb-6"> <div class="grid grid-cols-2"> <!-- Row 1 --> <div class="px-4 py-3 border-b border-border"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Date</div> <div class="text-sm text-text-primary">2026-02-08</div> </div> <div class="px-4 py-3 border-b border-border border-l border-border"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Branch</div> <div class="text-sm"> <code class="font-mono text-xs bg-bg-surface px-1.5 py-0.5 rounded text-action">infra/agent-architecture</code> </div> </div> <!-- Row 2 --> <div class="px-4 py-3 border-b border-border"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Phase</div> <div class="text-sm text-text-primary">Phase 1</div> </div> <div class="px-4 py-3 border-b border-border border-l border-border"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Vertical</div> <div class="text-sm text-text-primary"> <a href="/verticals/meta" class="text-action hover:underline">Meta</a>  </div> </div> <!-- Row 3 --> <div class="px-4 py-3"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Stage</div> <div class="text-sm"> <a href="/verticals/meta/build" class="inline-flex items-center bg-bg-surface text-action text-xs font-medium px-2 py-0.5 rounded hover:bg-action/10 transition-colors"> Build </a> </div> </div> <div class="px-4 py-3 border-l border-border"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Status</div> <div class="text-sm font-medium text-success"> Complete </div> </div> </div> </div> <!-- Workflow chain --> <div class="mb-6"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Workflow Chain</div> <div class="bg-bg-elevated border border-border rounded-lg px-4 py-2"> <div class="overflow-x-auto"><div class="flex items-center gap-1.5 min-w-max py-2"><a href="/sessions/2026-02-07-shaping-skills" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="Shaping Skills Evaluation"><span class="font-semibold">Research</span><span class="opacity-60">&middot;</span><span class="opacity-80">Shaping Skills Evaluati…</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-08-strategic-pivot" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="Strategic Pivot: Vertical-by-Vertical"><span class="font-semibold">Impl Plan</span><span class="opacity-60">&middot;</span><span class="opacity-80">Strategic Pivot: Vertic…</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-07-ci-testing" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="CI &#38; Testing Setup"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">CI &amp; Testing Setup</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-07-skills-implementation" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="Skills Implementation"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">Skills Implementation</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-08-agent-architecture" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-action/10 border-action/30 text-action font-medium" title="Agent Architecture"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">Agent Architecture</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-08-vercel-setup" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="Vercel Setup with Access Code Protection"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">Vercel Setup with Acces…</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-08-breadboarding-skill" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="Breadboarding Skill"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">Breadboarding Skill</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-10-work-orchestrator" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="work() — Worktree Orchestrator"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">work() — Worktree Orche…</span></a><span class="text-text-muted text-[11px] select-none">&rarr;</span><a href="/sessions/2026-02-10-worktree-migration" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap bg-bg-surface border-border text-text-secondary hover:text-text-primary hover:border-action/20" title="Git Worktree Migration + Memory Refactoring"><span class="font-semibold">Build</span><span class="opacity-60">&middot;</span><span class="opacity-80">Git Worktree Migration …</span></a></div></div> </div> </div> <!-- Session resume --> <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 mb-6"> <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Resume Session</div> <code class="font-mono text-xs text-action select-all">claude --resume 5799011a-0503-4ea3-b856-2d19cf66b9ac</code> </div> <!-- PR link -->  <!-- Divider --> <hr class="border-t border-border mb-8"> <!-- Body content --> <div class="prose"> <h2 id="agents-vs-skills">Agents vs Skills</h2>
+<p><strong>Agents</strong> (<code>.claude/agents/</code>) are specialized AI assistants with their own context windows, system prompts, tool restrictions, and preloaded skills. They run isolated from the main conversation.</p>
+<p><strong>Skills</strong> (<code>.claude/skills/</code>) are domain expertise containers with instructions, templates, and references. Agents preload skills at startup for domain knowledge.</p>
+<p>Think of agents as specialists hired for specific jobs, and skills as the training manuals they carry.</p>
+<h2 id="agents-created">Agents Created</h2>
+<p>5 agents in <code>.claude/agents/</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Agent</th><th>Purpose</th><th>Skills</th></tr></thead><tbody><tr><td>frontend-builder</td><td>Build screens &#x26; components</td><td>screen-builder, quality-gate</td></tr><tr><td>requirements-interrogator</td><td>Question features before building</td><td>pre-build-interrogator</td></tr><tr><td>design-auditor</td><td>Audit screens against design system</td><td>design-audit</td></tr><tr><td>feature-strategist</td><td>Competitive analysis &#x26; feature planning</td><td>feature-strategy</td></tr><tr><td>doc-sync</td><td>Keep docs synchronized with code</td><td>doc-sync</td></tr></tbody></table>
+<h3 id="how-to-invoke">How to Invoke</h3>
+<p>Use explicit delegation (recommended):</p>
+<ul>
+<li><code>Use the frontend-builder agent to build PageHeader</code></li>
+<li><code>Have the design-auditor agent review the jobs screen</code></li>
+<li><code>Ask requirements-interrogator about the Kanban board workflow</code></li>
+<li><code>Use feature-strategist for quote system competitive analysis</code></li>
+<li><code>Have doc-sync check APP_FLOW against built screens</code></li>
+</ul>
+<hr>
+<h2 id="skills-created">Skills Created</h2>
+<p>4 new skills in <code>.claude/skills/</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Skill</th><th>Files</th><th>Purpose</th></tr></thead><tbody><tr><td>pre-build-interrogator</td><td>SKILL.md + spike template</td><td>Exhaustive questioning before building</td></tr><tr><td>design-audit</td><td>SKILL.md + 15-dimension audit ref</td><td>Jobs/Ive-style design review</td></tr><tr><td>feature-strategy</td><td>SKILL.md + frameworks ref + plan template</td><td>Product strategy &#x26; feature discovery</td></tr><tr><td>doc-sync</td><td>SKILL.md + drift detection checklist</td><td>Documentation synchronization</td></tr></tbody></table>
+<p>Added to existing 2 skills (screen-builder, quality-gate). Total: 6 skills.</p>
+<hr>
+<h2 id="orchestration-patterns">Orchestration Patterns</h2>
+<p>4 workflow chains:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Pattern</th><th>Chain</th><th>Use For</th></tr></thead><tbody><tr><td>Linear</td><td>builder -> quality-gate -> progress</td><td>Steps 2, 3, 5, 7, 8, 9</td></tr><tr><td>Pre-Build</td><td>interrogator -> spike -> builder -> gate</td><td>Steps 4, 6</td></tr><tr><td>Checkpoint</td><td>auditor -> report -> approval -> fixes</td><td>After Steps 3, 6, 10</td></tr><tr><td>Competitive</td><td>strategist -> plan -> approval</td><td>Print Life analysis</td></tr></tbody></table>
+<hr>
+<h2 id="files-created--modified">Files Created &#x26; Modified</h2>
+<h3 id="created-18-files">Created (18 files)</h3>
+<ul>
+<li><code>docs/AGENTS.md</code> — Agent registry, orchestration, calling conventions</li>
+<li><code>.claude/agents/frontend-builder.md</code></li>
+<li><code>.claude/agents/requirements-interrogator.md</code></li>
+<li><code>.claude/agents/design-auditor.md</code></li>
+<li><code>.claude/agents/feature-strategist.md</code></li>
+<li><code>.claude/agents/doc-sync.md</code></li>
+<li><code>.claude/skills/pre-build-interrogator/SKILL.md</code></li>
+<li><code>.claude/skills/pre-build-interrogator/templates/spike-template.md</code></li>
+<li><code>.claude/skills/design-audit/SKILL.md</code></li>
+<li><code>.claude/skills/design-audit/reference/audit-dimensions.md</code></li>
+<li><code>.claude/skills/feature-strategy/SKILL.md</code></li>
+<li><code>.claude/skills/feature-strategy/reference/feature-frameworks.md</code></li>
+<li><code>.claude/skills/feature-strategy/templates/feature-plan-template.md</code></li>
+<li><code>.claude/skills/doc-sync/SKILL.md</code></li>
+<li><code>.claude/skills/doc-sync/checklists/drift-detection.md</code></li>
+<li><code>agent-outputs/README.md</code></li>
+<li><code>agent-outputs/.gitkeep</code></li>
+<li><code>for_human/session-2026-02-08-agent-architecture.html</code> (this file)</li>
+</ul>
+<h3 id="modified">Modified</h3>
+<ul>
+<li><code>CLAUDE.md</code> — Added AGENTS.md to canonical docs, updated “Project Skills” -> “Agent &#x26; Skill Infrastructure”, added agent-outputs/ and .claude/ to architecture tree</li>
+</ul>
+<hr>
+<h2 id="decision-rationale">Decision Rationale</h2>
+<ul>
+<li><strong>5 agents, not 3</strong>: doc-sync and feature-strategist seem “nice to have” but they prevent the two biggest Phase 1 risks: stale docs and building a “me too” product.</li>
+<li><strong>Skills as knowledge, agents as workflow</strong>: Skills are reusable across agents. The design-audit skill could be preloaded into a different agent in Phase 2 without rewriting it.</li>
+<li><strong>Read-only where possible</strong>: interrogator, auditor, and strategist are read-only by design. This prevents accidental code changes from analysis agents.</li>
+<li><strong>agent-outputs/ for audit trail</strong>: Every agent run produces structured markdown. This makes debugging agent behavior possible and creates a project history.</li>
+<li><strong>Deferred to Phase 2</strong>: Agent nesting, continuous learning, multi-agent teams, and script-heavy agents add complexity not justified for Phase 1 mockup work.</li>
+</ul> </div> <!-- Footer --> <footer class="mt-16 pt-6 border-t border-border"> <p class="text-xs text-text-muted text-center">
+Screen Print Pro &mdash; Agent Architecture &mdash; 2026-02-08 </p> </footer> </main>  </body></html>
