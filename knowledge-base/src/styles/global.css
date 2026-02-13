@@ -149,3 +149,38 @@ body {
 .prose strong {
   color: var(--color-text-primary);
 }
+
+/* Pagefind UI theme overrides */
+:root {
+  --pagefind-ui-scale: 0.8;
+  --pagefind-ui-primary: var(--color-action);
+  --pagefind-ui-text: var(--color-text-primary);
+  --pagefind-ui-background: var(--color-bg-elevated);
+  --pagefind-ui-border: var(--color-border);
+  --pagefind-ui-tag: var(--color-bg-surface);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 6px;
+  --pagefind-ui-font: var(--font-ui);
+}
+
+.pagefind-ui .pagefind-ui__search-input {
+  font-size: 13px;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+.pagefind-ui .pagefind-ui__result-link {
+  color: var(--color-action);
+}
+
+.pagefind-ui .pagefind-ui__result-excerpt {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.pagefind-ui mark {
+  background: var(--color-action);
+  color: var(--color-bg-primary);
+  border-radius: 2px;
+  padding: 0 2px;
+}

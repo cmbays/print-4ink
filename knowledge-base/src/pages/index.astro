@@ -113,6 +113,15 @@ for (const s of allSessions) {
         </select>
       </div>
 
+      <!-- Status filter -->
+      <div class="flex items-center gap-1.5 mb-4" id="status-filter">
+        <span class="text-[11px] text-text-muted mr-1">Status:</span>
+        <button type="button" data-status-value="" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors bg-action/15 text-action border-action/30">All</button>
+        <button type="button" data-status-value="complete" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors text-text-muted border-border hover:text-text-secondary">Complete</button>
+        <button type="button" data-status-value="in-progress" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors text-text-muted border-border hover:text-text-secondary">In Progress</button>
+        <button type="button" data-status-value="superseded" class="status-pill text-[11px] font-medium px-2 py-0.5 rounded border transition-colors text-text-muted border-border hover:text-text-secondary">Superseded</button>
+      </div>
+
       <!-- Doc cards -->
       <div id="doc-list" class="space-y-2.5">
         {sorted.map((session) => (
@@ -128,6 +137,7 @@ for (const s of allSessions) {
               subtitle={session.data.subtitle}
               date={session.data.date}
               vertical={session.data.vertical}
+              verticalSecondary={session.data.verticalSecondary}
               stage={session.data.stage}
               tags={session.data.tags}
               status={session.data.status}
@@ -158,6 +168,7 @@ for (const s of allSessions) {
 
   let activeVertical: string | null = null;
   let activePhase: string | null = null;
+  let activeStatus: string | null = null;
 
   const cards = document.querySelectorAll<HTMLElement>('.doc-card-wrapper');
   const pageTitle = document.getElementById('page-title');
@@ -167,6 +178,7 @@ for (const s of allSessions) {
   const docList = document.getElementById('doc-list');
   const verticalBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-vertical-btn');
   const phasePills = document.querySelectorAll<HTMLButtonElement>('.phase-pill');
+  const statusPills = document.querySelectorAll<HTMLButtonElement>('.status-pill');
   const sidebarPhaseBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-phase-btn');
   const mobileSelect = document.getElementById('mobile-vertical-select') as HTMLSelectElement | null;
   const clearBtn = document.getElementById('clear-filters-btn');
@@ -182,11 +194,13 @@ for (const s of allSessions) {
     cards.forEach((card) => {
       const cardVertical = card.dataset.vertical;
       const cardPhase = card.dataset.phase;
+      const cardStatus = card.dataset.status;
 
       const matchVertical = !activeVertical || cardVertical === activeVertical;
       const matchPhase = !activePhase || cardPhase === activePhase;
+      const matchStatus = !activeStatus || cardStatus === activeStatus;
 
-      if (matchVertical && matchPhase) {
+      if (matchVertical && matchPhase && matchStatus) {
         card.style.display = '';
         visibleCount++;
       } else {
@@ -289,6 +303,19 @@ for (const s of allSessions) {
       }
     });
 
+    // Status pills
+    statusPills.forEach((pill) => {
+      const val = pill.dataset.statusValue;
+      const isActive = (val === '' && !activeStatus) || val === activeStatus;
+      if (isActive) {
+        activeClass.split(' ').forEach((c) => pill.classList.add(c));
+        inactiveClass.split(' ').forEach((c) => pill.classList.remove(c));
+      } else {
+        activeClass.split(' ').forEach((c) => pill.classList.remove(c));
+        inactiveClass.split(' ').forEach((c) => pill.classList.add(c));
+      }
+    });
+
     // Sidebar phase buttons
     sidebarPhaseBtns.forEach((btn) => {
       const val = btn.dataset.phaseFilter;
@@ -318,6 +345,11 @@ for (const s of allSessions) {
     } else {
       url.searchParams.delete('phase');
     }
+    if (activeStatus) {
+      url.searchParams.set('status', activeStatus);
+    } else {
+      url.searchParams.delete('status');
+    }
     history.replaceState(null, '', url.toString());
   }
 
@@ -337,6 +369,15 @@ for (const s of allSessions) {
     pill.addEventListener('click', () => {
       const val = pill.dataset.phaseValue || null;
       activePhase = val || null;
+      applyFilters();
+    });
+  });
+
+  // Status pills
+  statusPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const val = pill.dataset.statusValue || null;
+      activeStatus = val || null;
       applyFilters();
     });
   });
@@ -363,6 +404,7 @@ for (const s of allSessions) {
     clearBtn.addEventListener('click', () => {
       activeVertical = null;
       activePhase = null;
+      activeStatus = null;
       applyFilters();
     });
   }
@@ -372,11 +414,13 @@ for (const s of allSessions) {
   const params = new URLSearchParams(window.location.search);
   const initVertical = params.get('vertical');
   const initPhase = params.get('phase');
+  const initStatus = params.get('status');
 
   if (initVertical) activeVertical = initVertical;
   if (initPhase) activePhase = initPhase;
+  if (initStatus) activeStatus = initStatus;
 
-  if (activeVertical || activePhase) {
+  if (activeVertical || activePhase || activeStatus) {
     applyFilters();
   }
 </script>

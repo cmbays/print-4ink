@@ -57,3 +57,8 @@ quality-gate/
 
 # Per-worktree session scratchpad (never committed)
 .session-context.md
+
+# Knowledge base build output
+knowledge-base/dist/
+knowledge-base/node_modules/
+knowledge-base/.astro/

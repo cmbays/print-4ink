@@ -1,4 +1,6 @@
 ---
+import Search from 'astro-pagefind/components/Search';
+
 interface Props {
   activeVertical?: string;
   activeView?: string;
@@ -32,6 +34,11 @@ const verticals = [
   <div class="px-5 pt-6 pb-4">
     <h1 class="text-sm font-bold tracking-tight text-text-primary">Knowledge Base</h1>
     <p class="text-[11px] text-text-muted mt-0.5" id="sidebar-session-count">{sessionCount} sessions</p>
+  </div>
+
+  <!-- Search -->
+  <div class="px-3 mb-4">
+    <Search id="search" className="pagefind-ui" uiOptions={{ showImages: false, showSubResults: true, resetStyles: false }} />
   </div>
 
   <!-- Views -->

@@ -9,7 +9,10 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "gen:index": "node scripts/generate-for-human-index.js"
+    "gen:index": "node scripts/generate-for-human-index.js",
+    "kb:dev": "npm --prefix knowledge-base run dev",
+    "kb:build": "npm --prefix knowledge-base run build",
+    "kb:preview": "npm --prefix knowledge-base run preview"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

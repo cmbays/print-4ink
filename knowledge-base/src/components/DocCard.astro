@@ -4,13 +4,14 @@ interface Props {
   subtitle: string;
   date: Date;
   vertical: string;
+  verticalSecondary?: string[];
   stage: string;
   tags: string[];
   status: string;
   slug: string;
 }
 
-const { title, subtitle, date, vertical, stage, tags, status, slug } = Astro.props;
+const { title, subtitle, date, vertical, verticalSecondary = [], stage, tags, status, slug } = Astro.props;
 
 const dateStr = date.toISOString().split('T')[0];
 
@@ -92,6 +93,11 @@ function verticalLabel(v: string): string {
     <span>{dateStr}</span>
     <span class="opacity-40">&middot;</span>
     <span>{verticalLabel(vertical)}</span>
+    {verticalSecondary.length > 0 && verticalSecondary.map((v) => (
+      <span class="px-1.5 py-0.5 rounded bg-purple/10 text-purple text-[10px]">
+        +{verticalLabel(v)}
+      </span>
+    ))}
     <span class="opacity-40">&middot;</span>
     <span class="px-1.5 py-0.5 rounded bg-bg-surface text-text-muted text-[10px]">
       {stageLabel(stage)}
