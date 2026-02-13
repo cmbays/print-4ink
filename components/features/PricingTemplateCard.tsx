@@ -79,7 +79,7 @@ function formatRelativeTime(dateString: string): string {
 
 const serviceTypeConfig = {
   "screen-print": { label: "Screen Print", colorClass: "text-action" },
-  dtf: { label: "DTF", colorClass: "text-warning" },
+  dtf: { label: "DTF", colorClass: "text-brown" },
 } as const;
 
 // ---------------------------------------------------------------------------

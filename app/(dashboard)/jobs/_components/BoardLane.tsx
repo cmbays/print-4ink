@@ -15,7 +15,7 @@ import type { BoardCard } from "@/lib/schemas/board-card";
 
 interface BoardLaneProps {
   lane: Lane;
-  section: "quotes" | "jobs";
+  section: "quotes" | "jobs" | "combined";
   cards: BoardCard[];
   renderCard: (card: BoardCard) => React.ReactNode;
   onAddScratchNote?: () => void;
@@ -52,8 +52,8 @@ export function BoardLane({
       className={cn(
         "flex min-w-[200px] flex-1 flex-col rounded-lg",
         "bg-background border border-border/50",
-        "transition-colors duration-150",
-        isOver && "border-action/60 bg-action/5",
+        "transition-all duration-200",
+        isOver && "border-action bg-action/5 animate-lane-glow",
       )}
     >
       {/* Lane header */}

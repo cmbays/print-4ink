@@ -98,11 +98,13 @@ describe("jobCardSchema", () => {
     serviceType: "screen-print" as const,
     quantity: 200,
     locationCount: 2,
+    colorCount: 5,
     startDate: "2026-02-10",
     dueDate: "2026-02-14",
     riskLevel: "on_track" as const,
     priority: "high" as const,
     taskProgress: { completed: 5, total: 8 },
+    orderTotal: 1850,
   };
 
   it("validates a valid job card", () => {
@@ -187,11 +189,13 @@ describe("boardCardSchema (discriminated union)", () => {
       serviceType: "screen-print",
       quantity: 100,
       locationCount: 1,
+      colorCount: 2,
       startDate: "2026-02-10",
       dueDate: "2026-02-14",
       riskLevel: "on_track",
       priority: "medium",
       taskProgress: { completed: 0, total: 8 },
+      orderTotal: 975,
     };
     const result = boardCardSchema.parse(card);
     expect(result.type).toBe("job");

@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X } from "lucide-react";
+import { Filter, X, Layers, SplitSquareHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,9 @@ import type { ServiceType } from "@/lib/schemas/quote";
 import type { CardFilters } from "@/lib/helpers/job-utils";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
+const layoutEnum = z.enum(["combined", "split"]);
+
+export type BoardLayout = z.infer<typeof layoutEnum>;
 
 // ---------------------------------------------------------------------------
 // Filter options
@@ -78,6 +81,11 @@ export function useFiltersFromURL(): CardFilters {
   return { today: today || undefined, serviceType, lane, risk, horizon };
 }
 
+export function useLayoutFromURL(): BoardLayout {
+  const searchParams = useSearchParams();
+  return layoutEnum.safeParse(searchParams.get("layout")).data ?? "combined";
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -111,11 +119,57 @@ export function BoardFilterBar() {
   );
 
   const clearAll = useCallback(() => {
-    router.replace("?", { scroll: false });
-  }, [router]);
+    const params = new URLSearchParams();
+    const currentLayout = searchParams.get("layout");
+    if (currentLayout) params.set("layout", currentLayout);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [router, searchParams]);
+
+  const layout = useLayoutFromURL();
 
   return (
     <div className="flex flex-wrap items-center gap-3">
+      {/* Layout toggle: Combined / Split */}
+      <div
+        role="group"
+        aria-label="Board layout"
+        className="flex items-center rounded-md border border-border/50 p-0.5"
+      >
+        <Button
+          variant="ghost"
+          size="xs"
+          className={cn(
+            "gap-1 rounded-sm px-2 py-1 text-xs",
+            layout === "combined"
+              ? "bg-surface text-foreground"
+              : "text-muted-foreground",
+          )}
+          aria-pressed={layout === "combined"}
+          onClick={() => setParam("layout", null)}
+        >
+          <Layers className="size-3" />
+          Combined
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
+          className={cn(
+            "gap-1 rounded-sm px-2 py-1 text-xs",
+            layout === "split"
+              ? "bg-surface text-foreground"
+              : "text-muted-foreground",
+          )}
+          aria-pressed={layout === "split"}
+          onClick={() => setParam("layout", "split")}
+        >
+          <SplitSquareHorizontal className="size-3" />
+          Split
+        </Button>
+      </div>
+
+      {/* Divider */}
+      <div className="h-4 w-px bg-border/50" />
+
       {/* Filter icon + count */}
       <div className="flex items-center gap-1.5 text-muted-foreground">
         <Filter className="size-4" />

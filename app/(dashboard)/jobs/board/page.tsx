@@ -12,6 +12,7 @@ import {
   useSensors,
   type DragStartEvent,
   type DragEndEvent,
+  type DropAnimation,
 } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ import { CapacitySummaryBar } from "../_components/CapacitySummaryBar";
 import {
   BoardFilterBar,
   useFiltersFromURL,
+  useLayoutFromURL,
 } from "../_components/BoardFilterBar";
 import { BoardSection } from "../_components/BoardSection";
 import { JobBoardCard } from "../_components/JobBoardCard";
@@ -34,7 +36,6 @@ import { QuoteBoardCard } from "../_components/QuoteBoardCard";
 import { ScratchNoteCard } from "../_components/ScratchNoteCard";
 import { DraggableCard } from "../_components/DraggableCard";
 import { BlockReasonDialog } from "../_components/BlockReasonDialog";
-import { MoveLaneDialog } from "../_components/MoveLaneDialog";
 import { ScratchNoteCapture } from "../_components/ScratchNoteCapture";
 import {
   computeCapacitySummary,
@@ -49,6 +50,7 @@ import {
   invoices,
 } from "@/lib/mock-data";
 import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
+import { laneEnum } from "@/lib/schemas/job";
 import type { Job, Lane } from "@/lib/schemas/job";
 
 // ---------------------------------------------------------------------------
@@ -73,16 +75,21 @@ function projectJobToCard(job: Job): JobCard {
     serviceType: job.serviceType,
     quantity: job.quantity,
     locationCount: job.complexity.locationCount,
+    colorCount: job.printLocations.reduce((sum, loc) => sum + loc.colorCount, 0),
     startDate: job.startDate,
     dueDate: job.dueDate,
     riskLevel: job.riskLevel,
     priority: job.priority,
     taskProgress: { completed: progress.completed, total: progress.total },
+    tasks: [...job.tasks]
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((t) => ({ label: t.label, isCompleted: t.isCompleted })),
     assigneeInitials: job.assigneeInitials,
     sourceQuoteId: job.sourceQuoteId,
     invoiceId: job.invoiceId,
     invoiceStatus: invoice?.status,
     blockReason: job.blockReason,
+    orderTotal: job.orderTotal,
   };
 }
 
@@ -114,11 +121,14 @@ function parseDragId(dragId: string): { cardType: string; cardId: string } {
 }
 
 /** Droppable IDs are "{section}:{lane}" */
-function parseDroppableId(droppableId: string): { section: string; lane: Lane } {
+function parseDroppableId(droppableId: string): { section: string; lane: Lane } | null {
   const idx = droppableId.indexOf(":");
+  if (idx === -1) return null;
+  const parsed = laneEnum.safeParse(droppableId.slice(idx + 1));
+  if (!parsed.success) return null;
   return {
     section: droppableId.slice(0, idx),
-    lane: droppableId.slice(idx + 1) as Lane,
+    lane: parsed.data,
   };
 }
 
@@ -147,8 +157,48 @@ function getCardLabel(card: BoardCard): string {
 // Inner board (needs Suspense boundary for useSearchParams)
 // ---------------------------------------------------------------------------
 
+/** Get due date for sorting (scratch notes have no due date → sort to top) */
+function getCardSortDate(card: BoardCard): string {
+  if (card.type === "scratch_note") return "0000-00-00"; // sort to top
+  if (card.type === "job") return card.dueDate;
+  return card.dueDate ?? "9999-99-99"; // quotes without due date sort to bottom
+}
+
+const springDropAnimation: DropAnimation = {
+  sideEffects({ active, dragOverlay }) {
+    active.node.style.opacity = "0";
+    // Spring settle: scale back to 1, remove rotation
+    dragOverlay.node.animate(
+      [
+        { transform: "scale(1.03) rotate(2deg)", opacity: 0.9 },
+        { transform: "scale(1) rotate(0deg)", opacity: 1 },
+      ],
+      {
+        duration: 250,
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      },
+    );
+    return () => {
+      active.node.style.opacity = "";
+    };
+  },
+  duration: 250,
+  easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+  keyframes({ transform }) {
+    return [
+      { ...transform.initial },
+      {
+        ...transform.final,
+        scale: "1",
+        rotate: "0deg",
+      },
+    ];
+  },
+};
+
 function ProductionBoardInner() {
   const filters = useFiltersFromURL();
+  const layout = useLayoutFromURL();
 
   // ---- Mutable state (Phase 1 client-side only) ----
   const [jobCards, setJobCards] = useState<JobCard[]>(() =>
@@ -170,18 +220,12 @@ function ProductionBoardInner() {
     card: BoardCard | null;
   }>({ open: false, card: null });
 
-  // ---- Move Lane dialog state ----
-  const [moveLaneDialog, setMoveLaneDialog] = useState<{
-    open: boolean;
-    card: BoardCard | null;
-  }>({ open: false, card: null });
-
   // ---- Scratch note capture state ----
   const [showScratchCapture, setShowScratchCapture] = useState(false);
 
   // ---- Sensors ----
   const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: { distance: 5 },
+    activationConstraint: { distance: 3 },
   });
   const keyboardSensor = useSensor(KeyboardSensor);
   const sensors = useSensors(pointerSensor, keyboardSensor);
@@ -201,6 +245,15 @@ function ProductionBoardInner() {
     () => computeFilteredCards(quoteRowCards, filters),
     [quoteRowCards, filters],
   );
+
+  // ---- Combined mode: merge + sort by due date ----
+  const combinedCards: BoardCard[] = useMemo(() => {
+    if (layout !== "combined") return [];
+    const merged = [...filteredJobCards, ...filteredQuoteCards];
+    return merged.sort((a, b) =>
+      getCardSortDate(a).localeCompare(getCardSortDate(b)),
+    );
+  }, [layout, filteredJobCards, filteredQuoteCards]);
 
   // ---- Capacity summary ----
   const allFilteredCards: BoardCard[] = useMemo(
@@ -278,12 +331,18 @@ function ProductionBoardInner() {
     }
 
     const { cardType } = parseDragId(active.id as string);
-    const { section: targetSection, lane: targetLane } = parseDroppableId(over.id as string);
+    const dropTarget = parseDroppableId(over.id as string);
+    if (!dropTarget) return;
+    const { section: targetSection, lane: targetLane } = dropTarget;
     const sourceSection = cardTypeToSection(cardType);
 
-    // Same-row constraint: quotes stay in quotes, jobs stay in jobs
-    if (sourceSection !== targetSection) {
+    // Same-row constraint: in split mode, quotes stay in quotes, jobs stay in jobs
+    if (layout === "split" && sourceSection !== targetSection) {
+      return;
+    }
 
+    // In combined mode, only allow drops on the "combined" section
+    if (layout === "combined" && targetSection !== "combined") {
       return;
     }
 
@@ -334,25 +393,6 @@ function ProductionBoardInner() {
   }
 
   // ===========================================================================
-  // Move Lane dialog handlers
-  // ===========================================================================
-
-  const openMoveLaneDialog = useCallback((card: BoardCard) => {
-    setMoveLaneDialog({ open: true, card });
-  }, []);
-
-  function confirmMoveLane(targetLane: Lane, blockReason?: string) {
-    if (moveLaneDialog.card) {
-      moveCard(moveLaneDialog.card, targetLane, blockReason);
-    }
-    setMoveLaneDialog({ open: false, card: null });
-  }
-
-  function cancelMoveLane() {
-    setMoveLaneDialog({ open: false, card: null });
-  }
-
-  // ===========================================================================
   // Scratch note CRUD
   // ===========================================================================
 
@@ -373,6 +413,12 @@ function ProductionBoardInner() {
     setScratchNoteCards((prev) => prev.filter((n) => n.id !== noteId));
   }, []);
 
+  const editScratchNote = useCallback((noteId: string, newContent: string) => {
+    setScratchNoteCards((prev) =>
+      prev.map((n) => (n.id === noteId ? { ...n, content: newContent } : n)),
+    );
+  }, []);
+
   // ===========================================================================
   // Card renderer (dispatches by type, wraps in DraggableCard)
   // ===========================================================================
@@ -387,10 +433,7 @@ function ProductionBoardInner() {
               dragId={dragId}
               data={{ cardType: "job", cardId: card.id, section: "jobs" }}
             >
-              <JobBoardCard
-                card={card}
-                onMoveLane={() => openMoveLaneDialog(card)}
-              />
+              <JobBoardCard card={card} />
             </DraggableCard>
           );
         }
@@ -401,10 +444,7 @@ function ProductionBoardInner() {
               dragId={dragId}
               data={{ cardType: "quote", cardId: card.quoteId, section: "quotes" }}
             >
-              <QuoteBoardCard
-                card={card}
-                onMoveLane={() => openMoveLaneDialog(card)}
-              />
+              <QuoteBoardCard card={card} />
             </DraggableCard>
           );
         }
@@ -413,11 +453,12 @@ function ProductionBoardInner() {
             <ScratchNoteCard
               card={card}
               onDismiss={() => dismissScratchNote(card.id)}
+              onEdit={editScratchNote}
             />
           );
       }
     },
-    [openMoveLaneDialog, dismissScratchNote],
+    [dismissScratchNote, editScratchNote],
   );
 
   // ===========================================================================
@@ -429,19 +470,19 @@ function ProductionBoardInner() {
     switch (activeCard.type) {
       case "job":
         return (
-          <div className="w-[200px] rotate-2 opacity-90 shadow-xl">
+          <div className="w-[200px] scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
             <JobBoardCard card={activeCard} />
           </div>
         );
       case "quote":
         return (
-          <div className="w-[200px] rotate-2 opacity-90 shadow-xl">
+          <div className="w-[200px] scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
             <QuoteBoardCard card={activeCard} />
           </div>
         );
       case "scratch_note":
         return (
-          <div className="w-[200px] rotate-2 opacity-90 shadow-xl">
+          <div className="w-[200px] scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
             <ScratchNoteCard card={activeCard} />
           </div>
         );
@@ -474,35 +515,55 @@ function ProductionBoardInner() {
           onDragCancel={handleDragCancel}
         >
           <TooltipProvider skipDelayDuration={300}>
-            <div className="flex flex-col gap-6">
-              {/* Quotes section */}
-              <BoardSection
-                label="Quotes"
-                section="quotes"
-                cards={filteredQuoteCards}
-                renderCard={renderCard}
-                onAddScratchNote={() => setShowScratchCapture(true)}
-                readyLaneFooter={
-                  showScratchCapture ? (
-                    <ScratchNoteCapture
-                      onSubmit={createScratchNote}
-                      onCancel={() => setShowScratchCapture(false)}
-                    />
-                  ) : undefined
-                }
-              />
+            {layout === "combined" ? (
+              <div className="flex flex-col gap-6">
+                <BoardSection
+                  label="All Cards"
+                  section="combined"
+                  cards={combinedCards}
+                  renderCard={renderCard}
+                  onAddScratchNote={() => setShowScratchCapture(true)}
+                  readyLaneFooter={
+                    showScratchCapture ? (
+                      <ScratchNoteCapture
+                        onSubmit={createScratchNote}
+                        onCancel={() => setShowScratchCapture(false)}
+                      />
+                    ) : undefined
+                  }
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-6">
+                {/* Quotes section */}
+                <BoardSection
+                  label="Quotes"
+                  section="quotes"
+                  cards={filteredQuoteCards}
+                  renderCard={renderCard}
+                  onAddScratchNote={() => setShowScratchCapture(true)}
+                  readyLaneFooter={
+                    showScratchCapture ? (
+                      <ScratchNoteCapture
+                        onSubmit={createScratchNote}
+                        onCancel={() => setShowScratchCapture(false)}
+                      />
+                    ) : undefined
+                  }
+                />
 
-              {/* Jobs section */}
-              <BoardSection
-                label="Jobs"
-                section="jobs"
-                cards={filteredJobCards}
-                renderCard={renderCard}
-              />
-            </div>
+                {/* Jobs section */}
+                <BoardSection
+                  label="Jobs"
+                  section="jobs"
+                  cards={filteredJobCards}
+                  renderCard={renderCard}
+                />
+              </div>
+            )}
           </TooltipProvider>
 
-          <DragOverlay dropAnimation={null}>
+          <DragOverlay dropAnimation={springDropAnimation}>
             {renderDragOverlay()}
           </DragOverlay>
         </DndContext>
@@ -521,19 +582,6 @@ function ProductionBoardInner() {
         />
       )}
 
-      {/* Move Lane Dialog */}
-      {moveLaneDialog.card && (
-        <MoveLaneDialog
-          open={moveLaneDialog.open}
-          onOpenChange={(open) => {
-            if (!open) cancelMoveLane();
-          }}
-          cardLabel={getCardLabel(moveLaneDialog.card)}
-          currentLane={moveLaneDialog.card.lane}
-          onConfirm={confirmMoveLane}
-          onCancel={cancelMoveLane}
-        />
-      )}
     </div>
   );
 }

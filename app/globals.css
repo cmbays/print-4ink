@@ -62,6 +62,20 @@
   --color-warning-hover: var(--warning-hover);
   --color-warning-bold: var(--warning-bold);
 
+  /* Design system: card type accent colors */
+  --color-purple: #a855f7;
+  --color-purple-hover: #9333ea;
+  --color-purple-bold: #c084fc;
+  --color-magenta: #ff50da;
+  --color-magenta-hover: #e040c0;
+  --color-magenta-bold: #ff85e6;
+  --color-lime: #84cc16;
+  --color-lime-hover: #65a30d;
+  --color-lime-bold: #a3e635;
+  --color-brown: #c47a3a;
+  --color-brown-hover: #a8652e;
+  --color-brown-bold: #d9954f;
+
   /* Design system: surface colors */
   --color-surface: var(--surface);
   --color-elevated: var(--elevated);
@@ -137,6 +151,22 @@
   --warning-hover: #e6b050;
   --warning-bold: #fff700;
 
+  --purple: #a855f7;
+  --purple-hover: #9333ea;
+  --purple-bold: #c084fc;
+
+  --magenta: #ff50da;
+  --magenta-hover: #e040c0;
+  --magenta-bold: #ff85e6;
+
+  --lime: #84cc16;
+  --lime-hover: #65a30d;
+  --lime-bold: #a3e635;
+
+  --brown: #c47a3a;
+  --brown-hover: #a8652e;
+  --brown-bold: #d9954f;
+
   /* Charts — Niji rainbow */
   --chart-1: #2ab9ff;
   --chart-2: #54ca74;
@@ -162,6 +192,20 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+/* Lane drop-target glow pulse */
+@keyframes lane-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px 2px rgba(42, 185, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 16px 4px rgba(42, 185, 255, 0.3);
+  }
+}
+
+.animate-lane-glow {
+  animation: lane-glow 1.5s ease-in-out infinite;
 }
 
 /* Reduced motion */

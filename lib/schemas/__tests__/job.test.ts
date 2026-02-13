@@ -298,6 +298,7 @@ describe("jobSchema", () => {
       { id: "1a240001-0001-4001-8001-000000001024", label: "Art files finalized", isCompleted: true, completedAt: "2026-02-02T10:00:00Z", isCanonical: true, sortOrder: 0 },
       { id: "1a240002-0001-4001-8001-000000001025", label: "Film positives printed", isCompleted: false, isCanonical: true, sortOrder: 1 },
     ],
+    orderTotal: 1850,
     artworkIds: ["art-001"],
     history: [
       { fromLane: "ready", toLane: "in_progress", timestamp: "2026-02-03T09:00:00Z" },

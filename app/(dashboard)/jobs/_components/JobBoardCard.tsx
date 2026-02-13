@@ -1,25 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { Package, Calendar, ArrowRightLeft } from "lucide-react";
+import { Package, Palette, MapPin, Calendar, Zap, DollarSign, Circle, CircleCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
-import { RiskIndicator } from "@/components/features/RiskIndicator";
+import { RISK_COLORS } from "@/lib/constants";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { formatShortDate } from "@/lib/helpers/format";
+import { formatCurrencyCompact } from "@/lib/helpers/money";
 import {
-  SERVICE_TYPE_LEFT_BORDER_COLORS,
+  CARD_TYPE_BORDER_COLORS,
   INVOICE_STATUS_LABELS,
   INVOICE_STATUS_BADGE_COLORS,
 } from "@/lib/constants";
 import type { JobCard } from "@/lib/schemas/board-card";
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Strip leading customer name from title to avoid duplication on card */
+function deduplicateTitle(title: string, customerName: string): string {
+  // Match patterns like "Customer Name — Title" or "Customer Name - Title"
+  const separators = [" — ", " – ", " - "];
+  for (const sep of separators) {
+    if (title.startsWith(customerName + sep)) {
+      return title.slice(customerName.length + sep.length);
+    }
+  }
+  return title;
+}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -27,28 +43,25 @@ import type { JobCard } from "@/lib/schemas/board-card";
 
 interface JobBoardCardProps {
   card: JobCard;
-  onClick?: () => void;
-  onMoveLane?: () => void;
 }
 
-export function JobBoardCard({ card, onClick, onMoveLane }: JobBoardCardProps) {
+export function JobBoardCard({ card }: JobBoardCardProps) {
   const isBlocked = !!card.blockReason;
   const isRush = card.priority === "rush";
   const isDone = card.lane === "done";
-  const leftBorder = SERVICE_TYPE_LEFT_BORDER_COLORS[card.serviceType];
 
   const cardEl = (
     <div
       role="article"
       aria-label={`Job ${card.jobNumber}: ${card.customerName} — ${card.title}`}
       className={cn(
-        "group relative rounded-lg bg-elevated border border-border p-3 border-l-4",
-        leftBorder,
+        "group relative rounded-lg bg-elevated border border-border px-3 py-2",
+        "border-l-[3px]",
+        CARD_TYPE_BORDER_COLORS.job,
         "cursor-pointer select-none",
         "hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "transition-all duration-150",
-        isRush && "border-t-2 border-t-error",
         isBlocked && "opacity-60",
       )}
     >
@@ -58,7 +71,9 @@ export function JobBoardCard({ card, onClick, onMoveLane }: JobBoardCardProps) {
           <p className="text-sm font-semibold text-foreground truncate">
             {card.customerName}
           </p>
-          <p className="text-xs text-muted-foreground truncate">{card.title}</p>
+          <p className="text-xs text-muted-foreground truncate">
+            {deduplicateTitle(card.title, card.customerName)}
+          </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           {card.assigneeInitials && (
@@ -69,67 +84,59 @@ export function JobBoardCard({ card, onClick, onMoveLane }: JobBoardCardProps) {
               {card.assigneeInitials}
             </div>
           )}
-          <ServiceTypeBadge
-            serviceType={card.serviceType}
-            variant="icon-only"
-            className="text-muted-foreground"
+          <div className="flex flex-col items-center gap-1">
+            <ServiceTypeBadge
+              serviceType={card.serviceType}
+              variant="icon-only"
+            />
+            {isRush && (
+              <Zap className="size-3.5 text-error" aria-label="Rush order" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Metadata row: qty/colors/locations + progress left, date + revenue right */}
+      <div className="mt-1 flex items-start justify-between gap-2 text-xs text-muted-foreground">
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-flex items-center gap-0.5">
+              <Package className="size-3" />
+              {card.quantity.toLocaleString()}
+            </span>
+            {card.colorCount > 0 && (
+              <span className="inline-flex items-center gap-0.5">
+                <Palette className="size-3" />
+                {card.colorCount}
+              </span>
+            )}
+            {card.locationCount > 0 && (
+              <span className="inline-flex items-center gap-0.5">
+                <MapPin className="size-3" />
+                {card.locationCount}
+              </span>
+            )}
+          </span>
+          <TaskProgressBar
+            completed={card.taskProgress.completed}
+            total={card.taskProgress.total}
           />
         </div>
-      </div>
-
-      {/* Job number */}
-      <p className="mt-1 text-xs font-mono text-muted-foreground">
-        {card.jobNumber}
-      </p>
-
-      {/* Metadata row: quantity, complexity, due date, risk */}
-      <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <Package className="size-3" />
-          {card.quantity.toLocaleString()}
-          {card.locationCount > 0 && (
-            <span className="text-muted-foreground">
-              &middot; {card.locationCount} loc
-            </span>
-          )}
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <Calendar className="size-3" />
-          {formatShortDate(card.dueDate)}
-        </span>
-        <RiskIndicator riskLevel={card.riskLevel} />
-      </div>
-
-      {/* Bottom: task progress */}
-      <div className="mt-2">
-        <TaskProgressBar
-          completed={card.taskProgress.completed}
-          total={card.taskProgress.total}
-        />
-      </div>
-
-      {/* Quick action: Move Lane */}
-      {onMoveLane && (
-        <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            variant="ghost"
-            size="xs"
-            className="text-muted-foreground hover:text-action"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onMoveLane();
-            }}
-          >
-            <ArrowRightLeft className="size-3" />
-            Move Lane
-          </Button>
+        <div className="flex flex-col items-end gap-0.5">
+          <span className={cn("inline-flex items-center gap-1", RISK_COLORS[card.riskLevel])}>
+            <Calendar className="size-3" />
+            {formatShortDate(card.dueDate)}
+          </span>
+          <span className="inline-flex items-center gap-0.5 font-medium text-foreground">
+            <DollarSign className="size-3 text-success" />
+            {formatCurrencyCompact(card.orderTotal).replace("$", "")}
+          </span>
         </div>
-      )}
+      </div>
 
       {/* Payment status badge (Done lane only) */}
       {isDone && card.invoiceStatus && (
-        <div className="mt-2">
+        <div className="mt-1">
           <Badge
             variant="ghost"
             className={cn(
@@ -145,19 +152,46 @@ export function JobBoardCard({ card, onClick, onMoveLane }: JobBoardCardProps) {
   );
 
   const linked = (
-    <Link href={`/jobs/${card.id}`} className="block" onClick={onClick}>
+    <Link href={`/jobs/${card.id}`} className="block">
       {cardEl}
     </Link>
   );
 
-  if (isBlocked) {
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>{linked}</TooltipTrigger>
-        <TooltipContent>{card.blockReason}</TooltipContent>
-      </Tooltip>
-    );
-  }
+  const hasTooltip = card.tasks.length > 0 || isBlocked;
 
-  return linked;
+  if (!hasTooltip) return linked;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{linked}</TooltipTrigger>
+      <TooltipContent side="right" className="max-w-[240px] p-3">
+        <div className="flex flex-col gap-2">
+          {isBlocked && (
+            <p className="text-xs font-medium text-error">
+              Blocked: {card.blockReason}
+            </p>
+          )}
+          {card.tasks.length > 0 && (
+            <div className="flex flex-col gap-1">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Progress
+              </p>
+              {card.tasks.map((task, i) => (
+                <div key={i} className="flex items-start gap-1.5 text-xs">
+                  {task.isCompleted ? (
+                    <CircleCheck className="size-3.5 shrink-0 mt-px text-success" />
+                  ) : (
+                    <Circle className="size-3.5 shrink-0 mt-px text-muted-foreground" />
+                  )}
+                  <span className={task.isCompleted ? "text-muted-foreground line-through" : "text-foreground"}>
+                    {task.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
 }

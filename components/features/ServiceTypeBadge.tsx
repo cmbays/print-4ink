@@ -1,12 +1,12 @@
-import { Printer, Palette, Scissors } from "lucide-react";
+import { Printer, Film, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SERVICE_TYPE_BORDER_COLORS, SERVICE_TYPE_LABELS } from "@/lib/constants";
+import { SERVICE_TYPE_BORDER_COLORS, SERVICE_TYPE_COLORS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import type { ServiceType } from "@/lib/schemas/quote";
 import type { LucideIcon } from "lucide-react";
 
 const SERVICE_TYPE_ICON_COMPONENTS: Record<ServiceType, LucideIcon> = {
   "screen-print": Printer,
-  dtf: Palette,
+  dtf: Film,
   embroidery: Scissors,
 };
 
@@ -26,9 +26,10 @@ export function ServiceTypeBadge({
   const label = SERVICE_TYPE_LABELS[serviceType];
 
   if (variant === "icon-only") {
+    const textColor = SERVICE_TYPE_COLORS[serviceType];
     return (
       <span
-        className={cn("inline-flex items-center", borderColor, className)}
+        className={cn("inline-flex items-center", textColor, className)}
         aria-label={label}
       >
         <Icon className="size-4" />

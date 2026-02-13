@@ -18,7 +18,7 @@ const LANE_ORDER: Lane[] = ["ready", "in_progress", "review", "blocked", "done"]
 
 interface BoardSectionProps {
   label: string;
-  section: "quotes" | "jobs";
+  section: "quotes" | "jobs" | "combined";
   cards: BoardCard[];
   renderCard: (card: BoardCard) => React.ReactNode;
   onAddScratchNote?: () => void;
