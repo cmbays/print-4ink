@@ -58,10 +58,10 @@ vercel env list
 
 ## Files Changed
 
-- [middleware.ts (created)](https://github.com/cmbays/print-4ink/blob/feat/vercel-setup/middleware.ts)
-- [app/demo-login/page.tsx (created)](https://github.com/cmbays/print-4ink/blob/feat/vercel-setup/app/demo-login/page.tsx)
-- [app/api/demo-login/route.ts (created)](https://github.com/cmbays/print-4ink/blob/feat/vercel-setup/app/api/demo-login/route.ts)
-- [Full PR diff](https://github.com/cmbays/print-4ink/compare/main...feat/vercel-setup)
+- [middleware.ts (created)](https://github.com/cmbays/print-4ink/blob/main/middleware.ts)
+- [app/demo-login/page.tsx (created)](https://github.com/cmbays/print-4ink/blob/main/app/demo-login/page.tsx)
+- [app/api/demo-login/route.ts (created)](https://github.com/cmbays/print-4ink/blob/main/app/api/demo-login/route.ts)
+- [PR #4](https://github.com/cmbays/print-4ink/pull/4)
 
 ## Next Steps
 

@@ -79,10 +79,10 @@ Color swatches should match S&S Activewear's supplier UI: dense palette with swa
 
 ## Documents Created
 
-- [docs/competitive-analysis/print-life-quoting-analysis.md](../docs/competitive-analysis/print-life-quoting-analysis.md)
-- [docs/competitive-analysis/print-life-journey-quoting.md](../docs/competitive-analysis/print-life-journey-quoting.md)
-- [docs/strategy/screen-print-pro-journey-quoting.md](../docs/strategy/screen-print-pro-journey-quoting.md)
-- [docs/strategy/quoting-scope-definition.md](../docs/strategy/quoting-scope-definition.md)
+- [docs/competitive-analysis/print-life-quoting-analysis.md](https://github.com/cmbays/print-4ink/blob/main/docs/competitive-analysis/print-life-quoting-analysis.md)
+- [docs/competitive-analysis/print-life-journey-quoting.md](https://github.com/cmbays/print-4ink/blob/main/docs/competitive-analysis/print-life-journey-quoting.md)
+- [docs/strategy/screen-print-pro-journey-quoting.md](https://github.com/cmbays/print-4ink/blob/main/docs/strategy/screen-print-pro-journey-quoting.md)
+- [docs/strategy/quoting-scope-definition.md](https://github.com/cmbays/print-4ink/blob/main/docs/strategy/quoting-scope-definition.md)
 
 ## Next: Build Phase
 

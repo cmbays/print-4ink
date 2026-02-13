@@ -34,10 +34,8 @@ const shortStageLabels: Record<string, string> = {
   learnings: 'Learnings',
 };
 
-// Filter to same vertical and sort by stage order, then by date
-const chainSessions = allSessions
-  .filter((s) => true) // already filtered by caller
-  .sort((a, b) => {
+// Sort by stage order, then by date (filtering done by caller)
+const chainSessions = allSessions.sort((a, b) => {
     const stageA = stageOrder.indexOf(a.stage);
     const stageB = stageOrder.indexOf(b.stage);
     if (stageA !== stageB) return stageA - stageB;

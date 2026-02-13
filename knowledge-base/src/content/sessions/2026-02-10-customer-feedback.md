@@ -32,7 +32,7 @@ The 4Ink owner reviewed both the Customer List and Customer Detail pages. Feedba
 | 4 | Health column needs its own filter | Added `?health=` URL param with inline filter dropdown |
 | 5 | "Add Customer" should have a "Save & View Details" option | New button in AddCustomerModal, navigates to detail page using generated UUID |
 | 6 | Activity timeline items should be clickable | Quote icons link to `/quotes/:id`, note icons switch to Notes tab |
-| 7 | Customer Quotes table — Date should come before Status | Reordered: Quote # | Date | Status | Total |
+| 7 | Customer Quotes table — Date should come before Status | Reordered: `Quote # \| Date \| Status \| Total` |
 | 8 | Contact "Other" role needs custom description field | Text input appears when role === "other" |
 
 ## New Component: ColumnHeaderMenu

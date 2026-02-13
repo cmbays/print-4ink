@@ -79,7 +79,7 @@ Confirmation dialog before archiving.
 
 ## Cross-Vertical Navigation
 
-```
+```text
 P1 Customer List
   click row → P2 /customers/[id]
   click Add Customer → P1.1 Add Customer Modal
@@ -184,7 +184,7 @@ Enhance existing quoting combobox.
 
 ## Dependency Graph Summary
 
-```
+```text
 Step 1 Schemas → blocks everything
 Step 2 Mock Data → blocks all display components
 Steps 3-9 Shared Components → run in parallel, block pages

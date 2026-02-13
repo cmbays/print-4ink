@@ -153,7 +153,7 @@ The script is sourced (not executed), so it defines the `work()` function in you
 
 ## Safety Guarantees
 
-- Always operates from main repo (`~/Github/print-4ink`), never from `$PWD`
+- Always operates from main repo (`~/GitHub/print-4ink`), never from `$PWD`
 - Pulls latest main before branching (skips for stacked PRs)
 - Checks branch doesn't already exist before creating
 - Enforces max 6 worktrees with warning

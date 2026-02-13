@@ -14,10 +14,10 @@ status: complete
 
 | Metric | Value |
 |--------|-------|
-| 7 | Places |
-| 65 | UI Affordances |
-| 32 | Code Affordances |
-| 18 | Data Stores |
+| Places | 7 |
+| UI Affordances | 65 |
+| Code Affordances | 32 |
+| Data Stores | 18 |
 
 ## Places & Navigation Flow
 
