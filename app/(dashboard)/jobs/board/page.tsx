@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { Plus, LayoutGrid, List } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import {
   DndContext,
   DragOverlay,
@@ -37,132 +38,35 @@ import { ScratchNoteCard } from "../_components/ScratchNoteCard";
 import { DraggableCard } from "../_components/DraggableCard";
 import { BlockReasonDialog } from "../_components/BlockReasonDialog";
 import { ScratchNoteCapture } from "../_components/ScratchNoteCapture";
+import { LANE_LABELS } from "@/lib/constants";
 import {
   computeCapacitySummary,
   computeFilteredCards,
-  computeTaskProgress,
 } from "@/lib/helpers/job-utils";
+import {
+  projectJobToCard,
+  projectScratchNoteToCard,
+} from "@/lib/helpers/board-projections";
+import {
+  parseDragId,
+  parseDroppableId,
+  cardTypeToSection,
+  getCardLabel,
+  getCardSortDate,
+} from "@/lib/helpers/board-dnd";
 import {
   jobs as initialJobs,
   quoteCards as initialQuoteCards,
   scratchNotes as initialScratchNotes,
-  customers,
-  invoices,
 } from "@/lib/mock-data";
 import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
-import { laneEnum } from "@/lib/schemas/job";
-import type { Job, Lane } from "@/lib/schemas/job";
-
-// ---------------------------------------------------------------------------
-// Projection: Job → JobCard view model
-// ---------------------------------------------------------------------------
-
-function projectJobToCard(job: Job): JobCard {
-  const customer = customers.find((c) => c.id === job.customerId);
-  const progress = computeTaskProgress(job.tasks);
-  const invoice = job.invoiceId
-    ? invoices.find((inv) => inv.id === job.invoiceId)
-    : undefined;
-
-  return {
-    type: "job",
-    id: job.id,
-    jobNumber: job.jobNumber,
-    title: job.title,
-    customerId: job.customerId,
-    customerName: customer?.company ?? "Unknown",
-    lane: job.lane,
-    serviceType: job.serviceType,
-    quantity: job.quantity,
-    locationCount: job.complexity.locationCount,
-    colorCount: job.printLocations.reduce((sum, loc) => sum + loc.colorCount, 0),
-    startDate: job.startDate,
-    dueDate: job.dueDate,
-    riskLevel: job.riskLevel,
-    priority: job.priority,
-    taskProgress: { completed: progress.completed, total: progress.total },
-    tasks: [...job.tasks]
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map((t) => ({ label: t.label, isCompleted: t.isCompleted })),
-    assigneeInitials: job.assigneeInitials,
-    sourceQuoteId: job.sourceQuoteId,
-    invoiceId: job.invoiceId,
-    invoiceStatus: invoice?.status,
-    blockReason: job.blockReason,
-    orderTotal: job.orderTotal,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Projection: ScratchNote → ScratchNoteCard view model
-// ---------------------------------------------------------------------------
-
-function projectScratchNoteToCard(
-  note: { id: string; content: string; createdAt: string; isArchived: boolean },
-): ScratchNoteCardType {
-  return {
-    type: "scratch_note",
-    id: note.id,
-    content: note.content,
-    createdAt: note.createdAt,
-    isArchived: note.isArchived,
-    lane: "ready",
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Helpers: parse drag IDs
-// ---------------------------------------------------------------------------
-
-/** Drag IDs are "job:{uuid}", "quote:{quoteId}", "scratch:{uuid}" */
-function parseDragId(dragId: string): { cardType: string; cardId: string } {
-  const idx = dragId.indexOf(":");
-  return { cardType: dragId.slice(0, idx), cardId: dragId.slice(idx + 1) };
-}
-
-/** Droppable IDs are "{section}:{lane}" */
-function parseDroppableId(droppableId: string): { section: string; lane: Lane } | null {
-  const idx = droppableId.indexOf(":");
-  if (idx === -1) return null;
-  const parsed = laneEnum.safeParse(droppableId.slice(idx + 1));
-  if (!parsed.success) return null;
-  return {
-    section: droppableId.slice(0, idx),
-    lane: parsed.data,
-  };
-}
-
-/** Map card type to section for same-row constraint */
-function cardTypeToSection(cardType: string): string {
-  if (cardType === "job") return "jobs";
-  return "quotes"; // quote and scratch are in quotes section
-}
-
-// ---------------------------------------------------------------------------
-// Card label for dialogs
-// ---------------------------------------------------------------------------
-
-function getCardLabel(card: BoardCard): string {
-  switch (card.type) {
-    case "job":
-      return `${card.jobNumber}: ${card.customerName}`;
-    case "quote":
-      return `Quote: ${card.customerName}`;
-    case "scratch_note":
-      return `Note: ${card.content.slice(0, 40)}`;
-  }
-}
+import type { Lane } from "@/lib/schemas/job";
 
 // ---------------------------------------------------------------------------
 // Inner board (needs Suspense boundary for useSearchParams)
 // ---------------------------------------------------------------------------
 
-/** Get due date for sorting (scratch notes have no due date → sort to top) */
-function getCardSortDate(card: BoardCard): string {
-  if (card.type === "scratch_note") return "0000-00-00"; // sort to top
-  if (card.type === "job") return card.dueDate;
-  return card.dueDate ?? "9999-99-99"; // quotes without due date sort to bottom
-}
+const SPRING_EASING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
 
 const springDropAnimation: DropAnimation = {
   sideEffects({ active, dragOverlay }) {
@@ -175,7 +79,7 @@ const springDropAnimation: DropAnimation = {
       ],
       {
         duration: 250,
-        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        easing: SPRING_EASING,
       },
     );
     return () => {
@@ -183,7 +87,7 @@ const springDropAnimation: DropAnimation = {
     };
   },
   duration: 250,
-  easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+  easing: SPRING_EASING,
   keyframes({ transform }) {
     return [
       { ...transform.initial },
@@ -199,6 +103,7 @@ const springDropAnimation: DropAnimation = {
 function ProductionBoardInner() {
   const filters = useFiltersFromURL();
   const layout = useLayoutFromURL();
+  const prefersReducedMotion = useReducedMotion();
 
   // ---- Mutable state (Phase 1 client-side only) ----
   const [jobCards, setJobCards] = useState<JobCard[]>(() =>
@@ -213,6 +118,7 @@ function ProductionBoardInner() {
 
   // ---- DnD state ----
   const [activeCard, setActiveCard] = useState<BoardCard | null>(null);
+  const [dropAnnouncement, setDropAnnouncement] = useState("");
 
   // ---- Block dialog state ----
   const [blockDialog, setBlockDialog] = useState<{
@@ -366,7 +272,9 @@ function ProductionBoardInner() {
 
     // Direct move
     moveCard(card, targetLane);
-
+    setDropAnnouncement(
+      `${getCardLabel(card)} moved to ${LANE_LABELS[targetLane]}`,
+    );
   }
 
   function handleDragCancel() {
@@ -465,32 +373,42 @@ function ProductionBoardInner() {
   // Drag overlay renderer
   // ===========================================================================
 
+  function DragOverlayWrapper({ children }: { children: React.ReactNode }) {
+    return (
+      <div
+        className="w-50 scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200"
+        style={prefersReducedMotion ? undefined : { transitionTimingFunction: "var(--transition-timing-spring)" }}
+      >
+        {children}
+      </div>
+    );
+  }
+
   function renderDragOverlay() {
     if (!activeCard) return null;
     switch (activeCard.type) {
       case "job":
-        return (
-          <div className="w-[200px] scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
-            <JobBoardCard card={activeCard} />
-          </div>
-        );
+        return <DragOverlayWrapper><JobBoardCard card={activeCard} /></DragOverlayWrapper>;
       case "quote":
-        return (
-          <div className="w-[200px] scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
-            <QuoteBoardCard card={activeCard} />
-          </div>
-        );
+        return <DragOverlayWrapper><QuoteBoardCard card={activeCard} /></DragOverlayWrapper>;
       case "scratch_note":
-        return (
-          <div className="w-[200px] scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
-            <ScratchNoteCard card={activeCard} />
-          </div>
-        );
+        return <DragOverlayWrapper><ScratchNoteCard card={activeCard} /></DragOverlayWrapper>;
     }
   }
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Accessibility: DnD instructions (visually hidden) */}
+      <div id="dnd-instructions" className="sr-only">
+        Press space bar to start dragging a card. While dragging, use arrow keys
+        to move. Press space bar again to drop the card in the current lane, or
+        press escape to cancel.
+      </div>
+      {/* Accessibility: drop announcements */}
+      <div aria-live="polite" className="sr-only">
+        {dropAnnouncement}
+      </div>
+
       {/* Capacity summary */}
       <CapacitySummaryBar summary={summary} />
 
@@ -563,7 +481,7 @@ function ProductionBoardInner() {
             )}
           </TooltipProvider>
 
-          <DragOverlay dropAnimation={springDropAnimation}>
+          <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
             {renderDragOverlay()}
           </DragOverlay>
         </DndContext>

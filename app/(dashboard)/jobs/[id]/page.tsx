@@ -38,7 +38,7 @@ import type { Job, Lane, JobNoteType } from "@/lib/schemas/job";
 // ---------------------------------------------------------------------------
 
 function deepCloneJob(job: Job): Job {
-  return JSON.parse(JSON.stringify(job)) as Job;
+  return structuredClone(job);
 }
 
 // ---------------------------------------------------------------------------

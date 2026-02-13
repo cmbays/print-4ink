@@ -51,7 +51,7 @@ export function LinkedEntitiesSection({
             badge={
               quoteTotal != null ? (
                 <span className="text-xs font-medium text-foreground tabular-nums">
-                  ${quoteTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                  ${quoteTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               ) : undefined
             }
@@ -70,7 +70,7 @@ export function LinkedEntitiesSection({
                 <Badge
                   variant="ghost"
                   className={cn(
-                    "text-[10px]",
+                    "text-xs",
                     INVOICE_STATUS_BADGE_COLORS[invoiceStatus]
                   )}
                 >

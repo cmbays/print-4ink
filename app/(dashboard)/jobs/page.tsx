@@ -127,19 +127,27 @@ function JobsListInner() {
 
   // ---- Unblock ----
   const handleUnblock = useCallback((job: Job) => {
+    // Restore to last non-blocked lane from history (matches detail page behavior)
+    const lastNonBlockedEntry = [...job.history]
+      .reverse()
+      .find((entry) => entry.fromLane !== "blocked");
+    const restoreLane: Lane = lastNonBlockedEntry
+      ? lastNonBlockedEntry.fromLane
+      : "ready";
+
     setJobs((prev) =>
       prev.map((j) =>
         j.id === job.id
           ? {
               ...j,
-              lane: "ready" as Lane,
+              lane: restoreLane,
               blockReason: undefined,
               blockedAt: undefined,
             }
           : j,
       ),
     );
-    toast.success(`${job.jobNumber} unblocked and moved to Ready`);
+    toast.success(`${job.jobNumber} unblocked and moved to ${LANE_LABELS[restoreLane]}`);
   }, []);
 
   return (

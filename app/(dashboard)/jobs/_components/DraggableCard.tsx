@@ -22,6 +22,8 @@ export function DraggableCard({ dragId, data, children }: DraggableCardProps) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      aria-roledescription="draggable card"
+      aria-describedby="dnd-instructions"
       className={cn(
         "relative",
         "cursor-grab active:cursor-grabbing",
@@ -32,7 +34,7 @@ export function DraggableCard({ dragId, data, children }: DraggableCardProps) {
       )}
       style={{
         transitionTimingFunction: isDragging
-          ? "cubic-bezier(0.34, 1.56, 0.64, 1)"
+          ? "var(--transition-timing-spring)"
           : undefined,
       }}
     >

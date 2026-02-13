@@ -31,6 +31,12 @@ describe("scratchNoteCardSchema", () => {
       scratchNoteCardSchema.parse({ ...validCard, content: "" })
     ).toThrow();
   });
+
+  it("rejects content over 500 chars", () => {
+    expect(() =>
+      scratchNoteCardSchema.parse({ ...validCard, content: "x".repeat(501) })
+    ).toThrow();
+  });
 });
 
 describe("quoteCardSchema", () => {
@@ -82,6 +88,43 @@ describe("quoteCardSchema", () => {
   it("rejects empty customerName", () => {
     expect(() =>
       quoteCardSchema.parse({ ...validCard, customerName: "" })
+    ).toThrow();
+  });
+
+  it("defaults notes to empty array when omitted", () => {
+    const minimal = {
+      type: "quote" as const,
+      quoteId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      customerName: "Test",
+      description: "Test description",
+      lane: "ready" as const,
+      quoteStatus: "draft" as const,
+    };
+    const result = quoteCardSchema.parse(minimal);
+    expect(result.notes).toEqual([]);
+  });
+
+  it("defaults isNew to false when omitted", () => {
+    const minimal = {
+      type: "quote" as const,
+      quoteId: "02b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      customerId: "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      customerName: "Test",
+      description: "Test description",
+      lane: "ready" as const,
+      quoteStatus: "draft" as const,
+    };
+    const result = quoteCardSchema.parse(minimal);
+    expect(result.isNew).toBe(false);
+  });
+
+  it("rejects notes content over 1000 chars", () => {
+    expect(() =>
+      quoteCardSchema.parse({
+        ...validCard,
+        notes: [{ content: "x".repeat(1001), type: "internal" }],
+      })
     ).toThrow();
   });
 });
@@ -144,6 +187,20 @@ describe("jobCardSchema", () => {
   it("rejects assigneeInitials over 3 chars", () => {
     expect(() =>
       jobCardSchema.parse({ ...validCard, assigneeInitials: "ABCD" })
+    ).toThrow();
+  });
+
+  it("defaults tasks to empty array when omitted", () => {
+    const result = jobCardSchema.parse(validCard);
+    expect(result.tasks).toEqual([]);
+  });
+
+  it("rejects task label over 200 chars", () => {
+    expect(() =>
+      jobCardSchema.parse({
+        ...validCard,
+        tasks: [{ label: "x".repeat(201), isCompleted: false }],
+      })
     ).toThrow();
   });
 });

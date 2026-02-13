@@ -312,7 +312,7 @@ export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Card Type — Visual Encoding (neobrutalist 3D border: left + bottom)
+// Card Type — Visual Encoding (neobrutalist accent: left border)
 // ---------------------------------------------------------------------------
 
 export const CARD_TYPE_BORDER_COLORS = {
@@ -320,12 +320,6 @@ export const CARD_TYPE_BORDER_COLORS = {
   quote: "border-l-magenta",
   scratch_note: "border-l-magenta",
 } as const;
-
-export const SERVICE_TYPE_ICONS: Record<ServiceType, string> = {
-  "screen-print": "Printer",
-  dtf: "Film",
-  embroidery: "Scissors",
-};
 
 // ---------------------------------------------------------------------------
 // Jobs & Production — Canonical Task Templates

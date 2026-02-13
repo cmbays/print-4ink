@@ -5,26 +5,8 @@ import { StickyNote, Plus, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CARD_TYPE_BORDER_COLORS } from "@/lib/constants";
+import { formatRelativeTime } from "@/lib/helpers/format";
 import type { ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatRelativeTime(dateStr: string): string {
-  const now = new Date();
-  const date = new Date(dateStr);
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHours / 24);
-
-  if (diffMins < 1) return "just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -76,13 +58,20 @@ export function ScratchNoteCard({
   return (
     <div
       role="article"
+      tabIndex={!isEditing && onEdit ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (!isEditing && onEdit && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          startEditing();
+        }
+      }}
       aria-label={`Scratch note: ${card.content.slice(0, 50)}`}
       className={cn(
         "group relative rounded-lg bg-elevated border border-border p-3",
         "border-l-[3px]",
         CARD_TYPE_BORDER_COLORS.scratch_note,
         "transition-all duration-150",
-        !isEditing && onEdit && "cursor-pointer hover:bg-surface",
+        !isEditing && onEdit && "cursor-pointer hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
       )}
       onClick={!isEditing ? startEditing : undefined}
     >

@@ -126,18 +126,21 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
         </div>
       )}
 
-      {/* Create Job action (accepted quotes in Done lane) */}
+    </div>
+  );
+
+  const linked = (
+    <div>
+      <Link href={`/quotes/${card.quoteId}`} className="block">
+        {cardEl}
+      </Link>
       {showCreateJob && (
         <div className="mt-1">
           <Button
             variant="ghost"
             size="xs"
             className="text-action hover:text-action-hover"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onCreateJob();
-            }}
+            onClick={onCreateJob}
           >
             <Plus className="size-3" />
             Create Job
@@ -145,12 +148,6 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
         </div>
       )}
     </div>
-  );
-
-  const linked = (
-    <Link href={`/quotes/${card.quoteId}`} className="block">
-      {cardEl}
-    </Link>
   );
 
   if (card.notes.length === 0) return linked;

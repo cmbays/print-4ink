@@ -37,8 +37,8 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
           <div className="flex items-start gap-3">
             <Shirt className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="space-y-2">
-              {job.garmentDetails.map((gd, idx) => (
-                <div key={idx}>
+              {job.garmentDetails.map((gd) => (
+                <div key={`${gd.garmentId}:${gd.colorId}`}>
                   <p className="text-sm text-foreground">
                     {gd.garmentId}
                     <span className="ml-2 text-xs text-muted-foreground">
@@ -66,9 +66,9 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
           <div className="flex items-start gap-3">
             <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="space-y-1.5">
-              {job.printLocations.map((loc, idx) => (
+              {job.printLocations.map((loc) => (
                 <div
-                  key={idx}
+                  key={loc.position}
                   className="flex items-center gap-2 text-sm"
                 >
                   <span className="text-foreground">{loc.position}</span>

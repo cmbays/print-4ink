@@ -489,6 +489,19 @@ export function JobsDataTable({
                   </TableHead>
                   <TableHead>
                     <ColumnHeaderMenu
+                      label="Risk"
+                      sortKey="risk"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort("risk", dir)}
+                      filterOptions={riskFilterOptions}
+                      activeFilters={riskFilter ? [riskFilter] : []}
+                      onFilterToggle={handleRiskFilterToggle}
+                      onFilterClear={handleRiskFilterClear}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
                       label="Progress"
                       sortKey="taskProgress"
                       currentSortKey={sortKey}
