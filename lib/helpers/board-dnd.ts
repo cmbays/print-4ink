@@ -3,8 +3,9 @@ import type { Lane } from "@/lib/schemas/job";
 import type { BoardCard } from "@/lib/schemas/board-card";
 
 /** Drag IDs are "job:{uuid}", "quote:{quoteId}", "scratch:{uuid}" */
-export function parseDragId(dragId: string): { cardType: string; cardId: string } {
+export function parseDragId(dragId: string): { cardType: string; cardId: string } | null {
   const idx = dragId.indexOf(":");
+  if (idx === -1) return null;
   return { cardType: dragId.slice(0, idx), cardId: dragId.slice(idx + 1) };
 }
 

@@ -36,7 +36,7 @@ export function formatShortDate(dateStr: string): string {
  */
 export function formatRelativeTime(dateStr: string): string {
   const now = new Date();
-  const date = new Date(dateStr);
+  const date = parseDate(dateStr);
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);

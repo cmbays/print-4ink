@@ -26,7 +26,7 @@ export function DraggableCard({ dragId, data, children }: DraggableCardProps) {
       aria-describedby="dnd-instructions"
       className={cn(
         "relative",
-        "cursor-grab active:cursor-grabbing",
+        "touch-none cursor-grab active:cursor-grabbing",
         "transition-[transform,opacity] duration-200",
         isDragging
           ? "opacity-30 scale-[1.03] rotate-1 shadow-xl"

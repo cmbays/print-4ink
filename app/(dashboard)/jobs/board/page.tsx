@@ -176,7 +176,9 @@ function ProductionBoardInner() {
   // ---- Find a card by drag ID ----
   const findCard = useCallback(
     (dragId: string): BoardCard | undefined => {
-      const { cardType, cardId } = parseDragId(dragId);
+      const parsed = parseDragId(dragId);
+      if (!parsed) return undefined;
+      const { cardType, cardId } = parsed;
       if (cardType === "job") return jobCards.find((c) => c.id === cardId);
       if (cardType === "quote") return quoteCardState.find((c) => c.quoteId === cardId);
       if (cardType === "scratch") return scratchNoteCards.find((c) => c.id === cardId);
@@ -236,7 +238,9 @@ function ProductionBoardInner() {
       return;
     }
 
-    const { cardType } = parseDragId(active.id as string);
+    const dragParsed = parseDragId(active.id as string);
+    if (!dragParsed) return;
+    const { cardType } = dragParsed;
     const dropTarget = parseDroppableId(over.id as string);
     if (!dropTarget) return;
     const { section: targetSection, lane: targetLane } = dropTarget;

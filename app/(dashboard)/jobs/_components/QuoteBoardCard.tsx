@@ -45,7 +45,7 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
       aria-label={`Quote for ${card.customerName}: ${truncate(card.description, 60)}`}
       className={cn(
         "group relative rounded-lg bg-elevated border border-border px-3 py-2",
-        "border-l-[3px]",
+        "border-l-2",
         CARD_TYPE_BORDER_COLORS.quote,
         "cursor-pointer select-none",
         "hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface",
@@ -63,7 +63,7 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
             {card.isNew && (
               <Badge
                 variant="ghost"
-                className="bg-success/10 text-success border border-success/20 text-[10px] px-1.5 py-0"
+                className="bg-success/10 text-success border border-success/20 text-xs px-1.5 py-0"
               >
                 New
               </Badge>
@@ -158,15 +158,15 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{linked}</TooltipTrigger>
-      <TooltipContent side="right" className="max-w-[240px] p-3">
+      <TooltipContent side="right" className="max-w-60 p-3">
         <div className="flex flex-col gap-2">
           {internalNotes.length > 0 && (
             <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Internal
               </p>
               {internalNotes.map((note, i) => (
-                <div key={i} className="flex items-start gap-1.5 text-xs">
+                <div key={`internal-${i}`} className="flex items-start gap-1.5 text-xs">
                   <MessageSquare className="size-3.5 shrink-0 mt-px text-muted-foreground" />
                   <span className="text-foreground">{note.content}</span>
                 </div>
@@ -175,11 +175,11 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
           )}
           {customerNotes.length > 0 && (
             <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Customer
               </p>
               {customerNotes.map((note, i) => (
-                <div key={i} className="flex items-start gap-1.5 text-xs">
+                <div key={`customer-${i}`} className="flex items-start gap-1.5 text-xs">
                   <User className="size-3.5 shrink-0 mt-px text-action" />
                   <span className="text-foreground">{note.content}</span>
                 </div>

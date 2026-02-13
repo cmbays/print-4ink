@@ -68,7 +68,7 @@ export function ScratchNoteCard({
       aria-label={`Scratch note: ${card.content.slice(0, 50)}`}
       className={cn(
         "group relative rounded-lg bg-elevated border border-border p-3",
-        "border-l-[3px]",
+        "border-l-2",
         CARD_TYPE_BORDER_COLORS.scratch_note,
         "transition-all duration-150",
         !isEditing && onEdit && "cursor-pointer hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

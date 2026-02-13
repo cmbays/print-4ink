@@ -1,5 +1,3 @@
-"use client";
-
 import { Package, MapPin, Shirt, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SERVICE_TYPE_LABELS } from "@/lib/constants";

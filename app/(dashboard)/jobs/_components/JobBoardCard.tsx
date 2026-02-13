@@ -56,7 +56,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
       aria-label={`Job ${card.jobNumber}: ${card.customerName} — ${card.title}`}
       className={cn(
         "group relative rounded-lg bg-elevated border border-border px-3 py-2",
-        "border-l-[3px]",
+        "border-l-2",
         CARD_TYPE_BORDER_COLORS.job,
         "cursor-pointer select-none",
         "hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface",
@@ -78,7 +78,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
         <div className="flex items-center gap-1.5 shrink-0">
           {card.assigneeInitials && (
             <div
-              className="flex size-6 items-center justify-center rounded-full bg-surface text-[10px] font-medium text-foreground"
+              className="flex size-6 items-center justify-center rounded-full bg-surface text-xs font-medium text-foreground"
               aria-label={`Assigned to ${card.assigneeInitials}`}
             >
               {card.assigneeInitials}
@@ -140,7 +140,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
           <Badge
             variant="ghost"
             className={cn(
-              "text-[10px]",
+              "text-xs",
               INVOICE_STATUS_BADGE_COLORS[card.invoiceStatus],
             )}
           >
@@ -164,7 +164,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{linked}</TooltipTrigger>
-      <TooltipContent side="right" className="max-w-[240px] p-3">
+      <TooltipContent side="right" className="max-w-60 p-3">
         <div className="flex flex-col gap-2">
           {isBlocked && (
             <p className="text-xs font-medium text-error">
@@ -173,7 +173,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
           )}
           {card.tasks.length > 0 && (
             <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Progress
               </p>
               {card.tasks.map((task, i) => (

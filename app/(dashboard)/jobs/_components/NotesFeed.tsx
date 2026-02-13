@@ -87,7 +87,7 @@ export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
           value={newNoteType}
           onValueChange={(v) => setNewNoteType(v as JobNoteType)}
         >
-          <SelectTrigger size="sm" className="w-[110px] shrink-0">
+          <SelectTrigger size="sm" className="w-28 shrink-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

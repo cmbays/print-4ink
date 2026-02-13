@@ -53,7 +53,7 @@ export function BoardLane({
         "flex min-w-[200px] flex-1 flex-col rounded-lg",
         "bg-background border border-border/50",
         "transition-all duration-200",
-        isOver && "border-action bg-action/5 animate-lane-glow",
+        isOver && "border-action bg-action/5 motion-safe:animate-lane-glow",
       )}
     >
       {/* Lane header */}
