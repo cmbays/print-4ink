@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-13
-**Status**: Quoting + Customer Management + Invoicing + Price Matrix verticals built and demo-ready. Knowledge base migrated from static HTML to Astro 5.3 with Pagefind search.
+**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Knowledge base on Astro 5.3 with 30 session docs.
 
 ## What's Built
 
@@ -14,14 +14,14 @@
 - Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
 - shadcn/ui components (24 primitives)
 - Fonts: Inter + JetBrains Mono via `next/font`, dark mode default
-- Vitest (314 tests, 14 test files), GitHub Actions CI
-- Layout shell: sidebar (7 nav links incl. Invoices) + per-page Topbar breadcrumbs + main content area
+- Vitest (414 tests, 17 test files), GitHub Actions CI
+- Layout shell: sidebar (8 nav links incl. Jobs + Invoices) + per-page Topbar breadcrumbs + main content area
 - Dashboard: summary cards, "Needs Attention", "In Progress" sections
 </details>
 
-<details><summary>Data Layer (13 Zod schemas)</summary>
+<details><summary>Data Layer (15 Zod schemas)</summary>
 
-- Schemas: job, quote, customer, garment, screen, color, artwork, contact, group, address, note, invoice, credit-memo
+- Schemas: job, quote, customer, garment, screen, color, artwork, contact, group, address, note, invoice, credit-memo, board-card, scratch-note
 - Constants: production states, priorities, burn status, quote status, invoice status, payment methods, credit memo reasons, lifecycle, health, type tags, payment terms, pricing tiers
 - Mock data: 10 customers, 13 contacts, 2 groups, 20 addresses, 21 notes, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garments, 8 artworks, 8 invoices, 11 payments, 2 credit memos
 - Reverse lookup helpers: getCustomerQuotes/Jobs/Contacts/Notes/Artworks/Invoices, getInvoicePayments/CreditMemos, getQuoteInvoice
@@ -136,10 +136,26 @@
 - Research docs: `docs/spikes/invoicing-{industry-practices,competitor-analysis,integration-map,ux-patterns,compliance,decisions}.md`
 </details>
 
+<details><summary>Jobs Vertical (PRs #58, #64, #77 — all merged)</summary>
+
+- Discovery: 10-competitor analysis, user interviews, friction mapping, journey design
+- Breadboard: 14 places, 126 UI affordances, 31 components, 5-wave build order
+- **Schemas**: `board-card.ts` (JobCard, QuoteCard, ScratchNoteCard), `scratch-note.ts`
+- **Helpers**: `job-utils.ts` (capacity summary, risk level, task progress, filtered cards), `board-projections.ts` (domain→view model), `board-dnd.ts` (drag ID parsing, droppable parsing)
+- **Jobs Board** (`/jobs/board`) — Unified Kanban with 3 card types (jobs, quotes, scratch notes), dnd-kit drag-and-drop, BoardFilterBar (search + service type + priority + section toggles), capacity summary strip, lane glow animations
+- **Jobs List** (`/jobs`) — DataTable with sort/search/status filter, view toggle to board, desktop+mobile
+- **Job Detail** (`/jobs/[id]`) — Command center: status timeline, task checklist, print locations, garments, notes feed, customer info, related quote link
+- **Card components**: JobBoardCard (task progress bar, risk-colored dates, invoice status, rush indicator), QuoteBoardCard (status badge, service type, notes tooltip), ScratchNoteCard (inline edit, create quote CTA)
+- **Reusable**: TaskProgressBar, ServiceTypeBadge, BoardFilterBar, DraggableCard, DroppableLane
+- Polish pass (PR #64): extracted pure functions from board page, DRY formatRelativeTime, structuredClone, CSS spring variables, accessibility (ARIA drag-drop, reduced motion), 100 new tests
+- CodeRabbit fixes (PR #77): Tailwind token standardization, parseDragId null safety, UTC date fix, touch-none mobile, motion-safe animation gate
+- GitHub issues created: #70-#76 (Zod-derived props, board extraction, accessibility, test coverage)
+</details>
+
 <details><summary>Knowledge Base — Astro Migration (PR #62 — merged)</summary>
 
 - Replaced `for_human/` (25k lines of HTML/JS generator) with `knowledge-base/` powered by Astro 5.3
-- 24 Markdown session docs with Zod-validated YAML frontmatter (build-time schema enforcement)
+- 30 Markdown session docs with Zod-validated YAML frontmatter (build-time schema enforcement)
 - 8 Astro components: Sidebar, DocCard, Pipeline, PhaseFilter, VerticalHealth, WorkflowChain, GaryQuestion, DecisionRecord
 - 6 page templates generating 51 static pages: index, session detail, vertical overview, vertical/stage, gary-tracker, decisions
 - Pagefind full-text search with highlighted snippets, sub-results, and tag facet filters
@@ -163,15 +179,24 @@
 - [ ] **#17** — Sync garment category filter with URL query params
 - [ ] **#18** — Extract shared formatCurrency/formatDate to lib/utils (invoicing done via `lib/helpers/money.ts`, quotes/customers still have local copies)
 - [ ] **#63** — KB: Remaining CodeRabbit review feedback (a11y, code quality, markdown lint, CI astro sync)
+- [ ] **#70** — Derive JobBoardCardProps from Zod schema instead of explicit interface
+- [ ] **#71** — Extract board lane config to constants
+- [ ] **#72** — Add Storybook stories for board card components
+- [ ] **#73** — Add keyboard-only drag-and-drop for board accessibility
+- [ ] **#74** — Consolidate card type rendering in board page
+- [ ] **#75** — Extract board page into smaller sub-components
+- [ ] **#76** — Unify date formatting functions across codebase
+- [ ] **#78** — Rename (dashboard) route group to avoid confusion with /dashboard page
 
 ## Next Actions
 
-1. Demo all 4 verticals (Quoting + Customer Management + Invoicing + Price Matrix) to user (4Ink owner), collect feedback
+1. Demo all 5 verticals (Quoting + Customer Management + Invoicing + Price Matrix + Jobs) to user (4Ink owner), collect feedback
 2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-3. Wire Matrix Peek Sheet into Quote Detail page for full pricing integration
-4. Connect Tag-Template Mapper to Customer Management for auto-apply during quoting
-5. Full 15-dimension design audit on Price Matrix screens
-6. Address deferred tech debt (#15-#18) as needed
+3. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
+4. Wire Matrix Peek Sheet into Quote Detail page for full pricing integration
+5. Connect Tag-Template Mapper to Customer Management for auto-apply during quoting
+6. Full 15-dimension design audit on Price Matrix screens
+7. Address deferred tech debt (#15-#18, #70-#78) as needed
 
 ## Document Map
 
@@ -194,7 +219,7 @@
 | `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
 | `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
 | `docs/breadboards/invoicing-breadboard.md` | Invoicing breadboard (9 places, 99 UI + 44 code affordances) |
-| `knowledge-base/src/content/sessions/` | 24 Markdown session docs (Astro KB, replaces `for_human/`) |
+| `knowledge-base/src/content/sessions/` | 30 Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
