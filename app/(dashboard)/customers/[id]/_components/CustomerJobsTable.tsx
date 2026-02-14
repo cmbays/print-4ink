@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +17,7 @@ interface CustomerJobsTableProps {
 }
 
 export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
+  const router = useRouter();
   const sorted = [...jobs].sort(
     (a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()
   );
@@ -47,7 +49,8 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
             {sorted.map((job) => (
               <tr
                 key={job.id}
-                className="border-b border-border/50 hover:bg-muted/50 transition-colors"
+                className="border-b border-border/50 hover:bg-muted/50 transition-colors cursor-pointer"
+                onClick={() => router.push(`/jobs/${job.id}`)}
               >
                 <td className="py-3 font-medium text-foreground">
                   {job.jobNumber}
@@ -77,8 +80,9 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
         {sorted.map((job) => (
           <div
             key={job.id}
-            className="rounded-lg border border-border bg-elevated p-4"
+            className="rounded-lg border border-border bg-elevated p-4 cursor-pointer hover:bg-muted/50 transition-colors"
             role="listitem"
+            onClick={() => router.push(`/jobs/${job.id}`)}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium text-foreground">{job.jobNumber}</span>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, FileText, ScrollText } from "lucide-react";
+import { ChevronDown, FileText, Hammer, ScrollText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -146,6 +146,18 @@ export function InvoiceDetailView({
                 className="text-action hover:underline"
               >
                 View Quote
+              </Link>
+            </div>
+          )}
+          {invoice.jobId && (
+            <div className="flex items-center gap-2 text-sm">
+              <Hammer className="size-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Linked job:</span>
+              <Link
+                href={`/jobs/${invoice.jobId}`}
+                className="text-action hover:underline"
+              >
+                View Job
               </Link>
             </div>
           )}

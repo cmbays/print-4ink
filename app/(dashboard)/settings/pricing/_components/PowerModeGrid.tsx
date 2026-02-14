@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
+import { MarginLegend } from "@/components/features/MarginLegend";
 import { cn } from "@/lib/utils";
 import {
   buildFullMatrixData,
@@ -27,12 +28,6 @@ import type {
   MarginBreakdown,
 } from "@/lib/schemas/price-matrix";
 import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Grid3x3, X, ToggleRight, ToggleLeft, Settings2, Minus, Plus } from "lucide-react";
 
 const dotColors: Record<MarginIndicator, string> = {
@@ -242,43 +237,7 @@ export function PowerModeGrid({
             </div>
 
             {/* Legend — inline with title, tooltips explain each status */}
-            <TooltipProvider skipDelayDuration={300}>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex cursor-default items-center gap-1">
-                      <span className="inline-block size-1.5 rounded-full bg-success" />
-                      Healthy
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
-                    Margin is 30% or above — price comfortably covers costs
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex cursor-default items-center gap-1">
-                      <span className="inline-block size-1.5 rounded-full bg-warning" />
-                      Caution
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
-                    Margin is 15–30% — covers costs but leaves little room for error
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex cursor-default items-center gap-1">
-                      <span className="inline-block size-1.5 rounded-full bg-error" />
-                      Unprofitable
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" sideOffset={6}>
-                    Margin is below 15% — may not cover ink, labor, and overhead
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </TooltipProvider>
+            <MarginLegend variant="tooltip" />
 
             {/* Spacer */}
             <div className="flex-1" />

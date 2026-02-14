@@ -236,7 +236,9 @@ function ServiceTypeStep({
           type="button"
           onClick={() => onChange("screen-print")}
           className={cn(
-            "flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-colors",
+            "flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "active:scale-[0.98]",
             value === "screen-print"
               ? "border-action bg-action/5"
               : "border-border hover:border-muted-foreground/40"
@@ -259,7 +261,9 @@ function ServiceTypeStep({
           type="button"
           onClick={() => onChange("dtf")}
           className={cn(
-            "flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-colors",
+            "flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "active:scale-[0.98]",
             value === "dtf"
               ? "border-action bg-action/5"
               : "border-border hover:border-muted-foreground/40"

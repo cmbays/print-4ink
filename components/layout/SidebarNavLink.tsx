@@ -1,0 +1,43 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
+
+interface SidebarNavLinkProps {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  iconColor?: string;
+  activePrefix?: string;
+}
+
+export function SidebarNavLink({
+  name,
+  href,
+  icon: Icon,
+  iconColor,
+  activePrefix,
+}: SidebarNavLinkProps) {
+  const pathname = usePathname();
+  const prefix = activePrefix ?? href;
+  const isActive =
+    prefix === "/" ? pathname === "/" : pathname.startsWith(prefix);
+
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
+        isActive
+          ? "bg-sidebar-accent text-sidebar-primary"
+          : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+      )}
+    >
+      <Icon className={cn("h-4 w-4", iconColor)} />
+      {name}
+    </Link>
+  );
+}

@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Hammer,
@@ -13,7 +11,7 @@ import {
   Shirt,
   Settings,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { SidebarNavLink } from "./SidebarNavLink";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -30,8 +28,6 @@ const settingsNavigation = [
 ];
 
 export function Sidebar() {
-  const pathname = usePathname();
-
   return (
     <aside className="flex h-full w-60 flex-col border-r border-sidebar-border bg-sidebar">
       <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
@@ -42,29 +38,9 @@ export function Sidebar() {
       </div>
       <nav className="flex flex-1 flex-col px-2 py-3">
         <div className="flex-1 space-y-1">
-          {navigation.map((item) => {
-            const prefix = item.activePrefix ?? item.href;
-            const isActive =
-              prefix === "/"
-                ? pathname === "/"
-                : pathname.startsWith(prefix);
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-primary"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                )}
-              >
-                <item.icon className={cn("h-4 w-4", item.iconColor)} />
-                {item.name}
-              </Link>
-            );
-          })}
+          {navigation.map((item) => (
+            <SidebarNavLink key={item.name} {...item} />
+          ))}
         </div>
 
         <div className="mx-3 my-3 border-t border-sidebar-border" />
@@ -73,25 +49,9 @@ export function Sidebar() {
           <span className="px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Settings
           </span>
-          {settingsNavigation.map((item) => {
-            const isActive = pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-primary"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.name}
-              </Link>
-            );
-          })}
+          {settingsNavigation.map((item) => (
+            <SidebarNavLink key={item.name} {...item} />
+          ))}
         </div>
       </nav>
     </aside>
