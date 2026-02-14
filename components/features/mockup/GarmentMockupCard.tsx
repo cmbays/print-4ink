@@ -129,6 +129,7 @@ export function GarmentMockupCard({
               {hasArt && (
                 <span
                   className="ml-1 inline-block size-1.5 rounded-full bg-action"
+                  role="img"
                   aria-label="has artwork"
                 />
               )}

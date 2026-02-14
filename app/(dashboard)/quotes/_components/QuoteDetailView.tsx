@@ -83,7 +83,7 @@ export function QuoteDetailView({
 
   return (
     <div className="space-y-6">
-      <MockupFilterProvider colors={garmentColors} />
+      {garmentColors.length > 0 && <MockupFilterProvider colors={garmentColors} />}
       {/* Header — sticky at top */}
       <div className="sticky top-0 z-10 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">

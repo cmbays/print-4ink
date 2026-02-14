@@ -15,6 +15,16 @@ export interface ArtworkPlacement {
   offsetY?: number;
 }
 
+type ResolvedPlacement = ArtworkPlacement & {
+  zone: { x: number; y: number; width: number; height: number };
+};
+
+function isResolved<T extends Record<string, unknown>>(
+  p: T | null
+): p is T & ResolvedPlacement {
+  return p !== null;
+}
+
 const EMPTY_PLACEMENTS: ArtworkPlacement[] = [];
 
 // Size presets (classes applied to the root wrapper)
@@ -78,9 +88,7 @@ export function GarmentMockup({
           if (!zone) return null;
           return { ...placement, zone };
         })
-        .filter(Boolean) as (ArtworkPlacement & {
-        zone: { x: number; y: number; width: number; height: number };
-      })[],
+        .filter(isResolved),
     [artworkPlacements, garmentCategory, view]
   );
 
@@ -151,7 +159,7 @@ export function GarmentMockup({
                 height={scaledH}
                 clipPath={`url(#${clipId})`}
                 preserveAspectRatio="xMidYMid meet"
-                style={{ mixBlendMode: "multiply" }}
+                className="mix-blend-multiply"
               />
             </g>
           );
