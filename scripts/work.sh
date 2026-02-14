@@ -22,8 +22,8 @@ PRINT4INK_PORT_MAX=3010
 
 # ── Source Libraries ────────────────────────────────────────────────────────
 # Resolve script directory (works when sourced from both Zsh and Bash)
-if [[ -n "$ZSH_VERSION" ]]; then
-    WORK_SCRIPT_DIR="${0:a:h}"
+if [[ -n "${ZSH_VERSION:-}" ]]; then
+    WORK_SCRIPT_DIR="${${(%):-%x}:a:h}"
 else
     WORK_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
@@ -146,7 +146,7 @@ NOTES
   - Outside Zellij: creates a new Zellij session to attach to
   - Branch naming: session/<MMDD>-<topic> (auto-generated, kebab-case enforced)
   - Max 6 concurrent worktrees
-  - Session registry: ~/.session-registry.json (cross-references everything)
+  - Session registry: ~/Github/print-4ink-worktrees/.session-registry.json
 HELP
 }
 
@@ -238,44 +238,61 @@ CONTEXT
     echo "  Dev:       PORT=$PORT npm run dev"
 
     # ── Zellij Integration ───────────────────────────────────────────────────
-    # Generate temp KDL layout for launching Claude in the worktree
-    local LAYOUT_FILE
-    LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
+    # Escape double-quotes in prompt for safe KDL embedding
+    local SAFE_PROMPT="${PROMPT//\"/\\\"}"
 
-    if [[ -n "$PROMPT" ]]; then
-        cat > "$LAYOUT_FILE" <<KDL
+    if [[ -n "${ZELLIJ:-}" ]]; then
+        # ── Inside Zellij: add tab to current session ────────────────────
+        local LAYOUT_FILE
+        LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
+
+        if [[ -n "$PROMPT" ]]; then
+            cat > "$LAYOUT_FILE" <<KDL
 layout {
     pane command="claude" cwd="$WORKTREE_DIR" {
-        args "$PROMPT"
+        args "$SAFE_PROMPT"
     }
 }
 KDL
-    else
-        cat > "$LAYOUT_FILE" <<KDL
+        else
+            cat > "$LAYOUT_FILE" <<KDL
 layout {
     pane command="claude" cwd="$WORKTREE_DIR"
 }
 KDL
-    fi
+        fi
 
-    if [[ -n "$ZELLIJ" ]]; then
-        # ── Inside Zellij: add tab to current session ────────────────────
         zellij action new-tab --layout "$LAYOUT_FILE" --name "$TOPIC"
         echo "  Zellij:    tab '$TOPIC' opened"
+
+        # Clean up temp file after Zellij reads it
+        (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
+        disown
     else
         # ── Outside Zellij: create new session ───────────────────────────
-        # Wrap in a full layout with a named tab
         local SESSION_LAYOUT
         SESSION_LAYOUT=$(mktemp "${TMPDIR:-/tmp}/work-session-XXXXXX.kdl")
-        cat > "$SESSION_LAYOUT" <<KDL
+
+        if [[ -n "$PROMPT" ]]; then
+            cat > "$SESSION_LAYOUT" <<KDL
 layout {
     tab name="$TOPIC" cwd="$WORKTREE_DIR" {
         pane command="claude" {
-            args "$PROMPT"
+            args "$SAFE_PROMPT"
         }
     }
 }
 KDL
+        else
+            cat > "$SESSION_LAYOUT" <<KDL
+layout {
+    tab name="$TOPIC" cwd="$WORKTREE_DIR" {
+        pane command="claude"
+    }
+}
+KDL
+        fi
+
         echo ""
         echo "  Attach the new Zellij session:"
         echo "    zellij attach $TOPIC --create --layout $SESSION_LAYOUT"
@@ -284,12 +301,9 @@ KDL
         echo "    zellij --session $TOPIC --layout $SESSION_LAYOUT"
     fi
 
-    # Clean up temp file after a delay (Zellij reads it synchronously)
-    (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
-
-    # Register in session registry
+    # Register in session registry (only pass required args, let defaults handle the rest)
     if type _registry_add &>/dev/null; then
-        _registry_add "$TOPIC" "$BRANCH" "" "" "" "" "" "" "$TOPIC"
+        _registry_add "$TOPIC" "$BRANCH"
     fi
 }
 
@@ -298,13 +312,20 @@ KDL
 _work_phase() {
     local PHASE="$1"; shift
     local VERTICAL="${1:-}"
+    local VALID_VERTICALS="quoting customer-management invoicing price-matrix jobs screen-room garments dashboard devx"
 
     [[ -z "$VERTICAL" ]] && {
         echo "Error: vertical required. Usage: work $PHASE <vertical>"
-        echo "  Verticals: quoting, customer-management, invoicing, price-matrix,"
-        echo "             jobs, screen-room, garments, dashboard, devx"
+        echo "  Verticals: $VALID_VERTICALS"
         return 1
     }
+
+    # Validate vertical against whitelist
+    if [[ ! " $VALID_VERTICALS " == *" $VERTICAL "* ]]; then
+        echo "Error: Unknown vertical '$VERTICAL'"
+        echo "  Valid verticals: $VALID_VERTICALS"
+        return 1
+    fi
     shift
 
     # Parse optional --prompt
@@ -379,6 +400,11 @@ _work_resume() {
     local topic="$1"
     [[ -z "$topic" ]] && { echo "Usage: work resume <topic>"; return 1; }
 
+    if ! type _registry_get &>/dev/null; then
+        echo "Error: Session registry not loaded. Cannot look up sessions."
+        return 1
+    fi
+
     local session_id
     session_id=$(_registry_get "$topic" | jq -r '.claudeSessionId // empty')
 
@@ -407,6 +433,11 @@ _work_fork() {
         return 1
     }
 
+    if ! type _registry_get &>/dev/null; then
+        echo "Error: Session registry not loaded. Cannot look up sessions."
+        return 1
+    fi
+
     local source_id
     source_id=$(_registry_get "$source_topic" | jq -r '.claudeSessionId // empty')
 
@@ -432,11 +463,22 @@ _work_fork() {
 # List sessions from registry
 _work_sessions() {
     local vertical_filter=""
-    [[ "${1:-}" == "--vertical" ]] && vertical_filter="$2"
+    [[ "${1:-}" == "--vertical" ]] && vertical_filter="${2:-}"
 
     echo "=== Session Registry ==="
     if [[ -n "$vertical_filter" ]]; then
-        _registry_list ".sessions[] | select(.vertical == \"$vertical_filter\")"
+        # Use jq --arg for safe parameterized filtering (no injection)
+        _registry_init
+        local header=$'TOPIC\tSTATUS\tVERTICAL\tSTAGE\tBRANCH\tKB DOC'
+        local rows
+        rows=$(jq -r --arg v "$vertical_filter" \
+            '.sessions[] | select(.vertical == $v) | "\(.topic)\t\(.status)\t\(.vertical)\t\(.stage)\t\(.branch)\t\(.kbDoc // "-")"' \
+            "$REGISTRY_FILE" 2>/dev/null)
+        if [[ -z "$rows" ]]; then
+            echo "  (no sessions for vertical '$vertical_filter')"
+        else
+            printf '%s\n%s\n' "$header" "$rows" | column -t -s $'\t'
+        fi
     else
         _registry_list
     fi
@@ -452,6 +494,11 @@ _work_status() {
     fi
     echo ""
 
+    _work_show_infra
+}
+
+# ── Shared Infrastructure Display ──────────────────────────────────────────
+_work_show_infra() {
     echo "=== Worktrees ==="
     git -C "$PRINT4INK_REPO" worktree list
     echo ""
@@ -470,20 +517,7 @@ _work_status() {
 
 # ── List (Quick Overview) ──────────────────────────────────────────────────
 _work_list() {
-    echo "=== Worktrees ==="
-    git -C "$PRINT4INK_REPO" worktree list
-    echo ""
-
-    echo "=== Zellij Sessions ==="
-    zellij list-sessions 2>/dev/null || echo "  No Zellij sessions running"
-    echo ""
-
-    echo "=== Dev Server Ports ==="
-    local port pid
-    for port in $(seq $PRINT4INK_PORT_MIN $PRINT4INK_PORT_MAX); do
-        pid=$(lsof -iTCP:$port -sTCP:LISTEN -t 2>/dev/null)
-        [[ -n "$pid" ]] && echo "  :$port  IN USE (pid $pid)"
-    done
+    _work_show_infra
 }
 
 # ── Clean: Remove Worktree + Zellij + Branch + Registry ────────────────────
@@ -492,14 +526,25 @@ _work_clean() {
     [[ -z "$TOPIC" ]] && { echo "Error: topic required. Usage: work clean <topic>"; return 1; }
 
     # Find the branch matching this topic
-    local BRANCH
-    BRANCH=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *+' | head -1)
+    local MATCHES
+    MATCHES=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *+')
+    local MATCH_COUNT
+    MATCH_COUNT=$(echo "$MATCHES" | grep -c . 2>/dev/null || echo 0)
 
-    if [[ -z "$BRANCH" ]]; then
+    if [[ -z "$MATCHES" || "$MATCH_COUNT" -eq 0 ]]; then
         echo "Error: No branch found matching 'session/*-${TOPIC}'."
         echo "  Run 'work list' to see active worktrees."
         return 1
     fi
+
+    if [[ "$MATCH_COUNT" -gt 1 ]]; then
+        echo "Error: Multiple branches match '*-${TOPIC}':"
+        echo "$MATCHES" | sed 's/^/  /'
+        echo "  Use a more specific topic name."
+        return 1
+    fi
+
+    local BRANCH="$MATCHES"
 
     local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH}"
 
