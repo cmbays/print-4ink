@@ -38,7 +38,7 @@ Group work into waves following these principles:
 - **Wave 1+**: Feature waves — parallel sessions where possible.
 - **Dependencies flow forward**: Wave N+1 depends on Wave N being merged.
 - **Within a wave**: Sessions are parallel unless `serial: true`.
-- **Max 4 parallel sessions per wave** to stay within worktree limits.
+- **Parallel sessions per wave**: No hard limit on worktrees — size waves based on logical dependencies, not worktree count.
 
 Dependency rules:
 - Schemas before UI components
@@ -117,7 +117,7 @@ Before committing:
 1. Verify all topics are unique across all waves
 2. Verify all `dependsOn` references point to real topics
 3. Verify wave 0 is serial if it's foundation work
-4. Verify no wave has more than 4 parallel sessions
+4. Verify wave sizes are reasonable for the dependency graph (no artificial limit)
 5. Verify YAML is valid: `yq '.' <manifest.yaml>` (if yq is available)
 
 ## Tips
