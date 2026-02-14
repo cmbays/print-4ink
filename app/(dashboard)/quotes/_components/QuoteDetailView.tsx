@@ -4,8 +4,9 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { DiscountRow } from "./DiscountRow";
-import { ArtworkPreview } from "./ArtworkPreview";
 import { QuoteActions } from "./QuoteActions";
+import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
+import { normalizePosition } from "@/lib/constants/print-zones";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
@@ -73,8 +74,13 @@ export function QuoteDetailView({
   const subtotal = garmentTotal + decorationTotal + setupFeesTotal;
   const effectiveTotal = quote.total;
 
+  const garmentColors = quote.lineItems
+    .map((item) => allColors.find((c) => c.id === item.colorId)?.hex)
+    .filter(Boolean) as string[];
+
   return (
     <div className="space-y-6">
+      <MockupFilterProvider colors={garmentColors} />
       {/* Header — sticky at top */}
       <div className="sticky top-0 z-10 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -196,11 +202,14 @@ export function QuoteDetailView({
                   return (
                     <div key={di} className="flex items-center gap-3 text-sm">
                       {color && (
-                        <ArtworkPreview
-                          garmentColor={color.hex}
-                          artworkThumbnailUrl={artwork?.thumbnailUrl}
-                          artworkName={artwork?.name}
-                          location={detail.location}
+                        <GarmentMockupThumbnail
+                          garmentCategory={garment?.baseCategory ?? "t-shirts"}
+                          colorHex={color.hex}
+                          artworkPlacements={artwork ? [{
+                            artworkUrl: artwork.thumbnailUrl,
+                            position: normalizePosition(detail.location),
+                          }] : []}
+                          className="shrink-0"
                         />
                       )}
                       <div className="flex-1">

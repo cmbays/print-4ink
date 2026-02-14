@@ -15,6 +15,7 @@ import {
   type DragEndEvent,
   type DropAnimation,
 } from "@dnd-kit/core";
+import { MockupFilterProvider } from "@/components/features/mockup";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -171,6 +172,13 @@ function ProductionBoardInner() {
     () => computeCapacitySummary(allFilteredCards),
     [allFilteredCards],
   );
+
+  // ---- Garment colors for mockup filter ----
+  const garmentColors = useMemo(() => {
+    return jobCards
+      .map((card) => card.garmentColorHex)
+      .filter(Boolean) as string[];
+  }, [jobCards]);
 
   const isEmpty = allFilteredCards.length === 0;
 
@@ -403,6 +411,7 @@ function ProductionBoardInner() {
 
   return (
     <div className="flex flex-col gap-4">
+      <MockupFilterProvider colors={garmentColors} />
       {/* Desktop board — hidden on mobile */}
       <div className="hidden md:block">
         {/* Accessibility: DnD instructions (visually hidden) */}
