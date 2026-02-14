@@ -26,11 +26,15 @@ export function MarginLegend({ variant = "simple", className }: MarginLegendProp
             <Tooltip key={item.label}>
               <TooltipTrigger asChild>
                 <div className="flex cursor-default items-center gap-1">
-                  <span className={cn("inline-block size-1.5 rounded-full", item.color)} />
+                  <span className={cn("inline-block size-2 rounded-full", item.color)} />
                   {item.label}
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={6}>
+              <TooltipContent
+                side="bottom"
+                sideOffset={6}
+                className="data-[state=closed]:pointer-events-none"
+              >
                 {item.tooltip}
               </TooltipContent>
             </Tooltip>

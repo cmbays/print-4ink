@@ -25,7 +25,7 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
           <Button variant="outline" size="sm" asChild>
             <Link href="/jobs/board">
               <Hammer className="size-4" />
-              Create Job
+              View Jobs
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>

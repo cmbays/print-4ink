@@ -21,8 +21,8 @@ const BURN_STATUS_COLORS: Record<BurnStatus, string> = {
   reclaimed: "bg-muted text-muted-foreground",
 };
 
-function getJobNumber(jobId: string): string {
-  return jobs.find((j) => j.id === jobId)?.jobNumber ?? "Unknown";
+function findJob(jobId: string) {
+  return jobs.find((j) => j.id === jobId) ?? null;
 }
 
 export default function ScreensPage() {
@@ -53,7 +53,7 @@ export default function ScreensPage() {
                 <p className="text-sm font-medium">No screens yet</p>
               </div>
             ) : (
-              <Table>
+              <Table aria-label="Screen inventory">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Mesh Count</TableHead>
@@ -80,12 +80,21 @@ export default function ScreensPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Link
-                          href={`/jobs/${screen.jobId}`}
-                          className="text-action hover:underline text-sm"
-                        >
-                          {getJobNumber(screen.jobId)}
-                        </Link>
+                        {(() => {
+                          const job = findJob(screen.jobId);
+                          return job ? (
+                            <Link
+                              href={`/jobs/${screen.jobId}`}
+                              className="text-action hover:underline text-sm"
+                            >
+                              {job.jobNumber}
+                            </Link>
+                          ) : (
+                            <span className="text-muted-foreground italic text-sm">
+                              Unknown job
+                            </span>
+                          );
+                        })()}
                       </TableCell>
                     </TableRow>
                   ))}

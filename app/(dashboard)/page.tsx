@@ -100,7 +100,7 @@ export default function DashboardPage() {
               <Link
                 key={job.id}
                 href={`/jobs/${job.id}`}
-                className="flex items-center justify-between rounded-md border border-border p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                className="flex items-center justify-between rounded-md border border-border p-3 hover:bg-muted/50 transition-colors"
               >
                 <div>
                   <p className="text-sm font-medium">{job.title}</p>
@@ -140,7 +140,7 @@ export default function DashboardPage() {
             <Link
               key={job.id}
               href={`/jobs/${job.id}`}
-              className="flex items-center justify-between rounded-md border border-border p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+              className="flex items-center justify-between rounded-md border border-border p-3 hover:bg-muted/50 transition-colors"
             >
               <div>
                 <p className="text-sm font-medium">{job.title}</p>
