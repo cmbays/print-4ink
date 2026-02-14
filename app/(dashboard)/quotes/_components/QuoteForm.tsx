@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag } from "lucide-react";
+import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 import { CustomerCombobox, type CustomerOption } from "@/components/features/CustomerCombobox";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { LineItemRow } from "./LineItemRow";
@@ -30,6 +31,7 @@ import {
   artworks as mockArtworks,
 } from "@/lib/mock-data";
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
+import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount } from "@/lib/schemas/quote";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
@@ -107,6 +109,13 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     initialData?.customerNotes || ""
   );
 
+  // Screen reuse
+  const customerScreens = useMemo(() => {
+    if (!customerId) return [];
+    return deriveScreensFromJobs(customerId);
+  }, [customerId]);
+  const [screenReuse, setScreenReuse] = useState(false);
+
   // Review sheet
   const [showReview, setShowReview] = useState(false);
 
@@ -179,11 +188,12 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       lineItemSetupFees += calculateLineItemSetupFee(item.serviceType);
     });
 
-    const quoteSetupFee = calculateQuoteSetupFee(lineItems);
+    const quoteSetupFee = screenReuse ? 0 : calculateQuoteSetupFee(lineItems);
+    const screenReuseDiscount = screenReuse ? calculateQuoteSetupFee(lineItems) : 0;
     const setupFees = lineItemSetupFees + quoteSetupFee;
 
-    return { garmentSubtotal, decorationSubtotal, setupFees };
-  }, [lineItems]);
+    return { garmentSubtotal, decorationSubtotal, setupFees, screenReuseDiscount };
+  }, [lineItems, screenReuse]);
 
   // Grand total for sticky bar
   const grandTotal = useMemo(() => {
@@ -236,6 +246,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   const handleCustomerSelect = useCallback(
     (id: string) => {
       setCustomerId(id);
+      // Reset screen reuse when customer changes
+      setScreenReuse(false);
       // Reset artwork selection when customer changes
       setArtworkIds([]);
       setLocalArtworks([]);
@@ -792,6 +804,25 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           </div>
         </CollapsibleSection>
 
+        {/* Screen reuse banner */}
+        {customerId && customerScreens.length > 0 && lineItems.some((li) => li.serviceType === "screen-print") && (
+          <div className="flex items-center gap-3 rounded-lg border border-success/20 bg-success/5 px-4 py-3">
+            <Monitor className="size-4 shrink-0 text-success" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">
+                {customerScreens.length} reusable screen{customerScreens.length !== 1 ? "s" : ""} on file
+              </p>
+              <p className="text-xs text-muted-foreground">
+                From previous completed jobs — setup fee can be waived
+              </p>
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <Switch checked={screenReuse} onCheckedChange={setScreenReuse} aria-label="Reuse screens" />
+              <span className="text-xs text-muted-foreground">Reuse</span>
+            </label>
+          </div>
+        )}
+
         {/* Section 2: Artwork */}
         <CollapsibleSection
           title="Artwork"
@@ -872,6 +903,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
               shipping={shipping}
               onShippingChange={setShipping}
               customerTag={customerTag}
+              screenReuse={screenReuse}
+              screenReuseDiscount={pricingBreakdown.screenReuseDiscount}
             />
           </div>
         </CollapsibleSection>

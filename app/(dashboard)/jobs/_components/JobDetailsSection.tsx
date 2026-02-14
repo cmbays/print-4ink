@@ -1,7 +1,9 @@
-import { Package, MapPin, Shirt, CheckCircle2, XCircle } from "lucide-react";
+import { Package, MapPin, Shirt, CheckCircle2, XCircle, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SERVICE_TYPE_LABELS } from "@/lib/constants";
+import { Badge } from "@/components/ui/badge";
+import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@/lib/constants";
 import { getGarmentById, getColorById } from "@/lib/helpers/garment-helpers";
+import { getScreensByJobId } from "@/lib/helpers/screen-helpers";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import type { Job } from "@/lib/schemas/job";
 
@@ -10,6 +12,8 @@ interface JobDetailsSectionProps {
 }
 
 export function JobDetailsSection({ job }: JobDetailsSectionProps) {
+  const jobScreens = getScreensByJobId(job.id);
+
   return (
     <section className="rounded-lg border border-border bg-card">
       <div className="border-b border-border px-4 py-3">
@@ -102,6 +106,32 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
                       Pending
                     </span>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Screens */}
+        {jobScreens.length > 0 && (
+          <div className="flex items-start gap-3">
+            <Printer className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+            <div className="space-y-1.5">
+              {jobScreens.map((screen) => (
+                <div key={screen.id} className="flex items-center gap-2 text-sm">
+                  <span className="text-foreground">{screen.meshCount} mesh</span>
+                  <span className="text-xs text-muted-foreground">{screen.emulsionType}</span>
+                  <Badge
+                    variant="ghost"
+                    className={cn(
+                      "text-xs",
+                      screen.burnStatus === "burned" && "bg-success/10 text-success border border-success/20",
+                      screen.burnStatus === "pending" && "bg-warning/10 text-warning border border-warning/20",
+                      screen.burnStatus === "reclaimed" && "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {BURN_STATUS_LABELS[screen.burnStatus]}
+                  </Badge>
                 </div>
               ))}
             </div>
