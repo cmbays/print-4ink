@@ -46,17 +46,20 @@ Created a comprehensive implementation plan for the mobile optimization vertical
 | Sprint 3 | Tasks 15-18 | ~1 week | Lists + Forms: Quotes mobile cards, polish existing cards, MobileFilterSheet, form mobile layouts |
 | Sprint 4 | Tasks 19-25 | ~1 week | Detail Views + Polish: BottomActionBar, all detail mobile layouts, FullScreenModal, desktop regression |
 
-## New Components (12 total)
+## New Components (~15 total)
 
 | Component | File Path | Sprint |
 |-----------|-----------|--------|
+| `navigation.ts` | `lib/constants/navigation.ts` | 1 |
 | `BottomTabBar` | `components/layout/bottom-tab-bar.tsx` | 1 |
 | `MobileDrawer` | `components/layout/mobile-drawer.tsx` | 1 |
 | `MobileHeader` | `components/layout/mobile-header.tsx` | 1 |
+| `MobileShell` | `components/layout/mobile-shell.tsx` | 1 |
 | `BottomSheet` | `components/ui/bottom-sheet.tsx` | 1 |
 | `MobileCardList` | `components/ui/mobile-card-list.tsx` | 1 |
 | `MobileKanbanBoard` | `app/(dashboard)/jobs/board/_components/MobileKanbanBoard.tsx` | 2 |
 | `MobileLaneTabBar` | `app/(dashboard)/jobs/board/_components/MobileLaneTabBar.tsx` | 2 |
+| `BlockReasonSheet` | `components/features/BlockReasonSheet.tsx` | 2 |
 | `CapacitySummary` | `components/features/CapacitySummary.tsx` | 2 |
 | `NoteCapture` | `components/features/NoteCapture.tsx` | 2 |
 | `LaneSelector` | `components/features/LaneSelector.tsx` | 2 |
@@ -64,11 +67,23 @@ Created a comprehensive implementation plan for the mobile optimization vertical
 | `BottomActionBar` | `components/layout/bottom-action-bar.tsx` | 4 |
 | `FullScreenModal` | `components/ui/full-screen-modal.tsx` | 4 |
 
+## Architect Review
+
+Two independent architect agents reviewed the plan and identified 20 findings (4 critical, 12 important, 4 nice-to-have). All critical and important fixes were applied:
+
+- **Server component preservation**: Dashboard layout stays server component; extracted `MobileShell` client wrapper
+- **Color class correction**: `text-text-muted`/`text-text-secondary` → `text-muted-foreground` (~20 instances)
+- **Type system alignment**: Board uses `JobCard` from `board-card.ts`, not raw `Job` schema
+- **Missing affordances added**: FAB, section toggle, quote cards, scratch notes, BlockReasonSheet
+- **ARIA fix**: `<nav>` + `aria-current="page"` instead of `role="tablist"`
+- **Design standards updated**: CLAUDE.md color token table fixed, z-index scale added, mobile patterns documented
+
 ## Risk Areas
 
 1. **Mobile Kanban swipe (Task 10)** — Highest complexity; may need a spike for touch gesture handling with Framer Motion
-2. **Dashboard layout client component (Task 6)** — Converting server component to client for drawer state could affect server component children
-3. **BottomActionBar z-index (Task 19)** — Positioning above BottomTabBar requires careful layering
+2. **iOS Safari scroll locking** — Bottom sheets may need body scroll lock to prevent background scroll
+3. **Mobile keyboard handling** — NoteCapture textarea may push content on iOS virtual keyboard
+4. **BottomActionBar z-index (Task 19)** — Uses z-40 to layer below BottomTabBar (z-50)
 
 ## Artifacts
 
