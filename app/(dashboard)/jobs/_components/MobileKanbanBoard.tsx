@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, AlertTriangle, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { MobileLaneTabBar } from "./MobileLaneTabBar";
 import { BlockReasonSheet } from "@/components/features/BlockReasonSheet";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
@@ -206,16 +207,19 @@ export function MobileKanbanBoard({
   return (
     <div className="flex flex-col gap-0 md:hidden">
       {/* Section toggle: All / Jobs / Quotes */}
-      <div className="flex items-center gap-1 border-b border-border px-4 py-2">
+      <div className="flex items-center gap-1 border-b border-border px-4 py-2" role="tablist" aria-label="Card type filter">
         {(["all", "jobs", "quotes"] as const).map((filter) => (
           <button
             key={filter}
+            role="tab"
+            aria-selected={sectionFilter === filter}
             onClick={() => setSectionFilter(filter)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            className={cn(
+              "min-h-(--mobile-touch-target) rounded-full px-3 py-1 text-xs font-medium transition-colors",
               sectionFilter === filter
                 ? "bg-action/10 text-action"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
+            )}
           >
             {filter === "all" ? "All" : filter === "jobs" ? "Jobs" : "Quotes"}
           </button>

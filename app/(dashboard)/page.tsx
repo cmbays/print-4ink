@@ -130,7 +130,7 @@ export default function DashboardPage() {
                 <Link
                   key={job.id}
                   href={`/jobs/${job.id}`}
-                  className="flex items-center justify-between rounded-md border border-border p-3 transition-colors hover:bg-muted/50"
+                  className="flex min-h-(--mobile-touch-target) items-center justify-between rounded-md border border-border p-3 transition-colors hover:bg-muted/50"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{job.title}</p>
