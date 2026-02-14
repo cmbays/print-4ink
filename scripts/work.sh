@@ -184,7 +184,7 @@ _work_new() {
     # Safety: worktree limit
     local COUNT
     COUNT=$(git -C "$PRINT4INK_REPO" worktree list | wc -l | tr -d ' ')
-    if (( COUNT > PRINT4INK_MAX_WORKTREES )); then
+    if (( COUNT >= PRINT4INK_MAX_WORKTREES )); then
         echo "Warning: $COUNT worktrees active (max $PRINT4INK_MAX_WORKTREES)."
         echo "  Run 'work list' then 'work clean <topic>' first."
         return 1
@@ -297,7 +297,7 @@ KDL
 _work_phase() {
     local PHASE="$1"; shift
     local VERTICAL="${1:-}"
-    local VALID_VERTICALS="quoting customer-management invoicing price-matrix jobs screen-room garments dashboard devx"
+    local VALID_VERTICALS="quoting customer-management invoicing price-matrix jobs screen-room garments dashboard mobile-optimization devx meta"
 
     [[ -z "$VERTICAL" ]] && {
         echo "Error: vertical required. Usage: work $PHASE <vertical>"
@@ -701,11 +701,13 @@ _work_show_infra() {
     echo ""
 
     echo "=== Dev Server Ports ==="
-    local port pid
+    local port pid found=0
     for port in $(seq $PRINT4INK_PORT_MIN $PRINT4INK_PORT_MAX); do
         pid=$(lsof -iTCP:$port -sTCP:LISTEN -t 2>/dev/null)
-        [[ -n "$pid" ]] && echo "  :$port  IN USE (pid $pid)"
+        [[ -n "$pid" ]] && { echo "  :$port  IN USE (pid $pid)"; found=1; }
     done
+    (( found == 0 )) && echo "  (no active dev servers)"
+    return 0
 }
 
 # ── List (Quick Overview) ──────────────────────────────────────────────────
