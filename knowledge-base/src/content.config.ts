@@ -11,6 +11,7 @@ const verticals = [
   'screen-room',
   'garments',
   'dashboard',
+  'mobile-optimization',
   'meta',
 ] as const;
 
