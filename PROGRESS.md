@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-14
-**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Mobile Optimization vertical registered and research phase complete. Knowledge base on Astro 5.3 with 35 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
+**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Mobile Optimization Sprint 1 complete — navigation shell and shared components merged (PR #101). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 35 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
 
 ## What's Built
 
@@ -205,6 +205,25 @@
 - KB: `2026-02-14-garment-mockup-breadboard.md`, `2026-02-14-garment-mockup-impl-plan.md`
 </details>
 
+<details><summary>Mobile Optimization Sprint 1 — Navigation Shell (PR #101 — merged)</summary>
+
+- **8 mobile CSS design tokens** in `@theme inline`: `--mobile-nav-height`, `--mobile-header-height`, `--mobile-touch-target`, `--mobile-bottom-safe-area`, `--mobile-card-gap`, `--mobile-sheet-max-height`, `--mobile-fab-size`, `--shadow-brutal-sm`
+- **Custom utilities**: `pb-safe` (safe area padding), `scrollbar-none` (hide scrollbar, keep scroll)
+- **Viewport**: `viewport-fit=cover` export for notched device support
+- **`useIsMobile` hook**: `useSyncExternalStore`-based viewport detection (SSR-safe, React 19 compatible)
+- **Shared nav constants**: `NavItem` interface, `PRIMARY_NAV` (4 items), `SECONDARY_NAV` (4 items) in `lib/constants/navigation.ts`
+- **BottomTabBar**: 5-tab fixed bottom nav (Dashboard, Jobs, Quotes, Customers, More) with active states, focus-visible rings, touch targets >= 44px
+- **MobileDrawer**: Left sheet with secondary nav links (Invoices, Screen Room, Garments, Settings)
+- **MobileHeader**: Dynamic page title from pathname matching + notification bell placeholder (disabled, Phase 2)
+- **MobileShell**: Client wrapper managing drawer state — dashboard layout stays server component
+- **Layout integration**: Sidebar hidden on mobile (`hidden md:flex`), MobileShell wraps content, zero desktop regression
+- **Touch target audit**: All mobile interactive elements verified >= 44px (`min-h-(--mobile-touch-target)`)
+- **BottomSheet**: Reusable bottom sheet component (side=bottom, rounded top, drag handle, 85vh max, safe area)
+- **MobileCardList**: Generic card list container with empty state, `md:hidden`, mobile-card-gap token
+- Key decisions: CSS-first responsive (`md:hidden`/`hidden md:block`), per-component touch targets (not global), `useSyncExternalStore` over `useState`+`useEffect`, `label` field in NavItem (sidebar adopts in Sprint 4)
+- 12 commits, 9 tasks across 3 batches, 2 CodeRabbit review rounds (all legitimate issues fixed, false positives documented)
+</details>
+
 <details><summary>PM Foundation (PR #91 — merged)</summary>
 
 - **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
@@ -247,17 +266,16 @@
 
 ## Next Actions
 
-1. **HIGH PRIORITY: Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
-2. **Mobile Optimization — Interview Gary** — 10 questions prepared in scope definition, validate mobile usage assumptions
-3. **Mobile Optimization — Breadboarding** — Map UI affordances for bottom tab bar, card components, mobile navigation shell
-4. **Mobile Optimization — Build Phase 1** — Bottom tab bar → card list views → dashboard → forms → Kanban → detail views (~30-40 hours, 4 sprints)
-5. **Configure hookify** (#80) — reduce permission fatigue across all sessions
-6. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
-7. Demo all 5 verticals to Gary (4Ink owner), collect feedback
-8. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
-9. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-10. Run first cool-down cycle to shape Phase 2 bets
-11. Address deferred tech debt (#15-#18, #70-#78) as needed
+1. **HIGH PRIORITY: Mobile Optimization Sprint 2 — Responsive Page Adaptations** — Sprint 1 navigation shell complete (PR #101). Sprint 2 covers: responsive dashboard cards, quotes list table→card conversion, jobs board mobile adaptation, customer list mobile view. Execute against `docs/plans/2026-02-14-mobile-optimization-implementation.md` Tasks 10-16.
+2. **HIGH PRIORITY: Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
+3. **Mobile Optimization Sprints 3-4** — Sprint 3: mobile forms + detail views. Sprint 4: polish, animation, sidebar nav constant adoption. Full plan at `docs/plans/2026-02-14-mobile-optimization-implementation.md`.
+4. **Configure hookify** (#80) — reduce permission fatigue across all sessions
+5. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
+6. Demo all 5 verticals to Gary (4Ink owner), collect feedback
+7. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
+8. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+9. Run first cool-down cycle to shape Phase 2 bets
+10. Address deferred tech debt (#15-#18, #70-#78) as needed
 
 ## Document Map
 
