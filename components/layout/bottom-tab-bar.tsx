@@ -42,8 +42,9 @@ export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
               onClick={onMorePress}
               className={cn(
                 "flex flex-1 flex-col items-center justify-center gap-0.5 py-1",
-                "text-muted-foreground transition-colors",
+                "text-muted-foreground transition-colors hover:text-foreground active:text-foreground",
                 "min-h-(--mobile-touch-target)",
+                "disabled:pointer-events-none disabled:opacity-50",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
               )}
             >
