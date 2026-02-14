@@ -15,6 +15,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+import { GarmentMockupCard, MockupFilterProvider } from "@/components/features/mockup";
+import type { ArtworkPlacement } from "@/components/features/mockup";
+import { normalizePosition } from "@/lib/constants/print-zones";
+
 import { JobHeader } from "../_components/JobHeader";
 import { QuickActionsBar } from "../_components/QuickActionsBar";
 import { TaskChecklist } from "../_components/TaskChecklist";
@@ -30,6 +34,9 @@ import {
   customers,
   quotes,
   invoices,
+  garmentCatalog,
+  colors as allColors,
+  artworks as allArtworks,
 } from "@/lib/mock-data";
 import type { Job, Lane, JobNoteType } from "@/lib/schemas/job";
 
@@ -80,6 +87,39 @@ export default function JobDetailPage() {
     if (!job?.invoiceId) return undefined;
     const invoice = invoices.find((inv) => inv.id === job.invoiceId);
     return invoice?.status;
+  }, [job]);
+
+  // Resolve garment mockup data for primary garment
+  const mockupData = useMemo(() => {
+    if (!job) return null;
+    const garmentId = job.garmentDetails[0]?.garmentId;
+    const colorId = job.garmentDetails[0]?.colorId;
+    const garment = garmentCatalog.find((g) => g.id === garmentId);
+    const color = allColors.find((c) => c.id === colorId);
+    if (!garment || !color) return null;
+
+    // KNOWN LIMITATION: artworkIds[] and printLocations[] are separate arrays
+    // with no guaranteed 1:1 correspondence. This mapping is best-effort.
+    // Phase 2: add artworkId directly to jobPrintLocationSchema.
+    const artworkPlacements: ArtworkPlacement[] = job.printLocations
+      .map((loc, i) => {
+        const artworkId = i < job.artworkIds.length ? job.artworkIds[i] : undefined;
+        const artwork = artworkId
+          ? allArtworks.find((a) => a.id === artworkId)
+          : undefined;
+        return {
+          artworkUrl: artwork?.thumbnailUrl ?? "",
+          position: normalizePosition(loc.position),
+        };
+      })
+      .filter((p) => p.artworkUrl);
+
+    return {
+      garmentCategory: garment.baseCategory,
+      colorHex: color.hex,
+      artworkPlacements,
+      colors: [color.hex],
+    };
   }, [job]);
 
   // ===========================================================================
@@ -318,6 +358,24 @@ export default function JobDetailPage() {
         onBlock={() => setBlockDialogOpen(true)}
         onUnblock={unblockJob}
       />
+
+      {/* Per-page MockupFilterProvider */}
+      {mockupData && <MockupFilterProvider colors={mockupData.colors} />}
+
+      {/* What We're Printing */}
+      {mockupData && (
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h3 className="mb-3 text-sm font-semibold text-foreground">
+            What We&apos;re Printing
+          </h3>
+          <GarmentMockupCard
+            garmentCategory={mockupData.garmentCategory}
+            colorHex={mockupData.colorHex}
+            artworkPlacements={mockupData.artworkPlacements}
+            size="md"
+          />
+        </div>
+      )}
 
       {/* Two-column layout on large screens */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">

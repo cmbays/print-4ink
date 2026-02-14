@@ -2,6 +2,7 @@ import { z } from "zod";
 import { laneEnum, riskLevelEnum, priorityEnum } from "./job";
 import { serviceTypeEnum, quoteStatusEnum } from "./quote";
 import { invoiceStatusEnum } from "./invoice";
+import { garmentCategoryEnum } from "./garment";
 
 // Board card is a VIEW MODEL — projected from underlying entities, not stored.
 
@@ -69,6 +70,9 @@ export const jobCardSchema = z.object({
   invoiceStatus: invoiceStatusEnum.optional(),
   blockReason: z.string().max(500).optional(),
   orderTotal: z.number().positive(),
+  garmentCategory: garmentCategoryEnum.optional(),
+  garmentColorHex: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+  primaryArtworkUrl: z.string().optional(),
 });
 
 // ---------------------------------------------------------------------------

@@ -14,6 +14,7 @@ import { invoiceSchema } from "../invoice";
 import { creditMemoSchema } from "../credit-memo";
 import { scratchNoteSchema } from "../scratch-note";
 import { quoteCardSchema } from "../board-card";
+import { mockupTemplateSchema } from "../mockup-template";
 import {
   customers,
   contacts,
@@ -31,6 +32,7 @@ import {
   creditMemos,
   scratchNotes,
   quoteCards,
+  mockupTemplates,
 } from "@/lib/mock-data";
 
 describe("mock data validates against schemas", () => {
@@ -560,6 +562,13 @@ describe("data coverage", () => {
     expect(done.length).toBeGreaterThanOrEqual(1);
     for (const job of done) {
       expect(job.completedAt).toBeTruthy();
+    }
+  });
+
+  it("all mockup templates are valid", () => {
+    expect(mockupTemplates.length).toBeGreaterThanOrEqual(1);
+    for (const template of mockupTemplates) {
+      expect(() => mockupTemplateSchema.parse(template)).not.toThrow();
     }
   });
 });

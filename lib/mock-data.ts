@@ -13,6 +13,7 @@ import type { GarmentCatalog } from "./schemas/garment";
 import type { Artwork } from "./schemas/artwork";
 import type { Invoice, Payment } from "./schemas/invoice";
 import type { CreditMemo } from "./schemas/credit-memo";
+import type { MockupTemplate } from "./schemas/mockup-template";
 
 // ---------------------------------------------------------------------------
 // Customer IDs (stable — referenced by jobs, quotes, artworks)
@@ -2321,3 +2322,36 @@ export function getJobNotes(jobId: string): JobNote[] {
   const job = jobs.find((j) => j.id === jobId);
   return job?.notes ?? [];
 }
+
+// ---------------------------------------------------------------------------
+// Mockup Templates
+// ---------------------------------------------------------------------------
+
+export const mockupTemplates: MockupTemplate[] = [
+  {
+    id: "mt-00000001-0000-4000-8000-000000000001",
+    garmentCategory: "t-shirts",
+    view: "front",
+    svgPath: "/mockup-templates/t-shirts-front.svg",
+    printZones: [
+      { position: "front-chest", x: 28, y: 18, width: 44, height: 35 },
+      { position: "left-chest", x: 52, y: 18, width: 16, height: 16 },
+      { position: "full-front", x: 22, y: 15, width: 56, height: 50 },
+    ],
+    viewBoxWidth: 400,
+    viewBoxHeight: 480,
+  },
+  {
+    id: "mt-00000001-0000-4000-8000-000000000002",
+    garmentCategory: "t-shirts",
+    view: "back",
+    svgPath: "/mockup-templates/t-shirts-back.svg",
+    printZones: [
+      { position: "full-back", x: 22, y: 18, width: 56, height: 50 },
+      { position: "upper-back", x: 25, y: 12, width: 50, height: 15 },
+      { position: "nape", x: 42, y: 5, width: 16, height: 10 },
+    ],
+    viewBoxWidth: 400,
+    viewBoxHeight: 480,
+  },
+];

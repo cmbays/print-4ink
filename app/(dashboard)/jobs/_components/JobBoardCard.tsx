@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
+import { GarmentMockupThumbnail } from "@/components/features/mockup";
 import { RISK_COLORS } from "@/lib/constants";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { formatShortDate } from "@/lib/helpers/format";
@@ -65,8 +66,19 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
         isBlocked && "opacity-60",
       )}
     >
-      {/* Header: customer name + assignee initials + service icon */}
+      {/* Header: mockup + customer name + assignee initials + service icon */}
       <div className="flex items-start justify-between gap-2">
+        {card.garmentCategory && card.garmentColorHex && (
+          <GarmentMockupThumbnail
+            garmentCategory={card.garmentCategory}
+            colorHex={card.garmentColorHex}
+            artworkPlacements={card.primaryArtworkUrl ? [{
+              artworkUrl: card.primaryArtworkUrl,
+              position: "front-chest",
+            }] : []}
+            className="shrink-0"
+          />
+        )}
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-foreground truncate">
             {card.customerName}
