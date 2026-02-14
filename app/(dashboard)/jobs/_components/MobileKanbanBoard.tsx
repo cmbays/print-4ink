@@ -46,7 +46,7 @@ function MobileJobCard({
   job: JobCard;
   activeLane: Lane;
   onMoveToNext: () => void;
-  onBlock: (reason: string) => void;
+  onBlock: () => void;
 }) {
   const { taskProgress } = job;
 
@@ -107,7 +107,7 @@ function MobileJobCard({
               className="min-h-(--mobile-touch-target) text-warning"
               onClick={(e) => {
                 e.preventDefault();
-                onBlock("");
+                onBlock();
               }}
             >
               <AlertTriangle className="h-4 w-4" />
@@ -271,7 +271,7 @@ export function MobileKanbanBoard({
                       onMoveCard(job, nextLane);
                     }
                   }}
-                  onBlock={() => setBlockingJob(job)}
+                  onBlock={() => { setBlockingJob(job); }}
                 />
               ))}
           </>

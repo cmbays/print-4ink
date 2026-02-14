@@ -18,10 +18,12 @@ export function MobileLaneTabBar({
   cardCounts,
 }: MobileLaneTabBarProps) {
   return (
-    <div className="flex gap-1 overflow-x-auto border-b border-border px-1 pb-px scrollbar-none">
+    <div className="flex gap-1 overflow-x-auto border-b border-border px-1 pb-px scrollbar-none" role="tablist" aria-label="Board lanes">
       {lanes.map((lane) => (
         <button
           key={lane}
+          role="tab"
+          aria-selected={activeLane === lane}
           onClick={() => onLaneChange(lane)}
           className={cn(
             "flex shrink-0 items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",

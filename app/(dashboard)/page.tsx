@@ -30,13 +30,14 @@ const inProgressJobs = jobs.filter(
 const completedJobs = jobs.filter((j) => j.lane === "done");
 
 // Coming up this week — jobs due within the next 7 days (server-computed)
-const now = new Date();
-const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const weekFromToday = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 const comingUpJobs = jobs
   .filter((j) => {
     if (j.lane === "done" || j.isArchived) return false;
     const due = new Date(j.dueDate);
-    return due >= now && due <= weekFromNow;
+    return due >= today && due <= weekFromToday;
   })
   .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
