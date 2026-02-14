@@ -8,7 +8,9 @@ import { CustomerJobsTable } from "./CustomerJobsTable";
 import { ArtworkGallery } from "@/components/features/ArtworkGallery";
 import { ContactHierarchy } from "./ContactHierarchy";
 import { CustomerDetailsPanel } from "./CustomerDetailsPanel";
+import { CustomerScreensTab } from "./CustomerScreensTab";
 import { NotesPanel } from "@/components/features/NotesPanel";
+import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Quote } from "@/lib/schemas/quote";
 import type { Job } from "@/lib/schemas/job";
@@ -38,6 +40,7 @@ export function CustomerTabs({
 }: CustomerTabsProps) {
   const defaultTab = customer.lifecycleStage === "prospect" ? "notes" : "activity";
   const [activeTab, setActiveTab] = useState(defaultTab);
+  const screens = deriveScreensFromJobs(customer.id);
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -57,6 +60,9 @@ export function CustomerTabs({
         </TabsTrigger>
         <TabsTrigger value="artwork" className="px-2 text-xs sm:text-sm sm:px-3">
           Artwork{artworks.length > 0 && ` (${artworks.length})`}
+        </TabsTrigger>
+        <TabsTrigger value="screens" className="px-2 text-xs sm:text-sm sm:px-3">
+          Screens{screens.length > 0 && ` (${screens.length})`}
         </TabsTrigger>
         <TabsTrigger value="contacts" className="px-2 text-xs sm:text-sm sm:px-3">
           Contacts{customer.contacts.length > 0 && ` (${customer.contacts.length})`}
@@ -93,6 +99,10 @@ export function CustomerTabs({
           artworks={artworks}
           customerId={customer.id}
         />
+      </TabsContent>
+
+      <TabsContent value="screens" className="mt-4">
+        <CustomerScreensTab customerId={customer.id} />
       </TabsContent>
 
       <TabsContent value="contacts" className="mt-4">
