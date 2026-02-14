@@ -4,7 +4,7 @@ description: "Every dependency mapped to its domain purpose, with decision conte
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-07
+last_updated: 2026-02-14
 last_verified: 2026-02-09
 depends_on: []
 ---
@@ -83,6 +83,7 @@ depends_on: []
 | Tool | Version | Purpose |
 |------|---------|---------|
 | **big.js** | ^7.0.1 | Arbitrary-precision decimal arithmetic for all monetary calculations |
+| **@types/big.js** | ^6.2.2 | TypeScript type definitions for big.js |
 
 **Why big.js**: JavaScript's IEEE 754 floating-point causes silent errors in financial math (`0.1 + 0.2 ≠ 0.3`). big.js provides exact decimal arithmetic in 6KB — the smallest of the three libraries by the same author (big.js < bignumber.js < decimal.js). It covers exactly what we need: add, subtract, multiply, divide, compare.
 
@@ -141,12 +142,13 @@ depends_on: []
 | Tool | Version | Purpose |
 |------|---------|---------|
 | **Vitest** | ^4.0.18 | Unit test runner. Schema validation tests in Phase 1, expanding in Phase 3. |
+| **@playwright/test** | ^1.58.2 | E2E browser testing. Cross-browser integration tests for critical user flows. |
 
 **Why Vitest**: Fast, native TypeScript support, Vite-based (shares config patterns with Next.js ecosystem). Tests live in `__tests__/` directories next to source files.
 
 **When to use**: Zod schema validation tests (`lib/schemas/__tests__/`), mock data integrity tests. Component tests deferred to Phase 2/3 when UI stabilizes.
 
-**When NOT to use**: Don't write component rendering tests in Phase 1 — the UI is changing too rapidly. E2E tests (Playwright) deferred until after Checkpoint 1.
+**When NOT to use**: Don't write component rendering tests in Phase 1 — the UI is changing too rapidly.
 
 ---
 

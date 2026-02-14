@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { SERVICE_TYPE_COLORS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import type { MarginIndicator as MarginIndicatorType } from "@/lib/schemas/price-matrix";
 import { MarginIndicator } from "./MarginIndicator";
 import {
@@ -52,11 +53,6 @@ interface PricingTemplateCardProps {
   onSetDefault: () => void;
 }
 
-const serviceTypeConfig = {
-  "screen-print": { label: "Screen Print", colorClass: "text-action" },
-  dtf: { label: "DTF", colorClass: "text-brown" },
-} as const;
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -71,8 +67,6 @@ export function PricingTemplateCard({
   onDelete,
   onSetDefault,
 }: PricingTemplateCardProps) {
-  const serviceConfig = serviceTypeConfig[template.serviceType];
-
   return (
     <Card
       className={cn(
@@ -173,10 +167,10 @@ export function PricingTemplateCard({
             variant="ghost"
             className={cn(
               "text-[10px] px-1.5 py-0",
-              serviceConfig.colorClass
+              SERVICE_TYPE_COLORS[template.serviceType]
             )}
           >
-            {serviceConfig.label}
+            {SERVICE_TYPE_LABELS[template.serviceType]}
           </Badge>
           <Badge
             variant="ghost"
