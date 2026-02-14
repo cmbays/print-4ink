@@ -335,6 +335,9 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 | `design-auditor` | Design review checkpoints | design-audit |
 | `feature-strategist` | Competitive analysis, feature planning | feature-strategy |
 | `doc-sync` | Syncing docs with code changes | doc-sync |
+| `secretary` (Ada) | Project pulse, 1:1 check-ins, strategic advice | one-on-one, cool-down |
+| `finance-sme` | Self-review of financial calculations | — |
+| `build-reviewer` | Self-review of code quality | — |
 
 **Calling convention**: "Use the [agent-name] agent to [task]" — e.g., "Use the frontend-builder agent to build PageHeader"
 
