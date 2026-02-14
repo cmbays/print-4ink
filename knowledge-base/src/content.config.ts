@@ -12,6 +12,7 @@ const verticals = [
   'garments',
   'dashboard',
   'mobile-optimization',
+  'devx',
   'meta',
 ] as const;
 
@@ -21,6 +22,7 @@ const stages = [
   'breadboarding',
   'implementation-planning',
   'build',
+  'polish',
   'review',
   'learnings',
 ] as const;
