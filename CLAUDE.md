@@ -4,8 +4,8 @@ description: "AI operating rules, design system, coding standards, and canonical
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-10
-last_verified: 2026-02-10
+last_updated: 2026-02-14
+last_verified: 2026-02-14
 depends_on: []
 ---
 
@@ -164,18 +164,22 @@ agent-outputs/              # Structured output from agent runs (audit trail)
 
 ### Color Tokens (Ghostty Niji theme)
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `--color-bg-primary` | `#141515` | Main background |
-| `--color-bg-elevated` | `#1c1d1e` | Cards, panels |
-| `--color-bg-surface` | `#232425` | Interactive surfaces |
-| `--color-text-primary` | `rgba(255,255,255,0.87)` | High-emphasis text |
-| `--color-text-secondary` | `rgba(255,255,255,0.60)` | Medium-emphasis text |
-| `--color-text-muted` | `rgba(255,255,255,0.38)` | Hints, disabled |
-| `--color-action` | `#2ab9ff` (Niji blue) | Primary CTAs |
-| `--color-success` | `#54ca74` (Niji green) | Completions |
-| `--color-error` | `#d23e08` (Niji red) | Failures |
-| `--color-warning` | `#ffc663` (Niji gold) | Cautions |
+Colors are defined as CSS custom properties in `app/globals.css` and exposed via `@theme inline` for Tailwind. Use the **Tailwind class** column, not raw CSS variables.
+
+| Tailwind Class | CSS Variable | Value | Use |
+|----------------|-------------|-------|-----|
+| `bg-background` | `--background` | `#141515` | Main background |
+| `bg-elevated` | `--elevated` | `#1c1d1e` | Cards, panels |
+| `bg-surface` | `--surface` | `#232425` | Interactive surfaces |
+| `text-foreground` | `--foreground` | `rgba(255,255,255,0.87)` | High-emphasis text |
+| `text-muted-foreground` | `--muted-foreground` | `rgba(255,255,255,0.60)` | Medium-emphasis text, hints |
+| `text-action` | `--action` | `#2ab9ff` (Niji blue) | Primary CTAs, active states |
+| `text-success` | `--success` | `#54ca74` (Niji green) | Completions |
+| `text-error` / `text-destructive` | `--error` / `--destructive` | `#d23e08` (Niji red) | Failures |
+| `text-warning` | `--warning` | `#ffc663` (Niji gold) | Cautions |
+| `border-border` | `--border` | `rgba(255,255,255,0.12)` | Subtle borders |
+
+> **Note:** There is no separate "text-secondary" or "text-muted" token. `text-foreground` (87% opacity) is high emphasis, `text-muted-foreground` (60% opacity) covers both medium emphasis and hint text. Do NOT use `text-text-muted` or `text-text-secondary` — these classes do not exist.
 
 ### Typography & Spacing
 
@@ -184,10 +188,30 @@ agent-outputs/              # Structured output from agent runs (audit trail)
 - **Border radius**: `sm: 4px`, `md: 8px`, `lg: 12px`
 - **Neobrutalist shadow**: `4px 4px 0px` on primary CTAs
 
+### z-index Scale
+
+| z-index | Usage | Notes |
+|---------|-------|-------|
+| `z-10` | Sticky headers, inline overlays | Within content flow |
+| `z-40` | BottomActionBar, FAB | Above content, below navigation |
+| `z-50` | BottomTabBar, Sheet/Dialog overlays | Navigation + modal layer (shadcn default) |
+
+Sheet and Dialog components from shadcn/ui use z-50 with a backdrop overlay that covers the full viewport. Do not create new z-index values without checking this scale.
+
+### Mobile Responsive Patterns
+
+- **Breakpoint**: `md:` (768px) is the single responsive breakpoint. Below = mobile, above = desktop.
+- **CSS-first responsive**: Use `md:hidden` / `hidden md:block` for show/hide. Avoid `useIsMobile()` unless JS logic requires it (e.g., FullScreenModal). CSS breakpoints have zero hydration risk.
+- **Mobile tokens**: Defined in `globals.css @theme inline` — `--mobile-nav-height`, `--mobile-touch-target`, `--mobile-card-gap`, etc. Use via Tailwind: `h-(--mobile-nav-height)`.
+- **Touch targets**: All mobile interactive elements must be ≥ 44px (`min-h-(--mobile-touch-target)`). Enforce per-component, NOT via global CSS.
+- **Safe area**: Use `pb-safe` utility for bottom safe area on notched devices. Requires `viewport-fit=cover` in viewport meta.
+- **Navigation constants**: Import from `lib/constants/navigation.ts` — shared between Sidebar, BottomTabBar, MobileDrawer.
+- **Conditional rendering for state reset**: Bottom sheets and modals that have form state should be rendered conditionally: `{open && <Sheet />}`. This ensures React unmounts/remounts on close, resetting all `useState` hooks automatically.
+
 ## Coding Standards
 
 1. **Zod-first types**: Define Zod schema, derive type via `z.infer<typeof schema>`. No separate interfaces.
-2. **Server components default**: Only add `"use client"` when using hooks, event handlers, or browser APIs.
+2. **Server components default**: Only add `"use client"` when using hooks, event handlers, or browser APIs. When a server component (e.g., `layout.tsx`) needs client interactivity, extract a `"use client"` wrapper component that receives `children` as a prop — keep the parent as a server component.
 3. **DRY components**: Wrap repeated UI into reusable components in `@/components/`.
 4. **Separation of concerns**: Keep logic (hooks) separate from presentation (Tailwind classes).
 5. **URL state**: Filters, search, pagination live in URL query params.
