@@ -3,8 +3,8 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-13
-**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Knowledge base on Astro 5.3 with 30 session docs.
+**Last Updated**: 2026-02-14
+**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Knowledge base on Astro 5.3 with 31 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
 
 ## What's Built
 
@@ -169,7 +169,19 @@
 <details><summary>Agent & Skill Infrastructure</summary>
 
 - 5 agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
-- 8 skills: vertical-discovery, breadboarding, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync
+- 9 skills: vertical-discovery, breadboarding, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync, cool-down
+</details>
+
+<details><summary>PM Foundation (PR #91 — merged)</summary>
+
+- **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
+- **ROADMAP.md**: New canonical strategic planning document — vision, phases, vertical inventory, current bets, forward planning, information hierarchy
+- **Cool-down skill**: 5-step cycle retrospective (Harvest → Synthesize → Shape Candidates → Update Artifacts → Present). Future: multi-team competitive variant.
+- **GitHub label taxonomy**: 28 labels across 5 dimensions — vertical/* (9), type/* (7), priority/* (4), source/* (5), phase/* (3)
+- **GitHub issues #80-89**: Tooling backlog — hookify, firecrawl integration, plugin cleanup, cool-down buildout, backend horizontal research, gh dash, Sentry, stale docs, code review workflow, vertical BRIEFs
+- **Plugin cleanup**: Removed supabase-toolkit (keep official supabase) and project-management-suite (Linear-focused, not needed)
+- **Design doc**: `docs/plans/2026-02-14-pm-foundation-design.md`
+- Key decisions: GitHub Issues over Linear (already in workflow, less lock-in), 4-layer information hierarchy (ROADMAP → BRIEFs → Issues → KB), horizontal backend foundation before vertical backends in Phase 2
 </details>
 
 ## Deferred Tech Debt (GitHub Issues)
@@ -188,14 +200,26 @@
 - [ ] **#76** — Unify date formatting functions across codebase
 - [ ] **#78** — Rename (dashboard) route group to avoid confusion with /dashboard page
 
+## Tooling & Process Backlog (GitHub Issues)
+
+- [ ] **#80** — Configure hookify to reduce permission fatigue (priority/now)
+- [ ] **#81** — Integrate firecrawl into research/discovery skills
+- [ ] **#83** — Build full cool-down skill implementation
+- [ ] **#84** — Research: Backend horizontal foundation for Phase 2
+- [ ] **#85** — Set up gh dash filters for vertical-based views
+- [ ] **#86** — Activate Sentry error monitoring (Phase 2)
+- [ ] **#87** — Update stale IMPLEMENTATION_PLAN.md (priority/now)
+- [ ] **#88** — Integrate coderabbit/pr-review-toolkit into PR workflow
+- [ ] **#89** — Create vertical BRIEF template + first BRIEF for quoting
+
 ## Next Actions
 
-1. Demo all 5 verticals (Quoting + Customer Management + Invoicing + Price Matrix + Jobs) to user (4Ink owner), collect feedback
-2. Iterate on feedback (target: 8+ rating on Clarity, Speed, Polish, Value)
-3. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
-4. Wire Matrix Peek Sheet into Quote Detail page for full pricing integration
-5. Connect Tag-Template Mapper to Customer Management for auto-apply during quoting
-6. Full 15-dimension design audit on Price Matrix screens
+1. **Configure hookify** (#80) — reduce permission fatigue across all sessions
+2. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
+3. Demo all 5 verticals to Gary (4Ink owner), collect feedback
+4. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
+5. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+6. Run first cool-down cycle to shape Phase 2 bets
 7. Address deferred tech debt (#15-#18, #70-#78) as needed
 
 ## Document Map
@@ -203,6 +227,7 @@
 | Document | Purpose |
 |----------|---------|
 | `CLAUDE.md` | AI operating rules, design system, coding standards |
+| `docs/ROADMAP.md` | Vision, phases, bets, forward planning (Shape Up) |
 | `PROGRESS.md` | This file — current state and what's next |
 | `docs/HISTORY.md` | Archived session logs and completed feature details |
 | `docs/AGENTS.md` | Agent registry, orchestration patterns |

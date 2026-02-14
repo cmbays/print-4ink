@@ -268,6 +268,7 @@ These documents define the project. Reference them, keep them current, and never
 | Document | Purpose | Update When |
 |----------|---------|-------------|
 | `CLAUDE.md` | AI operating rules, loaded every session | Any pattern/rule changes |
+| `docs/ROADMAP.md` | Vision, phases, bets, forward planning | Cycle transitions, betting decisions |
 | `docs/AGENTS.md` | Agent registry, orchestration, calling conventions | Adding/retiring agents |
 | `docs/TECH_STACK.md` | Tool choices, versions, decision context | Adding/removing/upgrading deps |
 | `docs/PRD.md` | Features, scope, acceptance criteria | Scope changes or new features |
@@ -277,6 +278,7 @@ These documents define the project. Reference them, keep them current, and never
 | `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
 
 **Rules:**
+- Before starting any work, read `ROADMAP.md` for strategic context and current bets.
 - Before adding a dependency, check `TECH_STACK.md`. If it's not listed, ask first.
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
 - Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
@@ -324,6 +326,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 | `design-audit` | Design review checkpoints | 15-dimension audit against design system |
 | `feature-strategy` | Feature planning | Product strategy frameworks and feature plan templates |
 | `doc-sync` | After completing steps | Drift detection and doc synchronization |
+| `cool-down` | Between build cycles, after demos | Retrospective synthesis and forward planning (Shape Up) |
 
 ### Orchestration Patterns
 
