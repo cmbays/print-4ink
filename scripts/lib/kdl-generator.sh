@@ -88,7 +88,11 @@ _kdl_generate_wave() {
 
     local session_count
     session_count=$(yq ".waves[$wave_idx].sessions | length" "$manifest")
-    [[ "$session_count" -eq 0 ]] && {
+    if [[ -z "$session_count" || "$session_count" == "null" ]]; then
+        echo "Error: Wave '$wave_name' is missing sessions" >&2
+        return 1
+    fi
+    (( session_count == 0 )) && {
         echo "Error: Wave '$wave_name' has no sessions" >&2
         return 1
     }

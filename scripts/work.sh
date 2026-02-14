@@ -505,14 +505,17 @@ _work_build() {
         return 1
     fi
 
-    # Generate KDL layout (for outside-Zellij use)
+    # Generate KDL layout from parallel arrays (uses prefixed prompts, not raw manifest)
     local KDL_FILE
     KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX.kdl")
-    _kdl_generate_wave "$MANIFEST" "$WAVE_IDX" "$KDL_FILE" || {
-        echo "Error: Failed to generate KDL layout"
-        rm -f "$KDL_FILE"
-        return 1
-    }
+    {
+        echo "layout {"
+        local k
+        for (( k=0; k<${#created_topics[@]}; k++ )); do
+            _kdl_render_tab "${created_topics[$k]}" "${session_dirs[$k]}" "${session_prompts[$k]}"
+        done
+        echo "}"
+    } > "$KDL_FILE"
 
     echo "=== KDL Layout Generated ==="
     echo "  File: $KDL_FILE"

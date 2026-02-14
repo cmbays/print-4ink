@@ -34,7 +34,7 @@ Produce breadboard doc at `docs/breadboards/{VERTICAL}-breadboard.md` with:
 - Build order with dependency chain
 - Estimated complexity per place
 
-Also produce a KB session doc at `{KB_DIR}/` with:
+Also produce a KB session doc at `{KB_DIR}/YYYY-MM-DD-{VERTICAL}-breadboard.md` with:
 - Frontmatter: vertical={VERTICAL}, stage=breadboarding, tags=[plan]
 - Summary of breadboard decisions
 - Any open questions or Gary items
