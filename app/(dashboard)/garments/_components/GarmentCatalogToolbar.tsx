@@ -139,7 +139,7 @@ export function GarmentCatalogToolbar({
               <TabsTrigger
                 key={cat.value}
                 value={cat.value}
-                className="min-h-[44px] md:min-h-0"
+                className="min-h-(--mobile-touch-target) md:min-h-0"
               >
                 {cat.label}
               </TabsTrigger>
@@ -164,7 +164,7 @@ export function GarmentCatalogToolbar({
             <button
               type="button"
               onClick={() => updateParam("q", null)}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Clear search"
             >
               <X className="size-3.5" />
@@ -179,8 +179,8 @@ export function GarmentCatalogToolbar({
         >
           <SelectTrigger
             className={cn(
-              "h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-[160px]",
-              "min-h-[44px] md:min-h-0",
+              "h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-40",
+              "min-h-(--mobile-touch-target) md:min-h-0",
               brand && "border-action/40 text-action",
             )}
             aria-label="Filter by brand"
@@ -206,8 +206,8 @@ export function GarmentCatalogToolbar({
         >
           <SelectTrigger
             className={cn(
-              "h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-[160px]",
-              "min-h-[44px] md:min-h-0",
+              "h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-40",
+              "min-h-(--mobile-touch-target) md:min-h-0",
               colorFamily && "border-action/40 text-action",
             )}
             aria-label="Filter by color family"

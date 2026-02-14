@@ -5,7 +5,9 @@ import { jobs } from "@/lib/mock-data";
 describe("deriveScreensFromJobs", () => {
   it("returns screen records for a customer with completed jobs", () => {
     const doneJob = jobs.find((j) => j.lane === "done");
-    if (!doneJob) return;
+    if (!doneJob) {
+      throw new Error("Expected at least one done job in mock data.");
+    }
 
     const screens = deriveScreensFromJobs(doneJob.customerId);
     expect(screens.length).toBeGreaterThan(0);
@@ -22,7 +24,9 @@ describe("deriveScreensFromJobs", () => {
 
   it("only includes done lane jobs", () => {
     const inProgressJob = jobs.find((j) => j.lane === "in_progress");
-    if (!inProgressJob) return;
+    if (!inProgressJob) {
+      throw new Error("Expected at least one in_progress job in mock data.");
+    }
 
     const screens = deriveScreensFromJobs(inProgressJob.customerId);
     // Should not include screens from in_progress jobs

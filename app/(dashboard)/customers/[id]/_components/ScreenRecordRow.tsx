@@ -39,7 +39,7 @@ export function ScreenRecordRow({ screen, onReclaim }: ScreenRecordRowProps) {
               compact
               maxCompactSwatches={6}
             />
-            <Badge variant="outline" className="text-[10px]">
+            <Badge variant="outline" className="text-xs">
               {screen.meshCount} mesh
             </Badge>
             <span className="text-xs text-muted-foreground">{dateStr}</span>

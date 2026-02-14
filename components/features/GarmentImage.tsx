@@ -1,5 +1,3 @@
-"use client";
-
 import { Shirt } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +36,7 @@ export function GarmentImage({
     >
       <Shirt size={ICON_SIZES[size]} aria-hidden="true" />
       {size !== "sm" && (
-        <span className="mt-1 text-center text-[10px] leading-tight">
+        <span className="mt-1 text-center text-xs leading-tight">
           {sku}
         </span>
       )}

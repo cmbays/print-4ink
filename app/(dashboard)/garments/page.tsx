@@ -9,7 +9,6 @@ import { GarmentTableRow } from "./_components/GarmentTableRow";
 import { GarmentDetailDrawer } from "./_components/GarmentDetailDrawer";
 import {
   garmentCatalog as initialCatalog,
-  colors,
   jobs,
   customers,
 } from "@/lib/mock-data";
@@ -158,12 +157,11 @@ function GarmentCatalogInner() {
 
       {/* Grid View */}
       {view === "grid" ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {filteredGarments.map((garment) => (
             <GarmentCard
               key={garment.id}
               garment={garment}
-              colors={colors}
               showPrice={showPrice}
               onToggleFavorite={handleToggleFavorite}
               onClick={setSelectedGarmentId}
@@ -251,7 +249,7 @@ function GarmentCatalogInner() {
 export default function GarmentCatalogPage() {
   return (
     <>
-      <Topbar breadcrumbs={[{ label: "Garment Catalog" }]} />
+      <Topbar breadcrumbs={[{ label: "Dashboard", href: "/" }, { label: "Garment Catalog" }]} />
       <div className="flex flex-col gap-4">
         <Suspense
           fallback={

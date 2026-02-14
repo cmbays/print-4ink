@@ -24,9 +24,18 @@ export function GarmentTableRow({
 }: GarmentTableRowProps) {
   return (
     <tr
+      role="button"
+      tabIndex={0}
       onClick={() => onClick(garment.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick(garment.id);
+        }
+      }}
       className={cn(
         "cursor-pointer border-b border-border transition-colors hover:bg-surface",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
         "motion-reduce:transition-none",
         !garment.isEnabled && "opacity-50",
       )}
@@ -41,7 +50,7 @@ export function GarmentTableRow({
         {garment.name}
       </td>
       <td className="px-3 py-2.5">
-        <Badge variant="outline" className="text-[10px]">
+        <Badge variant="outline" className="text-xs">
           {garment.baseCategory}
         </Badge>
       </td>

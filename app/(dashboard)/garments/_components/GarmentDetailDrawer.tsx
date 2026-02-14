@@ -64,7 +64,7 @@ export function GarmentDetailDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-[480px] sm:max-w-[480px] p-0 flex flex-col"
+        className="w-full md:max-w-md p-0 flex flex-col"
       >
         <SheetHeader className="border-b border-border px-4 py-3">
           <SheetTitle className="text-base">
@@ -192,7 +192,7 @@ export function GarmentDetailDrawer({
                       </tr>
                     </thead>
                     <tbody>
-                      {garment.availableSizes
+                      {[...garment.availableSizes]
                         .sort((a, b) => a.order - b.order)
                         .map((size) => {
                           const finalPrice = money(garment.basePrice).plus(

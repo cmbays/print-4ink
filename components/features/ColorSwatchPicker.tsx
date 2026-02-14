@@ -219,7 +219,7 @@ export function ColorSwatchPicker({
             </Tooltip>
           ))}
           {remaining > 0 && (
-            <span className="ml-1 text-[10px] text-muted-foreground">
+            <span className="ml-1 text-xs text-muted-foreground">
               +{remaining}
             </span>
           )}
@@ -248,7 +248,7 @@ export function ColorSwatchPicker({
           />
         </div>
 
-        <ScrollArea className="max-h-[300px]">
+        <ScrollArea className="max-h-72">
           {/* Favorites section */}
           {favoriteColors.length > 0 && (
             <div className="mb-3">

@@ -13,7 +13,7 @@ export function deriveScreensFromJobs(customerId: string): CustomerScreen[] {
       jobId: job.id,
       artworkName: `${job.title} — ${loc.position}`,
       colorIds: job.garmentDetails.map((gd) => gd.colorId),
-      meshCount: loc.colorCount * 110,
+      meshCount: Math.max(1, loc.colorCount * 110),
       createdAt: job.completedAt ?? job.createdAt,
     }))
   );

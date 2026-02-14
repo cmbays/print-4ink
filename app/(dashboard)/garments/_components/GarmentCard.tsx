@@ -12,7 +12,6 @@ import type { Color } from "@/lib/schemas/color";
 
 interface GarmentCardProps {
   garment: GarmentCatalog;
-  colors: Color[];
   showPrice: boolean;
   onToggleFavorite: (garmentId: string) => void;
   onClick: (garmentId: string) => void;
@@ -20,7 +19,6 @@ interface GarmentCardProps {
 
 export function GarmentCard({
   garment,
-  colors,
   showPrice,
   onToggleFavorite,
   onClick,
@@ -81,7 +79,7 @@ export function GarmentCard({
             </span>
           )}
           {!garment.isEnabled && (
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+            <Badge variant="outline" className="text-xs px-1.5 py-0">
               Disabled
             </Badge>
           )}
