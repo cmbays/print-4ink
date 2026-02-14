@@ -20,7 +20,9 @@ interface NotesFeedProps {
   onAddNote: (type: JobNoteType, content: string) => void;
 }
 
-const NOTE_FILTER_TABS: Array<{ value: string; label: string }> = [
+type NoteFilterValue = "all" | JobNoteType;
+
+const NOTE_FILTER_TABS: ReadonlyArray<{ value: NoteFilterValue; label: string }> = [
   { value: "all", label: "All" },
   { value: "internal", label: "Internal" },
   { value: "customer", label: "Customer" },
@@ -28,7 +30,7 @@ const NOTE_FILTER_TABS: Array<{ value: string; label: string }> = [
 ];
 
 export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeFilter, setActiveFilter] = useState<NoteFilterValue>("all");
   const [newNoteContent, setNewNoteContent] = useState("");
   const [newNoteType, setNewNoteType] = useState<JobNoteType>("internal");
 
@@ -66,7 +68,7 @@ export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
 
       {/* Filter tabs */}
       <div className="border-b border-border px-4 py-2">
-        <Tabs value={activeFilter} onValueChange={setActiveFilter}>
+        <Tabs value={activeFilter} onValueChange={(v) => setActiveFilter(v as NoteFilterValue)}>
           <TabsList variant="line" className="h-8">
             {NOTE_FILTER_TABS.map((tab) => (
               <TabsTrigger
