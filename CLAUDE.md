@@ -64,9 +64,10 @@ Every Claude session that will modify code MUST create its own worktree.
 3. **Install deps**: `cd ~/Github/print-4ink-worktrees/session-MMDD-topic && npm install`
 4. **Create scratchpad**: Write `.session-context.md` with task context (gitignored)
 5. **Work normally** — edit files, run tests, dev server (`PORT=300X npm run dev`)
-6. **Stage and commit**: `git add <files> && git commit -m "description"`
-7. **Push**: `git push -u origin session/MMDD-topic`
-8. **Open PR**: `gh pr create --title "..." --body "..."`
+6. **Commit and push frequently** — after each logical chunk of work (a completed component, a passing test suite, a schema change), commit and push immediately. Don't batch commits until the end.
+   - `git add <files> && git commit -m "description" && git push -u origin session/MMDD-topic`
+   - First push uses `-u` to set upstream; subsequent pushes just need `git push`
+7. **Open PR when ready**: `gh pr create --title "..." --body "..."`
 
 ### Stacked PR (branch from worktree branch)
 
@@ -86,7 +87,9 @@ Every Claude session that will modify code MUST create its own worktree.
 - **Main repo** (`~/Github/print-4ink/`) stays on `main` — never switch branches there
 - Branch name format: `session/<MMDD>-<kebab-case-topic>`
 - **NEVER push directly to main** — always branch + PR
-- **Max 6 concurrent worktrees** — clean up merged ones promptly
+- **Push after every commit** — work should always be on the remote. Local-only commits are at risk if a worktree is lost. Commit+push is one action, not two separate steps.
+- **No worktree limit** — accumulate worktrees freely during active work. The user will run a batch cleanup when ready.
+- **NEVER remove worktrees you didn't create** — agents must only clean up their own worktree, and only when explicitly asked. Other worktrees may belong to concurrent sessions.
 - **Dev server ports**: Each worktree uses a unique port (`PORT=3001`, `3002`, etc.)
 - If session is read-only (research, questions), no worktree needed
 
@@ -468,7 +471,7 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Zod v4 UUID validation**: Validates full RFC-4122 format — version byte (3rd group must start with 1-8) AND variant byte (4th group must start with 8, 9, a, or b). Hand-crafted UUIDs often fail the variant check.
 - **Radix Tooltip hover bugs**: Adjacent tooltips need a single shared `<TooltipProvider>` with `skipDelayDuration={300}`, base `sideOffset >= 6`, `data-[state=closed]:pointer-events-none` on content, and `pointer-events-none` on arrow. Do NOT use `disableHoverableContent` — it causes flickering on small targets.
 - **shadcn/ui Tooltip dark mode**: Default `bg-foreground text-background` is invisible in dark mode. Override to `bg-elevated text-foreground border border-border shadow-lg`. Arrow: `bg-elevated fill-elevated`.
-- **Git worktrees**: Main repo (`~/Github/print-4ink/`) always stays on `main`. Worktrees go in `~/Github/print-4ink-worktrees/`. Each worktree needs its own `npm install`. Max 4 concurrent worktrees — clean up after PR merges.
+- **Git worktrees**: Main repo (`~/Github/print-4ink/`) always stays on `main`. Worktrees go in `~/Github/print-4ink-worktrees/`. Each worktree needs its own `npm install`. No limit on concurrent worktrees — user handles batch cleanup. Agents must NEVER remove worktrees they didn't create.
 - **Hot files**: Never commit `PROGRESS.md` on feature branches. Update on main after merge. `knowledge-base/dist/` is gitignored.
 - **CRITICAL — Financial arithmetic**: NEVER use JavaScript floating-point (`+`, `-`, `*`, `/`) for monetary calculations. IEEE 754 causes silent errors (e.g., `0.1 + 0.2 = 0.30000000000000004`). Use `big.js` via the `lib/helpers/money.ts` wrapper (`money()`, `round2()`, `toNumber()`). Schema invariants use `Big.eq()` for exact comparison — no tolerance hacks. Integer-cents workarounds still fail on multiplication/division (tax rates, percentage deposits).
 - **React 19 ESLint — no setState in effects**: Don't use `useEffect` to reset form state when a dialog opens. Instead, have the parent conditionally render the dialog (`{showDialog && <Dialog />}`) so React unmounts/remounts the component, naturally resetting all `useState` hooks.
