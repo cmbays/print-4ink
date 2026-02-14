@@ -9,7 +9,7 @@ import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/featu
 import { normalizePosition } from "@/lib/constants/print-zones";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { DollarSign, Info, Send } from "lucide-react";
 import { toast } from "sonner";
 import { MatrixPeekSheet } from "./MatrixPeekSheet";
@@ -74,9 +74,12 @@ export function QuoteDetailView({
   const subtotal = garmentTotal + decorationTotal + setupFeesTotal;
   const effectiveTotal = quote.total;
 
-  const garmentColors = quote.lineItems
-    .map((item) => allColors.find((c) => c.id === item.colorId)?.hex)
-    .filter(Boolean) as string[];
+  const garmentColors = useMemo(
+    () => quote.lineItems
+      .map((item) => allColors.find((c) => c.id === item.colorId)?.hex)
+      .filter(Boolean) as string[],
+    [quote.lineItems]
+  );
 
   return (
     <div className="space-y-6">

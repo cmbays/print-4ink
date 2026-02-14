@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { getZoneForPosition } from "@/lib/constants/print-zones";
 import type { GarmentCategory } from "@/lib/schemas/garment";
@@ -13,6 +13,8 @@ export interface ArtworkPlacement {
   offsetX?: number;
   offsetY?: number;
 }
+
+const EMPTY_PLACEMENTS: ArtworkPlacement[] = [];
 
 // Size presets (classes applied to the root wrapper)
 const SIZE_CLASSES = {
@@ -47,7 +49,7 @@ interface GarmentMockupProps {
 export function GarmentMockup({
   garmentCategory,
   colorHex,
-  artworkPlacements = [],
+  artworkPlacements = EMPTY_PLACEMENTS,
   view = "front",
   size = "md",
   className,
@@ -55,6 +57,7 @@ export function GarmentMockup({
   viewBoxWidth = 400,
   viewBoxHeight = 480,
 }: GarmentMockupProps) {
+  const instanceId = useId();
   const svgPath =
     templatePath ?? `/mockup-templates/${garmentCategory}-${view}.svg`;
   const filterId = `garment-tint-${colorHex.replace("#", "").toLowerCase()}`;
@@ -119,7 +122,7 @@ export function GarmentMockup({
           const ax = cx - scaledW / 2;
           const ay = cy - scaledH / 2;
 
-          const clipId = `clip-${view}-${placement.position}-${i}`;
+          const clipId = `clip-${instanceId}-${view}-${placement.position}-${i}`;
 
           return (
             <g key={`${placement.position}-${i}`}>

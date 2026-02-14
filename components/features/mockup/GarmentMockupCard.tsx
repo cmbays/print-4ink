@@ -17,6 +17,16 @@ interface GarmentMockupCardProps {
   availableViews?: MockupView[];
 }
 
+// Static mapping of views to their associated print positions.
+// Zones within a view can overlap — they represent ALTERNATIVE placement
+// positions, not simultaneous regions. The UI presents them as mutually exclusive.
+const VIEW_POSITION_MAP: Record<string, string[]> = {
+  front: ["front-chest", "left-chest", "right-chest", "full-front", "front-panel"],
+  back: ["full-back", "upper-back", "nape", "back-panel"],
+  "left-sleeve": ["left-sleeve"],
+  "right-sleeve": ["right-sleeve"],
+};
+
 /**
  * Interactive mockup card with front/back toggle and artwork indicators.
  * Used in quote detail, job detail, and editor contexts.
@@ -32,13 +42,7 @@ export function GarmentMockupCard({
   const [activeView, setActiveView] = useState<MockupView>("front");
 
   const viewHasArtwork = (view: MockupView): boolean => {
-    const viewPositionMap: Record<string, string[]> = {
-      front: ["front-chest", "left-chest", "right-chest", "full-front", "front-panel"],
-      back: ["full-back", "upper-back", "nape", "back-panel"],
-      "left-sleeve": ["left-sleeve"],
-      "right-sleeve": ["right-sleeve"],
-    };
-    const positions = viewPositionMap[view] ?? [];
+    const positions = VIEW_POSITION_MAP[view] ?? [];
     return artworkPlacements.some((p) => positions.includes(p.position));
   };
 

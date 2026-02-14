@@ -98,10 +98,12 @@ export default function JobDetailPage() {
     const color = allColors.find((c) => c.id === colorId);
     if (!garment || !color) return null;
 
-    // Map artworkIds[] to printLocations[] in order (1:1)
+    // KNOWN LIMITATION: artworkIds[] and printLocations[] are separate arrays
+    // with no guaranteed 1:1 correspondence. This mapping is best-effort.
+    // Phase 2: add artworkId directly to jobPrintLocationSchema.
     const artworkPlacements: ArtworkPlacement[] = job.printLocations
       .map((loc, i) => {
-        const artworkId = job.artworkIds[i];
+        const artworkId = i < job.artworkIds.length ? job.artworkIds[i] : undefined;
         const artwork = artworkId
           ? allArtworks.find((a) => a.id === artworkId)
           : undefined;

@@ -15,12 +15,12 @@ export const printZoneSchema = z.object({
   width: z.number().positive().max(100),
   height: z.number().positive().max(100),
 }).refine(
-  (z) => z.x + z.width <= 100 && z.y + z.height <= 100,
+  (zone) => zone.x + zone.width <= 100 && zone.y + zone.height <= 100,
   { message: "Print zone extends beyond viewBox boundary (x+width or y+height > 100)" }
 );
 
 export const mockupTemplateSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().min(1),
   garmentCategory: garmentCategoryEnum,
   view: mockupViewEnum,
   svgPath: z.string().min(1),
