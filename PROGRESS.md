@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-14
-**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Mobile Optimization vertical registered and research phase complete. Knowledge base on Astro 5.3 with 33 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
+**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Mobile Optimization vertical registered and research phase complete. Knowledge base on Astro 5.3 with 35 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
 
 ## What's Built
 
@@ -189,6 +189,22 @@
 - KB session docs: `2026-02-14-mobile-optimization-kickoff.md`, `2026-02-14-mobile-optimization-research.md`
 </details>
 
+<details><summary>Garment Mockup Engine — Design, Breadboard & Plan (PR #102 — merged)</summary>
+
+- **Design document**: SVG composition engine using `feColorMatrix` color tinting + `<image>` artwork overlay + `<clipPath>` print zone masking + `mix-blend-mode: multiply` fabric texture blending. Zero external dependencies — all browser-native SVG/CSS.
+- **Breadboard**: 8 Places (4 Phase 1), 10 UI Affordances, 12 Code Affordances, 7 Data Stores. Maps integration into Quote Detail, Job Detail, Kanban Board, and Root Layout.
+- **Implementation plan**: 16-task TDD plan with parallelization windows (Tasks 1-4 concurrent, Tasks 11-13 concurrent)
+- **4 integration gaps found and resolved during breadboarding**:
+  - Location string normalization: `PRINT_POSITION_ALIASES` lookup + `normalizePosition()` fallback (quote "Front" / job "Front Center" → engine "front-chest")
+  - Job artwork-to-location: 1:1 order mapping (`artworkIds[0]` → `printLocations[0]`). Phase 2 adds per-location `artworkId`.
+  - JobCard view model: 3 optional fields (`garmentCategory`, `garmentColorHex`, `primaryArtworkUrl`) for Kanban thumbnails
+  - MockupFilterProvider: Per-page rendering (root layout is server component)
+- **Component architecture**: Stable interface (`<GarmentMockup garmentCategory colorHex artworkPlacements[] view size />`) designed to scale from SVG → Photo → Canvas → 3D
+- **Starts with t-shirts only** (2 SVG templates: front + back). Expand to other categories after core is proven.
+- Artifacts: `docs/plans/2026-02-14-garment-mockup-design.md`, `docs/plans/2026-02-14-garment-mockup-impl-plan.md`, `docs/breadboards/mockup-engine-breadboard.md`
+- KB: `2026-02-14-garment-mockup-breadboard.md`, `2026-02-14-garment-mockup-impl-plan.md`
+</details>
+
 <details><summary>PM Foundation (PR #91 — merged)</summary>
 
 - **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
@@ -231,16 +247,17 @@
 
 ## Next Actions
 
-1. **Mobile Optimization — Interview Gary** — 10 questions prepared in scope definition, validate mobile usage assumptions
-2. **Mobile Optimization — Breadboarding** — Map UI affordances for bottom tab bar, card components, mobile navigation shell
-3. **Mobile Optimization — Build Phase 1** — Bottom tab bar → card list views → dashboard → forms → Kanban → detail views (~30-40 hours, 4 sprints)
-4. **Configure hookify** (#80) — reduce permission fatigue across all sessions
-5. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
-6. Demo all 5 verticals to Gary (4Ink owner), collect feedback
-7. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
-8. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-9. Run first cool-down cycle to shape Phase 2 bets
-10. Address deferred tech debt (#15-#18, #70-#78) as needed
+1. **HIGH PRIORITY: Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
+2. **Mobile Optimization — Interview Gary** — 10 questions prepared in scope definition, validate mobile usage assumptions
+3. **Mobile Optimization — Breadboarding** — Map UI affordances for bottom tab bar, card components, mobile navigation shell
+4. **Mobile Optimization — Build Phase 1** — Bottom tab bar → card list views → dashboard → forms → Kanban → detail views (~30-40 hours, 4 sprints)
+5. **Configure hookify** (#80) — reduce permission fatigue across all sessions
+6. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
+7. Demo all 5 verticals to Gary (4Ink owner), collect feedback
+8. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
+9. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+10. Run first cool-down cycle to shape Phase 2 bets
+11. Address deferred tech debt (#15-#18, #70-#78) as needed
 
 ## Document Map
 
@@ -268,7 +285,10 @@
 | `docs/competitive-analysis/mobile-optimization-journey-map.md` | Mobile user journeys with time metrics |
 | `docs/strategy/mobile-optimization-improved-journey.md` | Mobile experience design + component architecture |
 | `docs/strategy/mobile-optimization-scope-definition.md` | Mobile CORE/PERIPHERAL/INTERCONNECTIONS + build order |
-| `knowledge-base/src/content/sessions/` | 33 Markdown session docs (Astro KB, replaces `for_human/`) |
+| `docs/plans/2026-02-14-garment-mockup-design.md` | Garment mockup engine design (SVG composition architecture) |
+| `docs/plans/2026-02-14-garment-mockup-impl-plan.md` | 16-task TDD plan with breadboard gap fixes |
+| `docs/breadboards/mockup-engine-breadboard.md` | Mockup engine breadboard (8 places, 10 UI + 12 code affordances) |
+| `knowledge-base/src/content/sessions/` | 35 Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
