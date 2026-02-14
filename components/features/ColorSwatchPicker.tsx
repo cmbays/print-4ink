@@ -20,6 +20,8 @@ interface ColorSwatchPickerProps {
   onSelect: (colorId: string) => void;
   favorites?: string[];
   onToggleFavorite?: (colorId: string) => void;
+  compact?: boolean;
+  maxCompactSwatches?: number;
 }
 
 const DEFAULT_COLORS = catalogColors;
@@ -128,6 +130,8 @@ export function ColorSwatchPicker({
   onSelect,
   favorites = DEFAULT_FAVORITES,
   onToggleFavorite,
+  compact,
+  maxCompactSwatches,
 }: ColorSwatchPickerProps) {
   const [search, setSearch] = useState("");
   const gridRef = useRef<HTMLDivElement>(null);
@@ -192,6 +196,37 @@ export function ColorSwatchPicker({
     },
     []
   );
+
+  // Compact mode: simple row of small swatches
+  if (compact) {
+    const displayColors = colors.slice(0, maxCompactSwatches ?? 8);
+    const remaining = colors.length - displayColors.length;
+    return (
+      <TooltipProvider>
+        <div className="flex items-center gap-0.5">
+          {displayColors.map((color) => (
+            <Tooltip key={color.id}>
+              <TooltipTrigger asChild>
+                <div
+                  className="h-4 w-4 flex-shrink-0 rounded-sm"
+                  style={{ backgroundColor: color.hex }}
+                  aria-label={color.name}
+                />
+              </TooltipTrigger>
+              <TooltipContent side="bottom" sideOffset={4}>
+                {color.name}
+              </TooltipContent>
+            </Tooltip>
+          ))}
+          {remaining > 0 && (
+            <span className="ml-1 text-[10px] text-muted-foreground">
+              +{remaining}
+            </span>
+          )}
+        </div>
+      </TooltipProvider>
+    );
+  }
 
   return (
     <TooltipProvider>
