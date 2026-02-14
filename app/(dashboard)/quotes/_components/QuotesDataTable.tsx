@@ -358,9 +358,11 @@ export function QuotesDataTable() {
         )}
       </div>
 
-      {/* ---- Table ---- */}
+      {/* ---- Table + Cards ---- */}
       {filteredQuotes.length > 0 ? (
-        <div className="rounded-md border border-border">
+        <>
+        {/* Desktop table */}
+        <div className="hidden rounded-md border border-border md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -470,6 +472,41 @@ export function QuotesDataTable() {
             </TableBody>
           </Table>
         </div>
+
+        {/* Mobile card list */}
+        <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
+          {filteredQuotes.map((quote) => (
+            <button
+              key={quote.id}
+              type="button"
+              onClick={() => router.push(`/quotes/${quote.id}`)}
+              className={cn(
+                "flex flex-col gap-2 rounded-lg border border-border bg-elevated p-4",
+                "text-left transition-colors hover:bg-muted/50",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-action">
+                  {quote.quoteNumber}
+                </span>
+                <StatusBadge status={quote.status} />
+              </div>
+              <p className="truncate text-sm text-muted-foreground">
+                {quote.customerName}
+              </p>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>
+                  {quote.lineItemCount} {quote.lineItemCount === 1 ? "item" : "items"}
+                </span>
+                <span className="font-medium tabular-nums text-foreground">
+                  {formatCurrency(quote.total)}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
+        </>
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">

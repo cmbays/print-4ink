@@ -451,7 +451,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
           </div>
 
           {/* Mobile card list — visible below md */}
-          <div className="flex flex-col gap-3 md:hidden">
+          <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
             {filteredInvoices.map((invoice) => (
               <button
                 key={invoice.id}

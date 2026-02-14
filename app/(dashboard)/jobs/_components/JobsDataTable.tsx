@@ -624,7 +624,7 @@ export function JobsDataTable({
           </div>
 
           {/* Mobile card list -- visible below md */}
-          <div className="flex flex-col gap-3 md:hidden">
+          <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
             {filteredJobs.map((job) => {
               const progress = computeTaskProgress(job.tasks);
               return (

@@ -709,7 +709,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
           </div>
 
           {/* Mobile card list — visible below md */}
-          <div className="flex flex-col gap-3 md:hidden">
+          <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
             {filteredCustomers.map((customer) => {
               const contact = getPrimaryContact(customer);
               const revenue = revenueMap.get(customer.id) ?? 0;
