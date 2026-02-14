@@ -37,6 +37,7 @@ import { QuoteBoardCard } from "../_components/QuoteBoardCard";
 import { ScratchNoteCard } from "../_components/ScratchNoteCard";
 import { DraggableCard } from "../_components/DraggableCard";
 import { BlockReasonDialog } from "../_components/BlockReasonDialog";
+import { MobileKanbanBoard } from "../_components/MobileKanbanBoard";
 import { ScratchNoteCapture } from "../_components/ScratchNoteCapture";
 import { LANE_LABELS } from "@/lib/constants";
 import {
@@ -402,96 +403,112 @@ function ProductionBoardInner() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Accessibility: DnD instructions (visually hidden) */}
-      <div id="dnd-instructions" className="sr-only">
-        Press space bar to start dragging a card. While dragging, use arrow keys
-        to move. Press space bar again to drop the card in the current lane, or
-        press escape to cancel.
-      </div>
-      {/* Accessibility: drop announcements */}
-      <div aria-live="polite" className="sr-only">
-        {dropAnnouncement}
-      </div>
-
-      {/* Capacity summary */}
-      <CapacitySummaryBar summary={summary} />
-
-      {/* Filter bar */}
-      <BoardFilterBar />
-
-      {/* Board content */}
-      {isEmpty ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/50 py-16 text-center">
-          <p className="text-sm text-muted-foreground">
-            No cards match the current filters.
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Try adjusting or clearing your filters.
-          </p>
+      {/* Desktop board — hidden on mobile */}
+      <div className="hidden md:block">
+        {/* Accessibility: DnD instructions (visually hidden) */}
+        <div id="dnd-instructions" className="sr-only">
+          Press space bar to start dragging a card. While dragging, use arrow keys
+          to move. Press space bar again to drop the card in the current lane, or
+          press escape to cancel.
         </div>
-      ) : (
-        <DndContext
-          sensors={sensors}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
-        >
-          <TooltipProvider skipDelayDuration={300}>
-            {layout === "combined" ? (
-              <div className="flex flex-col gap-6">
-                <BoardSection
-                  label="All Cards"
-                  section="combined"
-                  cards={combinedCards}
-                  renderCard={renderCard}
-                  onAddScratchNote={() => setShowScratchCapture(true)}
-                  readyLaneFooter={
-                    showScratchCapture ? (
-                      <ScratchNoteCapture
-                        onSubmit={createScratchNote}
-                        onCancel={() => setShowScratchCapture(false)}
-                      />
-                    ) : undefined
-                  }
-                />
-              </div>
-            ) : (
-              <div className="flex flex-col gap-6">
-                {/* Quotes section */}
-                <BoardSection
-                  label="Quotes"
-                  section="quotes"
-                  cards={filteredQuoteCards}
-                  renderCard={renderCard}
-                  onAddScratchNote={() => setShowScratchCapture(true)}
-                  readyLaneFooter={
-                    showScratchCapture ? (
-                      <ScratchNoteCapture
-                        onSubmit={createScratchNote}
-                        onCancel={() => setShowScratchCapture(false)}
-                      />
-                    ) : undefined
-                  }
-                />
+        {/* Accessibility: drop announcements */}
+        <div aria-live="polite" className="sr-only">
+          {dropAnnouncement}
+        </div>
 
-                {/* Jobs section */}
-                <BoardSection
-                  label="Jobs"
-                  section="jobs"
-                  cards={filteredJobCards}
-                  renderCard={renderCard}
-                />
-              </div>
-            )}
+        {/* Capacity summary */}
+        <CapacitySummaryBar summary={summary} />
 
-            <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
-              {renderDragOverlay()}
-            </DragOverlay>
-          </TooltipProvider>
-        </DndContext>
-      )}
+        {/* Filter bar */}
+        <div className="mt-4">
+          <BoardFilterBar />
+        </div>
 
-      {/* Block Reason Dialog */}
+        {/* Board content */}
+        <div className="mt-4">
+          {isEmpty ? (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/50 py-16 text-center">
+              <p className="text-sm text-muted-foreground">
+                No cards match the current filters.
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Try adjusting or clearing your filters.
+              </p>
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
+            >
+              <TooltipProvider skipDelayDuration={300}>
+                {layout === "combined" ? (
+                  <div className="flex flex-col gap-6">
+                    <BoardSection
+                      label="All Cards"
+                      section="combined"
+                      cards={combinedCards}
+                      renderCard={renderCard}
+                      onAddScratchNote={() => setShowScratchCapture(true)}
+                      readyLaneFooter={
+                        showScratchCapture ? (
+                          <ScratchNoteCapture
+                            onSubmit={createScratchNote}
+                            onCancel={() => setShowScratchCapture(false)}
+                          />
+                        ) : undefined
+                      }
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-6">
+                    {/* Quotes section */}
+                    <BoardSection
+                      label="Quotes"
+                      section="quotes"
+                      cards={filteredQuoteCards}
+                      renderCard={renderCard}
+                      onAddScratchNote={() => setShowScratchCapture(true)}
+                      readyLaneFooter={
+                        showScratchCapture ? (
+                          <ScratchNoteCapture
+                            onSubmit={createScratchNote}
+                            onCancel={() => setShowScratchCapture(false)}
+                          />
+                        ) : undefined
+                      }
+                    />
+
+                    {/* Jobs section */}
+                    <BoardSection
+                      label="Jobs"
+                      section="jobs"
+                      cards={filteredJobCards}
+                      renderCard={renderCard}
+                    />
+                  </div>
+                )}
+
+                <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
+                  {renderDragOverlay()}
+                </DragOverlay>
+              </TooltipProvider>
+            </DndContext>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile board — uses same state as desktop */}
+      <MobileKanbanBoard
+        jobCards={jobCards}
+        quoteCards={quoteCardState}
+        scratchNotes={scratchNoteCards}
+        onMoveCard={moveCard}
+        onAddScratchNote={() => setShowScratchCapture(true)}
+      />
+
+      {/* Block Reason Dialog — shared between desktop and mobile */}
       {blockDialog.card && (
         <BlockReasonDialog
           open={blockDialog.open}
@@ -504,6 +521,16 @@ function ProductionBoardInner() {
         />
       )}
 
+      {/* Scratch Note Capture — mobile FAB triggers this */}
+      {showScratchCapture && (
+        <div className="md:hidden">
+          <ScratchNoteCapture
+            onSubmit={createScratchNote}
+            onCancel={() => setShowScratchCapture(false)}
+          />
+        </div>
+      )}
+
     </div>
   );
 }
@@ -514,26 +541,28 @@ function ProductionBoardInner() {
 
 export default function ProductionBoardPage() {
   return (
-    <div className="flex flex-col gap-4 p-6">
-      {/* Breadcrumb */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/jobs/board">Jobs</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Board</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="flex flex-col gap-4 p-4 md:p-6">
+      {/* Breadcrumb — desktop only */}
+      <div className="hidden md:block">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/jobs/board">Jobs</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Board</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="hidden items-center justify-between gap-4 md:flex">
         <h1 className="text-lg font-semibold text-foreground">
           Production Board
         </h1>
