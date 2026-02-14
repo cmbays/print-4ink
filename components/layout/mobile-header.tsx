@@ -38,7 +38,7 @@ export function MobileHeader() {
       </h1>
       <button
         type="button"
-        className="flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action"
+        className="flex min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action"
         aria-label="Notifications (coming soon)"
         disabled
       >
