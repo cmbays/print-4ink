@@ -817,7 +817,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
               </p>
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
-              <Switch checked={screenReuse} onCheckedChange={setScreenReuse} />
+              <Switch checked={screenReuse} onCheckedChange={setScreenReuse} aria-label="Reuse screens" />
               <span className="text-xs text-muted-foreground">Reuse</span>
             </label>
           </div>
