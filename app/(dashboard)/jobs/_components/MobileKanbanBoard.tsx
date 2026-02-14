@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, AlertTriangle, Plus } from "lucide-react";
 import { MobileLaneTabBar } from "./MobileLaneTabBar";
+import { BlockReasonSheet } from "@/components/features/BlockReasonSheet";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
@@ -174,6 +175,7 @@ export function MobileKanbanBoard({
 }: MobileKanbanBoardProps) {
   const [activeLane, setActiveLane] = useState<Lane>("in_progress");
   const [sectionFilter, setSectionFilter] = useState<SectionFilter>("all");
+  const [blockingJob, setBlockingJob] = useState<JobCard | null>(null);
 
   // Compute card counts for all lanes
   const cardCounts = LANES.reduce(
@@ -265,7 +267,7 @@ export function MobileKanbanBoard({
                       onMoveCard(job, nextLane);
                     }
                   }}
-                  onBlock={(reason) => onMoveCard(job, "blocked", reason)}
+                  onBlock={() => setBlockingJob(job)}
                 />
               ))}
           </>
@@ -280,6 +282,21 @@ export function MobileKanbanBoard({
           <Plus className="h-6 w-6" />
         </button>
       </div>
+
+      {/* Block Reason Sheet — conditional rendering for state reset */}
+      {blockingJob && (
+        <BlockReasonSheet
+          open={!!blockingJob}
+          onOpenChange={(open) => {
+            if (!open) setBlockingJob(null);
+          }}
+          jobTitle={`${blockingJob.jobNumber} — ${blockingJob.customerName}`}
+          onConfirm={(reason) => {
+            onMoveCard(blockingJob, "blocked", reason);
+            setBlockingJob(null);
+          }}
+        />
+      )}
     </div>
   );
 }
