@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-14
-**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization Sprint 1 complete — navigation shell and shared components merged (PR #101). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
+**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization Sprint 2 in progress. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI, 8 agents, 14 skills, session orchestration.
 
 ## What's Built
 
@@ -169,8 +169,9 @@
 
 <details><summary>Agent & Skill Infrastructure</summary>
 
-- 5 agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync
-- 9 skills: vertical-discovery, breadboarding, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync, cool-down
+- 8 agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync, secretary (Ada), finance-sme, build-reviewer
+- 14 skills: vertical-discovery, breadboarding, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync, cool-down, implementation-planning, one-on-one, build-session-protocol, and more
+- DevX vertical (PRs #92, #94, #96, #100, #103, #108): `work` CLI (Zellij orchestration), session registry, KDL layout generator, 8 prompts
 </details>
 
 <details><summary>Mobile Optimization Research (PR #90 — merged)</summary>
@@ -253,6 +254,15 @@
 - Key decisions: GitHub Issues over Linear (already in workflow, less lock-in), 4-layer information hierarchy (ROADMAP → BRIEFs → Issues → KB), horizontal backend foundation before vertical backends in Phase 2
 </details>
 
+<details><summary>Worktree & Permissions Policy Update (PR #118)</summary>
+
+- **Worktree policy**: Removed artificial worktree limit (was max 4/6 — contradictory). No cap on concurrent worktrees; user handles batch cleanup.
+- **Ownership rule**: Agents must NEVER remove worktrees they didn't create — prevents disruption of concurrent sessions.
+- **Push-after-commit**: Workflow changed from separate commit/push steps to combined commit+push after every logical chunk. Work is always on remote as insurance against worktree loss.
+- **Implementation planning skill**: Removed wave size cap (was "max 4 parallel sessions per wave") — size waves by dependency graph, not worktree count.
+- **Permissions (global settings.json)**: Added 51 Bash allows (system info, file ops, TUI tools, dev tools), 14 new denies (destructive git, worktree removal, process killing), broad Read/Write/Edit, `uv` over `pip`.
+</details>
+
 ## Deferred Tech Debt (GitHub Issues)
 
 - [ ] **#15** — Migrate forms to React Hook Form + Zod
@@ -283,16 +293,14 @@
 
 ## Next Actions
 
-1. **Screen Intelligence Integration** — Remaining screen features: quote-time screen reuse detection + notification, setup fee auto-discount when screens exist, job detail linked screens display. Integration work across quoting and jobs verticals (not a standalone vertical).
-2. **Mobile Optimization Sprint 2 — Responsive Page Adaptations** — Sprint 1 navigation shell complete (PR #101). Sprint 2 covers: responsive dashboard cards, quotes list table→card conversion, jobs board mobile adaptation, customer list mobile view. Execute against `docs/plans/2026-02-14-mobile-optimization-implementation.md` Tasks 10-16.
-3. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
-4. **Mobile Optimization Sprints 3-4** — Sprint 3: mobile forms + detail views. Sprint 4: polish, animation, sidebar nav constant adoption. Full plan at `docs/plans/2026-02-14-mobile-optimization-implementation.md`.
-5. **Configure hookify** (#80) — reduce permission fatigue across all sessions
-6. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
-7. Demo all 6 verticals to Gary (4Ink owner), collect feedback
-8. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-9. Run first cool-down cycle to shape Phase 2 bets
-10. Address deferred tech debt (#15-#18, #70-#78) as needed
+1. **Mobile Optimization Sprint 2 — Responsive Page Adaptations** — Sprint 1 navigation shell complete (PR #101). Sprint 2 in progress: responsive dashboard cards, quotes list table→card conversion, jobs board mobile adaptation, customer list mobile view. Execute against `docs/plans/2026-02-14-mobile-optimization-implementation.md` Tasks 10-16.
+2. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
+3. **Mobile Optimization Sprints 3-4** — Sprint 3: mobile forms + detail views. Sprint 4: polish, animation, sidebar nav constant adoption. Full plan at `docs/plans/2026-02-14-mobile-optimization-implementation.md`.
+4. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
+5. Demo all 6 verticals to Gary (4Ink owner), collect feedback
+6. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+7. Run first cool-down cycle to shape Phase 2 bets
+8. Address deferred tech debt (#15-#18, #70-#78) as needed
 
 ## Document Map
 
