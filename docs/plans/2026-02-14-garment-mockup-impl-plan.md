@@ -10,7 +10,15 @@
 
 **Design Doc:** `docs/plans/2026-02-14-garment-mockup-design.md`
 
+**Breadboard:** `docs/breadboards/mockup-engine-breadboard.md`
+
 **Worktree:** `~/Github/print-4ink-worktrees/session-0214-mockup-design` (branch: `session/0214-mockup-design`)
+
+**Breadboard Gaps Addressed:** This plan incorporates 4 integration gaps found during breadboarding:
+1. Location string normalization (Task 2 — `PRINT_POSITION_ALIASES`)
+2. Job artwork-to-location mapping (Task 13 — 1:1 order assumption)
+3. JobCard view model enrichment (Task 5A — extend `board-card.ts`)
+4. MockupFilterProvider placement (Tasks 11-13 — per-page, not global)
 
 ---
 
@@ -187,8 +195,10 @@ import { describe, it, expect } from "vitest";
 import {
   PRINT_ZONES,
   PRINT_POSITION_LABELS,
+  PRINT_POSITION_ALIASES,
   getZonesForCategory,
   getZoneForPosition,
+  normalizePosition,
 } from "../../constants/print-zones";
 import { printZoneSchema } from "../mockup-template";
 
@@ -245,6 +255,34 @@ describe("getZoneForPosition", () => {
     expect(zone).toBeUndefined();
   });
 });
+
+describe("PRINT_POSITION_ALIASES", () => {
+  it("maps quote-style 'Front' to 'front-chest'", () => {
+    expect(PRINT_POSITION_ALIASES["Front"]).toBe("front-chest");
+  });
+
+  it("maps job-style 'Back Full' to 'full-back'", () => {
+    expect(PRINT_POSITION_ALIASES["Back Full"]).toBe("full-back");
+  });
+
+  it("maps 'Left Chest' to 'left-chest'", () => {
+    expect(PRINT_POSITION_ALIASES["Left Chest"]).toBe("left-chest");
+  });
+});
+
+describe("normalizePosition", () => {
+  it("normalizes known alias", () => {
+    expect(normalizePosition("Front Center")).toBe("front-chest");
+  });
+
+  it("falls back to kebab-case for unknown input", () => {
+    expect(normalizePosition("Hip Pocket")).toBe("hip-pocket");
+  });
+
+  it("handles already-canonical input", () => {
+    expect(normalizePosition("front-chest")).toBe("front-chest");
+  });
+});
 ```
 
 **Step 2: Run tests to verify they fail**
@@ -273,6 +311,41 @@ export const PRINT_POSITION_LABELS: Record<string, string> = {
   "left-sleeve": "Left Sleeve",
   "right-sleeve": "Right Sleeve",
 };
+
+/**
+ * Alias map: normalizes freeform location strings (from quote/job mock data)
+ * to canonical kebab-case position IDs used by the mockup engine.
+ *
+ * BREADBOARD GAP #1: Quote data uses "Front", "Back", "Left Sleeve".
+ * Job data uses "Front Center", "Back Full", "Left Chest".
+ * Mockup engine expects "front-chest", "full-back", etc.
+ */
+export const PRINT_POSITION_ALIASES: Record<string, string> = {
+  // Quote-style short names
+  "Front": "front-chest",
+  "Back": "full-back",
+  "Left Sleeve": "left-sleeve",
+  "Right Sleeve": "right-sleeve",
+  // Job-style descriptive names
+  "Front Center": "front-chest",
+  "Front Left Chest": "left-chest",
+  "Left Chest": "left-chest",
+  "Right Chest": "right-chest",
+  "Back Full": "full-back",
+  "Back Number": "upper-back",
+  "Full Front": "full-front",
+  "Full Back": "full-back",
+  "Upper Back": "upper-back",
+  "Nape": "nape",
+};
+
+/**
+ * Normalize a freeform location/position string to a canonical position ID.
+ * Returns the input lowercased+kebab-cased if no alias match.
+ */
+export function normalizePosition(input: string): string {
+  return PRINT_POSITION_ALIASES[input] ?? input.toLowerCase().replace(/\s+/g, "-");
+}
 
 /**
  * Print zone geometry per garment category and view.
@@ -600,6 +673,67 @@ Expected: PASS (existing tests still pass; new data validates if tested)
 ```bash
 git add lib/mock-data.ts
 git commit -m "feat(mock-data): add mockup template data for t-shirts front/back"
+```
+
+---
+
+### Task 5A: Extend JobCard View Model for Mockup Data
+
+> **Breadboard Gap #3**: `JobCard` in `board-card.ts` has no garment category, color hex, or artwork data. The Kanban board needs these to render mockup thumbnails without per-card resolution from full job data.
+
+**Files:**
+- Modify: `lib/schemas/board-card.ts`
+- Modify: `lib/mock-data.ts` (job card projection section)
+
+**Step 1: Add optional mockup fields to jobCardSchema**
+
+In `lib/schemas/board-card.ts`, add these 3 optional fields to `jobCardSchema`:
+
+```typescript
+// Add after the existing `orderTotal` field:
+  garmentCategory: garmentCategoryEnum.optional(),
+  garmentColorHex: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+  primaryArtworkUrl: z.string().optional(),
+```
+
+Also add the import at the top:
+```typescript
+import { garmentCategoryEnum } from "./garment";
+```
+
+**Step 2: Update mock data card projection**
+
+In `lib/mock-data.ts`, wherever `JobCard` objects are projected from `Job` data, add the garment fields. Find the card projection section and add:
+
+```typescript
+// For each job card projection, resolve and add:
+garmentCategory: (() => {
+  const garmentId = job.garmentDetails[0]?.garmentId;
+  const garment = garmentCatalog.find((g) => g.id === garmentId);
+  return garment?.baseCategory;
+})(),
+garmentColorHex: (() => {
+  const colorId = job.garmentDetails[0]?.colorId;
+  const color = colors.find((c) => c.id === colorId);
+  return color?.hex;
+})(),
+primaryArtworkUrl: (() => {
+  const artworkId = job.artworkIds?.[0];
+  const artwork = artworks.find((a) => a.id === artworkId);
+  return artwork?.thumbnailUrl;
+})(),
+```
+
+**Step 3: Verify existing tests still pass**
+
+Run: `npm test -- lib/schemas/__tests__/board-card.test.ts`
+Expected: PASS (new fields are optional, existing data still validates)
+
+**Step 4: Commit**
+
+```bash
+git add lib/schemas/board-card.ts lib/mock-data.ts
+git commit -m "feat(board-card): add optional garment mockup fields to JobCard view model"
 ```
 
 ---
@@ -1043,31 +1177,81 @@ git commit -m "feat(mockup): add barrel export for mockup components"
 
 ### Task 11: Integration — QuoteDetailView
 
+> **Breadboard ref**: P1 (Quote Detail View), U1 (mockup thumbnail per print location)
+> **Breadboard Gap #1**: Location strings need normalization ("Front" → "front-chest")
+> **Breadboard Gap #4**: MockupFilterProvider rendered per-page, not in layout
+
 **Files:**
 - Modify: `app/(dashboard)/quotes/_components/QuoteDetailView.tsx`
 
-Replace the existing `ArtworkPreview` usage with `GarmentMockupCard` for a richer visual.
+Replace the existing `ArtworkPreview` usage with `GarmentMockupThumbnail` for a richer visual.
 
 **Step 1: Read current QuoteDetailView** to find exact ArtworkPreview usage locations
 
-Reference: `app/(dashboard)/quotes/_components/QuoteDetailView.tsx` (~line 120-180 area, in the line items render section)
+Reference: `app/(dashboard)/quotes/_components/QuoteDetailView.tsx` (line ~197-205, in the print locations loop)
 
-**Step 2: Add MockupFilterProvider to the view** and replace ArtworkPreview with GarmentMockupThumbnail in line item rows
+Current code at each print location:
+```tsx
+<ArtworkPreview
+  garmentColor={color.hex}
+  artworkThumbnailUrl={artwork?.thumbnailUrl}
+  artworkName={artwork?.name}
+  location={detail.location}
+/>
+```
 
-The integration should:
-- Collect all garment colors used across line items
-- Render a `MockupFilterProvider` with those colors
-- For each line item, render a `GarmentMockupThumbnail` (size sm) instead of `ArtworkPreview`
-- Map `printLocationDetails[].artworkId` → artwork thumbnailUrl + position → `ArtworkPlacement[]`
-- Resolve `garmentId` → `GarmentCatalog.baseCategory` for the template
-- Resolve `colorId` → `Color.hex` for tinting
+**Step 2: Add imports and collect colors**
 
-**Step 3: Verify the dev server renders correctly**
+At the top of the component, add:
+```tsx
+import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
+import type { ArtworkPlacement } from "@/components/features/mockup";
+import { normalizePosition } from "@/lib/constants/print-zones";
+```
+
+Inside the component, collect all garment colors for MockupFilterProvider:
+```tsx
+const garmentColors = useMemo(() => {
+  return quote.lineItems.map((item) => {
+    const color = allColors.find((c) => c.id === item.colorId);
+    return color?.hex;
+  }).filter(Boolean) as string[];
+}, [quote.lineItems]);
+```
+
+**Step 3: Add MockupFilterProvider at the top of the JSX return** (per-page, not global)
+
+```tsx
+<div className="space-y-6">
+  <MockupFilterProvider colors={garmentColors} />
+  {/* ... rest of existing JSX */}
+```
+
+**Step 4: Replace ArtworkPreview with GarmentMockupThumbnail**
+
+For each print location detail, replace the `<ArtworkPreview>` with:
+```tsx
+{color && (
+  <GarmentMockupThumbnail
+    garmentCategory={garment?.baseCategory ?? "t-shirts"}
+    colorHex={color.hex}
+    artworkPlacements={artwork ? [{
+      artworkUrl: artwork.thumbnailUrl,
+      position: normalizePosition(detail.location),
+    }] : []}
+    className="shrink-0"
+  />
+)}
+```
+
+Key: `normalizePosition(detail.location)` converts `"Front"` → `"front-chest"`, `"Back"` → `"full-back"`, etc.
+
+**Step 5: Verify the dev server renders correctly**
 
 Run: `PORT=3005 npm run dev`
 Navigate to any quote detail page. Confirm mockup thumbnails appear instead of flat color squares.
 
-**Step 4: Commit**
+**Step 6: Commit**
 
 ```bash
 git add app/(dashboard)/quotes/_components/QuoteDetailView.tsx
@@ -1078,24 +1262,62 @@ git commit -m "feat(quotes): replace ArtworkPreview with GarmentMockup in detail
 
 ### Task 12: Integration — Kanban Board Cards
 
+> **Breadboard ref**: P4 (Kanban Board), U9 (xs mockup thumbnail per card)
+> **Breadboard Gap #3**: Resolved by Task 5A — `JobCard` now has `garmentCategory`, `garmentColorHex`, `primaryArtworkUrl`
+> **Breadboard Gap #4**: MockupFilterProvider rendered per-page in board/page.tsx
+
 **Files:**
 - Modify: `app/(dashboard)/jobs/_components/JobBoardCard.tsx`
 - Modify: `app/(dashboard)/jobs/board/page.tsx` (add MockupFilterProvider)
 
 **Step 1: Add mockup thumbnail to JobBoardCard**
 
-Add a `GarmentMockupThumbnail` (size xs, 40x48px) to the left side of each Kanban card. The card currently shows text-only (customer name, title, metadata). Adding a visual mockup provides at-a-glance identification.
+Import the thumbnail component:
+```tsx
+import { GarmentMockupThumbnail } from "@/components/features/mockup";
+```
 
-The `JobCard` schema (`lib/schemas/board-card.ts`) needs to be checked — if it doesn't carry garment/artwork data, the thumbnail may need to resolve from mock data via `card.id`.
+In the card JSX, add a thumbnail on the left side of the header area. The card data comes from the enriched `JobCard` view model (Task 5A):
+
+```tsx
+{/* Add before or alongside the header div */}
+{card.garmentCategory && card.garmentColorHex && (
+  <GarmentMockupThumbnail
+    garmentCategory={card.garmentCategory}
+    colorHex={card.garmentColorHex}
+    artworkPlacements={card.primaryArtworkUrl ? [{
+      artworkUrl: card.primaryArtworkUrl,
+      position: "front-chest", // primary artwork defaults to front-chest
+    }] : []}
+    className="shrink-0"
+  />
+)}
+```
+
+Cards without mockup data (missing `garmentCategory` or `garmentColorHex`) render without a thumbnail — graceful degradation.
 
 **Step 2: Add MockupFilterProvider to the board page**
 
-In `app/(dashboard)/jobs/board/page.tsx`, wrap the board content with `MockupFilterProvider`, passing all garment colors from visible cards.
+In `app/(dashboard)/jobs/board/page.tsx`, collect all garment colors from visible cards and render a per-page MockupFilterProvider:
+
+```tsx
+import { MockupFilterProvider } from "@/components/features/mockup";
+
+// Inside the component, collect colors:
+const garmentColors = useMemo(() => {
+  return jobCards
+    .map((card) => card.garmentColorHex)
+    .filter(Boolean) as string[];
+}, [jobCards]);
+
+// In the JSX return, add at top:
+<MockupFilterProvider colors={garmentColors} />
+```
 
 **Step 3: Verify on dev server**
 
 Run: `PORT=3005 npm run dev`
-Navigate to `/jobs/board`. Confirm small mockup thumbnails appear on job cards.
+Navigate to `/jobs/board`. Confirm small mockup thumbnails appear on job cards that have garment data.
 
 **Step 4: Commit**
 
@@ -1108,24 +1330,90 @@ git commit -m "feat(kanban): add garment mockup thumbnails to job board cards"
 
 ### Task 13: Integration — Job Detail Page
 
+> **Breadboard ref**: P3 (Job Detail), U6-U8 (mockup card + view toggle + dot indicators)
+> **Breadboard Gap #2**: Job `printLocations[]` has no `artworkId`. Use 1:1 order mapping with `artworkIds[]`.
+> **Breadboard Gap #1**: Job `printLocations[].position` uses "Front Center" etc — needs normalization.
+> **Breadboard Gap #4**: Per-page MockupFilterProvider.
+
 **Files:**
 - Modify: `app/(dashboard)/jobs/[id]/page.tsx`
 
-**Step 1: Add "What We're Printing" section**
+**Step 1: Add imports**
 
-At the top of the job detail page (after the header, before the task checklist), add a section with a `GarmentMockupCard` (size md) showing the job's primary garment + artwork.
+```tsx
+import { GarmentMockupCard, MockupFilterProvider } from "@/components/features/mockup";
+import type { ArtworkPlacement } from "@/components/features/mockup";
+import { normalizePosition } from "@/lib/constants/print-zones";
+import { garmentCatalog, colors as allColors, artworks as allArtworks } from "@/lib/mock-data";
+```
 
-The job schema has `garmentDetails[]` and `printLocations[]` which contain the data needed to drive the mockup.
+**Step 2: Build mockup data from job**
 
-**Step 2: Add MockupFilterProvider**
+Inside the component, after the existing `useMemo` blocks, add:
 
-Wrap the page with `MockupFilterProvider` with garment colors from `garmentDetails`.
+```tsx
+// Resolve garment category and color for primary garment
+const mockupData = useMemo(() => {
+  if (!job) return null;
+  const garmentId = job.garmentDetails[0]?.garmentId;
+  const colorId = job.garmentDetails[0]?.colorId;
+  const garment = garmentCatalog.find((g) => g.id === garmentId);
+  const color = allColors.find((c) => c.id === colorId);
+  if (!garment || !color) return null;
 
-**Step 3: Verify on dev server**
+  // BREADBOARD GAP #2: Map artworkIds[] to printLocations[] in order (1:1)
+  const artworkPlacements: ArtworkPlacement[] = job.printLocations.map((loc, i) => {
+    const artworkId = job.artworkIds[i];
+    const artwork = artworkId ? allArtworks.find((a) => a.id === artworkId) : undefined;
+    return {
+      artworkUrl: artwork?.thumbnailUrl ?? "",
+      position: normalizePosition(loc.position), // "Front Center" → "front-chest"
+    };
+  }).filter((p) => p.artworkUrl); // Only include locations with artwork
 
-Navigate to any job detail page. Confirm mockup card renders with front/back toggle.
+  return {
+    garmentCategory: garment.baseCategory,
+    colorHex: color.hex,
+    artworkPlacements,
+    colors: [color.hex],
+  };
+}, [job]);
+```
 
-**Step 4: Commit**
+**Step 3: Add "What We're Printing" section + MockupFilterProvider**
+
+In the JSX, after the `<QuickActionsBar>` and before the two-column layout, add:
+
+```tsx
+{/* Per-page MockupFilterProvider */}
+{mockupData && <MockupFilterProvider colors={mockupData.colors} />}
+
+{/* What We're Printing */}
+{mockupData && (
+  <div className="rounded-lg border border-border bg-card p-4">
+    <h3 className="mb-3 text-sm font-semibold text-foreground">
+      What We're Printing
+    </h3>
+    <GarmentMockupCard
+      garmentCategory={mockupData.garmentCategory}
+      colorHex={mockupData.colorHex}
+      artworkPlacements={mockupData.artworkPlacements}
+      size="md"
+    />
+  </div>
+)}
+```
+
+**Step 4: Verify on dev server**
+
+Run: `PORT=3005 npm run dev`
+Navigate to any job detail page (e.g., `/jobs/{id}`). Confirm:
+- Mockup card renders with garment silhouette tinted to correct color
+- Front/back toggle works
+- Dot indicators show which views have artwork
+- Jobs without garment data show no mockup section (graceful degradation)
+
+**Step 5: Commit**
 
 ```bash
 git add app/(dashboard)/jobs/[id]/page.tsx
@@ -1223,23 +1511,26 @@ EOF
 
 ```
 Task 1 (schemas) ──┐
-Task 2 (constants)─┼── Task 5 (mock data) ── Task 6 (FilterProvider)
-Task 3 (color util)┘                          │
-                                               ├── Task 7 (GarmentMockup core)
-Task 4 (SVG assets) ─────────────────────────┘    │
-                                                    ├── Task 8 (Thumbnail)
-                                                    ├── Task 9 (Card)
-                                                    └── Task 10 (Barrel)
-                                                         │
-                                            ┌────────────┼────────────┐
-                                            │            │            │
-                                     Task 11 (Quote)  Task 12 (Kanban)  Task 13 (Job)
-                                            │            │            │
-                                            └────────────┼────────────┘
-                                                         │
-                                                    Task 14 (Validate)
-                                                         │
-                                                    Task 15 (PR)
+Task 2 (constants + aliases)─┼── Task 5 (mock data) ─┬── Task 6 (FilterProvider)
+Task 3 (color util)──────────┘                        │
+                                                      ├── Task 5A (JobCard schema)
+                                                      │
+                                                      └── Task 7 (GarmentMockup core)
+Task 4 (SVG assets) ─────────────────────────────────┘    │
+                                                            ├── Task 8 (Thumbnail)
+                                                            ├── Task 9 (Card)
+                                                            └── Task 10 (Barrel)
+                                                                 │
+                                                ┌────────────────┼────────────────┐
+                                                │                │                │
+                                    Task 11 (Quote)    Task 12 (Kanban)    Task 13 (Job)
+                                    uses: normalizePosition   uses: JobCard      uses: normalizePosition
+                                                │                │                │
+                                                └────────────────┼────────────────┘
+                                                                 │
+                                                            Task 14 (Validate)
+                                                                 │
+                                                            Task 15 (PR)
 ```
 
-Tasks 1-3 can run in parallel. Tasks 11-13 can run in parallel.
+Tasks 1-4 can run in parallel. Task 5A depends on Task 5. Tasks 11-13 can run in parallel.
