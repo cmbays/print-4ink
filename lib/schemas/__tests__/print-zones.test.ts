@@ -63,7 +63,7 @@ describe("getZonesForCategory", () => {
   });
 
   it("returns empty array for valid category with invalid view", () => {
-    const zones = getZonesForCategory("t-shirts", "bottom");
+    const zones = getZonesForCategory("t-shirts", "bottom" as never);
     expect(zones).toEqual([]);
   });
 

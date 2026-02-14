@@ -1,4 +1,5 @@
-import type { PrintZone } from "@/lib/schemas/mockup-template";
+import type { PrintZone, MockupView } from "@/lib/schemas/mockup-template";
+import type { GarmentCategory } from "@/lib/schemas/garment";
 
 /**
  * Human-readable labels for print positions.
@@ -53,7 +54,9 @@ export const PRINT_POSITION_ALIASES: Record<string, string> = {
 export function normalizePosition(input: string): string {
   const trimmed = input.trim();
   if (!trimmed) {
-    console.warn("[mockup] normalizePosition called with empty input");
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[mockup] normalizePosition called with empty input");
+    }
     return "unknown";
   }
 
@@ -72,10 +75,12 @@ export function normalizePosition(input: string): string {
 
   // Unknown input — warn and fall back to kebab-case
   const kebab = inputLower.replace(/\s+/g, "-");
-  console.warn(
-    `[mockup] Unknown print position "${trimmed}", falling back to "${kebab}". ` +
-    `Consider adding it to PRINT_POSITION_ALIASES.`
-  );
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      `[mockup] Unknown print position "${trimmed}", falling back to "${kebab}". ` +
+      `Consider adding it to PRINT_POSITION_ALIASES.`
+    );
+  }
   return kebab;
 }
 
@@ -84,8 +89,8 @@ export function normalizePosition(input: string): string {
  * Coordinates are percentages of the template viewBox.
  */
 export const PRINT_ZONES: Record<
-  string,
-  Partial<Record<string, PrintZone[]>>
+  GarmentCategory,
+  Partial<Record<MockupView, PrintZone[]>>
 > = {
   "t-shirts": {
     front: [
@@ -136,16 +141,16 @@ export const PRINT_ZONES: Record<
 
 /** Get all print zones for a garment category and view. */
 export function getZonesForCategory(
-  category: string,
-  view: string
+  category: GarmentCategory,
+  view: MockupView
 ): PrintZone[] {
   return PRINT_ZONES[category]?.[view] ?? [];
 }
 
 /** Get a specific zone by position within a category and view. */
 export function getZoneForPosition(
-  category: string,
-  view: string,
+  category: GarmentCategory,
+  view: MockupView,
   position: string
 ): PrintZone | undefined {
   return getZonesForCategory(category, view).find(

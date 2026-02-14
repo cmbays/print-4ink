@@ -3,6 +3,7 @@
 import { useId, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { getZoneForPosition } from "@/lib/constants/print-zones";
+import { hexToColorMatrix } from "@/lib/helpers/color-matrix";
 import type { GarmentCategory } from "@/lib/schemas/garment";
 import type { MockupView } from "@/lib/schemas/mockup-template";
 
@@ -43,8 +44,10 @@ interface GarmentMockupProps {
  * Core SVG composition engine for garment mockups.
  * Renders a garment template with color tinting and artwork overlays.
  *
- * Uses feColorMatrix filters (from MockupFilterProvider) for color tinting,
- * and mix-blend-mode: multiply for realistic fabric texture.
+ * Self-contained: renders its own inline feColorMatrix filter for color
+ * tinting. MockupFilterProvider is optional — when present, it provides
+ * shared filter definitions that the browser deduplicates for performance.
+ * Uses mix-blend-mode: multiply for realistic fabric texture.
  */
 export function GarmentMockup({
   garmentCategory,
@@ -95,6 +98,15 @@ export function GarmentMockup({
         role="img"
         aria-label={`${garmentCategory} mockup - ${view} view`}
       >
+        {/* Inline color tint filter — self-contained fallback.
+            MockupFilterProvider may also define this filter ID at page level
+            for deduplication, but this ensures the component works standalone. */}
+        <defs>
+          <filter id={filterId}>
+            <feColorMatrix type="matrix" values={hexToColorMatrix(colorHex)} />
+          </filter>
+        </defs>
+
         {/* Garment template with color tint filter */}
         <image
           href={svgPath}
