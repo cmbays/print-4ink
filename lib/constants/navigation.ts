@@ -1,3 +1,12 @@
+// Navigation items reference Lucide icon components, so they live here
+// rather than in the data-only lib/constants.ts file.
+//
+// PRIMARY_NAV / SECONDARY_NAV define the mobile information architecture:
+// primary = bottom tab bar, secondary = drawer. The desktop sidebar has its
+// own display order and grouping — do not assume [...PRIMARY, ...SECONDARY]
+// matches sidebar order. When refactoring sidebar to use these constants,
+// update SidebarNavLink to accept `label` instead of `name`.
+
 import {
   LayoutDashboard,
   Hammer,

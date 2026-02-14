@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
+/**
+ * Client-only hook for mobile viewport detection.
+ * Returns `false` during SSR and first render — use CSS breakpoints
+ * (md:hidden / hidden md:block) for layout to avoid hydration flash.
+ * Reserve this hook for JS-only logic (e.g., choosing Dialog vs Sheet).
+ */
 export function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = useState(false);
 
