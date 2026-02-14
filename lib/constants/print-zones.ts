@@ -13,6 +13,9 @@ export const PRINT_POSITION_LABELS: Record<string, string> = {
   "nape": "Nape",
   "left-sleeve": "Left Sleeve",
   "right-sleeve": "Right Sleeve",
+  "left-leg": "Left Leg",
+  "front-panel": "Front Panel",
+  "back-panel": "Back Panel",
 };
 
 /**
@@ -48,16 +51,29 @@ export const PRINT_POSITION_ALIASES: Record<string, string> = {
  * falls back to kebab-case conversion.
  */
 export function normalizePosition(input: string): string {
-  const aliased = PRINT_POSITION_ALIASES[input];
+  const trimmed = input.trim();
+  if (!trimmed) {
+    console.warn("[mockup] normalizePosition called with empty input");
+    return "unknown";
+  }
+
+  // Try exact match first (fast path)
+  const aliased = PRINT_POSITION_ALIASES[trimmed];
   if (aliased) return aliased;
 
+  // Try case-insensitive match
+  const inputLower = trimmed.toLowerCase();
+  for (const [key, value] of Object.entries(PRINT_POSITION_ALIASES)) {
+    if (key.toLowerCase() === inputLower) return value;
+  }
+
   // Check if already a canonical position
-  if (PRINT_POSITION_LABELS[input]) return input;
+  if (PRINT_POSITION_LABELS[trimmed]) return trimmed;
 
   // Unknown input — warn and fall back to kebab-case
-  const kebab = input.toLowerCase().replace(/\s+/g, "-");
+  const kebab = inputLower.replace(/\s+/g, "-");
   console.warn(
-    `[mockup] Unknown print position "${input}", falling back to "${kebab}". ` +
+    `[mockup] Unknown print position "${trimmed}", falling back to "${kebab}". ` +
     `Consider adding it to PRINT_POSITION_ALIASES.`
   );
   return kebab;
@@ -104,16 +120,16 @@ export const PRINT_ZONES: Record<
   },
   pants: {
     front: [
-      { position: "left-chest", x: 30, y: 10, width: 20, height: 20 },
+      { position: "left-leg", x: 30, y: 35, width: 20, height: 25 },
     ],
     back: [],
   },
   headwear: {
     front: [
-      { position: "front-chest", x: 20, y: 25, width: 60, height: 40 },
+      { position: "front-panel", x: 20, y: 25, width: 60, height: 40 },
     ],
     back: [
-      { position: "full-back", x: 20, y: 25, width: 60, height: 40 },
+      { position: "back-panel", x: 20, y: 25, width: 60, height: 40 },
     ],
   },
 };

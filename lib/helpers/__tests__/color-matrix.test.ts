@@ -47,8 +47,10 @@ describe("hexToColorMatrix", () => {
   it("produces identity-like matrix for white", () => {
     const matrix = hexToColorMatrix("#FFFFFF");
     const values = matrix.trim().split(/\s+/).map(Number);
-    // Row 1 (R channel) sums should be close to 1
-    expect(values[0] + values[1] + values[2]).toBeCloseTo(1, 0);
+    // Each color row should sum to exactly 1.0 (luminance weights sum to 1)
+    expect(values[0] + values[1] + values[2]).toBeCloseTo(1, 4);
+    expect(values[5] + values[6] + values[7]).toBeCloseTo(1, 4);
+    expect(values[10] + values[11] + values[12]).toBeCloseTo(1, 4);
   });
 
   it("produces a dark matrix for black", () => {

@@ -12,9 +12,12 @@ export const printZoneSchema = z.object({
   position: z.string().min(1),
   x: z.number().min(0).max(100),
   y: z.number().min(0).max(100),
-  width: z.number().min(0).max(100),
-  height: z.number().min(0).max(100),
-});
+  width: z.number().positive().max(100),
+  height: z.number().positive().max(100),
+}).refine(
+  (z) => z.x + z.width <= 100 && z.y + z.height <= 100,
+  { message: "Print zone extends beyond viewBox boundary (x+width or y+height > 100)" }
+);
 
 export const mockupTemplateSchema = z.object({
   id: z.string().uuid(),

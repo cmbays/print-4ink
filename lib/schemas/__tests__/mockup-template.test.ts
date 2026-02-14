@@ -50,16 +50,33 @@ describe("printZoneSchema", () => {
     ).toThrow();
   });
 
-  // Review fix #3: boundary overflow test
+  it("rejects zero width (degenerate zone)", () => {
+    expect(() =>
+      printZoneSchema.parse({ ...validZone, width: 0 })
+    ).toThrow();
+  });
+
+  it("rejects zero height (degenerate zone)", () => {
+    expect(() =>
+      printZoneSchema.parse({ ...validZone, height: 0 })
+    ).toThrow();
+  });
+
   it("accepts zone at boundary (x=0, y=0, width=100, height=100)", () => {
     expect(() =>
       printZoneSchema.parse({ position: "full", x: 0, y: 0, width: 100, height: 100 })
     ).not.toThrow();
   });
 
-  it("rejects zone at exact boundary max+1", () => {
+  it("rejects zone that overflows horizontally (x + width > 100)", () => {
     expect(() =>
-      printZoneSchema.parse({ ...validZone, height: 100.1 })
+      printZoneSchema.parse({ ...validZone, x: 80, width: 30 })
+    ).toThrow();
+  });
+
+  it("rejects zone that overflows vertically (y + height > 100)", () => {
+    expect(() =>
+      printZoneSchema.parse({ ...validZone, y: 85, height: 20 })
     ).toThrow();
   });
 });

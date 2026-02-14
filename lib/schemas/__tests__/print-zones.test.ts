@@ -19,8 +19,21 @@ describe("PRINT_ZONES", () => {
   it("every zone validates against printZoneSchema", () => {
     for (const [, views] of Object.entries(PRINT_ZONES)) {
       for (const [, zones] of Object.entries(views)) {
-        for (const zone of zones!) {
+        for (const zone of zones ?? []) {
           expect(() => printZoneSchema.parse(zone)).not.toThrow();
+        }
+      }
+    }
+  });
+
+  it("every position in PRINT_ZONES has a label in PRINT_POSITION_LABELS", () => {
+    for (const [category, views] of Object.entries(PRINT_ZONES)) {
+      for (const [view, zones] of Object.entries(views)) {
+        for (const zone of zones ?? []) {
+          expect(
+            PRINT_POSITION_LABELS,
+            `Missing label for position "${zone.position}" in ${category}/${view}`
+          ).toHaveProperty(zone.position);
         }
       }
     }
@@ -46,6 +59,16 @@ describe("getZonesForCategory", () => {
 
   it("returns empty array for invalid category", () => {
     const zones = getZonesForCategory("socks" as never, "front");
+    expect(zones).toEqual([]);
+  });
+
+  it("returns empty array for valid category with invalid view", () => {
+    const zones = getZonesForCategory("t-shirts", "bottom");
+    expect(zones).toEqual([]);
+  });
+
+  it("returns empty array for category with empty view (pants/back)", () => {
+    const zones = getZonesForCategory("pants", "back");
     expect(zones).toEqual([]);
   });
 });
@@ -86,7 +109,22 @@ describe("normalizePosition", () => {
     expect(normalizePosition("front-chest")).toBe("front-chest");
   });
 
-  // Review fix #2: warn on unknown input
+  it("handles case-insensitive alias match", () => {
+    expect(normalizePosition("front center")).toBe("front-chest");
+    expect(normalizePosition("FRONT CENTER")).toBe("front-chest");
+    expect(normalizePosition("left chest")).toBe("left-chest");
+  });
+
+  it("returns 'unknown' for empty input with warning", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    expect(normalizePosition("")).toBe("unknown");
+    expect(normalizePosition("  ")).toBe("unknown");
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("empty input")
+    );
+    warnSpy.mockRestore();
+  });
+
   it("logs a warning for unknown input and returns kebab-case", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const result = normalizePosition("Hip Pocket");
@@ -97,14 +135,13 @@ describe("normalizePosition", () => {
     warnSpy.mockRestore();
   });
 
-  // Review fix #3: round-trip test — all aliases resolve to known positions
+  // Round-trip test — all aliases resolve to known positions
   it("every alias resolves to a position that exists in PRINT_POSITION_LABELS", () => {
     for (const [alias, canonical] of Object.entries(PRINT_POSITION_ALIASES)) {
       expect(PRINT_POSITION_LABELS).toHaveProperty(
         canonical,
         expect.any(String)
       );
-      // Also verify normalizePosition returns the same canonical
       expect(normalizePosition(alias)).toBe(canonical);
     }
   });
