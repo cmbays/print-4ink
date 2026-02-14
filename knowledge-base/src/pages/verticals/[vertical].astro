@@ -14,6 +14,7 @@ const verticals = [
   'screen-room',
   'garments',
   'dashboard',
+  'mobile-optimization',
   'meta',
 ];
 
@@ -26,6 +27,7 @@ const verticalLabels: Record<string, string> = {
   'screen-room': 'Screen Room',
   garments: 'Garments',
   dashboard: 'Dashboard',
+  'mobile-optimization': 'Mobile Optimization',
   meta: 'Meta',
 };
 
@@ -49,6 +51,7 @@ export function getStaticPaths() {
     'screen-room',
     'garments',
     'dashboard',
+    'mobile-optimization',
     'meta',
   ].map((v) => ({ params: { vertical: v } }));
 }
