@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
-# work() — Claude + Tmux Worktree Orchestrator for Screen Print Pro
+# work() — Claude + Zellij Worktree Orchestrator for Screen Print Pro
 #
 # Source this file in your shell profile:
 #   source ~/Github/print-4ink/scripts/work.sh
 #
-# Then use: work <topic>, work list, work focus, work clean <topic>, etc.
+# Then use: work <topic>, work list, work clean <topic>, etc.
 #
 # UX Model:
-#   - New workstream (work <topic>) → detached tmux session. You attach from a new Ghostty pane.
-#   - Related work (work <topic> <base>) → new window in parent's tmux session. Appears as a tab.
-#   - Agent Teams → agents spawn as tmux panes. Use Ctrl+b z to zoom, Ctrl+b o to cycle.
-#   - work focus → read-only tiled monitor of all windows in current session.
+#   - New workstream (work <topic>) → Zellij tab or new session
+#   - Related work (work <topic> <base>) → Zellij tab in current session
+#   - Phase commands (work research <vertical>) → auto-named worktree + Claude with phase prompt
+#   - Build (work build <manifest>) → multi-tab Zellij layout from YAML manifest
+#   - Session management: resume, fork, sessions, status
 
 # ── Config ──────────────────────────────────────────────────────────────────
 PRINT4INK_REPO="$HOME/Github/print-4ink"
@@ -19,15 +20,44 @@ PRINT4INK_MAX_WORKTREES=6
 PRINT4INK_PORT_MIN=3001
 PRINT4INK_PORT_MAX=3010
 
+# ── Source Libraries ────────────────────────────────────────────────────────
+# Resolve script directory (works when sourced from both Zsh and Bash)
+if [[ -n "$ZSH_VERSION" ]]; then
+    WORK_SCRIPT_DIR="${0:a:h}"
+else
+    WORK_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
+# shellcheck source=lib/registry.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/registry.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/registry.sh"
+
 # ── Dispatcher ──────────────────────────────────────────────────────────────
 work() {
     case "${1:-}" in
-        list)    _work_list ;;
-        focus)   _work_focus ;;
-        unfocus) _work_unfocus ;;
-        clean)   _work_clean "$2" ;;
+        # Phase commands (Wave 2 — stubs for now)
+        research)   shift; _work_phase "research" "$@" ;;
+        interview)  shift; _work_phase "interview" "$@" ;;
+        breadboard) shift; _work_phase "breadboard" "$@" ;;
+        plan)       shift; _work_phase "plan" "$@" ;;
+        build)      shift; _work_build "$@" ;;
+        polish)     shift; _work_phase "polish" "$@" ;;
+        review)     shift; _work_phase "review" "$@" ;;
+        learnings)  shift; _work_phase "learnings" "$@" ;;
+        cooldown)   shift; _work_phase "cooldown" "$@" ;;
+
+        # Session management
+        sessions)   shift; _work_sessions "$@" ;;
+        resume)     shift; _work_resume "$@" ;;
+        fork)       shift; _work_fork "$@" ;;
+        status)     _work_status ;;
+        next)       _work_next ;;
+        clean)      shift; _work_clean "$@" ;;
+
+        # Utilities
+        list)       _work_list ;;
         help|--help|-h|"")
             _work_help ;;
+
+        # Legacy: bare topic (creates worktree + Zellij tab)
         --stack)
             shift
             local topic="${1:-}"
@@ -35,7 +65,6 @@ work() {
             shift
             local prompt=""
             [[ "${1:-}" == "--prompt" ]] && prompt="${2:-}"
-            # Auto-detect current branch from $PWD
             local current_branch
             current_branch=$(git -C "$PWD" rev-parse --abbrev-ref HEAD 2>/dev/null)
             if [[ -z "$current_branch" || "$current_branch" == "HEAD" ]]; then
@@ -49,7 +78,6 @@ work() {
             local topic="$1"; shift
             local base="main"
             local prompt=""
-            # Next arg is either a base-branch or --prompt
             if [[ "${1:-}" == "--prompt" ]]; then
                 prompt="${2:-}"
             elif [[ -n "${1:-}" ]]; then
@@ -64,62 +92,65 @@ work() {
 # ── Help ────────────────────────────────────────────────────────────────────
 _work_help() {
     cat <<'HELP'
-work — Claude + Tmux Worktree Orchestrator
+work — Claude + Zellij Worktree Orchestrator
 
 USAGE
-  work <topic>                          New workstream: worktree + detached tmux session
-  work <topic> <base-branch>           Related work: worktree + window in parent's session
-  work --stack <topic>                  Stack from current branch (auto-detects $PWD)
-  work <topic> --prompt "task desc"     Seed the new Claude with an initial prompt
-  work list                             Show sessions, windows, worktrees, and ports
-  work focus                            Read-only tiled monitor of all windows
-  work unfocus                          Close monitor, return to original session
-  work clean <topic>                    Remove worktree + tmux + branch
-  work help                             This help text
+  work <topic>                            New workstream: worktree + Zellij tab
+  work <topic> <base-branch>             Related work: worktree + Zellij tab
+  work --stack <topic>                    Stack from current branch (auto-detects $PWD)
+  work <topic> --prompt "task desc"       Seed the new Claude with an initial prompt
 
-WORKFLOW
-  New workstream (new Ghostty pane needed):
-    1. Claude tells you: work invoicing-schema
-    2. You split a new pane in Ghostty
-    3. Run: tmux attach -t invoicing-schema
-    4. Claude is already running with your prompt
+PHASE COMMANDS
+  work research <vertical>                Research phase (vertical-discovery skill)
+  work interview <vertical>               Interview phase (requirements-interrogator)
+  work breadboard <vertical>              Breadboarding phase (breadboarding skill)
+  work plan <vertical>                    Implementation planning
+  work build <manifest> [--wave N]        Execute build from YAML manifest
+  work polish <vertical>                  Post-build polish
+  work review <vertical>                  Quality gate + doc sync
+  work learnings <vertical>               Cross-cutting pattern synthesis
+  work cooldown <vertical>                5-step retrospective
 
-  Related work (Claude does this automatically):
-    1. Claude runs: work invoicing-ui session/0210-invoicing-schema --prompt "..."
-    2. New window appears in the "invoicing-schema" tmux session
-    3. Navigate: Ctrl+b n (next window) or Ctrl+b w (window tree)
+SESSION MANAGEMENT
+  work sessions [--vertical <name>]       List sessions from registry
+  work resume <topic>                     Resume Claude session by topic
+  work fork <new-topic> <source-topic>    Fork a session with new context
+  work status                             Show all layers (registry, worktrees, Zellij, ports)
+  work next                               AI recommendation: what to work on next
 
-  Agent Teams (automatic):
-    1. Claude uses TeamCreate → agents spawn as tmux panes
-    2. Use Ctrl+b z to zoom a pane, Ctrl+b o to cycle between them
-    3. Ctrl+b q shows pane numbers — press a number to jump
+UTILITIES
+  work list                               Show worktrees, Zellij sessions, ports
+  work clean <topic>                      Remove worktree + Zellij + branch + registry
+  work help                               This help text
 
 EXAMPLES
   work invoicing-schema                                     # New workstream
   work invoicing-schema --prompt "Build the Zod schemas"    # With initial task
-  work invoicing-ui session/0210-invoicing-schema           # Window in parent
+  work invoicing-ui session/0210-invoicing-schema           # Branch from parent
   work --stack invoicing-tests --prompt "Write tests"       # Stack from $PWD
-  work focus                                                # Monitor all
+  work research quoting                                     # Start quoting research
+  work resume invoicing-schema                              # Resume Claude session
+  work sessions --vertical quoting                          # List quoting sessions
   work clean invoicing-schema                               # Full cleanup
 
-TMUX NAVIGATION
-  Ctrl+b s   Session picker (switch between workstreams)
-  Ctrl+b n   Next window (cycle branches in session)
-  Ctrl+b p   Previous window
-  Ctrl+b w   Window tree (all sessions + windows)
-  Ctrl+b z   Zoom/unzoom pane (fullscreen toggle)
-  Ctrl+b o   Cycle to next pane (agent teams)
-  Ctrl+b q   Flash pane numbers, press number to jump
+ZELLIJ NAVIGATION
+  Ctrl+t       Tab mode (then arrows or number to switch)
+  Alt+n        New pane
+  Alt+←/→      Switch pane focus
+  Ctrl+p       Pane mode
+  Ctrl+s       Search (scroll mode)
+  Alt+1..9     Quick tab switch
 
 NOTES
-  - New workstreams create detached sessions — attach from a new Ghostty pane
-  - Related work creates windows in parent's session — no pane splitting needed
+  - Inside Zellij: new workstreams open as tabs in current session
+  - Outside Zellij: creates a new Zellij session to attach to
   - Branch naming: session/<MMDD>-<topic> (auto-generated, kebab-case enforced)
   - Max 6 concurrent worktrees
+  - Session registry: ~/.session-registry.json (cross-references everything)
 HELP
 }
 
-# ── Create New Worktree + Tmux ──────────────────────────────────────────────
+# ── Create New Worktree + Zellij ────────────────────────────────────────────
 _work_new() {
     local TOPIC="$1"
     local BASE="${2:-main}"
@@ -206,236 +237,256 @@ CONTEXT
     echo "  Port:      $PORT"
     echo "  Dev:       PORT=$PORT npm run dev"
 
-    # ── Tmux Integration ────────────────────────────────────────────────────
-    # All tmux commands (new-session -d, new-window -d, send-keys, etc.)
-    # work from both inside and outside tmux. We only need a running server.
-    if ! tmux info &>/dev/null; then
-        # No tmux server — start one with the new session
-        tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
+    # ── Zellij Integration ───────────────────────────────────────────────────
+    # Generate temp KDL layout for launching Claude in the worktree
+    local LAYOUT_FILE
+    LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
 
-        tmux send-keys -t "$TOPIC" "claude" Enter
-
-        if [[ -n "$PROMPT" ]]; then
-            sleep 3
-            tmux send-keys -t "$TOPIC" "$PROMPT" Enter
-        fi
-
-        echo "  Session:   $TOPIC (detached)"
-        echo ""
-        echo "  Attach from a new Ghostty pane:"
-        echo "    tmux attach -t $TOPIC"
-        return 0
+    if [[ -n "$PROMPT" ]]; then
+        cat > "$LAYOUT_FILE" <<KDL
+layout {
+    pane command="claude" cwd="$WORKTREE_DIR" {
+        args "$PROMPT"
+    }
+}
+KDL
+    else
+        cat > "$LAYOUT_FILE" <<KDL
+layout {
+    pane command="claude" cwd="$WORKTREE_DIR"
+}
+KDL
     fi
 
-    if [[ "$BASE" == "main" ]]; then
-        # ── New workstream: detached tmux session ───────────────────────
-        # Creates session in background. User attaches from a new Ghostty pane.
-        tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
-
-
-
-        # Launch Claude in the new session
-        tmux send-keys -t "$TOPIC" "claude" Enter
-
-        # Seed with initial prompt if provided
-        if [[ -n "$PROMPT" ]]; then
-            sleep 3
-            tmux send-keys -t "$TOPIC" "$PROMPT" Enter
-        fi
-
-        echo "  Session:   $TOPIC (detached)"
-        echo ""
-        echo "  Attach from a new Ghostty pane:"
-        echo "    tmux attach -t $TOPIC"
-
+    if [[ -n "$ZELLIJ" ]]; then
+        # ── Inside Zellij: add tab to current session ────────────────────
+        zellij action new-tab --layout "$LAYOUT_FILE" --name "$TOPIC"
+        echo "  Zellij:    tab '$TOPIC' opened"
     else
-        # ── Related work: new window in parent's tmux session ───────────
-        # Finds the parent session and adds a window tab. No pane splitting.
-        local PARENT_SESSION=""
-        local sess
-        local win_paths
+        # ── Outside Zellij: create new session ───────────────────────────
+        # Wrap in a full layout with a named tab
+        local SESSION_LAYOUT
+        SESSION_LAYOUT=$(mktemp "${TMPDIR:-/tmp}/work-session-XXXXXX.kdl")
+        cat > "$SESSION_LAYOUT" <<KDL
+layout {
+    tab name="$TOPIC" cwd="$WORKTREE_DIR" {
+        pane command="claude" {
+            args "$PROMPT"
+        }
+    }
+}
+KDL
+        echo ""
+        echo "  Attach the new Zellij session:"
+        echo "    zellij attach $TOPIC --create --layout $SESSION_LAYOUT"
+        echo ""
+        echo "  Or start it directly:"
+        echo "    zellij --session $TOPIC --layout $SESSION_LAYOUT"
+    fi
 
-        # Strategy 1: Check if any session's windows are in the base branch worktree
-        for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-            [[ "$sess" == focus-* ]] && continue
-            win_paths=$(tmux list-windows -t "$sess" -F '#{pane_current_path}' 2>/dev/null)
-            if echo "$win_paths" | grep -q "${PRINT4INK_WORKTREES}/${BASE}" 2>/dev/null; then
-                PARENT_SESSION="$sess"
-                break
-            fi
-        done
+    # Clean up temp file after a delay (Zellij reads it synchronously)
+    (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
 
-        # Strategy 2: Match session name to base branch slug
-        if [[ -z "$PARENT_SESSION" ]]; then
-            local base_slug
-            base_slug=$(echo "$BASE" | sed 's|session/[0-9]*-||')
-            for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-                [[ "$sess" == focus-* ]] && continue
-                if [[ "$sess" == "$base_slug" ]]; then
-                    PARENT_SESSION="$sess"
-                    break
-                fi
-            done
-        fi
-
-        # Strategy 3: Check current tmux session (only works when called from inside tmux)
-        if [[ -z "$PARENT_SESSION" && -n "$TMUX" ]]; then
-            local current_session
-            current_session=$(tmux display-message -p '#S' 2>/dev/null)
-            if [[ -n "$current_session" && "$current_session" != focus-* ]]; then
-                PARENT_SESSION="$current_session"
-            fi
-        fi
-
-        if [[ -n "$PARENT_SESSION" ]]; then
-            # Create window WITHOUT switching to it (-d flag)
-            tmux new-window -d -t "$PARENT_SESSION" -n "$TOPIC" -c "$WORKTREE_DIR"
-
-            # Launch Claude
-            tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "claude" Enter
-
-            # Seed with initial prompt if provided
-            if [[ -n "$PROMPT" ]]; then
-                sleep 3
-                tmux send-keys -t "${PARENT_SESSION}:${TOPIC}" "$PROMPT" Enter
-            fi
-
-            echo "  Window:    $TOPIC in session '$PARENT_SESSION'"
-            echo "  Navigate:  Ctrl+b n (next) or Ctrl+b w (tree)"
-        else
-            # Fallback: create detached session if parent not found
-            tmux new-session -d -s "$TOPIC" -c "$WORKTREE_DIR"
-    
-            tmux send-keys -t "$TOPIC" "claude" Enter
-
-            if [[ -n "$PROMPT" ]]; then
-                sleep 3
-                tmux send-keys -t "$TOPIC" "$PROMPT" Enter
-            fi
-
-            echo "  Session:   $TOPIC (parent not found, created detached session)"
-            echo ""
-            echo "  Attach from a new Ghostty pane:"
-            echo "    tmux attach -t $TOPIC"
-        fi
+    # Register in session registry
+    if type _registry_add &>/dev/null; then
+        _registry_add "$TOPIC" "$BRANCH" "" "" "" "" "" "" "$TOPIC"
     fi
 }
 
-# ── List Sessions ───────────────────────────────────────────────────────────
+# ── Phase Command (Generic Wrapper) ────────────────────────────────────────
+# Usage: _work_phase <phase> <vertical> [--prompt "..."]
+_work_phase() {
+    local PHASE="$1"; shift
+    local VERTICAL="${1:-}"
+
+    [[ -z "$VERTICAL" ]] && {
+        echo "Error: vertical required. Usage: work $PHASE <vertical>"
+        echo "  Verticals: quoting, customer-management, invoicing, price-matrix,"
+        echo "             jobs, screen-room, garments, dashboard, devx"
+        return 1
+    }
+    shift
+
+    # Parse optional --prompt
+    local PROMPT=""
+    [[ "${1:-}" == "--prompt" ]] && PROMPT="${2:-}"
+
+    # Auto-generate topic name
+    local TOPIC="${VERTICAL}-${PHASE}"
+
+    # Load phase prompt template if available and no custom prompt given
+    local PROMPT_FILE="${WORK_SCRIPT_DIR}/prompts/${PHASE}.md"
+    if [[ -z "$PROMPT" && -f "$PROMPT_FILE" ]]; then
+        # Interpolate variables in the template
+        PROMPT=$(sed \
+            -e "s|{VERTICAL}|$VERTICAL|g" \
+            -e "s|{PHASE}|$PHASE|g" \
+            -e "s|{REPO}|$PRINT4INK_REPO|g" \
+            "$PROMPT_FILE")
+    elif [[ -z "$PROMPT" ]]; then
+        PROMPT="You are starting the $PHASE phase for the $VERTICAL vertical. Read the CLAUDE.md and relevant docs first."
+    fi
+
+    # Create worktree + Zellij tab via _work_new
+    _work_new "$TOPIC" "main" "$PROMPT"
+
+    # Update registry with vertical and stage info
+    if type _registry_update &>/dev/null; then
+        _registry_update "$TOPIC" "vertical" "$VERTICAL"
+        _registry_update "$TOPIC" "stage" "$PHASE"
+    fi
+}
+
+# ── Build from Manifest (Wave 2 — Stub) ────────────────────────────────────
+_work_build() {
+    local MANIFEST="${1:-}"
+
+    if [[ -z "$MANIFEST" ]]; then
+        echo "Error: manifest required. Usage: work build <manifest.yaml> [--wave N]"
+        echo ""
+        echo "  The manifest is a YAML file produced by the implementation-planning skill."
+        echo "  It defines sessions, their prompts, and dependency ordering."
+        echo ""
+        echo "  This command will be implemented in Wave 2 of the devx build."
+        return 1
+    fi
+
+    if [[ ! -f "$MANIFEST" ]]; then
+        echo "Error: Manifest file not found: $MANIFEST"
+        return 1
+    fi
+
+    echo "work build: Reading manifest..."
+    echo "  (Full implementation coming in Wave 2 — requires KDL generator + yq)"
+    echo "  Manifest: $MANIFEST"
+}
+
+# ── Next (Wave 3 — Stub) ───────────────────────────────────────────────────
+_work_next() {
+    echo "work next: Analyzing project state..."
+    echo "  (Full implementation coming in Wave 3 — requires prompt template)"
+    echo ""
+    echo "  For now, check:"
+    echo "    - ROADMAP.md for current priorities"
+    echo "    - 'work sessions' for active work"
+    echo "    - 'gh issue list --repo cmbays/print-4ink --label priority/high'"
+}
+
+# ── Session Management ──────────────────────────────────────────────────────
+
+# Resume a Claude session by topic
+_work_resume() {
+    local topic="$1"
+    [[ -z "$topic" ]] && { echo "Usage: work resume <topic>"; return 1; }
+
+    local session_id
+    session_id=$(_registry_get "$topic" | jq -r '.claudeSessionId // empty')
+
+    if [[ -z "$session_id" ]]; then
+        echo "Error: No Claude session ID found for topic '$topic'"
+        echo "  The session may not have been registered, or the ID wasn't captured."
+        echo "  Run 'work sessions' to see registered sessions."
+        echo ""
+        echo "  Tip: You can find session IDs with:"
+        echo "    ls -t ~/.claude/projects/*/*.jsonl | head -5"
+        return 1
+    fi
+
+    echo "Resuming Claude session for '$topic'..."
+    echo "  Session ID: $session_id"
+    claude --resume "$session_id"
+}
+
+# Fork a session (create new worktree + link to source context)
+_work_fork() {
+    local new_topic="$1"
+    local source_topic="$2"
+    [[ -z "$new_topic" || -z "$source_topic" ]] && {
+        echo "Usage: work fork <new-topic> <source-topic>"
+        echo "  Creates a new worktree and links it to the source session's context."
+        return 1
+    }
+
+    local source_id
+    source_id=$(_registry_get "$source_topic" | jq -r '.claudeSessionId // empty')
+
+    if [[ -z "$source_id" ]]; then
+        echo "Error: No Claude session ID found for source topic '$source_topic'"
+        echo "  Run 'work sessions' to see registered sessions."
+        return 1
+    fi
+
+    # Create worktree for the fork
+    _work_new "${new_topic}" "main" ""
+
+    # Register with forkedFrom reference
+    if type _registry_update &>/dev/null; then
+        _registry_update "$new_topic" "forkedFrom" "$source_topic"
+    fi
+
+    echo ""
+    echo "Fork created. Resume with forked context:"
+    echo "  claude --resume $source_id --fork-session"
+}
+
+# List sessions from registry
+_work_sessions() {
+    local vertical_filter=""
+    [[ "${1:-}" == "--vertical" ]] && vertical_filter="$2"
+
+    echo "=== Session Registry ==="
+    if [[ -n "$vertical_filter" ]]; then
+        _registry_list ".sessions[] | select(.vertical == \"$vertical_filter\")"
+    else
+        _registry_list
+    fi
+}
+
+# Show status across all layers
+_work_status() {
+    echo "=== Active Sessions ==="
+    if type _registry_list &>/dev/null; then
+        _registry_list '.sessions[] | select(.status == "active")'
+    else
+        echo "  (registry not loaded)"
+    fi
+    echo ""
+
+    echo "=== Worktrees ==="
+    git -C "$PRINT4INK_REPO" worktree list
+    echo ""
+
+    echo "=== Zellij Sessions ==="
+    zellij list-sessions 2>/dev/null || echo "  No Zellij sessions running"
+    echo ""
+
+    echo "=== Dev Server Ports ==="
+    local port pid
+    for port in $(seq $PRINT4INK_PORT_MIN $PRINT4INK_PORT_MAX); do
+        pid=$(lsof -iTCP:$port -sTCP:LISTEN -t 2>/dev/null)
+        [[ -n "$pid" ]] && echo "  :$port  IN USE (pid $pid)"
+    done
+}
+
+# ── List (Quick Overview) ──────────────────────────────────────────────────
 _work_list() {
     echo "=== Worktrees ==="
     git -C "$PRINT4INK_REPO" worktree list
     echo ""
 
-    if tmux info &>/dev/null; then
-        echo "=== Tmux Sessions ==="
-        local sess
-        for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-            # Skip focus sessions in main listing
-            [[ "$sess" == focus-* ]] && continue
-            echo "  [$sess]"
-            tmux list-windows -t "$sess" -F '    #{window_index}: #{window_name}  #{pane_current_path}' 2>/dev/null
-        done
-    fi
-
+    echo "=== Zellij Sessions ==="
+    zellij list-sessions 2>/dev/null || echo "  No Zellij sessions running"
     echo ""
+
     echo "=== Dev Server Ports ==="
     local port pid
     for port in $(seq $PRINT4INK_PORT_MIN $PRINT4INK_PORT_MAX); do
         pid=$(lsof -iTCP:$port -sTCP:LISTEN -t 2>/dev/null)
-        if [[ -n "$pid" ]]; then
-            echo "  :$port  IN USE (pid $pid)"
-        fi
+        [[ -n "$pid" ]] && echo "  :$port  IN USE (pid $pid)"
     done
 }
 
-# ── Focus: Non-Destructive Tiled Monitor ────────────────────────────────────
-_work_focus() {
-    if [[ -z "$TMUX" ]]; then
-        echo "Error: Not in a tmux session."
-        return 1
-    fi
-
-    local SESSION
-    SESSION=$(tmux display-message -p '#S')
-
-    # Don't focus a focus session
-    [[ "$SESSION" == focus-* ]] && { echo "Already in focus mode."; return 1; }
-
-    local WINDOWS
-    WINDOWS=$(tmux list-windows -t "$SESSION" -F '#I:#W')
-    local COUNT
-    COUNT=$(echo "$WINDOWS" | wc -l | tr -d ' ')
-
-    if (( COUNT <= 1 )); then
-        echo "Only 1 window in '$SESSION'. Nothing to tile."
-        return 0
-    fi
-
-    local FOCUS="focus-${SESSION}"
-
-    # Kill existing focus session if present
-    tmux kill-session -t "$FOCUS" 2>/dev/null
-
-    # Create focus session with first pane
-    local FIRST_WIN
-    FIRST_WIN=$(echo "$WINDOWS" | head -1 | cut -d: -f1)
-    tmux new-session -d -s "$FOCUS" \
-        "watch -n 0.5 -t 'tmux capture-pane -p -t \"${SESSION}:${FIRST_WIN}\" -S -50'"
-
-    # Add remaining windows as panes (no hook — we WANT panes for tiled view)
-    local WIN_IDX
-    echo "$WINDOWS" | tail -n +2 | while IFS= read -r line; do
-        WIN_IDX=$(echo "$line" | cut -d: -f1)
-        tmux split-window -t "$FOCUS" \
-            "watch -n 0.5 -t 'tmux capture-pane -p -t \"${SESSION}:${WIN_IDX}\" -S -50'"
-        tmux select-layout -t "$FOCUS" tiled
-    done
-
-    tmux select-layout -t "$FOCUS" tiled
-    tmux switch-client -t "$FOCUS"
-    echo "Focus mode: $COUNT windows tiled."
-    echo "  Exit:  Ctrl+b s → pick original session → 'work unfocus'"
-    echo "         Or just: Ctrl+b s → pick original session (focus dies on its own when you 'work clean')"
-}
-
-# ── Unfocus: Kill Focus Sessions ─────────────────────────────────────────────
-_work_unfocus() {
-    # If inside tmux AND in a focus session, switch back first
-    if [[ -n "$TMUX" ]]; then
-        local SESSION
-        SESSION=$(tmux display-message -p '#S' 2>/dev/null)
-        if [[ "$SESSION" == focus-* ]]; then
-            local ORIGINAL="${SESSION#focus-}"
-            tmux switch-client -t "$ORIGINAL" 2>/dev/null
-            tmux kill-session -t "$SESSION" 2>/dev/null
-            echo "Exited focus mode. Back to '$ORIGINAL'."
-            return 0
-        fi
-    fi
-
-    # From any context: find and kill all focus-* sessions
-    if ! tmux info &>/dev/null; then
-        echo "No tmux server running."
-        return 1
-    fi
-
-    local focus_sessions found=0
-    focus_sessions=$(tmux list-sessions -F '#S' 2>/dev/null | grep '^focus-' || true)
-
-    if [[ -z "$focus_sessions" ]]; then
-        echo "No focus sessions found."
-        return 1
-    fi
-
-    echo "$focus_sessions" | while IFS= read -r fs; do
-        tmux kill-session -t "$fs" 2>/dev/null
-        echo "  Killed: $fs"
-    done
-    echo "Focus sessions cleaned up."
-}
-
-# ── Clean: Remove Worktree + Tmux + Branch ──────────────────────────────────
+# ── Clean: Remove Worktree + Zellij + Branch + Registry ────────────────────
 _work_clean() {
     local TOPIC="$1"
     [[ -z "$TOPIC" ]] && { echo "Error: topic required. Usage: work clean <topic>"; return 1; }
@@ -455,28 +506,43 @@ _work_clean() {
     echo "Will clean up:"
     echo "  Branch:    $BRANCH"
     echo "  Worktree:  $WORKTREE_DIR"
-    tmux has-session -t "$TOPIC" 2>/dev/null && echo "  Tmux:      session '$TOPIC'"
+    if type _registry_exists &>/dev/null && _registry_exists "$TOPIC"; then
+        echo "  Registry:  session '$TOPIC'"
+    fi
     echo ""
     echo -n "Proceed? [y/N] "
     read -r CONFIRM
     [[ "$CONFIRM" != [yY] ]] && { echo "Cancelled."; return 0; }
 
-    # Close tmux session or window (works from both inside and outside tmux)
+    # Close Zellij tab if running
+    if [[ -n "$ZELLIJ" ]]; then
+        # Try to close the tab by name (no direct API — inform user)
+        echo "  Note: Close Zellij tab '$TOPIC' manually if still open."
+    fi
+
+    # Try closing Zellij session if one was created
+    zellij kill-session "$TOPIC" 2>/dev/null && echo "  Closed Zellij session '$TOPIC'"
+
+    # Also try tmux cleanup (migration period)
     if tmux has-session -t "$TOPIC" 2>/dev/null; then
-        # Kill focus session if it exists
         tmux kill-session -t "focus-${TOPIC}" 2>/dev/null
         tmux kill-session -t "$TOPIC" 2>/dev/null
         echo "  Closed tmux session '$TOPIC'"
     elif tmux info &>/dev/null; then
-        # Try finding it as a window in any session
         local sess
         for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-            if tmux list-windows -t "$sess" -F '#W' | grep -q "^${TOPIC}$"; then
+            if tmux list-windows -t "$sess" -F '#W' 2>/dev/null | grep -q "^${TOPIC}$"; then
                 tmux kill-window -t "${sess}:${TOPIC}" 2>/dev/null
                 echo "  Closed tmux window '$TOPIC' in session '$sess'"
                 break
             fi
         done
+    fi
+
+    # Archive in registry
+    if type _registry_archive &>/dev/null && _registry_exists "$TOPIC"; then
+        _registry_archive "$TOPIC"
+        echo "  Archived session '$TOPIC' in registry"
     fi
 
     # Remove worktree
