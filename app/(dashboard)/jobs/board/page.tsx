@@ -483,11 +483,11 @@ function ProductionBoardInner() {
                 />
               </div>
             )}
-          </TooltipProvider>
 
-          <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
-            {renderDragOverlay()}
-          </DragOverlay>
+            <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
+              {renderDragOverlay()}
+            </DragOverlay>
+          </TooltipProvider>
         </DndContext>
       )}
 
