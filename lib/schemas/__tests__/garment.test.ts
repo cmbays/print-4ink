@@ -157,4 +157,24 @@ describe("garmentCatalogSchema", () => {
       garmentCatalogSchema.parse({ ...validCatalog, name: "" })
     ).toThrow();
   });
+
+  it("accepts isEnabled field", () => {
+    const result = garmentCatalogSchema.parse({ ...validCatalog, isEnabled: true });
+    expect(result.isEnabled).toBe(true);
+  });
+
+  it("defaults isEnabled to true", () => {
+    const result = garmentCatalogSchema.parse(validCatalog);
+    expect(result.isEnabled).toBe(true);
+  });
+
+  it("accepts isFavorite field", () => {
+    const result = garmentCatalogSchema.parse({ ...validCatalog, isFavorite: true });
+    expect(result.isFavorite).toBe(true);
+  });
+
+  it("defaults isFavorite to false", () => {
+    const result = garmentCatalogSchema.parse(validCatalog);
+    expect(result.isFavorite).toBe(false);
+  });
 });

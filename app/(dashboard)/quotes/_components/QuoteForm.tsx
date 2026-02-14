@@ -296,6 +296,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         paymentTerms: "upfront",
         pricingTier: "standard",
         taxExempt: false,
+        favoriteGarments: [],
+        favoriteColors: {},
         createdAt: now,
         updatedAt: now,
       };

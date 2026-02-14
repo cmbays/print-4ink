@@ -1,6 +1,8 @@
 import { Package, MapPin, Shirt, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SERVICE_TYPE_LABELS } from "@/lib/constants";
+import { getGarmentById, getColorById } from "@/lib/helpers/garment-helpers";
+import { GarmentImage } from "@/components/features/GarmentImage";
 import type { Job } from "@/lib/schemas/job";
 
 interface JobDetailsSectionProps {
@@ -35,26 +37,42 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
           <div className="flex items-start gap-3">
             <Shirt className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="space-y-2">
-              {job.garmentDetails.map((gd) => (
-                <div key={`${gd.garmentId}:${gd.colorId}`}>
-                  <p className="text-sm text-foreground">
-                    {gd.garmentId}
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {gd.colorId}
-                    </span>
-                  </p>
-                  <div className="mt-1 flex flex-wrap gap-1.5">
-                    {Object.entries(gd.sizes).map(([size, count]) => (
-                      <span
-                        key={size}
-                        className="inline-flex items-center rounded bg-surface px-1.5 py-0.5 text-xs text-secondary-foreground"
-                      >
-                        {size}: {count}
-                      </span>
-                    ))}
+              {job.garmentDetails.map((gd) => {
+                const garment = getGarmentById(gd.garmentId);
+                const color = getColorById(gd.colorId);
+                return (
+                  <div key={`${gd.garmentId}:${gd.colorId}`} className="flex items-start gap-3">
+                    {garment && (
+                      <GarmentImage brand={garment.brand} sku={garment.sku} name={garment.name} size="sm" />
+                    )}
+                    <div>
+                      <p className="text-sm text-foreground">
+                        {garment ? `${garment.brand} ${garment.sku}` : gd.garmentId}
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          {color ? color.name : gd.colorId}
+                        </span>
+                        {color && (
+                          <span
+                            className="ml-1.5 inline-block h-3 w-3 rounded-sm align-middle"
+                            style={{ backgroundColor: color.hex }}
+                            aria-hidden="true"
+                          />
+                        )}
+                      </p>
+                      <div className="mt-1 flex flex-wrap gap-1.5">
+                        {Object.entries(gd.sizes).map(([size, count]) => (
+                          <span
+                            key={size}
+                            className="inline-flex items-center rounded bg-surface px-1.5 py-0.5 text-xs text-muted-foreground"
+                          >
+                            {size}: {count}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

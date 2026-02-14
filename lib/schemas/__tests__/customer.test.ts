@@ -250,4 +250,30 @@ describe("customerSchema", () => {
       customerSchema.parse({ ...validCustomer, typeTags: ["nonprofit"] })
     ).toThrow();
   });
+
+  it("accepts favoriteGarments field", () => {
+    const result = customerSchema.parse({
+      ...validCustomer,
+      favoriteGarments: ["gc-001", "gc-002"],
+    });
+    expect(result.favoriteGarments).toEqual(["gc-001", "gc-002"]);
+  });
+
+  it("defaults favoriteGarments to empty array", () => {
+    const result = customerSchema.parse(validCustomer);
+    expect(result.favoriteGarments).toEqual([]);
+  });
+
+  it("accepts favoriteColors field", () => {
+    const result = customerSchema.parse({
+      ...validCustomer,
+      favoriteColors: { "gc-001": ["clr-black", "clr-white"] },
+    });
+    expect(result.favoriteColors).toEqual({ "gc-001": ["clr-black", "clr-white"] });
+  });
+
+  it("defaults favoriteColors to empty object", () => {
+    const result = customerSchema.parse(validCustomer);
+    expect(result.favoriteColors).toEqual({});
+  });
 });
