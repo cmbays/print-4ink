@@ -107,7 +107,7 @@ PHASE COMMANDS
   work interview <vertical>               Interview phase (requirements-interrogator)
   work breadboard <vertical>              Breadboarding phase (breadboarding skill)
   work plan <vertical>                    Implementation planning
-  work build <manifest> [--wave N]        Execute build from YAML manifest
+  work build <manifest> [--wave N]        Execute build from YAML manifest (default: wave 0)
   work polish <vertical>                  Post-build polish
   work review <vertical>                  Quality gate + doc sync
   work learnings <vertical>               Cross-cutting pattern synthesis
@@ -240,29 +240,26 @@ CONTEXT
     echo "  Dev:       PORT=$PORT npm run dev"
 
     # ── Zellij Integration ───────────────────────────────────────────────────
-    # Escape double-quotes in prompt for safe KDL embedding
-    local SAFE_PROMPT="${PROMPT//\"/\\\"}"
-
     if [[ -n "${ZELLIJ:-}" ]]; then
         # ── Inside Zellij: add tab to current session ────────────────────
         local LAYOUT_FILE
         LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
 
-        if [[ -n "$PROMPT" ]]; then
-            cat > "$LAYOUT_FILE" <<KDL
-layout {
+        {
+            echo "layout {"
+            if [[ -n "$PROMPT" ]]; then
+                local SAFE_PROMPT
+                SAFE_PROMPT=$(_kdl_sanitize_prompt "$PROMPT")
+                cat <<KDL
     pane command="claude" cwd="$WORKTREE_DIR" {
         args "$SAFE_PROMPT"
     }
-}
 KDL
-        else
-            cat > "$LAYOUT_FILE" <<KDL
-layout {
-    pane command="claude" cwd="$WORKTREE_DIR"
-}
-KDL
-        fi
+            else
+                echo "    pane command=\"claude\" cwd=\"$WORKTREE_DIR\""
+            fi
+            echo "}"
+        } > "$LAYOUT_FILE"
 
         zellij action new-tab --layout "$LAYOUT_FILE" --name "$TOPIC"
         echo "  Zellij:    tab '$TOPIC' opened"
@@ -275,25 +272,11 @@ KDL
         local SESSION_LAYOUT
         SESSION_LAYOUT=$(mktemp "${TMPDIR:-/tmp}/work-session-XXXXXX.kdl")
 
-        if [[ -n "$PROMPT" ]]; then
-            cat > "$SESSION_LAYOUT" <<KDL
-layout {
-    tab name="$TOPIC" cwd="$WORKTREE_DIR" {
-        pane command="claude" {
-            args "$SAFE_PROMPT"
-        }
-    }
-}
-KDL
-        else
-            cat > "$SESSION_LAYOUT" <<KDL
-layout {
-    tab name="$TOPIC" cwd="$WORKTREE_DIR" {
-        pane command="claude"
-    }
-}
-KDL
-        fi
+        {
+            echo "layout {"
+            _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT"
+            echo "}"
+        } > "$SESSION_LAYOUT"
 
         echo ""
         echo "  Attach the new Zellij session:"
@@ -344,19 +327,25 @@ _work_phase() {
         local KB_DIR="knowledge-base/src/content/sessions"
         local PRIOR_KB_DOCS=""
         if [[ -d "${PRINT4INK_REPO}/${KB_DIR}" ]]; then
-            PRIOR_KB_DOCS=$(ls "${PRINT4INK_REPO}/${KB_DIR}/"*"-${VERTICAL}-"* 2>/dev/null | xargs -I{} basename {} | tr '\n' ', ' | sed 's/,$//')
+            # Use a while-read loop to handle filenames with spaces safely
+            local docs_list=""
+            while IFS= read -r -d '' filepath; do
+                local fname="${filepath##*/}"
+                [[ -n "$docs_list" ]] && docs_list="${docs_list}, "
+                docs_list="${docs_list}${fname}"
+            done < <(find "${PRINT4INK_REPO}/${KB_DIR}" -maxdepth 1 -name "*-${VERTICAL}-*" -print0 2>/dev/null)
+            PRIOR_KB_DOCS="$docs_list"
         fi
         local BREADBOARD_PATH="docs/breadboards/${VERTICAL}-breadboard.md"
 
-        # Interpolate variables in the template
-        PROMPT=$(sed \
-            -e "s|{VERTICAL}|$VERTICAL|g" \
-            -e "s|{PHASE}|$PHASE|g" \
-            -e "s|{REPO}|$PRINT4INK_REPO|g" \
-            -e "s|{PRIOR_KB_DOCS}|$PRIOR_KB_DOCS|g" \
-            -e "s|{BREADBOARD_PATH}|$BREADBOARD_PATH|g" \
-            -e "s|{KB_DIR}|$KB_DIR|g" \
-            "$PROMPT_FILE")
+        # Interpolate variables using parameter expansion (avoids sed delimiter conflicts)
+        PROMPT=$(<"$PROMPT_FILE")
+        PROMPT="${PROMPT//\{VERTICAL\}/$VERTICAL}"
+        PROMPT="${PROMPT//\{PHASE\}/$PHASE}"
+        PROMPT="${PROMPT//\{REPO\}/$PRINT4INK_REPO}"
+        PROMPT="${PROMPT//\{PRIOR_KB_DOCS\}/$PRIOR_KB_DOCS}"
+        PROMPT="${PROMPT//\{BREADBOARD_PATH\}/$BREADBOARD_PATH}"
+        PROMPT="${PROMPT//\{KB_DIR\}/$KB_DIR}"
     elif [[ -z "$PROMPT" ]]; then
         PROMPT="You are starting the $PHASE phase for the $VERTICAL vertical. Read the CLAUDE.md and relevant docs first."
     fi
@@ -377,7 +366,7 @@ _work_phase() {
 #   If --wave is omitted, defaults to wave 0 (first wave).
 _work_build() {
     local MANIFEST="${1:-}"
-    shift 2>/dev/null
+    [[ -n "$MANIFEST" ]] && shift
 
     if [[ -z "$MANIFEST" ]]; then
         echo "Error: manifest required. Usage: work build <manifest.yaml> [--wave N]"
@@ -392,12 +381,8 @@ _work_build() {
         return 1
     fi
 
-    # Check yq dependency
-    if ! command -v yq &>/dev/null; then
-        echo "Error: yq is required for manifest parsing."
-        echo "  Install: brew install yq"
-        return 1
-    fi
+    # Check yq dependency once at entry
+    _kdl_check_deps || return 1
 
     # Parse --wave flag (default: 0)
     local WAVE_IDX=0
@@ -407,6 +392,14 @@ _work_build() {
             *) echo "Error: Unknown flag '$1'"; return 1 ;;
         esac
     done
+
+    # Validate manifest has required fields
+    local VERTICAL
+    VERTICAL=$(yq -r '.vertical // ""' "$MANIFEST")
+    [[ -z "$VERTICAL" ]] && {
+        echo "Error: Manifest missing required 'vertical' field"
+        return 1
+    }
 
     # Validate wave exists
     local WAVE_COUNT
@@ -418,31 +411,38 @@ _work_build() {
 
     local WAVE_NAME
     WAVE_NAME=$(_kdl_wave_name "$MANIFEST" "$WAVE_IDX")
-    local VERTICAL
-    VERTICAL=$(yq -r '.vertical' "$MANIFEST")
-    local IS_SERIAL
-    IS_SERIAL=$(_kdl_wave_is_serial "$MANIFEST" "$WAVE_IDX" && echo "true" || echo "false")
+    local IS_SERIAL="parallel"
+    _kdl_wave_is_serial "$MANIFEST" "$WAVE_IDX" && IS_SERIAL="serial"
 
     echo "=== work build ==="
     echo "  Manifest:  $MANIFEST"
     echo "  Vertical:  $VERTICAL"
     echo "  Wave $WAVE_IDX:   $WAVE_NAME"
-    echo "  Mode:      $([ "$IS_SERIAL" = "true" ] && echo "serial" || echo "parallel")"
+    echo "  Mode:      $IS_SERIAL"
     echo ""
+
+    # Compute MMDD once (not per iteration)
+    local MMDD
+    MMDD=$(date +%m%d)
+
+    # Pull latest main once before creating any worktrees
+    echo "Pulling latest main..."
+    git -C "$PRINT4INK_REPO" pull origin main --quiet 2>/dev/null
 
     # Create worktrees for all sessions in this wave
     local TOPICS
     TOPICS=$(_kdl_wave_topics "$MANIFEST" "$WAVE_IDX") || return 1
 
     local topic
+    local session_idx=0
     local created_topics=()
+    # Parallel arrays: store per-session data during creation for reuse in Zellij path
+    local -a session_prompts=()
+    local -a session_dirs=()
+
     while IFS= read -r topic; do
         [[ -z "$topic" ]] && continue
         echo "--- Creating session: $topic ---"
-
-        local session_idx
-        session_idx=$(echo "$TOPICS" | grep -n "^${topic}$" | head -1 | cut -d: -f1)
-        session_idx=$((session_idx - 1))
 
         local stage
         stage=$(_kdl_session_detail "$MANIFEST" "$WAVE_IDX" "$session_idx" "stage")
@@ -454,26 +454,29 @@ _work_build() {
         # Prepend build-session-protocol skill invocation to prompt
         local full_prompt="Use the build-session-protocol skill to guide your workflow. ${prompt}"
 
-        # Create worktree (without Zellij — we'll launch all at once)
-        local MMDD
-        MMDD=$(date +%m%d)
         local BRANCH="session/${MMDD}-${topic}"
         local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH}"
 
         if git -C "$PRINT4INK_REPO" rev-parse --verify "$BRANCH" &>/dev/null; then
             echo "  Branch '$BRANCH' already exists — skipping worktree creation"
         else
-            # Pull latest main
-            git -C "$PRINT4INK_REPO" pull origin main --quiet 2>/dev/null
-
             # Create worktree
-            git -C "$PRINT4INK_REPO" worktree add "$WORKTREE_DIR" -b "$BRANCH" main --quiet || {
-                echo "  Error creating worktree for $topic"
+            if ! git -C "$PRINT4INK_REPO" worktree add "$WORKTREE_DIR" -b "$BRANCH" main --quiet; then
+                echo "  Error creating worktree for $topic — skipping"
+                session_idx=$((session_idx + 1))
                 continue
-            }
+            fi
 
-            # Install deps
-            (cd "$WORKTREE_DIR" && npm install --silent 2>&1 | tail -1)
+            # Install deps (show last line for summary, but capture errors)
+            local npm_output
+            npm_output=$(cd "$WORKTREE_DIR" && npm install --silent 2>&1)
+            local npm_exit=$?
+            if [[ $npm_exit -ne 0 ]]; then
+                echo "  Warning: npm install failed (exit $npm_exit)"
+                echo "  $npm_output" | tail -3
+            else
+                echo "  $(echo "$npm_output" | tail -1)"
+            fi
         fi
 
         # Register session
@@ -489,8 +492,12 @@ _work_build() {
         fi
 
         created_topics+=("$topic")
+        session_prompts+=("$full_prompt")
+        session_dirs+=("$WORKTREE_DIR")
         echo "  Created: $WORKTREE_DIR"
         echo ""
+
+        session_idx=$((session_idx + 1))
     done <<< "$TOPICS"
 
     if [[ ${#created_topics[@]} -eq 0 ]]; then
@@ -498,7 +505,7 @@ _work_build() {
         return 1
     fi
 
-    # Generate KDL layout
+    # Generate KDL layout (for outside-Zellij use)
     local KDL_FILE
     KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX.kdl")
     _kdl_generate_wave "$MANIFEST" "$WAVE_IDX" "$KDL_FILE" || {
@@ -515,34 +522,21 @@ _work_build() {
     if [[ -n "${ZELLIJ:-}" ]]; then
         # Inside Zellij: open each session as a new tab
         echo "Opening ${#created_topics[@]} tabs in current Zellij session..."
-        local t
-        for t in "${created_topics[@]}"; do
+        local i
+        for (( i=0; i<${#created_topics[@]}; i++ )); do
+            local t="${created_topics[$i]}"
+            local cwd="${session_dirs[$i]}"
+            local tab_prompt="${session_prompts[$i]}"
+
             local tab_kdl
             tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
-            local mmdd
-            mmdd=$(date +%m%d)
-            local cwd="${PRINT4INK_WORKTREES}/session/${mmdd}-${t}"
-            local tab_prompt
-            tab_prompt=$(_kdl_session_detail "$MANIFEST" "$WAVE_IDX" "$(echo "$TOPICS" | grep -n "^${t}$" | head -1 | cut -d: -f1 | xargs -I{} expr {} - 1)" "prompt")
-            local safe_tab_prompt="${tab_prompt//\"/\\\"}"
-            safe_tab_prompt=$(echo "$safe_tab_prompt" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//')
-            local full_tab_prompt="Use the build-session-protocol skill to guide your workflow. ${safe_tab_prompt}"
 
-            if [[ -n "$full_tab_prompt" ]]; then
-                cat > "$tab_kdl" <<KDL
-layout {
-    pane command="claude" cwd="$cwd" {
-        args "$full_tab_prompt"
-    }
-}
-KDL
-            else
-                cat > "$tab_kdl" <<KDL
-layout {
-    pane command="claude" cwd="$cwd"
-}
-KDL
-            fi
+            # Use the shared render helper for the tab layout
+            {
+                echo "layout {"
+                _kdl_render_tab "$t" "$cwd" "$tab_prompt"
+                echo "}"
+            } > "$tab_kdl"
 
             zellij action new-tab --layout "$tab_kdl" --name "$t"
             (sleep 5 && rm -f "$tab_kdl" 2>/dev/null) &

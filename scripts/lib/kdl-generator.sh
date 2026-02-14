@@ -4,7 +4,8 @@
 # Requires: yq (https://github.com/mikefarah/yq — brew install yq)
 # Source this file from work.sh.
 
-# Check yq availability
+# ── Dependency Check ──────────────────────────────────────────────────────
+# Call once at entry points (_work_build), not on every helper.
 _kdl_check_deps() {
     if ! command -v yq &>/dev/null; then
         echo "Error: yq is required for manifest parsing." >&2
@@ -13,15 +14,58 @@ _kdl_check_deps() {
     fi
 }
 
-# Generate a Zellij KDL layout for a wave from a YAML manifest
-# Usage: _kdl_generate_wave <manifest_file> <wave_index> <output_file>
-#   wave_index is 0-based
-_kdl_generate_wave() {
-    _kdl_check_deps || return 1
+# ── Prompt Sanitization ──────────────────────────────────────────────────
+# Escape and flatten a multi-line prompt for safe KDL embedding.
+# Handles: double-quotes, backslashes, backticks, newlines → single space.
+# Usage: sanitized=$(_kdl_sanitize_prompt "$raw_prompt")
+_kdl_sanitize_prompt() {
+    local raw="$1"
+    # Escape backslashes first, then double-quotes, then backticks
+    local escaped="${raw//\\/\\\\}"
+    escaped="${escaped//\"/\\\"}"
+    escaped="${escaped//\`/\\\`}"
+    # Collapse newlines to spaces, compress whitespace, trim
+    echo "$escaped" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//'
+}
 
+# ── KDL Tab Rendering ────────────────────────────────────────────────────
+# Render a single KDL tab block. Used by both _kdl_generate_wave and _work_build.
+# Usage: _kdl_render_tab <tab_name> <cwd> [prompt]
+#   Writes KDL to stdout. Caller redirects as needed.
+_kdl_render_tab() {
+    local tab_name="$1"
+    local cwd="$2"
+    local prompt="${3:-}"
+
+    if [[ -n "$prompt" && "$prompt" != "null" ]]; then
+        local safe_prompt
+        safe_prompt=$(_kdl_sanitize_prompt "$prompt")
+        cat <<KDL_TAB
+    tab name="$tab_name" cwd="$cwd" {
+        pane command="claude" {
+            args "$safe_prompt"
+        }
+    }
+KDL_TAB
+    else
+        cat <<KDL_TAB
+    tab name="$tab_name" cwd="$cwd" {
+        pane command="claude"
+    }
+KDL_TAB
+    fi
+}
+
+# ── Layout Generation ─────────────────────────────────────────────────────
+# Generate a Zellij KDL layout for a wave from a YAML manifest.
+# Usage: _kdl_generate_wave <manifest_file> <wave_index> <output_file>
+#   wave_index is 0-based.
+#   worktree_base defaults to $PRINT4INK_WORKTREES if not set.
+_kdl_generate_wave() {
     local manifest="$1"
     local wave_idx="$2"
     local output="$3"
+    local worktree_base="${PRINT4INK_WORKTREES:?PRINT4INK_WORKTREES must be set}"
 
     [[ ! -f "$manifest" ]] && {
         echo "Error: Manifest not found: $manifest" >&2
@@ -29,15 +73,15 @@ _kdl_generate_wave() {
     }
 
     local vertical
-    vertical=$(yq '.vertical' "$manifest")
-    [[ -z "$vertical" || "$vertical" == "null" ]] && {
+    vertical=$(yq -r '.vertical // ""' "$manifest")
+    [[ -z "$vertical" ]] && {
         echo "Error: Manifest missing 'vertical' field" >&2
         return 1
     }
 
     local wave_name
-    wave_name=$(yq ".waves[$wave_idx].name" "$manifest")
-    [[ -z "$wave_name" || "$wave_name" == "null" ]] && {
+    wave_name=$(yq -r ".waves[$wave_idx].name // \"\"" "$manifest")
+    [[ -z "$wave_name" ]] && {
         echo "Error: Wave $wave_idx not found in manifest" >&2
         return 1
     }
@@ -49,80 +93,56 @@ _kdl_generate_wave() {
         return 1
     }
 
-    # Start KDL layout
+    local mmdd
+    mmdd=$(date +%m%d)
+
+    # Build KDL layout
     {
         echo "layout {"
 
-        local i topic prompt stage cwd safe_prompt
+        local i topic prompt cwd
         for (( i=0; i<session_count; i++ )); do
             topic=$(yq -r ".waves[$wave_idx].sessions[$i].topic" "$manifest")
-            prompt=$(yq -r ".waves[$wave_idx].sessions[$i].prompt" "$manifest")
-            stage=$(yq -r ".waves[$wave_idx].sessions[$i].stage // \"build\"" "$manifest")
+            prompt=$(yq -r ".waves[$wave_idx].sessions[$i].prompt // \"\"" "$manifest")
+            cwd="${worktree_base}/session/${mmdd}-${topic}"
 
-            # Derive worktree path from topic
-            local mmdd
-            mmdd=$(date +%m%d)
-            cwd="${PRINT4INK_WORKTREES}/session/${mmdd}-${topic}"
-
-            # Escape double-quotes in prompt for KDL safety
-            safe_prompt="${prompt//\"/\\\"}"
-            # Collapse newlines to spaces for KDL args
-            safe_prompt=$(echo "$safe_prompt" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//')
-
-            if [[ -n "$safe_prompt" && "$safe_prompt" != "null" ]]; then
-                cat <<KDL_TAB
-    tab name="$topic" cwd="$cwd" {
-        pane command="claude" {
-            args "$safe_prompt"
-        }
-    }
-KDL_TAB
-            else
-                cat <<KDL_TAB
-    tab name="$topic" cwd="$cwd" {
-        pane command="claude"
-    }
-KDL_TAB
-            fi
+            _kdl_render_tab "$topic" "$cwd" "$prompt"
         done
 
         echo "}"
     } > "$output"
 }
 
+# ── Manifest Queries ──────────────────────────────────────────────────────
+# These are lightweight yq wrappers. The caller (_work_build) should have
+# already verified yq is available via _kdl_check_deps.
+
 # Get wave count from manifest
-# Usage: _kdl_wave_count <manifest_file>
 _kdl_wave_count() {
-    _kdl_check_deps || return 1
     yq '.waves | length' "$1"
 }
 
 # Get wave name from manifest
-# Usage: _kdl_wave_name <manifest_file> <wave_index>
 _kdl_wave_name() {
-    _kdl_check_deps || return 1
-    yq ".waves[$2].name" "$1"
+    yq -r ".waves[$2].name // \"\"" "$1"
 }
 
-# Get session topics for a wave
-# Usage: _kdl_wave_topics <manifest_file> <wave_index>
+# Get session topics for a wave (one per line)
 _kdl_wave_topics() {
-    _kdl_check_deps || return 1
     yq -r ".waves[$2].sessions[].topic" "$1"
 }
 
 # Check if a wave is serial (sessions run one at a time)
-# Usage: _kdl_wave_is_serial <manifest_file> <wave_index>
+# Returns exit code: 0 = serial, 1 = parallel.
+# Usage: if _kdl_wave_is_serial "$manifest" "$idx"; then ...
 _kdl_wave_is_serial() {
-    _kdl_check_deps || return 1
     local val
-    val=$(yq ".waves[$2].serial // false" "$1")
+    val=$(yq -r ".waves[$2].serial // \"false\"" "$1")
     [[ "$val" == "true" ]]
 }
 
-# Get session details from manifest
-# Usage: _kdl_session_detail <manifest_file> <wave_index> <session_index> <field>
+# Get a session field from manifest
+# Usage: _kdl_session_detail <manifest> <wave_idx> <session_idx> <field>
 _kdl_session_detail() {
-    _kdl_check_deps || return 1
     yq -r ".waves[$2].sessions[$3].$4 // \"\"" "$1"
 }
