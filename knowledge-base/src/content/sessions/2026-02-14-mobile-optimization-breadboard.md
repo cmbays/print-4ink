@@ -87,6 +87,6 @@ All 8 CORE features (C1–C8), 4 INTERCONNECTIONS (I1–I4), and 4 interview-dis
 
 ## Artifacts
 
-- Breadboard document: `docs/breadboards/mobile-optimization-breadboard.md`
-- Design doc: `docs/plans/2026-02-14-mobile-optimization-design.md`
-- Interview session: `knowledge-base/src/content/sessions/2026-02-14-mobile-optimization-interview.md`
+- [Breadboard document](https://github.com/cmbays/print-4ink/blob/main/docs/breadboards/mobile-optimization-breadboard.md)
+- [Design doc](https://github.com/cmbays/print-4ink/blob/main/docs/plans/2026-02-14-mobile-optimization-design.md)
+- [Interview session](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/sessions/2026-02-14-mobile-optimization-interview.md)
