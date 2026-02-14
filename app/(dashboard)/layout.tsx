@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/layout/sidebar";
+import { MobileShell } from "@/components/layout/mobile-shell";
 
 export default function DashboardLayout({
   children,
@@ -7,9 +8,16 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      {/* Desktop sidebar — hidden on mobile */}
+      <div className="hidden md:flex">
+        <Sidebar />
+      </div>
+
+      {/* Mobile shell manages all client state (drawer, header, tab bar) */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <MobileShell>
+          {children}
+        </MobileShell>
       </div>
     </div>
   );
