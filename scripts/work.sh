@@ -29,6 +29,8 @@ else
 fi
 # shellcheck source=lib/registry.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/registry.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/registry.sh"
+# shellcheck source=lib/kdl-generator.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/kdl-generator.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/kdl-generator.sh"
 
 # ── Dispatcher ──────────────────────────────────────────────────────────────
 work() {
@@ -338,11 +340,22 @@ _work_phase() {
     # Load phase prompt template if available and no custom prompt given
     local PROMPT_FILE="${WORK_SCRIPT_DIR}/prompts/${PHASE}.md"
     if [[ -z "$PROMPT" && -f "$PROMPT_FILE" ]]; then
+        # Gather context for template interpolation
+        local KB_DIR="knowledge-base/src/content/sessions"
+        local PRIOR_KB_DOCS=""
+        if [[ -d "${PRINT4INK_REPO}/${KB_DIR}" ]]; then
+            PRIOR_KB_DOCS=$(ls "${PRINT4INK_REPO}/${KB_DIR}/"*"-${VERTICAL}-"* 2>/dev/null | xargs -I{} basename {} | tr '\n' ', ' | sed 's/,$//')
+        fi
+        local BREADBOARD_PATH="docs/breadboards/${VERTICAL}-breadboard.md"
+
         # Interpolate variables in the template
         PROMPT=$(sed \
             -e "s|{VERTICAL}|$VERTICAL|g" \
             -e "s|{PHASE}|$PHASE|g" \
             -e "s|{REPO}|$PRINT4INK_REPO|g" \
+            -e "s|{PRIOR_KB_DOCS}|$PRIOR_KB_DOCS|g" \
+            -e "s|{BREADBOARD_PATH}|$BREADBOARD_PATH|g" \
+            -e "s|{KB_DIR}|$KB_DIR|g" \
             "$PROMPT_FILE")
     elif [[ -z "$PROMPT" ]]; then
         PROMPT="You are starting the $PHASE phase for the $VERTICAL vertical. Read the CLAUDE.md and relevant docs first."
@@ -358,17 +371,19 @@ _work_phase() {
     fi
 }
 
-# ── Build from Manifest (Wave 2 — Stub) ────────────────────────────────────
+# ── Build from Manifest ─────────────────────────────────────────────────────
+# Usage: work build <manifest.yaml> [--wave N]
+#   Reads a YAML execution manifest and launches Zellij with one tab per session.
+#   If --wave is omitted, defaults to wave 0 (first wave).
 _work_build() {
     local MANIFEST="${1:-}"
+    shift 2>/dev/null
 
     if [[ -z "$MANIFEST" ]]; then
         echo "Error: manifest required. Usage: work build <manifest.yaml> [--wave N]"
         echo ""
         echo "  The manifest is a YAML file produced by the implementation-planning skill."
         echo "  It defines sessions, their prompts, and dependency ordering."
-        echo ""
-        echo "  This command will be implemented in Wave 2 of the devx build."
         return 1
     fi
 
@@ -377,9 +392,180 @@ _work_build() {
         return 1
     fi
 
-    echo "work build: Reading manifest..."
-    echo "  (Full implementation coming in Wave 2 — requires KDL generator + yq)"
-    echo "  Manifest: $MANIFEST"
+    # Check yq dependency
+    if ! command -v yq &>/dev/null; then
+        echo "Error: yq is required for manifest parsing."
+        echo "  Install: brew install yq"
+        return 1
+    fi
+
+    # Parse --wave flag (default: 0)
+    local WAVE_IDX=0
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --wave) WAVE_IDX="${2:-0}"; shift 2 ;;
+            *) echo "Error: Unknown flag '$1'"; return 1 ;;
+        esac
+    done
+
+    # Validate wave exists
+    local WAVE_COUNT
+    WAVE_COUNT=$(_kdl_wave_count "$MANIFEST") || return 1
+    if (( WAVE_IDX >= WAVE_COUNT )); then
+        echo "Error: Wave $WAVE_IDX does not exist (manifest has $WAVE_COUNT waves: 0-$((WAVE_COUNT-1)))"
+        return 1
+    fi
+
+    local WAVE_NAME
+    WAVE_NAME=$(_kdl_wave_name "$MANIFEST" "$WAVE_IDX")
+    local VERTICAL
+    VERTICAL=$(yq -r '.vertical' "$MANIFEST")
+    local IS_SERIAL
+    IS_SERIAL=$(_kdl_wave_is_serial "$MANIFEST" "$WAVE_IDX" && echo "true" || echo "false")
+
+    echo "=== work build ==="
+    echo "  Manifest:  $MANIFEST"
+    echo "  Vertical:  $VERTICAL"
+    echo "  Wave $WAVE_IDX:   $WAVE_NAME"
+    echo "  Mode:      $([ "$IS_SERIAL" = "true" ] && echo "serial" || echo "parallel")"
+    echo ""
+
+    # Create worktrees for all sessions in this wave
+    local TOPICS
+    TOPICS=$(_kdl_wave_topics "$MANIFEST" "$WAVE_IDX") || return 1
+
+    local topic
+    local created_topics=()
+    while IFS= read -r topic; do
+        [[ -z "$topic" ]] && continue
+        echo "--- Creating session: $topic ---"
+
+        local session_idx
+        session_idx=$(echo "$TOPICS" | grep -n "^${topic}$" | head -1 | cut -d: -f1)
+        session_idx=$((session_idx - 1))
+
+        local stage
+        stage=$(_kdl_session_detail "$MANIFEST" "$WAVE_IDX" "$session_idx" "stage")
+        [[ -z "$stage" ]] && stage="build"
+
+        local prompt
+        prompt=$(_kdl_session_detail "$MANIFEST" "$WAVE_IDX" "$session_idx" "prompt")
+
+        # Prepend build-session-protocol skill invocation to prompt
+        local full_prompt="Use the build-session-protocol skill to guide your workflow. ${prompt}"
+
+        # Create worktree (without Zellij — we'll launch all at once)
+        local MMDD
+        MMDD=$(date +%m%d)
+        local BRANCH="session/${MMDD}-${topic}"
+        local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH}"
+
+        if git -C "$PRINT4INK_REPO" rev-parse --verify "$BRANCH" &>/dev/null; then
+            echo "  Branch '$BRANCH' already exists — skipping worktree creation"
+        else
+            # Pull latest main
+            git -C "$PRINT4INK_REPO" pull origin main --quiet 2>/dev/null
+
+            # Create worktree
+            git -C "$PRINT4INK_REPO" worktree add "$WORKTREE_DIR" -b "$BRANCH" main --quiet || {
+                echo "  Error creating worktree for $topic"
+                continue
+            }
+
+            # Install deps
+            (cd "$WORKTREE_DIR" && npm install --silent 2>&1 | tail -1)
+        fi
+
+        # Register session
+        if type _registry_add &>/dev/null; then
+            _registry_add "$topic" "$BRANCH"
+            if type _registry_update &>/dev/null; then
+                _registry_update "$topic" "vertical" "$VERTICAL"
+                _registry_update "$topic" "stage" "$stage"
+            fi
+            if type _registry_update_json &>/dev/null; then
+                _registry_update_json "$topic" "wave" "$WAVE_IDX"
+            fi
+        fi
+
+        created_topics+=("$topic")
+        echo "  Created: $WORKTREE_DIR"
+        echo ""
+    done <<< "$TOPICS"
+
+    if [[ ${#created_topics[@]} -eq 0 ]]; then
+        echo "No sessions created."
+        return 1
+    fi
+
+    # Generate KDL layout
+    local KDL_FILE
+    KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX.kdl")
+    _kdl_generate_wave "$MANIFEST" "$WAVE_IDX" "$KDL_FILE" || {
+        echo "Error: Failed to generate KDL layout"
+        rm -f "$KDL_FILE"
+        return 1
+    }
+
+    echo "=== KDL Layout Generated ==="
+    echo "  File: $KDL_FILE"
+    echo "  Sessions: ${#created_topics[@]}"
+    echo ""
+
+    if [[ -n "${ZELLIJ:-}" ]]; then
+        # Inside Zellij: open each session as a new tab
+        echo "Opening ${#created_topics[@]} tabs in current Zellij session..."
+        local t
+        for t in "${created_topics[@]}"; do
+            local tab_kdl
+            tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
+            local mmdd
+            mmdd=$(date +%m%d)
+            local cwd="${PRINT4INK_WORKTREES}/session/${mmdd}-${t}"
+            local tab_prompt
+            tab_prompt=$(_kdl_session_detail "$MANIFEST" "$WAVE_IDX" "$(echo "$TOPICS" | grep -n "^${t}$" | head -1 | cut -d: -f1 | xargs -I{} expr {} - 1)" "prompt")
+            local safe_tab_prompt="${tab_prompt//\"/\\\"}"
+            safe_tab_prompt=$(echo "$safe_tab_prompt" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//')
+            local full_tab_prompt="Use the build-session-protocol skill to guide your workflow. ${safe_tab_prompt}"
+
+            if [[ -n "$full_tab_prompt" ]]; then
+                cat > "$tab_kdl" <<KDL
+layout {
+    pane command="claude" cwd="$cwd" {
+        args "$full_tab_prompt"
+    }
+}
+KDL
+            else
+                cat > "$tab_kdl" <<KDL
+layout {
+    pane command="claude" cwd="$cwd"
+}
+KDL
+            fi
+
+            zellij action new-tab --layout "$tab_kdl" --name "$t"
+            (sleep 5 && rm -f "$tab_kdl" 2>/dev/null) &
+            disown
+            echo "  Opened tab: $t"
+        done
+    else
+        # Outside Zellij: tell user to launch
+        local session_name="${VERTICAL}-w${WAVE_IDX}"
+        echo "Launch the build session:"
+        echo "  zellij --session $session_name --layout $KDL_FILE"
+        echo ""
+        echo "Or attach to an existing session:"
+        echo "  zellij attach $session_name --create --layout $KDL_FILE"
+    fi
+
+    echo ""
+    echo "=== Build Wave $WAVE_IDX Started ==="
+    echo "  Monitor: work sessions --vertical $VERTICAL"
+    echo "  Status:  work status"
+    if (( WAVE_IDX + 1 < WAVE_COUNT )); then
+        echo "  Next:    work build $MANIFEST --wave $((WAVE_IDX + 1))"
+    fi
 }
 
 # ── Next (Wave 3 — Stub) ───────────────────────────────────────────────────
