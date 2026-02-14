@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink, Pencil } from "lucide-react";
 import Link from "next/link";
+import { MarginLegend } from "@/components/features/MarginLegend";
 import {
   buildFullMatrixData,
   formatCurrency,
@@ -278,20 +279,7 @@ export function MatrixPeekSheet({
         </div>
 
         {/* Margin legend */}
-        <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <span className="inline-block size-2 rounded-full bg-success" />
-            Healthy (≥30%)
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block size-2 rounded-full bg-warning" />
-            Caution (15–30%)
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block size-2 rounded-full bg-error" />
-            Low (&lt;15%)
-          </span>
-        </div>
+        <MarginLegend className="mt-3" />
 
         <Separator className="my-4" />
 

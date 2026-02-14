@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import {
   LANE_LABELS,
@@ -11,6 +13,7 @@ import {
   Clock,
   CheckCircle2,
   Package,
+  Kanban,
 } from "lucide-react";
 
 function getCustomerName(customerId: string) {
@@ -94,9 +97,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {blockedJobs.map((job) => (
-              <div
+              <Link
                 key={job.id}
-                className="flex items-center justify-between rounded-md border border-border p-3"
+                href={`/jobs/${job.id}`}
+                className="flex items-center justify-between rounded-md border border-border p-3 hover:bg-muted/50 transition-colors"
               >
                 <div>
                   <p className="text-sm font-medium">{job.title}</p>
@@ -114,7 +118,7 @@ export default function DashboardPage() {
                     </Badge>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>
@@ -122,14 +126,21 @@ export default function DashboardPage() {
 
       {/* In progress */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>In Progress</CardTitle>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/jobs/board">
+              <Kanban className="size-4" />
+              View Board
+            </Link>
+          </Button>
         </CardHeader>
         <CardContent className="space-y-3">
           {inProgressJobs.map((job) => (
-            <div
+            <Link
               key={job.id}
-              className="flex items-center justify-between rounded-md border border-border p-3"
+              href={`/jobs/${job.id}`}
+              className="flex items-center justify-between rounded-md border border-border p-3 hover:bg-muted/50 transition-colors"
             >
               <div>
                 <p className="text-sm font-medium">{job.title}</p>
@@ -146,7 +157,7 @@ export default function DashboardPage() {
                   {PRIORITY_LABELS[job.priority]}
                 </Badge>
               </div>
-            </div>
+            </Link>
           ))}
         </CardContent>
       </Card>

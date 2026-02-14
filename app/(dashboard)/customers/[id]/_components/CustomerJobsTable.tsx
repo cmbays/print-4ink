@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -50,7 +51,12 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
                 className="border-b border-border/50 hover:bg-muted/50 transition-colors"
               >
                 <td className="py-3 font-medium text-foreground">
-                  {job.jobNumber}
+                  <Link
+                    href={`/jobs/${job.id}`}
+                    className="text-action hover:underline"
+                  >
+                    {job.jobNumber}
+                  </Link>
                 </td>
                 <td className="py-3 text-foreground">{job.title}</td>
                 <td className="py-3">
@@ -75,9 +81,10 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
       {/* Mobile cards */}
       <div className="sm:hidden space-y-3" role="list" aria-label="Customer jobs">
         {sorted.map((job) => (
-          <div
+          <Link
             key={job.id}
-            className="rounded-lg border border-border bg-elevated p-4"
+            href={`/jobs/${job.id}`}
+            className="block rounded-lg border border-border bg-elevated p-4 hover:bg-muted/50 transition-colors"
             role="listitem"
           >
             <div className="flex items-center justify-between mb-2">
@@ -95,7 +102,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
                 Due {formatDate(job.dueDate)}
               </span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </>

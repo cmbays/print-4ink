@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
+import { MarginLegend } from "@/components/features/MarginLegend";
 import { cn } from "@/lib/utils";
 import { buildFullMatrixData, formatCurrency } from "@/lib/pricing-engine";
 import type { PricingTemplate, MarginIndicator } from "@/lib/schemas/price-matrix";
@@ -75,20 +76,7 @@ export function ColorPricingGrid({
       </CardHeader>
       <CardContent>
         {/* Legend */}
-        <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block size-2 rounded-full bg-success" />
-            Healthy (&ge;30%)
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block size-2 rounded-full bg-warning" />
-            Caution (15&ndash;30%)
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block size-2 rounded-full bg-error" />
-            Unprofitable (&lt;15%)
-          </div>
-        </div>
+        <MarginLegend className="mb-3" />
 
         {/* Grid */}
         <div className="overflow-x-auto">
