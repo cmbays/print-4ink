@@ -38,6 +38,8 @@ export const garmentCatalogSchema = z.object({
   basePrice: z.number().nonnegative(),
   availableColors: z.array(z.string()),
   availableSizes: z.array(garmentSizeSchema),
+  isEnabled: z.boolean().default(true),
+  isFavorite: z.boolean().default(false),
 });
 
 export type GarmentSize = z.infer<typeof garmentSizeSchema>;
