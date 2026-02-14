@@ -22,6 +22,8 @@ interface PricingSummaryProps {
   shipping: number;
   onShippingChange: (shipping: number) => void;
   customerTag?: CustomerTag;
+  screenReuse?: boolean;
+  screenReuseDiscount?: number;
 }
 
 function formatCurrency(value: number): string {
@@ -40,6 +42,8 @@ export function PricingSummary({
   shipping,
   onShippingChange,
   customerTag,
+  screenReuse,
+  screenReuseDiscount,
 }: PricingSummaryProps) {
   const subtotal = garmentSubtotal + decorationSubtotal;
 
@@ -60,7 +64,8 @@ export function PricingSummary({
     [manualDiscounts]
   );
 
-  const totalDiscounts = contractDiscount + totalManualDiscounts;
+  const screenDiscount = screenReuse && screenReuseDiscount ? screenReuseDiscount : 0;
+  const totalDiscounts = contractDiscount + totalManualDiscounts + screenDiscount;
 
   // Tax is 10% of (subtotal + setupFees - discounts + shipping)
   const preTaxTotal = subtotal + setupFees - totalDiscounts + shipping;
@@ -117,6 +122,26 @@ export function PricingSummary({
             {formatCurrency(setupFees)}
           </span>
         </div>
+
+        {/* Screen Reuse Discount */}
+        {screenReuse && screenReuseDiscount != null && screenReuseDiscount > 0 && (
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="ghost"
+                className="text-xs bg-success/10 text-success border border-success/20"
+              >
+                screens
+              </Badge>
+              <span className="text-muted-foreground">
+                Screen Reuse (setup waived)
+              </span>
+            </div>
+            <span className="text-success">
+              -{formatCurrency(screenReuseDiscount)}
+            </span>
+          </div>
+        )}
 
         <Separator />
 
