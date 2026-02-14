@@ -28,21 +28,26 @@ This skill defines the end-to-end completion flow for every build session in Scr
 
 After implementation is complete, launch sub-agent reviews:
 
-7. **Code quality review**: Use the code-reviewer agent to check for:
+7. **Code quality review**: Use the **build-reviewer** agent to check for:
    - DRY violations and unused code
    - `any` types (should use Zod inference)
    - Proper `cn()` usage (no string concatenation for classNames)
    - Tailwind tokens (no hardcoded px values)
    - Component composition patterns
+   - Zod-first types (no standalone interfaces for schema data)
+   - Correct shadcn/ui usage
 
-8. **Security scan**: Check for:
+8. **Financial safety review**: If the diff touches files in `lib/schemas/`, `lib/helpers/`, pricing engines, or any component displaying monetary values, use the **finance-sme** agent to verify:
+   - All monetary arithmetic uses `big.js` via `lib/helpers/money.ts`
+   - No raw `+`, `-`, `*`, `/` on money values
+   - Equality checks use `Big.eq()`, not `===`
+   - `round2()` applied before output
+   - `formatCurrency()` used for display
+
+9. **Security scan**: Check for:
    - No hardcoded secrets or credentials
    - Proper input validation at system boundaries
    - No raw HTML injection without sanitization (use safe React patterns)
-
-9. **Domain-specific checks**:
-   - If touching financial calculations: verify all arithmetic uses `big.js` via `lib/helpers/money.ts`
-   - If touching UI components: verify design system compliance
 
 10. Address all critical and high-severity findings before proceeding.
 

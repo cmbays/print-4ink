@@ -1,6 +1,6 @@
 # Agent Registry
 
-**Last Verified**: 2026-02-08
+**Last Verified**: 2026-02-14
 
 This document is the canonical reference for Screen Print Pro's agent architecture. It defines which agents exist, when to use them, how they orchestrate together, and how to create new ones.
 
@@ -21,6 +21,9 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 | `design-auditor` | Design review checkpoint | "Have design-auditor review the jobs screen" | design-audit | Audit report in `agent-outputs/` |
 | `feature-strategist` | Competitive analysis, feature planning | "Use feature-strategist for quote system analysis" | feature-strategy | Feature plan in `docs/` |
 | `doc-sync` | Sync docs with code changes | "Have doc-sync check APP_FLOW against built screens" | doc-sync | Updated canonical docs |
+| `secretary` (Ada) | Project pulse, 1:1 check-ins, strategic advice | "Start a 1:1 with Ada" | one-on-one, cool-down | Memory updates, recommendations |
+| `finance-sme` | Self-review of financial code | "Have finance-sme review the invoice diff" | — | Audit report (pass/fail) |
+| `build-reviewer` | Self-review of code quality | "Have build-reviewer check the jobs diff" | — | Audit report (pass/needs_fixes/fail) |
 
 ## Agent Details
 
@@ -98,6 +101,52 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 - After completing a step in IMPLEMENTATION_PLAN
 - When docs feel stale or out of sync with built code
 - At the start of Phase 2 (full doc audit before user iteration)
+
+### secretary (Ada)
+
+**Purpose**: Executive assistant with evolving personality, project awareness, and structured 1:1 check-ins. The one team member who sees across all verticals and connects dots between sessions.
+
+**Tools**: Read, Grep, Glob, Bash, WebSearch
+**Preloaded skills**: one-on-one, cool-down
+**Reads**: ROADMAP.md, PROGRESS.md, session registry, KB docs, GitHub Issues, her own memory files
+**Writes**: Memory files (personality.md, project-pulse.md, 1on1-log.md)
+**Never touches**: Code, canonical docs (recommends updates, doesn't make them)
+
+**When to use**:
+- Starting a new work session (1:1 check-in for focus recommendation)
+- Between-cycle retrospectives (cool-down skill)
+- Strategic questions about project direction
+- Cross-vertical pattern recognition
+
+### finance-sme
+
+**Purpose**: Financial calculation safety reviewer. Verifies all monetary arithmetic uses `big.js` via `lib/helpers/money.ts`. Paranoid about IEEE 754 precision errors in the financial pipeline.
+
+**Tools**: Read, Grep, Glob (read-only)
+**Preloaded skills**: none
+**Reads**: Changed files touching schemas, pricing, invoicing, quoting
+**Writes**: Audit report (structured markdown)
+**Never touches**: Code (read-only)
+
+**When to use**:
+- Self-review step of build-session-protocol (automatically invoked when diff touches financial code)
+- After modifying any schema with monetary fields
+- After changes to pricing engine, invoice utils, or quote calculations
+
+### build-reviewer
+
+**Purpose**: General code quality reviewer for build sessions. Checks adherence to project conventions across type safety, component patterns, Tailwind/design system, DRY, state management, and accessibility.
+
+**Tools**: Read, Grep, Glob (read-only)
+**Preloaded skills**: none
+**Reads**: Changed files, CLAUDE.md standards, existing component patterns
+**Writes**: Audit report (structured markdown)
+**Never touches**: Code (read-only)
+
+**When to use**:
+- Self-review step of build-session-protocol (always invoked)
+- Before creating a PR for any build session
+- When reviewing code quality concerns raised by CodeRabbit
 
 ## Orchestration Patterns
 
