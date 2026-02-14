@@ -1,5 +1,5 @@
 import { computeTaskProgress } from "./job-utils";
-import { customers, invoices } from "@/lib/mock-data";
+import { customers, invoices, garmentCatalog, colors as allColors, artworks as allArtworks } from "@/lib/mock-data";
 import type { JobCard, ScratchNoteCard } from "@/lib/schemas/board-card";
 import type { Job } from "@/lib/schemas/job";
 
@@ -40,6 +40,21 @@ export function projectJobToCard(job: Job): JobCard {
     invoiceStatus: invoice?.status,
     blockReason: job.blockReason,
     orderTotal: job.orderTotal,
+    garmentCategory: (() => {
+      const garmentId = job.garmentDetails[0]?.garmentId;
+      const garment = garmentCatalog.find((g) => g.id === garmentId);
+      return garment?.baseCategory;
+    })(),
+    garmentColorHex: (() => {
+      const colorId = job.garmentDetails[0]?.colorId;
+      const color = allColors.find((c) => c.id === colorId);
+      return color?.hex;
+    })(),
+    primaryArtworkUrl: (() => {
+      const artworkId = job.artworkIds?.[0];
+      const artwork = allArtworks.find((a) => a.id === artworkId);
+      return artwork?.thumbnailUrl;
+    })(),
   };
 }
 
