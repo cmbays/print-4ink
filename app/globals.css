@@ -85,6 +85,16 @@
 
   /* Spring transition */
   --transition-timing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Mobile-specific tokens */
+  --mobile-nav-height: 3.5rem;
+  --mobile-header-height: 3rem;
+  --mobile-touch-target: 2.75rem;
+  --mobile-bottom-safe-area: env(safe-area-inset-bottom, 0px);
+  --mobile-card-gap: 0.75rem;
+  --mobile-sheet-max-height: 85vh;
+  --mobile-fab-size: 3.5rem;
+  --shadow-brutal-sm: 2px 2px 0px;
 }
 
 /* =====================
@@ -183,6 +193,20 @@
   --sidebar-accent-foreground: rgba(255, 255, 255, 0.87);
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #2ab9ff;
+}
+
+/* Mobile safe area padding */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Hide scrollbar while keeping scroll functionality */
+@utility scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer base {
