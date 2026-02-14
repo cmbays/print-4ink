@@ -45,12 +45,10 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 
 **Goal**: High-fidelity UI with mock data for user acceptance testing. No backend.
 
-**Status**: 5 of 7 verticals built and demo-ready.
+**Status**: 6 of 7 verticals built and demo-ready. Screen Room integrated into existing verticals (customer screens tab, job detail) rather than standalone page.
 
 **Remaining**:
-- Screen Room vertical (simple — data table + status badges)
-- Garment Catalog vertical (simple — grouped display)
-- Cross-vertical linking (#65-#69)
+- Screen intelligence integration — quote-time reuse detection, setup fee auto-discount, job detail linked screens
 - First demo with Gary (4Ink owner) for feedback
 - Polish pass and tech debt (#15-#18, #52-#57, #70-#78)
 
@@ -90,15 +88,16 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 | Invoicing | Built | Demo | TODO |
 | Price Matrix | Built | Demo | TODO |
 | Jobs | Built | Demo | TODO |
-| Screen Room | Not started | — | TODO |
-| Garments | Not started | — | TODO |
+| Screen Room | Integrated | Demo | TODO |
+| Garments | Built | Demo | TODO |
 
 ## Current Bets (What We're Working On)
 
-1. **PM Foundation** (this work) — Label taxonomy, ROADMAP, cool-down skill, GitHub issues backlog
-2. **Remaining Phase 1 verticals** — Screen Room + Garments (simple builds)
-3. **Gary demo** — First real user feedback session
-4. **Tooling improvements** — hookify (#80), firecrawl integration (#81), review workflow (#88)
+1. **Screen intelligence integration** — Quote-time reuse detection, setup fee auto-discount, job detail linked screens
+2. **Gary demo** — First real user feedback session (6 verticals + screen integration ready)
+3. **Garment Mockup Engine** — SVG composition engine, 16-task TDD plan ready
+4. **Mobile Optimization Sprint 2** — Responsive page adaptations
+5. **Tooling improvements** — hookify (#80), firecrawl integration (#81), review workflow (#88)
 
 ## Forward Planning (Shaped But Not Started)
 

@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-14
-**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Mobile Optimization Sprint 1 complete — navigation shell and shared components merged (PR #101). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 35 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
+**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization Sprint 1 complete — navigation shell and shared components merged (PR #101). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
 
 ## What's Built
 
@@ -14,17 +14,18 @@
 - Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
 - shadcn/ui components (24 primitives)
 - Fonts: Inter + JetBrains Mono via `next/font`, dark mode default
-- Vitest (414 tests, 17 test files), GitHub Actions CI
+- Vitest (434 tests, 19 test files), GitHub Actions CI
 - Layout shell: sidebar (8 nav links incl. Jobs + Invoices) + per-page Topbar breadcrumbs + main content area
 - Dashboard: summary cards, "Needs Attention", "In Progress" sections
 </details>
 
 <details><summary>Data Layer (15 Zod schemas)</summary>
 
-- Schemas: job, quote, customer, garment, screen, color, artwork, contact, group, address, note, invoice, credit-memo, board-card, scratch-note
+- Schemas: job, quote, customer, garment, screen, color, artwork, contact, group, address, note, invoice, credit-memo, board-card, scratch-note, customer-screen
 - Constants: production states, priorities, burn status, quote status, invoice status, payment methods, credit memo reasons, lifecycle, health, type tags, payment terms, pricing tiers
-- Mock data: 10 customers, 13 contacts, 2 groups, 20 addresses, 21 notes, 6 jobs, 6 quotes, 5 screens, 42 colors, 5 garments, 8 artworks, 8 invoices, 11 payments, 2 credit memos
-- Reverse lookup helpers: getCustomerQuotes/Jobs/Contacts/Notes/Artworks/Invoices, getInvoicePayments/CreditMemos, getQuoteInvoice
+- Mock data: 10 customers, 13 contacts, 2 groups, 20 addresses, 21 notes, 6 jobs, 6 quotes, 5 screens, 42 colors, 17 garments, 8 artworks, 8 invoices, 11 payments, 2 credit memos
+- Reverse lookup helpers: getCustomerQuotes/Jobs/Contacts/Notes/Artworks/Invoices, getInvoicePayments/CreditMemos, getQuoteInvoice, getGarmentById, getColorById
+- Screen helpers: deriveScreensFromJobs (derives customer screen records from completed jobs)
 - Financial arithmetic: big.js via `lib/helpers/money.ts` (money, round2, toNumber, formatCurrency)
 </details>
 
@@ -224,6 +225,22 @@
 - 12 commits, 9 tasks across 3 batches, 2 CodeRabbit review rounds (all legitimate issues fixed, false positives documented)
 </details>
 
+<details><summary>Garment Catalog & Customer Screens (PR #109 — merged)</summary>
+
+- **Discovery + Breadboard**: Garment catalog breadboard mapped ~40 UI affordances, 23 code affordances, 12 data stores across 4 places
+- **18-task build** via subagent-driven development with two-stage review (spec + quality)
+- **Schemas**: Extended `garmentCatalogSchema` (isEnabled, isFavorite), extended `customerSchema` (favoriteGarments, favoriteColors), new `customerScreenSchema`
+- **Helpers**: `getGarmentById()`, `getColorById()` in `garment-helpers.ts`, `deriveScreensFromJobs()` in `screen-helpers.ts` — all with tests
+- **Mock data expanded**: 5 → 17 garments across all categories (t-shirts, fleece, outerwear, pants, headwear)
+- **Shared components**: `GarmentImage` (shirt icon placeholder, sm/md/lg), `FavoriteStar` (inline toggle with a11y), `ColorSwatchPicker` compact mode
+- **Garment Catalog** (`/garments`) — Grid/table toggle, category tabs, search, brand/color family filters, price toggle (localStorage), detail drawer (Sheet) with size/price matrix, linked jobs, favorites
+- **Customer Screens tab** — Derived from completed jobs, color swatches, mesh count badges, linked job links, reclaim workflow with confirmation dialog
+- **Customer favorites** — FavoriteStar toggles on catalog page and drawer, favoriteGarments/favoriteColors on customer schema
+- **Job Detail polish** — Replaced raw IDs (`gc-002`, `clr-black`) with resolved garment names + GarmentImage + color swatches
+- **Cross-linking**: Dashboard, CustomerJobsTable, InvoiceDetailView already had working links (verified, no changes needed)
+- 434 tests passing, 17 commits, CodeRabbit review: 13 issues fixed across 12 files (Tailwind tokens, breakpoints, touch targets, a11y, sort mutation)
+</details>
+
 <details><summary>PM Foundation (PR #91 — merged)</summary>
 
 - **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
@@ -266,13 +283,13 @@
 
 ## Next Actions
 
-1. **HIGH PRIORITY: Mobile Optimization Sprint 2 — Responsive Page Adaptations** — Sprint 1 navigation shell complete (PR #101). Sprint 2 covers: responsive dashboard cards, quotes list table→card conversion, jobs board mobile adaptation, customer list mobile view. Execute against `docs/plans/2026-02-14-mobile-optimization-implementation.md` Tasks 10-16.
-2. **HIGH PRIORITY: Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
-3. **Mobile Optimization Sprints 3-4** — Sprint 3: mobile forms + detail views. Sprint 4: polish, animation, sidebar nav constant adoption. Full plan at `docs/plans/2026-02-14-mobile-optimization-implementation.md`.
-4. **Configure hookify** (#80) — reduce permission fatigue across all sessions
-5. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
-6. Demo all 5 verticals to Gary (4Ink owner), collect feedback
-7. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
+1. **Screen Intelligence Integration** — Remaining screen features: quote-time screen reuse detection + notification, setup fee auto-discount when screens exist, job detail linked screens display. Integration work across quoting and jobs verticals (not a standalone vertical).
+2. **Mobile Optimization Sprint 2 — Responsive Page Adaptations** — Sprint 1 navigation shell complete (PR #101). Sprint 2 covers: responsive dashboard cards, quotes list table→card conversion, jobs board mobile adaptation, customer list mobile view. Execute against `docs/plans/2026-02-14-mobile-optimization-implementation.md` Tasks 10-16.
+3. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
+4. **Mobile Optimization Sprints 3-4** — Sprint 3: mobile forms + detail views. Sprint 4: polish, animation, sidebar nav constant adoption. Full plan at `docs/plans/2026-02-14-mobile-optimization-implementation.md`.
+5. **Configure hookify** (#80) — reduce permission fatigue across all sessions
+6. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
+7. Demo all 6 verticals to Gary (4Ink owner), collect feedback
 8. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
 9. Run first cool-down cycle to shape Phase 2 bets
 10. Address deferred tech debt (#15-#18, #70-#78) as needed
