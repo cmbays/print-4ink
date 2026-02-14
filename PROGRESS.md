@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-14
-**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Knowledge base on Astro 5.3 with 31 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
+**Status**: 5 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs). Mobile Optimization vertical registered and research phase complete. Knowledge base on Astro 5.3 with 33 session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy).
 
 ## What's Built
 
@@ -172,6 +172,23 @@
 - 9 skills: vertical-discovery, breadboarding, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync, cool-down
 </details>
 
+<details><summary>Mobile Optimization Research (PR #90 — merged)</summary>
+
+- **Vertical registered**: `mobile-optimization` slug added to KB schema, all vertical label maps, sidebar, CLAUDE.md
+- **4-agent parallel research team**: Mobile UX best practices, competitor mobile landscape, current app audit, consumer mobile needs
+- **Competitive analysis**: 6 direct competitors (Printavo, InkSoft, DecoNetwork, ShopVOX, Teesom, YoPrint) + 3 adjacent benchmarks (Jobber, ServiceTitan, Katana)
+- **Key finding**: No screen print management tool has a working mobile experience. Printavo's native app doesn't reliably load. All others are basic responsive web. Biggest competitive gap in the market.
+- **Journey map**: 4 user journeys with time metrics — morning status check (competitor: 45-90s → target: 5-10s), customer lookup, quick quote, status update
+- **Scope definition**: 8 CORE features (Phase 1), 5 PERIPHERAL (Phase 2 PWA), 4 INTERCONNECTIONS, 18-step build order (~30-40 hours across 4 sprints)
+- **CORE Phase 1**: Bottom tab bar navigation, responsive dashboard, table→card conversion, touch-friendly elements, mobile forms, Kanban mobile adaptation, detail view layouts, dialog/modal sizing
+- **PERIPHERAL Phase 2**: PWA install + offline shell, push notifications, photo capture, mobile quoting calculator, swipe gestures
+- **Mobile maturity roadmap**: Responsive web (Phase 1) → PWA (Phase 2) → Native app via React Native/Expo (Phase 3, when scale justifies)
+- **Design inspiration**: Jobber (field service) not Printavo — adjacent industries solved B2B mobile years ago
+- **10 interview questions for Gary** prepared, 3 tracked as Gary Questions in KB
+- Research docs: `docs/competitive-analysis/mobile-optimization-competitive-analysis.md`, `mobile-optimization-journey-map.md`, `docs/strategy/mobile-optimization-improved-journey.md`, `mobile-optimization-scope-definition.md`
+- KB session docs: `2026-02-14-mobile-optimization-kickoff.md`, `2026-02-14-mobile-optimization-research.md`
+</details>
+
 <details><summary>PM Foundation (PR #91 — merged)</summary>
 
 - **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
@@ -214,13 +231,16 @@
 
 ## Next Actions
 
-1. **Configure hookify** (#80) — reduce permission fatigue across all sessions
-2. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
-3. Demo all 5 verticals to Gary (4Ink owner), collect feedback
-4. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
-5. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-6. Run first cool-down cycle to shape Phase 2 bets
-7. Address deferred tech debt (#15-#18, #70-#78) as needed
+1. **Mobile Optimization — Interview Gary** — 10 questions prepared in scope definition, validate mobile usage assumptions
+2. **Mobile Optimization — Breadboarding** — Map UI affordances for bottom tab bar, card components, mobile navigation shell
+3. **Mobile Optimization — Build Phase 1** — Bottom tab bar → card list views → dashboard → forms → Kanban → detail views (~30-40 hours, 4 sprints)
+4. **Configure hookify** (#80) — reduce permission fatigue across all sessions
+5. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 5 verticals are built
+6. Demo all 5 verticals to Gary (4Ink owner), collect feedback
+7. Build remaining verticals: Screen Room (`/screens`), Garment Catalog (`/garments`)
+8. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+9. Run first cool-down cycle to shape Phase 2 bets
+10. Address deferred tech debt (#15-#18, #70-#78) as needed
 
 ## Document Map
 
@@ -244,7 +264,11 @@
 | `docs/spikes/invoicing-decisions.md` | 19 invoicing decisions from user interview |
 | `docs/spikes/invoicing-integration-map.md` | Invoicing schema dependencies + build order |
 | `docs/breadboards/invoicing-breadboard.md` | Invoicing breadboard (9 places, 99 UI + 44 code affordances) |
-| `knowledge-base/src/content/sessions/` | 30 Markdown session docs (Astro KB, replaces `for_human/`) |
+| `docs/competitive-analysis/mobile-optimization-competitive-analysis.md` | Mobile competitor landscape (6 competitors + 3 benchmarks) |
+| `docs/competitive-analysis/mobile-optimization-journey-map.md` | Mobile user journeys with time metrics |
+| `docs/strategy/mobile-optimization-improved-journey.md` | Mobile experience design + component architecture |
+| `docs/strategy/mobile-optimization-scope-definition.md` | Mobile CORE/PERIPHERAL/INTERCONNECTIONS + build order |
+| `knowledge-base/src/content/sessions/` | 33 Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
