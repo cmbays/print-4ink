@@ -565,15 +565,25 @@ _work_build() {
     fi
 }
 
-# ── Next (Wave 3 — Stub) ───────────────────────────────────────────────────
+# ── Next (AI-powered focus recommendation) ─────────────────────────────────
 _work_next() {
-    echo "work next: Analyzing project state..."
-    echo "  (Full implementation coming in Wave 3 — requires prompt template)"
+    local PROMPT_FILE="${WORK_SCRIPT_DIR}/prompts/next.md"
+
+    if [[ ! -f "$PROMPT_FILE" ]]; then
+        echo "Error: Prompt template not found: $PROMPT_FILE"
+        return 1
+    fi
+
+    if ! command -v claude &>/dev/null; then
+        echo "Error: claude CLI not found. Install Claude Code first."
+        return 1
+    fi
+
+    echo "Analyzing project state..."
     echo ""
-    echo "  For now, check:"
-    echo "    - ROADMAP.md for current priorities"
-    echo "    - 'work sessions' for active work"
-    echo "    - 'gh issue list --repo cmbays/print-4ink --label priority/high'"
+
+    # Run Claude in print mode (non-interactive) with the next prompt
+    claude -p "$(cat "$PROMPT_FILE")" --allowedTools "Bash(gh *)" "Bash(cat *)" "Bash(jq *)" "Read" "Grep" "Glob"
 }
 
 # ── Session Management ──────────────────────────────────────────────────────
