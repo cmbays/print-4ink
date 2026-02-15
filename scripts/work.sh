@@ -739,14 +739,14 @@ _work_clean() {
 
     # Try to find the branch matching this topic
     local MATCHES
-    MATCHES=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *+')
+    MATCHES=$(git -C "$PRINT4INK_REPO" branch --list "session/[0-9][0-9][0-9][0-9]-${TOPIC}" | tr -d ' *+')
     local MATCH_COUNT=0
     if [[ -n "$MATCHES" ]]; then
         MATCH_COUNT=$(echo "$MATCHES" | grep -c .)
     fi
 
     if [[ "$MATCH_COUNT" -gt 1 ]]; then
-        echo "Error: Multiple branches match '*-${TOPIC}':"
+        echo "Error: Multiple branches match 'session/MMDD-${TOPIC}':"
         echo "$MATCHES" | sed 's/^/  /'
         echo "  Use a more specific topic name."
         return 1
