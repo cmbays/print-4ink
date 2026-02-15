@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-14
-**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization Sprint 2 in progress. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI, 8 agents, 14 skills, session orchestration.
+**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization complete — all 25 tasks across 4 sprints merged (PRs #101, #114, #148). Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI, 8 agents, 14 skills, session orchestration.
 
 ## What's Built
 
@@ -174,6 +174,24 @@
 - DevX vertical (PRs #92, #94, #96, #100, #103, #108): `work` CLI (Zellij orchestration), session registry, KDL layout generator, 8 prompts
 </details>
 
+<details><summary>Mobile Optimization Sprint 3+4 — Shared Components, Form Layouts, Detail Views (PR #148 — merged)</summary>
+
+- **3-wave parallel agent build**: Wave 1 (4 agents): shared components. Wave 2 (4 agents): detail page layouts. Wave 3 (3 agents): code/design/security review.
+- **Shared components built**:
+  - `MobileFilterSheet` — Configurable sort/filter bottom sheet with chip toggles, focus-visible rings, conditional render for state reset
+  - `BottomActionBar` — Fixed bottom bar at z-40 (above content, below nav), positioned above BottomTabBar with safe area padding
+  - `FullScreenModal` — Mobile-first modal using `useIsMobile()` (Dialog on desktop, full Sheet on mobile), sr-only DialogHeader for Radix a11y
+- **Form layout updates**: QuoteForm and InvoiceForm action buttons converted to sticky bottom bars on mobile (`sticky bottom-0 z-10`), Cancel as `variant="link"`, touch targets enforced
+- **Detail view mobile layouts**:
+  - Job Detail — Mobile tabbed layout (Overview/Tasks/Notes), lane-aware BottomActionBar (hidden for done, "Unblock" for blocked, "Move Lane" otherwise)
+  - Quote Detail — Status-aware BottomActionBar (accepted: View Jobs + Create Invoice, draft: Edit + Send, fallback: Copy as New), spacer standardization with `pb-20 md:pb-0`
+  - Invoice Detail — Status-aware BottomActionBar with `hasActions` guard (prevents empty bar), conditional buttons for edit/send/record payment/send reminder
+  - Customer Detail — Mobile tab bar with 9 tabs in scrollable `TabsList`, sticky header, touch target enforcement
+- **Review findings**: 9 issues found by 3 review agents, all fixed. 6 remaining items filed as GitHub issues (#151-#156)
+- **Merge conflict resolution**: Adopted `shadow-brutal` / `shadow-brutal-sm` semantic tokens from main (replaced inline `shadow-[4px_4px_0px]`)
+- 11 files changed, +608/-87 lines, 4 commits, squash-merged as `a3e70ba`
+</details>
+
 <details><summary>Mobile Optimization Research (PR #90 — merged)</summary>
 
 - **Vertical registered**: `mobile-optimization` slug added to KB schema, all vertical label maps, sidebar, CLAUDE.md
@@ -278,6 +296,12 @@
 - [ ] **#75** — Extract board page into smaller sub-components
 - [ ] **#76** — Unify date formatting functions across codebase
 - [ ] **#78** — Rename (dashboard) route group to avoid confusion with /dashboard page
+- [ ] **#151** — Unit tests for mobile shared components (MobileFilterSheet, BottomActionBar, FullScreenModal)
+- [ ] **#152** — Integrate MobileFilterSheet into list views (quotes, jobs, customers, invoices)
+- [ ] **#153** — Extract hardcoded toast messages to constants
+- [ ] **#154** — Fix pre-existing lint errors in garments/page.tsx and PowerModeGrid (React 19 compiler)
+- [ ] **#155** — Customer detail tab grouping for 9-tab mobile bar
+- [ ] **#156** — Mobile scroll-to-error on form validation
 
 ## Tooling & Process Backlog (GitHub Issues)
 
@@ -293,14 +317,12 @@
 
 ## Next Actions
 
-1. **Mobile Optimization Sprint 2 — Responsive Page Adaptations** — Sprint 1 navigation shell complete (PR #101). Sprint 2 in progress: responsive dashboard cards, quotes list table→card conversion, jobs board mobile adaptation, customer list mobile view. Execute against `docs/plans/2026-02-14-mobile-optimization-implementation.md` Tasks 10-16.
-2. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
-3. **Mobile Optimization Sprints 3-4** — Sprint 3: mobile forms + detail views. Sprint 4: polish, animation, sidebar nav constant adoption. Full plan at `docs/plans/2026-02-14-mobile-optimization-implementation.md`.
-4. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
-5. Demo all 6 verticals to Gary (4Ink owner), collect feedback
-6. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-7. Run first cool-down cycle to shape Phase 2 bets
-8. Address deferred tech debt (#15-#18, #70-#78) as needed
+1. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
+2. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
+3. Demo all 6 verticals to Gary (4Ink owner), collect feedback
+4. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+5. Run first cool-down cycle to shape Phase 2 bets
+6. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
 
 ## Document Map
 
