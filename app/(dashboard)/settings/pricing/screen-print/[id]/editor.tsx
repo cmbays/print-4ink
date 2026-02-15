@@ -68,7 +68,7 @@ import type {
 import type { GarmentCategory } from "@/lib/schemas/garment";
 
 import { ColorPricingGrid } from "../../_components/ColorPricingGrid";
-import { QuantityTierEditor } from "../../_components/QuantityTierEditor";
+import { QuantityTierEditor, validateTiers } from "../../_components/QuantityTierEditor";
 import { LocationUpchargeEditor } from "../../_components/LocationUpchargeEditor";
 import { GarmentTypePricingEditor } from "../../_components/GarmentTypePricingEditor";
 import { ComparisonView } from "../../_components/ComparisonView";
@@ -164,6 +164,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const health = calculateTemplateHealth(template, DEFAULT_GARMENT_COST);
   const maxColors = template.matrix.maxColors ?? 8;
   const fees = template.matrix.setupFeeConfig;
+  const tierValidation = validateTiers(template.matrix.quantityTiers);
 
   // ── Update helpers ────────────────────────────────────────────────
 
@@ -364,9 +365,20 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
             <div className="flex flex-wrap items-center gap-1.5">
               {/* Qty Tiers popover */}
               <Popover>
-                <WithTooltip tooltip="Configure quantity breakpoints and base pricing">
+                <WithTooltip tooltip={tierValidation.hasErrors
+                  ? "Quantity tiers have configuration issues"
+                  : "Configure quantity breakpoints and base pricing"
+                }>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-7 text-xs">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "h-7 text-xs",
+                        tierValidation.hasErrors && "border-error text-error hover:text-error",
+                      )}
+                    >
+                      {tierValidation.hasErrors && <AlertTriangle className="size-3" />}
                       <Layers className="size-3.5" />
                       <span className="hidden md:inline">Qty Tiers</span>
                     </Button>
