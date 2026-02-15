@@ -67,20 +67,20 @@ Used a 4-agent parallel research team:
 2. **Breadboarding** — Map every UI affordance for the mobile navigation shell and card components.
 3. **Build Phase 1** — Start with bottom tab bar navigation, then card list views, then dashboard, then forms.
 
-<div class="gary-question" data-question-id="mobile-q1" data-vertical="mobile-optimization" data-status="unanswered">
+<div class="gary-question" data-question-id="mobile-q1" data-vertical="mobile-optimization" data-status="answered">
   <p class="gary-question-text">What do you actually do on your phone right now for shop management? (Check orders? Text customers? Look up pricing?)</p>
   <p class="gary-question-context">Understanding current mobile behavior determines which features to prioritize. If Gary never checks job status on his phone, our dashboard priority is wrong.</p>
-  <div class="gary-answer" data-answered-date=""></div>
+  <div class="gary-answer" data-answered-date="2026-02-14">No mobile experience yet — it's new/exciting for them. Desktop computers in shop corner with lots of back-and-forth between production floor and desk.</div>
 </div>
 
-<div class="gary-question" data-question-id="mobile-q2" data-vertical="mobile-optimization" data-status="unanswered">
+<div class="gary-question" data-question-id="mobile-q2" data-vertical="mobile-optimization" data-status="answered">
   <p class="gary-question-text">Would you install an app or prefer to use the website on your phone?</p>
   <p class="gary-question-context">Determines whether PWA install prompt or App Store presence matters more. Informs Phase 2 vs Phase 3 priority.</p>
-  <div class="gary-answer" data-answered-date=""></div>
+  <div class="gary-answer" data-answered-date="2026-02-14">Access website via tablet at events/home. Don't use PrintLife on phone. PWA path confirmed.</div>
 </div>
 
-<div class="gary-question" data-question-id="mobile-q3" data-vertical="mobile-optimization" data-status="unanswered">
+<div class="gary-question" data-question-id="mobile-q3" data-vertical="mobile-optimization" data-status="answered">
   <p class="gary-question-text">When are you away from your desk but still need shop info? (On the floor? Driving? Customer meetings? Weekends?)</p>
   <p class="gary-question-context">Maps the actual mobile usage contexts. If "on the shop floor" is the primary context, offline capability moves up in priority.</p>
-  <div class="gary-answer" data-answered-date=""></div>
+  <div class="gary-answer" data-answered-date="2026-02-14">Production floor ↔ desk computers. Tablets at events/home, not on production floor.</div>
 </div>

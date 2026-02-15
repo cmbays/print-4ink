@@ -66,16 +66,16 @@ Root `layout.tsx` is a server component. Decision: per-page rendering instead of
 
 Update the implementation plan with gap fixes (new Task 2A for aliases, update Task 5 for JobCard extension, update Tasks 11-13 for normalization), then execute the plan.
 
-<div class="gary-question" data-question-id="garments-q1" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q1" data-vertical="garments" data-status="answered">
   <p class="gary-question-text">What mockup tool do you currently use? What do you like/dislike about it?</p>
   <p class="gary-question-context">Helps us understand what baseline quality to target and which workflows to replicate</p>
-  <div class="gary-answer" data-answered-date=""></div>
+  <div class="gary-answer" data-answered-date="2026-02-14">Manual mockup process. Quote approved → mockup created → mockup approved → work committed → garments ordered. No dedicated mockup tool — creates images manually and shares via email.</div>
 </div>
 
-<div class="gary-question" data-question-id="garments-q2" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q2" data-vertical="garments" data-status="answered">
   <p class="gary-question-text">Do customers ever need to reposition artwork themselves, or do you always set the position?</p>
   <p class="gary-question-context">Determines whether Phase 1's auto-place model is sufficient or if we need interactive editing sooner</p>
-  <div class="gary-answer" data-answered-date=""></div>
+  <div class="gary-answer" data-answered-date="2026-02-14">Gary sets positions. Customers approve/reject. Auto-place model sufficient for Phase 1.</div>
 </div>
 
 <div class="gary-question" data-question-id="garments-q3" data-vertical="garments" data-status="unanswered">
