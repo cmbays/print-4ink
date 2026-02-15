@@ -4,7 +4,7 @@ import { SERVICE_TYPE_BORDER_COLORS, SERVICE_TYPE_COLORS, SERVICE_TYPE_LABELS } 
 import type { ServiceType } from "@/lib/schemas/quote";
 import type { LucideIcon } from "lucide-react";
 
-const SERVICE_TYPE_ICON_COMPONENTS: Record<ServiceType, LucideIcon> = {
+export const SERVICE_TYPE_ICONS: Record<ServiceType, LucideIcon> = {
   "screen-print": Printer,
   dtf: Film,
   embroidery: Scissors,
@@ -21,7 +21,7 @@ export function ServiceTypeBadge({
   variant = "badge",
   className,
 }: ServiceTypeBadgeProps) {
-  const Icon = SERVICE_TYPE_ICON_COMPONENTS[serviceType];
+  const Icon = SERVICE_TYPE_ICONS[serviceType];
   const borderColor = SERVICE_TYPE_BORDER_COLORS[serviceType];
   const label = SERVICE_TYPE_LABELS[serviceType];
 
