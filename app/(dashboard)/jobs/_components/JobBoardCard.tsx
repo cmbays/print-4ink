@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Package, Palette, MapPin, Calendar, Zap, DollarSign, Circle, CircleCheck } from "lucide-react";
+import { Package, Palette, MapPin, Calendar, Zap, Circle, CircleCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,7 +14,7 @@ import { GarmentMockupThumbnail } from "@/components/features/mockup";
 import { RISK_COLORS } from "@/lib/constants";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { formatShortDate } from "@/lib/helpers/format";
-import { formatCurrencyCompact } from "@/lib/helpers/money";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import {
   CARD_TYPE_BORDER_COLORS,
   INVOICE_STATUS_LABELS,
@@ -139,10 +139,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
             <Calendar className="size-3" />
             {formatShortDate(card.dueDate)}
           </span>
-          <span className="inline-flex items-center gap-0.5 font-medium text-foreground">
-            <DollarSign className="size-3 text-success" />
-            {formatCurrencyCompact(card.orderTotal).replace("$", "")}
-          </span>
+          <MoneyAmount value={card.orderTotal} format="compact" className="font-medium text-foreground" />
         </div>
       </div>
 

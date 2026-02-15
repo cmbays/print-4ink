@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { DollarSign, ShoppingBag, TrendingUp, Clock, Users } from "lucide-react";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 export interface CustomerStats {
   lifetimeRevenue: number;
@@ -13,15 +14,6 @@ interface CustomerQuickStatsProps {
   stats: CustomerStats;
   variant?: "bar" | "header";
   className?: string;
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
 }
 
 function formatDaysAgo(dateString: string | null): string {
@@ -39,33 +31,35 @@ function formatDaysAgo(dateString: string | null): string {
   return `${days} days ago`;
 }
 
+import type { ReactNode } from "react";
+
 const statItems = [
   {
     key: "revenue" as const,
     label: "Lifetime Revenue",
     icon: DollarSign,
-    format: (s: CustomerQuickStatsProps["stats"]) =>
-      formatCurrency(s.lifetimeRevenue),
+    format: (s: CustomerQuickStatsProps["stats"]): ReactNode =>
+      <MoneyAmount value={s.lifetimeRevenue} format="compact" />,
   },
   {
     key: "orders" as const,
     label: "Total Orders",
     icon: ShoppingBag,
-    format: (s: CustomerQuickStatsProps["stats"]) =>
+    format: (s: CustomerQuickStatsProps["stats"]): ReactNode =>
       String(s.totalOrders),
   },
   {
     key: "aov" as const,
     label: "Avg Order",
     icon: TrendingUp,
-    format: (s: CustomerQuickStatsProps["stats"]) =>
-      formatCurrency(s.avgOrderValue),
+    format: (s: CustomerQuickStatsProps["stats"]): ReactNode =>
+      <MoneyAmount value={s.avgOrderValue} format="compact" />,
   },
   {
     key: "lastOrder" as const,
     label: "Last Order",
     icon: Clock,
-    format: (s: CustomerQuickStatsProps["stats"]) =>
+    format: (s: CustomerQuickStatsProps["stats"]): ReactNode =>
       formatDaysAgo(s.lastOrderDate),
   },
 ];

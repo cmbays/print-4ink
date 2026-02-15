@@ -289,12 +289,12 @@ export function QuotesDataTable() {
       <div className="sticky top-0 z-10 bg-background pb-2">
         {/* Header row: title + search + archive toggle + action button */}
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight shrink-0">Quotes</h1>
+          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">Quotes</h1>
 
-          <div className="flex-1" />
+          <div className="hidden md:block flex-1" />
 
-          {/* Search bar */}
-          <div className="relative w-full max-w-xs">
+          {/* Search bar — full width on mobile, constrained on desktop */}
+          <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               placeholder="Search quotes or customers..."
@@ -344,8 +344,8 @@ export function QuotesDataTable() {
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
-                      ? "bg-action/10 text-action border border-action/20"
-                      : "bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-muted",
+                      ? "bg-error/10 text-error border border-error/20"
+                      : "bg-transparent text-muted-foreground border border-transparent hover:text-error/80 hover:bg-error/5",
                   )}
                   aria-label={showArchived ? "Hide Archived" : "Show Archived"}
                 >

@@ -1,8 +1,10 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { Customer } from "@/lib/schemas/customer";
 import { quotes } from "@/lib/mock-data";
 import { Users, UserCheck, DollarSign, UserPlus } from "lucide-react";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 function computeRevenueYTD(): number {
   const now = new Date();
@@ -12,15 +14,6 @@ function computeRevenueYTD(): number {
       (q) => q.status === "accepted" && new Date(q.createdAt) >= startOfYear
     )
     .reduce((sum, q) => sum + q.total, 0);
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
 }
 
 const stats = [
@@ -47,10 +40,10 @@ export function CustomerListStatsBar({
   ).length;
   const revenueYTD = computeRevenueYTD();
 
-  const values: Record<(typeof stats)[number]["key"], string> = {
+  const values: Record<(typeof stats)[number]["key"], ReactNode> = {
     total: String(total),
     active: String(active),
-    revenue: formatCurrency(revenueYTD),
+    revenue: <MoneyAmount value={revenueYTD} format="compact" />,
     prospects: String(prospects),
   };
 

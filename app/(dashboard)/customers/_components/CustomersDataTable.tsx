@@ -73,14 +73,7 @@ type SortKey = z.infer<typeof sortKeySchema>;
 const sortDirSchema = z.enum(["asc", "desc"]);
 type SortDir = z.infer<typeof sortDirSchema>;
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 function formatRelativeDate(iso: string): string {
   const now = new Date();
@@ -485,12 +478,12 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       <div className="sticky top-0 z-10 bg-background pb-2">
         {/* Header row: title + search + archive toggle + action button */}
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight shrink-0">Customers</h1>
+          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">Customers</h1>
 
-          <div className="flex-1" />
+          <div className="hidden md:block flex-1" />
 
-          {/* Search bar */}
-          <div className="relative w-full max-w-xs">
+          {/* Search bar — full width on mobile, constrained on desktop */}
+          <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               placeholder="Search company, contact, email, phone..."
@@ -540,8 +533,8 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
-                      ? "bg-action/10 text-action border border-action/20"
-                      : "bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-muted",
+                      ? "bg-error/10 text-error border border-error/20"
+                      : "bg-transparent text-muted-foreground border border-transparent hover:text-error/80 hover:bg-error/5",
                   )}
                   aria-label={showArchived ? "Hide Archived" : "Show Archived"}
                 >
@@ -717,7 +710,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                         {formatRelativeDate(customer.updatedAt)}
                       </TableCell>
                       <TableCell className="text-sm font-medium tabular-nums">
-                        {revenue > 0 ? formatCurrency(revenue) : (
+                        {revenue > 0 ? <MoneyAmount value={revenue} format="compact" /> : (
                           <span className="text-muted-foreground">--</span>
                         )}
                       </TableCell>
@@ -756,8 +749,8 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                         {contact.email && ` \u00B7 ${contact.email}`}
                       </span>
                     </div>
-                    <span className="shrink-0 text-sm font-medium tabular-nums">
-                      {revenue > 0 ? formatCurrency(revenue) : (
+                    <span className="shrink-0 text-sm font-medium">
+                      {revenue > 0 ? <MoneyAmount value={revenue} format="compact" /> : (
                         <span className="text-muted-foreground">--</span>
                       )}
                     </span>

@@ -116,41 +116,7 @@ export default function DashboardPage() {
         <CapacitySummary summary={capacitySummary} variant="full" />
       </div>
 
-      {/* Coming Up This Week — mobile only */}
-      {comingUpJobs.length > 0 && (
-        <div className="md:hidden">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-sm">
-                <Calendar className="h-4 w-4 text-action" />
-                Coming Up This Week
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {comingUpJobs.slice(0, 5).map((job) => (
-                <Link
-                  key={job.id}
-                  href={`/jobs/${job.id}`}
-                  className="flex min-h-(--mobile-touch-target) items-center justify-between rounded-md border border-border p-3 transition-colors hover:bg-muted/50"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{job.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {job.jobNumber} &middot; Due{" "}
-                      {new Date(job.dueDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="ml-2 shrink-0">
-                    {LANE_LABELS[job.lane]}
-                  </Badge>
-                </Link>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Blocked items */}
+      {/* Needs Attention — blocked jobs (highest priority) */}
       {blockedJobs.length > 0 && (
         <Card>
           <CardHeader>
@@ -188,7 +154,7 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      {/* In progress */}
+      {/* In Progress */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>In Progress</CardTitle>
@@ -225,6 +191,40 @@ export default function DashboardPage() {
           ))}
         </CardContent>
       </Card>
+
+      {/* Coming Up This Week — mobile only, lowest priority */}
+      {comingUpJobs.length > 0 && (
+        <div className="md:hidden">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Calendar className="h-4 w-4 text-action" />
+                Coming Up This Week
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {comingUpJobs.slice(0, 5).map((job) => (
+                <Link
+                  key={job.id}
+                  href={`/jobs/${job.id}`}
+                  className="flex min-h-(--mobile-touch-target) items-center justify-between rounded-md border border-border p-3 transition-colors hover:bg-muted/50"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{job.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {job.jobNumber} &middot; Due{" "}
+                      {new Date(job.dueDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="ml-2 shrink-0">
+                    {LANE_LABELS[job.lane]}
+                  </Badge>
+                </Link>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
     </>
   );

@@ -124,7 +124,7 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
           <Button
             variant="outline"
             onClick={() => setArchiveOpen(true)}
-            className="text-muted-foreground hover:text-error hover:border-error/50"
+            className="text-error/70 border-error/30 hover:text-error hover:border-error/50 hover:bg-error/5 focus-visible:ring-error/50"
           >
             <Archive className="size-4" />
             <span className="hidden sm:inline">Archive</span>
