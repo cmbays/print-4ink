@@ -218,6 +218,7 @@ export function PowerModeGrid({
     setBulkValue("");
   }, [bulkValue, applyBulkValue]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table returns unmemoizable functions; known React Compiler limitation
   const table = useReactTable({
     data: matrixData,
     columns,

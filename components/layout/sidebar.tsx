@@ -18,7 +18,7 @@ const navigation = [
   { name: "Quotes", href: "/quotes", icon: FileSignature, iconColor: "text-magenta" },
   { name: "Invoices", href: "/invoices", icon: Receipt, iconColor: "text-success" },
   { name: "Jobs", href: "/jobs/board", icon: Hammer, activePrefix: "/jobs", iconColor: "text-purple" },
-  { name: "Screen Room", href: "/screens", icon: Printer, iconColor: "text-action" },
+  { name: "Screens", href: "/screens", icon: Printer, iconColor: "text-action" },
   { name: "Customers", href: "/customers", icon: Users },
   { name: "Garments", href: "/garments", icon: Shirt },
 ] satisfies Array<{ name: string; href: string; icon: typeof LayoutDashboard; activePrefix?: string; iconColor?: string }>;

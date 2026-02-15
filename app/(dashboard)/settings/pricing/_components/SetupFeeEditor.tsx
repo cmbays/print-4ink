@@ -51,6 +51,7 @@ export function SetupFeeEditor({
                 onChange={(e) =>
                   update("perScreenFee", parseFloat(e.target.value) || 0)
                 }
+                onFocus={(e) => e.target.select()}
                 className="h-8 pl-5 text-xs"
               />
             </div>
@@ -73,6 +74,7 @@ export function SetupFeeEditor({
               onChange={(e) =>
                 update("bulkWaiverThreshold", parseInt(e.target.value) || 0)
               }
+              onFocus={(e) => e.target.select()}
               className="h-8 w-32 text-xs"
             />
           </div>
@@ -98,6 +100,7 @@ export function SetupFeeEditor({
                   onChange={(e) =>
                     update("reorderDiscountWindow", parseInt(e.target.value) || 0)
                   }
+                  onFocus={(e) => e.target.select()}
                   className="h-8 text-xs"
                 />
               </div>
@@ -119,6 +122,7 @@ export function SetupFeeEditor({
                         parseFloat(e.target.value) || 0
                       )
                     }
+                    onFocus={(e) => e.target.select()}
                     className="h-8 pr-6 text-xs"
                   />
                   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">

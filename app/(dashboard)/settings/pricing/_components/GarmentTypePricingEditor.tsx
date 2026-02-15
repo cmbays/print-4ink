@@ -65,6 +65,7 @@ export function GarmentTypePricingEditor({
                   onChange={(e) =>
                     updateMarkup(index, parseFloat(e.target.value) || 0)
                   }
+                  onFocus={(e) => e.target.select()}
                   className="h-8 pr-6 text-xs text-right"
                 />
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">

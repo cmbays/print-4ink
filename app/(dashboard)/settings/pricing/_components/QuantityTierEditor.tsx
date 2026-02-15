@@ -98,71 +98,82 @@ export function QuantityTierEditor({
             <div className="w-8" />
           </div>
 
-          {tiers.map((tier, index) => (
-            <div
-              key={index}
-              className={cn(
-                "grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-3"
-              )}
-            >
-              <Input
-                type="number"
-                min={1}
-                value={tier.minQty}
-                onChange={(e) =>
-                  updateTier(index, "minQty", parseInt(e.target.value) || 1)
-                }
-                className="h-8 text-xs"
-              />
-              <Input
-                type="number"
-                min={tier.minQty}
-                placeholder="Unlimited"
-                value={tier.maxQty ?? ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "") {
-                    updateTier(index, "maxQty", null);
-                  } else {
-                    const parsed = parseInt(val) || tier.minQty;
-                    updateTier(index, "maxQty", Math.max(parsed, tier.minQty));
-                  }
-                }}
-                className="h-8 text-xs"
-              />
-              <Input
-                type="text"
-                value={tier.label}
-                onChange={(e) => updateTier(index, "label", e.target.value)}
-                className="h-8 text-xs"
-              />
-              <div className="relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                  $
-                </span>
+          {tiers.map((tier, index) => {
+            const prevMax = index > 0 ? (tiers[index - 1].maxQty ?? tiers[index - 1].minQty) : 0;
+            const minQtyInvalid = index > 0 && tier.minQty <= prevMax;
+            const maxQtyInvalid = tier.maxQty !== null && tier.maxQty < tier.minQty;
+
+            return (
+              <div
+                key={index}
+                className={cn(
+                  "grid grid-cols-[1fr_1fr_1fr_1fr_auto] items-center gap-3"
+                )}
+              >
                 <Input
                   type="number"
-                  step={0.25}
-                  min={0}
-                  value={basePrices[index] ?? 0}
+                  min={1}
+                  value={tier.minQty}
                   onChange={(e) =>
-                    updateBasePrice(index, parseFloat(e.target.value) || 0)
+                    updateTier(index, "minQty", parseInt(e.target.value) || 0)
                   }
-                  className="h-8 pl-5 text-xs"
+                  onBlur={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 1) updateTier(index, "minQty", 1);
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  className={cn("h-8 text-xs", minQtyInvalid && "border-error")}
                 />
+                <Input
+                  type="number"
+                  placeholder="Unlimited"
+                  value={tier.maxQty ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "") {
+                      updateTier(index, "maxQty", null);
+                    } else {
+                      updateTier(index, "maxQty", parseInt(val) || 0);
+                    }
+                  }}
+                  onFocus={(e) => e.target.select()}
+                  className={cn("h-8 text-xs", maxQtyInvalid && "border-error")}
+                />
+                <Input
+                  type="text"
+                  value={tier.label}
+                  onChange={(e) => updateTier(index, "label", e.target.value)}
+                  className="h-8 text-xs"
+                />
+                <div className="relative">
+                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                    $
+                  </span>
+                  <Input
+                    type="number"
+                    step={0.25}
+                    min={0}
+                    value={basePrices[index] ?? 0}
+                    onChange={(e) =>
+                      updateBasePrice(index, parseFloat(e.target.value) || 0)
+                    }
+                    onFocus={(e) => e.target.select()}
+                    className="h-8 pl-5 text-xs"
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 text-muted-foreground hover:text-error"
+                  onClick={() => removeTier(index)}
+                  disabled={tiers.length <= 1}
+                  aria-label={`Remove tier ${tier.label}`}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 text-muted-foreground hover:text-error"
-                onClick={() => removeTier(index)}
-                disabled={tiers.length <= 1}
-                aria-label={`Remove tier ${tier.label}`}
-              >
-                <Trash2 className="size-3.5" />
-              </Button>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Price summary */}
           {basePrices.length > 0 && (

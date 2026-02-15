@@ -72,6 +72,7 @@ export function LocationUpchargeEditor({
                   onChange={(e) =>
                     updateUpcharge(index, parseFloat(e.target.value) || 0)
                   }
+                  onFocus={(e) => e.target.select()}
                   className="h-8 pl-5 text-xs text-right"
                 />
               </div>

@@ -89,7 +89,7 @@ export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityT
         aria-hidden="true"
       />
 
-      {items.map((item, index) => {
+      {items.map((item, _index) => {
         const config = ICON_CONFIG[item.type];
         const Icon = config.icon;
 

@@ -65,6 +65,7 @@ export function ColorPricingGrid({
                 min={0}
                 value={colorHitRate}
                 onChange={(e) => onColorHitRateChange(parseFloat(e.target.value) || 0)}
+                onFocus={(e) => e.target.select()}
                 className="h-8 pl-5 text-xs"
               />
             </div>
