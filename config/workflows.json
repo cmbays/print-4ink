@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "vertical",
+    "label": "Vertical",
+    "stages": ["research", "interview", "shape", "breadboard", "plan", "build", "review", "wrap-up"]
+  },
+  {
+    "slug": "polish",
+    "label": "Polish",
+    "stages": ["interview", "breadboard", "plan", "build", "review", "wrap-up"]
+  },
+  {
+    "slug": "horizontal",
+    "label": "Horizontal",
+    "stages": ["research", "plan", "build", "review", "wrap-up"]
+  },
+  {
+    "slug": "bug-fix",
+    "label": "Bug Fix",
+    "stages": ["build", "review", "wrap-up"]
+  }
+]

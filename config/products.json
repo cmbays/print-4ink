@@ -1,0 +1,10 @@
+[
+  { "slug": "dashboard", "label": "Dashboard", "route": "/dashboard" },
+  { "slug": "quotes", "label": "Quotes", "route": "/quotes" },
+  { "slug": "customers", "label": "Customers", "route": "/customers" },
+  { "slug": "invoices", "label": "Invoices", "route": "/invoices" },
+  { "slug": "jobs", "label": "Jobs", "route": "/jobs" },
+  { "slug": "garments", "label": "Garments", "route": "/garments" },
+  { "slug": "screens", "label": "Screens", "route": "/screens" },
+  { "slug": "pricing", "label": "Pricing", "route": "/settings/pricing" }
+]

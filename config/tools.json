@@ -1,0 +1,7 @@
+[
+  { "slug": "work-orchestrator", "label": "Work Orchestrator" },
+  { "slug": "skills-framework", "label": "Skills Framework" },
+  { "slug": "agent-system", "label": "Agent System" },
+  { "slug": "knowledge-base", "label": "Knowledge Base" },
+  { "slug": "ci-pipeline", "label": "CI Pipeline" }
+]
