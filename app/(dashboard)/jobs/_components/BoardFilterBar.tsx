@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X, Layers, SplitSquareHorizontal, Printer, Film, Scissors } from "lucide-react";
+import { Filter, X, LayoutGrid, Briefcase, FileText, Printer, Film, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,9 +28,9 @@ import type { ServiceType } from "@/lib/schemas/quote";
 import type { CardFilters } from "@/lib/helpers/job-utils";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
-const layoutEnum = z.enum(["combined", "split"]);
+const cardTypeEnum = z.enum(["all", "jobs", "quotes"]);
 
-export type BoardLayout = z.infer<typeof layoutEnum>;
+export type CardTypeFilter = z.infer<typeof cardTypeEnum>;
 
 // ---------------------------------------------------------------------------
 // Filter options
@@ -78,9 +78,9 @@ export function useFiltersFromURL(): CardFilters {
   return { today: today || undefined, serviceType, risk, horizon };
 }
 
-export function useLayoutFromURL(): BoardLayout {
+export function useCardTypeFromURL(): CardTypeFilter {
   const searchParams = useSearchParams();
-  return layoutEnum.safeParse(searchParams.get("layout")).data ?? "combined";
+  return cardTypeEnum.safeParse(searchParams.get("cardType")).data ?? "all";
 }
 
 // ---------------------------------------------------------------------------
@@ -116,19 +116,19 @@ export function BoardFilterBar() {
 
   const clearAll = useCallback(() => {
     const params = new URLSearchParams();
-    const currentLayout = searchParams.get("layout");
-    if (currentLayout) params.set("layout", currentLayout);
+    const currentCardType = searchParams.get("cardType");
+    if (currentCardType) params.set("cardType", currentCardType);
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [router, searchParams]);
 
-  const layout = useLayoutFromURL();
+  const cardType = useCardTypeFromURL();
 
   return (
     <div role="group" aria-label="Board filters" className="flex flex-wrap items-center gap-3">
-      {/* Layout toggle: Combined / Split */}
+      {/* Card type filter: All / Jobs / Quotes */}
       <div
         role="group"
-        aria-label="Board layout"
+        aria-label="Card type filter"
         className="flex items-center rounded-md border border-border/50 p-0.5"
       >
         <Button
@@ -136,30 +136,45 @@ export function BoardFilterBar() {
           size="xs"
           className={cn(
             "gap-1 rounded-sm px-2 py-1 text-xs",
-            layout === "combined"
+            cardType === "all"
               ? "bg-surface text-foreground"
               : "text-muted-foreground",
           )}
-          aria-pressed={layout === "combined"}
-          onClick={() => setParam("layout", null)}
+          aria-pressed={cardType === "all"}
+          onClick={() => setParam("cardType", null)}
         >
-          <Layers className="size-3" />
-          Combined
+          <LayoutGrid className="size-3" />
+          All
         </Button>
         <Button
           variant="ghost"
           size="xs"
           className={cn(
             "gap-1 rounded-sm px-2 py-1 text-xs",
-            layout === "split"
+            cardType === "jobs"
               ? "bg-surface text-foreground"
               : "text-muted-foreground",
           )}
-          aria-pressed={layout === "split"}
-          onClick={() => setParam("layout", "split")}
+          aria-pressed={cardType === "jobs"}
+          onClick={() => setParam("cardType", "jobs")}
         >
-          <SplitSquareHorizontal className="size-3" />
-          Split
+          <Briefcase className="size-3" />
+          Jobs
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
+          className={cn(
+            "gap-1 rounded-sm px-2 py-1 text-xs",
+            cardType === "quotes"
+              ? "bg-surface text-foreground"
+              : "text-muted-foreground",
+          )}
+          aria-pressed={cardType === "quotes"}
+          onClick={() => setParam("cardType", "quotes")}
+        >
+          <FileText className="size-3" />
+          Quotes
         </Button>
       </div>
 
