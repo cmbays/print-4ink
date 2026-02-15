@@ -73,12 +73,12 @@ Products match what the app shows to users:
   "vertical": {
     "label": "Vertical",
     "description": "Full end-to-end feature development pipeline",
-    "stages": ["research", "interview", "shaping", "breadboard", "plan", "build", "review", "wrap-up"]
+    "stages": ["research", "interview", "shaping", "breadboard", "breadboard-reflection", "plan", "build", "review", "wrap-up"]
   },
   "polish": {
     "label": "Polish Cycle",
     "description": "Bridging the gap between vision and first build (the other 20%)",
-    "stages": ["interview", "shaping", "breadboard", "plan", "build", "review", "wrap-up"]
+    "stages": ["interview", "shaping", "breadboard", "breadboard-reflection", "plan", "build", "review", "wrap-up"]
   },
   "horizontal": {
     "label": "Horizontal",
@@ -130,7 +130,7 @@ Pipeline types are extensible — new types added to config as workflow needs ar
 
 ### Phase 1: SHAPING (one worktree, one Claude, sequential stages)
 
-**Stages**: Research → Interview → Shaping Skill → Breadboard → Plan
+**Stages**: Research → Interview → Shaping Skill → Breadboard → Breadboard Reflection → Plan
 
 **Session architecture**:
 - One worktree for the entire shaping phase
@@ -143,9 +143,10 @@ Pipeline types are extensible — new types added to config as workflow needs ar
 - Interview: HUMAN REQUIRED (sequential, full attention)
 - Shaping skill: automated (synthesis of interview findings)
 - Breadboard: automated, produces mermaid visuals in KB doc
+- Breadboard reflection: automated (companion skill — cross-references breadboard against scope, interview, existing code; identifies integration gaps)
 - Plan: automated, human approves manifest BY DEFAULT (skippable with `--auto`)
 
-**Outputs**: Research docs, interview findings, shaped problem definition, breadboard, impl plan + YAML manifest
+**Outputs**: Research docs, interview findings, shaped problem definition, breadboard, reflection/gap analysis, impl plan + YAML manifest
 
 **Command**: `work shape <product-or-topic>` — runs all stages in sequence
 
@@ -257,6 +258,7 @@ SHAPING:
   Interview   → HUMAN REQUIRED
   Shaping     → Automated (shaping skill)
   Breadboard  → Automated (produces mermaid visuals)
+  Reflection  → Automated (companion skill — gap analysis against scope, interview, code)
   Plan        → Automated (human approves manifest by default, skip with --auto)
 
 BUILD:
