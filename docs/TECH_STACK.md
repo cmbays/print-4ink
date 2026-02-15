@@ -4,8 +4,8 @@ description: "Every dependency mapped to its domain purpose, with decision conte
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-14
-last_verified: 2026-02-09
+last_updated: 2026-02-15
+last_verified: 2026-02-15
 depends_on: []
 ---
 
@@ -162,6 +162,65 @@ depends_on: []
 
 ---
 
+## Phase 2 Direction (Planned — Not Yet Installed)
+
+> Research completed 2026-02-15. See `docs/research/2026-02-15-ss-integration-research-synthesis.md` for full analysis.
+> Tracking issue: [#166](https://github.com/cmbays/print-4ink/issues/166)
+
+These tools are **recommended for Phase 2** based on research across 4 parallel investigations (security, industry standards, multi-supplier architecture, infrastructure path). They are NOT yet installed.
+
+### Database + Auth + Storage: Supabase
+
+| Tool | Purpose | Why This |
+|------|---------|----------|
+| **Supabase** (PostgreSQL) | Database, auth, file storage, realtime | All-in-one platform. $0 dev, $25/mo prod. Native RLS for multi-user. |
+| **@supabase/ssr** | Server-side auth for Next.js App Router | Cookie-based sessions, middleware token refresh. |
+
+**Why Supabase over alternatives**: Vercel Postgres lacks auth/storage/realtime. PlanetScale is MySQL ($39/mo min). Clerk + Vercel Blob = same cost but 3 vendors, 3 dashboards. Supabase gives database + auth + storage + realtime in one SDK at the same price point.
+
+### ORM: Drizzle
+
+| Tool | Purpose | Why This |
+|------|---------|----------|
+| **drizzle-orm** | TypeScript-native ORM for PostgreSQL | Schema defined in TS (matches Zod-first approach), tiny bundle (~50KB vs Prisma's ~2MB), `drizzle-zod` generates Zod schemas from table definitions. |
+| **drizzle-kit** | Schema migrations | `drizzle-kit generate` + `drizzle-kit migrate`. Code-first schema management. |
+
+**Why Drizzle over Prisma**: TypeScript-native (no DSL file), Zod integration via `drizzle-zod`, no binary engine, smaller bundle. Full SQL control with composable queries.
+
+### Rate Limiting + Cache: Upstash Redis
+
+| Tool | Purpose | Why This |
+|------|---------|----------|
+| **@upstash/redis** | Distributed cache and state | Serverless-native (HTTP-based, no persistent connections). Free tier: 10K commands/day. |
+| **@upstash/ratelimit** | API rate limiting | In-memory rate limiting fails on Vercel serverless (cold starts, multiple instances). Upstash provides distributed rate state. |
+
+**Why Upstash**: Required for Vercel serverless — in-memory caching resets on cold starts and isn't shared across instances. Also backs the SupplierAdapter cache layer.
+
+### External API: S&S Activewear REST V2
+
+| Integration | Purpose | Why This |
+|-------------|---------|----------|
+| **S&S Activewear API** | Real garment catalog, images, pricing, inventory | Only major distributor with modern REST/JSON API. S&S acquired alphabroder (Oct 2024) — 2 of 3 major distributors under one API. |
+| **PromoStandards** (future) | Multi-supplier integration | Industry standard (SOAP/XML). All 3 distributors support it. PSRESTful provides REST proxy. |
+
+### Data Architecture: DAL Pattern
+
+| Pattern | Purpose |
+|---------|---------|
+| **Data Access Layer** (`lib/dal/`) | Single boundary between components and data. Enables mock → Supabase migration with zero component changes. |
+| **SupplierAdapter interface** | Per-supplier adapters (MockAdapter → SSActivewearAdapter → PromoStandardsAdapter) normalized to canonical schema. |
+
+### What We Explicitly Won't Add
+
+| Tool | Reason |
+|------|--------|
+| **tRPC** | DAL + Zod already provides type safety. Overkill for single-user app. |
+| **GraphQL** | Adds complexity with no benefit for single-client app. |
+| **Separate API server** (Express/Fastify) | Next.js Server Components + Server Actions + Route Handlers cover all patterns. |
+| **Global state** (Redux/Zustand) | Still not needed. URL params + React state + Server Components. |
+
+---
+
 ## Explicitly Forbidden
 
 These packages must NOT be added without discussion:
@@ -174,8 +233,8 @@ These packages must NOT be added without discussion:
 | Material UI, Chakra UI, Ant Design | shadcn/ui only |
 | moment.js, date-fns, dayjs | Use native `Intl.DateTimeFormat` or simple string formatting until needed |
 | lodash | Use native JS methods. Only add specific lodash functions if truly needed. |
-| Prisma, Drizzle, Supabase client | Phase 3 concern. No database in Phase 1. |
-| NextAuth, Clerk | Phase 3 concern. No auth in Phase 1. |
+| Prisma | Drizzle recommended instead (TypeScript-native, Zod integration, smaller bundle) |
+| NextAuth, Clerk | Supabase Auth recommended instead (bundled with DB, native RLS) |
 
 ---
 
