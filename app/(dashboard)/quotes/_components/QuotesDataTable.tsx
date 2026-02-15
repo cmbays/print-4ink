@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Plus,
   Search,
+  SlidersHorizontal,
   X,
 } from "lucide-react";
 import { z } from "zod";
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/tooltip";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { formatDate } from "@/lib/helpers/format";
 import type { QuoteStatus } from "@/lib/schemas/quote";
 import { quotes as rawQuotes, customers } from "@/lib/mock-data";
@@ -117,6 +119,7 @@ export function QuotesDataTable() {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync from URL on back/forward navigation
   useEffect(() => {
@@ -306,6 +309,22 @@ export function QuotesDataTable() {
               </button>
             )}
           </div>
+
+          {/* Mobile filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
+            className={cn(
+              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              (activeStatuses.length > 0) && "text-action",
+            )}
+            aria-label="Sort & Filter"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
 
           {/* Archive toggle — icon only with tooltip */}
           <TooltipProvider skipDelayDuration={300}>
@@ -543,6 +562,36 @@ export function QuotesDataTable() {
           {filteredQuotes.length === 1 ? "quote" : "quotes"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "createdAt", label: "Date" },
+            { value: "quoteNumber", label: "Quote #" },
+            { value: "customerName", label: "Customer" },
+            { value: "total", label: "Total" },
+            { value: "status", label: "Status" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Status",
+              options: STATUS_OPTIONS,
+              selected: activeStatuses,
+              onToggle: handleStatusToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={() => {
+            router.replace("?", { scroll: false });
+            setLocalSearch("");
+          }}
+        />
       )}
     </div>
   );

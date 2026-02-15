@@ -6,6 +6,7 @@ import {
   FileText,
   Plus,
   Search,
+  SlidersHorizontal,
   X,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ import {
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { customers } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { formatDate } from "@/lib/helpers/format";
@@ -76,6 +78,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
@@ -294,6 +297,22 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
               </button>
             )}
           </div>
+
+          {/* Mobile filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
+            className={cn(
+              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              statusFilter && "text-action",
+            )}
+            aria-label="Sort & Filter"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
 
           <Button
             onClick={() => router.push("/invoices/new")}
@@ -537,6 +556,35 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
           {filteredInvoices.length === 1 ? "invoice" : "invoices"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "createdAt", label: "Date" },
+            { value: "invoiceNumber", label: "Invoice #" },
+            { value: "customer", label: "Customer" },
+            { value: "total", label: "Amount" },
+            { value: "dueDate", label: "Due Date" },
+            { value: "balanceDue", label: "Balance" },
+            { value: "status", label: "Status" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Status",
+              options: statusFilterOptions,
+              selected: statusFilter ? [statusFilter] : [],
+              onToggle: handleStatusFilterToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
     </div>
   );

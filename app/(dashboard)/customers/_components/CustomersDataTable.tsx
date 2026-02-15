@@ -6,6 +6,7 @@ import {
   Archive,
   Plus,
   Search,
+  SlidersHorizontal,
   Users,
   X,
 } from "lucide-react";
@@ -35,6 +36,7 @@ import { HealthBadge } from "@/components/features/HealthBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { quotes } from "@/lib/mock-data";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
@@ -163,6 +165,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
@@ -508,6 +511,22 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
             )}
           </div>
 
+          {/* Mobile filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
+            className={cn(
+              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              (activeTags.length > 0 || lifecycleFilter || healthFilter) && "text-action",
+            )}
+            aria-label="Sort & Filter"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
+
           {/* Archive toggle — icon only with tooltip */}
           <TooltipProvider skipDelayDuration={300}>
             <Tooltip>
@@ -798,6 +817,46 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
           {filteredCustomers.length === 1 ? "customer" : "customers"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "company", label: "Company" },
+            { value: "contact", label: "Contact" },
+            { value: "lifecycle", label: "Lifecycle" },
+            { value: "health", label: "Health" },
+            { value: "revenue", label: "Revenue" },
+            { value: "lastOrder", label: "Last Order" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Type",
+              options: typeFilterOptions,
+              selected: activeTags,
+              onToggle: handleTypeFilterToggle,
+            },
+            {
+              label: "Lifecycle",
+              options: lifecycleFilterOptions,
+              selected: lifecycleFilter ? [lifecycleFilter] : [],
+              onToggle: handleLifecycleFilterToggle,
+            },
+            {
+              label: "Health",
+              options: healthFilterOptions,
+              selected: healthFilter ? [healthFilter] : [],
+              onToggle: handleHealthFilterToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
 
       {/* ---- Add Customer Modal ---- */}

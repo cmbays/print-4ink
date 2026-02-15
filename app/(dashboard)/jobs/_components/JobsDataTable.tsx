@@ -9,6 +9,7 @@ import {
   Search,
   ShieldAlert,
   ShieldCheck,
+  SlidersHorizontal,
   ArrowRightLeft,
   X,
 } from "lucide-react";
@@ -36,6 +37,7 @@ import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { LaneBadge } from "@/components/features/LaneBadge";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { customers } from "@/lib/mock-data";
 import { computeTaskProgress } from "@/lib/helpers/job-utils";
 import { formatDate } from "@/lib/helpers/format";
@@ -132,6 +134,7 @@ export function JobsDataTable({
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
@@ -399,6 +402,22 @@ export function JobsDataTable({
             </button>
           )}
         </div>
+
+        {/* Mobile filter button */}
+        <button
+          type="button"
+          onClick={() => setFilterSheetOpen(true)}
+          className={cn(
+            "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+            "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+            "text-muted-foreground hover:text-foreground transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            (laneFilter || serviceTypeFilter || riskFilter) && "text-action",
+          )}
+          aria-label="Sort & Filter"
+        >
+          <SlidersHorizontal className="size-4" />
+        </button>
 
         <div className="flex-1" />
 
@@ -710,6 +729,46 @@ export function JobsDataTable({
           {filteredJobs.length === 1 ? "job" : "jobs"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "dueDate", label: "Due Date" },
+            { value: "jobNumber", label: "Job #" },
+            { value: "customer", label: "Customer" },
+            { value: "lane", label: "Lane" },
+            { value: "risk", label: "Risk" },
+            { value: "taskProgress", label: "Progress" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Lane",
+              options: laneFilterOptions,
+              selected: laneFilter ? [laneFilter] : [],
+              onToggle: handleLaneFilterToggle,
+            },
+            {
+              label: "Service Type",
+              options: serviceTypeFilterOptions,
+              selected: serviceTypeFilter ? [serviceTypeFilter] : [],
+              onToggle: handleServiceTypeFilterToggle,
+            },
+            {
+              label: "Risk",
+              options: riskFilterOptions,
+              selected: riskFilter ? [riskFilter] : [],
+              onToggle: handleRiskFilterToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
     </div>
   );
