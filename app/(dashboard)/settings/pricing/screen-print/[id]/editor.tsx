@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -29,10 +37,15 @@ import {
   Zap,
   LayoutGrid,
   Settings2,
+  Grid3x3,
+  Minus,
+  Plus,
+  Receipt,
 } from "lucide-react";
 import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
 import { calculateTemplateHealth } from "@/lib/pricing-engine";
 import { cn } from "@/lib/utils";
+import { MarginLegend } from "@/components/features/MarginLegend";
 import type {
   PricingTemplate,
   CostConfig,
@@ -51,7 +64,6 @@ import { ColorPricingGrid } from "../../_components/ColorPricingGrid";
 import { QuantityTierEditor } from "../../_components/QuantityTierEditor";
 import { LocationUpchargeEditor } from "../../_components/LocationUpchargeEditor";
 import { GarmentTypePricingEditor } from "../../_components/GarmentTypePricingEditor";
-import { SetupFeeEditor } from "../../_components/SetupFeeEditor";
 import { ComparisonView } from "../../_components/ComparisonView";
 import { PowerModeGrid } from "../../_components/PowerModeGrid";
 import { CostConfigSheet } from "../../_components/CostConfigSheet";
@@ -99,7 +111,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const isSandboxMode = sandboxSnapshot !== null;
   const [showComparison, setShowComparison] = useState(false);
 
-  // Editor mode state (Simple vs Power)
+  // Editor mode state (Simple vs Custom)
   const [editorMode, setEditorMode] = useState<EditorMode>("simple");
 
   // Cost config sheet state
@@ -135,7 +147,11 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   // Template health
   const health = calculateTemplateHealth(template, DEFAULT_GARMENT_COST);
 
-  // Update helpers
+  // Max colors
+  const maxColors = template.matrix.maxColors ?? 8;
+
+  // ── Update helpers ──────────────────────────────────────────────────
+
   const updateName = (name: string) => {
     setTemplate((prev) => (prev ? { ...prev, name } : prev));
     setIsEditing(true);
@@ -193,23 +209,26 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     setIsEditing(true);
   };
 
-  const updateSetupFees = (config: SetupFeeConfig) => {
+  const updateSetupFees = (field: keyof SetupFeeConfig, value: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
-        matrix: { ...prev.matrix, setupFeeConfig: config },
+        matrix: {
+          ...prev.matrix,
+          setupFeeConfig: { ...prev.matrix.setupFeeConfig, [field]: value },
+        },
       };
     });
     setIsEditing(true);
   };
 
-  const updateMaxColors = (maxColors: number) => {
+  const updateMaxColors = (newMax: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
-        matrix: { ...prev.matrix, maxColors },
+        matrix: { ...prev.matrix, maxColors: newMax },
       };
     });
     setIsEditing(true);
@@ -226,8 +245,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     });
   };
 
-  // Power mode cell edit: stores the exact price the user typed as an override.
-  // colIndex is 0-based (0 = 1 Color, 7 = 8 Colors)
+  // Power mode cell edit
   const handlePowerCellEdit = (tierIndex: number, colIndex: number, newPrice: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
@@ -241,7 +259,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     setIsEditing(true);
   };
 
-  // Power mode bulk edit: sets an override for every selected cell.
+  // Power mode bulk edit
   const handlePowerBulkEdit = (
     cells: Array<{ row: number; col: number }>,
     value: number
@@ -260,7 +278,8 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     setIsEditing(true);
   };
 
-  // Actions
+  // ── Actions ─────────────────────────────────────────────────────────
+
   const handleSave = () => {
     setTemplate((prev) =>
       prev ? { ...prev, updatedAt: new Date().toISOString() } : prev
@@ -275,7 +294,6 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     toast.success("Template duplicated", {
       description: `"${template.name} (Copy)" created. Redirecting...`,
     });
-    // In Phase 1, just show a toast — the hub page manages the list
     setTimeout(() => router.push("/settings/pricing"), 1000);
   };
 
@@ -322,12 +340,15 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     });
   };
 
+  // ── Setup fee config shorthand ──────────────────────────────────────
+  const fees = template.matrix.setupFeeConfig;
+
   return (
-    <div className="flex flex-col gap-6 p-6">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-2">
-          {/* Template name — inline editable */}
+    <div className="flex flex-col gap-4 p-4 md:p-6">
+      {/* ── Header ────────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
+        {/* Left: name + meta */}
+        <div className="flex flex-col gap-1.5 min-w-0">
           <div className="flex items-center gap-3">
             <Input
               value={template.name}
@@ -336,14 +357,14 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               aria-label="Template name"
             />
             {isEditing && (
-              <Badge variant="outline" className="text-[10px] text-warning border-warning/30">
+              <Badge variant="outline" className="text-[10px] text-warning border-warning/30 shrink-0">
                 Unsaved
               </Badge>
             )}
           </div>
 
-          {/* Meta row */}
-          <div className="flex items-center gap-2">
+          {/* Meta badges */}
+          <div className="flex flex-wrap items-center gap-1.5">
             <Badge variant="secondary" className="gap-1 text-[10px]">
               <Printer className="size-3" />
               Screen Print
@@ -358,37 +379,143 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               {healthLabels[health]}
             </Badge>
             {template.isDefault && (
-              <Badge variant="secondary" className="text-[10px]">
-                Default
-              </Badge>
+              <Badge variant="secondary" className="text-[10px]">Default</Badge>
             )}
             {template.isIndustryDefault && (
-              <Badge variant="secondary" className="text-[10px]">
-                Industry Default
-              </Badge>
+              <Badge variant="secondary" className="text-[10px]">Industry Default</Badge>
             )}
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-2">
+        {/* Right: action buttons */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           {!isSandboxMode ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={enterSandbox}
-              className="text-warning hover:text-warning"
-            >
-              <FlaskConical className="size-3.5" />
-              Sandbox
-            </Button>
-          ) : (
             <>
+              {/* Setup Fees popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Receipt className="size-3.5" />
+                    Setup Fees
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72" align="end">
+                  <div className="space-y-3">
+                    <p className="text-xs font-medium text-foreground">Setup Fees</p>
+
+                    {/* Per-screen fee */}
+                    <div className="space-y-1">
+                      <Label htmlFor="sf-per-screen" className="text-xs">Per-screen fee</Label>
+                      <div className="relative w-full">
+                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">$</span>
+                        <Input
+                          id="sf-per-screen"
+                          type="number"
+                          step={1}
+                          min={0}
+                          value={fees.perScreenFee}
+                          onChange={(e) => updateSetupFees("perScreenFee", parseFloat(e.target.value) || 0)}
+                          onFocus={(e) => e.target.select()}
+                          className="h-7 pl-5 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Bulk waiver */}
+                    <div className="space-y-1">
+                      <Label htmlFor="sf-bulk-waiver" className="text-xs">Bulk waiver (qty)</Label>
+                      <Input
+                        id="sf-bulk-waiver"
+                        type="number"
+                        step={1}
+                        min={0}
+                        value={fees.bulkWaiverThreshold}
+                        onChange={(e) => updateSetupFees("bulkWaiverThreshold", parseInt(e.target.value) || 0)}
+                        onFocus={(e) => e.target.select()}
+                        className="h-7 text-xs"
+                      />
+                      <p className="text-[10px] text-muted-foreground">
+                        Orders at or above this qty waive setup fees
+                      </p>
+                    </div>
+
+                    <Separator />
+
+                    {/* Reorder discount */}
+                    <p className="text-xs font-medium text-foreground">Reorder Discount</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label htmlFor="sf-reorder-window" className="text-xs">Window (mo)</Label>
+                        <Input
+                          id="sf-reorder-window"
+                          type="number"
+                          step={1}
+                          min={0}
+                          value={fees.reorderDiscountWindow}
+                          onChange={(e) => updateSetupFees("reorderDiscountWindow", parseInt(e.target.value) || 0)}
+                          onFocus={(e) => e.target.select()}
+                          className="h-7 text-xs"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label htmlFor="sf-reorder-pct" className="text-xs">Discount</Label>
+                        <div className="relative">
+                          <Input
+                            id="sf-reorder-pct"
+                            type="number"
+                            step={5}
+                            min={0}
+                            max={100}
+                            value={fees.reorderDiscountPercent}
+                            onChange={(e) => updateSetupFees("reorderDiscountPercent", parseFloat(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
+                            className="h-7 pr-6 text-xs"
+                          />
+                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">%</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      Reorders within {fees.reorderDiscountWindow}mo get {fees.reorderDiscountPercent}% off setup
+                    </p>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <Button variant="outline" size="sm" onClick={() => setShowCostSheet(true)}>
+                <Settings2 className="size-3.5" />
+                Edit Costs
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowComparison(true)}
+                onClick={enterSandbox}
+                className="text-warning hover:text-warning"
               >
+                <FlaskConical className="size-3.5" />
+                Sandbox
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDuplicate}>
+                <Copy className="size-3.5" />
+                <span className="hidden md:inline">Duplicate</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-error hover:text-error"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <Trash2 className="size-3.5" />
+                <span className="hidden md:inline">Delete</span>
+              </Button>
+              <Button size="sm" onClick={handleSave} disabled={!isEditing}>
+                <Save className="size-3.5" />
+                Save
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" size="sm" onClick={() => setShowComparison(true)}>
                 <GitCompareArrows className="size-3.5" />
                 Compare
               </Button>
@@ -401,64 +528,21 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                 <Undo2 className="size-3.5" />
                 Discard
               </Button>
-              <Button
-                size="sm"
-                onClick={saveSandboxChanges}
-              >
+              <Button size="sm" onClick={saveSandboxChanges}>
                 <Save className="size-3.5" />
                 Save Changes
-              </Button>
-            </>
-          )}
-
-          {!isSandboxMode && (
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowCostSheet(true)}
-              >
-                <Settings2 className="size-3.5" />
-                Edit Costs
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDuplicate}
-              >
-                <Copy className="size-3.5" />
-                Duplicate
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-error hover:text-error"
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="size-3.5" />
-                Delete
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleSave}
-                disabled={!isEditing}
-              >
-                <Save className="size-3.5" />
-                Save Template
               </Button>
             </>
           )}
         </div>
       </div>
 
-      {/* Sandbox mode banner */}
+      {/* ── Sandbox banner ────────────────────────────────────────── */}
       {isSandboxMode && (
         <div className="flex items-center justify-between rounded-lg border border-warning/30 bg-warning/10 p-3">
           <div className="flex items-center gap-2">
             <FlaskConical className="size-4 text-warning" />
-            <span className="text-sm font-medium text-warning">
-              Sandbox Mode
-            </span>
+            <span className="text-sm font-medium text-warning">Sandbox Mode</span>
             <span className="text-sm text-warning/80">
               &mdash; Changes won&apos;t affect live pricing until saved
             </span>
@@ -475,88 +559,160 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         </div>
       )}
 
-      {/* Mode toggle */}
-      <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-1 self-start">
-        <Button
-          variant={editorMode === "simple" ? "default" : "ghost"}
-          size="sm"
-          className="h-7 gap-1.5 text-xs"
-          onClick={() => setEditorMode("simple")}
-        >
-          <LayoutGrid className="size-3.5" />
-          Simple
-        </Button>
-        <Button
-          variant={editorMode === "power" ? "default" : "ghost"}
-          size="sm"
-          className="h-7 gap-1.5 text-xs"
-          onClick={() => setEditorMode("power")}
-        >
-          <Zap className="size-3.5" />
-          Power
-        </Button>
-      </div>
-
-      {/* Matrix preview selectors — garment type + print locations */}
-      <MatrixPreviewSelector
-        garmentTypes={template.matrix.garmentTypePricing}
-        locations={template.matrix.locationUpcharges}
-        selectedGarment={previewGarment}
-        selectedLocations={previewLocations}
-        onGarmentChange={setPreviewGarment}
-        onLocationsChange={setPreviewLocations}
-      />
-
-      {/* Pricing Matrix Grid — mode-dependent */}
-      {editorMode === "simple" ? (
-        <ColorPricingGrid
-          template={template}
-          colorHitRate={colorHitRate}
-          onColorHitRateChange={updateColorHitRate}
-          previewGarment={previewGarment}
-          previewLocations={previewLocations}
-        />
-      ) : (
-        <PowerModeGrid
-          template={template}
-          garmentBaseCost={DEFAULT_GARMENT_COST}
-          onCellEdit={handlePowerCellEdit}
-          onBulkEdit={handlePowerBulkEdit}
-          onMaxColorsChange={updateMaxColors}
-          previewGarment={previewGarment}
-          previewLocations={previewLocations}
-        />
-      )}
-
-      {/* Two-column layout for smaller editors */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Quantity Tiers */}
+      {/* ── 3-column sub-editors ──────────────────────────────────── */}
+      <div className="grid gap-4 md:grid-cols-3">
         <QuantityTierEditor
           tiers={template.matrix.quantityTiers}
           basePrices={template.matrix.basePriceByTier}
           onTiersChange={updateTiers}
         />
-
-        {/* Location Upcharges */}
-        <LocationUpchargeEditor
-          locations={template.matrix.locationUpcharges}
-          onLocationsChange={updateLocations}
-        />
-
-        {/* Garment Type Markup */}
         <GarmentTypePricingEditor
           garmentTypes={template.matrix.garmentTypePricing}
           onGarmentTypesChange={updateGarmentTypes}
         />
-
-        {/* Setup Fees */}
-        <SetupFeeEditor
-          config={template.matrix.setupFeeConfig}
-          onConfigChange={updateSetupFees}
+        <LocationUpchargeEditor
+          locations={template.matrix.locationUpcharges}
+          onLocationsChange={updateLocations}
         />
       </div>
 
-      {/* Delete confirmation dialog */}
+      {/* ── Unified Pricing Matrix Card ──────────────────────────── */}
+      <Card>
+        <CardHeader className="space-y-3 pb-3">
+          {/* Row 1: title + legend + mode toggle + settings */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <div className="flex items-center gap-2">
+              <Grid3x3 className="size-4 text-muted-foreground" />
+              <CardTitle className="text-base">Pricing Matrix</CardTitle>
+            </div>
+
+            <MarginLegend variant="tooltip" className="hidden md:flex" />
+
+            <div className="flex-1" />
+
+            {/* Simple / Custom toggle */}
+            <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5">
+              <Button
+                variant={editorMode === "simple" ? "default" : "ghost"}
+                size="sm"
+                className="h-6 gap-1 px-2 text-xs"
+                onClick={() => setEditorMode("simple")}
+              >
+                <LayoutGrid className="size-3" />
+                Simple
+              </Button>
+              <Button
+                variant={editorMode === "power" ? "default" : "ghost"}
+                size="sm"
+                className="h-6 gap-1 px-2 text-xs"
+                onClick={() => setEditorMode("power")}
+              >
+                <Zap className="size-3" />
+                Custom
+              </Button>
+            </div>
+
+            {/* Settings popover: max colors + color hit rate */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
+                  <Settings2 className="size-3.5" />
+                  Settings
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <div className="space-y-3">
+                  {/* Max colors stepper */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Max Colors</Label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon-xs"
+                        className="size-6"
+                        disabled={maxColors <= 1}
+                        onClick={() => updateMaxColors(Math.max(1, maxColors - 1))}
+                      >
+                        <Minus className="size-3" />
+                      </Button>
+                      <span className="w-8 text-center text-sm font-medium tabular-nums">
+                        {maxColors}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="icon-xs"
+                        className="size-6"
+                        disabled={maxColors >= 12}
+                        onClick={() => updateMaxColors(Math.min(12, maxColors + 1))}
+                      >
+                        <Plus className="size-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Color hit rate */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="matrix-hit-rate" className="text-xs">
+                      Color Hit Rate
+                    </Label>
+                    <div className="relative w-full">
+                      <Input
+                        id="matrix-hit-rate"
+                        type="number"
+                        step={0.1}
+                        min={0}
+                        value={colorHitRate}
+                        onChange={(e) => updateColorHitRate(parseFloat(e.target.value) || 0)}
+                        onFocus={(e) => e.target.select()}
+                        className="h-7 pr-6 text-xs"
+                      />
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                        x
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      Multiplier for 2+ color pricing per additional hit
+                    </p>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* Row 2: preview selectors (garment + location) */}
+          <MatrixPreviewSelector
+            garmentTypes={template.matrix.garmentTypePricing}
+            locations={template.matrix.locationUpcharges}
+            selectedGarment={previewGarment}
+            selectedLocations={previewLocations}
+            onGarmentChange={setPreviewGarment}
+            onLocationsChange={setPreviewLocations}
+          />
+        </CardHeader>
+
+        <CardContent className="pt-0">
+          {editorMode === "simple" ? (
+            <ColorPricingGrid
+              template={template}
+              previewGarment={previewGarment}
+              previewLocations={previewLocations}
+            />
+          ) : (
+            <PowerModeGrid
+              template={template}
+              garmentBaseCost={DEFAULT_GARMENT_COST}
+              onCellEdit={handlePowerCellEdit}
+              onBulkEdit={handlePowerBulkEdit}
+              previewGarment={previewGarment}
+              previewLocations={previewLocations}
+            />
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ── Delete confirmation dialog ────────────────────────────── */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
@@ -567,16 +723,10 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowDeleteDialog(false)}
-            >
+            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-            >
+            <Button variant="destructive" onClick={handleDelete}>
               <Trash2 className="size-3.5" />
               Delete
             </Button>
@@ -584,7 +734,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         </DialogContent>
       </Dialog>
 
-      {/* Comparison view modal (sandbox mode) */}
+      {/* ── Comparison view modal (sandbox mode) ─────────────────── */}
       {sandboxSnapshot && (
         <ComparisonView
           original={sandboxSnapshot}
@@ -597,7 +747,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         />
       )}
 
-      {/* Cost configuration sheet */}
+      {/* ── Cost configuration sheet ─────────────────────────────── */}
       <CostConfigSheet
         open={showCostSheet}
         onOpenChange={setShowCostSheet}

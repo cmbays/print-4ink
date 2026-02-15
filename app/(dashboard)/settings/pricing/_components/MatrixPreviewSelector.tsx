@@ -47,7 +47,7 @@ const locationLabels: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Component
+// Component — inline variant, no container border/bg
 // ---------------------------------------------------------------------------
 
 export function MatrixPreviewSelector({
@@ -67,26 +67,27 @@ export function MatrixPreviewSelector({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface/50 px-3 py-2">
+    <div className="flex flex-wrap items-center gap-2">
       {/* Garment type selector */}
-      <div className="flex items-center gap-2">
-        <Shirt className="size-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">Garment:</span>
+      <div className="flex items-center gap-1.5">
+        <Shirt className="size-3.5 text-muted-foreground shrink-0" />
         <Select
           value={selectedGarment ?? "__none__"}
           onValueChange={(v) => onGarmentChange(v === "__none__" ? undefined : v as GarmentCategory)}
         >
-          <SelectTrigger className="h-7 w-[130px] text-xs">
+          <SelectTrigger className="h-7 w-[160px] text-xs">
             <SelectValue placeholder="Base (none)" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="__none__">Base (none)</SelectItem>
             {garmentTypes.map((gt) => (
               <SelectItem key={gt.garmentCategory} value={gt.garmentCategory}>
-                {garmentLabels[gt.garmentCategory] ?? gt.garmentCategory}
-                {gt.baseMarkup > 0 && (
-                  <span className="ml-1 text-muted-foreground">+{gt.baseMarkup}%</span>
-                )}
+                <span className="flex items-center gap-1.5">
+                  {garmentLabels[gt.garmentCategory] ?? gt.garmentCategory}
+                  {gt.baseMarkup > 0 && (
+                    <span className="text-muted-foreground text-[10px]">+{gt.baseMarkup}%</span>
+                  )}
+                </span>
               </SelectItem>
             ))}
           </SelectContent>
@@ -94,34 +95,36 @@ export function MatrixPreviewSelector({
       </div>
 
       {/* Divider */}
-      <div className="h-5 w-px bg-border" />
+      <div className="h-4 w-px bg-border" />
 
       {/* Location toggles */}
-      <div className="flex items-center gap-2">
-        <MapPin className="size-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">Locations:</span>
-        <div className="flex items-center gap-1">
-          {locations.map((loc) => {
-            const isActive = selectedLocations.includes(loc.location);
-            return (
-              <Button
-                key={loc.location}
-                variant={isActive ? "default" : "outline"}
-                size="sm"
-                className={cn(
-                  "h-6 px-2 text-[11px]",
-                  isActive && "shadow-sm"
-                )}
-                onClick={() => toggleLocation(loc.location)}
-              >
-                {locationLabels[loc.location] ?? loc.location}
-                {loc.upcharge > 0 && !isActive && (
-                  <span className="ml-0.5 text-muted-foreground">+${loc.upcharge}</span>
-                )}
-              </Button>
-            );
-          })}
-        </div>
+      <div className="flex items-center gap-1">
+        <MapPin className="size-3.5 text-muted-foreground shrink-0 mr-0.5" />
+        {locations.map((loc) => {
+          const isActive = selectedLocations.includes(loc.location);
+          return (
+            <Button
+              key={loc.location}
+              variant={isActive ? "default" : "outline"}
+              size="sm"
+              className={cn(
+                "h-6 px-2 text-[11px]",
+                isActive && "shadow-sm"
+              )}
+              onClick={() => toggleLocation(loc.location)}
+            >
+              {locationLabels[loc.location] ?? loc.location}
+              {loc.upcharge > 0 && (
+                <span className={cn(
+                  "ml-0.5 text-[10px]",
+                  isActive ? "opacity-70" : "text-muted-foreground"
+                )}>
+                  +${loc.upcharge}
+                </span>
+              )}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );
