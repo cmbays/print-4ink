@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X, Layers, SplitSquareHorizontal } from "lucide-react";
+import { Filter, X, Layers, SplitSquareHorizontal, Printer, Film, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import {
 import {
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
+  SERVICE_TYPE_COLORS,
 } from "@/lib/constants";
 import { z } from "zod";
 import { riskLevelEnum } from "@/lib/schemas/job";
@@ -34,6 +35,12 @@ export type BoardLayout = z.infer<typeof layoutEnum>;
 // ---------------------------------------------------------------------------
 // Filter options
 // ---------------------------------------------------------------------------
+
+const SERVICE_TYPE_ICONS: Record<ServiceType, typeof Printer> = {
+  "screen-print": Printer,
+  dtf: Film,
+  embroidery: Scissors,
+};
 
 const SERVICE_TYPE_OPTIONS: { value: ServiceType; label: string }[] = [
   { value: "screen-print", label: SERVICE_TYPE_LABELS["screen-print"] },
@@ -207,11 +214,17 @@ export function BoardFilterBar() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Service Types</SelectItem>
-          {SERVICE_TYPE_OPTIONS.map((opt) => (
-            <SelectItem key={opt.value} value={opt.value}>
-              {opt.label}
-            </SelectItem>
-          ))}
+          {SERVICE_TYPE_OPTIONS.map((opt) => {
+            const Icon = SERVICE_TYPE_ICONS[opt.value];
+            return (
+              <SelectItem key={opt.value} value={opt.value}>
+                <span className="inline-flex items-center gap-1.5">
+                  <Icon className={cn("size-3.5", SERVICE_TYPE_COLORS[opt.value])} />
+                  {opt.label}
+                </span>
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
 
