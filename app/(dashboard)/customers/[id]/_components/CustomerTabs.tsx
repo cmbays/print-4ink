@@ -44,34 +44,36 @@ export function CustomerTabs({
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList
-        variant="line"
-        className="w-full justify-start gap-0 border-b border-border pb-0"
-      >
-        <TabsTrigger value="activity" className="px-2 text-xs md:text-sm md:px-3">Activity</TabsTrigger>
-        <TabsTrigger value="quotes" className="px-2 text-xs md:text-sm md:px-3">
-          Quotes{quotes.length > 0 && ` (${quotes.length})`}
-        </TabsTrigger>
-        <TabsTrigger value="jobs" className="px-2 text-xs md:text-sm md:px-3">
-          Jobs{jobs.length > 0 && ` (${jobs.length})`}
-        </TabsTrigger>
-        <TabsTrigger value="invoices" className="px-2 text-xs md:text-sm md:px-3">
-          Invoices{invoices.length > 0 && ` (${invoices.length})`}
-        </TabsTrigger>
-        <TabsTrigger value="artwork" className="px-2 text-xs md:text-sm md:px-3">
-          Artwork{artworks.length > 0 && ` (${artworks.length})`}
-        </TabsTrigger>
-        <TabsTrigger value="screens" className="px-2 text-xs md:text-sm md:px-3">
-          Screens{screens.length > 0 && ` (${screens.length})`}
-        </TabsTrigger>
-        <TabsTrigger value="contacts" className="px-2 text-xs md:text-sm md:px-3">
-          Contacts{customer.contacts.length > 0 && ` (${customer.contacts.length})`}
-        </TabsTrigger>
-        <TabsTrigger value="details" className="px-2 text-xs md:text-sm md:px-3">Details</TabsTrigger>
-        <TabsTrigger value="notes" className="px-2 text-xs md:text-sm md:px-3">
-          Notes{notes.length > 0 && ` (${notes.length})`}
-        </TabsTrigger>
-      </TabsList>
+      <div className="overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+        <TabsList
+          variant="line"
+          className="w-full justify-start gap-0 border-b border-border pb-0"
+        >
+          <TabsTrigger value="activity" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">Activity</TabsTrigger>
+          <TabsTrigger value="quotes" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Quotes{quotes.length > 0 && ` (${quotes.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="jobs" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Jobs{jobs.length > 0 && ` (${jobs.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="invoices" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Invoices{invoices.length > 0 && ` (${invoices.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="artwork" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Artwork{artworks.length > 0 && ` (${artworks.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="screens" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Screens{screens.length > 0 && ` (${screens.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="contacts" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Contacts{customer.contacts.length > 0 && ` (${customer.contacts.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="details" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">Details</TabsTrigger>
+          <TabsTrigger value="notes" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
+            Notes{notes.length > 0 && ` (${notes.length})`}
+          </TabsTrigger>
+        </TabsList>
+      </div>
 
       <TabsContent value="activity" className="mt-4">
         <ActivityTimeline

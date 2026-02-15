@@ -5,14 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { DiscountRow } from "./DiscountRow";
 import { QuoteActions } from "./QuoteActions";
+import { EmailPreviewModal } from "./EmailPreviewModal";
 import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
 import { normalizePosition } from "@/lib/constants/print-zones";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { DollarSign, Info, Send } from "lucide-react";
+import { Copy, DollarSign, Hammer, Info, Pencil, Receipt, Send } from "lucide-react";
 import { toast } from "sonner";
 import { MatrixPeekSheet } from "./MatrixPeekSheet";
+import { BottomActionBar } from "@/components/layout/bottom-action-bar";
 import {
   Tooltip,
   TooltipContent,
@@ -54,6 +56,10 @@ export function QuoteDetailView({
 }: QuoteDetailViewProps) {
   const [peekOpen, setPeekOpen] = useState(false);
   const [peekLineItem, setPeekLineItem] = useState<QuoteLineItem | null>(null);
+  const [mobileEmailOpen, setMobileEmailOpen] = useState(false);
+
+  const isDraft = quote.status === "draft";
+  const isAccepted = quote.status === "accepted";
 
   const totalDiscounts = quote.discounts.reduce((sum, d) => sum + d.amount, 0);
   const artworkMap = new Map(artworks.map((a) => [a.id, a]));
@@ -351,6 +357,84 @@ export function QuoteDetailView({
           lineItem={peekLineItem}
           onOverride={() => {
             toast.success("Override mode enabled for this quote");
+          }}
+        />
+      )}
+
+      {/* Mobile Bottom Action Bar */}
+      {mode === "detail" && (
+        <>
+          <BottomActionBar>
+            {isAccepted ? (
+              <>
+                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                  <Link href="/jobs/board">
+                    <Hammer className="size-4" />
+                    View Jobs
+                  </Link>
+                </Button>
+                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                  <Link href={`/invoices/new?quoteId=${quote.id}`}>
+                    <Receipt className="size-4" />
+                    Create Invoice
+                  </Link>
+                </Button>
+              </>
+            ) : isDraft ? (
+              <>
+                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                  <Link href={`/quotes/${quote.id}/edit`}>
+                    <Pencil className="size-4" />
+                    Edit
+                  </Link>
+                </Button>
+                {customer ? (
+                  <Button
+                    variant="outline"
+                    className="flex-1 min-h-(--mobile-touch-target)"
+                    onClick={() => setMobileEmailOpen(true)}
+                  >
+                    <Send className="size-4" />
+                    Send
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                    <Link href={`/quotes/new?duplicate=${quote.id}`}>
+                      <Copy className="size-4" />
+                      Copy as New
+                    </Link>
+                  </Button>
+                )}
+              </>
+            ) : (
+              /* sent status — main action is copy */
+              <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                <Link href={`/quotes/new?duplicate=${quote.id}`}>
+                  <Copy className="size-4" />
+                  Copy as New
+                </Link>
+              </Button>
+            )}
+          </BottomActionBar>
+          {/* Spacer to prevent content from being hidden behind the fixed BottomActionBar */}
+          <div className="h-16 md:hidden" />
+        </>
+      )}
+
+      {/* Mobile email preview modal (separate from QuoteActions modal) */}
+      {mobileEmailOpen && customer && (
+        <EmailPreviewModal
+          open={mobileEmailOpen}
+          onOpenChange={setMobileEmailOpen}
+          quote={{
+            quoteNumber: quote.quoteNumber,
+            total: quote.total,
+            lineItems: quote.lineItems,
+          }}
+          customer={{
+            name: customer.name,
+            email: customer.email,
+            company: customer.company,
           }}
         />
       )}
