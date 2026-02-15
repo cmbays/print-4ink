@@ -4,8 +4,8 @@ description: "Strategic planning document. Vision, phases, vertical inventory, c
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-14
-last_verified: 2026-02-14
+last_updated: 2026-02-15
+last_verified: 2026-02-15
 depends_on:
   - docs/PRD.md
   - docs/IMPLEMENTATION_PLAN.md
@@ -25,7 +25,7 @@ Production management software for 4Ink, a screen-printing shop. Manages the ful
 We follow a Shape Up cycle adapted for one developer working with Claude Code agents:
 
 | Phase | What Happens | Artifacts |
-|-------|-------------|-----------|
+|-------|-------------|----------|
 | **Shaping** | Define the problem, research competitors, map affordances, set boundaries | Vertical BRIEF, breadboard, spike docs |
 | **Betting** | Decide what to build next and in what order | Updated ROADMAP, IMPLEMENTATION_PLAN |
 | **Building** | Execute the vertical through the 7-step pipeline | Code, KB sessions, PR |
@@ -45,14 +45,14 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 
 **Goal**: High-fidelity UI with mock data for user acceptance testing. No backend.
 
-**Status**: All 7 verticals built and demo-ready. 434 tests, 19 test files, zero rollbacks. Screen Room integrated into existing verticals (customer screens tab, job detail, quote-time reuse detection) rather than standalone page. Mobile nav shell + responsive page adaptations shipped (Sprints 1-2). Garment mockup SVG composition engine designed and built. 36+ KB session docs.
+**Status**: All 7 verticals built and demo-ready. 529 tests, 26 test files, zero rollbacks. Screen Room integrated into existing verticals (customer screens tab, job detail, quote-time reuse detection) rather than standalone page. Mobile optimization complete — 4-sprint plan executed (PRs #101, #114, #148, #167, #174, #175). Garment mockup SVG composition engine designed and built. 37+ KB session docs.
 
 ### Phase 1.5: Demo Prep (CURRENT — Feb 15-21)
 
 **Goal**: Polish mobile, add onboarding wizards, build DTF Gang Sheet Builder, fix demo-blocking bugs. Demo with Gary on February 21.
 
 **Three must-haves** (ranked):
-1. **Mobile Polish** (Sprints 3-4) — forms, detail views, animation
+1. ~~**Mobile Polish** (Sprints 3-4)~~ — **Done** (PRs #148, #167, #174, #175). Remaining: #177 (5 pricing editor UX items).
 2. **Onboarding Wizards** (#145) — guided first-time experience across verticals
 3. **DTF Gang Sheet Builder** (#144) — new vertical, direct user request
 
@@ -96,12 +96,12 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 | Jobs | Complete | Demo | TODO |
 | Screen Room | Integrated | Demo | TODO |
 | Garments | Complete | Demo | TODO |
-| Mobile Optimization | Sprint 2 done | Build (Sprints 3-4) | — |
+| Mobile Optimization | Complete | Demo | — |
 | DTF Gang Sheet | Not started | Discovery (#144) | — |
 
 ## Current Bets (What We're Working On)
 
-1. **Mobile Polish** (Sprints 3-4) — forms, detail views, animation. Patterns established in Sprints 1-2.
+1. ~~**Mobile Polish** (Sprints 3-4)~~ — **Done** (PRs #148, #167, #174, #175). Remaining: #177 (5 pricing editor items).
 2. **Onboarding Wizards** (#145) — guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
 3. **DTF Gang Sheet Builder** (#144) — new vertical, direct user request. Full pipeline: discovery → build.
 4. ~~**Demo-blocking bug fixes**~~ — All 3 resolved (#128, #129, #138)
@@ -133,7 +133,7 @@ These are shaped ideas waiting for a betting decision post-demo:
 Issues are tagged with a consistent multi-dimensional taxonomy:
 
 | Dimension | Labels | Purpose |
-|-----------|--------|---------|
+|-----------|--------|--------|
 | **Vertical** | `vertical/quoting`, `vertical/jobs`, `vertical/invoicing`, `vertical/customers`, `vertical/price-matrix`, `vertical/screen-room`, `vertical/garments`, `vertical/dashboard`, `vertical/infrastructure` | Where does this belong? |
 | **Type** | `type/bug`, `type/feature`, `type/research`, `type/feedback`, `type/tech-debt`, `type/refactor`, `type/tooling` | What kind of thing is it? |
 | **Priority** | `priority/now`, `priority/next`, `priority/later`, `priority/icebox` | When should we address it? |
