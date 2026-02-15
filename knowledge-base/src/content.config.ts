@@ -7,9 +7,9 @@ import tagsConfig from '../../config/tags.json';
 
 // Derive enum tuples from canonical config files
 const verticals = verticalsConfig.map((v) => v.slug) as [string, ...string[]];
-const stages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => s.slug) as [string, ...string[]];
+// All stages are valid for session frontmatter (including non-pipeline stages like cooldown).
+// Pipeline-only filtering is done in display components, not in data validation.
+const stages = stagesConfig.map((s) => s.slug) as [string, ...string[]];
 const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
 
 const sessions = defineCollection({
