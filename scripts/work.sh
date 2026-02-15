@@ -243,7 +243,7 @@ CONTEXT
     if [[ -n "${ZELLIJ:-}" ]]; then
         # ── Inside Zellij: add tab to current session ────────────────────
         local LAYOUT_FILE
-        LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
+        LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX")
 
         {
             echo "layout {"
@@ -270,7 +270,7 @@ KDL
     else
         # ── Outside Zellij: create new session ───────────────────────────
         local SESSION_LAYOUT
-        SESSION_LAYOUT=$(mktemp "${TMPDIR:-/tmp}/work-session-XXXXXX.kdl")
+        SESSION_LAYOUT=$(mktemp "${TMPDIR:-/tmp}/work-session-XXXXXX")
 
         {
             echo "layout {"
@@ -280,9 +280,6 @@ KDL
 
         echo ""
         echo "  Start the new Zellij session:"
-        echo "    zellij --session $TOPIC --layout $SESSION_LAYOUT"
-        echo ""
-        echo "  Or always create a new session (even if inside one):"
         echo "    zellij --new-session-with-layout $SESSION_LAYOUT --session $TOPIC"
     fi
 
@@ -507,7 +504,7 @@ _work_build() {
 
     # Generate KDL layout from parallel arrays (uses prefixed prompts, not raw manifest)
     local KDL_FILE
-    KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX.kdl")
+    KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX")
     {
         echo "layout {"
         local k
@@ -532,7 +529,7 @@ _work_build() {
             local tab_prompt="${session_prompts[$i]}"
 
             local tab_kdl
-            tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX.kdl")
+            tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX")
 
             # Use the shared render helper for the tab layout
             {
@@ -550,9 +547,6 @@ _work_build() {
         # Outside Zellij: tell user to launch
         local session_name="${VERTICAL}-w${WAVE_IDX}"
         echo "Launch the build session:"
-        echo "  zellij --session $session_name --layout $KDL_FILE"
-        echo ""
-        echo "Or always create a new session (even if inside one):"
         echo "  zellij --new-session-with-layout $KDL_FILE --session $session_name"
     fi
 
