@@ -4,8 +4,8 @@ description: "Phase 1 build record and Phase 1.5 demo week plan. Tracks what was
 category: canonical
 status: active
 phase: 1
-last_updated: 2026-02-14
-last_verified: 2026-02-14
+last_updated: 2026-02-15
+last_verified: 2026-02-15
 current_step: "Phase 1.5 — Demo Prep"
 depends_on:
   - docs/PRD.md
@@ -32,7 +32,7 @@ depends_on:
 
 ## Phase 1: Frontend Mockups (COMPLETE)
 
-All 7 verticals built and demo-ready. 434 tests passing, 19 test files, zero rollbacks.
+All 7 verticals built and demo-ready. 529 tests passing, 26 test files, zero rollbacks.
 
 ### Vertical Build Record
 
@@ -46,7 +46,7 @@ All 7 verticals built and demo-ready. 434 tests passing, 19 test files, zero rol
 | **Jobs** | Demo | #58, #64, #77 | 10-competitor analysis → Kanban with dnd-kit → polish pass → CodeRabbit fixes |
 | **Garments** | Demo | #102, #104, #109, #141 | Catalog + mockup engine. Subagent-driven 18-task build. SVG composition engine. |
 | **Screen Room** | Integrated | #98, #109, #115 | Not standalone page — integrated as customer screens tab + job detail + quote-time reuse detection |
-| **Mobile** | Sprint 2 done | #99, #101, #114 | 4-sprint plan. Nav shell (Sprint 1) + responsive pages (Sprint 2) shipped. Sprints 3-4 pending. |
+| **Mobile** | Demo | #99, #101, #114, #148, #167, #174, #175 | 4-sprint plan complete. Nav shell (Sprint 1) + responsive pages (Sprint 2) + shared components, form layouts, detail views (Sprint 3+4) + mobile filter sheets, tab grouping, scroll-to-error + pricing mobile. |
 
 ### Infrastructure Built
 
@@ -75,7 +75,7 @@ All 7 verticals built and demo-ready. 434 tests passing, 19 test files, zero rol
 
 | Priority | Deliverable | Issue | Status |
 |----------|-------------|-------|--------|
-| **#1** | Mobile Polish (Sprints 3-4) | — | Pending — forms, detail views, animation |
+| **#1** | Mobile Polish (Sprints 3-4) | — | **DONE** — PRs #148, #167, #174, #175 merged. Filter sheets, tab grouping, scroll-to-error, pricing mobile. |
 | **#2** | Onboarding Wizards | #145 | Pending — guided first-time experience across verticals |
 | **#3** | DTF Gang Sheet Builder | #144 | Pending — new vertical, full pipeline needed |
 
@@ -83,19 +83,20 @@ All 7 verticals built and demo-ready. 434 tests passing, 19 test files, zero rol
 
 | Day | Deliverable | Risk Level |
 |-----|-------------|------------|
-| Day 1 | Cool-down: fix stale docs, triage issues, update Gary tracker | Low |
-| Day 2 | Mobile polish (Sprints 3-4): forms, detail views, animation | Low |
-| Days 3-4 | Onboarding Wizards + Bug fixes (#128, #129, #138) | Medium |
-| Days 4-5 | DTF Gang Sheet Builder — discovery through build | Medium |
+| Day 1 | Cool-down: fix stale docs, triage issues, update Gary tracker | **Done** |
+| Day 2 | Mobile polish (Sprints 3-4): forms, detail views, animation | **Done** (PRs #148, #167, #174, #175) |
+| Days 2-3 | Demo bug fixes (#128, #129, #138) | **Done** (PR #157) |
+| Days 3-4 | Onboarding Wizards (#145) | Pending |
+| Days 4-5 | DTF Gang Sheet Builder — discovery through build | Pending |
 | Day 6+ | Minimal backend (stretch) | High |
 
-### Demo-Blocking Bugs
+### Demo-Blocking Bugs (ALL RESOLVED)
 
-| Issue | Title | Why It Blocks |
-|-------|-------|---------------|
-| #128 | Price matrix: leading zeros | Visible data quality issue |
-| #129 | Price matrix: defer tier validation | Frustrating UX during live demo |
-| #138 | Price matrix: color pricing doubles | Incorrect pricing data |
+| Issue | Title | Status |
+|-------|-------|--------|
+| #128 | Price matrix: leading zeros | **Fixed** (PR #157) |
+| #129 | Price matrix: defer tier validation | **Fixed** (PR #157) |
+| #138 | Price matrix: color pricing doubles | **Fixed** (PR #157) |
 
 ### Demo Journeys (Wizard-Guided)
 
@@ -157,6 +158,12 @@ Tracked as GitHub issues. Prioritized during cool-down cycles.
 | #70-#76 | Jobs board refactoring (DRY, a11y, types) | next |
 | #78 | Rename (dashboard) route group | later |
 | #116 | Migrate QuoteForm money arithmetic to big.js | low |
+| ~~#151~~ | ~~Unit tests for mobile components~~ | **Closed** (PR #167) |
+| ~~#152~~ | ~~Integrate MobileFilterSheet into list views~~ | **Closed** (PR #167) |
+| #153 | Extract hardcoded toast messages to constants | later |
+| #154 | Fix pre-existing lint errors (React 19 compiler) | later |
+| ~~#155~~ | ~~Customer detail tab grouping~~ | **Closed** (PR #167) |
+| ~~#156~~ | ~~Mobile scroll-to-error~~ | **Closed** (PR #167) |
 
 ---
 

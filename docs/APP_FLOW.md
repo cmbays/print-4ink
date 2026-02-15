@@ -4,8 +4,8 @@ description: "Every screen, route, navigation path, and user journey. The author
 category: canonical
 status: active
 phase: 1
-last_updated: 2026-02-12
-last_verified: 2026-02-12
+last_updated: 2026-02-15
+last_verified: 2026-02-15
 depends_on:
   - docs/PRD.md
   - docs/strategy/jobs-scope-definition.md
@@ -43,6 +43,10 @@ depends_on:
 | 13 | Invoice Detail | `/invoices/[id]` | Full invoice view: line items, payments, reminders, linked entities | F13 |
 | 14 | New Invoice | `/invoices/new` | Create invoice from scratch or from accepted quote | F14 |
 | 15 | Edit Invoice | `/invoices/[id]/edit` | Edit draft invoice (reuses invoice form) | F15 |
+| 16 | Edit Quote | `/quotes/[id]/edit` | Edit draft quote (reuses quote form) | F7 |
+| 17 | Pricing Hub | `/settings/pricing` | Template cards with service type tabs (Screen Print / DTF) | F16 |
+| 18 | Screen Print Editor | `/settings/pricing/screen-print/[id]` | Simple/Power mode matrix editor with margin indicators | F16 |
+| 19 | DTF Editor | `/settings/pricing/dtf/[id]` | Sheet tier editor with pricing calculator | F16 |
 
 ---
 
@@ -51,13 +55,14 @@ depends_on:
 ### Sidebar (persistent, always visible)
 
 ```
-Dashboard       /
-Quotes          /quotes
-Invoices        /invoices
-Jobs            /jobs/board
-Screen Room     /screens
-Customers       /customers
-Garments        /garments
+Dashboard          /
+Quotes             /quotes
+Invoices           /invoices
+Jobs               /jobs/board
+Screen Room        /screens
+Customers          /customers
+Garments           /garments
+Pricing Settings   /settings/pricing
 ```
 
 Active state: highlighted background when route matches (exact for `/`, prefix for others).
@@ -83,6 +88,10 @@ Active state: highlighted background when route matches (exact for `/`, prefix f
 | Invoice Detail | Dashboard > Invoices > INV-1024 |
 | New Invoice | Dashboard > Invoices > New Invoice |
 | Edit Invoice | Dashboard > Invoices > INV-1024 > Edit |
+| Edit Quote | Dashboard > Quotes > Q-2048 > Edit |
+| Pricing Hub | Dashboard > Settings > Pricing |
+| Screen Print Editor | Dashboard > Settings > Pricing > [Template Name] |
+| DTF Editor | Dashboard > Settings > Pricing > [Template Name] |
 
 ### Cross-Links (navigation between related entities)
 
@@ -752,17 +761,23 @@ Quotes also appear as cards on the Production Board (`/jobs/board`) in the Quote
 
 ### Customer Detail (`/customers/[id]`)
 
-**Layout**: Single column with stacked sections
-**Sections**:
-- Customer header: name, company, contact info
-- Jobs table: linked jobs with lane, priority, due date
-- Quotes table: linked quotes with status, total, date
-- Invoices table: linked invoices with status, amount, balance due
+**Layout**: Header + tabbed content
+**Tabs** (9 total — mobile: 5 primary + "More" dropdown with 4 secondary):
+1. **Overview**: Quick stats, lifecycle badge, health badge, type tags
+2. **Contacts**: Contact list with roles, add contact sheet
+3. **Groups**: Group membership, add group sheet
+4. **Addresses**: Address list (billing, shipping)
+5. **Notes**: Chronological notes feed
+6. **Quotes**: Linked quotes table with status, total, date
+7. **Activity**: Activity timeline with interactive links
+8. **Screens**: Customer screens derived from completed jobs, reclaim workflow
+9. **Favorites**: Favorite garments and colors
 
 **Key Actions**:
 - Click job row → `/jobs/[jobId]`
 - Click quote row → `/quotes/[quoteId]`
 - Click invoice row → `/invoices/[invoiceId]`
+- Add contact / group / address via slide-out sheets
 - Back → `/customers`
 
 ---
@@ -781,12 +796,17 @@ Quotes also appear as cards on the Production Board (`/jobs/board`) in the Quote
 
 ### Garment Catalog (`/garments`)
 
-**Layout**: Grouped list or table
-**Grouping**: By brand
-**Fields**: SKU, Style, Brand, Color
+**Layout**: Grid/table toggle with category tabs and filters
+**Tabs**: All, T-Shirts, Fleece, Outerwear, Pants, Headwear
+**Filters**: Brand, color family, search
+**Features**: Price toggle (localStorage), favorite star toggles, detail drawer (Sheet) with size/price matrix and linked jobs
 
 **Key Actions**:
-- Expand/click to see which jobs use this garment
+- Grid/table view toggle
+- Click garment → opens detail drawer (Sheet) with full info
+- Toggle favorites (per-customer)
+- Filter by category tab, brand, color family
+- Search by name or SKU
 
 ---
 

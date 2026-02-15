@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-15
-**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization complete — all 25 tasks across 4 sprints merged (PRs #101, #114, #148). Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). **Garments vertical breadboard consolidated** (PR #173) — merged catalog build, mockup engine, and interview findings into single reference; defines 10-task build order for weight/fabric filters + customer-supplied garments. Knowledge base on Astro 5.3 with 37+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI bugfixes merged (PR #168: worktree path mismatch, Zellij CLI args, worktree limit 6→15), 8 agents, 14 skills, session orchestration. **All 3 demo-blocking bugs resolved** (#128, #129, #138 — all closed).
+**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 37+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 14 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed).
 
 ## What's Built
 
@@ -14,7 +14,7 @@
 - Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
 - shadcn/ui components (24 primitives)
 - Fonts: Inter + JetBrains Mono via `next/font`, dark mode default
-- Vitest (434 tests, 19 test files), GitHub Actions CI
+- Vitest (529 tests, 26 test files), GitHub Actions CI
 - Layout shell: sidebar (8 nav links incl. Jobs + Invoices) + per-page Topbar breadcrumbs + main content area
 - Dashboard: summary cards, "Needs Attention", "In Progress" sections
 </details>
@@ -192,6 +192,35 @@
 - 11 files changed, +608/-87 lines, 4 commits, squash-merged as `a3e70ba`
 </details>
 
+<details><summary>Mobile Polish — Filter Sheets, Tab Grouping, Scroll-to-Error (PR #167 — merged)</summary>
+
+- **MobileFilterSheet integration** (#152): All 4 list views (Quotes, Invoices, Customers, Jobs) now have mobile filter bottom sheets with sort options and filter chips
+- **Customer tab grouping** (#155): 9 tabs split into 5 primary + "More" dropdown with 4 secondary tabs on mobile
+- **Scroll-to-error** (#156): Forms auto-scroll to first validation error on submit, respects `prefers-reduced-motion`
+- **Unit tests** (#151): Contract tests for mobile components + behavioral tests for scroll-to-error utility
+- **New components**: `MoneyAmount` (currency display), `JobCardBody` / `QuoteCardBody` (shared card layouts), `entities.ts` constants
+- **Review fixes**: 4-agent design review caught broken sticky header bg token, missing aria-hidden, touch target violations, double-close bug, DRY issues
+- Closes #151, #152, #155, #156
+- 529 tests passing, 18 commits, +1324/-650 lines, 47 files changed
+</details>
+
+<details><summary>Pricing Mobile Responsive (PRs #174, #175 — merged)</summary>
+
+- **Pricing list** (PR #175): Mobile responsive header/tabs/search, canonical `SERVICE_TYPE_ICONS` exported from ServiceTypeBadge, badge wrap fix, mobile action menu always visible (no hover on touch)
+- **Screen-print editor** (PR #174): 8 desktop-only action buttons replaced with BottomActionBar (Tools + Save) on mobile. `MobileToolsSheet` — drill-down bottom sheet (Level 1 tool list → Level 2 editor detail) with labeled icons and descriptions. `MatrixPreviewSelector` stacks vertically with horizontal scroll for location toggles. Sticky first column on `ColorPricingGrid` and `PowerModeGrid` with shadow scroll hint. Sandbox mode banner stacks vertically with mobile BottomActionBar. Zero desktop regression.
+- 5 files changed in #174 (+425/-19), 3 files in #175 (+54/-48)
+</details>
+
+<details><summary>DevX — work CLI Enhancements (PRs #176, #178-#182 — merged)</summary>
+
+- **PR #176**: `--yolo` flag (auto-accept permissions) and `--claude-args` flag (pass arbitrary args to Claude CLI)
+- **PR #178**: `work clean` resilient to partial state (missing worktree, missing session, missing branch)
+- **PR #179**: Fix zsh arithmetic error in `work clean` grep -c
+- **PR #180**: Prevent zsh NOMATCH error on worktree glob fallback
+- **PR #181**: Use `find` for worktree glob, strip ANSI from zellij output
+- **PR #182**: Exact topic matching in `work clean` branch lookup (prevents substring matches)
+</details>
+
 <details><summary>Mobile Optimization Research (PR #90 — merged)</summary>
 
 - **Vertical registered**: `mobile-optimization` slug added to KB schema, all vertical label maps, sidebar, CLAUDE.md
@@ -319,12 +348,12 @@
 - [ ] **#75** — Extract board page into smaller sub-components
 - [ ] **#76** — Unify date formatting functions across codebase
 - [ ] **#78** — Rename (dashboard) route group to avoid confusion with /dashboard page
-- [ ] **#151** — Unit tests for mobile shared components (MobileFilterSheet, BottomActionBar, FullScreenModal)
-- [ ] **#152** — Integrate MobileFilterSheet into list views (quotes, jobs, customers, invoices)
+- [x] **#151** — Unit tests for mobile shared components *(closed by PR #167)*
+- [x] **#152** — Integrate MobileFilterSheet into list views *(closed by PR #167)*
 - [ ] **#153** — Extract hardcoded toast messages to constants
 - [ ] **#154** — Fix pre-existing lint errors in garments/page.tsx and PowerModeGrid (React 19 compiler)
-- [ ] **#155** — Customer detail tab grouping for 9-tab mobile bar
-- [ ] **#156** — Mobile scroll-to-error on form validation
+- [x] **#155** — Customer detail tab grouping for 9-tab mobile bar *(closed by PR #167)*
+- [x] **#156** — Mobile scroll-to-error on form validation *(closed by PR #167)*
 
 ## Tooling & Process Backlog (GitHub Issues)
 

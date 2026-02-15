@@ -4,8 +4,8 @@ description: "Phase 1 features, user stories, acceptance criteria, and scope bou
 category: canonical
 status: active
 phase: 1
-last_updated: 2026-02-07
-last_verified: 2026-02-07
+last_updated: 2026-02-15
+last_verified: 2026-02-15
 depends_on: []
 ---
 
@@ -62,11 +62,11 @@ Screen Print Pro replaces this with a unified production dashboard that gives in
 | User authentication / login | Phase 3 — no multi-user in Phase 1 |
 | Real API / database | Phase 3 — Zod schemas inform future backend |
 | Garment supplier integration (SanMar/AlphaBroder) | Phase 3 — requires real API |
-| Invoice generation | Phase 2 — need user feedback on quote flow first |
+| ~~Invoice generation~~ | **BUILT** in Phase 1 (PRs #48, #50) — full invoicing vertical with payments, credit memos, reminders |
 | Email notifications | Phase 3 — requires backend |
 | File upload (artwork images) | Phase 2 — requires storage backend |
 | Reporting / analytics | Phase 2 — need real data first |
-| Mobile-optimized layout | Phase 2 — desktop-first for shop office use |
+| ~~Mobile-optimized layout~~ | **BUILT** in Phase 1 (PRs #101, #114, #148, #167, #174, #175) — full responsive mobile with bottom tabs, filter sheets, scroll-to-error |
 | Print labels / packing slips | Phase 2 — need user feedback on shipping flow |
 | Multi-shop / multi-user | Phase 3+ — single operator for now |
 
@@ -120,13 +120,15 @@ Screen Print Pro replaces this with a unified production dashboard that gives in
 
 See `docs/APP_FLOW.md` for the complete route map and navigation paths.
 
-**Sidebar** (always visible):
+**Sidebar** (always visible on desktop, bottom tab bar on mobile):
 - Dashboard (`/`)
-- Jobs (`/jobs`)
+- Jobs (`/jobs/board`)
 - Quotes (`/quotes`)
 - Customers (`/customers`)
+- Invoices (`/invoices`)
 - Screen Room (`/screens`)
 - Garments (`/garments`)
+- Pricing Settings (`/settings/pricing`)
 
 ---
 
@@ -136,14 +138,20 @@ All data shapes defined as Zod schemas in `lib/schemas/`. See source files for e
 
 | Entity | Schema File | Key Fields |
 |--------|-------------|------------|
-| Job | `lib/schemas/job.ts` | jobNumber, title, customerId, status, priority, dueDate, garments[], printLocations[] |
+| Job | `lib/schemas/job.ts` | jobNumber, title, customerId, lane, serviceType, priority, dueDate, tasks[], garments[], printLocations[] |
 | Quote | `lib/schemas/quote.ts` | quoteNumber, customerId, lineItems[], setupFees, total, status |
-| Customer | `lib/schemas/customer.ts` | name, company, email, phone, address |
-| Garment | `lib/schemas/garment.ts` | sku, style, brand, color, sizes (record) |
+| Customer | `lib/schemas/customer.ts` | name, company, lifecycle, health, typeTags, favoriteGarments, favoriteColors |
+| Garment | `lib/schemas/garment.ts` | sku, style, brand, color, sizes (record), isEnabled, isFavorite |
 | Screen | `lib/schemas/screen.ts` | meshCount, emulsionType, burnStatus, jobId |
+| Invoice | `lib/schemas/invoice.ts` | invoiceNumber, customerId, lineItems[], status, payments[], balance, dueDate |
+| Credit Memo | `lib/schemas/credit-memo.ts` | invoiceId, reason, lineItems[], total |
+| Board Card | `lib/schemas/board-card.ts` | JobCard, QuoteCard, ScratchNoteCard union types |
+| Price Matrix | `lib/schemas/price-matrix.ts` | templateName, serviceType, tiers[], margins |
+| DTF Pricing | `lib/schemas/dtf-pricing.ts` | sheetTiers[], filmTypes, rushFees |
 
-**Production States**: `design -> approval -> burning -> press -> finishing -> shipped`
-**Quote Statuses**: `draft -> sent -> approved -> rejected`
+**Universal Lanes**: `ready -> in_progress -> review -> blocked -> done` (same for quotes and jobs)
+**Quote Statuses**: `draft -> sent -> accepted -> declined -> revised`
+**Invoice Statuses**: `draft -> sent -> partial -> paid -> overdue -> void`
 **Burn Statuses**: `pending -> burned -> reclaimed`
 **Priority Levels**: `low, medium, high, rush`
 
