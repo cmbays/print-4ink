@@ -8,7 +8,7 @@ Source: Adapted from Ryan Singer's [shaping-skills/breadboarding](https://github
 
 ## The Three Elements
 
-A breadboard maps a system using three types of interactive elements:
+A breadboard maps a system using three types of interactive elements (plus Places that contain them):
 
 ### UI Affordances (U)
 
@@ -198,3 +198,218 @@ Slice 3: CustomerCombobox (shared component, blocks Slice 4)
 Slice 4: New Quote Form (depends on Slices 2-3)
 Slice 5: Quote Detail + Email Modal (depends on mock quote data from Slice 4)
 ```
+
+---
+
+## Place References
+
+When a nested place has lots of internal affordances and would clutter the parent, you can **detach** it using the `_PlaceName` notation:
+
+1. Put a **reference node** in the parent place using underscore prefix: `_letter-browser`
+2. Define the full place separately with all its internals
+3. Wire from the reference to the place: `_letter-browser --> letter-browser`
+
+The reference is a **UI affordance** -- it represents "this widget/component renders here" in the parent context.
+
+In affordance tables, list the reference as a UI affordance:
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| U1 | P1 | page-header | Edit button | click | -> N1 | -- |
+| _letter-browser | P1 | -- | Widget reference | -- | -> P3 | -- |
+
+Style place references with a dashed border to distinguish them in Mermaid:
+```
+classDef placeRef fill:#FFB3BA,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5
+```
+
+---
+
+## Modes as Places
+
+When a component has distinct modes (read vs edit, viewing vs editing), model them as **separate places** -- they represent different perceptual states for the user with different affordances available.
+
+```
+P3: letter-browser (Read)    -- base state
+P4: letter-browser (Edit)    -- contains _letter-browser (Read) + new affordances
+```
+
+If one mode includes everything from another plus more, show this with a **place reference** inside the extended place. The reference shows composition: "everything in P3 appears here, plus these additions."
+
+In affordance tables for the extended place:
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To | Notes |
+|---|-------|-----------|------------|---------|-----------|------------|-------|
+| _letter-browser (Read) | P4 | -- | Inherits all of P3 | -- | -> P3 | -- | |
+| U3 | P4 | edit-toolbar | Add button | click | -> N3 | -- | NEW |
+| U4 | P4 | edit-toolbar | Edit button | click | -> N4 | -- | NEW |
+
+The state flag (e.g., `editMode$`) that switches between modes is a **navigation mechanism**, not a data store. Don't include it as an S in either place.
+
+---
+
+## Subplaces (Expanded)
+
+A **subplace** is a defined subset of a Place -- a contained area that groups related affordances. Use hierarchical IDs: `P2.1`, `P2.2`, etc.
+
+Use subplaces when:
+- A Place contains multiple distinct widgets or sections
+- You're detailing one part of a larger Place
+- You want to show what's in scope vs out of scope
+
+In affordance tables, use the subplace ID in the Place column:
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| U3 | P2.1 | sales-widget | "Refresh" button | click | -> N4 | -- |
+| U7 | P2.2 | activity-feed | activity list | render | -- | -- |
+
+In Mermaid, nest the subplace subgraph inside the parent. Use the same background color (no distinct fill) -- the subplace is part of the parent, not a separate Place. Add a placeholder sibling to show there's more on the page that you're not detailing:
+
+```
+otherContent[["... other page content ..."]]
+```
+
+---
+
+## Backend as a Place
+
+The database and resolvers aren't floating infrastructure -- they're a **Place** with their own affordances. Model them just like any other Place:
+
+| # | Place | Description |
+|---|-------|-------------|
+| P4 | Backend | API resolvers and database |
+
+Backend affordances follow the same rules:
+- **Code affordances (N)**: API routes, resolver functions, server actions
+- **Data stores (S)**: Database tables, cache entries
+
+Database tables (S) belong inside the Backend Place alongside the resolvers (N) that read and write them.
+
+**Screen Print Pro convention**: In Phase 1, Backend is not built -- code affordances in the Backend Place are tagged Phase 2. In Phase 2, the Backend Place contains Supabase tables (S), Drizzle queries (N), and server actions (N).
+
+When spanning frontend + backend, label both as Places:
+```
+P1: Quotes List (Frontend)
+P4: Backend (API + DB)
+```
+
+Wire from frontend code affordances to backend code affordances to show the boundary crossing.
+
+---
+
+## Chunking
+
+Chunking collapses a subsystem into a single node in the main diagram, with details shown separately. Use chunking to manage complexity when a section of the breadboard has:
+
+- **One wire in** (single entry point)
+- **One wire out** (single output)
+- **Lots of internals** between them
+
+### When to Chunk
+
+Look for sections where tracing the wiring reveals a "pinch point" -- many affordances that funnel through a single input and single output. These are natural boundaries for chunking.
+
+### How to Chunk
+
+1. **In the main diagram**, replace the subsystem with a single stadium-shaped node:
+   ```
+   dynamicForm[["CHUNK: dynamic-form"]]
+   ```
+
+2. **Wire to/from the chunk** using the boundary signals:
+   ```
+   N24 -->|formDefinition| dynamicForm
+   dynamicForm -.->|valid$| U8
+   ```
+
+3. **Create a separate chunk diagram** showing the internals with boundary markers
+
+4. **Style chunks distinctly** in the main diagram:
+   ```
+   classDef chunk fill:#87CEEB,stroke:#0288d1,color:#000,stroke-width:2px
+   ```
+
+Chunks often map naturally to reusable components -- they become the shared components in `components/features/`.
+
+---
+
+## Mechanisms Aren't Affordances
+
+An affordance is something you can **act upon** that has meaningful identity in the system. Several things look like affordances but are actually just implementation mechanisms:
+
+| Type | Example | Why it's not an affordance |
+|------|---------|---------------------------|
+| **Visual containers** | `modal-frame wrapper` | You can't act on a wrapper -- it's just a Place boundary |
+| **Internal transforms** | `letterDataTransform()` | Implementation detail of the caller -- not separately actionable |
+| **Navigation mechanisms** | `modalService.open()` | Just the "how" of getting to a Place -- wire to the destination directly |
+
+When reviewing affordance tables, double-check each Code affordance and ask:
+
+> "Is this actually an affordance, or is it just detailing the mechanism for how something happens?"
+
+If it's just the "how" -- skip it and wire directly to the destination or outcome:
+
+```
+N8 --> N22 --> P3     (N22 is modalService.open -- just mechanism)
+N8 --> P3             (handler navigates to modal -- correct)
+
+N6 --> N20 --> S2     (N20 is data transform -- internal to N6)
+N6 --> S2             (callback writes to store -- correct)
+```
+
+---
+
+## Side Effects Need Stores
+
+An N that appears to wire nowhere is suspicious. If it has **side effects outside the system boundary** (browser URL, localStorage, external API, analytics), add a **store node** to represent that external state:
+
+```
+N41: updateUrl()           (wires to... nothing?)
+N41: updateUrl() -> S15    (wires to Browser URL store)
+```
+
+This makes the data flow explicit. The store can also have return wires showing how external state flows back in.
+
+Common external stores to model:
+- `Browser URL` -- query params, hash fragments
+- `localStorage` / `sessionStorage` -- persisted client state
+- `Clipboard` -- copy/paste operations
+- `Browser History` -- navigation state
+
+**Screen Print Pro convention**: URL search params are a key state mechanism in Phase 1. Always model them as explicit S nodes so wiring is traceable.
+
+---
+
+## Data Store Placement
+
+A data store belongs in the Place where its data is **consumed** to enable some effect -- not where it's produced. Writes from other Places are "reaching into" that Place's state.
+
+To determine where a store belongs:
+1. **Trace read/write relationships** -- Who writes? Who reads?
+2. **The readers determine placement** -- that's where behavior is enabled
+3. **If only one Place reads**, the store goes inside that Place
+
+Example: A `changedPosts` array is written by a Modal (when user confirms changes) but read by a PAGE_SAVE handler (when user clicks Save). The store belongs with the PAGE_SAVE handler -- that's where it enables the persistence operation.
+
+Before putting a store in a separate DATA STORES section, verify it's actually read by multiple Places. If it only enables behavior in one Place, it belongs inside that Place.
+
+---
+
+## Mermaid Color Conventions
+
+The tables are the truth. Mermaid diagrams are optional visualizations for humans. Use these standard colors:
+
+| Type | Color | Hex | classDef |
+|------|-------|-----|----------|
+| UI affordances | Pink | `#FFB3BA` | `fill:#FFB3BA,stroke:#d87093,color:#000` |
+| Code affordances | Grey | `#C0C0C0` | `fill:#C0C0C0,stroke:#808080,color:#000` |
+| Data stores | Lavender | `#D8BFD8` | `fill:#D8BFD8,stroke:#9370db,color:#000` |
+| Chunks | Blue | `#87CEEB` | `fill:#87CEEB,stroke:#0288d1,color:#000,stroke-width:2px` |
+| Place references | Pink (dashed) | `#FFB3BA` | `fill:#FFB3BA,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5` |
+| Places (subgraphs) | White/transparent | -- | Subgraph boundary |
+
+Line conventions:
+- **Solid (`-->`)**: Wires Out -- calls, triggers, writes (control flow)
+- **Dashed (`-.->`)**: Returns To -- return values, data store reads (data flow)
+- **Labeled (`-.->|...|`)**: Abbreviated flow -- intermediate steps omitted
