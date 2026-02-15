@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-15
-**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization complete — all 25 tasks across 4 sprints merged (PRs #101, #114, #148). Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI bugfixes merged (PR #168: worktree path mismatch, Zellij CLI args, worktree limit 6→15), 8 agents, 14 skills, session orchestration. **All 3 demo-blocking bugs resolved** (#128, #129, #138 — all closed).
+**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization complete — all 25 tasks across 4 sprints merged (PRs #101, #114, #148). Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). **Garments vertical breadboard consolidated** (PR #173) — merged catalog build, mockup engine, and interview findings into single reference; defines 10-task build order for weight/fabric filters + customer-supplied garments. Knowledge base on Astro 5.3 with 37+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI bugfixes merged (PR #168: worktree path mismatch, Zellij CLI args, worktree limit 6→15), 8 agents, 14 skills, session orchestration. **All 3 demo-blocking bugs resolved** (#128, #129, #138 — all closed).
 
 ## What's Built
 
@@ -260,6 +260,17 @@
 - 434 tests passing, 17 commits, CodeRabbit review: 13 issues fixed across 12 files (Tailwind tokens, breakpoints, touch targets, a11y, sort mutation)
 </details>
 
+<details><summary>Garments Vertical — Consolidated Breadboard (PR #173 — merged)</summary>
+
+- **Consolidated breadboard**: `docs/breadboards/garments-breadboard.md` supersedes `garment-catalog-breadboard.md`, merges catalog build + mockup engine + interview findings
+- **Every affordance tagged**: [BUILT], [NEW], [MOCKUP], or [POLISH] — remaining work immediately visible
+- **New from interview (D1)**: Weight/fabric type filters — 4 UI affordances (U16-U19), 4 code affordances (N24-N27), 2 URL state stores (S13-S14). Schema adds `weight` (numeric oz) and `fabricType` (string) to `garmentCatalogSchema`
+- **New from interview (D2)**: Customer-supplied garment support — 3 code affordances (N28-N30), 1 data store (S15). Schema adds `customerSupplied` boolean + `handlingFee` to `quoteLineItemSchema`
+- **10-task build order** with 4 parallelization windows: A (schema+data), B (UI filters), C (customer-supplied schema), D (tests)
+- **Deferred**: Customer-supplied garment UI in quote form (to quoting v2), API auto-refresh, screen reclamation dashboard
+- KB: `2026-02-15-garments-breadboard.md`
+</details>
+
 <details><summary>PM Foundation (PR #91 — merged)</summary>
 
 - **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
@@ -333,9 +344,10 @@
 2. **DTF Gang Sheet Builder** (#144) — New vertical, direct user request. Full pipeline: discovery → build.
 3. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile.
 4. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`.
-5. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
-6. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-7. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
+5. **Garments — Weight/fabric filters + customer-supplied schema** — 10-task build order from consolidated breadboard (PR #173). Schema additions, filter UI, mock data. See `docs/breadboards/garments-breadboard.md`.
+6. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
+7. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+8. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
 
 ## Document Map
 
@@ -366,7 +378,8 @@
 | `docs/plans/2026-02-14-garment-mockup-design.md` | Garment mockup engine design (SVG composition architecture) |
 | `docs/plans/2026-02-14-garment-mockup-impl-plan.md` | 16-task TDD plan with breadboard gap fixes |
 | `docs/breadboards/mockup-engine-breadboard.md` | Mockup engine breadboard (8 places, 10 UI + 12 code affordances) |
-| `knowledge-base/src/content/sessions/` | 35 Markdown session docs (Astro KB, replaces `for_human/`) |
+| `docs/breadboards/garments-breadboard.md` | Consolidated garments vertical breadboard (9 places, 80+ affordances, 10-task build order) |
+| `knowledge-base/src/content/sessions/` | 37 Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
