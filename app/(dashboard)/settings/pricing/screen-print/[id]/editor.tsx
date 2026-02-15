@@ -53,6 +53,7 @@ import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
 import { calculateTemplateHealth } from "@/lib/pricing-engine";
 import { cn } from "@/lib/utils";
 import { MarginLegend } from "@/components/features/MarginLegend";
+import { BottomActionBar } from "@/components/layout/bottom-action-bar";
 import type {
   PricingTemplate,
   CostConfig,
@@ -75,6 +76,7 @@ import { ComparisonView } from "../../_components/ComparisonView";
 import { PowerModeGrid } from "../../_components/PowerModeGrid";
 import { CostConfigSheet } from "../../_components/CostConfigSheet";
 import { MatrixPreviewSelector } from "../../_components/MatrixPreviewSelector";
+import { MobileToolsSheet } from "../../_components/MobileToolsSheet";
 
 const DEFAULT_GARMENT_COST = 3.5;
 
@@ -126,6 +128,9 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
   // Cost config sheet
   const [showCostSheet, setShowCostSheet] = useState(false);
+
+  // Mobile tools sheet
+  const [showToolsSheet, setShowToolsSheet] = useState(false);
 
   // Matrix preview selectors (#134)
   const [previewGarment, setPreviewGarment] = useState<GarmentCategory | undefined>(undefined);
@@ -364,7 +369,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           {/* ── Action buttons ─────────────────────────────────────── */}
           <TooltipProvider skipDelayDuration={300}>
           {!isSandboxMode ? (
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="hidden md:flex flex-wrap items-center gap-1.5">
               {/* Qty Tiers popover */}
               <Popover>
                 <WithTooltip tooltip={tierValidation.hasErrors
@@ -559,7 +564,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               </WithTooltip>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5">
+            <div className="hidden md:flex items-center gap-1.5">
               <WithTooltip tooltip="Side-by-side comparison with original">
                 <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowComparison(true)}>
                   <GitCompareArrows className="size-3.5" />
@@ -590,15 +595,15 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
       </div>
 
       {/* ── Content area ─────────────────────────────────────────── */}
-      <div className="flex flex-col gap-4 px-4 pb-6 md:px-6">
+      <div className="flex flex-col gap-4 px-4 pb-20 md:pb-6 md:px-6">
 
         {/* Sandbox banner */}
         {isSandboxMode && (
-          <div className="flex items-center justify-between rounded-lg border border-warning/30 bg-warning/10 p-3">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between rounded-lg border border-warning/30 bg-warning/10 p-3">
             <div className="flex items-center gap-2">
-              <FlaskConical className="size-4 text-warning" />
+              <FlaskConical className="size-4 text-warning shrink-0" />
               <span className="text-sm font-medium text-warning">Sandbox Mode</span>
-              <span className="text-sm text-warning/80">
+              <span className="hidden md:inline text-sm text-warning/80">
                 &mdash; Changes won&apos;t affect live pricing until saved
               </span>
             </div>
@@ -607,10 +612,10 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                 variant="ghost"
                 size="sm"
                 onClick={discardSandboxChanges}
-                className="h-7 text-warning/70 hover:text-warning hover:bg-warning/10"
+                className="h-7 w-full md:w-auto text-warning/70 hover:text-warning hover:bg-warning/10"
               >
                 <X className="size-3.5" />
-                Exit
+                Exit Sandbox
               </Button>
             </WithTooltip>
           </div>
@@ -819,6 +824,58 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         template={template}
         onSave={updateCostConfig}
       />
+
+      {/* ── Mobile BottomActionBar ─────────────────────────────── */}
+      <BottomActionBar>
+        {isSandboxMode ? (
+          <>
+            <Button variant="outline" size="sm" onClick={discardSandboxChanges}>
+              <Undo2 className="size-4" />
+              Discard
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowComparison(true)}>
+              <GitCompareArrows className="size-4" />
+              Compare
+            </Button>
+            <div className="flex-1" />
+            <Button size="sm" onClick={saveSandboxChanges}>
+              <Save className="size-4" />
+              Save Changes
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="outline" size="sm" onClick={() => setShowToolsSheet(true)}>
+              <Settings2 className="size-4" />
+              Tools
+            </Button>
+            <div className="flex-1" />
+            <Button size="sm" onClick={handleSave} disabled={!isEditing}>
+              <Save className="size-4" />
+              Save
+            </Button>
+          </>
+        )}
+      </BottomActionBar>
+
+      {/* ── Mobile Tools Sheet ─────────────────────────────────── */}
+      {showToolsSheet && (
+        <MobileToolsSheet
+          open={showToolsSheet}
+          onOpenChange={setShowToolsSheet}
+          template={template}
+          fees={fees}
+          tierValidation={tierValidation}
+          onUpdateTiers={updateTiers}
+          onUpdateGarmentTypes={updateGarmentTypes}
+          onUpdateLocations={updateLocations}
+          onUpdateSetupFees={updateSetupFees}
+          onEnterSandbox={enterSandbox}
+          onDuplicate={handleDuplicate}
+          onShowDeleteDialog={() => setShowDeleteDialog(true)}
+          onShowCostSheet={() => setShowCostSheet(true)}
+        />
+      )}
     </div>
   );
 }

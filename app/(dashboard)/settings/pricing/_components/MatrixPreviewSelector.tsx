@@ -67,15 +67,15 @@ export function MatrixPreviewSelector({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center">
       {/* Garment type selector */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 w-full md:w-auto">
         <Shirt className="size-3.5 text-muted-foreground shrink-0" />
         <Select
           value={selectedGarment ?? "__none__"}
           onValueChange={(v) => onGarmentChange(v === "__none__" ? undefined : v as GarmentCategory)}
         >
-          <SelectTrigger className="h-7 w-[160px] text-xs">
+          <SelectTrigger className="h-7 w-full md:w-[160px] text-xs">
             <SelectValue placeholder="Base (none)" />
           </SelectTrigger>
           <SelectContent>
@@ -95,10 +95,10 @@ export function MatrixPreviewSelector({
       </div>
 
       {/* Divider */}
-      <div className="h-4 w-px bg-border" />
+      <div className="hidden md:block h-4 w-px bg-border" />
 
-      {/* Location toggles */}
-      <div className="flex items-center gap-1">
+      {/* Location toggles — horizontal scroll on mobile */}
+      <div className="flex items-center gap-1 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
         <MapPin className="size-3.5 text-muted-foreground shrink-0 mr-0.5" />
         {locations.map((loc) => {
           const isActive = selectedLocations.includes(loc.location);
@@ -108,7 +108,7 @@ export function MatrixPreviewSelector({
               variant={isActive ? "default" : "outline"}
               size="sm"
               className={cn(
-                "h-8 px-3 text-xs",
+                "h-8 px-3 text-xs shrink-0",
                 isActive && "shadow-sm"
               )}
               onClick={() => toggleLocation(loc.location)}
