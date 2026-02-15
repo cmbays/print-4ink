@@ -54,7 +54,7 @@ export function MobileFilterSheet({
                 type="button"
                 onClick={() => onSortChange(opt.value)}
                 className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm transition-colors",
+                  "rounded-full border px-3 py-1.5 text-sm transition-colors active:scale-95",
                   "min-h-(--mobile-touch-target)",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   currentSort === opt.value
@@ -83,7 +83,7 @@ export function MobileFilterSheet({
                     type="button"
                     onClick={() => group.onToggle(opt.value)}
                     className={cn(
-                      "rounded-full border px-3 py-1.5 text-sm transition-colors",
+                      "rounded-full border px-3 py-1.5 text-sm transition-colors active:scale-95",
                       "min-h-(--mobile-touch-target)",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       isSelected
@@ -111,7 +111,6 @@ export function MobileFilterSheet({
           <Button
             onClick={() => {
               onApply();
-              onOpenChange(false);
             }}
             className="flex-1 min-h-(--mobile-touch-target)"
           >

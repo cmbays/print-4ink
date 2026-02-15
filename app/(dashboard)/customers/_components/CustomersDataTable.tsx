@@ -503,7 +503,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
               <button
                 type="button"
                 onClick={() => setLocalSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
                 <X className="size-4" />
@@ -536,6 +536,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   onClick={toggleArchived}
                   className={cn(
                     "inline-flex items-center justify-center rounded-md p-2 transition-colors",
+                    "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived

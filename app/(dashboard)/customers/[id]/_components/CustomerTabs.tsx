@@ -70,15 +70,16 @@ export function CustomerTabs({
 
   const isSecondaryActive = (SECONDARY_TABS as readonly string[]).includes(activeTab);
 
+  /** Returns null for 0 counts to keep labels clean ("Quotes" not "Quotes (0)") */
   function getTabCount(tab: string): number | null {
     switch (tab) {
-      case "quotes": return quotes.length || null;
-      case "jobs": return jobs.length || null;
-      case "invoices": return invoices.length || null;
-      case "artwork": return artworks.length || null;
-      case "screens": return screens.length || null;
-      case "contacts": return customer.contacts.length || null;
-      case "notes": return notes.length || null;
+      case "quotes": return quotes.length > 0 ? quotes.length : null;
+      case "jobs": return jobs.length > 0 ? jobs.length : null;
+      case "invoices": return invoices.length > 0 ? invoices.length : null;
+      case "artwork": return artworks.length > 0 ? artworks.length : null;
+      case "screens": return screens.length > 0 ? screens.length : null;
+      case "contacts": return customer.contacts.length > 0 ? customer.contacts.length : null;
+      case "notes": return notes.length > 0 ? notes.length : null;
       default: return null;
     }
   }
@@ -126,13 +127,14 @@ export function CustomerTabs({
           <DropdownMenu>
             <DropdownMenuTrigger
               className={cn(
-                "inline-flex items-center gap-0.5 whitespace-nowrap border-b-2 px-2 text-xs transition-colors",
+                "inline-flex items-center gap-0.5 whitespace-nowrap border-b-2 px-2 text-xs transition-colors active:scale-95",
                 "min-h-(--mobile-touch-target)",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 isSecondaryActive
                   ? "border-action text-action font-medium"
                   : "border-transparent text-muted-foreground hover:text-foreground",
               )}
+              aria-label="More tabs"
             >
               {isSecondaryActive ? TAB_LABELS[activeTab] : "More"}
               <ChevronDown className="size-3" />
