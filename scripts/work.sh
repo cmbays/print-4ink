@@ -16,9 +16,9 @@
 # ── Config ──────────────────────────────────────────────────────────────────
 PRINT4INK_REPO="$HOME/Github/print-4ink"
 PRINT4INK_WORKTREES="$HOME/Github/print-4ink-worktrees"
-PRINT4INK_MAX_WORKTREES=6
+PRINT4INK_MAX_WORKTREES=15
 PRINT4INK_PORT_MIN=3001
-PRINT4INK_PORT_MAX=3010
+PRINT4INK_PORT_MAX=3015
 
 # ── Source Libraries ────────────────────────────────────────────────────────
 # Resolve script directory (works when sourced from both Zsh and Bash)
@@ -147,7 +147,7 @@ NOTES
   - Inside Zellij: new workstreams open as tabs in current session
   - Outside Zellij: creates a new Zellij session to attach to
   - Branch naming: session/<MMDD>-<topic> (auto-generated, kebab-case enforced)
-  - Max 6 concurrent worktrees
+  - Max 15 concurrent worktrees
   - Session registry: ~/Github/print-4ink-worktrees/.session-registry.json
 HELP
 }
@@ -172,7 +172,7 @@ _work_new() {
     local MMDD
     MMDD=$(date +%m%d)
     local BRANCH="session/${MMDD}-${TOPIC}"
-    local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH}"
+    local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH//\//-}"
 
     # Safety: branch already exists?
     if git -C "$PRINT4INK_REPO" rev-parse --verify "$BRANCH" &>/dev/null; then
@@ -279,11 +279,11 @@ KDL
         } > "$SESSION_LAYOUT"
 
         echo ""
-        echo "  Attach the new Zellij session:"
-        echo "    zellij attach $TOPIC --create --layout $SESSION_LAYOUT"
-        echo ""
-        echo "  Or start it directly:"
+        echo "  Start the new Zellij session:"
         echo "    zellij --session $TOPIC --layout $SESSION_LAYOUT"
+        echo ""
+        echo "  Or always create a new session (even if inside one):"
+        echo "    zellij --new-session-with-layout $SESSION_LAYOUT --session $TOPIC"
     fi
 
     # Register in session registry (only pass required args, let defaults handle the rest)
@@ -455,7 +455,7 @@ _work_build() {
         local full_prompt="Use the build-session-protocol skill to guide your workflow. ${prompt}"
 
         local BRANCH="session/${MMDD}-${topic}"
-        local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH}"
+        local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH//\//-}"
 
         if git -C "$PRINT4INK_REPO" rev-parse --verify "$BRANCH" &>/dev/null; then
             echo "  Branch '$BRANCH' already exists — skipping worktree creation"
@@ -552,8 +552,8 @@ _work_build() {
         echo "Launch the build session:"
         echo "  zellij --session $session_name --layout $KDL_FILE"
         echo ""
-        echo "Or attach to an existing session:"
-        echo "  zellij attach $session_name --create --layout $KDL_FILE"
+        echo "Or always create a new session (even if inside one):"
+        echo "  zellij --new-session-with-layout $KDL_FILE --session $session_name"
     fi
 
     echo ""
@@ -741,7 +741,7 @@ _work_clean() {
 
     local BRANCH="$MATCHES"
 
-    local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH}"
+    local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH//\//-}"
 
     echo "Will clean up:"
     echo "  Branch:    $BRANCH"
