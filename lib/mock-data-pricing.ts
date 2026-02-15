@@ -49,7 +49,7 @@ export const spStandardTemplate: PricingTemplate = {
     priceOverrides: {},
     maxColors: 8,
     colorPricing: [
-      { colors: 1, ratePerHit: 0 },
+      { colors: 1, ratePerHit: 1.5 },
       { colors: 2, ratePerHit: 1.5 },
       { colors: 3, ratePerHit: 1.5 },
       { colors: 4, ratePerHit: 1.5 },
@@ -113,7 +113,7 @@ export const spContractTemplate: PricingTemplate = {
     priceOverrides: {},
     maxColors: 8,
     colorPricing: [
-      { colors: 1, ratePerHit: 0 },
+      { colors: 1, ratePerHit: 1.3 },
       { colors: 2, ratePerHit: 1.3 },
       { colors: 3, ratePerHit: 1.3 },
       { colors: 4, ratePerHit: 1.3 },
@@ -177,7 +177,7 @@ export const spSchoolsTemplate: PricingTemplate = {
     priceOverrides: {},
     maxColors: 8,
     colorPricing: [
-      { colors: 1, ratePerHit: 0 },
+      { colors: 1, ratePerHit: 1.35 },
       { colors: 2, ratePerHit: 1.35 },
       { colors: 3, ratePerHit: 1.35 },
       { colors: 4, ratePerHit: 1.35 },

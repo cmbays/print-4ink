@@ -33,7 +33,7 @@ export const quantityTierSchema = z.object({
 
 export const colorPricingSchema = z.object({
   colors: z.number().int().min(1).max(8),
-  ratePerHit: z.number().nonnegative(), // additional cost per color hit
+  ratePerHit: z.number().nonnegative(), // cost per color hit (applied to every color including first)
 });
 
 // ---------------------------------------------------------------------------

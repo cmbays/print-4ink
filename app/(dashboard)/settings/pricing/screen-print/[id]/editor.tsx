@@ -160,7 +160,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
   // ── Derived values ────────────────────────────────────────────────
   const colorHitRate =
-    template.matrix.colorPricing.find((c) => c.colors === 2)?.ratePerHit ?? 1.5;
+    template.matrix.colorPricing[0]?.ratePerHit ?? 1.5;
   const health = calculateTemplateHealth(template, DEFAULT_GARMENT_COST);
   const maxColors = template.matrix.maxColors ?? 8;
   const fees = template.matrix.setupFeeConfig;
@@ -176,9 +176,11 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const updateColorHitRate = (rate: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
+      // Apply the same rate to ALL color counts (including 1-color).
+      // Total color cost = ratePerHit × colorCount, so 1 color = rate × 1.
       const colorPricing: ColorPricing[] = prev.matrix.colorPricing.map((c) => ({
         ...c,
-        ratePerHit: c.colors === 1 ? 0 : rate,
+        ratePerHit: rate,
       }));
       return { ...prev, matrix: { ...prev.matrix, colorPricing } };
     });
@@ -731,7 +733,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                         <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">x</span>
                       </div>
                       <p className="text-[10px] text-muted-foreground">
-                        Multiplier for 2+ color pricing per additional hit
+                        Per-color upcharge applied to every color hit
                       </p>
                     </div>
                   </div>

@@ -96,13 +96,13 @@ export function getBasePriceForTier(
   return matrix.basePriceByTier[tierIndex] ?? 0;
 }
 
-/** Get additional cost per piece for color count. */
+/** Get color upcharge per piece for a given color count. */
 export function getColorUpcharge(
   matrix: ScreenPrintMatrix,
   colorCount: number
 ): number {
-  // Colors = 1 means base rate (no upcharge from additional colors)
-  // Each additional color adds the per-hit rate
+  // Every color (including the first) applies the per-hit rate.
+  // Total color cost = ratePerHit × colorCount.
   const colorConfig = matrix.colorPricing.find((c) => c.colors === colorCount);
   if (colorConfig) {
     return money(new Big(colorConfig.ratePerHit).times(colorCount));
