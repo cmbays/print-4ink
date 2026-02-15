@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-15
-**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 37+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 14 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed).
+**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Shaping skills suite adopted** — full rjs/shaping-skills methodology as 4 deliverables: R × S shaping skill (609 lines), breadboarding upgrade (250 → 1758 lines from upstream), breadboard-reflection skill (188 lines), and shaping ripple hook (PR #199). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 38+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 17 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed).
 
 ## What's Built
 
@@ -167,10 +167,29 @@
 - Deleted: 43 HTML files, 1445-line generator script
 </details>
 
+<details><summary>Shaping Skills Suite Adoption (PR #199 — merged)</summary>
+
+- **Issue**: [#112](https://github.com/cmbays/print-4ink/issues/112) — adopt rjs/shaping-skills methodology
+- **4 deliverables** executed via subagent-driven development (11 tasks, two-stage review):
+  1. **Shaping skill** (new, 609 lines) — R × S methodology: Requirements × Shapes with binary fit checks, spikes for unknowns, pipeline integration layer
+  2. **Breadboarding skill** (upgraded, 250 → 1758 lines) — replaced Phase 1 simplification with full upstream 61KB base. Regained: vertical slicing, chunking, Mermaid visualization, 2 full examples, expanded procedures. Added: phase awareness, decision points, Screen Print Pro conventions
+  3. **Breadboard-reflection skill** (new, 188 lines) — design smell QA: naming test, 7 smells with phase tags (4 Phase 1, 3 Phase 2), wiring verification, quality gate checklist
+  4. **Shaping ripple hook** (new, 19 lines) — PostToolUse hook on Write/Edit, fires consistency reminders when editing `shaping: true` documents (exit code 2, non-blocking)
+- **Pipeline**: `Interview → Shaping (R×S) → Breadboarding → BB Reflection → Impl Planning`
+- **Canonical doc updates**: CLAUDE.md (skills table, pre-build ritual, orchestration patterns), AGENTS.md (pipeline, skill registry with 16 entries, shaping agent deferred to Phase 2)
+- **Infrastructure**: `.claude/settings.json` created, `.gitignore` updated to track `.claude/hooks/` and `.claude/settings.json`
+- **Templates**: frame-template.md, shaping-template.md (new), breadboard-template.md (updated with Component column, Mermaid, slicing)
+- **Reference docs**: shaping concepts.md (new), breadboarding concepts.md (expanded with 9 new concepts)
+- **CodeRabbit review**: MD040 — 33 untyped fenced code blocks fixed across 6 files
+- Design doc: `docs/plans/2026-02-15-shaping-skills-suite-design.md`
+- Implementation plan: `docs/plans/2026-02-15-shaping-skills-suite-impl-plan.md`
+</details>
+
 <details><summary>Agent & Skill Infrastructure</summary>
 
 - 8 agents: frontend-builder, requirements-interrogator, design-auditor, feature-strategist, doc-sync, secretary (Ada), finance-sme, build-reviewer
-- 14 skills: vertical-discovery, breadboarding, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync, cool-down, implementation-planning, one-on-one, build-session-protocol, and more
+- 17 skills: vertical-discovery, shaping, breadboarding, breadboard-reflection, screen-builder, quality-gate, pre-build-interrogator, design-audit, feature-strategy, doc-sync, cool-down, implementation-planning, one-on-one, build-session-protocol, and more
+- 1 hook: shaping-ripple (PostToolUse consistency reminders)
 - DevX vertical (PRs #92, #94, #96, #100, #103, #108): `work` CLI (Zellij orchestration), session registry, KDL layout generator, 8 prompts
 </details>
 
@@ -423,7 +442,9 @@
 | `docs/plans/2026-02-14-garment-mockup-impl-plan.md` | 16-task TDD plan with breadboard gap fixes |
 | `docs/breadboards/mockup-engine-breadboard.md` | Mockup engine breadboard (8 places, 10 UI + 12 code affordances) |
 | `docs/breadboards/garments-breadboard.md` | Consolidated garments vertical breadboard (9 places, 80+ affordances, 10-task build order) |
-| `knowledge-base/src/content/sessions/` | 37 Markdown session docs (Astro KB, replaces `for_human/`) |
+| `docs/plans/2026-02-15-shaping-skills-suite-design.md` | Shaping skills suite design (4 deliverables, pipeline architecture) |
+| `docs/plans/2026-02-15-shaping-skills-suite-impl-plan.md` | 11-task implementation plan for shaping skills suite |
+| `knowledge-base/src/content/sessions/` | 38+ Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
