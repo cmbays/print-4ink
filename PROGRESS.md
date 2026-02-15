@@ -3,8 +3,8 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-14
-**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization complete — all 25 tasks across 4 sprints merged (PRs #101, #114, #148). Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI, 8 agents, 14 skills, session orchestration.
+**Last Updated**: 2026-02-15
+**Status**: 6 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments). Mobile Optimization complete — all 25 tasks across 4 sprints merged (PRs #101, #114, #148). Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Knowledge base on Astro 5.3 with 36+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical complete — `work` CLI bugfixes merged (PR #168: worktree path mismatch, Zellij CLI args, worktree limit 6→15), 8 agents, 14 skills, session orchestration. **All 3 demo-blocking bugs resolved** (#128, #129, #138 — all closed).
 
 ## What's Built
 
@@ -281,6 +281,18 @@
 - **Permissions (global settings.json)**: Added 51 Bash allows (system info, file ops, TUI tools, dev tools), 14 new denies (destructive git, worktree removal, process killing), broad Read/Write/Edit, `uv` over `pip`.
 </details>
 
+<details><summary>Price Matrix Polish + Demo Bug Fixes (PR #157 — merged)</summary>
+
+- **Progressive disclosure layout**: Sub-editors (Qty Tiers, Garments, Locations, Setup Fees) converted from inline Cards to Popovers. Sticky header with all action buttons in one row.
+- **WithTooltip DRY wrapper** (`components/ui/with-tooltip.tsx`): Self-contained tooltip component with built-in `TooltipProvider`. Descriptive tooltips on all 17+ editor buttons.
+- **Quantity Tier Editor rewrite**: Removed custom label editing — labels auto-derived from min/max. Gap detection warns about uncovered quantity ranges with exact missing numbers. Overlap detection. Deferred validation (focus tracking suppresses red borders while typing). Red error indicator on Qty Tiers button when issues exist.
+- **Color pricing fix** (#138): Rate now applies uniformly to all colors including first. Formula: `base + (ratePerHit × colorCount)`. Previously 1-color had `ratePerHit=0`, causing 1→2 color jump to be double expected.
+- **Sandbox crash fix**: `WithTooltip` made self-contained with own `TooltipProvider` — no longer crashes when used outside grouped button bars.
+- **Matrix preview selectors**: Garment category combobox + location chip bar for previewing pricing with different garment/location combinations.
+- **PowerModeGrid external manual edit**: Spreadsheet supports toggling manual cell editing on/off.
+- 22 files changed, 5 commits, all 516 tests passing
+</details>
+
 ## Deferred Tech Debt (GitHub Issues)
 
 - [ ] **#15** — Migrate forms to React Hook Form + Zod
@@ -317,12 +329,13 @@
 
 ## Next Actions
 
-1. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`. 4 parallelization windows. Integrates mockup thumbnails into Quote Detail, Job Detail, and Kanban Board.
-2. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
-3. Demo all 6 verticals to Gary (4Ink owner), collect feedback
-4. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-5. Run first cool-down cycle to shape Phase 2 bets
-6. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
+1. **Onboarding Wizards** (#145) — Guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
+2. **DTF Gang Sheet Builder** (#144) — New vertical, direct user request. Full pipeline: discovery → build.
+3. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile.
+4. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`.
+5. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
+6. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+7. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
 
 ## Document Map
 

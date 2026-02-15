@@ -56,7 +56,7 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 2. **Onboarding Wizards** (#145) — guided first-time experience across verticals
 3. **DTF Gang Sheet Builder** (#144) — new vertical, direct user request
 
-**Demo-blocking bugs**: #128 (leading zeros), #129 (tier validation), #138 (color pricing doubles)
+**Demo-blocking bugs**: All resolved — #128 (leading zeros, closed), #129 (tier validation, closed), #138 (color pricing, closed via PR #157)
 
 ### Phase 2: Feedback Iteration + Backend Foundation
 
@@ -104,7 +104,7 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 1. **Mobile Polish** (Sprints 3-4) — forms, detail views, animation. Patterns established in Sprints 1-2.
 2. **Onboarding Wizards** (#145) — guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
 3. **DTF Gang Sheet Builder** (#144) — new vertical, direct user request. Full pipeline: discovery → build.
-4. **Demo-blocking bug fixes** — #128 (leading zeros), #129 (tier validation), #138 (color pricing doubles)
+4. ~~**Demo-blocking bug fixes**~~ — All 3 resolved (#128, #129, #138)
 5. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile + wizards.
 
 ## Forward Planning (Shaped But Not Started)
