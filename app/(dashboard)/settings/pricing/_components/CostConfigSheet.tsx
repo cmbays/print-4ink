@@ -218,6 +218,7 @@ export function CostConfigSheet({
                         e.target.value === "" ? 0 : Math.max(0, parseFloat(e.target.value) || 0)
                       )
                     }
+                    onFocus={(e) => e.target.select()}
                     className="h-8 text-sm"
                     min={0}
                     step={0.25}
@@ -245,6 +246,7 @@ export function CostConfigSheet({
                     Math.max(0, parseFloat(e.target.value) || 0)
                   )
                 }
+                onFocus={(e) => e.target.select()}
                 className="h-8 text-sm"
                 min={0}
                 step={0.05}
@@ -271,6 +273,7 @@ export function CostConfigSheet({
                     Math.max(0, parseFloat(e.target.value) || 0)
                   )
                 }
+                onFocus={(e) => e.target.select()}
                 className="h-8 text-sm"
                 min={0}
                 max={100}
@@ -301,6 +304,7 @@ export function CostConfigSheet({
                     e.target.value === "" ? undefined : Math.max(0, parseFloat(e.target.value) || 0)
                   )
                 }
+                onFocus={(e) => e.target.select()}
                 className="h-8 text-sm"
                 min={0}
                 step={1}

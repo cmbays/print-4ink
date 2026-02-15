@@ -20,6 +20,8 @@ export interface UseSpreadsheetEditorProps {
   getCellValue: (row: number, col: number) => number;
   onCellEdit: (row: number, col: number, value: number) => void;
   onBulkEdit: (cells: Array<{ row: number; col: number }>, value: number) => void;
+  /** When provided, manual-edit state is externally controlled by the parent. */
+  externalManualEdit?: { isOn: boolean; onToggle: () => void };
 }
 
 function cellKey(row: number, col: number) {
@@ -41,13 +43,15 @@ export function useSpreadsheetEditor({
   getCellValue,
   onCellEdit,
   onBulkEdit,
+  externalManualEdit,
 }: UseSpreadsheetEditorProps) {
   const [focusedCell, setFocusedCell] = useState<CellPosition | null>(null);
   const [editingCell, setEditingCell] = useState<CellPosition | null>(null);
   const [editMode, setEditMode] = useState<EditMode>("replace");
   const [selectedCells, setSelectedCells] = useState<Set<string>>(new Set());
   const [selectionAnchor, setSelectionAnchor] = useState<CellPosition | null>(null);
-  const [isManualEditOn, setIsManualEditOn] = useState(false);
+  const [_internalManualEdit, _setInternalManualEdit] = useState(false);
+  const isManualEditOn = externalManualEdit ? externalManualEdit.isOn : _internalManualEdit;
   const [editValue, setEditValue] = useState("");
   const [isDragging, setIsDragging] = useState(false);
 
@@ -708,19 +712,22 @@ export function useSpreadsheetEditor({
   // -- Toggle ----------------------------------------------------------------
 
   const toggleManualEdit = useCallback(() => {
-    setIsManualEditOn((prev) => {
-      if (prev) {
-        // Turning off — clear all state
-        setFocusedCell(null);
-        setEditingCell(null);
-        setSelectedCells(new Set());
-        setSelectionAnchor(null);
-        setEditValue("");
-        setIsDragging(false);
-      }
-      return !prev;
-    });
-  }, []);
+    // When turning off, clear all spreadsheet interaction state
+    if (isManualEditOn) {
+      setFocusedCell(null);
+      setEditingCell(null);
+      setSelectedCells(new Set());
+      setSelectionAnchor(null);
+      setEditValue("");
+      setIsDragging(false);
+    }
+
+    if (externalManualEdit) {
+      externalManualEdit.onToggle();
+    } else {
+      _setInternalManualEdit((prev) => !prev);
+    }
+  }, [isManualEditOn, externalManualEdit]);
 
   // -- Selection management ---------------------------------------------------
 

@@ -96,13 +96,13 @@ export function getBasePriceForTier(
   return matrix.basePriceByTier[tierIndex] ?? 0;
 }
 
-/** Get additional cost per piece for color count. */
+/** Get color upcharge per piece for a given color count. */
 export function getColorUpcharge(
   matrix: ScreenPrintMatrix,
   colorCount: number
 ): number {
-  // Colors = 1 means base rate (no upcharge from additional colors)
-  // Each additional color adds the per-hit rate
+  // Every color (including the first) applies the per-hit rate.
+  // Total color cost = ratePerHit × colorCount.
   const colorConfig = matrix.colorPricing.find((c) => c.colors === colorCount);
   if (colorConfig) {
     return money(new Big(colorConfig.ratePerHit).times(colorCount));
@@ -225,12 +225,18 @@ export function calculateScreenPrintPrice(
 /**
  * Calculate cell-level margin for a specific quantity tier + color count combination.
  * Used by the matrix grid to show margin indicators per cell.
+ *
+ * Optional `garmentCategory` and `locations` apply the full pricing formula:
+ *   (base + colorUpcharge + locationUpcharge) × garmentMultiplier
+ * When omitted, only base + colorUpcharge is used (backwards compatible).
  */
 export function calculateCellMargin(
   tierIndex: number,
   colorCount: number,
   template: PricingTemplate,
-  garmentBaseCost: number
+  garmentBaseCost: number,
+  garmentCategory?: GarmentCategory,
+  locations?: string[]
 ): MarginBreakdown {
   const { matrix, costConfig } = template;
   const overrides = matrix.priceOverrides ?? {};
@@ -238,20 +244,35 @@ export function calculateCellMargin(
   const overrideKey = `${tierIndex}-${colIndex}`;
   const overridePrice = overrides[overrideKey];
 
+  // Location upcharge: sum of all selected locations' upcharges
+  const locationUpcharge = locations
+    ? money(locations.reduce((sum, loc) => sum.plus(getLocationUpcharge(matrix, loc)), new Big(0)))
+    : 0;
+
+  // Garment type multiplier
+  const garmentMultiplier = garmentCategory
+    ? getGarmentTypeMultiplier(matrix, garmentCategory)
+    : 1;
+
   let revenue: number;
   if (overridePrice !== undefined) {
-    revenue = overridePrice;
+    // For overrides, still apply garment multiplier + location upcharge on top
+    revenue = money(new Big(overridePrice).plus(locationUpcharge).times(garmentMultiplier));
   } else {
     const basePrice = getBasePriceForTier(matrix, tierIndex);
     const colorUpcharge = getColorUpcharge(matrix, colorCount);
-    revenue = money(new Big(basePrice).plus(colorUpcharge));
+    revenue = money(
+      new Big(basePrice).plus(colorUpcharge).plus(locationUpcharge).times(garmentMultiplier)
+    );
   }
 
   const garmentCost =
     costConfig.garmentCostSource === "catalog"
       ? garmentBaseCost
       : (costConfig.manualGarmentCost ?? 0);
-  const inkCost = money(new Big(costConfig.inkCostPerHit).times(colorCount));
+  // Ink cost: per hit × colors × number of locations (minimum 1)
+  const locationCount = locations ? Math.max(locations.length, 1) : 1;
+  const inkCost = money(new Big(costConfig.inkCostPerHit).times(colorCount).times(locationCount));
   const overheadCost = money(
     new Big(revenue).times(new Big(costConfig.shopOverheadRate).div(100))
   );
@@ -272,10 +293,15 @@ export function calculateCellMargin(
 /**
  * Build the full pricing matrix data for the grid view.
  * Returns a 2D array: rows = quantity tiers, columns = color counts (1–maxColors).
+ *
+ * Optional `garmentCategory` and `locations` apply the full pricing formula.
+ * When omitted, only base + colorUpcharge is used (backwards compatible).
  */
 export function buildFullMatrixData(
   template: PricingTemplate,
-  garmentBaseCost: number
+  garmentBaseCost: number,
+  garmentCategory?: GarmentCategory,
+  locations?: string[]
 ): {
   tierLabel: string;
   cells: { price: number; margin: MarginBreakdown }[];
@@ -285,6 +311,16 @@ export function buildFullMatrixData(
 
   const overrides = matrix.priceOverrides ?? {};
 
+  // Location upcharge: sum of all selected locations' upcharges
+  const locationUpcharge = locations
+    ? money(locations.reduce((sum, loc) => sum.plus(getLocationUpcharge(matrix, loc)), new Big(0)))
+    : 0;
+
+  // Garment type multiplier
+  const garmentMultiplier = garmentCategory
+    ? getGarmentTypeMultiplier(matrix, garmentCategory)
+    : 1;
+
   return matrix.quantityTiers.map((tier, tierIndex) => {
     const cells = Array.from({ length: maxColors }, (_, i) => {
       const colorCount = i + 1;
@@ -293,14 +329,18 @@ export function buildFullMatrixData(
 
       let price: number;
       if (overridePrice !== undefined) {
-        price = overridePrice;
+        price = money(new Big(overridePrice).plus(locationUpcharge).times(garmentMultiplier));
       } else {
         const basePrice = getBasePriceForTier(matrix, tierIndex);
         const colorUpcharge = getColorUpcharge(matrix, colorCount);
-        price = money(new Big(basePrice).plus(colorUpcharge));
+        price = money(
+          new Big(basePrice).plus(colorUpcharge).plus(locationUpcharge).times(garmentMultiplier)
+        );
       }
 
-      const margin = calculateCellMargin(tierIndex, colorCount, template, garmentBaseCost);
+      const margin = calculateCellMargin(
+        tierIndex, colorCount, template, garmentBaseCost, garmentCategory, locations
+      );
       return { price, margin };
     });
 

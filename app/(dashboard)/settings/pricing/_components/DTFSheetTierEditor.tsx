@@ -73,6 +73,7 @@ export function DTFSheetTierEditor({
                           onChange={(e) =>
                             onUpdateTier(index, "length", parseFloat(e.target.value) || 0)
                           }
+                          onFocus={(e) => e.target.select()}
                           className="h-8 w-16 text-sm"
                           min={1}
                         />
@@ -92,6 +93,7 @@ export function DTFSheetTierEditor({
                               parseFloat(e.target.value) || 0
                             )
                           }
+                          onFocus={(e) => e.target.select()}
                           className="h-8 w-20 text-sm"
                           min={0}
                           step={0.01}
@@ -112,6 +114,7 @@ export function DTFSheetTierEditor({
                               val === "" ? 0 : parseFloat(val) || 0
                             );
                           }}
+                          onFocus={(e) => e.target.select()}
                           className="h-8 w-20 text-sm"
                           min={0}
                           step={0.01}

@@ -77,7 +77,7 @@ function defaultSPMatrix(): ScreenPrintMatrix {
     priceOverrides: {},
     maxColors: 8,
     colorPricing: [
-      { colors: 1, ratePerHit: 0 },
+      { colors: 1, ratePerHit: 1.5 },
       { colors: 2, ratePerHit: 1.5 },
       { colors: 3, ratePerHit: 1.5 },
       { colors: 4, ratePerHit: 1.5 },
@@ -658,7 +658,7 @@ function SPSettingsStep({
         <div>
           <p className="text-sm font-medium">Color Hit Rate</p>
           <p className="text-xs text-muted-foreground">
-            Additional cost per color per piece (colors 2+)
+            Per-color upcharge applied to every color hit
           </p>
         </div>
         <div className="relative w-40">
@@ -669,12 +669,13 @@ function SPSettingsStep({
             type="number"
             min={0}
             step={0.1}
-            value={matrix.colorPricing[1]?.ratePerHit ?? 0}
+            value={matrix.colorPricing[0]?.ratePerHit ?? 1.5}
             onChange={(e) => {
               const rate = parseFloat(e.target.value) || 0;
-              const newColorPricing = matrix.colorPricing.map((cp) =>
-                cp.colors === 1 ? cp : { ...cp, ratePerHit: rate }
-              );
+              const newColorPricing = matrix.colorPricing.map((cp) => ({
+                ...cp,
+                ratePerHit: rate,
+              }));
               onMatrixChange({ ...matrix, colorPricing: newColorPricing });
             }}
             className="h-8 text-xs pl-5"

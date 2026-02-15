@@ -7,16 +7,9 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
-import { MarginLegend } from "@/components/features/MarginLegend";
 import { cn } from "@/lib/utils";
 import {
   buildFullMatrixData,
@@ -27,8 +20,9 @@ import type {
   MarginIndicator,
   MarginBreakdown,
 } from "@/lib/schemas/price-matrix";
+import type { GarmentCategory } from "@/lib/schemas/garment";
 import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
-import { Grid3x3, X, ToggleRight, ToggleLeft, Settings2, Minus, Plus } from "lucide-react";
+import { X } from "lucide-react";
 
 const dotColors: Record<MarginIndicator, string> = {
   healthy: "bg-success",
@@ -42,19 +36,27 @@ interface MatrixRow {
   cells: { price: number; margin: MarginBreakdown }[];
 }
 
+// ---------------------------------------------------------------------------
+// Bare grid — no Card wrapper, no Manual Edit toggle.
+// Parent provides the Card shell, shared header, and Manual Edit button.
+// This component renders: bulk edit toolbar (when cells selected) + spreadsheet table.
+// ---------------------------------------------------------------------------
+
 interface PowerModeGridProps {
   template: PricingTemplate;
   garmentBaseCost: number;
   onCellEdit: (tierIndex: number, colIndex: number, newPrice: number) => void;
   onBulkEdit: (cells: Array<{ row: number; col: number }>, value: number) => void;
-  onMaxColorsChange: (maxColors: number) => void;
+  previewGarment?: GarmentCategory;
+  previewLocations?: string[];
+  /** External manual-edit state — parent owns the toggle, grid uses the state. */
+  isManualEditOn: boolean;
+  onToggleManualEdit: () => void;
 }
 
 // ---------------------------------------------------------------------------
 // Context — passes spreadsheet interaction state to PriceCell without
-// coupling column definitions to mutable state. This prevents TanStack from
-// recreating cell DOM elements on every keystroke (which was destroying the
-// edit input and losing focus).
+// coupling column definitions to mutable state.
 // ---------------------------------------------------------------------------
 
 type SpreadsheetState = ReturnType<typeof useSpreadsheetEditor>;
@@ -62,7 +64,6 @@ const SpreadsheetCtx = createContext<SpreadsheetState | null>(null);
 
 // ---------------------------------------------------------------------------
 // PriceCell — reads interaction state from context, not column closure.
-// Column definitions stay stable → TanStack preserves DOM → focus preserved.
 // ---------------------------------------------------------------------------
 
 function PriceCell({
@@ -136,8 +137,7 @@ function PriceCell({
 }
 
 // ---------------------------------------------------------------------------
-// Column builder — creates columns for a given maxColors count.
-// NO interaction state in closures. PriceCell reads state from context.
+// Column builder — stable columns, PriceCell reads state from context.
 // ---------------------------------------------------------------------------
 
 const columnHelper = createColumnHelper<MatrixRow>();
@@ -178,7 +178,10 @@ export function PowerModeGrid({
   garmentBaseCost,
   onCellEdit,
   onBulkEdit,
-  onMaxColorsChange,
+  previewGarment,
+  previewLocations,
+  isManualEditOn,
+  onToggleManualEdit,
 }: PowerModeGridProps) {
   const [bulkValue, setBulkValue] = useState("");
 
@@ -186,12 +189,12 @@ export function PowerModeGrid({
 
   const matrixData: MatrixRow[] = useMemo(
     () =>
-      buildFullMatrixData(template, garmentBaseCost).map((row, i) => ({
+      buildFullMatrixData(template, garmentBaseCost, previewGarment, previewLocations).map((row, i) => ({
         tierIndex: i,
         tierLabel: row.tierLabel,
         cells: row.cells,
       })),
-    [template, garmentBaseCost]
+    [template, garmentBaseCost, previewGarment, previewLocations]
   );
 
   const columns = useMemo(() => buildColumns(maxColors), [maxColors]);
@@ -207,6 +210,7 @@ export function PowerModeGrid({
     getCellValue,
     onCellEdit,
     onBulkEdit,
+    externalManualEdit: { isOn: isManualEditOn, onToggle: onToggleManualEdit },
   });
 
   const { applyBulkValue } = ss;
@@ -218,6 +222,7 @@ export function PowerModeGrid({
     setBulkValue("");
   }, [bulkValue, applyBulkValue]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table returns unmemoizable functions; known React Compiler limitation
   const table = useReactTable({
     data: matrixData,
     columns,
@@ -226,202 +231,127 @@ export function PowerModeGrid({
 
   return (
     <SpreadsheetCtx.Provider value={ss}>
-      <Card>
-        <CardHeader className="pb-3">
-          {/* Row 1: Title + legend (inline) + controls */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            {/* Title */}
-            <div className="flex items-center gap-2">
-              <Grid3x3 className="size-4 text-action" />
-              <CardTitle className="text-base">Full Pricing Matrix</CardTitle>
+      <div className="space-y-2">
+        {/* Bulk edit toolbar — visible only when cells are selected */}
+        {ss.selectedCells.size > 1 && ss.isManualEditOn && (
+          <div className="flex items-center gap-2 rounded-md border border-border bg-elevated px-2 py-1">
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {ss.selectedCells.size} cells
+            </span>
+            <div className="relative w-20">
+              <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                $
+              </span>
+              <Input
+                inputMode="decimal"
+                pattern="[0-9.]*"
+                placeholder="0.00"
+                value={bulkValue}
+                onChange={(e) => setBulkValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleBulkApply();
+                  if (e.key === "Escape") {
+                    setBulkValue("");
+                    ss.wrapperRef.current?.focus();
+                  }
+                }}
+                className="h-6 pl-4 pr-1 text-xs"
+              />
             </div>
-
-            {/* Legend — inline with title, tooltips explain each status */}
-            <MarginLegend variant="tooltip" />
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Bulk edit controls — visible when cells selected */}
-            {ss.selectedCells.size > 1 && ss.isManualEditOn && (
-              <div className="flex items-center gap-2 rounded-md border border-border bg-elevated px-2 py-1">
-                <span className="text-xs tabular-nums text-muted-foreground">
-                  {ss.selectedCells.size} cells
-                </span>
-                <div className="relative w-20">
-                  <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                    $
-                  </span>
-                  <Input
-                    inputMode="decimal"
-                    pattern="[0-9.]*"
-                    placeholder="0.00"
-                    value={bulkValue}
-                    onChange={(e) => setBulkValue(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleBulkApply();
-                      if (e.key === "Escape") {
-                        setBulkValue("");
-                        ss.wrapperRef.current?.focus();
-                      }
-                    }}
-                    className="h-6 pl-4 pr-1 text-xs"
-                  />
-                </div>
-                <Button size="xs" className="h-6 text-xs" onClick={handleBulkApply} disabled={!bulkValue}>
-                  Set
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  className="size-5"
-                  onClick={ss.clearSelection}
-                  aria-label="Clear selection"
-                >
-                  <X className="size-3" />
-                </Button>
-              </div>
-            )}
-
-            {/* Settings popover */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
-                  <Settings2 className="size-3.5" />
-                  {maxColors} Colors
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-48 p-3" align="end">
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-foreground">Max Colors</p>
-                  <p className="text-xs text-muted-foreground">
-                    Number of color columns in the matrix (1–12).
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon-xs"
-                      className="size-6"
-                      disabled={maxColors <= 1}
-                      onClick={() => onMaxColorsChange(maxColors - 1)}
-                    >
-                      <Minus className="size-3" />
-                    </Button>
-                    <span className="w-8 text-center text-sm font-medium tabular-nums">
-                      {maxColors}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="icon-xs"
-                      className="size-6"
-                      disabled={maxColors >= 12}
-                      onClick={() => onMaxColorsChange(maxColors + 1)}
-                    >
-                      <Plus className="size-3" />
-                    </Button>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            {/* Manual Edit toggle */}
+            <Button size="xs" className="h-6 text-xs" onClick={handleBulkApply} disabled={!bulkValue}>
+              Set
+            </Button>
             <Button
-              variant={ss.isManualEditOn ? "default" : "outline"}
-              size="sm"
-              className="h-7 gap-1.5 text-xs"
-              onClick={ss.toggleManualEdit}
+              variant="ghost"
+              size="icon-xs"
+              className="size-5"
+              onClick={ss.clearSelection}
+              aria-label="Clear selection"
             >
-              {ss.isManualEditOn ? (
-                <ToggleRight className="size-3.5" />
-              ) : (
-                <ToggleLeft className="size-3.5" />
-              )}
-              Manual Edit
+              <X className="size-3" />
             </Button>
           </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          {/* Grid wrapper — captures keyboard events for the entire spreadsheet */}
-          <div
-            ref={ss.wrapperRef}
-            role="grid"
-            aria-label="Pricing matrix spreadsheet"
-            className={cn(
-              "overflow-x-auto outline-none",
-              ss.isDragging && "cursor-crosshair"
-            )}
-            tabIndex={ss.isManualEditOn ? 0 : undefined}
-            onKeyDown={ss.handleTableKeyDown}
-          >
-            <table className="w-full border-collapse text-xs">
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header, headerIdx) => {
-                      // colIdx for color columns: header 0 is "Qty Tier", 1..N are colors
-                      const colIdx = headerIdx - 1;
-                      const isColorHeader = header.id.startsWith("color-");
-                      return (
-                        <th
-                          key={header.id}
-                          className={cn(
-                            "border border-border bg-surface px-3 py-2 font-medium text-muted-foreground",
-                            header.id === "tierLabel"
-                              ? "text-left"
-                              : "text-center",
-                            isColorHeader && ss.isManualEditOn && "cursor-pointer select-none hover:bg-action/5 hover:text-action transition-colors"
-                          )}
-                          onClick={() => {
-                            if (!isColorHeader || !ss.isManualEditOn) return;
-                            ss.selectColumn(colIdx);
-                          }}
-                        >
-                          <div
-                            className={cn(
-                              "flex items-center gap-1",
-                              header.id !== "tierLabel" && "justify-center"
-                            )}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </div>
-                        </th>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row, rowIndex) => (
-                  <tr key={row.id} className={cn(
-                    "hover:bg-action/[0.03] transition-colors",
-                    rowIndex % 2 === 1 && "bg-surface/30"
-                  )}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        key={cell.id}
+        )}
+
+        {/* Grid wrapper — captures keyboard events for the entire spreadsheet */}
+        <div
+          ref={ss.wrapperRef}
+          role="grid"
+          aria-label="Pricing matrix spreadsheet"
+          className={cn(
+            "overflow-x-auto outline-none",
+            ss.isDragging && "cursor-crosshair"
+          )}
+          tabIndex={ss.isManualEditOn ? 0 : undefined}
+          onKeyDown={ss.handleTableKeyDown}
+        >
+          <table className="w-full border-collapse text-xs">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header, headerIdx) => {
+                    const colIdx = headerIdx - 1;
+                    const isColorHeader = header.id.startsWith("color-");
+                    return (
+                      <th
+                        key={header.id}
                         className={cn(
-                          "border border-border px-3 py-2 transition-colors",
-                          cell.column.id === "tierLabel"
-                            ? "bg-surface"
-                            : "text-center"
+                          "border border-border bg-surface px-3 py-2 font-medium text-muted-foreground",
+                          header.id === "tierLabel"
+                            ? "text-left"
+                            : "text-center",
+                          isColorHeader && ss.isManualEditOn && "cursor-pointer select-none hover:bg-action/5 hover:text-action transition-colors"
                         )}
+                        onClick={() => {
+                          if (!isColorHeader || !ss.isManualEditOn) return;
+                          ss.selectColumn(colIdx);
+                        }}
                       >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                        <div
+                          className={cn(
+                            "flex items-center gap-1",
+                            header.id !== "tierLabel" && "justify-center"
+                          )}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row, rowIndex) => (
+                <tr key={row.id} className={cn(
+                  "hover:bg-action/[0.03] transition-colors",
+                  rowIndex % 2 === 1 && "bg-surface/30"
+                )}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className={cn(
+                        "border border-border px-3 py-2 transition-colors",
+                        cell.column.id === "tierLabel"
+                          ? "bg-surface"
+                          : "text-center"
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </SpreadsheetCtx.Provider>
   );
 }

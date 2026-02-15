@@ -28,10 +28,10 @@ function findJob(jobId: string) {
 export default function ScreensPage() {
   return (
     <>
-      <Topbar breadcrumbs={[{ label: "Screen Room" }]} />
+      <Topbar breadcrumbs={[{ label: "Screens" }]} />
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Screen Room</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Screens</h1>
           <p className="text-sm text-muted-foreground">
             Track screens, mesh counts, and burn status
           </p>

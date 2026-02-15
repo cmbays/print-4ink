@@ -38,7 +38,7 @@ export const PRIMARY_NAV: NavItem[] = [
 /** Secondary navigation — shown in Sidebar + MobileDrawer */
 export const SECONDARY_NAV: NavItem[] = [
   { label: "Invoices", href: "/invoices", icon: Receipt, iconColor: "text-success" },
-  { label: "Screen Room", href: "/screens", icon: Printer, iconColor: "text-action" },
+  { label: "Screens", href: "/screens", icon: Printer, iconColor: "text-action" },
   { label: "Garments", href: "/garments", icon: Shirt },
   { label: "Pricing Settings", href: "/settings/pricing", icon: Settings },
 ];
