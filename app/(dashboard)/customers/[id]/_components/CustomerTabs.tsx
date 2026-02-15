@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { ActivityTimeline } from "./ActivityTimeline";
 import { CustomerQuotesTable } from "./CustomerQuotesTable";
 import { CustomerJobsTable } from "./CustomerJobsTable";
@@ -29,6 +37,24 @@ interface CustomerTabsProps {
   notes: Note[];
 }
 
+// Primary tabs shown directly on mobile
+const PRIMARY_TABS = ["activity", "quotes", "jobs", "invoices", "notes"] as const;
+
+// Secondary tabs behind "More" dropdown on mobile
+const SECONDARY_TABS = ["artwork", "screens", "contacts", "details"] as const;
+
+const TAB_LABELS: Record<string, string> = {
+  activity: "Activity",
+  quotes: "Quotes",
+  jobs: "Jobs",
+  invoices: "Invoices",
+  notes: "Notes",
+  artwork: "Artwork",
+  screens: "Screens",
+  contacts: "Contacts",
+  details: "Details",
+};
+
 export function CustomerTabs({
   customer,
   customers,
@@ -42,36 +68,90 @@ export function CustomerTabs({
   const [activeTab, setActiveTab] = useState(defaultTab);
   const screens = deriveScreensFromJobs(customer.id);
 
+  const isSecondaryActive = (SECONDARY_TABS as readonly string[]).includes(activeTab);
+
+  function getTabCount(tab: string): number | null {
+    switch (tab) {
+      case "quotes": return quotes.length || null;
+      case "jobs": return jobs.length || null;
+      case "invoices": return invoices.length || null;
+      case "artwork": return artworks.length || null;
+      case "screens": return screens.length || null;
+      case "contacts": return customer.contacts.length || null;
+      case "notes": return notes.length || null;
+      default: return null;
+    }
+  }
+
+  function tabLabel(tab: string): string {
+    const count = getTabCount(tab);
+    return count ? `${TAB_LABELS[tab]} (${count})` : TAB_LABELS[tab];
+  }
+
+  const triggerClass = "min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3";
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <div className="overflow-x-auto scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+      {/* Desktop: all 9 tabs visible */}
+      <div className="hidden md:block overflow-x-auto scrollbar-none">
         <TabsList
           variant="line"
           className="w-full justify-start gap-0 border-b border-border pb-0"
         >
-          <TabsTrigger value="activity" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">Activity</TabsTrigger>
-          <TabsTrigger value="quotes" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Quotes{quotes.length > 0 && ` (${quotes.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="jobs" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Jobs{jobs.length > 0 && ` (${jobs.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="invoices" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Invoices{invoices.length > 0 && ` (${invoices.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="artwork" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Artwork{artworks.length > 0 && ` (${artworks.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="screens" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Screens{screens.length > 0 && ` (${screens.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="contacts" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Contacts{customer.contacts.length > 0 && ` (${customer.contacts.length})`}
-          </TabsTrigger>
-          <TabsTrigger value="details" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">Details</TabsTrigger>
-          <TabsTrigger value="notes" className="min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3">
-            Notes{notes.length > 0 && ` (${notes.length})`}
-          </TabsTrigger>
+          <TabsTrigger value="activity" className={triggerClass}>Activity</TabsTrigger>
+          <TabsTrigger value="quotes" className={triggerClass}>{tabLabel("quotes")}</TabsTrigger>
+          <TabsTrigger value="jobs" className={triggerClass}>{tabLabel("jobs")}</TabsTrigger>
+          <TabsTrigger value="invoices" className={triggerClass}>{tabLabel("invoices")}</TabsTrigger>
+          <TabsTrigger value="artwork" className={triggerClass}>{tabLabel("artwork")}</TabsTrigger>
+          <TabsTrigger value="screens" className={triggerClass}>{tabLabel("screens")}</TabsTrigger>
+          <TabsTrigger value="contacts" className={triggerClass}>{tabLabel("contacts")}</TabsTrigger>
+          <TabsTrigger value="details" className={triggerClass}>Details</TabsTrigger>
+          <TabsTrigger value="notes" className={triggerClass}>{tabLabel("notes")}</TabsTrigger>
+        </TabsList>
+      </div>
+
+      {/* Mobile: 5 primary tabs + "More" dropdown */}
+      <div className="md:hidden overflow-x-auto scrollbar-none -mx-4 px-4">
+        <TabsList
+          variant="line"
+          className="w-full justify-start gap-0 border-b border-border pb-0"
+        >
+          {PRIMARY_TABS.map((tab) => (
+            <TabsTrigger key={tab} value={tab} className={triggerClass}>
+              {tabLabel(tab)}
+            </TabsTrigger>
+          ))}
+
+          {/* "More" dropdown for secondary tabs */}
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className={cn(
+                "inline-flex items-center gap-0.5 whitespace-nowrap border-b-2 px-2 text-xs transition-colors",
+                "min-h-(--mobile-touch-target)",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                isSecondaryActive
+                  ? "border-action text-action font-medium"
+                  : "border-transparent text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {isSecondaryActive ? TAB_LABELS[activeTab] : "More"}
+              <ChevronDown className="size-3" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {SECONDARY_TABS.map((tab) => (
+                <DropdownMenuItem
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    "min-h-(--mobile-touch-target)",
+                    activeTab === tab && "text-action font-medium",
+                  )}
+                >
+                  {tabLabel(tab)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </TabsList>
       </div>
 
