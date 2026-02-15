@@ -727,21 +727,21 @@ _work_list() {
 }
 
 # ── Clean: Remove Worktree + Zellij + Branch + Registry ────────────────────
+# Best-effort cleanup: each resource is cleaned independently so partial
+# state (e.g., branch gone but Zellij session lingers) is handled gracefully.
 _work_clean() {
     local TOPIC="$1"
     [[ -z "$TOPIC" ]] && { echo "Error: topic required. Usage: work clean <topic>"; return 1; }
 
-    # Find the branch matching this topic
+    # ── Discovery phase: find what exists ──
+    local BRANCH="" WORKTREE_DIR="" HAS_ZELLIJ=false HAS_TMUX=false HAS_REGISTRY=false
+    local FOUND_ANYTHING=false
+
+    # Try to find the branch matching this topic
     local MATCHES
     MATCHES=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *+')
     local MATCH_COUNT
     MATCH_COUNT=$(echo "$MATCHES" | grep -c . 2>/dev/null || echo 0)
-
-    if [[ -z "$MATCHES" || "$MATCH_COUNT" -eq 0 ]]; then
-        echo "Error: No branch found matching 'session/*-${TOPIC}'."
-        echo "  Run 'work list' to see active worktrees."
-        return 1
-    fi
 
     if [[ "$MATCH_COUNT" -gt 1 ]]; then
         echo "Error: Multiple branches match '*-${TOPIC}':"
@@ -750,62 +750,115 @@ _work_clean() {
         return 1
     fi
 
-    local BRANCH="$MATCHES"
-
-    local WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH//\//-}"
-
-    echo "Will clean up:"
-    echo "  Branch:    $BRANCH"
-    echo "  Worktree:  $WORKTREE_DIR"
-    if type _registry_exists &>/dev/null && _registry_exists "$TOPIC"; then
-        echo "  Registry:  session '$TOPIC'"
-    fi
-    echo ""
-    echo -n "Proceed? [y/N] "
-    read -r CONFIRM
-    [[ "$CONFIRM" != [yY] ]] && { echo "Cancelled."; return 0; }
-
-    # Close Zellij tab if running
-    if [[ -n "$ZELLIJ" ]]; then
-        # Try to close the tab by name (no direct API — inform user)
-        echo "  Note: Close Zellij tab '$TOPIC' manually if still open."
-    fi
-
-    # Try closing Zellij session if one was created
-    zellij kill-session "$TOPIC" 2>/dev/null && echo "  Closed Zellij session '$TOPIC'"
-
-    # Also try tmux cleanup (migration period)
-    if tmux has-session -t "$TOPIC" 2>/dev/null; then
-        tmux kill-session -t "focus-${TOPIC}" 2>/dev/null
-        tmux kill-session -t "$TOPIC" 2>/dev/null
-        echo "  Closed tmux session '$TOPIC'"
-    elif tmux info &>/dev/null; then
-        local sess
-        for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
-            if tmux list-windows -t "$sess" -F '#W' 2>/dev/null | grep -q "^${TOPIC}$"; then
-                tmux kill-window -t "${sess}:${TOPIC}" 2>/dev/null
-                echo "  Closed tmux window '$TOPIC' in session '$sess'"
+    if [[ "$MATCH_COUNT" -eq 1 ]]; then
+        BRANCH="$MATCHES"
+        WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH//\//-}"
+        FOUND_ANYTHING=true
+    else
+        # No branch — try to find worktree dir by pattern (covers already-deleted branches)
+        local candidate
+        for candidate in "${PRINT4INK_WORKTREES}"/session-*-"${TOPIC}"; do
+            if [[ -d "$candidate" ]]; then
+                WORKTREE_DIR="$candidate"
+                FOUND_ANYTHING=true
                 break
             fi
         done
     fi
 
-    # Archive in registry
-    if type _registry_archive &>/dev/null && _registry_exists "$TOPIC"; then
+    # Check Zellij session
+    if zellij list-sessions 2>/dev/null | grep -q "^${TOPIC} "; then
+        HAS_ZELLIJ=true
+        FOUND_ANYTHING=true
+    fi
+
+    # Check tmux session/window
+    if tmux has-session -t "$TOPIC" 2>/dev/null; then
+        HAS_TMUX=true
+        FOUND_ANYTHING=true
+    elif tmux info &>/dev/null; then
+        local sess
+        for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
+            if tmux list-windows -t "$sess" -F '#W' 2>/dev/null | grep -q "^${TOPIC}$"; then
+                HAS_TMUX=true
+                FOUND_ANYTHING=true
+                break
+            fi
+        done
+    fi
+
+    # Check registry
+    if type _registry_exists &>/dev/null && _registry_exists "$TOPIC"; then
+        HAS_REGISTRY=true
+        FOUND_ANYTHING=true
+    fi
+
+    # Nothing to clean?
+    if [[ "$FOUND_ANYTHING" == false ]]; then
+        echo "Nothing found for topic '$TOPIC'."
+        echo "  No matching branch, worktree, Zellij session, tmux session, or registry entry."
+        echo "  Run 'work list' to see active sessions."
+        return 1
+    fi
+
+    # ── Preview phase ──
+    echo "Will clean up:"
+    [[ -n "$BRANCH" ]]       && echo "  Branch:    $BRANCH"
+    [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]] && echo "  Worktree:  $WORKTREE_DIR"
+    [[ "$HAS_ZELLIJ" == true ]]   && echo "  Zellij:    session '$TOPIC'"
+    [[ "$HAS_TMUX" == true ]]     && echo "  Tmux:      session/window '$TOPIC'"
+    [[ "$HAS_REGISTRY" == true ]] && echo "  Registry:  session '$TOPIC'"
+    echo ""
+    echo -n "Proceed? [y/N] "
+    read -r CONFIRM
+    [[ "$CONFIRM" != [yY] ]] && { echo "Cancelled."; return 0; }
+
+    # ── Cleanup phase: each step independent ──
+
+    # 1. Zellij session
+    if [[ "$HAS_ZELLIJ" == true ]]; then
+        # Note about closing tab if running inside Zellij
+        [[ -n "$ZELLIJ" ]] && echo "  Note: Close Zellij tab '$TOPIC' manually if still open."
+        zellij delete-session "$TOPIC" --force 2>/dev/null && echo "  Deleted Zellij session '$TOPIC'"
+    fi
+
+    # 2. Tmux session/window (migration period)
+    if [[ "$HAS_TMUX" == true ]]; then
+        if tmux has-session -t "$TOPIC" 2>/dev/null; then
+            tmux kill-session -t "focus-${TOPIC}" 2>/dev/null
+            tmux kill-session -t "$TOPIC" 2>/dev/null
+            echo "  Closed tmux session '$TOPIC'"
+        elif tmux info &>/dev/null; then
+            local sess
+            for sess in $(tmux list-sessions -F '#S' 2>/dev/null); do
+                if tmux list-windows -t "$sess" -F '#W' 2>/dev/null | grep -q "^${TOPIC}$"; then
+                    tmux kill-window -t "${sess}:${TOPIC}" 2>/dev/null
+                    echo "  Closed tmux window '$TOPIC' in session '$sess'"
+                    break
+                fi
+            done
+        fi
+    fi
+
+    # 3. Registry
+    if [[ "$HAS_REGISTRY" == true ]]; then
         _registry_archive "$TOPIC"
         echo "  Archived session '$TOPIC' in registry"
     fi
 
-    # Remove worktree
-    if [[ -d "$WORKTREE_DIR" ]]; then
+    # 4. Worktree
+    if [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]]; then
         git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>/dev/null
         echo "  Removed worktree: $WORKTREE_DIR"
     fi
 
-    # Delete branch
-    git -C "$PRINT4INK_REPO" branch -d "$BRANCH" 2>/dev/null || \
-        git -C "$PRINT4INK_REPO" branch -D "$BRANCH" 2>/dev/null
-    echo "  Deleted branch: $BRANCH"
+    # 5. Branch
+    if [[ -n "$BRANCH" ]]; then
+        if git -C "$PRINT4INK_REPO" branch -d "$BRANCH" 2>/dev/null || \
+           git -C "$PRINT4INK_REPO" branch -D "$BRANCH" 2>/dev/null; then
+            echo "  Deleted branch: $BRANCH"
+        fi
+    fi
 
     echo "Done."
 }
