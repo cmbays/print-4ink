@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Skill templates are reference scaffolds, not production code
     ".claude/skills/**/templates/**",
+    // Knowledge base build artifacts (Astro)
+    "knowledge-base/dist/**",
+    "knowledge-base/.astro/**",
   ]),
 ]);
 

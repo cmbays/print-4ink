@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Search, LayoutGrid, List, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -64,14 +64,11 @@ export function GarmentCatalogToolbar({
   const view = searchParams.get("view") ?? "grid";
 
   // --- Price toggle (localStorage) ---
-  const [showPrices, setShowPrices] = useState(true);
-
-  useEffect(() => {
+  const [showPrices, setShowPrices] = useState(() => {
+    if (typeof window === "undefined") return true;
     const stored = localStorage.getItem(PRICE_STORAGE_KEY);
-    if (stored !== null) {
-      setShowPrices(stored === "true");
-    }
-  }, []);
+    return stored !== null ? stored === "true" : true;
+  });
 
   const handlePriceToggle = useCallback((checked: boolean) => {
     setShowPrices(checked);
