@@ -42,6 +42,7 @@ import {
   convertQuoteToInvoiceLineItems,
 } from "@/lib/helpers/invoice-utils";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
 import type { PaymentTerms, PricingTier } from "@/lib/schemas/customer";
 import type { Invoice } from "@/lib/schemas/invoice";
 
@@ -245,6 +246,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
 
   function handleSaveDraft() {
     if (!validate()) {
+      scrollToFirstError();
       toast.error("Please fix the errors above", {
         description: "Some required fields are missing or invalid.",
       });
@@ -260,6 +262,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
 
   function handleReviewAndSend() {
     if (!validate()) {
+      scrollToFirstError();
       toast.error("Please fix the errors above", {
         description: "Some required fields are missing or invalid.",
       });
