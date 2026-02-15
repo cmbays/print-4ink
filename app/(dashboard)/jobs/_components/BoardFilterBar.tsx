@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X, LayoutGrid, Briefcase, FileText, Printer, Film, Scissors } from "lucide-react";
+import { Filter, X, LayoutGrid, Printer, Film, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import {
   SERVICE_TYPE_LABELS,
   SERVICE_TYPE_COLORS,
 } from "@/lib/constants";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { z } from "zod";
 import { riskLevelEnum } from "@/lib/schemas/job";
 import { serviceTypeEnum } from "@/lib/schemas/quote";
@@ -158,7 +159,7 @@ export function BoardFilterBar() {
           aria-pressed={cardType === "jobs"}
           onClick={() => setParam("cardType", "jobs")}
         >
-          <Briefcase className="size-3" />
+          <ENTITY_STYLES.job.icon className={cn("size-3", cardType === "jobs" && ENTITY_STYLES.job.color)} />
           Jobs
         </Button>
         <Button
@@ -173,7 +174,7 @@ export function BoardFilterBar() {
           aria-pressed={cardType === "quotes"}
           onClick={() => setParam("cardType", "quotes")}
         >
-          <FileText className="size-3" />
+          <ENTITY_STYLES.quote.icon className={cn("size-3", cardType === "quotes" && ENTITY_STYLES.quote.color)} />
           Quotes
         </Button>
       </div>
@@ -192,24 +193,6 @@ export function BoardFilterBar() {
             {activeCount}
           </Badge>
         )}
-      </div>
-
-      {/* Today toggle */}
-      <div className="flex items-center gap-1.5">
-        <Switch
-          id="today-filter"
-          size="sm"
-          checked={!!filters.today}
-          onCheckedChange={(checked) =>
-            setParam("today", checked ? "true" : null)
-          }
-        />
-        <Label
-          htmlFor="today-filter"
-          className="text-xs text-muted-foreground cursor-pointer"
-        >
-          Today
-        </Label>
       </div>
 
       {/* Service Type */}
@@ -288,6 +271,24 @@ export function BoardFilterBar() {
           ))}
         </SelectContent>
       </Select>
+
+      {/* Today toggle */}
+      <div className="flex items-center gap-1.5">
+        <Switch
+          id="today-filter"
+          size="sm"
+          checked={!!filters.today}
+          onCheckedChange={(checked) =>
+            setParam("today", checked ? "true" : null)
+          }
+        />
+        <Label
+          htmlFor="today-filter"
+          className="text-xs text-muted-foreground cursor-pointer"
+        >
+          Today
+        </Label>
+      </div>
 
       {/* Clear all */}
       {activeCount > 0 && (

@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  Briefcase,
   Eye,
   MoreHorizontal,
   Package,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { z } from "zod";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -708,7 +708,7 @@ export function JobsDataTable({
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <Briefcase
+          <ENTITY_STYLES.job.icon
             className="size-12 text-muted-foreground/50"
             aria-hidden="true"
           />

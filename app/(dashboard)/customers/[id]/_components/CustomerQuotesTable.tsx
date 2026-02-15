@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Copy } from "lucide-react";
+import { Copy } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
@@ -25,7 +26,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-        <FileText className="size-10 mb-3" aria-hidden="true" />
+        <ENTITY_STYLES.quote.icon className="size-10 mb-3" aria-hidden="true" />
         <p className="text-sm font-medium">No quotes yet</p>
         <p className="text-xs mt-1">Create one to get started</p>
       </div>

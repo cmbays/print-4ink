@@ -5,13 +5,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Archive,
-  ClipboardList,
   Package,
   Plus,
   Search,
   SlidersHorizontal,
   X,
 } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { z } from "zod";
 
@@ -534,7 +534,7 @@ export function QuotesDataTable() {
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ClipboardList className="size-6 text-muted-foreground/50" aria-hidden="true" />
+          <ENTITY_STYLES.quote.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters

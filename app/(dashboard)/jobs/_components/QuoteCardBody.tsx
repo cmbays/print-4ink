@@ -1,4 +1,5 @@
-import { FileText, Package, Palette, MapPin, Calendar } from "lucide-react";
+import { Package, Palette, MapPin, Calendar } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
@@ -74,7 +75,7 @@ export function QuoteCardBody({ card }: QuoteCardBodyProps) {
               variant="icon-only"
             />
           ) : (
-            <FileText className="size-4 text-muted-foreground" />
+            <ENTITY_STYLES.quote.icon className="size-4 text-muted-foreground" />
           )}
         </div>
       </div>
