@@ -32,7 +32,7 @@ as a 4-deliverable suite:
 
 ## Pipeline
 
-```
+```text
 Interview → Shaping (R × S) → Breadboarding → BB Reflection → Impl Planning
 ```
 

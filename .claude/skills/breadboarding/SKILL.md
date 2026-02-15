@@ -23,7 +23,7 @@ for Screen Print Pro's pipeline.
 
 Breadboarding follows shaping in the pipeline:
 
-```
+```text
 Interview → Shaping (R × S) → **Breadboarding** → BB Reflection → Impl Planning
 ```
 
@@ -188,7 +188,7 @@ When a control changes state, ask: did *everything* change, or just a subset whi
 
 When a mode (like "edit mode") transforms the entire screen — different buttons, different affordances everywhere — model as separate Places:
 
-```
+```text
 PLACE: CMS Page (Read Mode)
 PLACE: CMS Page (Edit Mode)
 ```
@@ -266,7 +266,7 @@ In affordance tables, list the reference as a UI affordance:
 | _letter-browser | Widget reference | — | → P3 |
 
 Style place references with a dashed border to distinguish them:
-```
+```text
 classDef placeRef fill:#ffb6c1,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5
 class U_LB placeRef
 ```
@@ -277,7 +277,7 @@ When a component has distinct modes (read vs edit, viewing vs editing, collapsed
 
 If one mode includes everything from another plus more, show this with a **place reference** inside the extended place:
 
-```
+```text
 P3: letter-browser (Read)    — base state
 P4: letter-browser (Edit)    — contains _letter-browser (Read) + new affordances
 ```
@@ -317,7 +317,7 @@ A **subplace** is a defined subset of a Place — a contained area that groups r
 
 **Notation:** Use hierarchical IDs — `P2.1`, `P2.2`, etc. for subplaces of P2.
 
-```
+```text
 | # | Place | Description |
 |---|-------|-------------|
 | P2 | Dashboard | Main dashboard page |
@@ -327,7 +327,7 @@ A **subplace** is a defined subset of a Place — a contained area that groups r
 
 In affordance tables, use the subplace ID to show containment:
 
-```
+```text
 | U3 | P2.1 | sales-widget | "Refresh" button | click | → N4 | — |
 | U7 | P2.2 | activity-feed | activity list | render | — | — |
 ```
@@ -349,7 +349,7 @@ end
 
 **Placeholder for out-of-scope content:** When detailing one subplace, add a placeholder sibling to show there's more on the page:
 
-```
+```text
 otherContent[["... other page content ..."]]
 ```
 
@@ -375,7 +375,7 @@ The Wires Out column answers: "What does this affordance trigger?"
 
 When an affordance causes navigation (user "goes" somewhere), wire to the **Place itself**, not to an affordance inside:
 
-```
+```text
 N1 Wires Out: → P2          (navigate to Edit Mode)
 N1 Wires Out: → U3          (wiring to affordance inside P2)
 ```
@@ -383,7 +383,7 @@ N1 Wires Out: → U3          (wiring to affordance inside P2)
 This makes navigation explicit in the tables. The Place is the destination; specific affordances inside become available once you arrive.
 
 In Mermaid, this becomes:
-```
+```text
 N1 --> P2
 ```
 
@@ -603,7 +603,7 @@ If it's just the "how" — skip it and wire directly to the destination or outco
 
 **Examples:**
 
-```
+```text
 N8 --> N22 --> P3     (N22 is modalService.open — just mechanism)
 N8 --> P3             (handler navigates to modal)
 
@@ -636,7 +636,7 @@ These are orthogonal. You can have navigation without data changes, and data cha
 
 A UI affordance that displays data must have something feeding it — either a data store (S) or a code affordance (N) that returns data.
 
-```
+```text
 U6: letter list (no incoming wire — where does the data come from?)
 S1 -.-> U6 (store feeds the display)
 N4 -.-> U6 (query result feeds the display)
@@ -659,7 +659,7 @@ If a Code affordance has no Wires Out AND no Returns To, something is wrong:
 
 An N that appears to wire nowhere is suspicious. If it has **side effects outside the system boundary** (browser URL, localStorage, external API, analytics), add a **store node** to represent that external state:
 
-```
+```text
 N41: updateUrl()           (wires to... nothing?)
 N41: updateUrl() → S15     (wires to Browser URL store)
 ```
@@ -807,7 +807,7 @@ Look for sections where tracing the wiring reveals a "pinch point" — many affo
 
 Example: A `dynamic-form` component receives a form definition, renders many fields (U7a-U7k), validates on change (N26), and emits a single `valid$` signal. In the main diagram, this becomes:
 
-```
+```text
 N24 -->|formDefinition| dynamicForm
 dynamicForm -.->|valid$| U8
 ```
@@ -816,13 +816,13 @@ dynamicForm -.->|valid$| U8
 
 1. **In the main diagram**, replace the subsystem with a single stadium-shaped node:
 
-```
+```text
 dynamicForm[["CHUNK: dynamic-form"]]
 ```
 
 2. **Wire to/from the chunk** using the boundary signals:
 
-```
+```text
 N24 -->|formDefinition| dynamicForm
 dynamicForm -.->|valid$| U8
 ```
@@ -853,7 +853,7 @@ flowchart TB
 
 4. **Style chunks distinctly** in the main diagram:
 
-```
+```text
 classDef chunk fill:#b3e5fc,stroke:#0288d1,color:#000,stroke-width:2px
 class dynamicForm chunk
 ```
@@ -909,7 +909,7 @@ flowchart TB
 
 When a data flow has intermediate steps that aren't relevant to the breadboard's scope, abbreviate by wiring directly from source to destination with a `...` label:
 
-```
+```text
 S4 -.->|...| U6
 ```
 
@@ -938,7 +938,7 @@ This says "data flows from S4 to U6, with intermediate steps omitted." Use this 
 | Chunks | Light blue | `#b3e5fc` |
 | Place references | Pink, dashed border | `#ffb6c1` |
 
-```
+```text
 classDef ui fill:#ffb6c1,stroke:#d87093,color:#000
 classDef nonui fill:#d3d3d3,stroke:#808080,color:#000
 classDef store fill:#e6e6fa,stroke:#9370db,color:#000

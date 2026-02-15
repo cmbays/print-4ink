@@ -21,7 +21,7 @@ Find design smells in breadboards and fix them. Adapted from
 
 Reflection follows breadboarding as a QA gate:
 
-```
+```text
 Shaping -> Breadboarding -> **BB Reflection** -> Impl Planning
 ```
 

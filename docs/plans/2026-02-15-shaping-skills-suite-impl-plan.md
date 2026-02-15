@@ -93,7 +93,7 @@ Iterative R × S methodology for defining problems and exploring solutions. Adap
 
 Shaping is one step in the Shaping phase of the pipeline:
 
-```
+```text
 Interview → **Shaping (R×S)** → Breadboarding → BB Reflection → Impl Planning
 ```
 
@@ -147,7 +147,7 @@ All decisions logged in the Decision Points Log table in the shaping doc.
 
    Shaping moves through one phase, then hands off:
 
-   ```
+   ```text
    Shaping → [handoff] → Breadboarding (with slicing)
    ```
 
@@ -495,7 +495,7 @@ for Screen Print Pro's pipeline.
 
 Breadboarding follows shaping in the pipeline:
 
-```
+```text
 Interview → Shaping (R×S) → **Breadboarding** → BB Reflection → Impl Planning
 ```
 
@@ -728,7 +728,7 @@ Find design smells in breadboards and fix them. Adapted from
 
 Reflection follows breadboarding as a QA gate:
 
-```
+```text
 Shaping → Breadboarding → **BB Reflection** → Impl Planning
 ```
 

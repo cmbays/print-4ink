@@ -21,7 +21,7 @@ Iterative R × S methodology for defining problems and exploring solutions. Adap
 
 Shaping is one step in the Shaping phase of the pipeline:
 
-```
+```text
 Interview → **Shaping (R × S)** → Breadboarding → BB Reflection → Impl Planning
 ```
 
@@ -172,7 +172,7 @@ Keep notation throughout as an audit trail. When finalizing, compose new options
 
 Shaping moves through one phase, then hands off:
 
-```
+```text
 Shaping → [handoff] → Breadboarding (with slicing)
 ```
 
@@ -487,7 +487,7 @@ Use the `/breadboarding` skill to produce:
 
 Shape letters (A, B, C...) are **mutually exclusive alternatives** — you pick one. Detailing is not an alternative; it's a deeper breakdown of the selected shape. Using a new letter would incorrectly suggest it's a sibling option.
 
-```
+```text
 A, B, C = alternatives (pick one)
 Detail B = expansion of B (not a choice)
 ```
@@ -504,7 +504,7 @@ Shaping produces two documents, with optional spike documents:
 
 ### Document Lifecycle
 
-```
+```text
 Frame (problem/outcome)
     |
     v

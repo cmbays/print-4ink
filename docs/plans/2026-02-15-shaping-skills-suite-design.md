@@ -60,7 +60,7 @@ Creation and analysis are different cognitive modes. The breadboarding skill gen
 
 **Location:** `.claude/skills/shaping/`
 
-```
+```text
 .claude/skills/shaping/
   SKILL.md
   templates/
@@ -165,7 +165,7 @@ shaping: true
 
 **Location:** `.claude/skills/breadboarding/` (replaces existing)
 
-```
+```text
 .claude/skills/breadboarding/
   SKILL.md                          # Upstream 61KB as base + our additions
   templates/
@@ -191,7 +191,7 @@ shaping: true
 
 **Output format** (adds Component column we were missing):
 
-```
+```text
 | # | Place | Component | Affordance | Control | Wires Out | Returns To |
 ```
 
@@ -233,7 +233,7 @@ shaping: true
 
 **Location:** `.claude/skills/breadboard-reflection/`
 
-```
+```text
 .claude/skills/breadboard-reflection/
   SKILL.md
 ```
@@ -327,7 +327,7 @@ All decisions logged with reasoning for KB audit trail (#197).
 
 ## Separation of Concerns
 
-```
+```text
 Interview (human) → Shaping (R×S) → Breadboarding (affordances + slicing) → BB Reflection (QA) → Impl Planning (execution)
 ```
 
