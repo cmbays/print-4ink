@@ -7,6 +7,8 @@ phase: 1
 created: YYYY-MM-DD
 last-verified: YYYY-MM-DD
 depends-on:
+  - docs/shaping/{topic}/shaping.md
+  - docs/shaping/{topic}/frame.md
   - docs/strategy/{vertical}-scope-definition.md
   - docs/strategy/screen-print-pro-journey-{vertical}.md
 ---
@@ -14,7 +16,7 @@ depends-on:
 # {Vertical} — Breadboard
 
 **Purpose**: Map all UI affordances, code affordances, and wiring for the {Vertical} vertical before building
-**Input**: Scope definition, improved journey design, APP_FLOW
+**Input**: Shaping doc (selected shape + parts), scope definition, improved journey design, APP_FLOW
 **Status**: {Draft | Complete}
 
 ---
@@ -25,7 +27,9 @@ depends-on:
 |----|-------|------|-------------|-------------|
 | P1 | | Page | | |
 | P2 | | Page | | |
-| P2.1 | | Modal | | |
+| P2.1 | | Subplace | | |
+| P3 | | Modal | | |
+| P4 | Backend | API/DB | | Database and resolvers |
 
 ---
 
@@ -33,52 +37,99 @@ depends-on:
 
 ### P1 — {Place Name}
 
-| ID | Affordance | Control | Wires Out | Returns To |
-|----|------------|---------|-----------|------------|
-| U1 | | click | | |
-| U2 | | type | | |
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| U1 | P1 | | | click | | |
+| U2 | P1 | | | type | | |
 
 ### P2 — {Place Name}
 
-| ID | Affordance | Control | Wires Out | Returns To |
-|----|------------|---------|-----------|------------|
-| U10 | | click | | |
-| U11 | | type | | |
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| U10 | P2 | | | click | | |
+| U11 | P2 | | | type | | |
 
-### P2.1 — {Modal Name}
+### P2.1 — {Subplace Name}
 
-| ID | Affordance | Control | Wires Out | Returns To |
-|----|------------|---------|-----------|------------|
-| U20 | | click | | |
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| U20 | P2.1 | | | click | | |
+
+### P3 — {Modal Name}
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| U30 | P3 | | | click | | |
 
 ---
 
 ## Code Affordances
 
-| ID | Place | Affordance | Phase | Trigger | Wires Out | Returns To |
-|----|-------|------------|-------|---------|-----------|------------|
-| N1 | | | 1 | | | |
-| N2 | | | 1 | | | |
+| # | Place | Component | Affordance | Phase | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|-------|---------|-----------|------------|
+| N1 | P1 | | | 1 | call | | |
+| N2 | P1 | | | 1 | call | | |
 
 ---
 
 ## Data Stores
 
-| ID | Place | Store | Type | Read By | Written By |
+| # | Place | Store | Type | Read By | Written By |
 |----|-------|-------|------|---------|------------|
-| S1 | | | URL state | | |
-| S2 | | | React state | | |
-| S3 | | | Mock data | | |
+| S1 | P1 | | URL state | | |
+| S2 | P1 | | React state | | |
+| S3 | P1 | | Mock data | | |
+
+---
+
+## Mermaid Diagram
+
+```mermaid
+flowchart TB
+    subgraph P1["P1: {Place Name}"]
+        U1["U1: {affordance}"]
+        N1["N1: {affordance}"]
+    end
+
+    subgraph P2["P2: {Place Name}"]
+        U10["U10: {affordance}"]
+    end
+
+    U1 --> N1
+    N1 --> P2
+
+    %% Color conventions
+    classDef ui fill:#FFB3BA,stroke:#d87093,color:#000
+    classDef nonui fill:#C0C0C0,stroke:#808080,color:#000
+    classDef store fill:#D8BFD8,stroke:#9370db,color:#000
+    classDef chunk fill:#87CEEB,stroke:#0288d1,color:#000,stroke-width:2px
+    classDef placeRef fill:#FFB3BA,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5
+
+    class U1 ui
+    class N1 nonui
+```
+
+### Mermaid Color Conventions
+
+| Type | Color | Hex | Style |
+|------|-------|-----|-------|
+| UI affordances | Pink | `#FFB3BA` | Solid border |
+| Code affordances | Grey | `#C0C0C0` | Solid border |
+| Data stores | Lavender | `#D8BFD8` | Solid border |
+| Chunks | Blue | `#87CEEB` | Thick border |
+| Place references | Pink | `#FFB3BA` | Dashed border |
+| Places (subgraphs) | White/transparent | -- | Subgraph boundary |
 
 ---
 
 ## Wiring Verification
 
 - [ ] Every U has at least one Wires Out or Returns To
-- [ ] Every N has a trigger
+- [ ] Every N has a trigger and either Wires Out or Returns To
 - [ ] Every S has at least one reader and one writer
 - [ ] No dangling wire references
-- [ ] Every CORE feature from scope definition has corresponding affordances
+- [ ] Every R from shaping has corresponding affordances (scope coverage)
+- [ ] Mermaid diagram matches tables (tables are truth)
 
 ---
 
@@ -91,23 +142,37 @@ depends-on:
 
 ---
 
-## Build Order
+## Vertical Slices
 
-| # | Component/Screen | Depends On | Blocks | Est. Complexity |
-|---|-----------------|------------|--------|-----------------|
-| 1 | | | | Low/Medium/High |
-| 2 | | | | |
+### Slice Summary
+
+| # | Slice | Mechanism | Affordances | Demo |
+|---|-------|-----------|-------------|------|
+| V1 | | | U-, N- | "{demo statement}" |
+| V2 | | | U-, N- | "{demo statement}" |
+
+### V1 — {Slice Name}
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| | | | | | | |
+
+### V2 — {Slice Name}
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|------------|---------|-----------|------------|
+| | | | | | | |
 
 ---
 
 ## Scope Coverage
 
-Verify every CORE feature from the scope definition is represented:
+Verify every requirement from the shaping doc has corresponding affordances:
 
-| Scope Feature | Affordances | Covered? |
-|---------------|-------------|----------|
-| | U-, N-, S- | Yes/No |
-| | | |
+| Req | Requirement | Affordances | Covered? |
+|-----|-------------|-------------|----------|
+| R0 | {from shaping} | U-, N-, S- | Yes/No |
+| R1 | | | |
 
 ---
 
@@ -123,6 +188,8 @@ Code affordances that will be added in Phase 2:
 
 ## Related Documents
 
+- `docs/shaping/{topic}/shaping.md` (selected shape + parts)
+- `docs/shaping/{topic}/frame.md` (problem/outcome context)
 - `docs/strategy/{vertical}-scope-definition.md` (scope boundaries)
 - `docs/strategy/screen-print-pro-journey-{vertical}.md` (improved journey)
 - `docs/APP_FLOW.md` (routes and navigation)
