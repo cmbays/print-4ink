@@ -754,13 +754,15 @@ _work_clean() {
 
     if [[ "$MATCH_COUNT" -eq 1 ]]; then
         BRANCH="$MATCHES"
-        WORKTREE_DIR="${PRINT4INK_WORKTREES}/${BRANCH//\//-}"
+        # Query git for the actual worktree path (handles both old session/ and new session- formats)
+        WORKTREE_DIR=$(git -C "$PRINT4INK_REPO" worktree list --porcelain 2>/dev/null \
+            | awk -v branch="$BRANCH" '/^worktree /{wt=$2} /^branch refs\/heads\//{if($2=="refs/heads/"branch) print wt}')
         FOUND_ANYTHING=true
     else
         # No branch — try to find worktree dir by pattern (covers already-deleted branches)
         # Use find to avoid zsh NOMATCH error (zsh expands globs before command runs)
         local candidate
-        candidate=$(find "${PRINT4INK_WORKTREES}" -maxdepth 1 -type d -name "session-*-${TOPIC}" 2>/dev/null | head -1)
+        candidate=$(find "${PRINT4INK_WORKTREES}" -maxdepth 2 -type d -name "*-${TOPIC}" 2>/dev/null | head -1)
         if [[ -n "$candidate" && -d "$candidate" ]]; then
             WORKTREE_DIR="$candidate"
             FOUND_ANYTHING=true
