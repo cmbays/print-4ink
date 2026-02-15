@@ -270,7 +270,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* ---- Sticky header area ---- */}
-      <div className="sticky top-0 z-10 bg-[var(--color-bg-primary)] pb-2">
+      <div className="sticky top-0 z-10 bg-background pb-2">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight shrink-0">Invoices</h1>
 

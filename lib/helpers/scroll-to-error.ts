@@ -10,7 +10,13 @@ export function scrollToFirstError() {
   requestAnimationFrame(() => {
     const errorEl = document.querySelector('[role="alert"]');
     if (errorEl) {
-      errorEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      errorEl.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "center",
+      });
     }
   });
 }

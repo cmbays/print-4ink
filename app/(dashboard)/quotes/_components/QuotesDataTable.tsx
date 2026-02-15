@@ -281,7 +281,7 @@ export function QuotesDataTable() {
   return (
     <div className="flex flex-col gap-4">
       {/* ---- Sticky header area ---- */}
-      <div className="sticky top-0 z-10 bg-[var(--color-bg-primary)] pb-2">
+      <div className="sticky top-0 z-10 bg-background pb-2">
         {/* Header row: title + search + archive toggle + action button */}
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight shrink-0">Quotes</h1>
@@ -290,7 +290,7 @@ export function QuotesDataTable() {
 
           {/* Search bar */}
           <div className="relative w-full max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               placeholder="Search quotes or customers..."
               value={localSearch}
@@ -529,7 +529,7 @@ export function QuotesDataTable() {
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ClipboardList className="size-6 text-muted-foreground/50" />
+          <ClipboardList className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
