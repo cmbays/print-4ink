@@ -1,5 +1,6 @@
 import { Zap, Package, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { LANE_LABELS, LANE_COLORS } from "@/lib/constants";
 import type { CapacitySummary } from "@/lib/helpers/job-utils";
 import type { Lane } from "@/lib/schemas/job";
@@ -23,7 +24,7 @@ const ACTIVE_LANES: Lane[] = ["ready", "in_progress", "review", "blocked"];
 // ---------------------------------------------------------------------------
 
 export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
-  const { rushQuantity, totalQuantity, cardsByLane } = summary;
+  const { rushQuantity, totalQuantity, totalRevenue, cardsByLane } = summary;
 
   return (
     <div className="flex flex-wrap items-center gap-4 rounded-lg bg-elevated border border-border/50 px-4 py-2.5">
@@ -32,7 +33,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
         <div className="flex items-center gap-1.5">
           <Zap className="size-3.5 text-error" />
           <span className="text-xs font-medium text-error">
-            {rushQuantity.toLocaleString()} pcs rush
+            {rushQuantity.toLocaleString()} rush
           </span>
         </div>
       )}
@@ -41,7 +42,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
       <div className="flex items-center gap-1.5">
         <Package className="size-3.5 text-muted-foreground" />
         <span className="text-xs text-muted-foreground">
-          {totalQuantity.toLocaleString()} pcs
+          {totalQuantity.toLocaleString()}
         </span>
       </div>
 
@@ -67,6 +68,16 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
           </div>
         ))}
       </div>
+
+      {/* Spacer pushes revenue to far right */}
+      <div className="flex-1" />
+
+      {/* Total revenue */}
+      <MoneyAmount
+        value={totalRevenue}
+        format="compact"
+        className="text-sm font-semibold"
+      />
     </div>
   );
 }

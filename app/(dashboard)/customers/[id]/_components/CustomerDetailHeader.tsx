@@ -53,8 +53,8 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
       {/* Top row: name + badges + actions */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
-          {/* Company name */}
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+          {/* Company name — hidden on mobile since breadcrumb shows it */}
+          <h1 className="hidden md:block text-2xl font-bold text-foreground tracking-tight">
             {customer.company}
           </h1>
 
@@ -124,7 +124,7 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
           <Button
             variant="outline"
             onClick={() => setArchiveOpen(true)}
-            className="text-muted-foreground hover:text-error hover:border-error/50"
+            className="text-error/70 border-error/30 hover:text-error hover:border-error/50 hover:bg-error/5 focus-visible:ring-error/50"
           >
             <Archive className="size-4" />
             <span className="hidden sm:inline">Archive</span>

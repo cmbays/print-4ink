@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Copy } from "lucide-react";
+import { Copy } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 import {
   QUOTE_STATUS_LABELS,
@@ -16,13 +18,6 @@ interface CustomerQuotesTableProps {
   quotes: Quote[];
 }
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
-}
-
 export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
   const sorted = [...quotes].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -31,7 +26,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-        <FileText className="size-10 mb-3" aria-hidden="true" />
+        <ENTITY_STYLES.quote.icon className="size-10 mb-3" aria-hidden="true" />
         <p className="text-sm font-medium">No quotes yet</p>
         <p className="text-xs mt-1">Create one to get started</p>
       </div>
@@ -75,7 +70,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                   </Badge>
                 </td>
                 <td className="py-3 text-right font-mono text-foreground">
-                  {formatCurrency(quote.total)}
+                  <MoneyAmount value={quote.total} />
                 </td>
                 <td className="py-3">
                   <Button
@@ -112,7 +107,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
             </div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-sm text-foreground">
-                {formatCurrency(quote.total)}
+                <MoneyAmount value={quote.total} />
               </span>
               <span className="text-xs text-muted-foreground">
                 {formatDate(quote.createdAt)}

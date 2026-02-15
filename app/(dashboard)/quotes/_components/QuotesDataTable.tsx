@@ -5,11 +5,14 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Archive,
-  ClipboardList,
+  Package,
   Plus,
   Search,
+  SlidersHorizontal,
   X,
 } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { z } from "zod";
 
 import { cn } from "@/lib/utils";
@@ -32,6 +35,7 @@ import {
 } from "@/components/ui/tooltip";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { formatDate } from "@/lib/helpers/format";
 import type { QuoteStatus } from "@/lib/schemas/quote";
 import { quotes as rawQuotes, customers } from "@/lib/mock-data";
@@ -85,12 +89,6 @@ type SortKey = z.infer<typeof sortKeySchema>;
 const sortDirSchema = z.enum(["asc", "desc"]);
 type SortDir = z.infer<typeof sortDirSchema>;
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -117,6 +115,7 @@ export function QuotesDataTable() {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync from URL on back/forward navigation
   useEffect(() => {
@@ -157,6 +156,11 @@ export function QuotesDataTable() {
     },
     [searchParams, router],
   );
+
+  const clearFilters = useCallback(() => {
+    router.replace("?", { scroll: false });
+    setLocalSearch("");
+  }, [router]);
 
   // ---- Status filter toggle -----------------------------------------------
 
@@ -278,16 +282,16 @@ export function QuotesDataTable() {
   return (
     <div className="flex flex-col gap-4">
       {/* ---- Sticky header area ---- */}
-      <div className="sticky top-0 z-10 bg-[var(--color-bg-primary)] pb-2">
+      <div className="sticky top-0 z-10 bg-background pb-2">
         {/* Header row: title + search + archive toggle + action button */}
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight shrink-0">Quotes</h1>
+          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">Quotes</h1>
 
-          <div className="flex-1" />
+          <div className="hidden md:block flex-1" />
 
-          {/* Search bar */}
-          <div className="relative w-full max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          {/* Search bar — full width on mobile, constrained on desktop */}
+          <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
+            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               placeholder="Search quotes or customers..."
               value={localSearch}
@@ -299,13 +303,29 @@ export function QuotesDataTable() {
               <button
                 type="button"
                 onClick={() => setLocalSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
                 <X className="size-4" />
               </button>
             )}
           </div>
+
+          {/* Mobile filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
+            className={cn(
+              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              (activeStatuses.length > 0) && "text-action",
+            )}
+            aria-label="Sort & Filter"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
 
           {/* Archive toggle — icon only with tooltip */}
           <TooltipProvider skipDelayDuration={300}>
@@ -316,11 +336,12 @@ export function QuotesDataTable() {
                   onClick={toggleArchived}
                   className={cn(
                     "inline-flex items-center justify-center rounded-md p-2 transition-colors",
+                    "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
-                      ? "bg-action/10 text-action border border-action/20"
-                      : "bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-muted",
+                      ? "bg-error/10 text-error border border-error"
+                      : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
                   )}
                   aria-label={showArchived ? "Hide Archived" : "Show Archived"}
                 >
@@ -346,10 +367,7 @@ export function QuotesDataTable() {
           <div className="flex items-center mt-2">
             <button
               type="button"
-              onClick={() => {
-                router.replace("?", { scroll: false });
-                setLocalSearch("");
-              }}
+              onClick={clearFilters}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
               Clear all filters
@@ -465,7 +483,7 @@ export function QuotesDataTable() {
                     {formatDate(quote.createdAt)}
                   </TableCell>
                   <TableCell className="text-sm font-medium tabular-nums">
-                    {formatCurrency(quote.total)}
+                    <MoneyAmount value={quote.total} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -486,22 +504,28 @@ export function QuotesDataTable() {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50",
               )}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-action">
-                  {quote.quoteNumber}
-                </span>
-                <StatusBadge status={quote.status} />
+              {/* Top row: quote # + customer left, price + qty right */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-medium text-action">
+                    {quote.quoteNumber}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {quote.customerName}
+                  </span>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-0.5">
+                  <MoneyAmount value={quote.total} format="compact" className="text-sm font-medium" />
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <Package className="size-3" />
+                    {quote.lineItemCount}
+                  </span>
+                </div>
               </div>
-              <p className="truncate text-sm text-muted-foreground">
-                {quote.customerName}
-              </p>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>
-                  {quote.lineItemCount} {quote.lineItemCount === 1 ? "item" : "items"}
-                </span>
-                <span className="font-medium tabular-nums text-foreground">
-                  {formatCurrency(quote.total)}
-                </span>
+
+              {/* Status badge */}
+              <div className="flex items-center">
+                <StatusBadge status={quote.status} />
               </div>
             </button>
           ))}
@@ -510,7 +534,7 @@ export function QuotesDataTable() {
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ClipboardList className="size-6 text-muted-foreground/50" />
+          <ENTITY_STYLES.quote.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
@@ -521,10 +545,7 @@ export function QuotesDataTable() {
             <Button
               variant="outline"
               className="mt-4"
-              onClick={() => {
-                router.replace("?", { scroll: false });
-                setLocalSearch("");
-              }}
+              onClick={clearFilters}
             >
               Clear Filters
             </Button>
@@ -543,6 +564,33 @@ export function QuotesDataTable() {
           {filteredQuotes.length === 1 ? "quote" : "quotes"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "createdAt", label: "Date" },
+            { value: "quoteNumber", label: "Quote #" },
+            { value: "customerName", label: "Customer" },
+            { value: "total", label: "Total" },
+            { value: "status", label: "Status" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Status",
+              options: STATUS_OPTIONS,
+              selected: activeStatuses,
+              onToggle: handleStatusToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
     </div>
   );

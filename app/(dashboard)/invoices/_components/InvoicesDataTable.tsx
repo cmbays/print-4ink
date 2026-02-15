@@ -3,15 +3,22 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  FileText,
+  Archive,
   Plus,
   Search,
+  SlidersHorizontal,
   X,
 } from "lucide-react";
 
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -24,10 +31,12 @@ import {
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { customers } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { formatDate } from "@/lib/helpers/format";
-import { formatCurrency } from "@/lib/helpers/money";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { INVOICE_STATUS_LABELS } from "@/lib/constants";
 import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
 
@@ -69,6 +78,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
   const view = searchParams.get("view") ?? "all";
   const searchQuery = searchParams.get("q") ?? "";
   const statusFilter = searchParams.get("status") ?? "";
+  const showArchived = searchParams.get("archived") === "true";
   const sortKeyParam = sortKeySchema.catch("createdAt").parse(searchParams.get("sort") ?? "createdAt");
   const sortDirParam = sortDirSchema.catch("desc").parse(searchParams.get("dir") ?? "desc");
 
@@ -76,6 +86,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
@@ -117,6 +128,12 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
     },
     [searchParams, router],
   );
+
+  // ---- Archive toggle -------------------------------------------------------
+
+  const toggleArchived = useCallback(() => {
+    updateParam("archived", showArchived ? null : "true");
+  }, [showArchived, updateParam]);
 
   // ---- Status filter --------------------------------------------------------
 
@@ -246,6 +263,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
   const hasFilters =
     searchQuery.length > 0 ||
     statusFilter.length > 0 ||
+    showArchived ||
     view !== "all";
 
   // ---- Clear all filters helper ---------------------------------------------
@@ -267,14 +285,14 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* ---- Sticky header area ---- */}
-      <div className="sticky top-0 z-10 bg-[var(--color-bg-primary)] pb-2">
+      <div className="sticky top-0 z-10 bg-background pb-2">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight shrink-0">Invoices</h1>
+          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">Invoices</h1>
 
-          <div className="flex-1" />
+          <div className="hidden md:block flex-1" />
 
-          {/* Search bar */}
-          <div className="relative w-full max-w-xs">
+          {/* Search bar — full width on mobile, constrained on desktop */}
+          <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               placeholder="Search invoice #, customer..."
@@ -287,13 +305,56 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
               <button
                 type="button"
                 onClick={() => setLocalSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
                 <X className="size-4" />
               </button>
             )}
           </div>
+
+          {/* Mobile filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
+            className={cn(
+              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              statusFilter && "text-action",
+            )}
+            aria-label="Sort & Filter"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
+
+          {/* Archive toggle — icon only with tooltip */}
+          <TooltipProvider skipDelayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={toggleArchived}
+                  className={cn(
+                    "inline-flex items-center justify-center rounded-md p-2 transition-colors",
+                    "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                    showArchived
+                      ? "bg-error/10 text-error border border-error"
+                      : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
+                  )}
+                  aria-label={showArchived ? "Hide Archived" : "Show Archived"}
+                >
+                  <Archive className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {showArchived ? "Hide Archived" : "Show Archived"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           <Button
             onClick={() => router.push("/invoices/new")}
@@ -434,12 +495,12 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                     <TableCell className="text-sm text-muted-foreground">
                       {formatDate(invoice.dueDate)}
                     </TableCell>
-                    <TableCell className="text-sm font-medium tabular-nums">
-                      {formatCurrency(invoice.total)}
+                    <TableCell className="text-sm font-medium">
+                      <MoneyAmount value={invoice.total} />
                     </TableCell>
-                    <TableCell className="text-sm font-medium tabular-nums">
+                    <TableCell className="text-sm font-medium">
                       {invoice.balanceDue > 0 ? (
-                        formatCurrency(invoice.balanceDue)
+                        <MoneyAmount value={invoice.balanceDue} />
                       ) : (
                         <span className="text-muted-foreground">--</span>
                       )}
@@ -473,9 +534,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                       {customerNameMap.get(invoice.customerId) ?? "Unknown"}
                     </span>
                   </div>
-                  <span className="shrink-0 text-sm font-medium tabular-nums">
-                    {formatCurrency(invoice.total)}
-                  </span>
+                  <MoneyAmount value={invoice.total} className="shrink-0 text-sm font-medium" />
                 </div>
 
                 {/* Middle row: due date + balance */}
@@ -483,7 +542,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
                   <span>Due {formatDate(invoice.dueDate)}</span>
                   {invoice.balanceDue > 0 && (
                     <span className="font-medium text-foreground">
-                      Balance: {formatCurrency(invoice.balanceDue)}
+                      Balance: <MoneyAmount value={invoice.balanceDue} />
                     </span>
                   )}
                 </div>
@@ -504,7 +563,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <FileText className="size-12 text-muted-foreground/50" aria-hidden="true" />
+          <ENTITY_STYLES.invoice.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No invoices found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
@@ -537,6 +596,35 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
           {filteredInvoices.length === 1 ? "invoice" : "invoices"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "createdAt", label: "Date" },
+            { value: "invoiceNumber", label: "Invoice #" },
+            { value: "customer", label: "Customer" },
+            { value: "total", label: "Amount" },
+            { value: "dueDate", label: "Due Date" },
+            { value: "balanceDue", label: "Balance" },
+            { value: "status", label: "Status" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Status",
+              options: statusFilterOptions,
+              selected: statusFilter ? [statusFilter] : [],
+              onToggle: handleStatusFilterToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
     </div>
   );

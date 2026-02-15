@@ -23,13 +23,13 @@ export function CapacitySummary({
       <div className="flex items-center gap-1.5">
         <Package className="h-3.5 w-3.5 text-muted-foreground" />
         <span className="text-muted-foreground">
-          {summary.totalQuantity.toLocaleString()} pcs
+          {summary.totalQuantity.toLocaleString()}
         </span>
       </div>
       {summary.rushQuantity > 0 && (
         <div className="flex items-center gap-1.5">
-          <Zap className="h-3.5 w-3.5 text-warning" />
-          <span className="text-warning">
+          <Zap className="h-3.5 w-3.5 text-error" />
+          <span className="text-error">
             {summary.rushQuantity.toLocaleString()} rush
           </span>
         </div>

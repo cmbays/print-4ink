@@ -6,6 +6,7 @@ import {
   Archive,
   Plus,
   Search,
+  SlidersHorizontal,
   Users,
   X,
 } from "lucide-react";
@@ -35,6 +36,7 @@ import { HealthBadge } from "@/components/features/HealthBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { quotes } from "@/lib/mock-data";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
@@ -71,14 +73,7 @@ type SortKey = z.infer<typeof sortKeySchema>;
 const sortDirSchema = z.enum(["asc", "desc"]);
 type SortDir = z.infer<typeof sortDirSchema>;
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-}
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 function formatRelativeDate(iso: string): string {
   const now = new Date();
@@ -163,6 +158,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
@@ -479,16 +475,16 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* ---- Sticky header area ---- */}
-      <div className="sticky top-0 z-10 bg-[var(--color-bg-primary)] pb-2">
+      <div className="sticky top-0 z-10 bg-background pb-2">
         {/* Header row: title + search + archive toggle + action button */}
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight shrink-0">Customers</h1>
+          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">Customers</h1>
 
-          <div className="flex-1" />
+          <div className="hidden md:block flex-1" />
 
-          {/* Search bar */}
-          <div className="relative w-full max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          {/* Search bar — full width on mobile, constrained on desktop */}
+          <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
+            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               placeholder="Search company, contact, email, phone..."
               value={localSearch}
@@ -500,13 +496,29 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
               <button
                 type="button"
                 onClick={() => setLocalSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
                 <X className="size-4" />
               </button>
             )}
           </div>
+
+          {/* Mobile filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterSheetOpen(true)}
+            className={cn(
+              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+              "text-muted-foreground hover:text-foreground transition-colors",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              (activeTags.length > 0 || lifecycleFilter || healthFilter) && "text-action",
+            )}
+            aria-label="Sort & Filter"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
 
           {/* Archive toggle — icon only with tooltip */}
           <TooltipProvider skipDelayDuration={300}>
@@ -517,11 +529,12 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                   onClick={toggleArchived}
                   className={cn(
                     "inline-flex items-center justify-center rounded-md p-2 transition-colors",
+                    "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
-                      ? "bg-action/10 text-action border border-action/20"
-                      : "bg-transparent text-muted-foreground border border-transparent hover:text-foreground hover:bg-muted",
+                      ? "bg-error/10 text-error border border-error"
+                      : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
                   )}
                   aria-label={showArchived ? "Hide Archived" : "Show Archived"}
                 >
@@ -697,7 +710,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                         {formatRelativeDate(customer.updatedAt)}
                       </TableCell>
                       <TableCell className="text-sm font-medium tabular-nums">
-                        {revenue > 0 ? formatCurrency(revenue) : (
+                        {revenue > 0 ? <MoneyAmount value={revenue} format="compact" /> : (
                           <span className="text-muted-foreground">--</span>
                         )}
                       </TableCell>
@@ -736,8 +749,8 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                         {contact.email && ` \u00B7 ${contact.email}`}
                       </span>
                     </div>
-                    <span className="shrink-0 text-sm font-medium tabular-nums">
-                      {revenue > 0 ? formatCurrency(revenue) : (
+                    <span className="shrink-0 text-sm font-medium">
+                      {revenue > 0 ? <MoneyAmount value={revenue} format="compact" /> : (
                         <span className="text-muted-foreground">--</span>
                       )}
                     </span>
@@ -765,7 +778,7 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <Users className="size-6 text-muted-foreground/50" />
+          <Users className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No customers found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
@@ -798,6 +811,46 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
           {filteredCustomers.length === 1 ? "customer" : "customers"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "company", label: "Company" },
+            { value: "contact", label: "Contact" },
+            { value: "lifecycle", label: "Lifecycle" },
+            { value: "health", label: "Health" },
+            { value: "revenue", label: "Revenue" },
+            { value: "lastOrder", label: "Last Order" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Type",
+              options: typeFilterOptions,
+              selected: activeTags,
+              onToggle: handleTypeFilterToggle,
+            },
+            {
+              label: "Lifecycle",
+              options: lifecycleFilterOptions,
+              selected: lifecycleFilter ? [lifecycleFilter] : [],
+              onToggle: handleLifecycleFilterToggle,
+            },
+            {
+              label: "Health",
+              options: healthFilterOptions,
+              selected: healthFilter ? [healthFilter] : [],
+              onToggle: handleHealthFilterToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
 
       {/* ---- Add Customer Modal ---- */}

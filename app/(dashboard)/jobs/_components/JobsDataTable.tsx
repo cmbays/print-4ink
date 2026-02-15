@@ -3,17 +3,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  Briefcase,
   Eye,
   MoreHorizontal,
+  Package,
   Search,
   ShieldAlert,
   ShieldCheck,
+  SlidersHorizontal,
   ArrowRightLeft,
   X,
 } from "lucide-react";
 
 import { z } from "zod";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +38,8 @@ import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { LaneBadge } from "@/components/features/LaneBadge";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
+import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { customers } from "@/lib/mock-data";
 import { computeTaskProgress } from "@/lib/helpers/job-utils";
 import { formatDate } from "@/lib/helpers/format";
@@ -132,6 +136,7 @@ export function JobsDataTable({
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
   const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
@@ -392,13 +397,29 @@ export function JobsDataTable({
             <button
               type="button"
               onClick={() => setLocalSearch("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
               aria-label="Clear search"
             >
               <X className="size-4" />
             </button>
           )}
         </div>
+
+        {/* Mobile filter button */}
+        <button
+          type="button"
+          onClick={() => setFilterSheetOpen(true)}
+          className={cn(
+            "inline-flex items-center justify-center rounded-md p-2 md:hidden",
+            "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
+            "text-muted-foreground hover:text-foreground transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            (laneFilter || serviceTypeFilter || riskFilter) && "text-action",
+          )}
+          aria-label="Sort & Filter"
+        >
+          <SlidersHorizontal className="size-4" />
+        </button>
 
         <div className="flex-1" />
 
@@ -648,9 +669,13 @@ export function JobsDataTable({
                         {customerNameMap.get(job.customerId) ?? "Unknown"}
                       </span>
                     </div>
-                    <span className="shrink-0 text-sm font-medium tabular-nums">
-                      {job.quantity.toLocaleString()} pcs
-                    </span>
+                    <div className="flex shrink-0 flex-col items-end gap-0.5">
+                      <MoneyAmount value={job.orderTotal} format="compact" className="text-sm font-medium" />
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                        <Package className="size-3" />
+                        {job.quantity.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Middle row: badges */}
@@ -683,7 +708,7 @@ export function JobsDataTable({
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <Briefcase
+          <ENTITY_STYLES.job.icon
             className="size-12 text-muted-foreground/50"
             aria-hidden="true"
           />
@@ -710,6 +735,46 @@ export function JobsDataTable({
           {filteredJobs.length === 1 ? "job" : "jobs"}
           {hasFilters && " (filtered)"}
         </p>
+      )}
+
+      {/* ---- Mobile filter sheet ---- */}
+      {filterSheetOpen && (
+        <MobileFilterSheet
+          open={filterSheetOpen}
+          onOpenChange={setFilterSheetOpen}
+          sortOptions={[
+            { value: "dueDate", label: "Due Date" },
+            { value: "jobNumber", label: "Job #" },
+            { value: "customer", label: "Customer" },
+            { value: "lane", label: "Lane" },
+            { value: "risk", label: "Risk" },
+            { value: "taskProgress", label: "Progress" },
+          ]}
+          currentSort={sortKey}
+          onSortChange={(value) => handleSort(value as SortKey)}
+          filterGroups={[
+            {
+              label: "Lane",
+              options: laneFilterOptions,
+              selected: laneFilter ? [laneFilter] : [],
+              onToggle: handleLaneFilterToggle,
+            },
+            {
+              label: "Service Type",
+              options: serviceTypeFilterOptions,
+              selected: serviceTypeFilter ? [serviceTypeFilter] : [],
+              onToggle: handleServiceTypeFilterToggle,
+            },
+            {
+              label: "Risk",
+              options: riskFilterOptions,
+              selected: riskFilter ? [riskFilter] : [],
+              onToggle: handleRiskFilterToggle,
+            },
+          ]}
+          onApply={() => setFilterSheetOpen(false)}
+          onReset={clearFilters}
+        />
       )}
     </div>
   );

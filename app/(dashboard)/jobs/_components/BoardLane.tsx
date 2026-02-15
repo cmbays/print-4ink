@@ -56,11 +56,12 @@ export function BoardLane({
         isOver && "border-action bg-action/5 motion-safe:animate-lane-glow",
       )}
     >
-      {/* Lane header */}
+      {/* Lane header — sticky below the board toolbar */}
       <div
         className={cn(
           "flex items-center justify-between gap-2 px-3 py-2",
-          "rounded-t-lg border-b border-border/50",
+          "sticky top-[var(--board-toolbar-h,6rem)] z-[9]",
+          "rounded-t-lg border-b border-border/50 bg-background",
           "transition-colors",
           isOver && "border-b-action/40",
         )}

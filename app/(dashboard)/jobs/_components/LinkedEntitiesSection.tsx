@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Receipt, User, ExternalLink } from "lucide-react";
+import { User, ExternalLink } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@/lib/constants";
@@ -44,7 +45,7 @@ export function LinkedEntitiesSection({
         {/* Source Quote */}
         {job.sourceQuoteId && (
           <EntityRow
-            icon={FileText}
+            icon={ENTITY_STYLES.quote.icon}
             label="Quote"
             href={`/quotes/${job.sourceQuoteId}`}
             value="Source Quote"
@@ -61,7 +62,7 @@ export function LinkedEntitiesSection({
         {/* Invoice */}
         {job.invoiceId && (
           <EntityRow
-            icon={Receipt}
+            icon={ENTITY_STYLES.invoice.icon}
             label="Invoice"
             href={`/invoices/${job.invoiceId}`}
             value="Invoice"

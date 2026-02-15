@@ -37,6 +37,7 @@ import type { Discount } from "@/lib/schemas/quote";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
 import type { Customer, CustomerTag, CustomerTypeTag } from "@/lib/schemas/customer";
 import { cn } from "@/lib/utils";
+import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
 
 interface QuoteFormProps {
   mode: "create" | "edit";
@@ -465,7 +466,10 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   }
 
   function handleSave(sendToCustomer: boolean) {
-    if (!validate()) return;
+    if (!validate()) {
+      scrollToFirstError();
+      return;
+    }
 
     if (sendToCustomer) {
       toast.success("Quote sent to customer", {
@@ -486,7 +490,10 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   }
 
   function handleReviewAndSend() {
-    if (!validate()) return;
+    if (!validate()) {
+      scrollToFirstError();
+      return;
+    }
     setShowReview(true);
   }
 

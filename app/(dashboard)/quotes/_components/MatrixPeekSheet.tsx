@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ExternalLink, Pencil } from "lucide-react";
+import { ExternalLink, Package, Palette, Pencil } from "lucide-react";
 import Link from "next/link";
 import { MarginLegend } from "@/components/features/MarginLegend";
 import {
@@ -194,7 +194,7 @@ export function MatrixPeekSheet({
             Current line item
           </p>
           <p className="text-sm font-medium text-foreground">
-            {totalQty} pcs × {colorCount} color{colorCount !== 1 ? "s" : ""}
+            <span className="inline-flex items-center gap-1"><Package className="size-3" />{totalQty}</span>{" × "}<span className="inline-flex items-center gap-1"><Palette className="size-3" />{colorCount}</span>
             {" → "}
             <span className="text-action">
               {highlightTierIdx >= 0

@@ -27,12 +27,12 @@ export function ScreenRecordRow({ screen, onReclaim }: ScreenRecordRowProps) {
   });
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-elevated p-3">
-      <div className="flex items-start gap-3">
+    <div className="flex flex-col gap-2 rounded-lg border border-border bg-elevated p-3 md:flex-row md:items-center md:justify-between md:gap-3">
+      <div className="flex items-start gap-3 min-w-0">
         <Monitor className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">{screen.artworkName}</p>
-          <div className="flex items-center gap-2">
+        <div className="min-w-0 space-y-1">
+          <p className="text-sm font-medium text-foreground truncate">{screen.artworkName}</p>
+          <div className="flex flex-wrap items-center gap-2">
             <ColorSwatchPicker
               colors={screenColors}
               onSelect={() => {}}
@@ -56,7 +56,7 @@ export function ScreenRecordRow({ screen, onReclaim }: ScreenRecordRowProps) {
       <Button
         variant="ghost"
         size="sm"
-        className="text-xs text-destructive hover:text-destructive"
+        className="self-end text-xs text-destructive hover:text-destructive md:self-auto shrink-0"
         onClick={() => onReclaim(screen.id)}
       >
         Reclaim

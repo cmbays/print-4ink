@@ -6,9 +6,8 @@ import { ArrowRight, AlertTriangle, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MobileLaneTabBar } from "./MobileLaneTabBar";
 import { BlockReasonSheet } from "@/components/features/BlockReasonSheet";
-import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
-import { RiskIndicator } from "@/components/features/RiskIndicator";
-import { TaskProgressBar } from "@/components/features/TaskProgressBar";
+import { JobCardBody, jobCardContainerClass } from "./JobCardBody";
+import { QuoteCardBody, quoteCardContainerClass } from "./QuoteCardBody";
 import { Button } from "@/components/ui/button";
 import type {
   JobCard,
@@ -34,7 +33,7 @@ const NEXT_LANE_LABEL: Record<string, string> = {
 type SectionFilter = "all" | "jobs" | "quotes";
 
 // ---------------------------------------------------------------------------
-// MobileJobCard
+// MobileJobCard — shared body + mobile-only touch actions
 // ---------------------------------------------------------------------------
 
 function MobileJobCard({
@@ -48,42 +47,13 @@ function MobileJobCard({
   onMoveToNext: () => void;
   onBlock: () => void;
 }) {
-  const { taskProgress } = job;
-
   return (
-    <div className="rounded-lg border border-border bg-elevated p-4">
+    <div className={jobCardContainerClass(job, "p-4")}>
       <Link href={`/jobs/${job.id}`} className="block">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs text-muted-foreground">{job.jobNumber}</p>
-            <p className="truncate text-sm font-medium text-foreground">
-              {job.customerName} — {job.title}
-            </p>
-          </div>
-          <RiskIndicator riskLevel={job.riskLevel} />
-        </div>
-
-        <div className="mt-2 flex items-center gap-2">
-          <ServiceTypeBadge serviceType={job.serviceType} />
-          <span className="text-xs text-muted-foreground">
-            {job.quantity} pcs
-          </span>
-          {job.dueDate && (
-            <span className="text-xs text-muted-foreground">
-              Due {new Date(job.dueDate).toLocaleDateString()}
-            </span>
-          )}
-        </div>
-
-        <div className="mt-2">
-          <TaskProgressBar
-            completed={taskProgress.completed}
-            total={taskProgress.total}
-          />
-        </div>
+        <JobCardBody card={job} />
       </Link>
 
-      {/* Quick actions — two-speed workflow */}
+      {/* Quick actions — two-speed workflow (mobile-only) */}
       {activeLane !== "done" && (
         <div className="mt-3 flex gap-2 border-t border-border pt-3">
           {NEXT_LANE_LABEL[activeLane] && (
@@ -97,7 +67,7 @@ function MobileJobCard({
               }}
             >
               Move to {NEXT_LANE_LABEL[activeLane]}
-              <ArrowRight className="ml-1 h-4 w-4" />
+              <ArrowRight className="ml-1 size-4" />
             </Button>
           )}
           {activeLane !== "blocked" && (
@@ -110,7 +80,7 @@ function MobileJobCard({
                 onBlock();
               }}
             >
-              <AlertTriangle className="h-4 w-4" />
+              <AlertTriangle className="size-4" />
             </Button>
           )}
         </div>
@@ -127,31 +97,16 @@ function MobileJobCard({
 }
 
 // ---------------------------------------------------------------------------
-// MobileQuoteCard
+// MobileQuoteCard — shared body + mobile touch target padding
 // ---------------------------------------------------------------------------
 
 function MobileQuoteCard({ quote }: { quote: QuoteCard }) {
   return (
-    <div className="rounded-lg border border-purple/30 bg-elevated p-4">
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <p className="text-xs text-purple">Quote</p>
-          <p className="truncate text-sm font-medium text-foreground">
-            {quote.customerName} — {quote.description}
-          </p>
-        </div>
-        {quote.isNew && (
-          <span className="rounded-full bg-action/20 px-2 py-0.5 text-xs text-action">
-            New
-          </span>
-        )}
+    <Link href={`/quotes/${quote.quoteId}`} className="block">
+      <div className={quoteCardContainerClass("p-4")}>
+        <QuoteCardBody card={quote} />
       </div>
-      {quote.total != null && (
-        <p className="mt-1 text-xs text-muted-foreground">
-          ${quote.total.toLocaleString()}
-        </p>
-      )}
-    </div>
+    </Link>
   );
 }
 
@@ -283,7 +238,7 @@ export function MobileKanbanBoard({
           className="fixed bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom,0px)+1rem)] right-4 z-40 flex h-(--mobile-fab-size) w-(--mobile-fab-size) items-center justify-center rounded-full bg-action text-primary-foreground shadow-lg md:hidden"
           aria-label="Add scratch note"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="size-6" />
         </button>
       </div>
 

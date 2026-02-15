@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, Suspense } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { Plus, LayoutGrid, List } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
@@ -30,7 +30,7 @@ import { CapacitySummaryBar } from "../_components/CapacitySummaryBar";
 import {
   BoardFilterBar,
   useFiltersFromURL,
-  useLayoutFromURL,
+  useCardTypeFromURL,
 } from "../_components/BoardFilterBar";
 import { BoardSection } from "../_components/BoardSection";
 import { JobBoardCard } from "../_components/JobBoardCard";
@@ -52,7 +52,6 @@ import {
 import {
   parseDragId,
   parseDroppableId,
-  cardTypeToSection,
   getCardLabel,
   getCardSortDate,
 } from "@/lib/helpers/board-dnd";
@@ -104,8 +103,24 @@ const springDropAnimation: DropAnimation = {
 
 function ProductionBoardInner() {
   const filters = useFiltersFromURL();
-  const layout = useLayoutFromURL();
+  const cardType = useCardTypeFromURL();
   const prefersReducedMotion = useReducedMotion();
+
+  // ---- Sticky toolbar height → CSS var for lane headers ----
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el) return;
+    const sync = () => {
+      el.parentElement?.style.setProperty(
+        "--board-toolbar-h",
+        `${el.offsetHeight}px`,
+      );
+    };
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // ---- Mutable state (Phase 1 client-side only) ----
   const [jobCards, setJobCards] = useState<JobCard[]>(() =>
@@ -154,14 +169,16 @@ function ProductionBoardInner() {
     [quoteRowCards, filters],
   );
 
-  // ---- Combined mode: merge + sort by due date ----
-  const combinedCards: BoardCard[] = useMemo(() => {
-    if (layout !== "combined") return [];
-    const merged = [...filteredJobCards, ...filteredQuoteCards];
-    return merged.sort((a, b) =>
+  // ---- Merge + filter by card type + sort by due date ----
+  const visibleCards: BoardCard[] = useMemo(() => {
+    let cards: BoardCard[];
+    if (cardType === "jobs") cards = [...filteredJobCards];
+    else if (cardType === "quotes") cards = [...filteredQuoteCards];
+    else cards = [...filteredJobCards, ...filteredQuoteCards];
+    return cards.sort((a, b) =>
       getCardSortDate(a).localeCompare(getCardSortDate(b)),
     );
-  }, [layout, filteredJobCards, filteredQuoteCards]);
+  }, [cardType, filteredJobCards, filteredQuoteCards]);
 
   // ---- Capacity summary ----
   const allFilteredCards: BoardCard[] = useMemo(
@@ -249,24 +266,13 @@ function ProductionBoardInner() {
 
     const dragParsed = parseDragId(active.id as string);
     if (!dragParsed) return;
-    const { cardType } = dragParsed;
+    const { cardType: draggedCardType } = dragParsed;
     const dropTarget = parseDroppableId(over.id as string);
     if (!dropTarget) return;
-    const { section: targetSection, lane: targetLane } = dropTarget;
-    const sourceSection = cardTypeToSection(cardType);
-
-    // Same-row constraint: in split mode, quotes stay in quotes, jobs stay in jobs
-    if (layout === "split" && sourceSection !== targetSection) {
-      return;
-    }
-
-    // In combined mode, only allow drops on the "combined" section
-    if (layout === "combined" && targetSection !== "combined") {
-      return;
-    }
+    const { lane: targetLane } = dropTarget;
 
     // Scratch notes can't be moved
-    if (cardType === "scratch") {
+    if (draggedCardType === "scratch") {
 
       return;
     }
@@ -425,16 +431,16 @@ function ProductionBoardInner() {
           {dropAnnouncement}
         </div>
 
-        {/* Capacity summary */}
-        <CapacitySummaryBar summary={summary} />
-
-        {/* Filter bar */}
-        <div className="mt-4">
-          <BoardFilterBar />
+        {/* Sticky toolbar: capacity summary + filter bar */}
+        <div ref={toolbarRef} className="sticky top-0 z-10 bg-background pb-3">
+          <CapacitySummaryBar summary={summary} />
+          <div className="mt-3">
+            <BoardFilterBar />
+          </div>
         </div>
 
         {/* Board content */}
-        <div className="mt-4">
+        <div className="mt-1">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/50 py-16 text-center">
               <p className="text-sm text-muted-foreground">
@@ -452,52 +458,21 @@ function ProductionBoardInner() {
               onDragCancel={handleDragCancel}
             >
               <TooltipProvider skipDelayDuration={300}>
-                {layout === "combined" ? (
-                  <div className="flex flex-col gap-6">
-                    <BoardSection
-                      label="All Cards"
-                      section="combined"
-                      cards={combinedCards}
-                      renderCard={renderCard}
-                      onAddScratchNote={() => setShowScratchCapture(true)}
-                      readyLaneFooter={
-                        showScratchCapture ? (
-                          <ScratchNoteCapture
-                            onSubmit={createScratchNote}
-                            onCancel={() => setShowScratchCapture(false)}
-                          />
-                        ) : undefined
-                      }
-                    />
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-6">
-                    {/* Quotes section */}
-                    <BoardSection
-                      label="Quotes"
-                      section="quotes"
-                      cards={filteredQuoteCards}
-                      renderCard={renderCard}
-                      onAddScratchNote={() => setShowScratchCapture(true)}
-                      readyLaneFooter={
-                        showScratchCapture ? (
-                          <ScratchNoteCapture
-                            onSubmit={createScratchNote}
-                            onCancel={() => setShowScratchCapture(false)}
-                          />
-                        ) : undefined
-                      }
-                    />
-
-                    {/* Jobs section */}
-                    <BoardSection
-                      label="Jobs"
-                      section="jobs"
-                      cards={filteredJobCards}
-                      renderCard={renderCard}
-                    />
-                  </div>
-                )}
+                <BoardSection
+                  label={cardType === "jobs" ? "Jobs" : cardType === "quotes" ? "Quotes" : "All Cards"}
+                  section="combined"
+                  cards={visibleCards}
+                  renderCard={renderCard}
+                  onAddScratchNote={cardType !== "jobs" ? () => setShowScratchCapture(true) : undefined}
+                  readyLaneFooter={
+                    showScratchCapture ? (
+                      <ScratchNoteCapture
+                        onSubmit={createScratchNote}
+                        onCancel={() => setShowScratchCapture(false)}
+                      />
+                    ) : undefined
+                  }
+                />
 
                 <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
                   {renderDragOverlay()}

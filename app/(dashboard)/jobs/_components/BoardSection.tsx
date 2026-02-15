@@ -63,7 +63,7 @@ export function BoardSection({
       </h2>
 
       {/* Lane columns */}
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="flex gap-3 pb-2">
         {LANE_ORDER.map((lane) => (
           <BoardLane
             key={lane}

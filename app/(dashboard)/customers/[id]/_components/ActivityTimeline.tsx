@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Briefcase, StickyNote, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
@@ -60,9 +61,9 @@ function relativeDate(dateStr: string): string {
 }
 
 const ICON_CONFIG = {
-  quote: { icon: FileText, color: "text-action" },
-  job: { icon: Briefcase, color: "text-success" },
-  note: { icon: StickyNote, color: "text-warning" },
+  quote: { icon: ENTITY_STYLES.quote.icon, color: ENTITY_STYLES.quote.color },
+  job: { icon: ENTITY_STYLES.job.icon, color: ENTITY_STYLES.job.color },
+  note: { icon: ENTITY_STYLES.scratch_note.icon, color: ENTITY_STYLES.scratch_note.color },
 } as const;
 
 export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityTimelineProps) {

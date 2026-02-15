@@ -1,6 +1,7 @@
 import type { BoardCard } from "@/lib/schemas/board-card";
 import type { JobTask, Lane, RiskLevel } from "@/lib/schemas/job";
 import type { ServiceType } from "@/lib/schemas/quote";
+import { money, toNumber } from "@/lib/helpers/money";
 
 // ---------------------------------------------------------------------------
 // Capacity summary
@@ -9,6 +10,7 @@ import type { ServiceType } from "@/lib/schemas/quote";
 export interface CapacitySummary {
   rushQuantity: number;
   totalQuantity: number;
+  totalRevenue: number;
   cardsByLane: Record<Lane, number>;
 }
 
@@ -23,6 +25,7 @@ export function computeCapacitySummary(cards: BoardCard[]): CapacitySummary {
 
   let rushQuantity = 0;
   let totalQuantity = 0;
+  let totalRevenueBig = money(0);
 
   for (const card of cards) {
     // All card types have a lane
@@ -33,12 +36,14 @@ export function computeCapacitySummary(cards: BoardCard[]): CapacitySummary {
         rushQuantity += card.quantity;
       }
       totalQuantity += card.quantity;
-    } else if (card.type === "quote" && card.quantity != null) {
-      totalQuantity += card.quantity;
+      totalRevenueBig = totalRevenueBig.plus(money(card.orderTotal));
+    } else if (card.type === "quote") {
+      if (card.quantity != null) totalQuantity += card.quantity;
+      if (card.total != null) totalRevenueBig = totalRevenueBig.plus(money(card.total));
     }
   }
 
-  return { rushQuantity, totalQuantity, cardsByLane };
+  return { rushQuantity, totalQuantity, totalRevenue: toNumber(totalRevenueBig), cardsByLane };
 }
 
 // ---------------------------------------------------------------------------

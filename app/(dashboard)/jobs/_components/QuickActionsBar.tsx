@@ -5,10 +5,10 @@ import {
   ArrowRightLeft,
   ShieldAlert,
   ShieldCheck,
-  FileText,
-  Receipt,
   LayoutGrid,
 } from "lucide-react";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/lib/schemas/job";
 
@@ -62,7 +62,7 @@ export function QuickActionsBar({
       {job.sourceQuoteId && (
         <Button variant="outline" size="sm" className="gap-1.5" asChild>
           <Link href={`/quotes/${job.sourceQuoteId}`}>
-            <FileText className="size-3.5" />
+            <ENTITY_STYLES.quote.icon className={cn("size-3.5", ENTITY_STYLES.quote.color)} />
             View Quote
           </Link>
         </Button>
@@ -72,7 +72,7 @@ export function QuickActionsBar({
       {job.invoiceId && (
         <Button variant="outline" size="sm" className="gap-1.5" asChild>
           <Link href={`/invoices/${job.invoiceId}`}>
-            <Receipt className="size-3.5" />
+            <ENTITY_STYLES.invoice.icon className={cn("size-3.5", ENTITY_STYLES.invoice.color)} />
             View Invoice
           </Link>
         </Button>

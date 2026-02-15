@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X, Layers, SplitSquareHorizontal } from "lucide-react";
+import { Filter, X, LayoutGrid, Printer, Film, Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,9 @@ import {
 import {
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
+  SERVICE_TYPE_COLORS,
 } from "@/lib/constants";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { z } from "zod";
 import { riskLevelEnum } from "@/lib/schemas/job";
 import { serviceTypeEnum } from "@/lib/schemas/quote";
@@ -27,13 +29,19 @@ import type { ServiceType } from "@/lib/schemas/quote";
 import type { CardFilters } from "@/lib/helpers/job-utils";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
-const layoutEnum = z.enum(["combined", "split"]);
+const cardTypeEnum = z.enum(["all", "jobs", "quotes"]);
 
-export type BoardLayout = z.infer<typeof layoutEnum>;
+export type CardTypeFilter = z.infer<typeof cardTypeEnum>;
 
 // ---------------------------------------------------------------------------
 // Filter options
 // ---------------------------------------------------------------------------
+
+const SERVICE_TYPE_ICONS: Record<ServiceType, typeof Printer> = {
+  "screen-print": Printer,
+  dtf: Film,
+  embroidery: Scissors,
+};
 
 const SERVICE_TYPE_OPTIONS: { value: ServiceType; label: string }[] = [
   { value: "screen-print", label: SERVICE_TYPE_LABELS["screen-print"] },
@@ -71,9 +79,9 @@ export function useFiltersFromURL(): CardFilters {
   return { today: today || undefined, serviceType, risk, horizon };
 }
 
-export function useLayoutFromURL(): BoardLayout {
+export function useCardTypeFromURL(): CardTypeFilter {
   const searchParams = useSearchParams();
-  return layoutEnum.safeParse(searchParams.get("layout")).data ?? "combined";
+  return cardTypeEnum.safeParse(searchParams.get("cardType")).data ?? "all";
 }
 
 // ---------------------------------------------------------------------------
@@ -109,19 +117,19 @@ export function BoardFilterBar() {
 
   const clearAll = useCallback(() => {
     const params = new URLSearchParams();
-    const currentLayout = searchParams.get("layout");
-    if (currentLayout) params.set("layout", currentLayout);
+    const currentCardType = searchParams.get("cardType");
+    if (currentCardType) params.set("cardType", currentCardType);
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [router, searchParams]);
 
-  const layout = useLayoutFromURL();
+  const cardType = useCardTypeFromURL();
 
   return (
     <div role="group" aria-label="Board filters" className="flex flex-wrap items-center gap-3">
-      {/* Layout toggle: Combined / Split */}
+      {/* Card type filter: All / Jobs / Quotes */}
       <div
         role="group"
-        aria-label="Board layout"
+        aria-label="Card type filter"
         className="flex items-center rounded-md border border-border/50 p-0.5"
       >
         <Button
@@ -129,30 +137,45 @@ export function BoardFilterBar() {
           size="xs"
           className={cn(
             "gap-1 rounded-sm px-2 py-1 text-xs",
-            layout === "combined"
+            cardType === "all"
               ? "bg-surface text-foreground"
               : "text-muted-foreground",
           )}
-          aria-pressed={layout === "combined"}
-          onClick={() => setParam("layout", null)}
+          aria-pressed={cardType === "all"}
+          onClick={() => setParam("cardType", null)}
         >
-          <Layers className="size-3" />
-          Combined
+          <LayoutGrid className="size-3" />
+          All
         </Button>
         <Button
           variant="ghost"
           size="xs"
           className={cn(
             "gap-1 rounded-sm px-2 py-1 text-xs",
-            layout === "split"
+            cardType === "jobs"
               ? "bg-surface text-foreground"
               : "text-muted-foreground",
           )}
-          aria-pressed={layout === "split"}
-          onClick={() => setParam("layout", "split")}
+          aria-pressed={cardType === "jobs"}
+          onClick={() => setParam("cardType", "jobs")}
         >
-          <SplitSquareHorizontal className="size-3" />
-          Split
+          <ENTITY_STYLES.job.icon className={cn("size-3", cardType === "jobs" && ENTITY_STYLES.job.color)} />
+          Jobs
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
+          className={cn(
+            "gap-1 rounded-sm px-2 py-1 text-xs",
+            cardType === "quotes"
+              ? "bg-surface text-foreground"
+              : "text-muted-foreground",
+          )}
+          aria-pressed={cardType === "quotes"}
+          onClick={() => setParam("cardType", "quotes")}
+        >
+          <ENTITY_STYLES.quote.icon className={cn("size-3", cardType === "quotes" && ENTITY_STYLES.quote.color)} />
+          Quotes
         </Button>
       </div>
 
@@ -172,24 +195,6 @@ export function BoardFilterBar() {
         )}
       </div>
 
-      {/* Today toggle */}
-      <div className="flex items-center gap-1.5">
-        <Switch
-          id="today-filter"
-          size="sm"
-          checked={!!filters.today}
-          onCheckedChange={(checked) =>
-            setParam("today", checked ? "true" : null)
-          }
-        />
-        <Label
-          htmlFor="today-filter"
-          className="text-xs text-muted-foreground cursor-pointer"
-        >
-          Today
-        </Label>
-      </div>
-
       {/* Service Type */}
       <Select
         value={filters.serviceType ?? "all"}
@@ -207,11 +212,17 @@ export function BoardFilterBar() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Service Types</SelectItem>
-          {SERVICE_TYPE_OPTIONS.map((opt) => (
-            <SelectItem key={opt.value} value={opt.value}>
-              {opt.label}
-            </SelectItem>
-          ))}
+          {SERVICE_TYPE_OPTIONS.map((opt) => {
+            const Icon = SERVICE_TYPE_ICONS[opt.value];
+            return (
+              <SelectItem key={opt.value} value={opt.value}>
+                <span className="inline-flex items-center gap-1.5">
+                  <Icon className={cn("size-3.5", SERVICE_TYPE_COLORS[opt.value])} />
+                  {opt.label}
+                </span>
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
 
@@ -260,6 +271,24 @@ export function BoardFilterBar() {
           ))}
         </SelectContent>
       </Select>
+
+      {/* Today toggle */}
+      <div className="flex items-center gap-1.5">
+        <Switch
+          id="today-filter"
+          size="sm"
+          checked={!!filters.today}
+          onCheckedChange={(checked) =>
+            setParam("today", checked ? "true" : null)
+          }
+        />
+        <Label
+          htmlFor="today-filter"
+          className="text-xs text-muted-foreground cursor-pointer"
+        >
+          Today
+        </Label>
+      </div>
 
       {/* Clear all */}
       {activeCount > 0 && (
