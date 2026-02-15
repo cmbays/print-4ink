@@ -1,322 +1,171 @@
 ---
 title: "IMPLEMENTATION_PLAN"
-description: "Sequenced build steps for Phase 1. Each step references PRD features and APP_FLOW routes. Check current step before starting work."
+description: "Phase 1 build record and Phase 1.5 demo week plan. Tracks what was built, what's in progress, and what's next."
 category: canonical
 status: active
 phase: 1
-last_updated: 2026-02-07
-last_verified: 2026-02-07
-current_step: 0
+last_updated: 2026-02-14
+last_verified: 2026-02-14
+current_step: "Phase 1.5 — Demo Prep"
 depends_on:
   - docs/PRD.md
   - docs/APP_FLOW.md
+  - docs/ROADMAP.md
 ---
 
 # Screen Print Pro — Implementation Plan
 
-**Current Step**: Step 0 (complete) — Scaffold + Dashboard MVP
+**Current Phase**: Phase 1.5 — Demo Prep (Feb 15-21)
+**Demo Date**: February 21, 2026
 
 ---
 
 ## Build Principles
 
-1. **Vertical slices**: Build one complete screen at a time, not horizontal layers
-2. **Shared components first**: Build reusable pieces before the pages that use them
-3. **Dependencies respected**: Don't build a detail page before its list page
-4. **User review checkpoints**: Pause for feedback after major milestones
-5. **One step per session**: Reference step number in session prompts
+1. **Shape Up methodology**: Shaping → Betting → Building → Cool-down cycles
+2. **7-step vertical pipeline**: Discovery → Scope → Breadboard → Implementation Planning → Build → Review → Demo
+3. **Parallel execution**: Multiple verticals built concurrently via git worktrees + subagent-driven development
+4. **Breadboard-first**: Every vertical gets a breadboard before the first line of code
+5. **User review checkpoints**: Demo with Gary (shop owner) to validate design decisions
 
 ---
 
-## Step 0: Project Scaffold (COMPLETE)
+## Phase 1: Frontend Mockups (COMPLETE)
 
-**Status**: Done
-**What was built**:
-- Next.js 16.1.6 scaffold with Tailwind v4, shadcn/ui
-- Dashboard layout shell (sidebar + topbar + main area)
-- Dashboard page with summary cards and job sections
-- Zod schemas, constants, mock data
-- Documentation framework
+All 7 verticals built and demo-ready. 434 tests passing, 19 test files, zero rollbacks.
 
-**Files**:
-- `app/(dashboard)/layout.tsx`, `app/(dashboard)/page.tsx`
-- `components/layout/sidebar.tsx`, `components/layout/topbar.tsx`
-- `lib/schemas/*.ts`, `lib/constants.ts`, `lib/mock-data.ts`
-- All `docs/*.md` files
+### Vertical Build Record
 
----
+| Vertical | Pipeline Stage | Key PRs | Build Approach |
+|----------|---------------|---------|----------------|
+| **Dashboard** | Demo | #13 (scaffold) | Sequential — first vertical, established patterns |
+| **Quoting** | Demo | #13, #14, #20, #44 | Full pipeline: discovery → scope → breadboard → build → review |
+| **Customer Management** | Demo | #24, #33, #35, #44 | Full pipeline with SmartViewTabs pattern that propagated to other verticals |
+| **Price Matrix** | Demo | #45, #47, #49 | 4-agent research team → breadboard (167 affordances) → 3-agent parallel build |
+| **Invoicing** | Demo | #46, #48, #50 | 5-agent research → breadboard (99 UI + 44 code affordances) → build with big.js financial precision |
+| **Jobs** | Demo | #58, #64, #77 | 10-competitor analysis → Kanban with dnd-kit → polish pass → CodeRabbit fixes |
+| **Garments** | Demo | #102, #104, #109, #141 | Catalog + mockup engine. Subagent-driven 18-task build. SVG composition engine. |
+| **Screen Room** | Integrated | #98, #109, #115 | Not standalone page — integrated as customer screens tab + job detail + quote-time reuse detection |
+| **Mobile** | Sprint 2 done | #99, #101, #114 | 4-sprint plan. Nav shell (Sprint 1) + responsive pages (Sprint 2) shipped. Sprints 3-4 pending. |
 
-## Step 1: Shared Layout Polish
+### Infrastructure Built
 
-**PRD**: Supports all features (navigation backbone)
-**APP_FLOW**: Sidebar, breadcrumbs, topbar
+| Component | PRs | Description |
+|-----------|-----|-------------|
+| **Data Layer** | Multiple | 15 Zod schemas, 42 colors, 17 garments, reverse lookup helpers, big.js money utilities |
+| **Knowledge Base** | #62 | Astro 5.3, 36+ session docs, Pagefind search, Gary tracker, pipeline stepper |
+| **DevX Vertical** | #92, #94, #96, #100, #103, #108 | `work` CLI, 8 agents, 14 skills, session orchestration, Zellij layouts |
+| **PM Foundation** | #91 | Shape Up methodology, ROADMAP.md, cool-down skill, 28 GitHub labels |
+| **Worktree Workflow** | #118 | No worktree limits, push-after-commit, ownership rules |
 
-**Tasks**:
-- [ ] Polish sidebar: add section dividers, active state animation
-- [ ] Polish topbar: add search input (global, filters to sidebar nav suggestions), user avatar placeholder
-- [ ] Create `Breadcrumb` wrapper component using shadcn/ui breadcrumb
-- [ ] Wire breadcrumbs into dashboard layout (reads route segments)
-- [ ] Create shared `PageHeader` component (title + subtitle + optional action button)
-- [ ] Create shared `DataTable` component wrapper around TanStack Table + shadcn/ui Table
-- [ ] Create shared `StatusBadge` component (maps production state → color)
-- [ ] Create shared `PriorityBadge` component (maps priority → color)
-- [ ] Create shared `EmptyState` component (icon + message + optional action)
+### Phase 1 Velocity
 
-**Output**: Reusable components in `components/features/` and `components/ui/`
-
----
-
-## Step 2: Jobs List Page
-
-**PRD**: F2 (Jobs List)
-**APP_FLOW**: `/jobs` — sortable, filterable table
-**Depends on**: Step 1 (DataTable, StatusBadge, PriorityBadge, PageHeader)
-
-**Tasks**:
-- [ ] Create `app/(dashboard)/jobs/page.tsx`
-- [ ] Implement DataTable with columns: Job #, Title, Customer, Status, Priority, Due Date
-- [ ] Add toolbar: search input, status filter dropdown
-- [ ] Add view toggle tabs: "List" (active) | "Board" (links to `/jobs/board`)
-- [ ] Row click navigates to `/jobs/[id]`
-- [ ] Empty state when no jobs match filter/search
-- [ ] URL state for search query and status filter
-
-**Output**: Working jobs list at `/jobs`
+- **24 PRs merged** on Feb 14 alone (#79 → #143)
+- **15 issues closed** on Feb 14
+- **~21,000 lines added** in one day
+- **Zero rollbacks** across all Phase 1 work
 
 ---
 
-## Step 3: Job Detail Page
+## Phase 1.5: Demo Prep (IN PROGRESS)
 
-**PRD**: F3 (Job Detail)
-**APP_FLOW**: `/jobs/[id]` — full job view with timeline
-**Depends on**: Step 2 (jobs route exists)
+**Goal**: Polish, onboard, and enhance for Gary demo on February 21.
 
-**Tasks**:
-- [ ] Create `app/(dashboard)/jobs/[id]/page.tsx`
-- [ ] Build job header: number, title, status badge, priority badge, due date
-- [ ] Build status timeline component: visual 6-step progression with current state highlighted
-- [ ] Build print locations section: table with position, color count, artwork approved badge
-- [ ] Build garments section: card per garment with SKU, style, brand, color, size breakdown
-- [ ] Build customer info card with link to `/customers/[id]`
-- [ ] Handle invalid job ID (404-style message with link back to `/jobs`)
-- [ ] Breadcrumb: Dashboard > Jobs > J-1024
+### Three Must-Haves (ranked)
 
-**Output**: Full job detail view at `/jobs/[id]`
+| Priority | Deliverable | Issue | Status |
+|----------|-------------|-------|--------|
+| **#1** | Mobile Polish (Sprints 3-4) | — | Pending — forms, detail views, animation |
+| **#2** | Onboarding Wizards | #145 | Pending — guided first-time experience across verticals |
+| **#3** | DTF Gang Sheet Builder | #144 | Pending — new vertical, full pipeline needed |
 
----
+### Demo Week Schedule
 
-## --- CHECKPOINT 1: Review with User ---
+| Day | Deliverable | Risk Level |
+|-----|-------------|------------|
+| Day 1 | Cool-down: fix stale docs, triage issues, update Gary tracker | Low |
+| Day 2 | Mobile polish (Sprints 3-4): forms, detail views, animation | Low |
+| Days 3-4 | Onboarding Wizards + Bug fixes (#128, #129, #138) | Medium |
+| Days 4-5 | DTF Gang Sheet Builder — discovery through build | Medium |
+| Day 6+ | Minimal backend (stretch) | High |
 
-**What to review**: Dashboard, Jobs List, Job Detail
-**Questions for user**:
-- Does the jobs list show the right columns? Need anything added/removed?
-- Is the job detail layout clear? Two-column vs. single-column?
-- Is the status timeline visualization intuitive?
-- Any missing information on the job detail page?
+### Demo-Blocking Bugs
 
----
+| Issue | Title | Why It Blocks |
+|-------|-------|---------------|
+| #128 | Price matrix: leading zeros | Visible data quality issue |
+| #129 | Price matrix: defer tier validation | Frustrating UX during live demo |
+| #138 | Price matrix: color pricing doubles | Incorrect pricing data |
 
-## Step 4: Kanban Board
+### Demo Journeys (Wizard-Guided)
 
-**PRD**: F4 (Kanban Board)
-**APP_FLOW**: `/jobs/board` — drag-and-drop columns
-**Depends on**: Step 2 (view toggle exists)
+1. **View the job board** — walk through Kanban, understand production flow
+2. **Close an invoice** — full financial cycle: view → record payment → mark paid
+3. **Create a customer** — demonstrate CRM capability and cross-linking
 
-**Pre-Build** (complete before coding):
-- [ ] Spike: dnd-kit mechanics for 6-column Kanban with sortable containers (`docs/spikes/spike-kanban-dnd.md`)
-- [ ] Affordance table: list all UI elements (columns, cards, drag overlay) + code mechanisms (onDragEnd, state update) + wiring
-- [ ] Ask user: (1) Drag confirmation or instant move? (2) Can cards with pending artwork be dragged to Press? (3) Fixed-width columns or flex-to-fill?
+### Mockup Integration
 
-**Tasks**:
-- [ ] Create `app/(dashboard)/jobs/board/page.tsx`
-- [ ] Build Kanban layout: 6 horizontal columns (one per production state)
-- [ ] Build job cards: job number, title, customer, due date, priority badge
-- [ ] Implement dnd-kit drag between columns
-- [ ] Update mock data status on drop (client-side state via useState)
-- [ ] Column headers with job count
-- [ ] Card click navigates to `/jobs/[id]`
-- [ ] "List" toggle links back to `/jobs`
-- [ ] Framer Motion enter/exit animations for cards
-
-**Output**: Interactive Kanban board at `/jobs/board`
+- Auto-generate garment mockups and attach to quotes when sending
+- Wire thumbnails into Job Detail, Kanban Board, Quote Detail
+- Replaces Gary's current manual process (create mockup image → email to customer)
 
 ---
 
-## Step 5: Quotes List + Detail
+## Phase 2: Feedback Iteration + Backend Foundation (NOT STARTED)
 
-**PRD**: F5 (Quotes List), F6 (Quote Detail)
-**APP_FLOW**: `/quotes`, `/quotes/[id]`
-**Depends on**: Step 1 (DataTable, PageHeader)
+**Shaped during cool-down, not yet bet on.**
 
-**Tasks**:
-- [ ] Create `app/(dashboard)/quotes/page.tsx`
-- [ ] Implement DataTable: Quote #, Customer, Status, Line Items count, Total, Date
-- [ ] Add toolbar: search, status filter, "New Quote" button
-- [ ] Row click navigates to `/quotes/[id]`
-- [ ] Create `app/(dashboard)/quotes/[id]/page.tsx`
-- [ ] Build quote header: number, status badge, date
-- [ ] Build customer info card
-- [ ] Build line items table: description, qty, colors, locations, unit price, total
-- [ ] Build summary section: subtotal, setup fees, grand total
-- [ ] Handle invalid quote ID
+### Shaped Pitches
 
-**Output**: Quotes list + detail pages
+- Process Gary's demo feedback into vertical BRIEFs
+- Backend horizontal: Supabase setup, auth, data model, API patterns (#84)
+- Quoting vertical backend (reference implementation)
+- New agents: Backend Architect (#119), Data Engineer (#120), Schema Migration (#121)
+- TDD skill for Phase 2 (#122)
+- Build pipeline upgrade (#123)
+- Sentry error monitoring (#86)
 
----
+### Open Strategic Questions
 
-## Step 6: New Quote Form
-
-**PRD**: F7 (New Quote Form)
-**APP_FLOW**: `/quotes/new`
-**Depends on**: Step 5 (quotes route exists)
-
-**Pre-Build** (complete before coding):
-- [ ] Spike: React Hook Form field arrays with Zod validation + auto-calculation (`docs/spikes/spike-quote-form.md`)
-- [ ] Affordance table: list all form fields, calculation logic, validation rules, and data flow
-- [ ] Ask user: (1) What determines unit price — quantity x colors x locations formula, or a rate card? (2) Auto-save while typing or explicit save only? (3) Need to duplicate existing quotes?
-
-**Tasks**:
-- [ ] Create `app/(dashboard)/quotes/new/page.tsx` (client component)
-- [ ] Customer selector dropdown (populated from mock customers)
-- [ ] Dynamic line items: add/remove rows with React Hook Form field arrays
-- [ ] Per-line fields: description, quantity, color count, locations
-- [ ] Auto-calculate: unit price (mock formula), line total, subtotal
-- [ ] Setup fees input
-- [ ] Grand total (subtotal + setup fees, read-only)
-- [ ] "Save as Draft" button: validates, adds to mock data, navigates to detail
-- [ ] "Cancel" button: navigates to `/quotes`
-- [ ] Form validation with Zod schema + error messages
-
-**Output**: Working quote creation form
+- Backend scope: one vertical at a time or horizontal foundation first? → **Decided: horizontal first** (ROADMAP.md)
+- Mobile path: responsive → PWA → native (phased)
+- Multi-user timing: depends on Gary feedback
 
 ---
 
-## --- CHECKPOINT 2: Review with User ---
+## Phase 3: Production App (NOT SCOPED)
 
-**What to review**: Kanban Board, Quotes List/Detail, New Quote Form
-**Questions for user**:
-- Does the Kanban board feel right? Card info sufficient?
-- Is the quote form missing any fields?
-- Is the pricing formula reasonable? (Placeholder for now)
-- Does the line item add/remove flow feel smooth?
+All verticals connected to real backend. Real-time updates, multi-user support.
 
----
+## Phase 4: Mobile (NOT SCOPED)
 
-## Step 7: Customers List + Detail
-
-**PRD**: F8 (Customers List), F9 (Customer Detail)
-**APP_FLOW**: `/customers`, `/customers/[id]`
-**Depends on**: Step 1 (DataTable, PageHeader)
-
-**Tasks**:
-- [ ] Create `app/(dashboard)/customers/page.tsx`
-- [ ] Implement DataTable: Name, Company, Email, Phone
-- [ ] Search input in toolbar
-- [ ] Row click navigates to `/customers/[id]`
-- [ ] Create `app/(dashboard)/customers/[id]/page.tsx`
-- [ ] Customer header: name, company, full contact info
-- [ ] Linked jobs table: job number, title, status, priority, due date (click → `/jobs/[id]`)
-- [ ] Linked quotes table: quote number, status, total, date (click → `/quotes/[id]`)
-- [ ] Empty states for no jobs / no quotes
-- [ ] Handle invalid customer ID
-
-**Output**: Customers list + detail with cross-linked entities
+Native mobile app on app stores. Will be shaped after Phase 3.
 
 ---
 
-## Step 8: Screen Room
+## Deferred Tech Debt
 
-**PRD**: F10 (Screen Room)
-**APP_FLOW**: `/screens`
-**Depends on**: Step 1 (DataTable, PageHeader)
+Tracked as GitHub issues. Prioritized during cool-down cycles.
 
-**Tasks**:
-- [ ] Create `app/(dashboard)/screens/page.tsx`
-- [ ] Implement DataTable: Screen ID (short), Mesh Count, Emulsion Type, Burn Status, Linked Job
-- [ ] Burn status filter dropdown in toolbar
-- [ ] Burn status badges with color coding
-- [ ] Job link click → `/jobs/[id]`
-- [ ] Empty state
-
-**Output**: Screen room inventory page
-
----
-
-## Step 9: Garment Catalog
-
-**PRD**: F11 (Garment Catalog)
-**APP_FLOW**: `/garments`
-**Depends on**: Step 1 (PageHeader)
-
-**Tasks**:
-- [ ] Create `app/(dashboard)/garments/page.tsx`
-- [ ] Extract unique garments from all jobs in mock data
-- [ ] Group by brand
-- [ ] Display: SKU, Style, Brand, Color
-- [ ] Show which jobs use each garment (expandable or inline)
-- [ ] Empty state
-
-**Output**: Garment catalog page
-
----
-
-## --- CHECKPOINT 3: Final Review ---
-
-**What to review**: All 11 screens, full navigation, cross-links
-**Verification**:
-- [ ] All sidebar links work
-- [ ] All breadcrumbs correct
-- [ ] All cross-links (job → customer, quote → customer, screen → job) work
-- [ ] All empty states display correctly
-- [ ] All 404/not-found states handled
-- [ ] Quality checklist from CLAUDE.md passes for each screen
-- [ ] 3-click-max rule verified
-- [ ] 5-second dashboard scan verified
-
----
-
-## Step 10: Polish Pass
-
-**Depends on**: All previous steps + Checkpoint 3 feedback
-
-**Tasks**:
-- [ ] Apply Framer Motion page transitions (layout animations between routes)
-- [ ] Add hover/focus states to all interactive elements
-- [ ] Verify color token usage (no off-palette colors)
-- [ ] Verify typography scale (max 3-4 sizes per screen)
-- [ ] Apply "Jobs Filter" methodology: remove elements that don't add meaning
-- [ ] Test keyboard navigation flow
-- [ ] Add ARIA labels where needed
-- [ ] Verify contrast ratios (4.5:1 minimum)
-
-**Output**: Polished, accessible Phase 1 mockup ready for user acceptance testing
-
----
-
-## Summary
-
-| Step | Feature | Route(s) | Status |
-|------|---------|----------|--------|
-| 0 | Scaffold + Dashboard | `/` | Done |
-| 1 | Shared Components | (components) | Pending |
-| 2 | Jobs List | `/jobs` | Pending |
-| 3 | Job Detail | `/jobs/[id]` | Pending |
-| -- | **Checkpoint 1** | | |
-| 4 | Kanban Board | `/jobs/board` | Pending |
-| 5 | Quotes List + Detail | `/quotes`, `/quotes/[id]` | Pending |
-| 6 | New Quote Form | `/quotes/new` | Pending |
-| -- | **Checkpoint 2** | | |
-| 7 | Customers List + Detail | `/customers`, `/customers/[id]` | Pending |
-| 8 | Screen Room | `/screens` | Pending |
-| 9 | Garment Catalog | `/garments` | Pending |
-| -- | **Checkpoint 3** | | |
-| 10 | Polish Pass | All | Pending |
+| Issue | Category | Priority |
+|-------|----------|----------|
+| #15 | Migrate forms to React Hook Form + Zod | next |
+| #16 | Replace local interfaces with schema-derived types | next |
+| #17 | Sync garment filter with URL params | next |
+| #18 | Extract shared formatCurrency/formatDate | next |
+| #63 | KB CodeRabbit feedback (a11y, markdown lint) | later |
+| #70-#76 | Jobs board refactoring (DRY, a11y, types) | next |
+| #78 | Rename (dashboard) route group | later |
+| #116 | Migrate QuoteForm money arithmetic to big.js | low |
 
 ---
 
 ## Related Documents
 
+- `docs/ROADMAP.md` — Strategic planning, phases, bets
+- `PROGRESS.md` — What's been built (updated after PR merges)
 - `docs/PRD.md` — Feature definitions and acceptance criteria
 - `docs/APP_FLOW.md` — Routes and navigation paths
 - `docs/TECH_STACK.md` — Tool choices
 - `CLAUDE.md` — AI operating rules and quality checklist
+- `knowledge-base/src/content/sessions/` — Historical session records
