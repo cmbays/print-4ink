@@ -4,8 +4,8 @@ description: "AI operating rules, design system, coding standards, and canonical
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-14
-last_verified: 2026-02-14
+last_updated: 2026-02-15
+last_verified: 2026-02-15
 depends_on: []
 ---
 
@@ -248,16 +248,23 @@ Before considering any screen done:
 
 ### Every Vertical (Required)
 
-Before building any vertical's screens, produce a **breadboard document** using the `breadboarding` skill:
+Before building any vertical, the Shaping phase produces these artifacts:
 
-1. **Run breadboarding skill** → produces `docs/breadboards/{vertical}-breadboard.md`
-   - Maps all Places (pages, modals, subplaces)
-   - Lists every UI affordance with wiring (control flow + data flow)
-   - Identifies code affordances (Phase 1: client-side, Phase 2: server-side)
-   - Defines component boundaries (shared vs vertical-specific)
-   - Establishes build order with dependency chain
-2. **Verify scope coverage** — every CORE feature from scope definition has corresponding affordances
-3. **Frontend-builder reads breadboard** as part of its startup sequence
+1. **Run shaping skill** → produces `docs/shaping/{topic}/frame.md` + `docs/shaping/{topic}/shaping.md`
+   - Defines requirements (R) and explores competing shapes (A, B, C...)
+   - Selects shape via fit check (R x S binary matrix)
+   - Spikes flagged unknowns before committing
+2. **Run breadboarding skill** → produces `docs/breadboards/{topic}-breadboard.md`
+   - Maps selected shape's parts into concrete affordances (U, N, S)
+   - Wires control flow (Wires Out) and data flow (Returns To)
+   - Slices into vertical demo-able increments (V1, V2...)
+3. **Run breadboard-reflection skill** → audits breadboard for design smells
+   - Traces user stories through wiring
+   - Applies naming test to all affordances
+   - Fixes wiring inconsistencies
+4. **Run implementation-planning skill** → produces execution manifest
+   - Takes sliced breadboard as input
+   - Designs waves for parallel agent execution
 
 ### Complex Screens (Additional)
 
@@ -349,7 +356,9 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 | Skill | Trigger | Purpose |
 |-------|---------|---------|
 | `vertical-discovery` | Start of each new vertical | 7-step competitor research + user interview + journey design methodology |
-| `breadboarding` | After scope definition, before build | Map UI/code affordances, wiring, places, and component boundaries into a buildable blueprint |
+| `shaping` | After interview, before breadboarding | R x S methodology — requirements, shapes, fit checks, spikes |
+| `breadboarding` | After shaping, before impl-planning | Map shaped parts or existing systems into affordances, wiring, and vertical slices |
+| `breadboard-reflection` | After breadboarding, before impl-planning | QA audit of breadboards — smell detection, naming test, wiring verification |
 | `screen-builder` | Starting Steps 1-10 | Build screens with design system + quality checklist + templates |
 | `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report |
 | `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions |
@@ -362,7 +371,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 > Simplified references. See `docs/AGENTS.md` for full pattern details.
 
-- **Vertical Build Chain** (standard per-vertical): `vertical-discovery → scope definition → breadboarding → frontend-builder → quality-gate → demo`
+- **Vertical Build Chain** (standard per-vertical): `research → interview → shaping → breadboarding → bb-reflection → implementation-planning → build → quality-gate → demo`
 - **Linear Chain** (simple screens): `frontend-builder → quality-gate → progress update`
 - **Pre-Build Chain** (complex screens): `breadboarding → requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update`
 - **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → frontend-builder (fixes) → quality-gate`
