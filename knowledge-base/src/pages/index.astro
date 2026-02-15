@@ -4,6 +4,8 @@ import Sidebar from '../components/Sidebar.astro';
 import DocCard from '../components/DocCard.astro';
 import PhaseFilter from '../components/PhaseFilter.astro';
 import { getCollection } from 'astro:content';
+import verticalsConfig from '../../../config/verticals.json';
+import stagesConfig from '../../../config/stages.json';
 
 // Fetch all sessions
 const allSessions = await getCollection('sessions');
@@ -18,30 +20,15 @@ for (const s of allSessions) {
 // Sort by date descending
 const sorted = allSessions.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// Vertical display names
-const verticalLabels: Record<string, string> = {
-  quoting: 'Quoting',
-  'customer-management': 'Customer Management',
-  invoicing: 'Invoicing',
-  'price-matrix': 'Price Matrix',
-  jobs: 'Jobs',
-  'screen-room': 'Screen Room',
-  garments: 'Garments',
-  dashboard: 'Dashboard',
-  'mobile-optimization': 'Mobile Optimization',
-  meta: 'Meta',
-};
+// Vertical display names (from canonical config)
+const verticalLabels: Record<string, string> = Object.fromEntries(
+  verticalsConfig.map((v) => [v.slug, v.label])
+);
 
-// Pipeline stages in order
-const pipelineStages = [
-  { slug: 'research', label: 'Research' },
-  { slug: 'interview', label: 'Interview' },
-  { slug: 'breadboarding', label: 'Breadboard' },
-  { slug: 'implementation-planning', label: 'Impl Plan' },
-  { slug: 'build', label: 'Build' },
-  { slug: 'review', label: 'Review' },
-  { slug: 'learnings', label: 'Learnings' },
-];
+// Pipeline stages in order (exclude non-pipeline stages like cooldown)
+const pipelineStages = stagesConfig
+  .filter((s) => s.pipeline !== false)
+  .map((s) => ({ slug: s.slug, label: s.label }));
 
 // Pre-compute which verticals have which stages
 const verticalStageMap: Record<string, string[]> = {};

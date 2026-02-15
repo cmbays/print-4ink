@@ -415,20 +415,7 @@ npm run preview      # Preview
 
 All frontmatter is validated by Zod at build time (`knowledge-base/src/content.config.ts`).
 
-**Vertical slugs:** `quoting`, `customer-management`, `invoicing`, `price-matrix`, `jobs`, `screen-room`, `garments`, `dashboard`, `mobile-optimization`, `dtf-gang-sheet`, `meta`
-
-**Stage slugs:** `research`, `interview`, `breadboarding`, `implementation-planning`, `build`, `review`, `learnings`
-
-**Tags** (apply 1-3 per session):
-
-| Tag | Color | Use When |
-|-----|-------|----------|
-| feature | Green | New functionality built |
-| build | Green | Infrastructure, tooling, scaffold |
-| plan | Blue | Strategy or roadmap created |
-| decision | Amber | Choice made between alternatives |
-| research | Purple | Competitive analysis, exploration |
-| learning | Amber | Lesson learned or gotcha documented |
+**Verticals, stages, and tags** are defined in canonical config files — see `config/verticals.json`, `config/stages.json`, and `config/tags.json`. All consumers (KB schema, KB UI, `work.sh`) import from these files. Do not duplicate the lists elsewhere.
 
 **Status:** `complete`, `in-progress`, `superseded`
 

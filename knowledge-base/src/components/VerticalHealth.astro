@@ -1,4 +1,7 @@
 ---
+import verticalsConfig from '../../../config/verticals.json';
+import stagesConfig from '../../../config/stages.json';
+
 interface Props {
   vertical: string;
   totalSessions: number;
@@ -9,28 +12,13 @@ interface Props {
 
 const { vertical, totalSessions, stageBreakdown, latestDate, status } = Astro.props;
 
-const verticalLabels: Record<string, string> = {
-  quoting: 'Quoting',
-  'customer-management': 'Customer Management',
-  invoicing: 'Invoicing',
-  'price-matrix': 'Price Matrix',
-  jobs: 'Jobs',
-  'screen-room': 'Screen Room',
-  garments: 'Garments',
-  dashboard: 'Dashboard',
-  'mobile-optimization': 'Mobile Optimization',
-  meta: 'Meta',
-};
+const verticalLabels: Record<string, string> = Object.fromEntries(
+  verticalsConfig.map((v) => [v.slug, v.label])
+);
 
-const allStages = [
-  'research',
-  'interview',
-  'breadboarding',
-  'implementation-planning',
-  'build',
-  'review',
-  'learnings',
-];
+const allStages = stagesConfig
+  .filter((s) => s.pipeline !== false)
+  .map((s) => s.slug);
 
 const coveredStages = allStages.filter((s) => (stageBreakdown[s] || 0) > 0);
 const coverageRatio = coveredStages.length / allStages.length;

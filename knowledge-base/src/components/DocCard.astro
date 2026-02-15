@@ -1,4 +1,8 @@
 ---
+import verticalsConfig from '../../../config/verticals.json';
+import stagesConfig from '../../../config/stages.json';
+import tagsConfig from '../../../config/tags.json';
+
 interface Props {
   title: string;
   subtitle: string;
@@ -15,43 +19,35 @@ const { title, subtitle, date, vertical, verticalSecondary = [], stage, tags, st
 
 const dateStr = date.toISOString().split('T')[0];
 
+const TAG_COLOR_CLASSES: Record<string, string> = {
+  green: 'bg-success/12 text-success',
+  blue: 'bg-action/12 text-action',
+  amber: 'bg-warning/12 text-warning',
+  purple: 'bg-purple/12 text-purple',
+};
+
+const tagColorMap: Record<string, string> = Object.fromEntries(
+  tagsConfig.map((t) => [t.slug, TAG_COLOR_CLASSES[t.color] || 'bg-bg-surface text-text-muted'])
+);
+
 function tagColor(tag: string): string {
-  switch (tag) {
-    case 'feature':
-    case 'build':
-      return 'bg-success/12 text-success';
-    case 'plan':
-      return 'bg-action/12 text-action';
-    case 'decision':
-    case 'learning':
-      return 'bg-warning/12 text-warning';
-    case 'research':
-      return 'bg-purple/12 text-purple';
-    default:
-      return 'bg-bg-surface text-text-muted';
-  }
+  return tagColorMap[tag] || 'bg-bg-surface text-text-muted';
 }
 
-function stageLabel(s: string): string {
-  return s
-    .split('-')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
-}
+const verticalLabelMap: Record<string, string> = Object.fromEntries(
+  verticalsConfig.map((v) => [v.slug, v.label])
+);
 
 function verticalLabel(v: string): string {
-  const labels: Record<string, string> = {
-    quoting: 'Quoting',
-    'customer-management': 'Customer Mgmt',
-    invoicing: 'Invoicing',
-    'price-matrix': 'Price Matrix',
-    jobs: 'Jobs',
-    'screen-room': 'Screen Room',
-    garments: 'Garments',
-    dashboard: 'Dashboard',
-    meta: 'Meta',
-  };
-  return labels[v] || v;
+  return verticalLabelMap[v] || v;
+}
+
+const stageLabelMap: Record<string, string> = Object.fromEntries(
+  stagesConfig.map((s) => [s.slug, s.label])
+);
+
+function stageLabel(s: string): string {
+  return stageLabelMap[s] || s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 ---
 

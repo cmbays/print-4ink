@@ -1,0 +1,8 @@
+[
+  { "slug": "feature", "label": "Feature", "color": "green" },
+  { "slug": "build", "label": "Build", "color": "green" },
+  { "slug": "plan", "label": "Plan", "color": "blue" },
+  { "slug": "decision", "label": "Decision", "color": "amber" },
+  { "slug": "research", "label": "Research", "color": "purple" },
+  { "slug": "learning", "label": "Learning", "color": "amber" }
+]

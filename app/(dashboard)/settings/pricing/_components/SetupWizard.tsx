@@ -47,12 +47,7 @@ import type { PricingTemplate, QuantityTier, ScreenPrintMatrix, CostConfig } fro
 import type { DTFPricingTemplate, DTFSheetTier, DTFRushFee, DTFFilmTypeConfig, DTFCustomerTierDiscount, DTFCostConfig } from "@/lib/schemas/dtf-pricing";
 import type { PricingTier } from "@/lib/schemas/customer";
 import type { GarmentCategory } from "@/lib/schemas/garment";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type ServiceType = "screen-print" | "dtf";
+import type { ServiceType } from "@/lib/schemas/quote";
 
 interface SetupWizardProps {
   open: boolean;

@@ -1,31 +1,39 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  Hammer,
-  FileSignature,
-  Receipt,
-  Users,
-  Layers,
-  Printer,
-  Shirt,
-  Settings,
-} from "lucide-react";
+import { Layers } from "lucide-react";
+import { PRIMARY_NAV, SECONDARY_NAV, type NavItem } from "@/lib/constants/navigation";
 import { SidebarNavLink } from "./SidebarNavLink";
 
-const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Quotes", href: "/quotes", icon: FileSignature, iconColor: "text-magenta" },
-  { name: "Invoices", href: "/invoices", icon: Receipt, iconColor: "text-success" },
-  { name: "Jobs", href: "/jobs/board", icon: Hammer, activePrefix: "/jobs", iconColor: "text-purple" },
-  { name: "Screens", href: "/screens", icon: Printer, iconColor: "text-action" },
-  { name: "Customers", href: "/customers", icon: Users },
-  { name: "Garments", href: "/garments", icon: Shirt },
-] satisfies Array<{ name: string; href: string; icon: typeof LayoutDashboard; activePrefix?: string; iconColor?: string }>;
+// Desktop sidebar uses a different display order than mobile bottom nav.
+// Build a lookup from all nav items, then arrange in sidebar-specific order.
+const ALL_NAV = new Map<string, NavItem>(
+  [...PRIMARY_NAV, ...SECONDARY_NAV].map((item) => [item.href, item])
+);
 
-const settingsNavigation = [
-  { name: "Pricing", href: "/settings/pricing", icon: Settings },
+const SIDEBAR_MAIN_ORDER = [
+  "/",
+  "/quotes",
+  "/invoices",
+  "/jobs/board",
+  "/screens",
+  "/customers",
+  "/garments",
 ];
+
+const SIDEBAR_SETTINGS_ORDER = ["/settings/pricing"];
+
+function getNavItem(href: string): NavItem {
+  const item = ALL_NAV.get(href);
+  if (!item) throw new Error(`Sidebar: no nav item for "${href}". Update navigation.ts or SIDEBAR_*_ORDER.`);
+  return item;
+}
+
+const mainNavItems = SIDEBAR_MAIN_ORDER.map(getNavItem);
+const settingsNavItems = SIDEBAR_SETTINGS_ORDER.map((href) => {
+  const item = getNavItem(href);
+  // Sidebar shows "Pricing" under a Settings header (not "Pricing Settings")
+  return item.label === "Pricing Settings" ? { ...item, label: "Pricing" } : item;
+});
 
 export function Sidebar() {
   return (
@@ -38,8 +46,8 @@ export function Sidebar() {
       </div>
       <nav className="flex flex-1 flex-col px-2 py-3">
         <div className="flex-1 space-y-1">
-          {navigation.map((item) => (
-            <SidebarNavLink key={item.name} {...item} />
+          {mainNavItems.map((item) => (
+            <SidebarNavLink key={item.href} {...item} />
           ))}
         </div>
 
@@ -49,8 +57,8 @@ export function Sidebar() {
           <span className="px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Settings
           </span>
-          {settingsNavigation.map((item) => (
-            <SidebarNavLink key={item.name} {...item} />
+          {settingsNavItems.map((item) => (
+            <SidebarNavLink key={item.href} {...item} />
           ))}
         </div>
       </nav>

@@ -1,41 +1,16 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import verticalsConfig from '../../config/verticals.json';
+import stagesConfig from '../../config/stages.json';
+import tagsConfig from '../../config/tags.json';
 
-const verticals = [
-  'quoting',
-  'customer-management',
-  'invoicing',
-  'price-matrix',
-  'jobs',
-  'screen-room',
-  'garments',
-  'dashboard',
-  'mobile-optimization',
-  'dtf-gang-sheet',
-  'devx',
-  'meta',
-] as const;
-
-const stages = [
-  'research',
-  'interview',
-  'breadboarding',
-  'implementation-planning',
-  'build',
-  'polish',
-  'review',
-  'learnings',
-] as const;
-
-const tags = [
-  'feature',
-  'build',
-  'plan',
-  'decision',
-  'research',
-  'learning',
-] as const;
+// Derive enum tuples from canonical config files
+const verticals = verticalsConfig.map((v) => v.slug) as [string, ...string[]];
+// All stages are valid for session frontmatter (including non-pipeline stages like cooldown).
+// Pipeline-only filtering is done in display components, not in data validation.
+const stages = stagesConfig.map((s) => s.slug) as [string, ...string[]];
+const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
 
 const sessions = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/sessions' }),

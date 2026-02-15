@@ -3,38 +3,20 @@ import Layout from '../../../layouts/Layout.astro';
 import Pipeline from '../../../components/Pipeline.astro';
 import DocCard from '../../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
+import verticalsConfig from '../../../../../config/verticals.json';
+import stagesConfig from '../../../../../config/stages.json';
 
-const verticalLabels: Record<string, string> = {
-  quoting: 'Quoting',
-  'customer-management': 'Customer Management',
-  invoicing: 'Invoicing',
-  'price-matrix': 'Price Matrix',
-  jobs: 'Jobs',
-  'screen-room': 'Screen Room',
-  garments: 'Garments',
-  dashboard: 'Dashboard',
-  meta: 'Meta',
-};
+const verticalLabels: Record<string, string> = Object.fromEntries(
+  verticalsConfig.map((v) => [v.slug, v.label])
+);
 
-const stageLabels: Record<string, string> = {
-  research: 'Research',
-  interview: 'Interview',
-  breadboarding: 'Breadboarding',
-  'implementation-planning': 'Implementation Planning',
-  build: 'Build',
-  review: 'Review',
-  learnings: 'Learnings',
-};
+const stageLabels: Record<string, string> = Object.fromEntries(
+  stagesConfig.map((s) => [s.slug, s.label])
+);
 
-const allStages = [
-  'research',
-  'interview',
-  'breadboarding',
-  'implementation-planning',
-  'build',
-  'review',
-  'learnings',
-];
+const allStages = stagesConfig
+  .filter((s) => s.pipeline !== false)
+  .map((s) => s.slug);
 
 export async function getStaticPaths() {
   const sessions = await getCollection('sessions');

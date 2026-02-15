@@ -70,6 +70,14 @@ export const QUOTE_STATUS_COLORS: Record<QuoteStatus, string> = {
   revised: "text-warning",
 };
 
+export const QUOTE_STATUS_BADGE_COLORS: Record<QuoteStatus, string> = {
+  draft: "bg-muted text-muted-foreground",
+  sent: "bg-action/10 text-action border border-action/20",
+  accepted: "bg-success/10 text-success border border-success/20",
+  declined: "bg-error/10 text-error border border-error/20",
+  revised: "bg-warning/10 text-warning border border-warning/20",
+};
+
 export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
   "screen-print": "Screen Print",
   dtf: "DTF",
