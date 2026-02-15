@@ -1,6 +1,6 @@
 # Agent Registry
 
-**Last Verified**: 2026-02-14
+**Last Verified**: 2026-02-15
 
 This document is the canonical reference for Screen Print Pro's agent architecture. It defines which agents exist, when to use them, how they orchestrate together, and how to create new ones.
 
@@ -153,12 +153,12 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 ### Pattern 1: Vertical Build Chain (Standard for Verticals)
 
 ```text
-vertical-discovery → scope definition → breadboarding → frontend-builder → quality-gate → demo
+research → interview → shaping → breadboarding → bb-reflection → implementation-planning → build → quality-gate → demo
 ```
 
 **Use for**: Every new vertical (Quoting, Invoicing, Customer Management, etc.)
 
-This is the standard 5-phase workflow. Breadboarding produces the build blueprint that frontend-builder consumes. The breadboard maps all UI affordances, code affordances, data stores, and wiring before any code is written.
+This is the standard pipeline. After research and interview, the **shaping** skill defines requirements and explores competing shapes (R x S fit-check methodology). The winning shape feeds into **breadboarding**, which maps all UI affordances, code affordances, data stores, and wiring. The **breadboard-reflection** skill then audits the breadboard for design smells before implementation planning begins. The frontend-builder agent consumes the breadboard as its build blueprint.
 
 ### Pattern 2: Linear Chain (Simple Screens)
 
@@ -173,12 +173,12 @@ The frontend-builder preloads breadboarding, screen-builder, and quality-gate sk
 ### Pattern 3: Pre-Build Chain (Complex Screens)
 
 ```text
-breadboarding → requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update
+shaping → breadboarding → bb-reflection → requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update
 ```
 
 **Use for**: Complex screens with ambiguous behavior (e.g., Kanban board, Quote form)
 
-Breadboarding maps the affordances first, then the interrogator surfaces unknowns and documents them. The builder uses both the breadboard and spike as context.
+Shaping explores competing approaches and selects the best shape. Breadboarding maps the affordances, and breadboard-reflection audits for design smells. The interrogator then surfaces remaining unknowns and documents them. The builder uses the shaped breadboard and spike as context.
 
 ### Pattern 4: Checkpoint Chain (Milestones)
 
@@ -197,6 +197,33 @@ feature-strategist → feature plan → user approval → update IMPLEMENTATION_
 ```
 
 **Use for**: When analyzing Print Life screenshots, planning Phase 2 features
+
+## Skill Registry
+
+Skills live in `.claude/skills/` and are either preloaded by agents or invoked explicitly.
+
+| Skill | Trigger | Purpose | Preloaded By |
+|-------|---------|---------|--------------|
+| `vertical-discovery` | Start of each new vertical | 7-step competitor research + user interview + journey design | — (invoked explicitly) |
+| `shaping` | After interview, before breadboarding | R x S methodology — requirements, shapes, fit checks, spikes | — (invoked explicitly) |
+| `breadboarding` | After shaping, before impl-planning | Map shaped parts into affordances, wiring, and vertical slices | `frontend-builder` |
+| `breadboard-reflection` | After breadboarding, before impl-planning | QA audit of breadboards — smell detection, naming test, wiring verification | — (standalone, invoked explicitly) |
+| `screen-builder` | Starting screen builds | Build screens with design system + quality checklist + templates | `frontend-builder` |
+| `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report | `frontend-builder` |
+| `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions | `requirements-interrogator` |
+| `design-audit` | Design review checkpoints | 15-dimension audit against design system | `design-auditor` |
+| `feature-strategy` | Feature planning | Product strategy frameworks and feature plan templates | `feature-strategist` |
+| `doc-sync` | After completing steps | Drift detection and doc synchronization | `doc-sync` |
+| `one-on-one` | 1:1 check-ins | Structured check-in protocol | `secretary` |
+| `cool-down` | Between build cycles, after demos | Retrospective synthesis and forward planning (Shape Up) | `secretary` |
+| `build-session-protocol` | Build sessions | Self-review protocol with finance-sme + build-reviewer | — (invoked explicitly) |
+| `implementation-planning` | After breadboard, before build | Sequenced build step generation | — (invoked explicitly) |
+| `gary-tracker` | Questions for the user | Track and surface unanswered questions | — (invoked explicitly) |
+| `learnings-synthesis` | After sessions | Extract and document lessons learned | — (invoked explicitly) |
+
+**Notes**:
+- `shaping` is invoked explicitly at the start of a vertical pipeline. A dedicated shaping agent is a candidate for Phase 2 if shaping becomes frequent enough to justify agent-level isolation.
+- `breadboard-reflection` is always invoked as a standalone skill after breadboarding completes. It is intentionally not preloaded by any agent — it acts as an independent QA checkpoint, not part of the builder's workflow.
 
 ## Handoff Protocol
 
@@ -323,6 +350,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 ## Deferred to Phase 2
 
+- **Shaping agent** — Dedicated agent preloading `shaping` skill with read-only tools for shape exploration. Currently invoked as a skill; promote to agent if shaping frequency justifies it.
 - **Agent nesting** — Agents calling subagents (complexity not justified in Phase 1)
 - **Continuous learning** — `~/.claude/skills/learned/` integration
 - **Multi-agent teams** — Parallel agent execution with coordination
