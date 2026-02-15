@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-15
-**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 37+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 14 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed).
+**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 37+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 14 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed).
 
 ## What's Built
 
@@ -221,6 +221,20 @@
 - **PR #182**: Exact topic matching in `work clean` branch lookup (prevents substring matches)
 </details>
 
+<details><summary>Config Centralization & Code Dedup (PR #195 — merged)</summary>
+
+- **Closes #190**: Shared concepts (verticals, stages, tags) were duplicated in 7+ locations and had drifted out of sync
+- **3 canonical config files** at `config/`: `verticals.json` (12 entries), `stages.json` (9 entries with `workAlias`/`pipeline` flags), `tags.json` (6 entries with colors)
+- **9 KB consumer migrations**: `content.config.ts`, `Sidebar.astro`, `DocCard.astro`, `VerticalHealth.astro`, `index.astro`, `[vertical].astro`, `[stage].astro` — all import from config
+- **work.sh**: `VALID_VERTICALS` read dynamically via `python3 -c` with guards for missing file, missing python3, and malformed JSON
+- **4 code dedup fixes**: sidebar.tsx (nav from `navigation.ts` Map lookup with explicit error throws), StatusBadge.tsx (imports from `lib/constants.ts`), BoardFilterBar.tsx (`SERVICE_TYPE_ICONS` from ServiceTypeBadge), SetupWizard.tsx (`ServiceType` from schema)
+- **Bugfixes found during audit**: `dtf-gang-sheet` and `devx` missing from 4 KB UI files, `mobile-optimization` missing from stage detail page, `polish` stage missing from VerticalHealth, invalid `vertical: infrastructure` in session doc
+- **CLAUDE.md**: Inline vertical/stage/tag lists replaced with config file references
+- **Zod schema**: All stages (including `cooldown` with `pipeline: false`) valid for session frontmatter — pipeline filtering done in display components only
+- **3-agent parallel review**: Code reviewer (CodeRabbit), build verifier (tsc + tests + builds), silent failure hunter. All findings addressed before merge.
+- 19 files changed (3 new, 16 modified), net -100 lines, 529 tests passing
+</details>
+
 <details><summary>Mobile Optimization Research (PR #90 — merged)</summary>
 
 - **Vertical registered**: `mobile-optimization` slug added to KB schema, all vertical label maps, sidebar, CLAUDE.md
@@ -366,6 +380,7 @@
 - [ ] **#87** — Update stale IMPLEMENTATION_PLAN.md (priority/now)
 - [ ] **#88** — Integrate coderabbit/pr-review-toolkit into PR workflow
 - [ ] **#89** — Create vertical BRIEF template + first BRIEF for quoting
+- [ ] **#196** — Rename pipeline stages to shorter, consistent slugs + add `shape` step (deferred to pipeline architecture session)
 
 ## Next Actions
 
