@@ -5,16 +5,16 @@ import type {
   MarginIndicator,
   QuantityTier,
   ScreenPrintMatrix,
-} from "./schemas/price-matrix";
+} from "@/lib/schemas/price-matrix";
 import type {
   DTFPricingTemplate,
   DTFCostConfig,
   DTFRushTurnaround,
   DTFFilmType,
-} from "./schemas/dtf-pricing";
-import type { PricingTier } from "./schemas/customer";
-import type { GarmentCategory } from "./schemas/garment";
-import { money as bigMoney, round2, toNumber } from "./helpers/money";
+} from "@/lib/schemas/dtf-pricing";
+import type { PricingTier } from "@/lib/schemas/customer";
+import type { GarmentCategory } from "@/lib/schemas/garment";
+import { money as bigMoney, round2, toNumber } from "@/lib/helpers/money";
 
 // Local wrapper: pricing-engine uses money() → number throughout.
 // Main's money() returns Big, so wrap with round2 + toNumber.

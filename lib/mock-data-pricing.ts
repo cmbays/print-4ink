@@ -1,6 +1,6 @@
-import type { PricingTemplate } from "./schemas/price-matrix";
-import type { DTFPricingTemplate } from "./schemas/dtf-pricing";
-import type { TagTemplateMapping } from "./schemas/tag-template-mapping";
+import type { PricingTemplate } from "@/lib/schemas/price-matrix";
+import type { DTFPricingTemplate } from "@/lib/schemas/dtf-pricing";
+import type { TagTemplateMapping } from "@/lib/schemas/tag-template-mapping";
 
 // ---------------------------------------------------------------------------
 // Template IDs (stable — referenced by tag mappings and quote line items)

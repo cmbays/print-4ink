@@ -2,6 +2,7 @@
 
 import { useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { z } from "zod";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -18,6 +19,9 @@ const TABS = [
 
 type TabValue = (typeof TABS)[number]["value"];
 
+const TAB_VALUES = TABS.map((t) => t.value) as [TabValue, ...TabValue[]];
+const tabSchema = z.enum(TAB_VALUES).catch("all");
+
 // ---------------------------------------------------------------------------
 // SmartViewTabs
 // ---------------------------------------------------------------------------
@@ -27,7 +31,7 @@ export function SmartViewTabs() {
   const searchParams = useSearchParams();
   const tablistRef = useRef<HTMLDivElement>(null);
 
-  const currentView = (searchParams.get("view") as TabValue) ?? "all";
+  const currentView = tabSchema.parse(searchParams.get("view") ?? "all");
 
   // ---- URL state management ------------------------------------------------
 

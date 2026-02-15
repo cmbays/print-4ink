@@ -270,7 +270,7 @@ Always check `components/ui/` before creating custom components. shadcn/ui provi
 The primary CTA gets the neobrutalist treatment: bold shadow, spring hover, dark text on Niji blue.
 
 ```tsx
-<Button className="bg-action text-black font-semibold border-2 border-current shadow-[4px_4px_0px] shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px] transition-all">
+<Button className="bg-action text-black font-semibold border-2 border-current shadow-brutal shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal-lg active:translate-x-0 active:translate-y-0 active:shadow-brutal-sm transition-all">
   New Quote
 </Button>
 ```
@@ -294,7 +294,7 @@ Three card treatments matching design layers:
 </div>
 
 // Interactive card — Neobrutalist hover
-<div className="rounded-lg border-2 border-border bg-card p-6 cursor-pointer transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px] hover:shadow-action hover:border-action">
+<div className="rounded-lg border-2 border-border bg-card p-6 cursor-pointer transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal hover:shadow-action hover:border-action">
   ...
 </div>
 ```

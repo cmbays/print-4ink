@@ -161,7 +161,7 @@ Gary uses iPhone, at least one employee uses Android. Reinforces PWA-first appro
 
 <div class="gary-question" data-question-id="mobile-q5" data-vertical="mobile-optimization" data-status="unanswered">
   <p class="gary-question-text">Would you want a TV on the shop floor showing the job board that auto-updates when someone moves a card from their phone?</p>
-  <p class="gary-question-context">The shop floor display concept emerged from the interview. Need Gary's reaction to validate before designing.</p>
+  <p class="gary-question-context">The shop floor display concept emerged from the interview. Need Gary's reaction to validate before designing. Partial answer: no tablets on production floor, use at events. Currently use a whiteboard — auto-refresh is the selling point. TV/display question still needs Gary's direct input.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 

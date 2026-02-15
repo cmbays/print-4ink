@@ -12,6 +12,7 @@ const verticals = [
   'garments',
   'dashboard',
   'mobile-optimization',
+  'dtf-gang-sheet',
   'devx',
   'meta',
 ] as const;
