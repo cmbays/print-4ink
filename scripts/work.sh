@@ -303,7 +303,9 @@ CONTEXT
 _work_phase() {
     local PHASE="$1"; shift
     local VERTICAL="${1:-}"
-    local VALID_VERTICALS="quoting customer-management invoicing price-matrix jobs screen-room garments dashboard mobile-optimization dtf-gang-sheet devx meta"
+    # Read valid verticals from canonical config (python3 ships with macOS, no jq needed)
+    local VALID_VERTICALS
+    VALID_VERTICALS=$(python3 -c "import json; data=json.load(open('${PRINT4INK_REPO}/config/verticals.json')); print(' '.join(v['slug'] for v in data))")
 
     [[ -z "$VERTICAL" ]] && {
         echo "Error: vertical required. Usage: work $PHASE <vertical>"

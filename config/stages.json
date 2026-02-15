@@ -1,0 +1,11 @@
+[
+  { "slug": "research", "label": "Research" },
+  { "slug": "interview", "label": "Interview" },
+  { "slug": "breadboarding", "label": "Breadboarding", "workAlias": "breadboard" },
+  { "slug": "implementation-planning", "label": "Implementation Planning", "workAlias": "plan" },
+  { "slug": "build", "label": "Build" },
+  { "slug": "polish", "label": "Polish" },
+  { "slug": "review", "label": "Review" },
+  { "slug": "learnings", "label": "Learnings" },
+  { "slug": "cooldown", "label": "Cooldown", "pipeline": false }
+]

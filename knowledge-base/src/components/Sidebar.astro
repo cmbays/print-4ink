@@ -1,5 +1,6 @@
 ---
 import Search from 'astro-pagefind/components/Search';
+import verticalsConfig from '../../../config/verticals.json';
 
 interface Props {
   activeVertical?: string;
@@ -16,18 +17,7 @@ const views = [
   { id: 'decisions', label: 'Decisions', href: '/decisions' },
 ];
 
-const verticals = [
-  { slug: 'quoting', label: 'Quoting' },
-  { slug: 'customer-management', label: 'Customer Mgmt' },
-  { slug: 'invoicing', label: 'Invoicing' },
-  { slug: 'price-matrix', label: 'Price Matrix' },
-  { slug: 'jobs', label: 'Jobs' },
-  { slug: 'screen-room', label: 'Screen Room' },
-  { slug: 'garments', label: 'Garments' },
-  { slug: 'dashboard', label: 'Dashboard' },
-  { slug: 'mobile-optimization', label: 'Mobile Opt.' },
-  { slug: 'meta', label: 'Meta' },
-];
+const verticals = verticalsConfig.map((v) => ({ slug: v.slug, label: v.label }));
 ---
 
 <aside id="sidebar" class="hidden md:flex flex-col w-[260px] min-w-[260px] h-screen bg-bg-primary border-r border-border overflow-y-auto sticky top-0">

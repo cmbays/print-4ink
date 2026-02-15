@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { Filter, X, LayoutGrid, Printer, Film, Scissors } from "lucide-react";
+import { Filter, X, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
   SERVICE_TYPE_COLORS,
 } from "@/lib/constants";
 import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
 import { z } from "zod";
 import { riskLevelEnum } from "@/lib/schemas/job";
 import { serviceTypeEnum } from "@/lib/schemas/quote";
@@ -32,16 +33,6 @@ const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
 const cardTypeEnum = z.enum(["all", "jobs", "quotes"]);
 
 export type CardTypeFilter = z.infer<typeof cardTypeEnum>;
-
-// ---------------------------------------------------------------------------
-// Filter options
-// ---------------------------------------------------------------------------
-
-const SERVICE_TYPE_ICONS: Record<ServiceType, typeof Printer> = {
-  "screen-print": Printer,
-  dtf: Film,
-  embroidery: Scissors,
-};
 
 const SERVICE_TYPE_OPTIONS: { value: ServiceType; label: string }[] = [
   { value: "screen-print", label: SERVICE_TYPE_LABELS["screen-print"] },

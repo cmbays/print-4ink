@@ -4,56 +4,19 @@ import Pipeline from '../../components/Pipeline.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
+import verticalsConfig from '../../../../config/verticals.json';
+import stagesConfig from '../../../../config/stages.json';
 
-const verticals = [
-  'quoting',
-  'customer-management',
-  'invoicing',
-  'price-matrix',
-  'jobs',
-  'screen-room',
-  'garments',
-  'dashboard',
-  'mobile-optimization',
-  'meta',
-];
+const verticalLabels: Record<string, string> = Object.fromEntries(
+  verticalsConfig.map((v) => [v.slug, v.label])
+);
 
-const verticalLabels: Record<string, string> = {
-  quoting: 'Quoting',
-  'customer-management': 'Customer Management',
-  invoicing: 'Invoicing',
-  'price-matrix': 'Price Matrix',
-  jobs: 'Jobs',
-  'screen-room': 'Screen Room',
-  garments: 'Garments',
-  dashboard: 'Dashboard',
-  'mobile-optimization': 'Mobile Optimization',
-  meta: 'Meta',
-};
-
-const allStages = [
-  'research',
-  'interview',
-  'breadboarding',
-  'implementation-planning',
-  'build',
-  'review',
-  'learnings',
-];
+const allStages = stagesConfig
+  .filter((s) => s.pipeline !== false)
+  .map((s) => s.slug);
 
 export function getStaticPaths() {
-  return [
-    'quoting',
-    'customer-management',
-    'invoicing',
-    'price-matrix',
-    'jobs',
-    'screen-room',
-    'garments',
-    'dashboard',
-    'mobile-optimization',
-    'meta',
-  ].map((v) => ({ params: { vertical: v } }));
+  return verticalsConfig.map((v) => ({ params: { vertical: v.slug } }));
 }
 
 const { vertical } = Astro.params;

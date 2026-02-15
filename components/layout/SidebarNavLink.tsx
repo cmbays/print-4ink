@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
 interface SidebarNavLinkProps {
-  name: string;
+  label: string;
   href: string;
   icon: LucideIcon;
   iconColor?: string;
@@ -14,7 +14,7 @@ interface SidebarNavLinkProps {
 }
 
 export function SidebarNavLink({
-  name,
+  label,
   href,
   icon: Icon,
   iconColor,
@@ -37,7 +37,7 @@ export function SidebarNavLink({
       )}
     >
       <Icon className={cn("h-4 w-4", iconColor)} />
-      {name}
+      {label}
     </Link>
   );
 }

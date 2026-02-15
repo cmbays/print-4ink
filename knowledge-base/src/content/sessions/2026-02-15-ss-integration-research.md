@@ -3,7 +3,7 @@ title: "S&S Activewear Integration Research Phase"
 subtitle: "4-agent parallel research: security, standards, architecture, infrastructure"
 date: 2026-02-15
 phase: 2
-vertical: infrastructure
+vertical: meta
 verticalSecondary: [garments]
 stage: research
 tags: [research, plan, decision]
