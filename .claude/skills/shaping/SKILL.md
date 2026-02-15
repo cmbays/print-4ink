@@ -2,7 +2,7 @@
 name: shaping
 description: >
   Iterative problem definition (requirements) and solution exploration (shapes).
-  Uses R x S methodology with fit checks, spikes, and multi-level consistency.
+  Uses R × S methodology with fit checks, spikes, and multi-level consistency.
   Produces Frame and Shaping documents that feed into breadboarding.
 trigger: >
   After interview/research is complete, before breadboarding.
@@ -14,7 +14,7 @@ prerequisites:
 
 # Shaping
 
-Iterative R x S methodology for defining problems and exploring solutions. Adapted from
+Iterative R × S methodology for defining problems and exploring solutions. Adapted from
 [rjs/shaping-skills](https://github.com/rjs/shaping-skills) for Screen Print Pro's pipeline.
 
 ## Pipeline Context
@@ -22,7 +22,7 @@ Iterative R x S methodology for defining problems and exploring solutions. Adapt
 Shaping is one step in the Shaping phase of the pipeline:
 
 ```
-Interview -> **Shaping (RxS)** -> Breadboarding -> BB Reflection -> Impl Planning
+Interview → **Shaping (R × S)** → Breadboarding → BB Reflection → Impl Planning
 ```
 
 ### Inputs
@@ -47,7 +47,10 @@ Produce these artifacts in `docs/shaping/{topic}/`:
 ### Handoff to Breadboarding
 
 When shaping is complete, the selected shape's **parts table** is the primary input
-to the `/breadboarding` skill. The breadboarding agent reads:
+to the `/breadboarding` skill. See [Phases → Handoff to Breadboarding](#handoff-to-breadboarding)
+for completion criteria.
+
+The breadboarding agent reads:
 
 1. `docs/shaping/{topic}/shaping.md` — selected shape + parts
 2. `docs/shaping/{topic}/frame.md` — problem/outcome context
@@ -81,8 +84,8 @@ Each level summarizes or provides a view into the level(s) below it. Lower level
 
 **Changes ripple in both directions:**
 
-- **Change at high level -> trickles down:** If you change the Frame's outcome, the shaping doc's requirements must reflect that.
-- **Change at low level -> trickles up:** If the shaping doc reveals a new constraint, the Frame's problem statement may need updating.
+- **Change at high level → trickles down:** If you change the Frame's outcome, the shaping doc's requirements must reflect that.
+- **Change at low level → trickles up:** If the shaping doc reveals a new constraint, the Frame's problem statement may need updating.
 
 ### The Practice
 
@@ -126,7 +129,7 @@ A numbered set defining the problem space.
 - Requirements are negotiated collaboratively - not filled in automatically
 - Track status: Core goal, Undecided, Leaning yes/no, Must-have, Nice-to-have, Out
 - Requirements extracted from fit checks should be made standalone (not dependent on any specific shape)
-- **R states what's needed, not what's satisfied** — satisfaction is always shown in a fit check (R x S)
+- **R states what's needed, not what's satisfied** — satisfaction is always shown in a fit check (R × S)
 - **Chunking policy:** Never have more than 9 top-level requirements. When R exceeds 9, group related requirements into chunks with sub-requirements (R3.1, R3.2, etc.) so the top level stays at 9 or fewer. This keeps the requirements scannable and forces meaningful grouping.
 
 ### S: Shapes (Solution Options)
@@ -148,10 +151,10 @@ Give shapes a short descriptive title that characterizes the approach. Display t
 ```
 
 Good titles capture the essence of the approach in a few words:
-- "E: Modify CUR in place to follow S-CUR"
-- "C: Two data sources with hybrid pagination"
-- Not: "E: The solution" (too vague)
-- Not: "E: Add search to widget-grid by swapping..." (too long)
+- ✓ "E: Modify CUR in place to follow S-CUR"
+- ✓ "C: Two data sources with hybrid pagination"
+- ✗ "E: The solution" (too vague)
+- ✗ "E: Add search to widget-grid by swapping..." (too long)
 
 ### Notation Hierarchy
 
@@ -170,7 +173,7 @@ Keep notation throughout as an audit trail. When finalizing, compose new options
 Shaping moves through one phase, then hands off:
 
 ```
-Shaping -> [handoff] -> Breadboarding (with slicing)
+Shaping → [handoff] → Breadboarding (with slicing)
 ```
 
 | Phase | Purpose | Output |
@@ -341,10 +344,10 @@ Spike is complete when all questions are answered and we can describe [the under
 
 Acceptance describes the **information/understanding** we'll have, not a conclusion or decision:
 
-- "...we can describe how users set their language and where non-English titles appear"
-- "...we can describe the steps to implement [component]"
-- Not: "...we can answer whether this is a blocker" (that's a decision, not information)
-- Not: "...we can decide if we should proceed" (decision comes after the spike)
+- ✓ "...we can describe how users set their language and where non-English titles appear"
+- ✓ "...we can describe the steps to implement [component]"
+- ✗ "...we can answer whether this is a blocker" (that's a decision, not information)
+- ✗ "...we can decide if we should proceed" (decision comes after the spike)
 
 The spike gathers information; decisions are made afterward based on that information.
 
@@ -363,7 +366,7 @@ Avoid:
 
 ## Shape Parts
 
-### Flagged Unknown
+### Flagged Unknown (⚠️)
 
 A mechanism can be described at a high level without being concretely understood. The **Flag** column tracks this:
 
@@ -390,8 +393,8 @@ This distinguishes "we have a sketch" from "we actually know how to do this." Ea
 
 Shape parts describe what we BUILD or CHANGE — not intentions or constraints:
 
-- "Route `childType === 'letter'` to `typesenseService.rawSearch()`" (mechanism)
-- Not: "Types unchanged" (constraint — belongs in R)
+- ✓ "Route `childType === 'letter'` to `typesenseService.rawSearch()`" (mechanism)
+- ✗ "Types unchanged" (constraint — belongs in R)
 
 ### Avoid Tautologies Between R and S
 
@@ -417,17 +420,17 @@ Each part should be a vertical slice containing the mechanism AND the data it ne
 When the same logic appears in multiple parts, extract it as a standalone part that others reference:
 
 - Don't duplicate "Signing handler: create WaiverSignature + set boolean" in B1 and B2
-- Extract as **B1: Signing handler**, then B2 and B3 say "-> calls B1"
+- Extract as **B1: Signing handler**, then B2 and B3 say "→ calls B1"
 
 ```markdown
 | **B1** | **Signing handler** |
 | B1.1 | WaiverSignatures table: memberId, waiverId, signedAt |
 | B1.2 | Handler: create WaiverSignature + set member.waiverUpToDate = true |
 | **B2** | **Self-serve signing** |
-| B2 | Self-serve purchase: click to sign inline -> calls B1 |
+| B2 | Self-serve purchase: click to sign inline → calls B1 |
 | **B3** | **POS signing via email** |
 | B3.1 | POS purchase: send waiver email |
-| B3.2 | Passwordless link to sign -> calls B1 |
+| B3.2 | Passwordless link to sign → calls B1 |
 ```
 
 ### Hierarchical Notation
