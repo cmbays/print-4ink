@@ -48,7 +48,7 @@ export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
               )}
             >
-              <tab.icon className="h-5 w-5" />
+              <tab.icon className="size-5" />
               <span className="text-[10px] font-medium">{tab.label}</span>
             </button>
           );
@@ -76,11 +76,14 @@ export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
               <span
                 className={cn(
                   "absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full",
-                  iconColor ? `bg-current ${activeIconColor}` : "bg-action",
+                  activeIconColor === "text-purple" ? "bg-purple"
+                    : activeIconColor === "text-magenta" ? "bg-magenta"
+                    : activeIconColor === "text-success" ? "bg-success"
+                    : "bg-action",
                 )}
               />
             )}
-            <tab.icon className={cn("h-5 w-5", active ? activeIconColor : undefined)} />
+            <tab.icon className={cn("size-5", active ? activeIconColor : undefined)} />
             <span className="text-[10px] font-medium">{tab.label}</span>
           </Link>
         );

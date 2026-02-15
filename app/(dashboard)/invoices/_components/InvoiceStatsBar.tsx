@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { invoices } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { money, toNumber, formatCurrencyCompact } from "@/lib/helpers/money";
+import { money, toNumber } from "@/lib/helpers/money";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 // ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ export function InvoiceStatsBar() {
           className="rounded-lg border border-border bg-elevated p-4"
         >
           <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <Icon className="size-4 text-muted-foreground" aria-hidden="true" />
             <span className="text-xs text-muted-foreground">{label}</span>
           </div>
           <p className="mt-1 text-lg font-semibold text-foreground">

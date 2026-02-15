@@ -111,6 +111,7 @@ export function MobileFilterSheet({
           <Button
             onClick={() => {
               onApply();
+              onOpenChange(false);
             }}
             className="flex-1 min-h-(--mobile-touch-target)"
           >

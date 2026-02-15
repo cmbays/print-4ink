@@ -320,10 +320,12 @@ export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
 
 export { ENTITY_STYLES } from "@/lib/constants/entities";
 
+// Derived from ENTITY_STYLES to prevent drift
+import { ENTITY_STYLES as _ENTITY_STYLES } from "@/lib/constants/entities";
 export const CARD_TYPE_BORDER_COLORS = {
-  job: "border-l-purple",
-  quote: "border-l-magenta",
-  scratch_note: "border-l-magenta",
+  job: _ENTITY_STYLES.job.borderColor,
+  quote: _ENTITY_STYLES.quote.borderColor,
+  scratch_note: _ENTITY_STYLES.scratch_note.borderColor,
 } as const;
 
 // ---------------------------------------------------------------------------

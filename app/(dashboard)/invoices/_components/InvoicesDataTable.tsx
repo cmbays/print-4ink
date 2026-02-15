@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Archive,
-  FileText,
   Plus,
   Search,
   SlidersHorizontal,
@@ -36,8 +35,8 @@ import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { customers } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { formatDate } from "@/lib/helpers/format";
-import { formatCurrency } from "@/lib/helpers/money";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
+import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { INVOICE_STATUS_LABELS } from "@/lib/constants";
 import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
 
@@ -564,7 +563,7 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <FileText className="size-12 text-muted-foreground/50" aria-hidden="true" />
+          <ENTITY_STYLES.invoice.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No invoices found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters

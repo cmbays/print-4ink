@@ -67,7 +67,7 @@ function MobileJobCard({
               }}
             >
               Move to {NEXT_LANE_LABEL[activeLane]}
-              <ArrowRight className="ml-1 h-4 w-4" />
+              <ArrowRight className="ml-1 size-4" />
             </Button>
           )}
           {activeLane !== "blocked" && (
@@ -80,7 +80,7 @@ function MobileJobCard({
                 onBlock();
               }}
             >
-              <AlertTriangle className="h-4 w-4" />
+              <AlertTriangle className="size-4" />
             </Button>
           )}
         </div>
@@ -238,7 +238,7 @@ export function MobileKanbanBoard({
           className="fixed bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom,0px)+1rem)] right-4 z-40 flex h-(--mobile-fab-size) w-(--mobile-fab-size) items-center justify-center rounded-full bg-action text-primary-foreground shadow-lg md:hidden"
           aria-label="Add scratch note"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="size-6" />
         </button>
       </div>
 

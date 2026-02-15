@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { DollarSign, ShoppingBag, TrendingUp, Clock, Users } from "lucide-react";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
@@ -30,8 +31,6 @@ function formatDaysAgo(dateString: string | null): string {
   if (days === 1) return "1 day ago";
   return `${days} days ago`;
 }
-
-import type { ReactNode } from "react";
 
 const statItems = [
   {

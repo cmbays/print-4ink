@@ -22,7 +22,7 @@ describe("MobileFilterSheet interface contract", () => {
       label: "Status",
       options: [{ value: "draft", label: "Draft" }],
       selected: ["draft"],
-      onToggle: (_v: string) => {},
+      onToggle: () => {},
     };
     expect(group.label).toBe("Status");
     expect(group.options).toHaveLength(1);
