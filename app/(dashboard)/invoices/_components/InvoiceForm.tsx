@@ -560,26 +560,32 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
         </CollapsibleSection>
 
         {/* Actions */}
-        <div className="flex items-center justify-between border-t border-border pt-6">
-          <Button
-            variant="link"
-            onClick={() => router.push("/invoices")}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Cancel
-          </Button>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={handleSaveDraft}>
-              <Save size={16} className="mr-2" />
-              {isEdit ? "Update Invoice" : "Save as Draft"}
-            </Button>
+        <div className="sticky bottom-0 z-10 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+          <div className="flex items-center justify-between md:pt-6 md:border-t md:border-border">
             <Button
-              onClick={handleReviewAndSend}
-              className="bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              variant="link"
+              onClick={() => router.push("/invoices")}
+              className="text-muted-foreground hover:text-foreground min-h-[44px] md:min-h-0"
             >
-              <Send size={16} className="mr-2" />
-              Review & Send
+              Cancel
             </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={handleSaveDraft}
+                className="min-h-[44px] md:min-h-0"
+              >
+                <Save size={16} className="mr-2" />
+                {isEdit ? "Update Invoice" : "Save as Draft"}
+              </Button>
+              <Button
+                onClick={handleReviewAndSend}
+                className="min-h-[44px] md:min-h-0 bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              >
+                <Send size={16} className="mr-2" />
+                Review & Send
+              </Button>
+            </div>
           </div>
         </div>
       </div>
