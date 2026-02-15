@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, AlertTriangle, Plus } from "lucide-react";
+import { ArrowRight, AlertTriangle, Package, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MobileLaneTabBar } from "./MobileLaneTabBar";
 import { BlockReasonSheet } from "@/components/features/BlockReasonSheet";
@@ -65,8 +65,9 @@ function MobileJobCard({
 
         <div className="mt-2 flex items-center gap-2">
           <ServiceTypeBadge serviceType={job.serviceType} />
-          <span className="text-xs text-muted-foreground">
-            {job.quantity} pcs
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <Package className="size-3" />
+            {job.quantity}
           </span>
           {job.dueDate && (
             <span className="text-xs text-muted-foreground">

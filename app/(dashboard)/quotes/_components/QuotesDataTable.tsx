@@ -11,6 +11,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { z } from "zod";
 
 import { cn } from "@/lib/utils";
@@ -87,12 +88,6 @@ type SortKey = z.infer<typeof sortKeySchema>;
 const sortDirSchema = z.enum(["asc", "desc"]);
 type SortDir = z.infer<typeof sortDirSchema>;
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -487,7 +482,7 @@ export function QuotesDataTable() {
                     {formatDate(quote.createdAt)}
                   </TableCell>
                   <TableCell className="text-sm font-medium tabular-nums">
-                    {formatCurrency(quote.total)}
+                    <MoneyAmount value={quote.total} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -521,9 +516,7 @@ export function QuotesDataTable() {
                 <span>
                   {quote.lineItemCount} {quote.lineItemCount === 1 ? "item" : "items"}
                 </span>
-                <span className="font-medium tabular-nums text-foreground">
-                  {formatCurrency(quote.total)}
-                </span>
+                <MoneyAmount value={quote.total} className="font-medium" />
               </div>
             </button>
           ))}

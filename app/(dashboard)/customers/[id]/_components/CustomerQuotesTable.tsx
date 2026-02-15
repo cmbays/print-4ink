@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FileText, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 import {
   QUOTE_STATUS_LABELS,
@@ -14,13 +15,6 @@ import type { Quote } from "@/lib/schemas/quote";
 
 interface CustomerQuotesTableProps {
   quotes: Quote[];
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 }
 
 export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
@@ -75,7 +69,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                   </Badge>
                 </td>
                 <td className="py-3 text-right font-mono text-foreground">
-                  {formatCurrency(quote.total)}
+                  <MoneyAmount value={quote.total} />
                 </td>
                 <td className="py-3">
                   <Button
@@ -112,7 +106,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
             </div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-sm text-foreground">
-                {formatCurrency(quote.total)}
+                <MoneyAmount value={quote.total} />
               </span>
               <span className="text-xs text-muted-foreground">
                 {formatDate(quote.createdAt)}

@@ -28,7 +28,7 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
           <Package className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
           <div>
             <p className="text-sm font-medium text-foreground">
-              {job.quantity.toLocaleString()} pcs
+              {job.quantity.toLocaleString()}
               <span className="ml-2 text-xs text-muted-foreground">
                 {SERVICE_TYPE_LABELS[job.serviceType]}
               </span>

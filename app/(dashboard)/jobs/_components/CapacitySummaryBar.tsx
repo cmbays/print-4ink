@@ -32,7 +32,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
         <div className="flex items-center gap-1.5">
           <Zap className="size-3.5 text-error" />
           <span className="text-xs font-medium text-error">
-            {rushQuantity.toLocaleString()} pcs rush
+            {rushQuantity.toLocaleString()} rush
           </span>
         </div>
       )}
@@ -41,7 +41,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
       <div className="flex items-center gap-1.5">
         <Package className="size-3.5 text-muted-foreground" />
         <span className="text-xs text-muted-foreground">
-          {totalQuantity.toLocaleString()} pcs
+          {totalQuantity.toLocaleString()}
         </span>
       </div>
 

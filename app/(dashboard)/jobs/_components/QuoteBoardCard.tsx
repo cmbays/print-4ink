@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Package, Palette, MapPin, Calendar, DollarSign, Plus, MessageSquare, User } from "lucide-react";
+import { FileText, Package, Palette, MapPin, Calendar, Plus, MessageSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { formatShortDate } from "@/lib/helpers/format";
-import { formatCurrencyCompact } from "@/lib/helpers/money";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { CARD_TYPE_BORDER_COLORS } from "@/lib/constants";
 import type { QuoteCard } from "@/lib/schemas/board-card";
 
@@ -117,10 +117,7 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
               </span>
             )}
             {card.total != null && (
-              <span className="inline-flex items-center gap-0.5 font-medium text-foreground">
-                <DollarSign className="size-3 text-success" />
-                {formatCurrencyCompact(card.total).replace("$", "")}
-              </span>
+              <MoneyAmount value={card.total} format="compact" className="font-medium text-foreground" />
             )}
           </div>
         </div>

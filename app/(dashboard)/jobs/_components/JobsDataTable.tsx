@@ -6,6 +6,7 @@ import {
   Briefcase,
   Eye,
   MoreHorizontal,
+  Package,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -38,6 +39,7 @@ import { LaneBadge } from "@/components/features/LaneBadge";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
+import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { customers } from "@/lib/mock-data";
 import { computeTaskProgress } from "@/lib/helpers/job-utils";
 import { formatDate } from "@/lib/helpers/format";
@@ -667,9 +669,13 @@ export function JobsDataTable({
                         {customerNameMap.get(job.customerId) ?? "Unknown"}
                       </span>
                     </div>
-                    <span className="shrink-0 text-sm font-medium tabular-nums">
-                      {job.quantity.toLocaleString()} pcs
-                    </span>
+                    <div className="flex shrink-0 flex-col items-end gap-0.5">
+                      <MoneyAmount value={job.orderTotal} format="compact" className="text-sm font-medium" />
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                        <Package className="size-3" />
+                        {job.quantity.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Middle row: badges */}
