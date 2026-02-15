@@ -2,7 +2,7 @@
 title: "Color Preference System — Breadboard"
 description: "UI affordances, code affordances, wiring, and vertical slices for the hierarchical color preference system (Global → Brand → Customer)"
 category: breadboard
-status: draft
+status: reviewed
 phase: 1
 created: 2026-02-15
 last-verified: 2026-02-15
@@ -20,7 +20,7 @@ depends-on:
 
 **Input**: Shaping doc (Shape A selected — entity-owned favorites with live inheritance), design doc (approved), spike (brand detail drawer pattern), existing garment catalog breadboard.
 
-**Status**: Draft
+**Status**: Reviewed (BB Reflection complete — 4 wiring fixes applied, 6 design clarifications added)
 
 **Integration note**: This breadboard modifies the existing Garment Catalog (P1, P1.1 from garment-catalog-breadboard.md) and adds new Places for color management. Cross-references to the garment breadboard are noted with `[GB:X]` notation where X is the original affordance ID.
 
@@ -143,12 +143,12 @@ depends-on:
 |---|-------|-----------|------------|-------|---------|-----------|------------|
 | N1 | P1 | ColorFilterGrid | `filterByColors(colorIds[])` | 1 | U1 swatch click | → write S1 | → P1 grid re-renders via N23 |
 | N2 | P1 | GarmentCatalogToolbar | `clearColorFilter()` | 1 | U2 pill click, U3 click | → clear S1 | → P1 grid re-renders via N23 |
-| N3 | P1.1 | GarmentDetailDrawer | `toggleDrawerFavorite(colorId)` | 1 | U11/U13 click | → N19 (resolve context), → write S2/S3/S4 | → U11, U13 update |
-| N4 | P2 | SettingsColorsPage | `toggleGlobalFavorite(colorId)` | 1 | U37/U39 click | → write S2; if removing & children exist: → N21 → P4 | → U37, U39 update |
+| N3 | P1.1 | GarmentDetailDrawer | `toggleDrawerFavorite(colorId)` | 1 | U11/U13 click | → resolve context from parent Place prop `{context, contextId}`: if global → write S2, if brand → write S3, if customer → write S4 | → U11, U13 update |
+| N4 | P2 | SettingsColorsPage | `toggleGlobalFavorite(colorId)` | 1 | U37/U39 click | → write S2; if ADDING & S8=true → N22; if REMOVING & children exist → N21 → P4 | → U37, U39 update |
 | N5 | P2 | SettingsColorsPage | `setDisplayPreference(mode)` | 1 | U40 toggle | → write S5 | → P2 re-renders (flat/grouped) |
 | N6 | P2 | SettingsColorsPage | `searchColors(query)` | 1 | U41 type (debounced) | → reads S6, local filter | → U39 filtered palette |
 | N7 | P1.2 | BrandDetailDrawer | `setBrandInheritMode(brand, mode)` | 1 | U22 toggle | → write S3 (mode field) | → P1.2 re-renders (read-only ↔ editable) |
-| N8 | P1.2 | FavoritesColorSection | `toggleBrandFavorite(brand, colorId)` | 1 | U23/U24 click | → write S3; if removing & children exist: → N21 → P4 | → U23, U24 update |
+| N8 | P1.2 | FavoritesColorSection | `toggleBrandFavorite(brand, colorId)` | 1 | U23/U24 click | → write S3; if ADDING & S8=true → N22; if REMOVING & children exist → N21 → P4 | → U23, U24 update |
 | N9 | P1.2 | InheritanceDetail | `restoreInheritedColor(brand, colorId)` | 1 | U28 click | → write S3 (re-inherit) | → U27 updated chain |
 | N10 | P2 | SettingsColorsPage | `setAutoPropagation(enabled)` | 1 | U42 toggle | → write S8 | — |
 | N11 | P3 | CustomerTabs | `switchToPreferencesTab()` | 1 | U50 click | — | → P3 panel renders |
@@ -159,10 +159,10 @@ depends-on:
 | N16 | P4 | RemovalConfirmationDialog | `removeFromAll(level, colorId)` | 1 | U67 click | → write S2/S3/S4 (all entities at and below level) | → close P4, originating place updates |
 | N17 | P4 | RemovalConfirmationDialog | `removeFromLevelOnly(level, colorId)` | 1 | U68 click | → write S2 or S3 (level only) | → close P4, originating place updates |
 | N18 | P4 | RemovalConfirmationDialog | `removeFromSelected(level, colorId, entityIds[])` | 1 | U72 click | → write S2/S3/S4 (selected entities) | → close P4, originating place updates |
-| N19 | Cross | (shared helper) | `resolveEffectiveFavorites(entityType, entityId)` | 1 | N3, card render, tab render | → reads S2, S3, S4 (hierarchy walk) | → U4, U11, U23, U53 |
+| N19 | Cross | (shared helper) | `resolveEffectiveFavorites(entityType, entityId)` | 1 | N3, card render, tab render | → reads S2, S3, S4 (hierarchy walk); returns `colorIds[]` (may be empty — fallback: `[]` when all levels empty) | → U4, U11, U23, U53 |
 | N20 | Cross | (shared helper) | `getInheritanceChain(entityType, entityId)` | 1 | U26/U55 expand | → reads S2, S3, S4 | → U27, U55 (chain data) |
 | N21 | P4 | RemovalConfirmationDialog | `getImpactPreview(level, colorId)` | 1 | P4 render (on open) | → reads S3, S4 | → writes S7, → U66 |
-| N22 | Cross | (shared helper) | `propagateAddition(level, colorId)` | 1 | N4 (add), N8 (add) | → reads S8 (auto-propagate config), → writes S3/S4 (inheriting entities) | — |
+| N22 | Cross | (shared helper) | `propagateAddition(level, colorId)` | 1 | N4 (add, if S8=true), N8 (add, if S8=true) | → reads S8; if S8=false: no-op; if S8=true: find children without explicit removal of this color → append to S3/S4 | — |
 | N23 | P1 | GarmentCatalogPage | `getFilteredGarmentsByColors(colorIds[])` | 1 | S1 change | → reads garment catalog, S6, S2 | → P1 grid renders |
 | N24 | P1.2 | BrandDetailDrawer | `getBrandGarments(brandName)` | 1 | P1.2 render | → reads garment catalog | → U29 |
 | N25 | P1 | (shared) | `openBrandDrawer(brandName)` | 1 | U6, U7, U16 click | — | → P1.2 opens |
@@ -217,6 +217,34 @@ depends-on:
 | `getInheritanceChain()` | `lib/helpers/color-preferences.ts` | Build chain visualization: what's inherited, what's explicit, what's removed |
 | `propagateAddition()` | `lib/helpers/color-preferences.ts` | Auto-add to inheriting children (respects auto-propagation config) |
 | `getImpactPreview()` | `lib/helpers/color-preferences.ts` | Count affected entities for removal confirmation |
+
+---
+
+## Design Clarifications (from BB Reflection)
+
+### N3 Context Resolution
+
+P1.1 (GarmentDetailDrawer) receives a `{context: 'global' | 'brand' | 'customer', contextId?: string}` prop from its parent Place. N3 uses this to determine which store (S2/S3/S4) to write to. In Phase 1, the drawer is always opened from P1 (catalog) → context defaults to "global" → writes S2. In Phase 2, when opened from P1.2 (brand drawer) or P3 (customer tab), the context prop routes writes to S3/S4.
+
+### Filter vs Favorites Independence
+
+Color filter (S1) and favorites (N19) are independent systems. S1 affects which garments appear (N23), not which favorites show on cards (U4/U5). This separation keeps filter UI simple and favorite counts honest. Example: filtering by "Blue" shows only garments with blue in their palette, but each card still shows ALL of its favorited colors (including non-blue favorites).
+
+### S5 Display Preference Scope
+
+S5 (flat/grouped toggle) applies to P2 (Settings > Colors) only. FavoritesColorSection instances in other Places (P1.1, P1.2, P3) always render in compact flat mode. Grouped display is a settings-page feature per R7 (nice-to-have).
+
+### U52 Label Computation
+
+Beth Meyer toggle in P3 uses dynamic label: if customer has `favoriteBrandNames.length > 0`, shows "Use [primary brand] colors". Otherwise shows "Use global colors". This mirrors U22 in P1.2 which always shows "Use global colors" (brand inherits from global).
+
+### Zero-Favorites Fallback (R5)
+
+When N19 resolves effective favorites and all three levels (S2, S3, S4) have zero favorites, it returns `[]`. UI behavior: U4 renders an empty state or is hidden; U5 shows "N colors available" (total from garment's palette, not favorites count). This ensures graceful degradation per R5.
+
+### P4 Single-Action Removal
+
+Impact preview (U66, N21) counts ALL downstream children in one query. "Remove everywhere" (N16) removes from all levels in one action — no cascading dialogs. "Remove from [level] only" (N17) only updates the specified level's store; children's explicit customizations are preserved.
 
 ---
 
@@ -311,9 +339,11 @@ depends-on:
 | U14 | P1.1 | GarmentDetailDrawer | Selected color name + hex | render | — | — |
 | U15 | P1.1 | GarmentDetailDrawer | Size/price matrix | render | — | — |
 | U16 | P1.1 | GarmentDetailDrawer | Brand name link | click | → N25 (stub → V4) | — |
-| N3 | P1.1 | GarmentDetailDrawer | `toggleDrawerFavorite(colorId)` | call | → write S2 | → U11, U13 update |
+| N3 | P1.1 | GarmentDetailDrawer | `toggleDrawerFavorite(colorId)` | call | → resolve context from `{context, contextId}` prop; Phase 1: always context=global → write S2 | → U11, U13 update |
 
 **Scroll fix**: Remove inner `ScrollArea` from `FavoritesColorSection`. Drawer's single outer `ScrollArea` wraps both sections.
+
+**Context prop**: P1.1 receives `{context: 'global', contextId?: string}` from parent. In Phase 1, context is always "global" (drawer opens from catalog). Phase 2 adds "brand" and "customer" contexts.
 
 ### V3: Global Favorites Page
 
@@ -332,7 +362,7 @@ depends-on:
 | U41 | P2 | SettingsColorsPage | Search input | type | → N6 | — |
 | U42 | P2 | SettingsColorsPage | Auto-propagation toggle | click | → N10 | — |
 | U43 | P2 | SettingsColorsPage | Color family group headers | render | — | — |
-| N4 | P2 | SettingsColorsPage | `toggleGlobalFavorite(colorId)` | call | → S2 | → U37, U39 |
+| N4 | P2 | SettingsColorsPage | `toggleGlobalFavorite(colorId)` | call | → S2; if ADDING & S8=true → N22 (stub → V6); if REMOVING & children → P4 (stub → V6) | → U37, U39 |
 | N5 | P2 | SettingsColorsPage | `setDisplayPreference(mode)` | call | → S5 | → P2 re-renders |
 | N6 | P2 | SettingsColorsPage | `searchColors(query)` | call | local filter on S6 | → U39 filtered |
 | N10 | P2 | SettingsColorsPage | `setAutoPropagation(enabled)` | call | → S8 | — |
@@ -361,7 +391,7 @@ depends-on:
 | U28 | P1.2 | InheritanceDetail | "Restore" action | click | → N9 | — |
 | U29 | P1.2 | BrandDetailDrawer | Brand garment list | render | — | — |
 | N7 | P1.2 | InheritanceToggle | `setBrandInheritMode()` | call | → S3 | → P1.2 re-renders |
-| N8 | P1.2 | FavoritesColorSection | `toggleBrandFavorite()` | call | → S3 | → U23, U24 |
+| N8 | P1.2 | FavoritesColorSection | `toggleBrandFavorite()` | call | → S3; if ADDING & S8=true → N22 (stub → V6); if REMOVING & children → P4 (stub → V6) | → U23, U24 |
 | N9 | P1.2 | InheritanceDetail | `restoreInheritedColor()` | call | → S3 | → U27 |
 | N20 | Cross | (helper) | `getInheritanceChain()` | call | → S2, S3 | → U27 |
 | N24 | P1.2 | BrandDetailDrawer | `getBrandGarments()` | call | → catalog data | → U29 |
