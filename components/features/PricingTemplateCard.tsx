@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { SERVICE_TYPE_COLORS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import type { MarginIndicator as MarginIndicatorType } from "@/lib/schemas/price-matrix";
 import { MarginIndicator } from "./MarginIndicator";
+import { ServiceTypeBadge } from "./ServiceTypeBadge";
 import {
   Card,
   CardContent,
@@ -85,9 +85,9 @@ export function PricingTemplateCard({
       }}
     >
       <CardHeader className="gap-1.5">
-        <div className="flex items-start gap-2">
-          {/* Title + health dot */}
-          <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex flex-col gap-1">
+          {/* Title row: health dot + title */}
+          <div className="flex min-w-0 items-center gap-2">
             <MarginIndicator
               percentage={healthPercentage}
               indicator={healthIndicator}
@@ -96,35 +96,37 @@ export function PricingTemplateCard({
             <CardTitle className="truncate text-sm">{template.name}</CardTitle>
           </div>
 
-          {/* Badges row */}
-          <div className="flex shrink-0 items-center gap-1.5">
-            {template.isDefault && (
-              <Badge
-                variant="outline"
-                className="border-success/30 bg-success/10 text-success text-[10px] px-1.5 py-0"
-              >
-                Default
-              </Badge>
-            )}
-            {template.isIndustryDefault && (
-              <Badge
-                variant="outline"
-                className="border-muted-foreground/30 bg-muted/50 text-muted-foreground text-[10px] px-1.5 py-0"
-              >
-                Industry Template
-              </Badge>
-            )}
-          </div>
+          {/* Badges row — wraps below title on narrow screens */}
+          {(template.isDefault || template.isIndustryDefault) && (
+            <div className="flex flex-wrap items-center gap-1.5 pl-5">
+              {template.isDefault && (
+                <Badge
+                  variant="outline"
+                  className="border-success/30 bg-success/10 text-success text-[10px] px-1.5 py-0"
+                >
+                  Default
+                </Badge>
+              )}
+              {template.isIndustryDefault && (
+                <Badge
+                  variant="outline"
+                  className="border-muted-foreground/30 bg-muted/50 text-muted-foreground text-[10px] px-1.5 py-0"
+                >
+                  Industry Template
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Action menu */}
+        {/* Action menu — always visible on mobile (no hover), hover-to-show on desktop */}
         <CardAction>
           <DropdownMenu>
             <DropdownMenuTrigger
               className={cn(
                 "inline-flex items-center justify-center rounded-md p-1",
                 "text-muted-foreground hover:text-foreground hover:bg-surface",
-                "opacity-0 transition-opacity group-hover:opacity-100",
+                "md:opacity-0 transition-opacity md:group-hover:opacity-100",
                 "focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               )}
               onClick={(e) => e.stopPropagation()}
@@ -163,15 +165,11 @@ export function PricingTemplateCard({
       <CardContent className="flex flex-col gap-2 pt-0">
         {/* Service type + pricing tier badges */}
         <div className="flex items-center gap-2">
-          <Badge
-            variant="ghost"
-            className={cn(
-              "text-[10px] px-1.5 py-0",
-              SERVICE_TYPE_COLORS[template.serviceType]
-            )}
-          >
-            {SERVICE_TYPE_LABELS[template.serviceType]}
-          </Badge>
+          <ServiceTypeBadge
+            serviceType={template.serviceType}
+            variant="badge"
+            className="text-[10px] px-1.5 py-0"
+          />
           <Badge
             variant="ghost"
             className="text-muted-foreground text-[10px] px-1.5 py-0"

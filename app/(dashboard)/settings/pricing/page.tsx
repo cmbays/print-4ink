@@ -2,13 +2,16 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Topbar } from "@/components/layout/topbar";
 import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Tag, Search, Printer, Layers } from "lucide-react";
+import { Plus, Tag, Search } from "lucide-react";
+import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
+import { SERVICE_TYPE_COLORS } from "@/lib/constants";
 import { SetupWizard } from "./_components/SetupWizard";
 import { TagTemplateMapper } from "./_components/TagTemplateMapper";
 import {
@@ -194,6 +197,10 @@ export default function PricingHubPage() {
   const spCount = spTemplates.length;
   const dtfCount = dtfTemplates.length;
 
+  // Canonical service type icons
+  const SPIcon = SERVICE_TYPE_ICONS["screen-print"];
+  const DTFIcon = SERVICE_TYPE_ICONS["dtf"];
+
   return (
     <>
       <Topbar
@@ -206,26 +213,27 @@ export default function PricingHubPage() {
 
       <div className="flex flex-col gap-6 p-6">
         {/* Page header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-lg font-semibold tracking-tight">Pricing Templates</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="hidden text-sm text-muted-foreground md:block">
               Configure pricing matrices for screen print and DTF services
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full md:w-auto">
             <Button
               variant="outline"
               size="sm"
+              className="flex-1 md:flex-initial"
               onClick={() => setTagMapperOpen(true)}
             >
               <Tag className="size-4" />
-              Manage Mappings
+              <span className="hidden md:inline">Manage Mappings</span>
             </Button>
             <Button
               size="sm"
               onClick={() => setWizardOpen(true)}
-              className="bg-action text-black font-semibold border-2 border-current shadow-brutal shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal-lg active:translate-x-0 active:translate-y-0 active:shadow-brutal-sm transition-all"
+              className="flex-1 md:flex-initial bg-action text-black font-semibold border-2 border-current shadow-brutal shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal-lg active:translate-x-0 active:translate-y-0 active:shadow-brutal-sm transition-all"
             >
               <Plus className="size-4" />
               New Template
@@ -234,14 +242,14 @@ export default function PricingHubPage() {
         </div>
 
         {/* Tabs + Search row */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <Tabs
             value={activeTab}
             onValueChange={(v) => setActiveTab(v as ServiceTypeTab)}
           >
             <TabsList>
               <TabsTrigger value="screen-print" className="gap-1.5">
-                <Printer className="size-3.5" />
+                <SPIcon className={cn("size-3.5", activeTab === "screen-print" && SERVICE_TYPE_COLORS["screen-print"])} />
                 Screen Print
                 <Badge
                   variant="secondary"
@@ -251,7 +259,7 @@ export default function PricingHubPage() {
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="dtf" className="gap-1.5">
-                <Layers className="size-3.5" />
+                <DTFIcon className={cn("size-3.5", activeTab === "dtf" && SERVICE_TYPE_COLORS["dtf"])} />
                 DTF
                 <Badge
                   variant="secondary"
@@ -263,7 +271,7 @@ export default function PricingHubPage() {
             </TabsList>
           </Tabs>
 
-          <div className="relative w-64">
+          <div className="relative w-full md:w-64">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search templates..."
@@ -291,7 +299,7 @@ export default function PricingHubPage() {
             ))}
             {filteredSPTemplates.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-                <Printer className="size-12 text-muted-foreground/50" />
+                <SPIcon className="size-12 text-action/30" />
                 <p className="text-sm text-muted-foreground">
                   {searchQuery
                     ? "No templates match your search"
@@ -331,7 +339,7 @@ export default function PricingHubPage() {
             ))}
             {filteredDTFTemplates.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
-                <Layers className="size-12 text-muted-foreground/50" />
+                <DTFIcon className="size-12 text-brown/30" />
                 <p className="text-sm text-muted-foreground">
                   {searchQuery
                     ? "No templates match your search"
