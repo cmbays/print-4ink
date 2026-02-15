@@ -9,6 +9,7 @@ import { MarginLegend } from "@/components/features/MarginLegend";
 import { cn } from "@/lib/utils";
 import { buildFullMatrixData, formatCurrency } from "@/lib/pricing-engine";
 import type { PricingTemplate, MarginIndicator } from "@/lib/schemas/price-matrix";
+import type { GarmentCategory } from "@/lib/schemas/garment";
 import { Grid3x3 } from "lucide-react";
 
 const DEFAULT_GARMENT_COST = 3.5;
@@ -27,19 +28,23 @@ interface ColorPricingGridProps {
   template: PricingTemplate;
   colorHitRate: number;
   onColorHitRateChange: (rate: number) => void;
+  previewGarment?: GarmentCategory;
+  previewLocations?: string[];
 }
 
 export function ColorPricingGrid({
   template,
   colorHitRate,
   onColorHitRateChange,
+  previewGarment,
+  previewLocations,
 }: ColorPricingGridProps) {
   const maxColors = template.matrix.maxColors ?? 8;
   const colorColumns = useMemo(() => buildColorColumns(maxColors), [maxColors]);
 
   const matrixData = useMemo(
-    () => buildFullMatrixData(template, DEFAULT_GARMENT_COST),
-    [template]
+    () => buildFullMatrixData(template, DEFAULT_GARMENT_COST, previewGarment, previewLocations),
+    [template, previewGarment, previewLocations]
   );
 
   return (

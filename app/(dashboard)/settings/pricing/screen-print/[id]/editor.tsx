@@ -45,6 +45,8 @@ import type {
   MarginIndicator,
 } from "@/lib/schemas/price-matrix";
 
+import type { GarmentCategory } from "@/lib/schemas/garment";
+
 import { ColorPricingGrid } from "../../_components/ColorPricingGrid";
 import { QuantityTierEditor } from "../../_components/QuantityTierEditor";
 import { LocationUpchargeEditor } from "../../_components/LocationUpchargeEditor";
@@ -53,6 +55,7 @@ import { SetupFeeEditor } from "../../_components/SetupFeeEditor";
 import { ComparisonView } from "../../_components/ComparisonView";
 import { PowerModeGrid } from "../../_components/PowerModeGrid";
 import { CostConfigSheet } from "../../_components/CostConfigSheet";
+import { MatrixPreviewSelector } from "../../_components/MatrixPreviewSelector";
 
 const DEFAULT_GARMENT_COST = 3.5;
 
@@ -101,6 +104,10 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
   // Cost config sheet state
   const [showCostSheet, setShowCostSheet] = useState(false);
+
+  // Matrix preview selector state (#134)
+  const [previewGarment, setPreviewGarment] = useState<GarmentCategory | undefined>(undefined);
+  const [previewLocations, setPreviewLocations] = useState<string[]>(["front"]);
 
   // Template not found
   if (!template) {
@@ -490,12 +497,24 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         </Button>
       </div>
 
+      {/* Matrix preview selectors — garment type + print locations */}
+      <MatrixPreviewSelector
+        garmentTypes={template.matrix.garmentTypePricing}
+        locations={template.matrix.locationUpcharges}
+        selectedGarment={previewGarment}
+        selectedLocations={previewLocations}
+        onGarmentChange={setPreviewGarment}
+        onLocationsChange={setPreviewLocations}
+      />
+
       {/* Pricing Matrix Grid — mode-dependent */}
       {editorMode === "simple" ? (
         <ColorPricingGrid
           template={template}
           colorHitRate={colorHitRate}
           onColorHitRateChange={updateColorHitRate}
+          previewGarment={previewGarment}
+          previewLocations={previewLocations}
         />
       ) : (
         <PowerModeGrid
@@ -504,6 +523,8 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           onCellEdit={handlePowerCellEdit}
           onBulkEdit={handlePowerBulkEdit}
           onMaxColorsChange={updateMaxColors}
+          previewGarment={previewGarment}
+          previewLocations={previewLocations}
         />
       )}
 

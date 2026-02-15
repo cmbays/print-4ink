@@ -27,6 +27,7 @@ import type {
   MarginIndicator,
   MarginBreakdown,
 } from "@/lib/schemas/price-matrix";
+import type { GarmentCategory } from "@/lib/schemas/garment";
 import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
 import { Grid3x3, X, ToggleRight, ToggleLeft, Settings2, Minus, Plus } from "lucide-react";
 
@@ -48,6 +49,8 @@ interface PowerModeGridProps {
   onCellEdit: (tierIndex: number, colIndex: number, newPrice: number) => void;
   onBulkEdit: (cells: Array<{ row: number; col: number }>, value: number) => void;
   onMaxColorsChange: (maxColors: number) => void;
+  previewGarment?: GarmentCategory;
+  previewLocations?: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -179,6 +182,8 @@ export function PowerModeGrid({
   onCellEdit,
   onBulkEdit,
   onMaxColorsChange,
+  previewGarment,
+  previewLocations,
 }: PowerModeGridProps) {
   const [bulkValue, setBulkValue] = useState("");
 
@@ -186,12 +191,12 @@ export function PowerModeGrid({
 
   const matrixData: MatrixRow[] = useMemo(
     () =>
-      buildFullMatrixData(template, garmentBaseCost).map((row, i) => ({
+      buildFullMatrixData(template, garmentBaseCost, previewGarment, previewLocations).map((row, i) => ({
         tierIndex: i,
         tierLabel: row.tierLabel,
         cells: row.cells,
       })),
-    [template, garmentBaseCost]
+    [template, garmentBaseCost, previewGarment, previewLocations]
   );
 
   const columns = useMemo(() => buildColumns(maxColors), [maxColors]);
