@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, Suspense } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { Plus, LayoutGrid, List } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
@@ -106,6 +106,22 @@ function ProductionBoardInner() {
   const filters = useFiltersFromURL();
   const layout = useLayoutFromURL();
   const prefersReducedMotion = useReducedMotion();
+
+  // ---- Sticky toolbar height → CSS var for lane headers ----
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el) return;
+    const sync = () => {
+      el.parentElement?.style.setProperty(
+        "--board-toolbar-h",
+        `${el.offsetHeight}px`,
+      );
+    };
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // ---- Mutable state (Phase 1 client-side only) ----
   const [jobCards, setJobCards] = useState<JobCard[]>(() =>
@@ -425,16 +441,16 @@ function ProductionBoardInner() {
           {dropAnnouncement}
         </div>
 
-        {/* Capacity summary */}
-        <CapacitySummaryBar summary={summary} />
-
-        {/* Filter bar */}
-        <div className="mt-4">
-          <BoardFilterBar />
+        {/* Sticky toolbar: capacity summary + filter bar */}
+        <div ref={toolbarRef} className="sticky top-0 z-10 bg-background pb-3">
+          <CapacitySummaryBar summary={summary} />
+          <div className="mt-3">
+            <BoardFilterBar />
+          </div>
         </div>
 
         {/* Board content */}
-        <div className="mt-4">
+        <div className="mt-1">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/50 py-16 text-center">
               <p className="text-sm text-muted-foreground">

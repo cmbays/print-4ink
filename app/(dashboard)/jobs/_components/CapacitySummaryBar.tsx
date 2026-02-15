@@ -27,7 +27,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
   const { rushQuantity, totalQuantity, totalRevenue, cardsByLane } = summary;
 
   return (
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-4 rounded-lg bg-elevated border border-border/50 px-4 py-2.5">
+    <div className="flex flex-wrap items-center gap-4 rounded-lg bg-elevated border border-border/50 px-4 py-2.5">
       {/* Rush orders */}
       {rushQuantity > 0 && (
         <div className="flex items-center gap-1.5">
