@@ -18,7 +18,7 @@ export function MobileLaneTabBar({
   cardCounts,
 }: MobileLaneTabBarProps) {
   return (
-    <div className="flex gap-1 overflow-x-auto border-b border-border px-1 pb-px scrollbar-none" role="tablist" aria-label="Board lanes">
+    <div className="sticky top-0 z-10 flex gap-1 overflow-x-auto border-b border-border bg-background px-1 pb-px scrollbar-none" role="tablist" aria-label="Board lanes">
       {lanes.map((lane) => (
         <button
           key={lane}

@@ -17,6 +17,7 @@ describe("computeCapacitySummary", () => {
     const result = computeCapacitySummary([]);
     expect(result.rushQuantity).toBe(0);
     expect(result.totalQuantity).toBe(0);
+    expect(result.totalRevenue).toBe(0);
     expect(result.cardsByLane).toEqual({
       ready: 0,
       in_progress: 0,
@@ -56,6 +57,17 @@ describe("computeCapacitySummary", () => {
     const result = computeCapacitySummary(cards);
     expect(result.cardsByLane.ready).toBe(3);
     expect(result.cardsByLane.blocked).toBe(1);
+  });
+
+  it("accumulates revenue from jobs and quotes", () => {
+    const cards: BoardCard[] = [
+      makeJobCard({ quantity: 100, lane: "ready" }), // orderTotal = 500
+      makeJobCard({ quantity: 50, lane: "in_progress" }), // orderTotal = 500
+      makeQuoteCard({ quantity: 200, lane: "review", total: 750 }),
+      makeScratchNoteCard(),
+    ];
+    const result = computeCapacitySummary(cards);
+    expect(result.totalRevenue).toBe(1750);
   });
 });
 
@@ -318,6 +330,7 @@ function makeQuoteCard(
   overrides: Partial<{
     lane: "ready" | "in_progress" | "review" | "blocked" | "done";
     quantity: number;
+    total: number;
   }> = {},
 ): BoardCard {
   cardCounter++;
@@ -332,6 +345,7 @@ function makeQuoteCard(
     isNew: false,
     notes: [],
     quantity: overrides.quantity,
+    total: overrides.total,
   };
 }
 

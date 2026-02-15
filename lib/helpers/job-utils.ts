@@ -9,6 +9,7 @@ import type { ServiceType } from "@/lib/schemas/quote";
 export interface CapacitySummary {
   rushQuantity: number;
   totalQuantity: number;
+  totalRevenue: number;
   cardsByLane: Record<Lane, number>;
 }
 
@@ -23,6 +24,7 @@ export function computeCapacitySummary(cards: BoardCard[]): CapacitySummary {
 
   let rushQuantity = 0;
   let totalQuantity = 0;
+  let totalRevenue = 0;
 
   for (const card of cards) {
     // All card types have a lane
@@ -33,12 +35,14 @@ export function computeCapacitySummary(cards: BoardCard[]): CapacitySummary {
         rushQuantity += card.quantity;
       }
       totalQuantity += card.quantity;
-    } else if (card.type === "quote" && card.quantity != null) {
-      totalQuantity += card.quantity;
+      totalRevenue += card.orderTotal;
+    } else if (card.type === "quote") {
+      if (card.quantity != null) totalQuantity += card.quantity;
+      if (card.total != null) totalRevenue += card.total;
     }
   }
 
-  return { rushQuantity, totalQuantity, cardsByLane };
+  return { rushQuantity, totalQuantity, totalRevenue, cardsByLane };
 }
 
 // ---------------------------------------------------------------------------

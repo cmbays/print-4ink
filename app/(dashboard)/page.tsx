@@ -45,6 +45,7 @@ const comingUpJobs = jobs
 const capacitySummary = {
   totalQuantity: jobs.filter((j) => j.lane !== "done").reduce((sum, j) => sum + j.quantity, 0),
   rushQuantity: jobs.filter((j) => j.lane !== "done" && j.priority === "rush").reduce((sum, j) => sum + j.quantity, 0),
+  totalRevenue: jobs.reduce((sum, j) => sum + j.orderTotal, 0),
   cardsByLane: (["ready", "in_progress", "review", "blocked", "done"] as Lane[]).reduce(
     (acc, lane) => ({ ...acc, [lane]: jobs.filter((j) => j.lane === lane).length }),
     {} as Record<Lane, number>
