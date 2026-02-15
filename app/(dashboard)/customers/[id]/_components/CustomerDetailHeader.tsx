@@ -67,13 +67,35 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
               {primaryContact.email && (
                 <span className="inline-flex items-center gap-1">
                   <Mail className="size-3 text-muted-foreground" aria-hidden="true" />
-                  <CopyButton value={primaryContact.email} label="email" />
+                  {/* Desktop: copy-to-clipboard button */}
+                  <span className="hidden md:inline">
+                    <CopyButton value={primaryContact.email} label="email" />
+                  </span>
+                  {/* Mobile: tap-to-email link */}
+                  <a
+                    href={`mailto:${primaryContact.email}`}
+                    className="md:hidden inline-flex items-center min-h-(--mobile-touch-target) text-sm text-action active:text-action/80 transition-colors"
+                    aria-label={`Email ${primaryContact.email}`}
+                  >
+                    {primaryContact.email}
+                  </a>
                 </span>
               )}
               {primaryContact.phone && (
                 <span className="inline-flex items-center gap-1">
                   <Phone className="size-3 text-muted-foreground" aria-hidden="true" />
-                  <CopyButton value={primaryContact.phone} label="phone" />
+                  {/* Desktop: copy-to-clipboard button */}
+                  <span className="hidden md:inline">
+                    <CopyButton value={primaryContact.phone} label="phone" />
+                  </span>
+                  {/* Mobile: tap-to-call link */}
+                  <a
+                    href={`tel:${primaryContact.phone}`}
+                    className="md:hidden inline-flex items-center min-h-(--mobile-touch-target) text-sm text-action active:text-action/80 transition-colors"
+                    aria-label={`Call ${primaryContact.phone}`}
+                  >
+                    {primaryContact.phone}
+                  </a>
                 </span>
               )}
             </div>

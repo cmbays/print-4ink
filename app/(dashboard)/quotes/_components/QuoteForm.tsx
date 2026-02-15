@@ -958,29 +958,32 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         </div>
 
         {/* Section 6: Actions */}
-        <div className="flex items-center justify-between border-t border-border pt-6">
-          <Button
-            variant="link"
-            onClick={() => router.push("/quotes")}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Cancel
-          </Button>
-          <div className="flex items-center gap-3">
+        <div className="sticky bottom-0 z-10 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+          <div className="flex items-center justify-between md:pt-6 md:border-t md:border-border">
             <Button
-              variant="outline"
-              onClick={() => handleSave(false)}
+              variant="link"
+              onClick={() => router.push("/quotes")}
+              className="text-muted-foreground hover:text-foreground min-h-(--mobile-touch-target) md:min-h-0"
             >
-              <Save size={16} className="mr-2" />
-              {isEdit ? "Update Quote" : "Save as Draft"}
+              Cancel
             </Button>
-            <Button
-              onClick={handleReviewAndSend}
-              className="bg-action text-primary-foreground font-medium shadow-brutal shadow-action/30 hover:shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-            >
-              <Send size={16} className="mr-2" />
-              Review & Send
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={() => handleSave(false)}
+                className="min-h-(--mobile-touch-target) md:min-h-0"
+              >
+                <Save size={16} className="mr-2" />
+                {isEdit ? "Update Quote" : "Save as Draft"}
+              </Button>
+              <Button
+                onClick={handleReviewAndSend}
+                className="min-h-(--mobile-touch-target) md:min-h-0 bg-action text-primary-foreground font-medium shadow-brutal shadow-action/30 hover:shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+              >
+                <Send size={16} className="mr-2" />
+                Review & Send
+              </Button>
+            </div>
           </div>
         </div>
       </div>

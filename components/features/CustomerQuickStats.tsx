@@ -113,7 +113,7 @@ export function CustomerQuickStats({
   return (
     <div
       className={cn(
-        "grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-6",
+        "grid grid-cols-2 gap-3 md:flex md:flex-wrap md:items-center md:gap-6",
         className
       )}
       aria-label="Customer statistics"

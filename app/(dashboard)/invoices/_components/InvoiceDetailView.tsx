@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, FileText, Hammer, ScrollText } from "lucide-react";
+import { ChevronDown, FileText, Hammer, ScrollText, CreditCard, Bell, Send, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Collapsible,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
+import { BottomActionBar } from "@/components/layout/bottom-action-bar";
 import { InvoiceActions } from "./InvoiceActions";
 import { PaymentLedger } from "./PaymentLedger";
 import { ReminderTimeline } from "./ReminderTimeline";
@@ -29,9 +31,10 @@ import {
   PAYMENT_TERMS_LABELS,
   CREDIT_MEMO_REASON_LABELS,
 } from "@/lib/constants";
-import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
+import { computeIsOverdue, isValidStatusTransition } from "@/lib/helpers/invoice-utils";
 import { formatDate } from "@/lib/helpers/format";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { toast } from "sonner";
 import type { Invoice, Payment } from "@/lib/schemas/invoice";
 import type { Customer } from "@/lib/schemas/customer";
 import type { CreditMemo } from "@/lib/schemas/credit-memo";
@@ -87,8 +90,19 @@ export function InvoiceDetailView({
     invoice.discounts.reduce((sum, d) => sum.plus(money(d.amount)), money(0)),
   );
 
+  // Status-aware action visibility (mirrors InvoiceActions logic)
+  const { status } = invoice;
+  const canSend = status === "draft" && isValidStatusTransition(status, "sent");
+  const canEdit = status === "draft";
+  const canRecordPayment = status === "sent" || status === "partial";
+  const canSendReminder = status === "sent" || status === "partial";
+
+  // Only show bottom bar when there are actionable buttons to display
+  const hasActions = canEdit || canSend || canRecordPayment || canSendReminder;
+  const showBottomBar = hasActions;
+
   return (
-    <div className="space-y-6">
+    <div className={cn("space-y-6", showBottomBar && "pb-20 md:pb-0")}>
       {/* 1. Header */}
       <div className="sticky top-0 z-10 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -438,6 +452,67 @@ export function InvoiceDetailView({
             </div>
           )}
         </div>
+      )}
+
+      {/* Mobile BottomActionBar — status-aware actions */}
+      {showBottomBar && (
+        <BottomActionBar>
+          {/* Draft: Edit + Send */}
+          {canEdit && (
+            <Button
+              variant="outline"
+              className="flex-1 min-h-(--mobile-touch-target)"
+              asChild
+            >
+              <Link href={`/invoices/${invoice.id}/edit`}>
+                <Pencil className="size-4" />
+                Edit
+              </Link>
+            </Button>
+          )}
+          {canSend && (
+            <Button
+              variant="outline"
+              className="flex-1 min-h-(--mobile-touch-target)"
+              onClick={() => {
+                toast.success(
+                  `Invoice ${invoice.invoiceNumber} sent to ${customer?.email ?? "customer"}`,
+                );
+              }}
+            >
+              <Send className="size-4" />
+              Send
+            </Button>
+          )}
+
+          {/* Sent / Partial / Overdue: Record Payment + Send Reminder */}
+          {canRecordPayment && (
+            <Button
+              variant="outline"
+              className="flex-1 min-h-(--mobile-touch-target)"
+              onClick={() => {
+                toast.info("Record Payment dialog coming in Phase 2");
+              }}
+            >
+              <CreditCard className="size-4" />
+              Record Payment
+            </Button>
+          )}
+          {canSendReminder && (
+            <Button
+              variant="outline"
+              className="flex-1 min-h-(--mobile-touch-target)"
+              onClick={() => {
+                toast.success(
+                  `Reminder sent for ${invoice.invoiceNumber}`,
+                );
+              }}
+            >
+              <Bell className="size-4" />
+              Send Reminder
+            </Button>
+          )}
+        </BottomActionBar>
       )}
     </div>
   );

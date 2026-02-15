@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { BottomActionBar } from "@/components/layout/bottom-action-bar";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -54,7 +56,11 @@ function deepCloneJob(job: Job): Job {
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const jobId = params.id;
+
+  // Mobile tab state
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Find job in mock data and deep clone for local state
   const initialJob = useMemo(
@@ -320,9 +326,22 @@ export default function JobDetailPage() {
   // ===========================================================================
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      {/* Breadcrumb */}
-      <Breadcrumb>
+    <div className="flex flex-col gap-4 p-4 pb-24 md:p-6 md:pb-6">
+      {/* Mobile: back button */}
+      <div className="md:hidden">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1.5 -ml-2 min-h-(--mobile-touch-target) text-muted-foreground"
+          onClick={() => router.push("/jobs/board")}
+        >
+          <ArrowLeft className="size-4" />
+          Back to Board
+        </Button>
+      </div>
+
+      {/* Desktop: breadcrumb */}
+      <Breadcrumb className="hidden md:flex">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
@@ -351,13 +370,15 @@ export default function JobDetailPage() {
       {/* Job header */}
       <JobHeader job={job} customerName={customerName} />
 
-      {/* Quick actions */}
-      <QuickActionsBar
-        job={job}
-        onMoveLane={() => setMoveLaneDialogOpen(true)}
-        onBlock={() => setBlockDialogOpen(true)}
-        onUnblock={unblockJob}
-      />
+      {/* Desktop: Quick actions */}
+      <div className="hidden md:block">
+        <QuickActionsBar
+          job={job}
+          onMoveLane={() => setMoveLaneDialogOpen(true)}
+          onBlock={() => setBlockDialogOpen(true)}
+          onUnblock={unblockJob}
+        />
+      </div>
 
       {/* Per-page MockupFilterProvider */}
       {mockupData && <MockupFilterProvider colors={mockupData.colors} />}
@@ -377,8 +398,49 @@ export default function JobDetailPage() {
         </div>
       )}
 
-      {/* Two-column layout on large screens */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      {/* Mobile: tabbed layout */}
+      <div className="md:hidden">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="w-full">
+            <TabsTrigger value="overview" className="flex-1">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="tasks" className="flex-1">
+              Tasks
+            </TabsTrigger>
+            <TabsTrigger value="notes" className="flex-1">
+              Notes
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="mt-4">
+            <div className="flex flex-col gap-4">
+              <JobDetailsSection job={job} />
+              <LinkedEntitiesSection
+                job={job}
+                customerName={customerName}
+                quoteTotal={quoteTotal}
+                invoiceStatus={invoiceStatus}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="tasks" className="mt-4">
+            <TaskChecklist
+              tasks={job.tasks}
+              onToggleTask={toggleTask}
+              onAddTask={addCustomTask}
+            />
+          </TabsContent>
+
+          <TabsContent value="notes" className="mt-4">
+            <NotesFeed notes={job.notes} onAddNote={addNote} />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Desktop: two-column grid layout */}
+      <div className="hidden md:grid md:grid-cols-1 md:gap-4 lg:grid-cols-3">
         {/* Main content — 2 cols */}
         <div className="flex flex-col gap-4 lg:col-span-2">
           <TaskChecklist
@@ -400,6 +462,39 @@ export default function JobDetailPage() {
           />
         </div>
       </div>
+
+      {/* Mobile: BottomActionBar — lane-aware actions */}
+      {job.lane !== "done" && (
+        <BottomActionBar>
+          {job.lane === "blocked" ? (
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
+              onClick={unblockJob}
+            >
+              <ArrowRightLeft className="size-4" />
+              Unblock
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
+              onClick={() => setMoveLaneDialogOpen(true)}
+            >
+              <ArrowRightLeft className="size-4" />
+              Move Lane
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
+            onClick={() => setActiveTab("notes")}
+          >
+            <MessageSquare className="size-4" />
+            Add Note
+          </Button>
+        </BottomActionBar>
+      )}
 
       {/* Move Lane Dialog */}
       {moveLaneDialogOpen && (
