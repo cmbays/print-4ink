@@ -834,16 +834,50 @@ _work_clean() {
     read -r CONFIRM
     [[ "$CONFIRM" != [yY] ]] && { echo "Cancelled."; return 0; }
 
-    # ── Cleanup phase: each step independent ──
+    # ── Cleanup phase ──
+    # Order: resources first (worktree, branch), then metadata (registry),
+    # then session kill last (may terminate our own shell).
+    #
+    # CWD safety: if we're inside the worktree we're about to delete,
+    # cd out first — otherwise git worktree remove fails and subsequent
+    # shell commands break (orphaned CWD).
 
-    # 1. Zellij session
-    if [[ "$HAS_ZELLIJ" == true ]]; then
-        # Note about closing tab if running inside Zellij
-        [[ -n "$ZELLIJ" ]] && echo "  Note: Close Zellij tab '$TOPIC' manually if still open."
-        zellij delete-session "$TOPIC" --force 2>/dev/null && echo "  Deleted Zellij session '$TOPIC'"
+    # 0. CWD safety — escape the worktree before deleting it
+    #    Boundary-aware: match exact dir or any subdir (trailing /), not prefix siblings
+    if [[ -n "$WORKTREE_DIR" && ( "$PWD" == "$WORKTREE_DIR" || "$PWD" == "$WORKTREE_DIR"/* ) ]]; then
+        echo "  Moving to main repo (CWD is inside target worktree)..."
+        cd "$PRINT4INK_REPO" || return 1
     fi
 
-    # 2. Tmux session/window (migration period)
+    # 1. Worktree
+    if [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]]; then
+        if git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>/dev/null; then
+            echo "  Removed worktree: $WORKTREE_DIR"
+        else
+            echo "  Warning: failed to remove worktree: $WORKTREE_DIR"
+        fi
+    fi
+
+    # 2. Branch
+    if [[ -n "$BRANCH" ]]; then
+        if git -C "$PRINT4INK_REPO" branch -d "$BRANCH" 2>/dev/null || \
+           git -C "$PRINT4INK_REPO" branch -D "$BRANCH" 2>/dev/null; then
+            echo "  Deleted branch: $BRANCH"
+        fi
+    fi
+
+    # 3. Registry (before session kill — accepts the tradeoff that if the
+    #    session kill fails, the entry is already archived. That failure is
+    #    immediately obvious: you're still sitting in the session.)
+    if [[ "$HAS_REGISTRY" == true ]]; then
+        if _registry_archive "$TOPIC"; then
+            echo "  Archived session '$TOPIC' in registry"
+        else
+            echo "  Warning: failed to archive session '$TOPIC' in registry"
+        fi
+    fi
+
+    # 4. Tmux session/window (migration period — may kill current shell)
     if [[ "$HAS_TMUX" == true ]]; then
         if tmux has-session -t "$TOPIC" 2>/dev/null; then
             tmux kill-session -t "focus-${TOPIC}" 2>/dev/null
@@ -861,24 +895,10 @@ _work_clean() {
         fi
     fi
 
-    # 3. Registry
-    if [[ "$HAS_REGISTRY" == true ]]; then
-        _registry_archive "$TOPIC"
-        echo "  Archived session '$TOPIC' in registry"
-    fi
-
-    # 4. Worktree
-    if [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]]; then
-        git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>/dev/null
-        echo "  Removed worktree: $WORKTREE_DIR"
-    fi
-
-    # 5. Branch
-    if [[ -n "$BRANCH" ]]; then
-        if git -C "$PRINT4INK_REPO" branch -d "$BRANCH" 2>/dev/null || \
-           git -C "$PRINT4INK_REPO" branch -D "$BRANCH" 2>/dev/null; then
-            echo "  Deleted branch: $BRANCH"
-        fi
+    # 5. Zellij session (LAST — may kill our own shell if running inside it)
+    if [[ "$HAS_ZELLIJ" == true ]]; then
+        echo "  Deleting Zellij session '$TOPIC'..."
+        zellij delete-session "$TOPIC" --force 2>/dev/null && echo "  Deleted Zellij session '$TOPIC'"
     fi
 
     echo "Done."
