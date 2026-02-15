@@ -22,9 +22,15 @@ const SIDEBAR_MAIN_ORDER = [
 
 const SIDEBAR_SETTINGS_ORDER = ["/settings/pricing"];
 
-const mainNavItems = SIDEBAR_MAIN_ORDER.map((href) => ALL_NAV.get(href)!);
+function getNavItem(href: string): NavItem {
+  const item = ALL_NAV.get(href);
+  if (!item) throw new Error(`Sidebar: no nav item for "${href}". Update navigation.ts or SIDEBAR_*_ORDER.`);
+  return item;
+}
+
+const mainNavItems = SIDEBAR_MAIN_ORDER.map(getNavItem);
 const settingsNavItems = SIDEBAR_SETTINGS_ORDER.map((href) => {
-  const item = ALL_NAV.get(href)!;
+  const item = getNavItem(href);
   // Sidebar shows "Pricing" under a Settings header (not "Pricing Settings")
   return item.label === "Pricing Settings" ? { ...item, label: "Pricing" } : item;
 });
