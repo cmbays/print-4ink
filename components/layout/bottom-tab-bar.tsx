@@ -54,21 +54,33 @@ export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
           );
         }
 
+        const iconColor = "iconColor" in tab ? (tab as NavItem).iconColor : undefined;
+        const activeIconColor = iconColor ?? "text-action";
+
         return (
           <Link
             key={tab.label}
             href={tab.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex flex-1 flex-col items-center justify-center gap-0.5 py-1",
+              "relative flex flex-1 flex-col items-center justify-center gap-0.5 py-1",
               "transition-colors min-h-(--mobile-touch-target)",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
               active
-                ? "text-action"
+                ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            <tab.icon className="h-5 w-5" />
+            {/* Active indicator bar */}
+            {active && (
+              <span
+                className={cn(
+                  "absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full",
+                  iconColor ? `bg-current ${activeIconColor}` : "bg-action",
+                )}
+              />
+            )}
+            <tab.icon className={cn("h-5 w-5", active ? activeIconColor : undefined)} />
             <span className="text-[10px] font-medium">{tab.label}</span>
           </Link>
         );
