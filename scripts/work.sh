@@ -758,17 +758,17 @@ _work_clean() {
         FOUND_ANYTHING=true
     else
         # No branch — try to find worktree dir by pattern (covers already-deleted branches)
-        # Use ls -d to avoid zsh NOMATCH error on unmatched globs
+        # Use find to avoid zsh NOMATCH error (zsh expands globs before command runs)
         local candidate
-        candidate=$(command ls -d "${PRINT4INK_WORKTREES}"/session-*-"${TOPIC}" 2>/dev/null | head -1)
+        candidate=$(find "${PRINT4INK_WORKTREES}" -maxdepth 1 -type d -name "session-*-${TOPIC}" 2>/dev/null | head -1)
         if [[ -n "$candidate" && -d "$candidate" ]]; then
             WORKTREE_DIR="$candidate"
             FOUND_ANYTHING=true
         fi
     fi
 
-    # Check Zellij session
-    if zellij list-sessions 2>/dev/null | grep -q "^${TOPIC} "; then
+    # Check Zellij session (strip ANSI codes before grep — zellij may colorize output)
+    if zellij list-sessions 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | grep -q "^${TOPIC}"; then
         HAS_ZELLIJ=true
         FOUND_ANYTHING=true
     fi
