@@ -122,7 +122,7 @@ PHASE COMMANDS
   work interview <vertical>               Interview phase (requirements-interrogator)
   work breadboard <vertical>              Breadboarding phase (breadboarding skill)
   work plan <vertical>                    Implementation planning
-  work build <manifest> [--wave N]        Execute build from YAML manifest (default: wave 0)
+  work build <manifest> [--wave N] [--yolo] Execute build from YAML manifest (default: wave 0)
   work polish <vertical>                  Post-build polish
   work review <vertical>                  Quality gate + doc sync
   work learnings <vertical>               Cross-cutting pattern synthesis
@@ -393,9 +393,10 @@ _work_phase() {
 }
 
 # ── Build from Manifest ─────────────────────────────────────────────────────
-# Usage: work build <manifest.yaml> [--wave N]
+# Usage: work build <manifest.yaml> [--wave N] [--yolo] [--claude-args "..."]
 #   Reads a YAML execution manifest and launches Zellij with one tab per session.
 #   If --wave is omitted, defaults to wave 0 (first wave).
+#   --yolo passes --dangerously-skip-permissions to all Claude sessions.
 _work_build() {
     local MANIFEST="${1:-}"
     [[ -n "$MANIFEST" ]] && shift
@@ -416,11 +417,14 @@ _work_build() {
     # Check yq dependency once at entry
     _kdl_check_deps || return 1
 
-    # Parse --wave flag (default: 0)
+    # Parse --wave and --yolo flags
     local WAVE_IDX=0
+    local CLAUDE_ARGS=""
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --wave) WAVE_IDX="${2:-0}"; shift 2 ;;
+            --yolo) CLAUDE_ARGS="--dangerously-skip-permissions"; shift ;;
+            --claude-args) CLAUDE_ARGS="${2:-}"; shift 2 ;;
             *) echo "Error: Unknown flag '$1'"; return 1 ;;
         esac
     done
@@ -544,7 +548,7 @@ _work_build() {
         echo "layout {"
         local k
         for (( k=0; k<${#created_topics[@]}; k++ )); do
-            _kdl_render_tab "${created_topics[$k]}" "${session_dirs[$k]}" "${session_prompts[$k]}"
+            _kdl_render_tab "${created_topics[$k]}" "${session_dirs[$k]}" "${session_prompts[$k]}" "$CLAUDE_ARGS"
         done
         echo "}"
     } > "$KDL_FILE"
@@ -569,7 +573,7 @@ _work_build() {
             # Use the shared render helper for the tab layout
             {
                 echo "layout {"
-                _kdl_render_tab "$t" "$cwd" "$tab_prompt"
+                _kdl_render_tab "$t" "$cwd" "$tab_prompt" "$CLAUDE_ARGS"
                 echo "}"
             } > "$tab_kdl"
 
