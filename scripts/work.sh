@@ -740,8 +740,10 @@ _work_clean() {
     # Try to find the branch matching this topic
     local MATCHES
     MATCHES=$(git -C "$PRINT4INK_REPO" branch --list "session/*-${TOPIC}" | tr -d ' *+')
-    local MATCH_COUNT
-    MATCH_COUNT=$(echo "$MATCHES" | grep -c . 2>/dev/null || echo 0)
+    local MATCH_COUNT=0
+    if [[ -n "$MATCHES" ]]; then
+        MATCH_COUNT=$(echo "$MATCHES" | grep -c .)
+    fi
 
     if [[ "$MATCH_COUNT" -gt 1 ]]; then
         echo "Error: Multiple branches match '*-${TOPIC}':"
