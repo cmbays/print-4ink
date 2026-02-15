@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import { useState, useMemo, useSyncExternalStore, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Topbar } from "@/components/layout/topbar";
 import { GarmentCatalogToolbar } from "./_components/GarmentCatalogToolbar";
@@ -32,30 +32,23 @@ function GarmentCatalogInner() {
   // Local state for mock data mutations
   const [catalog, setCatalog] = useState<GarmentCatalog[]>(initialCatalog);
 
-  // Price visibility from localStorage
-  const [showPrice, setShowPrice] = useState(true);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("garment-show-prices");
-    if (stored !== null) setShowPrice(stored === "true");
-
-    // Listen for storage changes from other tabs
-    const handler = () => {
-      const val = localStorage.getItem("garment-show-prices");
-      setShowPrice(val !== "false");
+  // Price visibility from localStorage (useSyncExternalStore avoids setState-in-effect)
+  const subscribeToPriceStore = useCallback((onStoreChange: () => void) => {
+    // Cross-tab changes
+    window.addEventListener("storage", onStoreChange);
+    // Same-page changes (storage event doesn't fire on the originating tab)
+    const interval = setInterval(onStoreChange, 500);
+    return () => {
+      window.removeEventListener("storage", onStoreChange);
+      clearInterval(interval);
     };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
   }, []);
 
-  // Poll localStorage since the storage event doesn't fire on the same page
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const val = localStorage.getItem("garment-show-prices");
-      setShowPrice(val !== "false");
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+  const showPrice = useSyncExternalStore(
+    subscribeToPriceStore,
+    () => localStorage.getItem("garment-show-prices") !== "false",
+    () => true, // server snapshot
+  );
 
   // Selected garment for drawer
   const [selectedGarmentId, setSelectedGarmentId] = useState<string | null>(

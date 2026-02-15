@@ -1,6 +1,6 @@
-import type { ProductionState, Priority, Lane, RiskLevel } from "./schemas/job";
-import type { BurnStatus } from "./schemas/screen";
-import type { QuoteStatus, ServiceType } from "./schemas/quote";
+import type { ProductionState, Priority, Lane, RiskLevel } from "@/lib/schemas/job";
+import type { BurnStatus } from "@/lib/schemas/screen";
+import type { QuoteStatus, ServiceType } from "@/lib/schemas/quote";
 import type {
   CustomerTag,
   LifecycleStage,
@@ -8,13 +8,13 @@ import type {
   CustomerTypeTag,
   PaymentTerms,
   PricingTier,
-} from "./schemas/customer";
-import type { ContactRole } from "./schemas/contact";
-import type { NoteChannel } from "./schemas/note";
-import type { ArtworkTag } from "./schemas/artwork";
-import type { GarmentCategory } from "./schemas/garment";
-import type { InvoiceStatus, PaymentMethod, InvoiceLineItemType } from "./schemas/invoice";
-import type { CreditMemoReason } from "./schemas/credit-memo";
+} from "@/lib/schemas/customer";
+import type { ContactRole } from "@/lib/schemas/contact";
+import type { NoteChannel } from "@/lib/schemas/note";
+import type { ArtworkTag } from "@/lib/schemas/artwork";
+import type { GarmentCategory } from "@/lib/schemas/garment";
+import type { InvoiceStatus, PaymentMethod, InvoiceLineItemType } from "@/lib/schemas/invoice";
+import type { CreditMemoReason } from "@/lib/schemas/credit-memo";
 
 export const PRODUCTION_STATE_LABELS: Record<ProductionState, string> = {
   design: "Design",

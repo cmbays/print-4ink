@@ -80,8 +80,10 @@
   --color-surface: var(--surface);
   --color-elevated: var(--elevated);
 
-  /* Neobrutalist shadow */
+  /* Neobrutalist shadow scale */
+  --shadow-brutal-sm: 2px 2px 0px;
   --shadow-brutal: 4px 4px 0px;
+  --shadow-brutal-lg: 6px 6px 0px;
 
   /* Spring transition */
   --transition-timing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -94,7 +96,6 @@
   --mobile-card-gap: 0.75rem;
   --mobile-sheet-max-height: 85vh;
   --mobile-fab-size: 3.5rem;
-  --shadow-brutal-sm: 2px 2px 0px;
 }
 
 /* =====================

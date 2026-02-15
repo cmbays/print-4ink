@@ -225,7 +225,7 @@ export default function PricingHubPage() {
             <Button
               size="sm"
               onClick={() => setWizardOpen(true)}
-              className="bg-action text-black font-semibold border-2 border-current shadow-[4px_4px_0px] shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px] transition-all"
+              className="bg-action text-black font-semibold border-2 border-current shadow-brutal shadow-action hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal-lg active:translate-x-0 active:translate-y-0 active:shadow-brutal-sm transition-all"
             >
               <Plus className="size-4" />
               New Template

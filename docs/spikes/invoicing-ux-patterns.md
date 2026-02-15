@@ -184,7 +184,7 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 - Toast notifications: "Invoice INV-1024 sent", "Payment recorded"
 
 ### "Neobrutalist Delight" Layer
-- Primary CTAs: `shadow-[4px_4px_0px] shadow-action/30` with press animation
+- Primary CTAs: `shadow-brutal shadow-action/30` with press animation
 - Status badge transitions: scale up briefly (1.05x) then settle
 - Overdue status: subtle pulse animation on badge
 

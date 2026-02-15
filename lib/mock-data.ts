@@ -1,19 +1,19 @@
-import type { Customer } from "./schemas/customer";
-import type { Contact } from "./schemas/contact";
-import type { Group } from "./schemas/group";
-import type { Note } from "./schemas/note";
-import type { Address } from "./schemas/address";
-import type { Job, JobTask, JobNote } from "./schemas/job";
-import type { Quote } from "./schemas/quote";
-import type { ScratchNote } from "./schemas/scratch-note";
-import type { QuoteCard } from "./schemas/board-card";
-import type { Screen } from "./schemas/screen";
-import type { Color } from "./schemas/color";
-import type { GarmentCatalog } from "./schemas/garment";
-import type { Artwork } from "./schemas/artwork";
-import type { Invoice, Payment } from "./schemas/invoice";
-import type { CreditMemo } from "./schemas/credit-memo";
-import type { MockupTemplate } from "./schemas/mockup-template";
+import type { Customer } from "@/lib/schemas/customer";
+import type { Contact } from "@/lib/schemas/contact";
+import type { Group } from "@/lib/schemas/group";
+import type { Note } from "@/lib/schemas/note";
+import type { Address } from "@/lib/schemas/address";
+import type { Job, JobTask, JobNote } from "@/lib/schemas/job";
+import type { Quote } from "@/lib/schemas/quote";
+import type { ScratchNote } from "@/lib/schemas/scratch-note";
+import type { QuoteCard } from "@/lib/schemas/board-card";
+import type { Screen } from "@/lib/schemas/screen";
+import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { Artwork } from "@/lib/schemas/artwork";
+import type { Invoice, Payment } from "@/lib/schemas/invoice";
+import type { CreditMemo } from "@/lib/schemas/credit-memo";
+import type { MockupTemplate } from "@/lib/schemas/mockup-template";
 
 // ---------------------------------------------------------------------------
 // Customer IDs (stable — referenced by jobs, quotes, artworks)
