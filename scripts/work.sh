@@ -843,15 +843,19 @@ _work_clean() {
     # shell commands break (orphaned CWD).
 
     # 0. CWD safety — escape the worktree before deleting it
-    if [[ -n "$WORKTREE_DIR" && "$PWD" == "$WORKTREE_DIR"* ]]; then
+    #    Boundary-aware: match exact dir or any subdir (trailing /), not prefix siblings
+    if [[ -n "$WORKTREE_DIR" && ( "$PWD" == "$WORKTREE_DIR" || "$PWD" == "$WORKTREE_DIR"/* ) ]]; then
         echo "  Moving to main repo (CWD is inside target worktree)..."
         cd "$PRINT4INK_REPO" || return 1
     fi
 
     # 1. Worktree
     if [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]]; then
-        git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>/dev/null
-        echo "  Removed worktree: $WORKTREE_DIR"
+        if git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>/dev/null; then
+            echo "  Removed worktree: $WORKTREE_DIR"
+        else
+            echo "  Warning: failed to remove worktree: $WORKTREE_DIR"
+        fi
     fi
 
     # 2. Branch
@@ -866,8 +870,11 @@ _work_clean() {
     #    session kill fails, the entry is already archived. That failure is
     #    immediately obvious: you're still sitting in the session.)
     if [[ "$HAS_REGISTRY" == true ]]; then
-        _registry_archive "$TOPIC"
-        echo "  Archived session '$TOPIC' in registry"
+        if _registry_archive "$TOPIC"; then
+            echo "  Archived session '$TOPIC' in registry"
+        else
+            echo "  Warning: failed to archive session '$TOPIC' in registry"
+        fi
     fi
 
     # 4. Tmux session/window (migration period — may kill current shell)
