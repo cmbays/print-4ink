@@ -30,14 +30,20 @@ _kdl_sanitize_prompt() {
 
 # ── KDL Tab Rendering ────────────────────────────────────────────────────
 # Render a single KDL tab block. Used by both _kdl_generate_wave and _work_build.
-# Usage: _kdl_render_tab <tab_name> <cwd> [prompt]
+# Usage: _kdl_render_tab <tab_name> <cwd> [prompt] [claude_args]
 #   Writes KDL to stdout. Caller redirects as needed.
 #   If a prompt is provided, it is written to .session-prompt.md in the cwd
 #   and Claude is told to read it (avoids KDL escaping issues with backticks/quotes).
+#   claude_args are prepended as CLI flags (e.g., "--dangerously-skip-permissions").
 _kdl_render_tab() {
     local tab_name="$1"
     local cwd="$2"
     local prompt="${3:-}"
+    local claude_args="${4:-}"
+
+    # Build KDL args line: [claude_args] [prompt_instruction]
+    local args_parts=""
+    [[ -n "$claude_args" ]] && args_parts="\"$claude_args\""
 
     if [[ -n "$prompt" && "$prompt" != "null" ]]; then
         # Write prompt to file in worktree (gitignored via .session-* pattern)
@@ -45,10 +51,19 @@ _kdl_render_tab() {
         mkdir -p "$cwd"
         echo "$prompt" > "$prompt_file"
 
+        local prompt_instruction="Read .session-prompt.md for your task instructions, then follow them."
+        if [[ -n "$args_parts" ]]; then
+            args_parts="$args_parts \"$prompt_instruction\""
+        else
+            args_parts="\"$prompt_instruction\""
+        fi
+    fi
+
+    if [[ -n "$args_parts" ]]; then
         cat <<KDL_TAB
     tab name="$tab_name" cwd="$cwd" {
         pane command="claude" {
-            args "Read .session-prompt.md for your task instructions, then follow them."
+            args $args_parts
         }
     }
 KDL_TAB

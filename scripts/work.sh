@@ -63,30 +63,43 @@ work() {
         --stack)
             shift
             local topic="${1:-}"
-            [[ -z "$topic" ]] && { echo "Error: topic required. Usage: work --stack <topic> [--prompt \"...\"]"; return 1; }
+            [[ -z "$topic" ]] && { echo "Error: topic required. Usage: work --stack <topic> [--prompt \"...\"] [--yolo] [--claude-args \"...\"]"; return 1; }
             shift
-            local prompt=""
-            [[ "${1:-}" == "--prompt" ]] && prompt="${2:-}"
+            local prompt="" claude_args=""
+            while [[ $# -gt 0 ]]; do
+                case "$1" in
+                    --prompt)       prompt="${2:-}"; shift 2 ;;
+                    --yolo)         claude_args="--dangerously-skip-permissions"; shift ;;
+                    --claude-args)  claude_args="${2:-}"; shift 2 ;;
+                    *)              shift ;;
+                esac
+            done
             local current_branch
             current_branch=$(git -C "$PWD" rev-parse --abbrev-ref HEAD 2>/dev/null)
             if [[ -z "$current_branch" || "$current_branch" == "HEAD" ]]; then
                 echo "Error: Not in a git worktree. Use 'work <topic> <base-branch>' instead."
                 return 1
             fi
-            _work_new "$topic" "$current_branch" "$prompt"
+            _work_new "$topic" "$current_branch" "$prompt" "$claude_args"
             ;;
         *)
-            # Parse: work <topic> [<base-branch>] [--prompt "..."]
+            # Parse: work <topic> [<base-branch>] [--prompt "..."] [--yolo] [--claude-args "..."]
             local topic="$1"; shift
             local base="main"
-            local prompt=""
-            if [[ "${1:-}" == "--prompt" ]]; then
-                prompt="${2:-}"
-            elif [[ -n "${1:-}" ]]; then
+            local prompt="" claude_args=""
+            # First non-flag arg after topic is the base branch
+            if [[ -n "${1:-}" && "${1:0:2}" != "--" ]]; then
                 base="$1"; shift
-                [[ "${1:-}" == "--prompt" ]] && prompt="${2:-}"
             fi
-            _work_new "$topic" "$base" "$prompt"
+            while [[ $# -gt 0 ]]; do
+                case "$1" in
+                    --prompt)       prompt="${2:-}"; shift 2 ;;
+                    --yolo)         claude_args="--dangerously-skip-permissions"; shift ;;
+                    --claude-args)  claude_args="${2:-}"; shift 2 ;;
+                    *)              shift ;;
+                esac
+            done
+            _work_new "$topic" "$base" "$prompt" "$claude_args"
             ;;
     esac
 }
@@ -101,6 +114,8 @@ USAGE
   work <topic> <base-branch>             Related work: worktree + Zellij tab
   work --stack <topic>                    Stack from current branch (auto-detects $PWD)
   work <topic> --prompt "task desc"       Seed the new Claude with an initial prompt
+  work <topic> --yolo                     Skip Claude permissions (--dangerously-skip-permissions)
+  work <topic> --claude-args "..."        Pass arbitrary flags to Claude CLI
 
 PHASE COMMANDS
   work research <vertical>                Research phase (vertical-discovery skill)
@@ -112,6 +127,7 @@ PHASE COMMANDS
   work review <vertical>                  Quality gate + doc sync
   work learnings <vertical>               Cross-cutting pattern synthesis
   work cooldown <vertical>                5-step retrospective
+  (All phase commands accept --yolo and --claude-args)
 
 SESSION MANAGEMENT
   work sessions [--vertical <name>]       List sessions from registry
@@ -133,6 +149,8 @@ EXAMPLES
   work research quoting                                     # Start quoting research
   work resume invoicing-schema                              # Resume Claude session
   work sessions --vertical quoting                          # List quoting sessions
+  work breadboard garments --yolo                            # Phase + skip permissions
+  work my-feature --claude-args "--model sonnet"             # Custom Claude flags
   work clean invoicing-schema                               # Full cleanup
 
 ZELLIJ NAVIGATION
@@ -157,6 +175,7 @@ _work_new() {
     local TOPIC="$1"
     local BASE="${2:-main}"
     local PROMPT="${3:-}"
+    local CLAUDE_ARGS="${4:-}"
 
     # Validate topic
     [[ -z "$TOPIC" ]] && { echo "Error: topic required"; return 1; }
@@ -247,17 +266,7 @@ CONTEXT
 
         {
             echo "layout {"
-            if [[ -n "$PROMPT" ]]; then
-                local SAFE_PROMPT
-                SAFE_PROMPT=$(_kdl_sanitize_prompt "$PROMPT")
-                cat <<KDL
-    pane command="claude" cwd="$WORKTREE_DIR" {
-        args "$SAFE_PROMPT"
-    }
-KDL
-            else
-                echo "    pane command=\"claude\" cwd=\"$WORKTREE_DIR\""
-            fi
+            _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT" "$CLAUDE_ARGS"
             echo "}"
         } > "$LAYOUT_FILE"
 
@@ -274,7 +283,7 @@ KDL
 
         {
             echo "layout {"
-            _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT"
+            _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT" "$CLAUDE_ARGS"
             echo "}"
         } > "$SESSION_LAYOUT"
 
@@ -290,7 +299,7 @@ KDL
 }
 
 # ── Phase Command (Generic Wrapper) ────────────────────────────────────────
-# Usage: _work_phase <phase> <vertical> [--prompt "..."]
+# Usage: _work_phase <phase> <vertical> [--prompt "..."] [--yolo] [--claude-args "..."]
 _work_phase() {
     local PHASE="$1"; shift
     local VERTICAL="${1:-}"
@@ -310,9 +319,17 @@ _work_phase() {
     fi
     shift
 
-    # Parse optional --prompt
+    # Parse optional flags
     local PROMPT=""
-    [[ "${1:-}" == "--prompt" ]] && PROMPT="${2:-}"
+    local CLAUDE_ARGS=""
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --prompt)       PROMPT="${2:-}"; shift 2 ;;
+            --yolo)         CLAUDE_ARGS="--dangerously-skip-permissions"; shift ;;
+            --claude-args)  CLAUDE_ARGS="${2:-}"; shift 2 ;;
+            *)              shift ;;
+        esac
+    done
 
     # Auto-generate topic name
     local TOPIC="${VERTICAL}-${PHASE}"
@@ -348,7 +365,7 @@ _work_phase() {
     fi
 
     # Create worktree + Zellij tab via _work_new
-    _work_new "$TOPIC" "main" "$PROMPT"
+    _work_new "$TOPIC" "main" "$PROMPT" "$CLAUDE_ARGS"
 
     # Update registry with vertical and stage info
     if type _registry_update &>/dev/null; then
