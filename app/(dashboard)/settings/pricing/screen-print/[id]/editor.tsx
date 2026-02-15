@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,11 @@ import {
   Minus,
   Plus,
   Receipt,
+  Layers,
+  Shirt,
+  MapPin,
+  ToggleRight,
+  ToggleLeft,
 } from "lucide-react";
 import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
 import { calculateTemplateHealth } from "@/lib/pricing-engine";
@@ -94,34 +99,45 @@ interface ScreenPrintEditorProps {
 export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const router = useRouter();
 
-  // Find source template
   const sourceTemplate = allScreenPrintTemplates.find(
     (t) => t.id === templateId
   );
 
-  // Editor state
+  // ── State ─────────────────────────────────────────────────────────
   const [template, setTemplate] = useState<PricingTemplate | null>(() =>
     sourceTemplate ? deepCopy(sourceTemplate) : null
   );
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  // Sandbox mode state
+  // Sandbox
   const [sandboxSnapshot, setSandboxSnapshot] = useState<PricingTemplate | null>(null);
   const isSandboxMode = sandboxSnapshot !== null;
   const [showComparison, setShowComparison] = useState(false);
 
-  // Editor mode state (Simple vs Custom)
+  // Editor mode (Simple vs Custom)
   const [editorMode, setEditorMode] = useState<EditorMode>("simple");
 
-  // Cost config sheet state
+  // Manual edit (Custom mode) — owned here, passed to PowerModeGrid
+  const [isManualEditOn, setIsManualEditOn] = useState(false);
+  const toggleManualEdit = useCallback(() => setIsManualEditOn((p) => !p), []);
+
+  // Cost config sheet
   const [showCostSheet, setShowCostSheet] = useState(false);
 
-  // Matrix preview selector state (#134)
+  // Matrix preview selectors (#134)
   const [previewGarment, setPreviewGarment] = useState<GarmentCategory | undefined>(undefined);
   const [previewLocations, setPreviewLocations] = useState<string[]>(["front"]);
 
-  // Template not found
+  // Simple mode ignores price overrides — always shows formula-computed prices.
+  // Custom mode shows the actual overrides the user set.
+  // Must be above the early-return guard to satisfy Rules of Hooks.
+  const simpleTemplate = useMemo<PricingTemplate | null>(
+    () => template ? { ...template, matrix: { ...template.matrix, priceOverrides: {} } } : null,
+    [template]
+  );
+
+  // ── Template not found ────────────────────────────────────────────
   if (!template) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-12 text-center" role="alert">
@@ -140,17 +156,14 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     );
   }
 
-  // Derive color hit rate from the template (rate of color 2+)
+  // ── Derived values ────────────────────────────────────────────────
   const colorHitRate =
     template.matrix.colorPricing.find((c) => c.colors === 2)?.ratePerHit ?? 1.5;
-
-  // Template health
   const health = calculateTemplateHealth(template, DEFAULT_GARMENT_COST);
-
-  // Max colors
   const maxColors = template.matrix.maxColors ?? 8;
+  const fees = template.matrix.setupFeeConfig;
 
-  // ── Update helpers ──────────────────────────────────────────────────
+  // ── Update helpers ────────────────────────────────────────────────
 
   const updateName = (name: string) => {
     setTemplate((prev) => (prev ? { ...prev, name } : prev));
@@ -164,10 +177,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         ...c,
         ratePerHit: c.colors === 1 ? 0 : rate,
       }));
-      return {
-        ...prev,
-        matrix: { ...prev.matrix, colorPricing },
-      };
+      return { ...prev, matrix: { ...prev.matrix, colorPricing } };
     });
     setIsEditing(true);
   };
@@ -177,11 +187,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
       if (!prev) return prev;
       return {
         ...prev,
-        matrix: {
-          ...prev.matrix,
-          quantityTiers: tiers,
-          basePriceByTier: basePrices,
-        },
+        matrix: { ...prev.matrix, quantityTiers: tiers, basePriceByTier: basePrices },
       };
     });
     setIsEditing(true);
@@ -190,10 +196,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const updateLocations = (locations: LocationUpcharge[]) => {
     setTemplate((prev) => {
       if (!prev) return prev;
-      return {
-        ...prev,
-        matrix: { ...prev.matrix, locationUpcharges: locations },
-      };
+      return { ...prev, matrix: { ...prev.matrix, locationUpcharges: locations } };
     });
     setIsEditing(true);
   };
@@ -201,10 +204,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const updateGarmentTypes = (garmentTypes: GarmentTypePricing[]) => {
     setTemplate((prev) => {
       if (!prev) return prev;
-      return {
-        ...prev,
-        matrix: { ...prev.matrix, garmentTypePricing: garmentTypes },
-      };
+      return { ...prev, matrix: { ...prev.matrix, garmentTypePricing: garmentTypes } };
     });
     setIsEditing(true);
   };
@@ -226,59 +226,42 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
   const updateMaxColors = (newMax: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
-      return {
-        ...prev,
-        matrix: { ...prev.matrix, maxColors: newMax },
-      };
+      return { ...prev, matrix: { ...prev.matrix, maxColors: newMax } };
     });
     setIsEditing(true);
   };
 
   const updateCostConfig = (config: CostConfig) => {
-    setTemplate((prev) => {
-      if (!prev) return prev;
-      return { ...prev, costConfig: config };
-    });
+    setTemplate((prev) => (prev ? { ...prev, costConfig: config } : prev));
     setIsEditing(true);
     toast.success("Cost configuration updated", {
       description: "Margin indicators have been recalculated.",
     });
   };
 
-  // Power mode cell edit
   const handlePowerCellEdit = (tierIndex: number, colIndex: number, newPrice: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
       const overrides = { ...(prev.matrix.priceOverrides ?? {}) };
       overrides[`${tierIndex}-${colIndex}`] = newPrice;
-      return {
-        ...prev,
-        matrix: { ...prev.matrix, priceOverrides: overrides },
-      };
+      return { ...prev, matrix: { ...prev.matrix, priceOverrides: overrides } };
     });
     setIsEditing(true);
   };
 
-  // Power mode bulk edit
-  const handlePowerBulkEdit = (
-    cells: Array<{ row: number; col: number }>,
-    value: number
-  ) => {
+  const handlePowerBulkEdit = (cells: Array<{ row: number; col: number }>, value: number) => {
     setTemplate((prev) => {
       if (!prev) return prev;
       const overrides = { ...(prev.matrix.priceOverrides ?? {}) };
       for (const { row, col } of cells) {
         overrides[`${row}-${col}`] = value;
       }
-      return {
-        ...prev,
-        matrix: { ...prev.matrix, priceOverrides: overrides },
-      };
+      return { ...prev, matrix: { ...prev.matrix, priceOverrides: overrides } };
     });
     setIsEditing(true);
   };
 
-  // ── Actions ─────────────────────────────────────────────────────────
+  // ── Actions ───────────────────────────────────────────────────────
 
   const handleSave = () => {
     setTemplate((prev) =>
@@ -305,105 +288,137 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
     setTimeout(() => router.push("/settings/pricing"), 500);
   };
 
-  // Sandbox actions
+  // Sandbox
   const enterSandbox = () => {
     setSandboxSnapshot(deepCopy(template));
     toast.info("Sandbox mode enabled", {
       description: "Changes won't affect live pricing until you save.",
     });
   };
-
-  const exitSandbox = () => {
-    setSandboxSnapshot(null);
-    setShowComparison(false);
-  };
-
+  const exitSandbox = () => { setSandboxSnapshot(null); setShowComparison(false); };
   const discardSandboxChanges = () => {
-    if (sandboxSnapshot) {
-      setTemplate(deepCopy(sandboxSnapshot));
-      setIsEditing(false);
-    }
+    if (sandboxSnapshot) { setTemplate(deepCopy(sandboxSnapshot)); setIsEditing(false); }
     exitSandbox();
-    toast.info("Changes discarded", {
-      description: "Template restored to original state.",
-    });
+    toast.info("Changes discarded", { description: "Template restored to original state." });
   };
-
   const saveSandboxChanges = () => {
     exitSandbox();
     setIsEditing(false);
-    setTemplate((prev) =>
-      prev ? { ...prev, updatedAt: new Date().toISOString() } : prev
-    );
+    setTemplate((prev) => prev ? { ...prev, updatedAt: new Date().toISOString() } : prev);
     toast.success("Sandbox changes applied", {
       description: `"${template.name}" has been updated with your changes.`,
     });
   };
 
-  // ── Setup fee config shorthand ──────────────────────────────────────
-  const fees = template.matrix.setupFeeConfig;
+  // Turn off manual edit when switching to Simple mode
+  const switchMode = (mode: EditorMode) => {
+    if (mode === "simple" && isManualEditOn) setIsManualEditOn(false);
+    setEditorMode(mode);
+  };
 
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-6">
-      {/* ── Header ────────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between md:gap-4">
-        {/* Left: name + meta */}
-        <div className="flex flex-col gap-1.5 min-w-0">
-          <div className="flex items-center gap-3">
-            <Input
-              value={template.name}
-              onChange={(e) => updateName(e.target.value)}
-              className="h-auto border-none bg-transparent p-0 text-lg font-semibold shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-              aria-label="Template name"
-            />
-            {isEditing && (
-              <Badge variant="outline" className="text-[10px] text-warning border-warning/30 shrink-0">
-                Unsaved
-              </Badge>
-            )}
-          </div>
+    <div className="flex flex-col gap-4">
+      {/* ══════════════════════════════════════════════════════════════
+          STICKY HEADER — name, badges, action buttons
+         ══════════════════════════════════════════════════════════════ */}
+      <div className="sticky top-0 z-10 bg-background border-b border-border px-4 py-3 md:px-6">
+        {/* Row: identity + buttons */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          {/* Printer icon (blue, no text) */}
+          <Printer className="size-5 text-action shrink-0" />
 
-          {/* Meta badges */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            <Badge variant="secondary" className="gap-1 text-[10px]">
-              <Printer className="size-3" />
-              Screen Print
-            </Badge>
-            <Badge variant="secondary" className="text-[10px] capitalize">
-              {template.pricingTier}
-            </Badge>
-            <Badge
-              variant="outline"
-              className={cn("text-[10px]", healthColors[health])}
-            >
-              {healthLabels[health]}
-            </Badge>
-            {template.isDefault && (
-              <Badge variant="secondary" className="text-[10px]">Default</Badge>
-            )}
-            {template.isIndustryDefault && (
-              <Badge variant="secondary" className="text-[10px]">Industry Default</Badge>
-            )}
-          </div>
-        </div>
+          {/* Template name */}
+          <Input
+            value={template.name}
+            onChange={(e) => updateName(e.target.value)}
+            className="h-auto w-auto min-w-[180px] max-w-[320px] border-none bg-transparent p-0 text-base font-semibold shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            aria-label="Template name"
+          />
 
-        {/* Right: action buttons */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {/* Badges */}
+          <Badge variant="secondary" className="text-[10px] capitalize">
+            {template.pricingTier}
+          </Badge>
+          <Badge variant="outline" className={cn("text-[10px]", healthColors[health])}>
+            {healthLabels[health]}
+          </Badge>
+          {isEditing && (
+            <Badge variant="outline" className="text-[10px] text-warning border-warning/30">
+              Unsaved
+            </Badge>
+          )}
+          {template.isDefault && (
+            <Badge variant="secondary" className="text-[10px]">Default</Badge>
+          )}
+          {template.isIndustryDefault && (
+            <Badge variant="secondary" className="text-[10px]">Industry</Badge>
+          )}
+
+          <div className="flex-1" />
+
+          {/* ── Action buttons ─────────────────────────────────────── */}
           {!isSandboxMode ? (
-            <>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {/* Qty Tiers popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-7 text-xs">
+                    <Layers className="size-3.5" />
+                    <span className="hidden md:inline">Qty Tiers</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[460px]" align="end">
+                  <QuantityTierEditor
+                    tiers={template.matrix.quantityTiers}
+                    basePrices={template.matrix.basePriceByTier}
+                    onTiersChange={updateTiers}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {/* Garment Markup popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-7 text-xs">
+                    <Shirt className="size-3.5" />
+                    <span className="hidden md:inline">Garments</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72" align="end">
+                  <GarmentTypePricingEditor
+                    garmentTypes={template.matrix.garmentTypePricing}
+                    onGarmentTypesChange={updateGarmentTypes}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              {/* Location Upcharges popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-7 text-xs">
+                    <MapPin className="size-3.5" />
+                    <span className="hidden md:inline">Locations</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72" align="end">
+                  <LocationUpchargeEditor
+                    locations={template.matrix.locationUpcharges}
+                    onLocationsChange={updateLocations}
+                  />
+                </PopoverContent>
+              </Popover>
+
               {/* Setup Fees popover */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="h-7 text-xs">
                     <Receipt className="size-3.5" />
-                    Setup Fees
+                    <span className="hidden md:inline">Setup Fees</span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72" align="end">
                   <div className="space-y-3">
                     <p className="text-xs font-medium text-foreground">Setup Fees</p>
-
-                    {/* Per-screen fee */}
                     <div className="space-y-1">
                       <Label htmlFor="sf-per-screen" className="text-xs">Per-screen fee</Label>
                       <div className="relative w-full">
@@ -420,8 +435,6 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                         />
                       </div>
                     </div>
-
-                    {/* Bulk waiver */}
                     <div className="space-y-1">
                       <Label htmlFor="sf-bulk-waiver" className="text-xs">Bulk waiver (qty)</Label>
                       <Input
@@ -438,10 +451,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                         Orders at or above this qty waive setup fees
                       </p>
                     </div>
-
                     <Separator />
-
-                    {/* Reorder discount */}
                     <p className="text-xs font-medium text-foreground">Reorder Discount</p>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
@@ -482,235 +492,235 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                 </PopoverContent>
               </Popover>
 
-              <Button variant="outline" size="sm" onClick={() => setShowCostSheet(true)}>
+              <div className="h-5 w-px bg-border hidden md:block" />
+
+              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowCostSheet(true)}>
                 <Settings2 className="size-3.5" />
-                Edit Costs
+                <span className="hidden md:inline">Edit Costs</span>
               </Button>
               <Button
                 variant="outline"
                 size="sm"
+                className="h-7 text-xs text-warning hover:text-warning"
                 onClick={enterSandbox}
-                className="text-warning hover:text-warning"
               >
                 <FlaskConical className="size-3.5" />
-                Sandbox
+                <span className="hidden md:inline">Sandbox</span>
               </Button>
-              <Button variant="outline" size="sm" onClick={handleDuplicate}>
+              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={handleDuplicate}>
                 <Copy className="size-3.5" />
-                <span className="hidden md:inline">Duplicate</span>
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="text-error hover:text-error"
+                className="h-7 text-xs text-error hover:text-error"
                 onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash2 className="size-3.5" />
-                <span className="hidden md:inline">Delete</span>
               </Button>
-              <Button size="sm" onClick={handleSave} disabled={!isEditing}>
+              <Button size="sm" className="h-7 text-xs" onClick={handleSave} disabled={!isEditing}>
                 <Save className="size-3.5" />
                 Save
               </Button>
-            </>
+            </div>
           ) : (
-            <>
-              <Button variant="outline" size="sm" onClick={() => setShowComparison(true)}>
+            <div className="flex items-center gap-1.5">
+              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowComparison(true)}>
                 <GitCompareArrows className="size-3.5" />
                 Compare
               </Button>
               <Button
                 variant="outline"
                 size="sm"
+                className="h-7 text-xs text-error hover:text-error"
                 onClick={discardSandboxChanges}
-                className="text-error hover:text-error"
               >
                 <Undo2 className="size-3.5" />
                 Discard
               </Button>
-              <Button size="sm" onClick={saveSandboxChanges}>
+              <Button size="sm" className="h-7 text-xs" onClick={saveSandboxChanges}>
                 <Save className="size-3.5" />
                 Save Changes
               </Button>
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      {/* ── Sandbox banner ────────────────────────────────────────── */}
-      {isSandboxMode && (
-        <div className="flex items-center justify-between rounded-lg border border-warning/30 bg-warning/10 p-3">
-          <div className="flex items-center gap-2">
-            <FlaskConical className="size-4 text-warning" />
-            <span className="text-sm font-medium text-warning">Sandbox Mode</span>
-            <span className="text-sm text-warning/80">
-              &mdash; Changes won&apos;t affect live pricing until saved
-            </span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={discardSandboxChanges}
-            className="h-7 text-warning/70 hover:text-warning hover:bg-warning/10"
-          >
-            <X className="size-3.5" />
-            Exit
-          </Button>
-        </div>
-      )}
+      {/* ── Content area ─────────────────────────────────────────── */}
+      <div className="flex flex-col gap-4 px-4 pb-6 md:px-6">
 
-      {/* ── 3-column sub-editors ──────────────────────────────────── */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <QuantityTierEditor
-          tiers={template.matrix.quantityTiers}
-          basePrices={template.matrix.basePriceByTier}
-          onTiersChange={updateTiers}
-        />
-        <GarmentTypePricingEditor
-          garmentTypes={template.matrix.garmentTypePricing}
-          onGarmentTypesChange={updateGarmentTypes}
-        />
-        <LocationUpchargeEditor
-          locations={template.matrix.locationUpcharges}
-          onLocationsChange={updateLocations}
-        />
-      </div>
-
-      {/* ── Unified Pricing Matrix Card ──────────────────────────── */}
-      <Card>
-        <CardHeader className="space-y-3 pb-3">
-          {/* Row 1: title + legend + mode toggle + settings */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        {/* Sandbox banner */}
+        {isSandboxMode && (
+          <div className="flex items-center justify-between rounded-lg border border-warning/30 bg-warning/10 p-3">
             <div className="flex items-center gap-2">
-              <Grid3x3 className="size-4 text-muted-foreground" />
-              <CardTitle className="text-base">Pricing Matrix</CardTitle>
+              <FlaskConical className="size-4 text-warning" />
+              <span className="text-sm font-medium text-warning">Sandbox Mode</span>
+              <span className="text-sm text-warning/80">
+                &mdash; Changes won&apos;t affect live pricing until saved
+              </span>
             </div>
-
-            <MarginLegend variant="tooltip" className="hidden md:flex" />
-
-            <div className="flex-1" />
-
-            {/* Simple / Custom toggle */}
-            <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5">
-              <Button
-                variant={editorMode === "simple" ? "default" : "ghost"}
-                size="sm"
-                className="h-6 gap-1 px-2 text-xs"
-                onClick={() => setEditorMode("simple")}
-              >
-                <LayoutGrid className="size-3" />
-                Simple
-              </Button>
-              <Button
-                variant={editorMode === "power" ? "default" : "ghost"}
-                size="sm"
-                className="h-6 gap-1 px-2 text-xs"
-                onClick={() => setEditorMode("power")}
-              >
-                <Zap className="size-3" />
-                Custom
-              </Button>
-            </div>
-
-            {/* Settings popover: max colors + color hit rate */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
-                  <Settings2 className="size-3.5" />
-                  Settings
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-56" align="end">
-                <div className="space-y-3">
-                  {/* Max colors stepper */}
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">Max Colors</Label>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon-xs"
-                        className="size-6"
-                        disabled={maxColors <= 1}
-                        onClick={() => updateMaxColors(Math.max(1, maxColors - 1))}
-                      >
-                        <Minus className="size-3" />
-                      </Button>
-                      <span className="w-8 text-center text-sm font-medium tabular-nums">
-                        {maxColors}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon-xs"
-                        className="size-6"
-                        disabled={maxColors >= 12}
-                        onClick={() => updateMaxColors(Math.min(12, maxColors + 1))}
-                      >
-                        <Plus className="size-3" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Color hit rate */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor="matrix-hit-rate" className="text-xs">
-                      Color Hit Rate
-                    </Label>
-                    <div className="relative w-full">
-                      <Input
-                        id="matrix-hit-rate"
-                        type="number"
-                        step={0.1}
-                        min={0}
-                        value={colorHitRate}
-                        onChange={(e) => updateColorHitRate(parseFloat(e.target.value) || 0)}
-                        onFocus={(e) => e.target.select()}
-                        className="h-7 pr-6 text-xs"
-                      />
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                        x
-                      </span>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">
-                      Multiplier for 2+ color pricing per additional hit
-                    </p>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={discardSandboxChanges}
+              className="h-7 text-warning/70 hover:text-warning hover:bg-warning/10"
+            >
+              <X className="size-3.5" />
+              Exit
+            </Button>
           </div>
+        )}
 
-          {/* Row 2: preview selectors (garment + location) */}
-          <MatrixPreviewSelector
-            garmentTypes={template.matrix.garmentTypePricing}
-            locations={template.matrix.locationUpcharges}
-            selectedGarment={previewGarment}
-            selectedLocations={previewLocations}
-            onGarmentChange={setPreviewGarment}
-            onLocationsChange={setPreviewLocations}
-          />
-        </CardHeader>
+        {/* ══════════════════════════════════════════════════════════
+            UNIFIED PRICING MATRIX CARD
+           ══════════════════════════════════════════════════════════ */}
+        <Card>
+          <CardHeader className="space-y-3 pb-3">
+            {/* Row 1: title + legend + mode toggle + manual edit + settings */}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <div className="flex items-center gap-2">
+                <Grid3x3 className="size-4 text-muted-foreground" />
+                <CardTitle className="text-base">Pricing Matrix</CardTitle>
+              </div>
 
-        <CardContent className="pt-0">
-          {editorMode === "simple" ? (
-            <ColorPricingGrid
-              template={template}
-              previewGarment={previewGarment}
-              previewLocations={previewLocations}
+              <MarginLegend variant="tooltip" className="hidden md:flex" />
+
+              <div className="flex-1" />
+
+              {/* Simple / Custom toggle */}
+              <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5">
+                <Button
+                  variant={editorMode === "simple" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-6 gap-1 px-2 text-xs"
+                  onClick={() => switchMode("simple")}
+                >
+                  <LayoutGrid className="size-3" />
+                  Simple
+                </Button>
+                <Button
+                  variant={editorMode === "power" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-6 gap-1 px-2 text-xs"
+                  onClick={() => switchMode("power")}
+                >
+                  <Zap className="size-3" />
+                  Custom
+                </Button>
+              </div>
+
+              {/* Manual Edit toggle — only shown in Custom mode */}
+              {editorMode === "power" && (
+                <Button
+                  variant={isManualEditOn ? "default" : "outline"}
+                  size="sm"
+                  className="h-7 gap-1.5 text-xs"
+                  onClick={toggleManualEdit}
+                >
+                  {isManualEditOn ? (
+                    <ToggleRight className="size-3.5" />
+                  ) : (
+                    <ToggleLeft className="size-3.5" />
+                  )}
+                  Manual Edit
+                </Button>
+              )}
+
+              {/* Settings popover: max colors + color hit rate */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
+                    <Settings2 className="size-3.5" />
+                    Settings
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-56" align="end">
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Max Colors</Label>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon-xs"
+                          className="size-6"
+                          disabled={maxColors <= 1}
+                          onClick={() => updateMaxColors(Math.max(1, maxColors - 1))}
+                        >
+                          <Minus className="size-3" />
+                        </Button>
+                        <span className="w-8 text-center text-sm font-medium tabular-nums">
+                          {maxColors}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon-xs"
+                          className="size-6"
+                          disabled={maxColors >= 12}
+                          onClick={() => updateMaxColors(Math.min(12, maxColors + 1))}
+                        >
+                          <Plus className="size-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <Separator />
+                    <div className="space-y-1.5">
+                      <Label htmlFor="matrix-hit-rate" className="text-xs">Color Hit Rate</Label>
+                      <div className="relative w-full">
+                        <Input
+                          id="matrix-hit-rate"
+                          type="number"
+                          step={0.1}
+                          min={0}
+                          value={colorHitRate}
+                          onChange={(e) => updateColorHitRate(parseFloat(e.target.value) || 0)}
+                          onFocus={(e) => e.target.select()}
+                          className="h-7 pr-6 text-xs"
+                        />
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">x</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Multiplier for 2+ color pricing per additional hit
+                      </p>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* Row 2: preview selectors (garment + location) */}
+            <MatrixPreviewSelector
+              garmentTypes={template.matrix.garmentTypePricing}
+              locations={template.matrix.locationUpcharges}
+              selectedGarment={previewGarment}
+              selectedLocations={previewLocations}
+              onGarmentChange={setPreviewGarment}
+              onLocationsChange={setPreviewLocations}
             />
-          ) : (
-            <PowerModeGrid
-              template={template}
-              garmentBaseCost={DEFAULT_GARMENT_COST}
-              onCellEdit={handlePowerCellEdit}
-              onBulkEdit={handlePowerBulkEdit}
-              previewGarment={previewGarment}
-              previewLocations={previewLocations}
-            />
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+
+          <CardContent className="pt-0">
+            {editorMode === "simple" ? (
+              <ColorPricingGrid
+                template={simpleTemplate!}
+                previewGarment={previewGarment}
+                previewLocations={previewLocations}
+              />
+            ) : (
+              <PowerModeGrid
+                template={template}
+                garmentBaseCost={DEFAULT_GARMENT_COST}
+                onCellEdit={handlePowerCellEdit}
+                onBulkEdit={handlePowerBulkEdit}
+                previewGarment={previewGarment}
+                previewLocations={previewLocations}
+                isManualEditOn={isManualEditOn}
+                onToggleManualEdit={toggleManualEdit}
+              />
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* ── Delete confirmation dialog ────────────────────────────── */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
@@ -734,7 +744,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
         </DialogContent>
       </Dialog>
 
-      {/* ── Comparison view modal (sandbox mode) ─────────────────── */}
+      {/* ── Comparison view (sandbox) ────────────────────────────── */}
       {sandboxSnapshot && (
         <ComparisonView
           original={sandboxSnapshot}

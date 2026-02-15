@@ -108,7 +108,7 @@ export function MatrixPreviewSelector({
               variant={isActive ? "default" : "outline"}
               size="sm"
               className={cn(
-                "h-6 px-2 text-[11px]",
+                "h-8 px-3 text-xs",
                 isActive && "shadow-sm"
               )}
               onClick={() => toggleLocation(loc.location)}
@@ -116,7 +116,7 @@ export function MatrixPreviewSelector({
               {locationLabels[loc.location] ?? loc.location}
               {loc.upcharge > 0 && (
                 <span className={cn(
-                  "ml-0.5 text-[10px]",
+                  "ml-1 text-[11px]",
                   isActive ? "opacity-70" : "text-muted-foreground"
                 )}>
                   +${loc.upcharge}

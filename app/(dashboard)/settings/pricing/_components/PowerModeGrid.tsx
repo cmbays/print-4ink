@@ -22,7 +22,7 @@ import type {
 } from "@/lib/schemas/price-matrix";
 import type { GarmentCategory } from "@/lib/schemas/garment";
 import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
-import { X, ToggleRight, ToggleLeft } from "lucide-react";
+import { X } from "lucide-react";
 
 const dotColors: Record<MarginIndicator, string> = {
   healthy: "bg-success",
@@ -37,8 +37,9 @@ interface MatrixRow {
 }
 
 // ---------------------------------------------------------------------------
-// Bare grid — no Card wrapper. Parent provides the Card shell + shared header.
-// This component renders: toolbar (bulk edit + manual edit) + spreadsheet table.
+// Bare grid — no Card wrapper, no Manual Edit toggle.
+// Parent provides the Card shell, shared header, and Manual Edit button.
+// This component renders: bulk edit toolbar (when cells selected) + spreadsheet table.
 // ---------------------------------------------------------------------------
 
 interface PowerModeGridProps {
@@ -48,13 +49,14 @@ interface PowerModeGridProps {
   onBulkEdit: (cells: Array<{ row: number; col: number }>, value: number) => void;
   previewGarment?: GarmentCategory;
   previewLocations?: string[];
+  /** External manual-edit state — parent owns the toggle, grid uses the state. */
+  isManualEditOn: boolean;
+  onToggleManualEdit: () => void;
 }
 
 // ---------------------------------------------------------------------------
 // Context — passes spreadsheet interaction state to PriceCell without
-// coupling column definitions to mutable state. This prevents TanStack from
-// recreating cell DOM elements on every keystroke (which was destroying the
-// edit input and losing focus).
+// coupling column definitions to mutable state.
 // ---------------------------------------------------------------------------
 
 type SpreadsheetState = ReturnType<typeof useSpreadsheetEditor>;
@@ -62,7 +64,6 @@ const SpreadsheetCtx = createContext<SpreadsheetState | null>(null);
 
 // ---------------------------------------------------------------------------
 // PriceCell — reads interaction state from context, not column closure.
-// Column definitions stay stable → TanStack preserves DOM → focus preserved.
 // ---------------------------------------------------------------------------
 
 function PriceCell({
@@ -136,8 +137,7 @@ function PriceCell({
 }
 
 // ---------------------------------------------------------------------------
-// Column builder — creates columns for a given maxColors count.
-// NO interaction state in closures. PriceCell reads state from context.
+// Column builder — stable columns, PriceCell reads state from context.
 // ---------------------------------------------------------------------------
 
 const columnHelper = createColumnHelper<MatrixRow>();
@@ -180,6 +180,8 @@ export function PowerModeGrid({
   onBulkEdit,
   previewGarment,
   previewLocations,
+  isManualEditOn,
+  onToggleManualEdit,
 }: PowerModeGridProps) {
   const [bulkValue, setBulkValue] = useState("");
 
@@ -208,6 +210,7 @@ export function PowerModeGrid({
     getCellValue,
     onCellEdit,
     onBulkEdit,
+    externalManualEdit: { isOn: isManualEditOn, onToggle: onToggleManualEdit },
   });
 
   const { applyBulkValue } = ss;
@@ -228,67 +231,47 @@ export function PowerModeGrid({
 
   return (
     <SpreadsheetCtx.Provider value={ss}>
-      <div className="space-y-3">
-        {/* Toolbar: bulk edit + manual edit toggle */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          {/* Bulk edit controls — visible when cells selected */}
-          {ss.selectedCells.size > 1 && ss.isManualEditOn && (
-            <div className="flex items-center gap-2 rounded-md border border-border bg-elevated px-2 py-1">
-              <span className="text-xs tabular-nums text-muted-foreground">
-                {ss.selectedCells.size} cells
+      <div className="space-y-2">
+        {/* Bulk edit toolbar — visible only when cells are selected */}
+        {ss.selectedCells.size > 1 && ss.isManualEditOn && (
+          <div className="flex items-center gap-2 rounded-md border border-border bg-elevated px-2 py-1">
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {ss.selectedCells.size} cells
+            </span>
+            <div className="relative w-20">
+              <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                $
               </span>
-              <div className="relative w-20">
-                <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                  $
-                </span>
-                <Input
-                  inputMode="decimal"
-                  pattern="[0-9.]*"
-                  placeholder="0.00"
-                  value={bulkValue}
-                  onChange={(e) => setBulkValue(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleBulkApply();
-                    if (e.key === "Escape") {
-                      setBulkValue("");
-                      ss.wrapperRef.current?.focus();
-                    }
-                  }}
-                  className="h-6 pl-4 pr-1 text-xs"
-                />
-              </div>
-              <Button size="xs" className="h-6 text-xs" onClick={handleBulkApply} disabled={!bulkValue}>
-                Set
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="size-5"
-                onClick={ss.clearSelection}
-                aria-label="Clear selection"
-              >
-                <X className="size-3" />
-              </Button>
+              <Input
+                inputMode="decimal"
+                pattern="[0-9.]*"
+                placeholder="0.00"
+                value={bulkValue}
+                onChange={(e) => setBulkValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleBulkApply();
+                  if (e.key === "Escape") {
+                    setBulkValue("");
+                    ss.wrapperRef.current?.focus();
+                  }
+                }}
+                className="h-6 pl-4 pr-1 text-xs"
+              />
             </div>
-          )}
-
-          <div className="flex-1" />
-
-          {/* Manual Edit toggle */}
-          <Button
-            variant={ss.isManualEditOn ? "default" : "outline"}
-            size="sm"
-            className="h-7 gap-1.5 text-xs"
-            onClick={ss.toggleManualEdit}
-          >
-            {ss.isManualEditOn ? (
-              <ToggleRight className="size-3.5" />
-            ) : (
-              <ToggleLeft className="size-3.5" />
-            )}
-            Manual Edit
-          </Button>
-        </div>
+            <Button size="xs" className="h-6 text-xs" onClick={handleBulkApply} disabled={!bulkValue}>
+              Set
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-xs"
+              className="size-5"
+              onClick={ss.clearSelection}
+              aria-label="Clear selection"
+            >
+              <X className="size-3" />
+            </Button>
+          </div>
+        )}
 
         {/* Grid wrapper — captures keyboard events for the entire spreadsheet */}
         <div
@@ -307,7 +290,6 @@ export function PowerModeGrid({
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header, headerIdx) => {
-                    // colIdx for color columns: header 0 is "Qty Tier", 1..N are colors
                     const colIdx = headerIdx - 1;
                     const isColorHeader = header.id.startsWith("color-");
                     return (
