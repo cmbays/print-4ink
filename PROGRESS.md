@@ -4,7 +4,7 @@
 
 **Phase**: 1 — Mockup with mock data
 **Last Updated**: 2026-02-15
-**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Shaping skills suite adopted** — full rjs/shaping-skills methodology as 4 deliverables: R × S shaping skill (609 lines), breadboarding upgrade (250 → 1758 lines from upstream), breadboard-reflection skill (188 lines), and shaping ripple hook (PR #199). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 38+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 17 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed).
+**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Colors vertical initiated** — new vertical for hierarchical color preference system (global → supplier → customer). UX research complete (10+ product patterns analyzed: Figma, Unity, Google Workspace, CrashPlan, CSS cascade). Interview complete with 14 key design decisions. Design doc approved. Next: shaping, then incremental build starting with UX fixes (#169). **Shaping skills suite adopted** — full rjs/shaping-skills methodology as 4 deliverables: R × S shaping skill (609 lines), breadboarding upgrade (250 → 1758 lines from upstream), breadboard-reflection skill (188 lines), and shaping ripple hook (PR #199). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 40+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 17 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed). Bug #154 (lint errors) confirmed already resolved on main and closed.
 
 ## What's Built
 
@@ -384,7 +384,7 @@
 - [x] **#151** — Unit tests for mobile shared components *(closed by PR #167)*
 - [x] **#152** — Integrate MobileFilterSheet into list views *(closed by PR #167)*
 - [ ] **#153** — Extract hardcoded toast messages to constants
-- [ ] **#154** — Fix pre-existing lint errors in garments/page.tsx and PowerModeGrid (React 19 compiler)
+- [x] **#154** — Fix pre-existing lint errors in garments/page.tsx and PowerModeGrid (React 19 compiler) *(already resolved on main, closed)*
 - [x] **#155** — Customer detail tab grouping for 9-tab mobile bar *(closed by PR #167)*
 - [x] **#156** — Mobile scroll-to-error on form validation *(closed by PR #167)*
 
@@ -403,14 +403,15 @@
 
 ## Next Actions
 
-1. **Onboarding Wizards** (#145) — Guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
-2. **DTF Gang Sheet Builder** (#144) — New vertical, direct user request. Full pipeline: discovery → build.
-3. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile.
-4. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`.
-5. **Garments — Weight/fabric filters + customer-supplied schema** — 10-task build order from consolidated breadboard (PR #173). Schema additions, filter UI, mock data. See `docs/breadboards/garments-breadboard.md`.
-6. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
-7. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
-8. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
+1. **Colors vertical — Shaping** — Design approved. Next: run shaping skill (R × S) to produce frame + shaping docs, then breadboard, then incremental build.
+2. **Onboarding Wizards** (#145) — Guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
+3. **DTF Gang Sheet Builder** (#144) — New vertical, direct user request. Full pipeline: discovery → build.
+4. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile. Include Gary questions from colors interview (3 pending).
+5. **Garment Mockup Engine — Execute 16-task plan** — Design, breadboard, and plan complete (PR #102). Execute via `superpowers:executing-plans` against `docs/plans/2026-02-14-garment-mockup-impl-plan.md`.
+6. **Garments — Weight/fabric filters + customer-supplied schema** — 10-task build order from consolidated breadboard (PR #173). Schema additions, filter UI, mock data. See `docs/breadboards/garments-breadboard.md`.
+7. **Update IMPLEMENTATION_PLAN.md** (#87) — plan is stale, shows Step 0 complete when 6 verticals are built
+8. Create vertical BRIEFs (#89) — enables cool-down skill and structured feedback capture
+9. Address deferred tech debt (#15-#18, #70-#78, #151-#156) as needed
 
 ## Document Map
 
@@ -444,7 +445,8 @@
 | `docs/breadboards/garments-breadboard.md` | Consolidated garments vertical breadboard (9 places, 80+ affordances, 10-task build order) |
 | `docs/plans/2026-02-15-shaping-skills-suite-design.md` | Shaping skills suite design (4 deliverables, pipeline architecture) |
 | `docs/plans/2026-02-15-shaping-skills-suite-impl-plan.md` | 11-task implementation plan for shaping skills suite |
-| `knowledge-base/src/content/sessions/` | 38+ Markdown session docs (Astro KB, replaces `for_human/`) |
+| `docs/plans/2026-02-15-color-preference-system-design.md` | Color preference system design (3-level hierarchy, inheritance, 5 build phases) |
+| `knowledge-base/src/content/sessions/` | 40+ Markdown session docs (Astro KB, replaces `for_human/`) |
 
 ## Key Design Requirements
 
