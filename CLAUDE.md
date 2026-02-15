@@ -415,7 +415,7 @@ npm run preview      # Preview
 
 All frontmatter is validated by Zod at build time (`knowledge-base/src/content.config.ts`).
 
-**Vertical slugs:** `quoting`, `customer-management`, `invoicing`, `price-matrix`, `jobs`, `screen-room`, `garments`, `dashboard`, `mobile-optimization`, `meta`
+**Vertical slugs:** `quoting`, `customer-management`, `invoicing`, `price-matrix`, `jobs`, `screen-room`, `garments`, `dashboard`, `mobile-optimization`, `dtf-gang-sheet`, `meta`
 
 **Stage slugs:** `research`, `interview`, `breadboarding`, `implementation-planning`, `build`, `review`, `learnings`
 

@@ -297,7 +297,7 @@ KDL
 _work_phase() {
     local PHASE="$1"; shift
     local VERTICAL="${1:-}"
-    local VALID_VERTICALS="quoting customer-management invoicing price-matrix jobs screen-room garments dashboard mobile-optimization devx meta"
+    local VALID_VERTICALS="quoting customer-management invoicing price-matrix jobs screen-room garments dashboard mobile-optimization dtf-gang-sheet devx meta"
 
     [[ -z "$VERTICAL" ]] && {
         echo "Error: vertical required. Usage: work $PHASE <vertical>"
