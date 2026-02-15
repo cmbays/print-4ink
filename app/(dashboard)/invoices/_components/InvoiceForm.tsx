@@ -565,7 +565,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
             <Button
               variant="link"
               onClick={() => router.push("/invoices")}
-              className="text-muted-foreground hover:text-foreground min-h-[44px] md:min-h-0"
+              className="text-muted-foreground hover:text-foreground min-h-(--mobile-touch-target) md:min-h-0"
             >
               Cancel
             </Button>
@@ -573,14 +573,14 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
               <Button
                 variant="outline"
                 onClick={handleSaveDraft}
-                className="min-h-[44px] md:min-h-0"
+                className="min-h-(--mobile-touch-target) md:min-h-0"
               >
                 <Save size={16} className="mr-2" />
                 {isEdit ? "Update Invoice" : "Save as Draft"}
               </Button>
               <Button
                 onClick={handleReviewAndSend}
-                className="min-h-[44px] md:min-h-0 bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                className="min-h-(--mobile-touch-target) md:min-h-0 bg-action text-primary-foreground font-medium shadow-[4px_4px_0px] shadow-action/30 hover:shadow-[2px_2px_0px] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
               >
                 <Send size={16} className="mr-2" />
                 Review & Send

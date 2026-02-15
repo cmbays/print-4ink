@@ -43,9 +43,14 @@ export function FullScreenModal({
         {isMobile ? (
           <div className="flex h-full flex-col">
             {/* Mobile header */}
+            {/* Visually hidden but accessible for Radix Dialog */}
+            <DialogHeader className="sr-only">
+              <DialogTitle>{title}</DialogTitle>
+              {description && <DialogDescription>{description}</DialogDescription>}
+            </DialogHeader>
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <div>
-                <h2 className="text-sm font-semibold">{title}</h2>
+                <h2 aria-hidden="true" className="text-sm font-semibold">{title}</h2>
                 {description && (
                   <p className="text-xs text-muted-foreground">{description}</p>
                 )}
@@ -53,9 +58,10 @@ export function FullScreenModal({
               <Button
                 variant="ghost"
                 size="icon"
+                aria-label="Close"
                 onClick={() => onOpenChange(false)}
               >
-                <X className="h-5 w-5" />
+                <X className="size-5" />
               </Button>
             </div>
             {/* Scrollable content */}

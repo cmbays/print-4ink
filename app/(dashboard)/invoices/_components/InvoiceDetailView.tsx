@@ -97,9 +97,9 @@ export function InvoiceDetailView({
   const canRecordPayment = status === "sent" || status === "partial";
   const canSendReminder = status === "sent" || status === "partial";
 
-  // Determine if we should show the bottom action bar
-  // "paid" and "void" invoices get no bottom bar — nothing urgent to do
-  const showBottomBar = status !== "paid" && status !== "void";
+  // Only show bottom bar when there are actionable buttons to display
+  const hasActions = canEdit || canSend || canRecordPayment || canSendReminder;
+  const showBottomBar = hasActions;
 
   return (
     <div className={cn("space-y-6", showBottomBar && "pb-20 md:pb-0")}>

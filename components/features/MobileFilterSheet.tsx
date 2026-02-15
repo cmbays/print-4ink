@@ -56,6 +56,7 @@ export function MobileFilterSheet({
                 className={cn(
                   "rounded-full border px-3 py-1.5 text-sm transition-colors",
                   "min-h-(--mobile-touch-target)",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   currentSort === opt.value
                     ? "border-action bg-action/10 text-action"
                     : "border-border text-muted-foreground hover:bg-surface"
@@ -84,6 +85,7 @@ export function MobileFilterSheet({
                     className={cn(
                       "rounded-full border px-3 py-1.5 text-sm transition-colors",
                       "min-h-(--mobile-touch-target)",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                       isSelected
                         ? "border-action bg-action/10 text-action"
                         : "border-border text-muted-foreground hover:bg-surface"

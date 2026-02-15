@@ -332,7 +332,7 @@ export default function JobDetailPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1.5 -ml-2 text-muted-foreground"
+          className="gap-1.5 -ml-2 min-h-(--mobile-touch-target) text-muted-foreground"
           onClick={() => router.push("/jobs/board")}
         >
           <ArrowLeft className="size-4" />
@@ -463,25 +463,38 @@ export default function JobDetailPage() {
         </div>
       </div>
 
-      {/* Mobile: BottomActionBar */}
-      <BottomActionBar>
-        <Button
-          variant="outline"
-          className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
-          onClick={() => setMoveLaneDialogOpen(true)}
-        >
-          <ArrowRightLeft className="size-4" />
-          Move Lane
-        </Button>
-        <Button
-          variant="outline"
-          className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
-          onClick={() => setActiveTab("notes")}
-        >
-          <MessageSquare className="size-4" />
-          Add Note
-        </Button>
-      </BottomActionBar>
+      {/* Mobile: BottomActionBar — lane-aware actions */}
+      {job.lane !== "done" && (
+        <BottomActionBar>
+          {job.lane === "blocked" ? (
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
+              onClick={unblockJob}
+            >
+              <ArrowRightLeft className="size-4" />
+              Unblock
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
+              onClick={() => setMoveLaneDialogOpen(true)}
+            >
+              <ArrowRightLeft className="size-4" />
+              Move Lane
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            className="flex-1 gap-1.5 min-h-(--mobile-touch-target)"
+            onClick={() => setActiveTab("notes")}
+          >
+            <MessageSquare className="size-4" />
+            Add Note
+          </Button>
+        </BottomActionBar>
+      )}
 
       {/* Move Lane Dialog */}
       {moveLaneDialogOpen && (

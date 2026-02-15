@@ -88,7 +88,7 @@ export function QuoteDetailView({
   );
 
   return (
-    <div className="space-y-6">
+    <div className={cn("space-y-6", mode === "detail" && "pb-20 md:pb-0")}>
       {garmentColors.length > 0 && <MockupFilterProvider colors={garmentColors} />}
       {/* Header — sticky at top */}
       <div className="sticky top-0 z-10 rounded-lg border border-border bg-card p-4 shadow-sm">
@@ -363,62 +363,58 @@ export function QuoteDetailView({
 
       {/* Mobile Bottom Action Bar */}
       {mode === "detail" && (
-        <>
-          <BottomActionBar>
-            {isAccepted ? (
-              <>
-                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
-                  <Link href="/jobs/board">
-                    <Hammer className="size-4" />
-                    View Jobs
-                  </Link>
-                </Button>
-                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
-                  <Link href={`/invoices/new?quoteId=${quote.id}`}>
-                    <Receipt className="size-4" />
-                    Create Invoice
-                  </Link>
-                </Button>
-              </>
-            ) : isDraft ? (
-              <>
-                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
-                  <Link href={`/quotes/${quote.id}/edit`}>
-                    <Pencil className="size-4" />
-                    Edit
-                  </Link>
-                </Button>
-                {customer ? (
-                  <Button
-                    variant="outline"
-                    className="flex-1 min-h-(--mobile-touch-target)"
-                    onClick={() => setMobileEmailOpen(true)}
-                  >
-                    <Send className="size-4" />
-                    Send
-                  </Button>
-                ) : (
-                  <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
-                    <Link href={`/quotes/new?duplicate=${quote.id}`}>
-                      <Copy className="size-4" />
-                      Copy as New
-                    </Link>
-                  </Button>
-                )}
-              </>
-            ) : (
-              /* sent status — main action is copy */
+        <BottomActionBar>
+          {isAccepted ? (
+            <>
               <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
-                <Link href={`/quotes/new?duplicate=${quote.id}`}>
-                  <Copy className="size-4" />
-                  Copy as New
+                <Link href="/jobs/board">
+                  <Hammer className="size-4" />
+                  View Jobs
                 </Link>
               </Button>
-            )}
-          </BottomActionBar>
-          {/* Spacer to prevent content from being hidden behind the fixed BottomActionBar */}
-          <div className="h-16 md:hidden" />
-        </>
+              <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                <Link href={`/invoices/new?quoteId=${quote.id}`}>
+                  <Receipt className="size-4" />
+                  Create Invoice
+                </Link>
+              </Button>
+            </>
+          ) : isDraft ? (
+            <>
+              <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                <Link href={`/quotes/${quote.id}/edit`}>
+                  <Pencil className="size-4" />
+                  Edit
+                </Link>
+              </Button>
+              {customer ? (
+                <Button
+                  variant="outline"
+                  className="flex-1 min-h-(--mobile-touch-target)"
+                  onClick={() => setMobileEmailOpen(true)}
+                >
+                  <Send className="size-4" />
+                  Send
+                </Button>
+              ) : (
+                <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+                  <Link href={`/quotes/new?duplicate=${quote.id}`}>
+                    <Copy className="size-4" />
+                    Copy as New
+                  </Link>
+                </Button>
+              )}
+            </>
+          ) : (
+            /* sent / declined / revised / expired — primary action is duplicate */
+            <Button variant="outline" className="flex-1 min-h-(--mobile-touch-target)" asChild>
+              <Link href={`/quotes/new?duplicate=${quote.id}`}>
+                <Copy className="size-4" />
+                Copy as New
+              </Link>
+            </Button>
+          )}
+        </BottomActionBar>
       )}
 
       {/* Mobile email preview modal (separate from QuoteActions modal) */}
