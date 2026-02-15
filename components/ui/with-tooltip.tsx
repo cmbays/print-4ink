@@ -5,19 +5,21 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 
 // ---------------------------------------------------------------------------
 // WithTooltip — DRY wrapper that eliminates 5-line tooltip boilerplate.
+//
+// Self-contained: includes its own TooltipProvider so it works anywhere.
 //
 // Usage:
 //   <WithTooltip tooltip="Save all changes">
 //     <Button><Save /></Button>
 //   </WithTooltip>
 //
-// IMPORTANT: Wrap groups of adjacent WithTooltip elements in a single
-// <TooltipProvider skipDelayDuration={300}> so hovering between buttons
-// shows tooltips instantly (shared delay).
+// For groups of adjacent WithTooltip elements, wrap in a shared
+// <TooltipProvider skipDelayDuration={300}> for instant hover transitions.
 // ---------------------------------------------------------------------------
 
 interface WithTooltipProps {
@@ -31,9 +33,11 @@ interface WithTooltipProps {
 
 export function WithTooltip({ tooltip, side = "bottom", children }: WithTooltipProps) {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side={side}>{tooltip}</TooltipContent>
-    </Tooltip>
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent side={side}>{tooltip}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
