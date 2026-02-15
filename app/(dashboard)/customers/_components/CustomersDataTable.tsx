@@ -533,8 +533,8 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
-                      ? "bg-error/10 text-error border border-error/20"
-                      : "bg-transparent text-muted-foreground border border-transparent hover:text-error/80 hover:bg-error/5",
+                      ? "bg-error/10 text-error border border-error"
+                      : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
                   )}
                   aria-label={showArchived ? "Hide Archived" : "Show Archived"}
                 >

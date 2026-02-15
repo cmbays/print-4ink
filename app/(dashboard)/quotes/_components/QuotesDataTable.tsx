@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Archive,
   ClipboardList,
+  Package,
   Plus,
   Search,
   SlidersHorizontal,
@@ -339,8 +340,8 @@ export function QuotesDataTable() {
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
                     showArchived
-                      ? "bg-error/10 text-error border border-error/20"
-                      : "bg-transparent text-muted-foreground border border-transparent hover:text-error/80 hover:bg-error/5",
+                      ? "bg-error/10 text-error border border-error"
+                      : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
                   )}
                   aria-label={showArchived ? "Hide Archived" : "Show Archived"}
                 >
@@ -503,20 +504,28 @@ export function QuotesDataTable() {
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50",
               )}
             >
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-action">
-                  {quote.quoteNumber}
-                </span>
-                <StatusBadge status={quote.status} />
+              {/* Top row: quote # + customer left, price + qty right */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-medium text-action">
+                    {quote.quoteNumber}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {quote.customerName}
+                  </span>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-0.5">
+                  <MoneyAmount value={quote.total} format="compact" className="text-sm font-medium" />
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <Package className="size-3" />
+                    {quote.lineItemCount}
+                  </span>
+                </div>
               </div>
-              <p className="truncate text-sm text-muted-foreground">
-                {quote.customerName}
-              </p>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>
-                  {quote.lineItemCount} {quote.lineItemCount === 1 ? "item" : "items"}
-                </span>
-                <MoneyAmount value={quote.total} className="font-medium" />
+
+              {/* Status badge */}
+              <div className="flex items-center">
+                <StatusBadge status={quote.status} />
               </div>
             </button>
           ))}
