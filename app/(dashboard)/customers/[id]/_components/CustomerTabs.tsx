@@ -89,7 +89,7 @@ export function CustomerTabs({
     return count ? `${TAB_LABELS[tab]} (${count})` : TAB_LABELS[tab];
   }
 
-  const triggerClass = "min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3";
+  const triggerClass = "shrink-0 min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3";
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -111,11 +111,11 @@ export function CustomerTabs({
         </TabsList>
       </div>
 
-      {/* Mobile: 5 primary tabs + "More" dropdown */}
+      {/* Mobile: 5 primary tabs + "More" dropdown — horizontally scrollable */}
       <div className="md:hidden overflow-x-auto scrollbar-none -mx-4 px-4">
         <TabsList
           variant="line"
-          className="w-full justify-start gap-0 border-b border-border pb-0"
+          className="w-max min-w-full justify-start gap-0 border-b border-border pb-0"
         >
           {PRIMARY_TABS.map((tab) => (
             <TabsTrigger key={tab} value={tab} className={triggerClass}>

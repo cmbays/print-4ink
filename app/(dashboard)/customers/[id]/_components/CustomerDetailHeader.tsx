@@ -53,8 +53,8 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
       {/* Top row: name + badges + actions */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
-          {/* Company name */}
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+          {/* Company name — hidden on mobile since breadcrumb shows it */}
+          <h1 className="hidden md:block text-2xl font-bold text-foreground tracking-tight">
             {customer.company}
           </h1>
 
