@@ -22,6 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { WithTooltip } from "@/components/ui/with-tooltip";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -357,16 +359,19 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           <div className="flex-1" />
 
           {/* ── Action buttons ─────────────────────────────────────── */}
+          <TooltipProvider skipDelayDuration={300}>
           {!isSandboxMode ? (
             <div className="flex flex-wrap items-center gap-1.5">
               {/* Qty Tiers popover */}
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs">
-                    <Layers className="size-3.5" />
-                    <span className="hidden md:inline">Qty Tiers</span>
-                  </Button>
-                </PopoverTrigger>
+                <WithTooltip tooltip="Configure quantity breakpoints and base pricing">
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-7 text-xs">
+                      <Layers className="size-3.5" />
+                      <span className="hidden md:inline">Qty Tiers</span>
+                    </Button>
+                  </PopoverTrigger>
+                </WithTooltip>
                 <PopoverContent className="w-[460px]" align="end">
                   <QuantityTierEditor
                     tiers={template.matrix.quantityTiers}
@@ -378,12 +383,14 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
               {/* Garment Markup popover */}
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs">
-                    <Shirt className="size-3.5" />
-                    <span className="hidden md:inline">Garments</span>
-                  </Button>
-                </PopoverTrigger>
+                <WithTooltip tooltip="Set markup percentages by garment category">
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-7 text-xs">
+                      <Shirt className="size-3.5" />
+                      <span className="hidden md:inline">Garments</span>
+                    </Button>
+                  </PopoverTrigger>
+                </WithTooltip>
                 <PopoverContent className="w-72" align="end">
                   <GarmentTypePricingEditor
                     garmentTypes={template.matrix.garmentTypePricing}
@@ -394,12 +401,14 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
               {/* Location Upcharges popover */}
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs">
-                    <MapPin className="size-3.5" />
-                    <span className="hidden md:inline">Locations</span>
-                  </Button>
-                </PopoverTrigger>
+                <WithTooltip tooltip="Adjust per-piece upcharges by print location">
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-7 text-xs">
+                      <MapPin className="size-3.5" />
+                      <span className="hidden md:inline">Locations</span>
+                    </Button>
+                  </PopoverTrigger>
+                </WithTooltip>
                 <PopoverContent className="w-72" align="end">
                   <LocationUpchargeEditor
                     locations={template.matrix.locationUpcharges}
@@ -410,12 +419,14 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
               {/* Setup Fees popover */}
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 text-xs">
-                    <Receipt className="size-3.5" />
-                    <span className="hidden md:inline">Setup Fees</span>
-                  </Button>
-                </PopoverTrigger>
+                <WithTooltip tooltip="Configure screen fees and reorder discounts">
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-7 text-xs">
+                      <Receipt className="size-3.5" />
+                      <span className="hidden md:inline">Setup Fees</span>
+                    </Button>
+                  </PopoverTrigger>
+                </WithTooltip>
                 <PopoverContent className="w-72" align="end">
                   <div className="space-y-3">
                     <p className="text-xs font-medium text-foreground">Setup Fees</p>
@@ -494,56 +505,73 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
               <div className="h-5 w-px bg-border hidden md:block" />
 
-              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowCostSheet(true)}>
-                <Settings2 className="size-3.5" />
-                <span className="hidden md:inline">Edit Costs</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs text-warning hover:text-warning"
-                onClick={enterSandbox}
-              >
-                <FlaskConical className="size-3.5" />
-                <span className="hidden md:inline">Sandbox</span>
-              </Button>
-              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={handleDuplicate}>
-                <Copy className="size-3.5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs text-error hover:text-error"
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="size-3.5" />
-              </Button>
-              <Button size="sm" className="h-7 text-xs" onClick={handleSave} disabled={!isEditing}>
-                <Save className="size-3.5" />
-                Save
-              </Button>
+              <WithTooltip tooltip="Edit ink, labor, and overhead cost assumptions">
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowCostSheet(true)}>
+                  <Settings2 className="size-3.5" />
+                  <span className="hidden md:inline">Edit Costs</span>
+                </Button>
+              </WithTooltip>
+              <WithTooltip tooltip="Test pricing changes without affecting live quotes">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 text-xs text-warning hover:text-warning"
+                  onClick={enterSandbox}
+                >
+                  <FlaskConical className="size-3.5" />
+                  <span className="hidden md:inline">Sandbox</span>
+                </Button>
+              </WithTooltip>
+              <WithTooltip tooltip="Create a copy of this template">
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={handleDuplicate}>
+                  <Copy className="size-3.5" />
+                </Button>
+              </WithTooltip>
+              <WithTooltip tooltip="Delete this template">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 text-xs text-error hover:text-error"
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </WithTooltip>
+              <WithTooltip tooltip="Save all changes">
+                <Button size="sm" className="h-7 text-xs" onClick={handleSave} disabled={!isEditing}>
+                  <Save className="size-3.5" />
+                  Save
+                </Button>
+              </WithTooltip>
             </div>
           ) : (
             <div className="flex items-center gap-1.5">
-              <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowComparison(true)}>
-                <GitCompareArrows className="size-3.5" />
-                Compare
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs text-error hover:text-error"
-                onClick={discardSandboxChanges}
-              >
-                <Undo2 className="size-3.5" />
-                Discard
-              </Button>
-              <Button size="sm" className="h-7 text-xs" onClick={saveSandboxChanges}>
-                <Save className="size-3.5" />
-                Save Changes
-              </Button>
+              <WithTooltip tooltip="Side-by-side comparison with original">
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowComparison(true)}>
+                  <GitCompareArrows className="size-3.5" />
+                  Compare
+                </Button>
+              </WithTooltip>
+              <WithTooltip tooltip="Discard all changes and restore original">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 text-xs text-error hover:text-error"
+                  onClick={discardSandboxChanges}
+                >
+                  <Undo2 className="size-3.5" />
+                  Discard
+                </Button>
+              </WithTooltip>
+              <WithTooltip tooltip="Apply sandbox changes to live template">
+                <Button size="sm" className="h-7 text-xs" onClick={saveSandboxChanges}>
+                  <Save className="size-3.5" />
+                  Save Changes
+                </Button>
+              </WithTooltip>
             </div>
           )}
+          </TooltipProvider>
         </div>
       </div>
 
@@ -560,15 +588,17 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                 &mdash; Changes won&apos;t affect live pricing until saved
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={discardSandboxChanges}
-              className="h-7 text-warning/70 hover:text-warning hover:bg-warning/10"
-            >
-              <X className="size-3.5" />
-              Exit
-            </Button>
+            <WithTooltip tooltip="Exit sandbox and discard changes">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={discardSandboxChanges}
+                className="h-7 text-warning/70 hover:text-warning hover:bg-warning/10"
+              >
+                <X className="size-3.5" />
+                Exit
+              </Button>
+            </WithTooltip>
           </div>
         )}
 
@@ -589,52 +619,61 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               <div className="flex-1" />
 
               {/* Simple / Custom toggle */}
+              <TooltipProvider skipDelayDuration={300}>
               <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5">
-                <Button
-                  variant={editorMode === "simple" ? "default" : "ghost"}
-                  size="sm"
-                  className="h-6 gap-1 px-2 text-xs"
-                  onClick={() => switchMode("simple")}
-                >
-                  <LayoutGrid className="size-3" />
-                  Simple
-                </Button>
-                <Button
-                  variant={editorMode === "power" ? "default" : "ghost"}
-                  size="sm"
-                  className="h-6 gap-1 px-2 text-xs"
-                  onClick={() => switchMode("power")}
-                >
-                  <Zap className="size-3" />
-                  Custom
-                </Button>
+                <WithTooltip tooltip="Formula-computed prices only">
+                  <Button
+                    variant={editorMode === "simple" ? "default" : "ghost"}
+                    size="sm"
+                    className="h-6 gap-1 px-2 text-xs"
+                    onClick={() => switchMode("simple")}
+                  >
+                    <LayoutGrid className="size-3" />
+                    Simple
+                  </Button>
+                </WithTooltip>
+                <WithTooltip tooltip="View and edit manual price overrides">
+                  <Button
+                    variant={editorMode === "power" ? "default" : "ghost"}
+                    size="sm"
+                    className="h-6 gap-1 px-2 text-xs"
+                    onClick={() => switchMode("power")}
+                  >
+                    <Zap className="size-3" />
+                    Custom
+                  </Button>
+                </WithTooltip>
               </div>
 
               {/* Manual Edit toggle — only shown in Custom mode */}
               {editorMode === "power" && (
-                <Button
-                  variant={isManualEditOn ? "default" : "outline"}
-                  size="sm"
-                  className="h-7 gap-1.5 text-xs"
-                  onClick={toggleManualEdit}
-                >
-                  {isManualEditOn ? (
-                    <ToggleRight className="size-3.5" />
-                  ) : (
-                    <ToggleLeft className="size-3.5" />
-                  )}
-                  Manual Edit
-                </Button>
+                <WithTooltip tooltip={isManualEditOn ? "Exit manual editing mode" : "Click cells to set custom prices"}>
+                  <Button
+                    variant={isManualEditOn ? "default" : "outline"}
+                    size="sm"
+                    className="h-7 gap-1.5 text-xs"
+                    onClick={toggleManualEdit}
+                  >
+                    {isManualEditOn ? (
+                      <ToggleRight className="size-3.5" />
+                    ) : (
+                      <ToggleLeft className="size-3.5" />
+                    )}
+                    Manual Edit
+                  </Button>
+                </WithTooltip>
               )}
 
               {/* Settings popover: max colors + color hit rate */}
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
-                    <Settings2 className="size-3.5" />
-                    Settings
-                  </Button>
-                </PopoverTrigger>
+                <WithTooltip tooltip="Adjust max colors and color hit rate">
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
+                      <Settings2 className="size-3.5" />
+                      Settings
+                    </Button>
+                  </PopoverTrigger>
+                </WithTooltip>
                 <PopoverContent className="w-56" align="end">
                   <div className="space-y-3">
                     <div className="space-y-1.5">
@@ -686,6 +725,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                   </div>
                 </PopoverContent>
               </Popover>
+              </TooltipProvider>
             </div>
 
             {/* Row 2: preview selectors (garment + location) */}
