@@ -32,18 +32,23 @@ _kdl_sanitize_prompt() {
 # Render a single KDL tab block. Used by both _kdl_generate_wave and _work_build.
 # Usage: _kdl_render_tab <tab_name> <cwd> [prompt]
 #   Writes KDL to stdout. Caller redirects as needed.
+#   If a prompt is provided, it is written to .session-prompt.md in the cwd
+#   and Claude is told to read it (avoids KDL escaping issues with backticks/quotes).
 _kdl_render_tab() {
     local tab_name="$1"
     local cwd="$2"
     local prompt="${3:-}"
 
     if [[ -n "$prompt" && "$prompt" != "null" ]]; then
-        local safe_prompt
-        safe_prompt=$(_kdl_sanitize_prompt "$prompt")
+        # Write prompt to file in worktree (gitignored via .session-* pattern)
+        local prompt_file="${cwd}/.session-prompt.md"
+        mkdir -p "$cwd"
+        echo "$prompt" > "$prompt_file"
+
         cat <<KDL_TAB
     tab name="$tab_name" cwd="$cwd" {
         pane command="claude" {
-            args "$safe_prompt"
+            args "Read .session-prompt.md for your task instructions, then follow them."
         }
     }
 KDL_TAB

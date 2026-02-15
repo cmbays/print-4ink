@@ -55,8 +55,9 @@ quality-gate/
 # Playwright MCP logs
 .playwright-mcp/
 
-# Per-worktree session scratchpad (never committed)
+# Per-worktree session files (never committed)
 .session-context.md
+.session-prompt.md
 
 # Knowledge base build output
 knowledge-base/dist/
