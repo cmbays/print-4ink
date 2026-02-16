@@ -7,16 +7,20 @@
  * our form error messages.
  */
 export function scrollToFirstError() {
+  // Double-rAF ensures React has committed new tab content after a tab switch
+  // before we attempt to find and scroll to the error element.
   requestAnimationFrame(() => {
-    const errorEl = document.querySelector('[role="alert"]');
-    if (errorEl) {
-      const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-      errorEl.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "center",
-      });
-    }
+    requestAnimationFrame(() => {
+      const errorEl = document.querySelector('[role="alert"]');
+      if (errorEl) {
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        errorEl.scrollIntoView({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          block: "center",
+        });
+      }
+    });
   });
 }
