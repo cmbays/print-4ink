@@ -24,14 +24,45 @@ _PIPELINE_STATES=(ready active building reviewing wrapped cooled)
 _pipeline_valid_transitions() {
     local from="$1"
     case "$from" in
-        ready)     echo "active" ;;
-        active)    echo "building" ;;
-        building)  echo "reviewing" ;;
-        reviewing) echo "wrapped building" ;;
-        wrapped)   echo "cooled" ;;
-        cooled)    echo "" ;;
-        *)         echo "" ;;
+        ready)     printf '%s\n' "active" ;;
+        active)    printf '%s\n' "building" ;;
+        building)  printf '%s\n' "reviewing" ;;
+        reviewing) printf '%s\n' "wrapped" "building" ;;
+        wrapped)   printf '%s\n' "cooled" ;;
+        cooled)    ;;
+        *)         ;;
     esac
+}
+
+# ── ID Resolution ───────────────────────────────────────────────────────────
+
+# Resolve a pipeline ID or name to its canonical ID.
+# Accepts either a pipeline ID (e.g., 20260216-my-pipeline) or a name (e.g., my-pipeline).
+# Returns the canonical ID on stdout, or prints error to stderr and returns 1.
+# Usage: pipeline_id=$(_pipeline_resolve_id "$input")
+_pipeline_resolve_id() {
+    local input="$1"
+    if [[ -z "$input" ]]; then
+        echo "Error: pipeline ID or name required." >&2
+        return 1
+    fi
+
+    # Try direct ID lookup first
+    if _registry_pipeline_exists "$input"; then
+        echo "$input"
+        return 0
+    fi
+
+    # Try matching by name
+    local matched_id
+    matched_id=$(jq -r --arg n "$input" '.pipelines[] | select(.name == $n) | .id' "$PIPELINE_REGISTRY_FILE" | head -1)
+    if [[ -n "$matched_id" ]]; then
+        echo "$matched_id"
+        return 0
+    fi
+
+    echo "Error: Pipeline '$input' not found." >&2
+    return 1
 }
 
 # ── Type Validation ───────────────────────────────────────────────────────────
@@ -246,15 +277,16 @@ _pipeline_transition() {
     current_state=$(echo "$entity" | jq -r '.state')
 
     # Check if transition is valid
-    local valid_targets
+    local valid_targets target
     valid_targets=$(_pipeline_valid_transitions "$current_state")
     local found=false
-    for target in $valid_targets; do
+    while IFS= read -r target; do
+        [[ -z "$target" ]] && continue
         if [[ "$target" == "$new_state" ]]; then
             found=true
             break
         fi
-    done
+    done <<< "$valid_targets"
 
     if [[ "$found" != true ]]; then
         echo "Error: Invalid transition '$current_state' -> '$new_state'." >&2
@@ -313,26 +345,28 @@ _pipeline_init_dirs() {
     local created=0
 
     # Create product directories
-    local product_slugs
+    local product_slugs dir slug
     product_slugs=$(echo "$entity" | jq -r '.products[]' 2>/dev/null)
-    for slug in $product_slugs; do
-        local dir="$base_dir/products/$slug/$id"
+    while IFS= read -r slug; do
+        [[ -z "$slug" ]] && continue
+        dir="$base_dir/products/$slug/$id"
         if [[ ! -d "$dir" ]]; then
             mkdir -p "$dir"
             created=$((created + 1))
         fi
-    done
+    done <<< "$product_slugs"
 
     # Create tool directories
     local tool_slugs
     tool_slugs=$(echo "$entity" | jq -r '.tools[]' 2>/dev/null)
-    for slug in $tool_slugs; do
-        local dir="$base_dir/tools/$slug/$id"
+    while IFS= read -r slug; do
+        [[ -z "$slug" ]] && continue
+        dir="$base_dir/tools/$slug/$id"
         if [[ ! -d "$dir" ]]; then
             mkdir -p "$dir"
             created=$((created + 1))
         fi
-    done
+    done <<< "$tool_slugs"
 
     if [[ "$created" -gt 0 ]]; then
         local noun="directory"; [[ "$created" -gt 1 ]] && noun="directories"

@@ -62,6 +62,9 @@ quality-gate/
 .session-context.md
 .session-prompt.md
 
+# Generated progress report (compiled artifact, not source of truth)
+PROGRESS.md
+
 # Knowledge base build output
 knowledge-base/dist/
 knowledge-base/node_modules/

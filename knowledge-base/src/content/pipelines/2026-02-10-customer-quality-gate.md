@@ -5,7 +5,7 @@ date: 2026-02-10
 phase: 1
 pipeline: customer-management
 pipelineType: vertical
-products: [customers]
+products: [customers, quotes, jobs]
 tools: []
 stage: review
 tags: [build, feature]

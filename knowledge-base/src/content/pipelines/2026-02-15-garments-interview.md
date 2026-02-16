@@ -5,7 +5,7 @@ date: 2026-02-15
 phase: 1
 pipeline: garments
 pipelineType: vertical
-products: [garments]
+products: [garments, customers, screens]
 tools: []
 stage: interview
 tags: [decision, research]
@@ -124,25 +124,25 @@ PrintLife already has auto-refreshing garment data via API. Our Phase 2 API inte
 
 ## Gary Questions
 
-<div class="gary-question" data-question-id="garments-q4" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q4" data-pipeline="garments" data-status="unanswered">
   <p class="gary-question-text">Do you place garment orders through the S&S/SanMar websites, or does PrintLife handle ordering for you?</p>
   <p class="gary-question-context">Confirms the ordering workflow and whether a "one-click order from quote" feature would save significant time in Phase 2.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="garments-q5" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q5" data-pipeline="garments" data-status="unanswered">
   <p class="gary-question-text">Would a screen reclamation dashboard — showing which stored screens haven't been reused in 6+ months — help you decide which to reclaim?</p>
   <p class="gary-question-context">Screen storage cost (not space) is a real constraint. A dashboard flagging idle screens could reduce tied-up capital and inform reclamation decisions.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="garments-q6" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q6" data-pipeline="garments" data-status="unanswered">
   <p class="gary-question-text">When a customer supplies their own garments, do you have a standard handling fee, or is it always negotiated per-job?</p>
   <p class="gary-question-context">Determines whether we need a configurable default handling fee for customer-supplied garments or just a flexible per-line-item override in the quoting system.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="garments-q7" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q7" data-pipeline="garments" data-status="unanswered">
   <p class="gary-question-text">How many garment styles do you stock on-site vs. order per-job? And do you track on-hand quantities in any system today?</p>
   <p class="gary-question-context">Light inventory awareness (what's on the shelf before ordering) surfaced as a potential Phase 2 feature. Knowing current tracking methods determines whether this is a pain point worth solving.</p>
   <div class="gary-answer" data-answered-date=""></div>

@@ -132,13 +132,15 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
           </>
         )}
 
-        {/* U78 — Dimensions display (always shown) */}
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground">Dimensions</span>
-          <p className="flex h-8 items-center text-sm text-foreground">
-            {item.width}&quot; &times; {item.height}&quot;
-          </p>
-        </div>
+        {/* U78 — Dimensions display (shown for custom preset only) */}
+        {item.sizePreset === "custom" && (
+          <div className="space-y-1">
+            <span className="text-xs text-muted-foreground">Dimensions</span>
+            <p className="flex h-8 items-center text-sm text-foreground">
+              {item.width}&quot; &times; {item.height}&quot;
+            </p>
+          </div>
+        )}
 
         {/* U79 — Quantity input */}
         <div className="space-y-1">

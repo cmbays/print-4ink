@@ -5,7 +5,7 @@ date: 2026-02-10
 phase: 1
 pipeline: quoting
 pipelineType: vertical
-products: [quotes]
+products: [quotes, customers, invoices]
 tools: []
 stage: build
 tags: [feature, build]

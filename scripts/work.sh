@@ -17,6 +17,7 @@
 PRINT4INK_REPO="$HOME/Github/print-4ink"
 PRINT4INK_ROOT="$PRINT4INK_REPO"
 PRINT4INK_WORKTREES="$HOME/Github/print-4ink-worktrees"
+PRINT4INK_GH_REPO="cmbays/print-4ink"  # GitHub owner/repo for gh CLI
 PRINT4INK_MAX_WORKTREES=15
 PRINT4INK_PORT_MIN=3001
 PRINT4INK_PORT_MAX=3015
@@ -36,28 +37,50 @@ fi
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-registry.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-registry.sh"
 # shellcheck source=lib/pipeline-entity.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-entity.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-entity.sh"
+# shellcheck source=lib/pipeline-gates.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-gates.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-gates.sh"
+# shellcheck source=lib/pipeline-define.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-define.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-define.sh"
+# shellcheck source=lib/pipeline-status.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-status.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-status.sh"
+# shellcheck source=lib/pipeline-start.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-start.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-start.sh"
+# shellcheck source=lib/pipeline-build.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-build.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-build.sh"
+# shellcheck source=lib/pipeline-end.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-end.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-end.sh"
+# shellcheck source=lib/pipeline-cooldown.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-cooldown.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-cooldown.sh"
 
 # ── Dispatcher ──────────────────────────────────────────────────────────────
 work() {
     case "${1:-}" in
-        # Phase commands (Wave 2 — stubs for now)
+        # Pipeline lifecycle commands
+        define)     shift; _work_define "$@" ;;
+        start)      shift; _work_start "$@" ;;
+        build)      shift; _work_build_dispatch "$@" ;;
+        end)        shift; _work_end "$@" ;;
+        cooldown)   shift; _work_cooldown "$@" ;;
+        status)     shift; _work_pipeline_status "$@" ;;
+
+        # Legacy phase commands (still functional for non-pipeline usage)
         research)   shift; _work_phase "research" "$@" ;;
         interview)  shift; _work_phase "interview" "$@" ;;
         breadboard) shift; _work_phase "breadboard" "$@" ;;
         plan)       shift; _work_phase "plan" "$@" ;;
-        build)      shift; _work_build "$@" ;;
         polish)     shift; _work_phase "polish" "$@" ;;
         review)     shift; _work_phase "review" "$@" ;;
         learnings)  shift; _work_phase "learnings" "$@" ;;
-        cooldown)   shift; _work_phase "cooldown" "$@" ;;
 
         # Session management
         sessions)   shift; _work_sessions "$@" ;;
         resume)     shift; _work_resume "$@" ;;
         fork)       shift; _work_fork "$@" ;;
-        status)     _work_status ;;
         next)       _work_next ;;
         clean)      shift; _work_clean "$@" ;;
+
+        # Progress
+        progress)   shift; _work_progress "$@" ;;
 
         # Utilities
         list)       _work_list ;;
@@ -112,65 +135,98 @@ work() {
 # ── Help ────────────────────────────────────────────────────────────────────
 _work_help() {
     cat <<'HELP'
-work — Claude + Zellij Worktree Orchestrator
+work — Pipeline-Aware Worktree Orchestrator for Screen Print Pro
 
 USAGE
   work <topic>                            New workstream: worktree + Zellij tab
   work <topic> <base-branch>             Related work: worktree + Zellij tab
   work --stack <topic>                    Stack from current branch (auto-detects $PWD)
   work <topic> --prompt "task desc"       Seed the new Claude with an initial prompt
-  work <topic> --yolo                     Skip Claude permissions (--dangerously-skip-permissions)
+  work <topic> --yolo                     Skip Claude permissions
   work <topic> --claude-args "..."        Pass arbitrary flags to Claude CLI
 
-PHASE COMMANDS
-  work research <pipeline>                Research phase (vertical-discovery skill)
-  work interview <pipeline>               Interview phase (requirements-interrogator)
-  work breadboard <pipeline>              Breadboarding phase (breadboarding skill)
-  work plan <pipeline>                    Implementation planning
-  work build <manifest> [--wave N] [--yolo] [--claude-args "..."] Execute build from YAML manifest (default: wave 0)
-  work polish <pipeline>                  Post-build polish
-  work review <pipeline>                  Quality gate + doc sync
-  work learnings <pipeline>               Cross-cutting pattern synthesis
-  work cooldown <pipeline>                5-step retrospective
+PIPELINE LIFECYCLE
+  work define <name> [flags]              Create a pipeline entity (→ ready state)
+    --type <type>                           Pipeline type: vertical|polish|horizontal|bug-fix (default: vertical)
+    --issue <number>                        Link to existing GitHub issue
+    --prompt "<text>"                       Create GitHub issue from prompt
+    --auto                                  Skip human approvals (plan + merge)
+    --products p1,p2                        Link to products (garments, quotes, etc.)
+    --tools t1,t2                           Link to tools (work-orchestrator, etc.)
+  work start <pipeline-id>                Run pre-build stages (→ active state)
+    --yolo                                  Skip Claude permissions
+    --claude-args "..."                     Pass flags to Claude
+  work build <pipeline-id> [flags]        Run build waves from manifest (→ building state)
+    --wave N                                Start at wave N (default: 0)
+    --yolo / --claude-args "..."            Passed to Claude sessions
+  work build <manifest.yaml> [flags]      Legacy: build from YAML file directly
+  work end <pipeline-id>                  Create final PR, poll for merge, wrap up (→ wrapped)
+    --skip-poll                             Skip merge detection polling
+  work cooldown                           Batch process all wrapped pipelines (→ cooled)
+    --dry-run                               Preview without changes
+    --skip-progress                         Skip PROGRESS.md update
+
+PIPELINE STATUS
+  work status                             Dashboard: all pipelines grouped by state
+  work status <pipeline-id>               Deep dive: single pipeline detail
+
+LEGACY PHASE COMMANDS
+  work research <name>                    Research phase (vertical-discovery skill)
+  work interview <name>                   Interview phase (requirements-interrogator)
+  work breadboard <name>                  Breadboarding phase (breadboarding skill)
+  work plan <name>                        Implementation planning
+  work polish <name>                      Post-build polish
+  work review <name>                      Quality gate + doc sync
+  work learnings <name>                   Cross-cutting pattern synthesis
   (All phase commands accept --yolo and --claude-args)
 
 SESSION MANAGEMENT
   work sessions [--vertical <name>]       List sessions from registry
   work resume <topic>                     Resume Claude session by topic
   work fork <new-topic> <source-topic>    Fork a session with new context
-  work status                             Show all layers (registry, worktrees, Zellij, ports)
   work next                               AI recommendation: what to work on next
+
+PROGRESS
+  work progress                           Generate PROGRESS.md from live GitHub data
+  work progress --output <path>           Write report to custom path
 
 UTILITIES
   work list                               Show worktrees, Zellij sessions, ports
   work clean <topic>                      Remove worktree + Zellij + branch + registry
   work help                               This help text
 
-EXAMPLES
-  work invoicing-schema                                     # New workstream
-  work invoicing-schema --prompt "Build the Zod schemas"    # With initial task
-  work invoicing-ui session/0210-invoicing-schema           # Branch from parent
-  work --stack invoicing-tests --prompt "Write tests"       # Stack from $PWD
-  work research quoting                                     # Start quoting research
-  work resume invoicing-schema                              # Resume Claude session
-  work sessions --vertical quoting                          # List quoting sessions
-  work breadboard garments --yolo                            # Phase + skip permissions
-  work my-feature --claude-args "--model sonnet"             # Custom Claude flags
-  work clean invoicing-schema                               # Full cleanup
+PIPELINE LIFECYCLE FLOW
+  define → start → build → end → cooldown
+  (ready)  (active) (building) (reviewing→wrapped) (cooled)
 
-ZELLIJ NAVIGATION
-  Ctrl+t       Tab mode (then arrows or number to switch)
-  Alt+n        New pane
-  Alt+←/→      Switch pane focus
-  Ctrl+p       Pane mode
-  Ctrl+s       Search (scroll mode)
-  Alt+1..9     Quick tab switch
+EXAMPLES
+  # Pipeline workflow
+  work define colors --type vertical --issue 42         # Create pipeline
+  work start 20260216-colors                            # Run pre-build stages
+  work build 20260216-colors                            # Launch build waves
+  work build 20260216-colors --wave 1                   # Next wave
+  work end 20260216-colors                              # Final PR + wrap up
+  work cooldown                                         # Process all wrapped
+
+  # Ad-hoc workstreams (non-pipeline)
+  work invoicing-schema                                 # New workstream
+  work invoicing-schema --prompt "Build the Zod schemas"
+  work --stack invoicing-tests --prompt "Write tests"   # Stack from $PWD
+
+  # Session management
+  work status                                           # Pipeline dashboard
+  work status 20260216-colors                           # Pipeline detail
+  work sessions --vertical quoting                      # List sessions
+  work resume invoicing-schema                          # Resume Claude session
+  work clean invoicing-schema                           # Full cleanup
 
 NOTES
+  - Pipeline IDs: YYYYMMDD-<topic> (e.g., 20260216-colors)
+  - Branch naming: session/<MMDD>-<topic> for sessions, build/<pipeline-id> for base
   - Inside Zellij: new workstreams open as tabs in current session
   - Outside Zellij: creates a new Zellij session to attach to
-  - Branch naming: session/<MMDD>-<topic> (auto-generated, kebab-case enforced)
   - Max 15 concurrent worktrees
+  - Pipeline registry: ~/Github/print-4ink-worktrees/.pipeline-registry.json
   - Session registry: ~/Github/print-4ink-worktrees/.session-registry.json
 HELP
 }
@@ -929,4 +985,297 @@ _work_clean() {
     fi
 
     echo "Done."
+}
+
+# ── Progress Report Generator ──────────────────────────────────────────────
+# Usage: work progress [--output <path>]
+#   Queries GitHub API and writes a PROGRESS.md report to repo root (or --output path).
+#   Sections: Milestones, Now (priority/now), Next (priority/next),
+#             Tracked In, Recent PRs, Stale (>30 days).
+#   ~5 API calls total (1 GraphQL milestones, 1 now, 1 next, 1 GraphQL tracked,
+#   1 recent PRs via --search, 1 stale via --search). All loops use @tsv extraction.
+_work_progress() {
+    # ── Local declarations (all at function top) ─────────────────────────────
+    local OWNER="cmbays"
+    local REPO="print-4ink"
+    local OUTPUT="${PRINT4INK_ROOT:-}/PROGRESS.md"
+    local TIMESTAMP
+    local milestones_section milestones_data milestones_tsv
+    local m_title m_due m_desc m_open m_closed m_total due_display
+    local m_issues_tsv i_num i_title i_state
+    local now_section now_tsv now_count now_items
+    local next_section next_tsv next_count next_items
+    local tracked_section tracked_tsv tracked_count tracked_items
+    local t_num t_title t_parents
+    local recent_section seven_days_ago recent_tsv recent_count recent_items
+    local p_num p_title p_date
+    local stale_section thirty_days_ago stale_tsv stale_count stale_items
+    local s_num s_title s_updated
+    local total_open report_content
+
+    # ── Environment guard ────────────────────────────────────────────────────
+    [[ -z "${PRINT4INK_ROOT:-}" ]] && {
+        echo "Error: PRINT4INK_ROOT not set. Source work.sh properly."
+        return 1
+    }
+
+    # ── Parse flags ──────────────────────────────────────────────────────────
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --output)
+                [[ -z "${2:-}" ]] && { echo "Error: --output requires a path argument"; return 1; }
+                OUTPUT="$2"; shift 2 ;;
+            *) echo "Unknown flag: $1"; return 1 ;;
+        esac
+    done
+
+    # ── Pre-flight checks ────────────────────────────────────────────────────
+    if ! command -v gh &>/dev/null; then
+        echo "Error: gh CLI not found. Install GitHub CLI first."
+        return 1
+    fi
+
+    if ! command -v jq &>/dev/null; then
+        echo "Error: jq not found. Install with: brew install jq"
+        return 1
+    fi
+
+    if ! gh auth status &>/dev/null; then
+        echo "Error: GitHub CLI not authenticated. Run: gh auth login"
+        return 1
+    fi
+
+    echo "Generating progress report..."
+
+    TIMESTAMP=$(date '+%Y-%m-%d %H:%M %Z')
+
+    # ── Section 1: Milestones (single GraphQL query) ─────────────────────────
+    milestones_section=""
+    milestones_data=$(gh api graphql \
+        -F owner="$OWNER" -F repo="$REPO" \
+        -f query='
+        query($owner: String!, $repo: String!) {
+            repository(owner: $owner, name: $repo) {
+                milestones(first: 20, states: OPEN, orderBy: {field: DUE_DATE, direction: ASC}) {
+                    nodes {
+                        title
+                        dueOn
+                        description
+                        closedIssues: issues(states: CLOSED) { totalCount }
+                        openIssues: issues(states: OPEN) { totalCount }
+                        issues(first: 50, orderBy: {field: CREATED_AT, direction: ASC}) {
+                            nodes { number title state }
+                        }
+                    }
+                }
+            }
+        }') || {
+        milestones_section="## Milestones"$'\n'"[Warning: Failed to fetch milestones]"$'\n'
+        milestones_data=""
+    }
+
+    if [[ -n "$milestones_data" ]]; then
+        # Extract milestone-level data as TSV (title, dueOn, description, openCount, closedCount)
+        milestones_tsv=$(printf '%s' "$milestones_data" | jq -r '
+            .data.repository.milestones.nodes[] |
+            [.title, (.dueOn // ""), (.description // ""),
+             (.openIssues.totalCount | tostring), (.closedIssues.totalCount | tostring)] | @tsv')
+
+        if [[ -z "$milestones_tsv" ]]; then
+            milestones_section="## Milestones"$'\n'"None."$'\n'
+        else
+            milestones_section="## Milestones"$'\n'
+            while IFS=$'\t' read -r m_title m_due m_desc m_open m_closed; do
+                m_total=$(( ${m_open:-0} + ${m_closed:-0} ))
+
+                due_display=""
+                if [[ -n "$m_due" ]]; then
+                    due_display=" (${m_due:0:10})"
+                fi
+
+                milestones_section+=$'\n'"### ${m_title}${due_display} — ${m_closed}/${m_total} complete"$'\n'
+                [[ -n "$m_desc" ]] && milestones_section+="${m_desc}"$'\n'
+
+                # Extract issues for this milestone as TSV (number, title, state)
+                m_issues_tsv=$(printf '%s' "$milestones_data" | jq -r --arg mt "$m_title" '
+                    .data.repository.milestones.nodes[] | select(.title == $mt) |
+                    .issues.nodes[] | [(.number | tostring), .title, .state] | @tsv')
+
+                if [[ -n "$m_issues_tsv" ]]; then
+                    while IFS=$'\t' read -r i_num i_title i_state; do
+                        if [[ "$i_state" == "CLOSED" ]]; then
+                            milestones_section+="- [x] #${i_num} ${i_title}"$'\n'
+                        else
+                            milestones_section+="- [ ] #${i_num} ${i_title}"$'\n'
+                        fi
+                    done <<< "$m_issues_tsv"
+                fi
+            done <<< "$milestones_tsv"
+        fi
+    fi
+
+    # ── Section 2: Now (priority/now) ────────────────────────────────────────
+    now_tsv=$(gh issue list --repo "${OWNER}/${REPO}" \
+        -l "priority/now" --state open --limit 100 \
+        --json number,title --jq '.[] | [(.number | tostring), .title] | @tsv') || {
+        now_section="## Now (priority/now)"$'\n'"[Warning: Failed to fetch priority/now issues]"$'\n'
+        now_tsv=""
+    }
+
+    if [[ -n "$now_tsv" ]]; then
+        now_count=0
+        now_items=""
+        while IFS=$'\t' read -r i_num i_title; do
+            now_items+="- #${i_num} ${i_title}"$'\n'
+            now_count=$((now_count + 1))
+        done <<< "$now_tsv"
+        now_section="## Now (priority/now) -- ${now_count} items"$'\n'
+        now_section+="*May include milestone-assigned issues.*"$'\n'
+        now_section+="${now_items}"
+    elif [[ -z "${now_section:-}" ]]; then
+        now_section="## Now (priority/now) -- 0 items"$'\n'"None."$'\n'
+    fi
+
+    # ── Section 3: Next (priority/next) ──────────────────────────────────────
+    next_tsv=$(gh issue list --repo "${OWNER}/${REPO}" \
+        -l "priority/next" --state open --limit 100 \
+        --json number,title --jq '.[] | [(.number | tostring), .title] | @tsv') || {
+        next_section="## Next (priority/next)"$'\n'"[Warning: Failed to fetch priority/next issues]"$'\n'
+        next_tsv=""
+    }
+
+    if [[ -n "$next_tsv" ]]; then
+        next_count=0
+        next_items=""
+        while IFS=$'\t' read -r i_num i_title; do
+            next_items+="- #${i_num} ${i_title}"$'\n'
+            next_count=$((next_count + 1))
+        done <<< "$next_tsv"
+        next_section="## Next (priority/next) -- ${next_count} items"$'\n'"${next_items}"
+    elif [[ -z "${next_section:-}" ]]; then
+        next_section="## Next (priority/next) -- 0 items"$'\n'"None."$'\n'
+    fi
+
+    # ── Section 4: Tracked In (sub-issue hierarchy, paginated GraphQL) ───────
+    tracked_tsv=$(gh api graphql --paginate \
+        -F owner="$OWNER" -F repo="$REPO" \
+        -f query='
+        query($owner: String!, $repo: String!, $endCursor: String) {
+            repository(owner: $owner, name: $repo) {
+                issues(first: 100, states: OPEN, after: $endCursor) {
+                    pageInfo { hasNextPage endCursor }
+                    nodes {
+                        number
+                        title
+                        trackedInIssues(first: 5) {
+                            nodes { number title }
+                        }
+                    }
+                }
+            }
+        }' --jq '
+        .data.repository.issues.nodes[] |
+        select(.trackedInIssues.nodes | length > 0) |
+        [(.number | tostring), .title,
+         ([.trackedInIssues.nodes[] | "#\(.number)"] | join(", "))] | @tsv') || {
+        tracked_section="## Tracked In"$'\n'"[Warning: Failed to fetch tracked-in data]"$'\n'
+        tracked_tsv=""
+    }
+
+    if [[ -n "$tracked_tsv" ]]; then
+        tracked_count=0
+        tracked_items=""
+        while IFS=$'\t' read -r t_num t_title t_parents; do
+            tracked_items+="- #${t_num} ${t_title} (tracked in ${t_parents})"$'\n'
+            tracked_count=$((tracked_count + 1))
+        done <<< "$tracked_tsv"
+        tracked_section="## Tracked In -- ${tracked_count} items"$'\n'
+        tracked_section+="*Shows issues tracked within parent issues (sub-issue hierarchy).*"$'\n'
+        tracked_section+="${tracked_items}"
+    elif [[ -z "${tracked_section:-}" ]]; then
+        tracked_section="## Tracked In -- 0 items"$'\n'"None."$'\n'
+    fi
+
+    # ── Section 5: Recent PRs (last 7 days, server-side date filter) ─────────
+    seven_days_ago=$(date -v-7d '+%Y-%m-%d' 2>/dev/null || date -d '7 days ago' '+%Y-%m-%d' 2>/dev/null)
+
+    if [[ -z "$seven_days_ago" ]]; then
+        recent_section="## Recent PRs (last 7 days)"$'\n'"Unable to compute date filter."$'\n'
+    else
+        recent_tsv=$(gh pr list --repo "${OWNER}/${REPO}" \
+            --state merged \
+            --search "merged:>=${seven_days_ago}" \
+            --limit 30 \
+            --json number,title,mergedAt \
+            --jq '.[] | [(.number | tostring), .title, (.mergedAt[:10])] | @tsv') || {
+            recent_section="## Recent PRs (last 7 days)"$'\n'"[Warning: Failed to fetch recent PRs]"$'\n'
+            recent_tsv=""
+        }
+
+        if [[ -n "$recent_tsv" ]]; then
+            recent_count=0
+            recent_items=""
+            while IFS=$'\t' read -r p_num p_title p_date; do
+                recent_items+="- PR #${p_num} ${p_title} (merged ${p_date})"$'\n'
+                recent_count=$((recent_count + 1))
+            done <<< "$recent_tsv"
+            recent_section="## Recent PRs (last 7 days) -- ${recent_count} items"$'\n'"${recent_items}"
+        elif [[ -z "${recent_section:-}" ]]; then
+            recent_section="## Recent PRs (last 7 days) -- 0 items"$'\n'"None."$'\n'
+        fi
+    fi
+
+    # ── Section 6: Stale (>30 days, server-side date filter) ─────────────────
+    thirty_days_ago=$(date -v-30d '+%Y-%m-%d' 2>/dev/null || date -d '30 days ago' '+%Y-%m-%d' 2>/dev/null)
+
+    if [[ -z "$thirty_days_ago" ]]; then
+        stale_section="## Stale (>30 days)"$'\n'"Unable to compute stale threshold."$'\n'
+    else
+        stale_tsv=$(gh issue list --repo "${OWNER}/${REPO}" \
+            --state open \
+            --search "updated:<${thirty_days_ago}" \
+            --limit 200 \
+            --json number,title,updatedAt \
+            --jq '.[] | [(.number | tostring), .title, (.updatedAt[:10])] | @tsv') || {
+            stale_section="## Stale (>30 days)"$'\n'"[Warning: Failed to fetch stale issues]"$'\n'
+            stale_tsv=""
+        }
+
+        if [[ -n "$stale_tsv" ]]; then
+            stale_count=0
+            stale_items=""
+            while IFS=$'\t' read -r s_num s_title s_updated; do
+                stale_items+="- #${s_num} ${s_title} (last updated ${s_updated})"$'\n'
+                stale_count=$((stale_count + 1))
+            done <<< "$stale_tsv"
+            stale_section="## Stale (>30 days) -- ${stale_count} items"$'\n'"${stale_items}"
+        elif [[ -z "${stale_section:-}" ]]; then
+            stale_section="## Stale (>30 days) -- 0 items"$'\n'"None."$'\n'
+        fi
+    fi
+
+    # ── Derive summary count from already-fetched data ───────────────────────
+    # Count unique open issues across now + next + stale (avoids extra API call)
+    total_open=$(( ${now_count:-0} + ${next_count:-0} + ${stale_count:-0} + ${tracked_count:-0} ))
+
+    # ── Assemble & write report ──────────────────────────────────────────────
+    report_content="# Progress Report
+Generated: ${TIMESTAMP}
+
+${milestones_section}
+${now_section}
+${next_section}
+${tracked_section}
+${recent_section}
+${stale_section}"
+
+    if ! printf '%s\n' "$report_content" > "$OUTPUT"; then
+        echo "Error: Failed to write report to ${OUTPUT}"
+        return 1
+    fi
+
+    echo "Written to ${OUTPUT}"
+    echo ""
+    echo "  Open issues (approx): ${total_open}"
+    echo "  Report: ${OUTPUT}"
 }
