@@ -47,6 +47,7 @@ depends_on:
 | 17 | Pricing Hub | `/settings/pricing` | Template cards with service type tabs (Screen Print / DTF) | F16 |
 | 18 | Screen Print Editor | `/settings/pricing/screen-print/[id]` | Simple/Power mode matrix editor with margin indicators | F16 |
 | 19 | DTF Editor | `/settings/pricing/dtf/[id]` | Sheet tier editor with pricing calculator | F16 |
+| 20 | Color Settings | `/settings/colors` | Global favorite color management with flat/grouped display | F17 |
 
 ---
 
@@ -63,6 +64,7 @@ Screen Room        /screens
 Customers          /customers
 Garments           /garments
 Pricing Settings   /settings/pricing
+Color Settings     /settings/colors
 ```
 
 Active state: highlighted background when route matches (exact for `/`, prefix for others).

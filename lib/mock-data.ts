@@ -14,6 +14,7 @@ import type { Artwork } from "@/lib/schemas/artwork";
 import type { Invoice, Payment } from "@/lib/schemas/invoice";
 import type { CreditMemo } from "@/lib/schemas/credit-memo";
 import type { MockupTemplate } from "@/lib/schemas/mockup-template";
+import type { BrandPreference, DisplayPreference, PropagationConfig } from "@/lib/schemas/color-preferences";
 
 // ---------------------------------------------------------------------------
 // Customer IDs (stable — referenced by jobs, quotes, artworks)
@@ -173,7 +174,8 @@ export const customers: Customer[] = [
     discountPercentage: 5,
     taxExempt: false,
     favoriteGarments: ["gc-002", "gc-005"],
-    favoriteColors: { "gc-002": ["clr-black", "clr-forest-green"], "gc-005": ["clr-black"] },
+    favoriteColors: ["clr-black", "clr-forest-green"],
+    favoriteBrandNames: ["Gildan"],
     createdAt: "2025-08-15T10:00:00Z",
     updatedAt: "2026-02-07T16:00:00Z",
   },
@@ -200,7 +202,8 @@ export const customers: Customer[] = [
     taxExempt: true,
     taxExemptCertExpiry: "2027-03-31T00:00:00Z",
     favoriteGarments: ["gc-001"],
-    favoriteColors: { "gc-001": ["clr-royal", "clr-white"] },
+    favoriteColors: ["clr-royal", "clr-white"],
+    favoriteBrandNames: ["Bella+Canvas"],
     createdAt: "2025-06-01T08:00:00Z",
     updatedAt: "2026-02-02T09:00:00Z",
   },
@@ -226,7 +229,8 @@ export const customers: Customer[] = [
     taxExempt: false,
     referredByCustomerId: CUSTOMER_IDS.riverCity,
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2026-02-05T09:15:00Z",
     updatedAt: "2026-02-06T11:30:00Z",
   },
@@ -251,7 +255,8 @@ export const customers: Customer[] = [
     pricingTier: "standard",
     taxExempt: false,
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2026-01-28T08:00:00Z",
     updatedAt: "2026-01-30T16:00:00Z",
   },
@@ -276,7 +281,8 @@ export const customers: Customer[] = [
     pricingTier: "preferred",
     taxExempt: false,
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2025-09-01T12:00:00Z",
     updatedAt: "2026-02-04T15:45:00Z",
   },
@@ -303,7 +309,8 @@ export const customers: Customer[] = [
     taxExempt: true,
     taxExemptCertExpiry: "2027-08-31T00:00:00Z",
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2025-08-01T09:00:00Z",
     updatedAt: "2026-02-01T10:00:00Z",
   },
@@ -329,7 +336,8 @@ export const customers: Customer[] = [
     discountPercentage: 5,
     taxExempt: false,
     favoriteGarments: ["gc-004", "gc-001"],
-    favoriteColors: { "gc-004": ["clr-red", "clr-white"] },
+    favoriteColors: ["clr-red", "clr-white"],
+    favoriteBrandNames: [],
     createdAt: "2025-11-01T10:00:00Z",
     updatedAt: "2026-01-15T14:00:00Z",
   },
@@ -355,7 +363,8 @@ export const customers: Customer[] = [
     taxExempt: false,
     referredByCustomerId: CUSTOMER_IDS.lonestar,
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2026-01-20T10:00:00Z",
     updatedAt: "2026-02-01T11:30:00Z",
   },
@@ -381,7 +390,8 @@ export const customers: Customer[] = [
     discountPercentage: 15,
     taxExempt: false,
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2025-05-01T09:00:00Z",
     updatedAt: "2025-12-10T15:00:00Z",
   },
@@ -407,7 +417,8 @@ export const customers: Customer[] = [
     taxExempt: true,
     taxExemptCertExpiry: "2027-06-30T00:00:00Z",
     favoriteGarments: [],
-    favoriteColors: {},
+    favoriteColors: [],
+    favoriteBrandNames: [],
     createdAt: "2026-02-03T09:00:00Z",
     updatedAt: "2026-02-07T14:00:00Z",
   },
@@ -2355,3 +2366,39 @@ export const mockupTemplates: MockupTemplate[] = [
     viewBoxHeight: 480,
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Color Preferences — Brand-level overrides (S3)
+// ---------------------------------------------------------------------------
+
+export const brandPreferences: BrandPreference[] = [
+  {
+    brandName: "Gildan",
+    inheritMode: "customize",
+    favoriteColorIds: ["clr-black", "clr-white", "clr-navy", "clr-royal", "clr-red", "clr-sport-grey", "clr-dark-heather"],
+    explicitColorIds: ["clr-sport-grey", "clr-dark-heather"],
+    removedInheritedColorIds: [],
+  },
+  {
+    brandName: "Bella+Canvas",
+    inheritMode: "inherit",
+    favoriteColorIds: [],
+    explicitColorIds: [],
+    removedInheritedColorIds: [],
+  },
+  {
+    brandName: "Comfort Colors",
+    inheritMode: "customize",
+    favoriteColorIds: ["clr-black", "clr-white", "clr-navy", "clr-royal", "clr-mint", "clr-daisy"],
+    explicitColorIds: ["clr-mint", "clr-daisy"],
+    removedInheritedColorIds: ["clr-red"],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Color Preferences — Global settings (S5, S8)
+// ---------------------------------------------------------------------------
+
+export const displayPreference: DisplayPreference = "flat";
+
+export const autoPropagationConfig: PropagationConfig = { autoPropagate: true };
