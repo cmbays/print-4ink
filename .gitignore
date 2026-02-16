@@ -66,3 +66,4 @@ quality-gate/
 knowledge-base/dist/
 knowledge-base/node_modules/
 knowledge-base/.astro/
+.firecrawl/
