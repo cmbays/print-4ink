@@ -2,11 +2,9 @@
 
 import { useCallback } from "react";
 import { Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
-import { formatCurrency } from "@/lib/helpers/money";
 import { dtfSheetTiers } from "@/lib/mock-data";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
@@ -37,7 +35,7 @@ export function DtfTabContent({
   // Wave 4 props — accepted but not yet wired
   canvasLayout: _canvasLayout,
   activeSheetIndex: _activeSheetIndex,
-  setActiveSheetIndex: _setActiveSheetIndex,
+  setActiveSheetIndex,
   setSheetCalculation,
   setCanvasLayout,
 }: DtfTabContentProps) {
@@ -76,9 +74,6 @@ export function DtfTabContent({
     [setLineItems]
   );
 
-  // Seed with one line item if empty
-  const hasItems = lineItems.length > 0;
-
   return (
     <div className="space-y-4">
       {/* U71 — DTF line item list */}
@@ -105,19 +100,7 @@ export function DtfTabContent({
         Add Design
       </Button>
 
-      {/* U81 — DTF subtotal display */}
-      {hasItems && (
-        <div className={cn(
-          "flex items-center justify-between rounded-lg border border-border bg-elevated px-4 py-3"
-        )}>
-          <span className="text-sm text-muted-foreground">DTF Subtotal</span>
-          <span className="text-sm font-medium text-foreground">
-            {sheetCalculation ? formatCurrency(sheetCalculation.totalCost) : "--"}
-          </span>
-        </div>
-      )}
-
-      {/* U82-U87 — Sheet Calculation Panel (Wave 3) */}
+      {/* U82-U87 — Sheet Calculation Panel (Wave 3) — includes subtotal in summary row */}
       <SheetCalculationPanel
         lineItems={lineItems}
         sheetCalculation={sheetCalculation}
@@ -125,17 +108,18 @@ export function DtfTabContent({
         splitMode={splitMode}
         setSplitMode={setSplitMode}
         setCanvasLayout={setCanvasLayout}
+        setActiveSheetIndex={setActiveSheetIndex}
         tiers={dtfSheetTiers}
       />
 
-      {/* Placeholder: Visual Canvas (Wave 4) */}
-      <div className={cn(
-        "rounded-lg border border-dashed border-border bg-surface/50 p-6 text-center"
-      )}>
-        <p className="text-sm text-muted-foreground/60">
-          Visual canvas — coming in Wave 4
-        </p>
-      </div>
+      {/* Placeholder: Visual Canvas (Wave 4) — dev-only */}
+      {process.env.NODE_ENV === "development" && (
+        <div className="rounded-lg border border-dashed border-border bg-surface/50 p-6 text-center">
+          <p className="text-sm text-muted-foreground/60">
+            Visual canvas — coming in Wave 4
+          </p>
+        </div>
+      )}
     </div>
   );
 }

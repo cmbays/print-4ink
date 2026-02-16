@@ -37,6 +37,7 @@ import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount, ServiceType } from "@/lib/schemas/quote";
+import { isValidDtfLineItem } from "@/lib/dtf/dtf-validation";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
@@ -356,9 +357,9 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       return totalQty > 0;
     });
 
-    // DTF: at least one item with name and valid dimensions (placeholder until Wave 2)
+    // DTF: at least one item with valid data
     const dtfValid = dtfLineItems.length > 0 &&
-      dtfLineItems.every((item) => item.artworkName && item.width > 0 && item.height > 0 && item.quantity >= 1);
+      dtfLineItems.every(isValidDtfLineItem);
 
     return {
       "screen-print": spValid,

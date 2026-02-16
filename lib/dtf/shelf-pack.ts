@@ -63,6 +63,15 @@ export function shelfPack(
   sheetWidth: number = DTF_SHEET_WIDTH,
   margin: number = DTF_DEFAULT_MARGIN
 ): PackedSheet[] {
+  // --- Step 0: Guard against quantity overflow ---
+  const MAX_PLACEMENTS = 5000;
+  const totalPlacements = designs.reduce((sum, d) => sum + d.quantity, 0);
+  if (totalPlacements > MAX_PLACEMENTS) {
+    throw new Error(
+      `Total placements (${totalPlacements}) exceeds maximum of ${MAX_PLACEMENTS}. Reduce quantities.`
+    );
+  }
+
   // --- Step 1: Expand by quantity ---
   const expanded: Array<{
     id: string;

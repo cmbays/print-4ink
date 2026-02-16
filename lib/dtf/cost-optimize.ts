@@ -7,26 +7,12 @@
  */
 
 import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
-import type { CanvasDesign } from "@/lib/schemas/dtf-sheet-calculation";
+import type {
+  OptimizedSheet,
+  SheetCalculation,
+} from "@/lib/schemas/dtf-sheet-calculation";
 import type { PackedSheet } from "./shelf-pack";
 import { money, round2, toNumber } from "@/lib/helpers/money";
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-export interface OptimizedSheetResult {
-  tier: DTFSheetTier;
-  designs: CanvasDesign[];
-  utilization: number;
-  cost: number;
-}
-
-export interface SheetCalculationResult {
-  sheets: OptimizedSheetResult[];
-  totalCost: number;
-  totalSheets: number;
-}
 
 // ---------------------------------------------------------------------------
 // Algorithm
@@ -44,16 +30,22 @@ export function optimizeCost(
   packedSheets: PackedSheet[],
   tiers: DTFSheetTier[],
   _splitMode: "combine" | "split" = "combine"
-): SheetCalculationResult {
+): SheetCalculation {
   if (packedSheets.length === 0) {
     return { sheets: [], totalCost: 0, totalSheets: 0 };
+  }
+
+  if (tiers.length === 0) {
+    throw new Error(
+      "No sheet tiers configured. Cannot calculate cost. Check DTF pricing template."
+    );
   }
 
   // Sort tiers by length ascending so we always pick the smallest fit first
   const sortedTiers = [...tiers].sort((a, b) => a.length - b.length);
 
   let runningTotal = money(0);
-  const optimizedSheets: OptimizedSheetResult[] = [];
+  const optimizedSheets: OptimizedSheet[] = [];
 
   for (const packedSheet of packedSheets) {
     // Find the smallest tier that fits the used height
@@ -72,12 +64,11 @@ export function optimizeCost(
       0
     );
     const tierArea = selectedTier.width * selectedTier.length;
-    const utilization =
+    const rawUtilization =
       tierArea > 0
-        ? toNumber(
-            round2(money(totalDesignArea).div(tierArea).times(100))
-          )
+        ? totalDesignArea / tierArea * 100
         : 0;
+    const utilization = Math.min(100, Math.round(rawUtilization));
 
     // Cost = tier retail price (big.js for precision)
     const sheetCost = round2(money(selectedTier.retailPrice));
