@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pipeline Architecture &mdash; Issue Cleanup &amp; Relationship Map</title>
+  <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-elevated: #18181b;
+      --bg-surface: #1c1c1f;
+      --text-primary: rgba(255,255,255,0.87);
+      --text-secondary: rgba(255,255,255,0.60);
+      --text-muted: rgba(255,255,255,0.38);
+      --action: #22d3ee;
+      --success: #34d399;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --purple: #a78bfa;
+      --border: rgba(255,255,255,0.08);
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      padding: 48px 24px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; }
+
+    .top-nav { margin-bottom: 24px; }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--action);
+      border-color: rgba(34, 211, 238, 0.3);
+      text-decoration: none;
+    }
+
+    header { margin-bottom: 32px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .tag-decision { background: rgba(251, 191, 36, 0.12); color: var(--warning); }
+    .tag-plan     { background: rgba(34, 211, 238, 0.12); color: var(--action); }
+    .tag-research { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .meta-item {
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .header-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 32px 0;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    a { color: var(--action); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    ul, ol { padding-left: 20px; margin-bottom: 16px; }
+    li { font-size: 14px; color: var(--text-secondary); margin-bottom: 6px; }
+    li strong { color: var(--text-primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    td:first-child { color: var(--text-primary); }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--action);
+    }
+
+    .code-block {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--action);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .stat-value.success { color: var(--success); }
+    .stat-value.error { color: var(--error); }
+    .stat-value.warning { color: var(--warning); }
+
+    .issue-status {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .status-closed { background: rgba(248, 113, 113, 0.15); color: var(--error); }
+    .status-open { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+    .status-updated { background: rgba(34, 211, 238, 0.15); color: var(--action); }
+    .status-linked { background: rgba(167, 139, 250, 0.15); color: var(--purple); }
+
+    .relationship-arrow {
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <nav class="top-nav">
+      <a class="back-btn" href="index.html">&larr; Back to Index</a>
+    </nav>
+
+    <header>
+      <div class="tag-row">
+        <span class="tag tag-decision">Decision</span>
+        <span class="tag tag-plan">Plan</span>
+        <span class="tag tag-research">Research</span>
+      </div>
+
+      <h1>Pipeline Architecture: Issue Cleanup &amp; Relationship Map</h1>
+      <p class="subtitle">Consolidated the pipeline architecture issue graph &mdash; closed duplicates, linked dependencies, and established #192 as the single source of truth for implementation.</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">2026-02-15</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Branch</span>
+          <span class="meta-value"><code>session/0215-pipeline-docs</code></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">PR</span>
+          <span class="meta-value"><a href="https://github.com/cmbays/print-4ink/pull/194">#194</a></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Umbrella Issue</span>
+          <span class="meta-value"><a href="https://github.com/cmbays/print-4ink/issues/192">#192</a></span>
+        </div>
+      </div>
+    </header>
+
+    <hr class="header-divider">
+
+    <!-- ========== SUMMARY ========== -->
+
+    <h2>What Happened</h2>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-value error">2</div>
+        <div class="stat-label">Issues Closed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">1</div>
+        <div class="stat-label">Issues Updated</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value success">4</div>
+        <div class="stat-label">Dependencies Linked</div>
+      </div>
+    </div>
+
+    <p>During the pipeline architecture design session, several issues were created at different points as the design evolved. By the end of the session, many of these overlapped with the comprehensive implementation checklist in <a href="https://github.com/cmbays/print-4ink/issues/192">#192</a>. This cleanup consolidates everything so #192 is the single entry point for pipeline architecture work.</p>
+
+    <h2>Issue Actions Taken</h2>
+
+    <!-- Closed issues -->
+    <div class="card">
+      <div class="card-label">
+        <span class="issue-status status-closed">Closed</span> &nbsp;
+        <a href="https://github.com/cmbays/print-4ink/issues/196">#196</a> &mdash; Rename pipeline stages to shorter, consistent slugs
+      </div>
+      <div class="card-desc">
+        <strong>Why closed:</strong> 100% superseded by #192 Stream A (Config). The stage slug table in #196 was also stale &mdash; it proposed <code>wrapup</code> (no hyphen) and still listed <code>polish</code> as a stage (it's a pipeline type). The finalized canonical slugs are: <code>research</code>, <code>interview</code>, <code>shape</code>, <code>breadboard</code>, <code>plan</code>, <code>build</code>, <code>review</code>, <code>wrap-up</code>.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">
+        <span class="issue-status status-closed">Closed</span> &nbsp;
+        <a href="https://github.com/cmbays/print-4ink/issues/202">#202</a> &mdash; Rename <code>vertical</code> &rarr; <code>pipeline</code> across project
+      </div>
+      <div class="card-desc">
+        <strong>Why closed:</strong> Superseded by #192 Streams A + B. The pipeline architecture goes further than a rename &mdash; it <strong>eliminates <code>verticals.json</code> entirely</strong>. Pipeline names are free text labels (not config-backed enums). The structured entities are Products and Tools. All audit locations listed in #202 are covered by #192's implementation streams.
+      </div>
+    </div>
+
+    <!-- Updated issue -->
+    <div class="card">
+      <div class="card-label">
+        <span class="issue-status status-updated">Updated</span> &nbsp;
+        <a href="https://github.com/cmbays/print-4ink/issues/192">#192</a> &mdash; Pipeline architecture redesign
+      </div>
+      <div class="card-desc">
+        <strong>What changed:</strong> Complete body rewrite with all 14 finalized decisions from the design session. Added entity model, pipeline model, canonical stages table, work command set, automation boundaries, and a structured implementation checklist organized by 6 streams (A through F). This is now the single source of truth.
+      </div>
+    </div>
+
+    <!-- Linked issues -->
+    <div class="card">
+      <div class="card-label">
+        <span class="issue-status status-linked">Linked</span> &nbsp;
+        <a href="https://github.com/cmbays/print-4ink/issues/201">#201</a> &mdash; Research agent and skills
+      </div>
+      <div class="card-desc">
+        <strong>Relationship:</strong> Stream F of #192. The <code>research</code> stage is first in <code>vertical</code> and <code>horizontal</code> pipeline types. Feature Strategist agent maps to this stage. Implementation should wait for Stream A (config) to land so skills reference canonical slugs.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">
+        <span class="issue-status status-linked">Linked</span> &nbsp;
+        <a href="https://github.com/cmbays/print-4ink/issues/214">#214</a> &mdash; Pipeline extensibility (cron, headless, interview queuing)
+      </div>
+      <div class="card-desc">
+        <strong>Relationship:</strong> Depends on #192. The <code>work define</code> / <code>work start</code> split was specifically designed to enable these features. Priority: backlog. Build after core pipeline is stable.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">
+        <span class="issue-status status-linked">Linked</span> &nbsp;
+        <a href="https://github.com/cmbays/print-4ink/issues/123">#123</a> &mdash; Build phase upgrade for Phase 2
+      </div>
+      <div class="card-desc">
+        <strong>Relationship:</strong> Complementary, not overlapping. #192 = pipeline <em>orchestration</em> (commands, stages, entity model). #123 = build stage <em>content</em> (backend agents, TDD, Supabase). #123 depends on #192 being implemented first.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ========== RELATIONSHIP MAP ========== -->
+
+    <h2>Issue Relationship Map</h2>
+
+    <p>The pipeline architecture issue graph after cleanup. #192 is the hub; everything else connects through it.</p>
+
+    <div class="code-block">#192 Pipeline Architecture Redesign (umbrella)
+  |
+  |-- Stream A: Config
+  |     Rename workflows.json -> pipeline-types.json
+  |     Update stages.json slugs
+  |     Eliminate verticals.json
+  |     (absorbed #196 and #202)
+  |
+  |-- Stream B: KB Schema
+  |     Update content.config.ts
+  |     Migrate ~60 frontmatter files
+  |
+  |-- Stream C: KB Pages
+  |     Update pipeline pages
+  |     Update filters and label functions
+  |
+  |-- Stream D: Work Orchestrator
+  |     work define / start / build / end
+  |     Stage gates, --auto mode
+  |     Pipeline state tracking
+  |
+  |-- Stream E: Skills Update
+  |     Update stage references in all skills
+  |     Update artifact output paths
+  |
+  |-- Stream F: Research Skills
+  |     #201 (standalone issue)
+  |     Depends on Stream A
+  |
+  +-- Related issues:
+        #214 Extensibility (backlog, depends on #192)
+        #123 Build phase upgrade (complementary, depends on #192)
+        #142 Agent memory (wrap-up integration)
+        #189 Structured DB (exploratory)
+        #193 Session naming (icebox)</div>
+
+    <h2>Closed Issues Summary</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Issue</th>
+          <th>Title</th>
+          <th>Reason</th>
+          <th>Absorbed By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/cmbays/print-4ink/issues/196">#196</a></td>
+          <td>Rename pipeline stages</td>
+          <td>Superseded &mdash; stale slug proposals</td>
+          <td>#192 Stream A</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/cmbays/print-4ink/issues/202">#202</a></td>
+          <td>Rename vertical &rarr; pipeline</td>
+          <td>Superseded &mdash; verticals eliminated entirely</td>
+          <td>#192 Streams A + B</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Open Dependencies</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Issue</th>
+          <th>Depends On</th>
+          <th>Relationship</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/cmbays/print-4ink/issues/201">#201</a></td>
+          <td>#192 Stream A</td>
+          <td>Stream F &mdash; research skills need canonical slugs</td>
+          <td>After Stream A</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/cmbays/print-4ink/issues/214">#214</a></td>
+          <td>#192 (all)</td>
+          <td>Extensibility &mdash; needs core pipeline working</td>
+          <td>Backlog</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/cmbays/print-4ink/issues/123">#123</a></td>
+          <td>#192 Stream D</td>
+          <td>Complementary &mdash; build stage content upgrade</td>
+          <td>After Stream D</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/cmbays/print-4ink/issues/142">#142</a></td>
+          <td>None</td>
+          <td>Related &mdash; agent memory used in wrap-up</td>
+          <td>Independent</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- ========== ARTIFACTS ========== -->
+
+    <h2>Session Artifacts</h2>
+
+    <div class="card">
+      <div class="card-label">Research Document (Comprehensive Rewrite)</div>
+      <div class="card-desc">
+        <code>docs/research/2026-02-15-pipeline-architecture-research.md</code><br>
+        14 key decisions, entity model, pipeline model, canonical stages, phase architecture, work commands, stage gates, config architecture, KB frontmatter evolution, implementation streams.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Memory Files Updated</div>
+      <div class="card-desc">
+        <code>memory/pipeline-architecture.md</code> &mdash; Full detailed decisions<br>
+        <code>memory/MEMORY.md</code> &mdash; Pipeline Architecture section updated
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">GitHub Issues</div>
+      <div class="card-desc">
+        <strong>Updated:</strong> <a href="https://github.com/cmbays/print-4ink/issues/192">#192</a> (complete body rewrite)<br>
+        <strong>Created:</strong> <a href="https://github.com/cmbays/print-4ink/issues/201">#201</a> (research skills), <a href="https://github.com/cmbays/print-4ink/issues/214">#214</a> (extensibility)<br>
+        <strong>Closed:</strong> <a href="https://github.com/cmbays/print-4ink/issues/196">#196</a>, <a href="https://github.com/cmbays/print-4ink/issues/202">#202</a> (superseded)
+      </div>
+    </div>
+
+    <h2>Key Principle</h2>
+
+    <div class="card">
+      <div class="card-desc" style="font-size: 15px; color: var(--text-primary); text-align: center; padding: 12px 0;">
+        <strong>#192 is the single entry point.</strong><br>
+        <span style="color: var(--text-secondary); font-size: 13px;">Everything pipeline-related either lives in #192's checklist, or is a separate issue with an explicit dependency comment linking back to #192.</span>
+      </div>
+    </div>
+
+    <footer>
+      Screen Print Pro &mdash; Pipeline Architecture Issue Cleanup &mdash; 2026-02-15
+    </footer>
+  </div>
+</body>
+</html>
