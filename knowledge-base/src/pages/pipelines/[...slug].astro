@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import WorkflowChain from '../../components/WorkflowChain.astro';
 import PageFooter from '../../components/PageFooter.astro';
 import BackLink from '../../components/BackLink.astro';
+import SessionResume from '../../components/SessionResume.astro';
 import { getCollection, render } from 'astro:content';
 import { tagColor, pipelineLabel, stageLabel, productLabel, toolLabel, statusColor, statusLabel, formatDate, labelFromSlug } from '../../lib/utils';
 
@@ -153,13 +154,7 @@ const dateStr = formatDate(date);
       </div>
     )}
 
-    <!-- Session resume -->
-    {sessionId && (
-      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 mb-6" data-pagefind-ignore>
-        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Resume Session</div>
-        <code class="font-mono text-xs text-action select-all">claude --resume {sessionId}</code>
-      </div>
-    )}
+    <SessionResume sessionId={sessionId} />
 
     <!-- PR link -->
     {pr && (
