@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
 import { formatCurrency } from "@/lib/helpers/money";
+import { dtfSheetTiers } from "@/lib/mock-data";
+import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 
@@ -30,14 +32,14 @@ export function DtfTabContent({
   lineItems,
   setLineItems,
   sheetCalculation,
-  // Wave 3/4 props — accepted but not yet wired
-  splitMode: _splitMode,
-  setSplitMode: _setSplitMode,
+  splitMode,
+  setSplitMode,
+  // Wave 4 props — accepted but not yet wired
   canvasLayout: _canvasLayout,
   activeSheetIndex: _activeSheetIndex,
   setActiveSheetIndex: _setActiveSheetIndex,
-  setSheetCalculation: _setSheetCalculation,
-  setCanvasLayout: _setCanvasLayout,
+  setSheetCalculation,
+  setCanvasLayout,
 }: DtfTabContentProps) {
   // N43 — addDtfLineItem
   const handleAddLineItem = useCallback(() => {
@@ -115,14 +117,16 @@ export function DtfTabContent({
         </div>
       )}
 
-      {/* Placeholder: Sheet Calculation (Wave 3) */}
-      <div className={cn(
-        "rounded-lg border border-dashed border-border bg-surface/50 p-6 text-center"
-      )}>
-        <p className="text-sm text-muted-foreground/60">
-          Sheet calculation — coming in Wave 3
-        </p>
-      </div>
+      {/* U82-U87 — Sheet Calculation Panel (Wave 3) */}
+      <SheetCalculationPanel
+        lineItems={lineItems}
+        sheetCalculation={sheetCalculation}
+        setSheetCalculation={setSheetCalculation}
+        splitMode={splitMode}
+        setSplitMode={setSplitMode}
+        setCanvasLayout={setCanvasLayout}
+        tiers={dtfSheetTiers}
+      />
 
       {/* Placeholder: Visual Canvas (Wave 4) */}
       <div className={cn(
