@@ -43,7 +43,7 @@ const healthStatus = hasCoreStages ? 'Active' : 'In Progress';
 const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
 ---
 
-<Layout title={label}>
+<Layout title={label} description={`${label} pipeline — session docs across all stages`}>
   <main class="max-w-[820px] mx-auto px-6 py-10">
     <BackLink href="/" label="Back to Index" />
 

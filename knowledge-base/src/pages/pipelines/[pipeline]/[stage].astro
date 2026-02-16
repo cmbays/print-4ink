@@ -47,7 +47,7 @@ const pipelineStages = pipelineStageSlugs.map((s) => ({
 }));
 ---
 
-<Layout title={`${pipelineLabel} — ${stageLabel}`}>
+<Layout title={`${pipelineLabel} — ${stageLabel}`} description={`${pipelineLabel} pipeline — ${stageLabel} stage documentation`}>
   <main class="max-w-[820px] mx-auto px-6 py-10">
     <BackLink href={`/pipelines/${pipeline}`} label={`Back to ${pipelineLabel}`} />
 
