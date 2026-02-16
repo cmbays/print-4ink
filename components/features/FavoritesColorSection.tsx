@@ -20,7 +20,7 @@ interface FavoritesColorSectionProps {
   badgeData?: Map<string, "inherited" | "added">;
 }
 
-function ColorSwatch({
+export function ColorSwatch({
   color,
   isFavorite,
   onClick,
