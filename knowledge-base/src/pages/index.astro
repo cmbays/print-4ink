@@ -4,8 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import DocCard from '../components/DocCard.astro';
 import PhaseFilter from '../components/PhaseFilter.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel } from '../lib/utils';
-import stagesConfig from '../../../config/stages.json';
+import { pipelineLabel, pipelineStages } from '../lib/utils';
 
 // Fetch all pipeline docs
 const allDocs = await getCollection('pipelines');
@@ -24,11 +23,6 @@ const sorted = allDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTim
 const pipelineLabels: Record<string, string> = Object.fromEntries(
   Object.keys(pipelineCounts).map((slug) => [slug, pipelineLabel(slug)])
 );
-
-// Pipeline stages in order (exclude non-pipeline stages like cooldown)
-const pipelineStages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => ({ slug: s.slug, label: s.label }));
 
 // Pre-compute which pipelines have which stages
 const pipelineStageMap: Record<string, string[]> = {};

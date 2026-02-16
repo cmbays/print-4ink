@@ -1,6 +1,5 @@
 ---
-import { pipelineLabel, normalizeStage } from '../lib/utils';
-import stagesConfig from '../../../config/stages.json';
+import { pipelineLabel, pipelineStageSlugs } from '../lib/utils';
 
 interface Props {
   pipeline: string;
@@ -12,11 +11,7 @@ interface Props {
 
 const { pipeline, totalDocs, stageBreakdown, latestDate, status } = Astro.props;
 
-const allStages = stagesConfig
-  .filter((s: { slug: string; label: string; pipeline?: boolean }) => s.pipeline !== false)
-  .map((s: { slug: string }) => s.slug);
-
-const coveredStages = allStages.filter((s: string) => (stageBreakdown[s] || 0) > 0);
+const coveredStages = pipelineStageSlugs.filter((s) => (stageBreakdown[s] || 0) > 0);
 const dateStr = latestDate.toISOString().split('T')[0];
 const label = pipelineLabel(pipeline);
 ---
@@ -41,12 +36,12 @@ const label = pipelineLabel(pipeline);
     <span class="opacity-40">&middot;</span>
     <span>Last active {dateStr}</span>
     <span class="opacity-40">&middot;</span>
-    <span>{coveredStages.length}/{allStages.length} stages</span>
+    <span>{coveredStages.length}/{pipelineStageSlugs.length} stages</span>
   </div>
 
   {/* Stage progress bar */}
   <div class="flex gap-1">
-    {allStages.map((stage) => {
+    {pipelineStageSlugs.map((stage) => {
       const hasDocs = (stageBreakdown[stage] || 0) > 0;
       return (
         <div

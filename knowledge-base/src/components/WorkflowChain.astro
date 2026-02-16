@@ -1,5 +1,5 @@
 ---
-import stagesConfig from '../../../config/stages.json';
+import { pipelineStageSlugs, pipelineStageLabelMap } from '../lib/utils';
 
 interface PipelineDoc {
   slug: string;
@@ -16,20 +16,10 @@ interface Props {
 
 const { currentSlug, pipeline, allPipelines } = Astro.props;
 
-const stageOrder = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => s.slug);
-
-const shortStageLabels: Record<string, string> = Object.fromEntries(
-  stagesConfig
-    .filter((s) => s.pipeline !== false)
-    .map((s) => [s.slug, s.label])
-);
-
 // Sort by stage order, then by date (filtering done by caller)
 const chainSessions = allPipelines.sort((a, b) => {
-    const stageA = stageOrder.indexOf(a.stage);
-    const stageB = stageOrder.indexOf(b.stage);
+    const stageA = pipelineStageSlugs.indexOf(a.stage);
+    const stageB = pipelineStageSlugs.indexOf(b.stage);
     if (stageA !== stageB) return stageA - stageB;
     return a.date.getTime() - b.date.getTime();
   });
@@ -46,7 +36,7 @@ function truncateTitle(title: string, maxLen: number = 24): string {
     <div class="flex items-center gap-1.5 min-w-max py-2">
       {chainSessions.map((session, i) => {
         const isCurrent = session.slug === currentSlug;
-        const stageLabel = shortStageLabels[session.stage] || session.stage;
+        const stageLabel = pipelineStageLabelMap[session.stage] || session.stage;
 
         return (
           <>

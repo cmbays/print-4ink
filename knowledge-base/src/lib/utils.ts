@@ -6,12 +6,27 @@ import toolsConfig from '../../../config/tools.json';
 // ── Stage slug normalization ─────────────────────────────────────
 
 // Old slugs → new canonical slugs
-const stageSlugMap: Record<string, string> = {
+export const stageSlugMap: Record<string, string> = {
   shaping: 'shape',
   breadboarding: 'breadboard',
   'implementation-planning': 'plan',
   learnings: 'wrap-up',
 };
+
+// ── Pipeline stage constants (config-driven) ─────────────────────
+
+/** Ordered pipeline stages (excludes non-pipeline stages like cooldown) */
+export const pipelineStages = stagesConfig
+  .filter((s: { slug: string; pipeline?: boolean }) => s.pipeline !== false)
+  .map((s: { slug: string; label: string }) => ({ slug: s.slug, label: s.label }));
+
+/** Pipeline stage slug → label map */
+export const pipelineStageLabelMap: Record<string, string> = Object.fromEntries(
+  pipelineStages.map((s) => [s.slug, s.label]),
+);
+
+/** Ordered pipeline stage slugs */
+export const pipelineStageSlugs: string[] = pipelineStages.map((s) => s.slug);
 
 /** Normalize a stage slug from old format to new canonical format */
 export function normalizeStage(slug: string): string {

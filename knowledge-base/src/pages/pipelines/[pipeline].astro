@@ -4,12 +4,7 @@ import Pipeline from '../../components/Pipeline.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel, normalizeStage } from '../../lib/utils';
-import stagesConfig from '../../../../config/stages.json';
-
-const allStages = stagesConfig
-  .filter((s: { slug: string; label: string; pipeline?: boolean }) => s.pipeline !== false)
-  .map((s: { slug: string }) => s.slug);
+import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -26,12 +21,12 @@ const sorted = pipelineDocs.sort((a, b) => b.data.date.getTime() - a.data.date.g
 
 // Compute stage breakdown (normalize old slugs → canonical before counting)
 const stageBreakdown: Record<string, number> = {};
-for (const stage of allStages) {
+for (const stage of pipelineStageSlugs) {
   stageBreakdown[stage] = pipelineDocs.filter((s) => normalizeStage(s.data.stage) === stage).length;
 }
 
 // Build pipeline stages
-const pipelineStages = allStages.map((stage) => ({
+const pipelineStages = pipelineStageSlugs.map((stage) => ({
   name: stage,
   slug: stage,
   count: stageBreakdown[stage] || 0,

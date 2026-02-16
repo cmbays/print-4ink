@@ -6,27 +6,15 @@ import tagsConfig from '../../config/tags.json';
 import productsConfig from '../../config/products.json';
 import toolsConfig from '../../config/tools.json';
 import pipelineTypesConfig from '../../config/pipeline-types.json';
+import { stageSlugMap, pipelineStageSlugs } from './lib/utils';
 
 // Derive enum tuples from canonical config files
 const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
 const products = productsConfig.map((p) => p.slug) as [string, ...string[]];
 const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]];
 const pipelineTypes = pipelineTypesConfig.map((w) => w.slug) as [string, ...string[]];
-
-// Stage slug mapping: old → new canonical (for backward compat with existing frontmatter)
-const stageSlugMap: Record<string, string> = {
-  shaping: 'shape',
-  breadboarding: 'breadboard',
-  'implementation-planning': 'plan',
-  learnings: 'wrap-up',
-};
-
-// Build union of all valid slugs (canonical + old aliases)
-const canonicalSlugs = stagesConfig
-  .filter((s: { slug: string; pipeline?: boolean }) => s.pipeline !== false)
-  .map((s: { slug: string }) => s.slug);
 const allValidStageSlugs = [
-  ...new Set([...canonicalSlugs, ...Object.keys(stageSlugMap)]),
+  ...new Set([...pipelineStageSlugs, ...Object.keys(stageSlugMap)]),
 ] as [string, ...string[]];
 
 // ── Pipelines (renamed from sessions) ─────────────────────────────
