@@ -1,0 +1,68 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+labels: ["type/bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly
+      placeholder: What did you observe?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+      placeholder: Describe the correct behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this?
+      placeholder: |
+        1. Go to ...
+        2. Click on ...
+        3. See error
+    validations:
+      required: true
+
+  - type: dropdown
+    id: product-tool
+    attributes:
+      label: Product/Tool
+      description: Which product or tool is affected?
+      options:
+        - Dashboard
+        - Quotes
+        - Customers
+        - Invoices
+        - Jobs
+        - Garments
+        - Screens
+        - Pricing
+        - Work Orchestrator
+        - Skills Framework
+        - Agent System
+        - Knowledge Base
+        - CI Pipeline
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical
+        - High
+        - Normal
+        - Low
+    validations:
+      required: false

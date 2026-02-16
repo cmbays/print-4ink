@@ -1,0 +1,55 @@
+name: Tracking Issue
+description: Track a multi-part effort with sub-issues
+labels: ["type/tooling"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What does completion look like?
+      placeholder: Describe the end state when all sub-issues are resolved
+    validations:
+      required: true
+
+  - type: textarea
+    id: sub-issues
+    attributes:
+      label: Sub-issues planned
+      description: List planned child issues (create them as sub-issues after this issue is opened)
+      placeholder: |
+        - Task 1: Description
+        - Task 2: Description
+        - Task 3: Description
+    validations:
+      required: false
+
+  - type: dropdown
+    id: product-tool
+    attributes:
+      label: Product/Tool
+      description: Which product or tool does this relate to?
+      options:
+        - Dashboard
+        - Quotes
+        - Customers
+        - Invoices
+        - Jobs
+        - Garments
+        - Screens
+        - Pricing
+        - Work Orchestrator
+        - Skills Framework
+        - Agent System
+        - Knowledge Base
+        - CI Pipeline
+    validations:
+      required: true
+
+  - type: textarea
+    id: milestone-context
+    attributes:
+      label: Milestone context
+      description: How does this relate to current milestones or deadlines?
+      placeholder: Part of D-Day milestone, needed before Feb 21 demo
+    validations:
+      required: false
