@@ -91,10 +91,10 @@ Entry points: (1) brand name on garment cards, (2) brand name in toolbar when fi
 
 ## Artifacts
 
-- **Shaping doc**: [`docs/shaping/colors/shaping.md`](https://github.com/cmbays/print-4ink/blob/session/0215-color-prefs/docs/shaping/colors/shaping.md)
-- **Frame**: [`docs/shaping/colors/frame.md`](https://github.com/cmbays/print-4ink/blob/session/0215-color-prefs/docs/shaping/colors/frame.md)
-- **Spike**: [`docs/shaping/colors/spike-brand-detail-view.md`](https://github.com/cmbays/print-4ink/blob/session/0215-color-prefs/docs/shaping/colors/spike-brand-detail-view.md)
-- **Design doc**: [`docs/plans/2026-02-15-color-preference-system-design.md`](https://github.com/cmbays/print-4ink/blob/session/0215-color-prefs/docs/plans/2026-02-15-color-preference-system-design.md)
+- **Shaping doc**: [`docs/shaping/colors/shaping.md`](https://github.com/cmbays/print-4ink/blob/main/docs/shaping/colors/shaping.md)
+- **Frame**: [`docs/shaping/colors/frame.md`](https://github.com/cmbays/print-4ink/blob/main/docs/shaping/colors/frame.md)
+- **Spike**: [`docs/shaping/colors/spike-brand-detail-view.md`](https://github.com/cmbays/print-4ink/blob/main/docs/shaping/colors/spike-brand-detail-view.md)
+- **Design doc**: [`docs/plans/2026-02-15-color-preference-system-design.md`](https://github.com/cmbays/print-4ink/blob/main/docs/plans/2026-02-15-color-preference-system-design.md)
 
 ## Pipeline
 
