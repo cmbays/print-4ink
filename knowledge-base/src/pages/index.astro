@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import DocCard from '../components/DocCard.astro';
 import PhaseFilter from '../components/PhaseFilter.astro';
 import { getCollection } from 'astro:content';
-import verticalsConfig from '../../../config/verticals.json';
+import { pipelineLabel } from '../lib/utils';
 import stagesConfig from '../../../config/stages.json';
 
 // Fetch all pipeline docs
@@ -13,16 +13,16 @@ const allDocs = await getCollection('pipelines');
 // Compute pipeline counts for sidebar
 const pipelineCounts: Record<string, number> = {};
 for (const s of allDocs) {
-  const v = s.data.pipeline;
+  const v = s.data.pipelineName;
   pipelineCounts[v] = (pipelineCounts[v] || 0) + 1;
 }
 
 // Sort by date descending
 const sorted = allDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// Pipeline display names (from canonical config)
+// Pipeline display names (derived from content, not config)
 const pipelineLabels: Record<string, string> = Object.fromEntries(
-  verticalsConfig.map((v) => [v.slug, v.label])
+  Object.keys(pipelineCounts).map((slug) => [slug, pipelineLabel(slug)])
 );
 
 // Pipeline stages in order (exclude non-pipeline stages like cooldown)
@@ -33,11 +33,11 @@ const pipelineStages = stagesConfig
 // Pre-compute which pipelines have which stages
 const pipelineStageMap: Record<string, string[]> = {};
 for (const s of allDocs) {
-  if (!pipelineStageMap[s.data.pipeline]) {
-    pipelineStageMap[s.data.pipeline] = [];
+  if (!pipelineStageMap[s.data.pipelineName]) {
+    pipelineStageMap[s.data.pipelineName] = [];
   }
-  if (!pipelineStageMap[s.data.pipeline].includes(s.data.stage)) {
-    pipelineStageMap[s.data.pipeline].push(s.data.stage);
+  if (!pipelineStageMap[s.data.pipelineName].includes(s.data.stage)) {
+    pipelineStageMap[s.data.pipelineName].push(s.data.stage);
   }
 }
 ---
@@ -115,7 +115,7 @@ for (const s of allDocs) {
         {sorted.map((doc) => (
           <div
             class="doc-card-wrapper"
-            data-pipeline={doc.data.pipeline}
+            data-pipeline={doc.data.pipelineName}
             data-phase={doc.data.phase}
             data-stage={doc.data.stage}
             data-status={doc.data.status}
@@ -124,7 +124,7 @@ for (const s of allDocs) {
               title={doc.data.title}
               subtitle={doc.data.subtitle}
               date={doc.data.date}
-              pipeline={doc.data.pipeline}
+              pipeline={doc.data.pipelineName}
               pipelineType={doc.data.pipelineType}
               stage={doc.data.stage}
               tags={doc.data.tags}

@@ -16,7 +16,7 @@ const { doc } = Astro.props;
 
 const allDocs = await getCollection('pipelines');
 const workflowSessions = allDocs
-  .filter((s) => s.data.pipeline === doc.data.pipeline)
+  .filter((s) => s.data.pipelineName === doc.data.pipelineName)
   .map((s) => ({
     slug: s.id,
     title: s.data.title,
@@ -25,7 +25,7 @@ const workflowSessions = allDocs
   }));
 const { Content } = await render(doc);
 
-const { title, subtitle, date, phase, pipeline, pipelineType, products, tools, stage, tags, sessionId, branch, pr, status } = doc.data;
+const { title, subtitle, date, phase, pipelineName: pipeline, pipelineType, products, tools, stage, tags, sessionId, branch, pr, status } = doc.data;
 
 const dateStr = formatDate(date);
 ---
