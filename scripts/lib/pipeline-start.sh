@@ -18,6 +18,41 @@
 # Pre-build stages are all stages BEFORE "build" in the pipeline type's stage list.
 # These run in a single worktree with one Claude session.
 
+# ── Session ID Capture ───────────────────────────────────────────────────────
+
+# Poll for Claude session ID and update the session registry.
+# Claude writes session JSONL files to ~/.claude/projects/<encoded-path>/.
+# This runs in the background and watches for the file to appear after launch.
+# Usage: _poll_claude_session_id <registry_topic> <worktree_dir> [max_wait_secs] &
+_poll_claude_session_id() {
+    local topic="$1"
+    local worktree_dir="$2"
+    local max_wait="${3:-120}"
+
+    # Resolve to absolute path and compute Claude's project directory
+    # Claude encodes /Users/foo/bar as -Users-foo-bar
+    local abs_path
+    abs_path=$(cd "$worktree_dir" 2>/dev/null && pwd) || abs_path="$worktree_dir"
+    local projects_dir="${HOME}/.claude/projects/${abs_path//\//-}"
+
+    local elapsed=0
+    while (( elapsed < max_wait )); do
+        sleep 5
+        elapsed=$((elapsed + 5))
+        if [[ -d "$projects_dir" ]]; then
+            local newest
+            newest=$(command ls -t "$projects_dir"/*.jsonl 2>/dev/null | head -1)
+            if [[ -n "$newest" ]]; then
+                local session_id
+                session_id=$(basename "$newest" .jsonl)
+                _registry_update "$topic" "claudeSessionId" "$session_id" 2>/dev/null
+                return 0
+            fi
+        fi
+    done
+    return 1
+}
+
 # ── Start Command ─────────────────────────────────────────────────────────────
 
 _work_start() {
@@ -145,38 +180,45 @@ _work_start() {
         _registry_update "${p_name}-prebuild" "stage" "${prebuild_stages[0]}"
     fi
 
-    # Launch via Zellij (reuse _work_new's pattern)
-    if [[ -n "${ZELLIJ:-}" ]]; then
-        local LAYOUT_FILE
-        LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-start-XXXXXX")
-        {
-            echo "layout {"
-            _kdl_render_tab "${p_name}-prebuild" "$WORKTREE_DIR" "$context_prompt" "$claude_args"
-            echo "}"
-        } > "$LAYOUT_FILE"
+    # ── Session ID Capture (background) ──────────────────────────────
+    # Poll for Claude's JSONL file and write session ID to registry.
+    # Must start BEFORE Zellij launch so polling begins immediately.
+    _poll_claude_session_id "${p_name}-prebuild" "$WORKTREE_DIR" &
+    disown
 
-        zellij action new-tab --layout "$LAYOUT_FILE" --name "${p_name}-prebuild"
-        echo "  Zellij: tab '${p_name}-prebuild' opened"
-
-        (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
-        disown
-    else
-        echo "Launch the pre-build session:"
-        echo "  cd $WORKTREE_DIR"
-        echo "  claude${claude_args:+ $claude_args}"
-        echo ""
-        echo "Paste this prompt to start:"
-        echo "---"
-        echo "$context_prompt" | head -20
-        echo "..."
-        echo "---"
-    fi
+    # ── Generate Zellij Layout ────────────────────────────────────────
+    local LAYOUT_FILE
+    LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-start-XXXXXX")
+    {
+        echo "layout {"
+        _kdl_render_tab "${p_name}-prebuild" "$WORKTREE_DIR" "$context_prompt" "$claude_args"
+        echo "}"
+    } > "$LAYOUT_FILE"
 
     echo ""
     echo "=== Pre-build Started ==="
     echo "  Pipeline: $pipeline_id"
     echo "  Stages:   ${prebuild_stages[*]}"
     echo "  Monitor:  work status $pipeline_id"
+
+    # ── Launch via Zellij ─────────────────────────────────────────────
+    if [[ -n "${ZELLIJ:-}" ]]; then
+        # Inside Zellij — open a new tab in current session
+        zellij action new-tab --layout "$LAYOUT_FILE" --name "${p_name}-prebuild"
+        echo "  Zellij: tab '${p_name}-prebuild' opened"
+
+        (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
+        disown
+    else
+        # Outside Zellij — create a new Zellij session (blocks until session ends)
+        echo "  Launching Zellij session '${p_name}-prebuild'..."
+        echo ""
+
+        zellij --new-session-with-layout "$LAYOUT_FILE" --session "${p_name}-prebuild"
+
+        # Cleanup after Zellij session ends
+        rm -f "$LAYOUT_FILE" 2>/dev/null
+    fi
 }
 
 # ── Build Start Prompt ────────────────────────────────────────────────────────
