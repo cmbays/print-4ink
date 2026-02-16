@@ -1,4 +1,6 @@
 ---
+import { pipelineLabel } from '../lib/utils';
+
 interface Props {
   questionId: string;
   vertical: string;
@@ -10,17 +12,13 @@ interface Props {
 }
 
 const { questionId, vertical, status, questionText, context, answer, answeredDate } = Astro.props;
-
-function verticalLabel(v: string): string {
-  return v.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 ---
 
 <div class="bg-bg-elevated border border-border border-l-[3px] border-l-purple rounded-lg p-4 mb-3" data-question-id={questionId}>
   <div class="flex items-center justify-between mb-2">
     <span class="text-[11px] font-semibold uppercase tracking-wide text-purple">{questionId}</span>
     <div class="flex items-center gap-2">
-      <span class="text-[11px] font-medium uppercase tracking-wide text-text-muted">{verticalLabel(vertical)}</span>
+      <span class="text-[11px] font-medium uppercase tracking-wide text-text-muted">{pipelineLabel(vertical)}</span>
       {status === 'answered' ? (
         <span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded bg-success/12 text-success">
           Answered

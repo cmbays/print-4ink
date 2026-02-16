@@ -8,5 +8,6 @@
   { "slug": "polish", "label": "Polish" },
   { "slug": "review", "label": "Review" },
   { "slug": "learnings", "label": "Learnings" },
+  { "slug": "wrap-up", "label": "Wrap-up" },
   { "slug": "cooldown", "label": "Cooldown", "pipeline": false }
 ]

@@ -1,4 +1,6 @@
 ---
+import stagesConfig from '../../../config/stages.json';
+
 interface StageInfo {
   name: string;
   slug: string;
@@ -8,20 +10,16 @@ interface StageInfo {
 
 interface Props {
   stages: StageInfo[];
-  vertical: string;
+  pipeline: string;
 }
 
-const { stages, vertical } = Astro.props;
+const { stages, pipeline } = Astro.props;
 
-const shortLabels: Record<string, string> = {
-  research: 'Research',
-  interview: 'Interview',
-  breadboarding: 'Breadboard',
-  'implementation-planning': 'Impl Plan',
-  build: 'Build',
-  review: 'Review',
-  learnings: 'Learnings',
-};
+const shortLabels: Record<string, string> = Object.fromEntries(
+  stagesConfig
+    .filter((s) => s.pipeline !== false)
+    .map((s) => [s.slug, s.label])
+);
 ---
 
 <div class="w-full overflow-x-auto">
@@ -35,7 +33,7 @@ const shortLabels: Record<string, string> = {
         <div class="flex items-start flex-1">
           {/* Stage node */}
           <a
-            href={hasContent ? `/verticals/${vertical}/${stage.slug}` : undefined}
+            href={hasContent ? `/pipelines/${pipeline}/${stage.slug}` : undefined}
             class:list={[
               'flex flex-col items-center gap-1.5 relative z-10 group',
               hasContent ? 'cursor-pointer' : 'cursor-default',
