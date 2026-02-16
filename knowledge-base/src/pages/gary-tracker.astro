@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import GaryQuestion from '../components/GaryQuestion.astro';
+import PageFooter from '../components/PageFooter.astro';
+import BackLink from '../components/BackLink.astro';
 import { pipelineLabel } from '../lib/utils';
 
 // Read all pipeline markdown files and extract Gary questions from HTML blocks
@@ -74,10 +76,7 @@ const unansweredCount = totalQuestions - answeredCount;
 
 <Layout title="Gary Tracker" description="Questions for Gary across all sessions">
   <main class="max-w-[720px] mx-auto px-6 py-12">
-    <!-- Back link -->
-    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
-      <span>&larr;</span> Back to Index
-    </a>
+    <BackLink href="/" label="Back to Index" />
 
     <!-- Header -->
     <h1 class="text-2xl font-bold tracking-tight mb-2">Gary Tracker</h1>
@@ -132,11 +131,6 @@ const unansweredCount = totalQuestions - answeredCount;
       </div>
     )}
 
-    <!-- Footer -->
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">
-        Screen Print Pro &mdash; Gary Tracker
-      </p>
-    </footer>
+    <PageFooter label="Gary Tracker" />
   </main>
 </Layout>

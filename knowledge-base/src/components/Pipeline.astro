@@ -1,5 +1,5 @@
 ---
-import stagesConfig from '../../../config/stages.json';
+import { pipelineStageLabelMap } from '../lib/utils';
 
 interface StageInfo {
   name: string;
@@ -14,12 +14,6 @@ interface Props {
 }
 
 const { stages, pipeline } = Astro.props;
-
-const shortLabels: Record<string, string> = Object.fromEntries(
-  stagesConfig
-    .filter((s) => s.pipeline !== false)
-    .map((s) => [s.slug, s.label])
-);
 ---
 
 <div class="w-full overflow-x-auto">
@@ -27,7 +21,7 @@ const shortLabels: Record<string, string> = Object.fromEntries(
     {stages.map((stage, i) => {
       const hasContent = stage.count > 0;
       const isActive = stage.active;
-      const label = shortLabels[stage.slug] || stage.name;
+      const label = pipelineStageLabelMap[stage.slug] || stage.name;
 
       return (
         <div class="flex items-start flex-1">

@@ -1,25 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DecisionRecord from '../components/DecisionRecord.astro';
+import PageFooter from '../components/PageFooter.astro';
+import BackLink from '../components/BackLink.astro';
 import { getCollection } from 'astro:content';
+import { sortByDateDesc, pluralize } from '../lib/utils';
 
 const docs = await getCollection('pipelines');
 const decisions = docs
   .filter((s) => s.data.tags.includes('decision'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort(sortByDateDesc);
 ---
 
 <Layout title="Decision Log" description="Key decisions made across the Screen Print Pro project">
   <main class="max-w-[720px] mx-auto px-6 py-12">
-    <!-- Back link -->
-    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
-      <span>&larr;</span> Back to Index
-    </a>
+    <BackLink href="/" label="Back to Index" />
 
     <!-- Header -->
     <h1 class="text-2xl font-bold tracking-tight mb-2">Decision Log</h1>
     <p class="text-text-secondary text-sm mb-2">Key decisions made across the project</p>
-    <p class="text-text-muted text-xs mb-8">{decisions.length} decision{decisions.length !== 1 ? 's' : ''} recorded</p>
+    <p class="text-text-muted text-xs mb-8">{pluralize(decisions.length, 'decision')} recorded</p>
 
     <!-- Decision cards -->
     <div class="space-y-3">
@@ -40,11 +40,6 @@ const decisions = docs
       </div>
     )}
 
-    <!-- Footer -->
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">
-        Screen Print Pro &mdash; Decision Log
-      </p>
-    </footer>
+    <PageFooter label="Decision Log" />
   </main>
 </Layout>

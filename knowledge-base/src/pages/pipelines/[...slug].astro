@@ -1,6 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import WorkflowChain from '../../components/WorkflowChain.astro';
+import PageFooter from '../../components/PageFooter.astro';
+import BackLink from '../../components/BackLink.astro';
+import SessionResume from '../../components/SessionResume.astro';
 import { getCollection, render } from 'astro:content';
 import { tagColor, pipelineLabel, stageLabel, productLabel, toolLabel, statusColor, statusLabel, formatDate, labelFromSlug } from '../../lib/utils';
 
@@ -32,10 +35,7 @@ const dateStr = formatDate(date);
 
 <Layout title={title} description={subtitle}>
   <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
-    <!-- Back link -->
-    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
-      <span>&larr;</span> Back to Index
-    </a>
+    <BackLink href="/" label="Back to Index" />
 
     <!-- Tag pills -->
     <div class="flex items-center gap-2 mb-4">
@@ -154,13 +154,7 @@ const dateStr = formatDate(date);
       </div>
     )}
 
-    <!-- Session resume -->
-    {sessionId && (
-      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 mb-6" data-pagefind-ignore>
-        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Resume Session</div>
-        <code class="font-mono text-xs text-action select-all">claude --resume {sessionId}</code>
-      </div>
-    )}
+    <SessionResume sessionId={sessionId} />
 
     <!-- PR link -->
     {pr && (
@@ -184,11 +178,6 @@ const dateStr = formatDate(date);
       <Content />
     </div>
 
-    <!-- Footer -->
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">
-        Screen Print Pro &mdash; {title} &mdash; {dateStr}
-      </p>
-    </footer>
+    <PageFooter label={`${title} \u2014 ${dateStr}`} />
   </main>
 </Layout>

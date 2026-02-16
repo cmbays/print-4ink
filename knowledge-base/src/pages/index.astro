@@ -4,8 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import DocCard from '../components/DocCard.astro';
 import PhaseFilter from '../components/PhaseFilter.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel } from '../lib/utils';
-import stagesConfig from '../../../config/stages.json';
+import { pipelineLabel, pipelineStages, sortByDateDesc, pluralize } from '../lib/utils';
 
 // Fetch all pipeline docs
 const allDocs = await getCollection('pipelines');
@@ -18,17 +17,12 @@ for (const s of allDocs) {
 }
 
 // Sort by date descending
-const sorted = allDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sorted = allDocs.sort(sortByDateDesc);
 
 // Pipeline display names (derived from content, not config)
 const pipelineLabels: Record<string, string> = Object.fromEntries(
   Object.keys(pipelineCounts).map((slug) => [slug, pipelineLabel(slug)])
 );
-
-// Pipeline stages in order (exclude non-pipeline stages like cooldown)
-const pipelineStages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => ({ slug: s.slug, label: s.label }));
 
 // Pre-compute which pipelines have which stages
 const pipelineStageMap: Record<string, string[]> = {};
@@ -80,7 +74,7 @@ for (const s of allDocs) {
             All Pipelines
           </h1>
           <p id="page-subtitle" class="text-[12px] text-text-muted mt-0.5">
-            {sorted.length} pipeline docs
+            {pluralize(sorted.length, 'pipeline doc')}
           </p>
         </div>
         <PhaseFilter />

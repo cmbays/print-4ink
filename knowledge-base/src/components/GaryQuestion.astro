@@ -1,5 +1,6 @@
 ---
 import { pipelineLabel } from '../lib/utils';
+import Badge from './Badge.astro';
 
 interface Props {
   questionId: string;
@@ -20,13 +21,9 @@ const { questionId, vertical, status, questionText, context, answer, answeredDat
     <div class="flex items-center gap-2">
       <span class="text-[11px] font-medium uppercase tracking-wide text-text-muted">{pipelineLabel(vertical)}</span>
       {status === 'answered' ? (
-        <span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded bg-success/12 text-success">
-          Answered
-        </span>
+        <Badge colorClass="bg-success/12 text-success">Answered</Badge>
       ) : (
-        <span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded bg-warning/12 text-warning">
-          Unanswered
-        </span>
+        <Badge colorClass="bg-warning/12 text-warning">Unanswered</Badge>
       )}
     </div>
   </div>
