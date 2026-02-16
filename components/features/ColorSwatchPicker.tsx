@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -160,142 +159,138 @@ export function ColorSwatchPicker({
     const displayColors = colors.slice(0, maxCompactSwatches ?? 8);
     const remaining = colors.length - displayColors.length;
     return (
-      <TooltipProvider>
-        <div className="flex items-center gap-0.5">
-          {displayColors.map((color) => (
-            <Tooltip key={color.id}>
-              <TooltipTrigger asChild>
-                <div
-                  className="h-4 w-4 flex-shrink-0 rounded-sm"
-                  style={{ backgroundColor: color.hex }}
-                  aria-label={color.name}
-                />
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={4}>
-                {color.name}
-              </TooltipContent>
-            </Tooltip>
-          ))}
-          {remaining > 0 && (
-            <span className="ml-1 text-xs text-muted-foreground">
-              +{remaining}
-            </span>
-          )}
-        </div>
-      </TooltipProvider>
+      <div className="flex items-center gap-0.5">
+        {displayColors.map((color) => (
+          <Tooltip key={color.id}>
+            <TooltipTrigger asChild>
+              <div
+                className="h-4 w-4 flex-shrink-0 rounded-sm"
+                style={{ backgroundColor: color.hex }}
+                aria-label={color.name}
+              />
+            </TooltipTrigger>
+            <TooltipContent side="bottom" sideOffset={4}>
+              {color.name}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+        {remaining > 0 && (
+          <span className="ml-1 text-xs text-muted-foreground">
+            +{remaining}
+          </span>
+        )}
+      </div>
     );
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-2 rounded-md border border-border bg-elevated p-3">
-        {/* Search */}
-        <div className="relative">
-          <Search
-            size={16}
-            className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <Input
-            type="text"
-            placeholder="Search colors..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-8 pl-8 text-sm"
-            aria-label="Search colors"
-          />
-        </div>
+    <div className="flex flex-col gap-2 rounded-md border border-border bg-elevated p-3">
+      {/* Search */}
+      <div className="relative">
+        <Search
+          size={16}
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <Input
+          type="text"
+          placeholder="Search colors..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-8 pl-8 text-sm"
+          aria-label="Search colors"
+        />
+      </div>
 
-        <ScrollArea className="max-h-72">
-          {/* Favorites section */}
-          {favoriteColors.length > 0 && (
-            <div className="mb-3">
-              <p className="mb-1.5 flex items-center gap-1 text-xs font-medium text-muted-foreground">
-                <Star size={16} className="fill-current" aria-hidden="true" />
-                Favorites
-              </p>
-              <div
-                className="flex flex-wrap gap-0.5"
-                role="listbox"
-                aria-label="Favorite colors"
-              >
-                {favoriteColors.map((color) => (
-                  <Swatch
-                    key={`fav-${color.id}`}
-                    color={color}
-                    isSelected={
-                      multiSelect
-                        ? selectedColorIds.includes(color.id)
-                        : selectedColorId === color.id
-                    }
-                    isFavorite={true}
-                    onSelect={() =>
-                      multiSelect && onToggleColor
-                        ? onToggleColor(color.id)
-                        : onSelect(color.id)
-                    }
-                    onToggleFavorite={
-                      onToggleFavorite
-                        ? () => onToggleFavorite(color.id)
-                        : undefined
-                    }
-                    tabIndex={0}
-                  />
-                ))}
-              </div>
+      <ScrollArea className="max-h-72">
+        {/* Favorites section */}
+        {favoriteColors.length > 0 && (
+          <div className="mb-3">
+            <p className="mb-1.5 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+              <Star size={16} className="fill-current" aria-hidden="true" />
+              Favorites
+            </p>
+            <div
+              className="flex flex-wrap gap-0.5"
+              role="listbox"
+              aria-label="Favorite colors"
+            >
+              {favoriteColors.map((color) => (
+                <Swatch
+                  key={`fav-${color.id}`}
+                  color={color}
+                  isSelected={
+                    multiSelect
+                      ? selectedColorIds.includes(color.id)
+                      : selectedColorId === color.id
+                  }
+                  isFavorite={true}
+                  onSelect={() =>
+                    multiSelect && onToggleColor
+                      ? onToggleColor(color.id)
+                      : onSelect(color.id)
+                  }
+                  onToggleFavorite={
+                    onToggleFavorite
+                      ? () => onToggleFavorite(color.id)
+                      : undefined
+                  }
+                  tabIndex={0}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* All Colors grid */}
+        <div>
+          <p className="mb-1.5 text-xs font-medium text-muted-foreground">
+            All Colors
+            {search.trim() && (
+              <span className="ml-1 text-muted-foreground/60">
+                ({filtered.length})
+              </span>
+            )}
+          </p>
+          {filtered.length === 0 ? (
+            <p className="py-4 text-center text-sm text-muted-foreground">
+              No colors match &ldquo;{search}&rdquo;
+            </p>
+          ) : (
+            <div
+              ref={gridRef}
+              className="flex flex-wrap gap-0.5"
+              role="listbox"
+              aria-label="All colors"
+              onKeyDown={handleKeyDown}
+            >
+              {filtered.map((color, i) => (
+                <Swatch
+                  key={color.id}
+                  color={color}
+                  isSelected={
+                    multiSelect
+                      ? selectedColorIds.includes(color.id)
+                      : selectedColorId === color.id
+                  }
+                  isFavorite={favorites.includes(color.id)}
+                  onSelect={() =>
+                    multiSelect && onToggleColor
+                      ? onToggleColor(color.id)
+                      : onSelect(color.id)
+                  }
+                  onToggleFavorite={
+                    onToggleFavorite
+                      ? () => onToggleFavorite(color.id)
+                      : undefined
+                  }
+                  tabIndex={i === 0 ? 0 : -1}
+                />
+              ))}
             </div>
           )}
-
-          {/* All Colors grid */}
-          <div>
-            <p className="mb-1.5 text-xs font-medium text-muted-foreground">
-              All Colors
-              {search.trim() && (
-                <span className="ml-1 text-muted-foreground/60">
-                  ({filtered.length})
-                </span>
-              )}
-            </p>
-            {filtered.length === 0 ? (
-              <p className="py-4 text-center text-sm text-muted-foreground">
-                No colors match &ldquo;{search}&rdquo;
-              </p>
-            ) : (
-              <div
-                ref={gridRef}
-                className="flex flex-wrap gap-0.5"
-                role="listbox"
-                aria-label="All colors"
-                onKeyDown={handleKeyDown}
-              >
-                {filtered.map((color, i) => (
-                  <Swatch
-                    key={color.id}
-                    color={color}
-                    isSelected={
-                      multiSelect
-                        ? selectedColorIds.includes(color.id)
-                        : selectedColorId === color.id
-                    }
-                    isFavorite={favorites.includes(color.id)}
-                    onSelect={() =>
-                      multiSelect && onToggleColor
-                        ? onToggleColor(color.id)
-                        : onSelect(color.id)
-                    }
-                    onToggleFavorite={
-                      onToggleFavorite
-                        ? () => onToggleFavorite(color.id)
-                        : undefined
-                    }
-                    tabIndex={i === 0 ? 0 : -1}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </div>
-    </TooltipProvider>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }

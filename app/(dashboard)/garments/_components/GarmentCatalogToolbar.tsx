@@ -20,7 +20,6 @@ import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ColorFilterGrid } from "./ColorFilterGrid";
@@ -328,42 +327,40 @@ export function GarmentCatalogToolbar({
 
             {/* Color swatch pills */}
             {selectedColors.length > 0 && (
-              <TooltipProvider skipDelayDuration={300}>
-                <div className="flex items-center gap-1">
-                  {selectedColors.map((color) => (
-                    <Tooltip key={color.id}>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => onToggleColor(color.id)}
-                          className="flex h-5 w-5 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0 items-center justify-center rounded-sm ring-1 ring-action transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          style={{ backgroundColor: color.hex }}
-                          aria-label={`Remove ${color.name} filter`}
-                        >
-                          <X
-                            size={10}
-                            style={{ color: color.swatchTextColor }}
-                            aria-hidden="true"
-                          />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={6}>
-                        {color.name}
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                  {showClearColors && (
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="text-muted-foreground hover:text-foreground"
-                      onClick={onClearColors}
-                    >
-                      Clear colors
-                    </Button>
-                  )}
-                </div>
-              </TooltipProvider>
+              <div className="flex items-center gap-1">
+                {selectedColors.map((color) => (
+                  <Tooltip key={color.id}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => onToggleColor(color.id)}
+                        className="flex h-5 w-5 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0 items-center justify-center rounded-sm ring-1 ring-action transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        style={{ backgroundColor: color.hex }}
+                        aria-label={`Remove ${color.name} filter`}
+                      >
+                        <X
+                          size={10}
+                          style={{ color: color.swatchTextColor }}
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" sideOffset={6}>
+                      {color.name}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+                {showClearColors && (
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={onClearColors}
+                  >
+                    Clear colors
+                  </Button>
+                )}
+              </div>
             )}
 
             {showClearAll && (

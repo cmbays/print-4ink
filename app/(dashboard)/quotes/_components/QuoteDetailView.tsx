@@ -18,7 +18,6 @@ import { BottomActionBar } from "@/components/layout/bottom-action-bar";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { Quote, QuoteLineItem } from "@/lib/schemas/quote";
@@ -137,7 +136,6 @@ export function QuoteDetailView({
       </div>
 
       {/* Line Items */}
-      <TooltipProvider delayDuration={200}>
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-foreground">Line Items</h3>
         {quote.lineItems.map((item, index) => {
@@ -236,7 +234,7 @@ export function QuoteDetailView({
                 <span>
                   ({formatCurrency(unitCostCombined)} x {totalQty} qty){itemSetupFee > 0 && <> + {formatCurrency(itemSetupFee)} setup</>} = <span className="font-medium text-foreground">{formatCurrency(item.lineTotal)}</span>
                 </span>
-                <Tooltip>
+                <Tooltip delayDuration={200}>
                   <TooltipTrigger asChild>
                     <span className="cursor-default text-muted-foreground hover:text-foreground transition-colors">
                       <Info size={14} />
@@ -262,7 +260,6 @@ export function QuoteDetailView({
           );
         })}
       </div>
-      </TooltipProvider>
 
       {/* Pricing */}
       <div className="rounded-lg border border-border bg-card p-6 space-y-2">

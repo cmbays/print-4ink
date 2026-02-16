@@ -28,7 +28,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
@@ -521,31 +520,29 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
           </button>
 
           {/* Archive toggle — icon only with tooltip */}
-          <TooltipProvider skipDelayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={toggleArchived}
-                  className={cn(
-                    "inline-flex items-center justify-center rounded-md p-2 transition-colors",
-                    "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
-                    showArchived
-                      ? "bg-error/10 text-error border border-error"
-                      : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
-                  )}
-                  aria-label={showArchived ? "Hide Archived" : "Show Archived"}
-                >
-                  <Archive className="size-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {showArchived ? "Hide Archived" : "Show Archived"}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={toggleArchived}
+                className={cn(
+                  "inline-flex items-center justify-center rounded-md p-2 transition-colors",
+                  "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                  showArchived
+                    ? "bg-error/10 text-error border border-error"
+                    : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
+                )}
+                aria-label={showArchived ? "Hide Archived" : "Show Archived"}
+              >
+                <Archive className="size-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {showArchived ? "Hide Archived" : "Show Archived"}
+            </TooltipContent>
+          </Tooltip>
 
           <Button
             onClick={() => setModalOpen(true)}

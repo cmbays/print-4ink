@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileShell } from "@/components/layout/mobile-shell";
+import { TooltipProviderWrapper } from "@/components/layout/tooltip-provider-wrapper";
 
 export default function DashboardLayout({
   children,
@@ -7,18 +8,20 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen">
-      {/* Desktop sidebar — hidden on mobile */}
-      <div className="hidden md:flex">
-        <Sidebar />
-      </div>
+    <TooltipProviderWrapper>
+      <div className="flex h-screen">
+        {/* Desktop sidebar — hidden on mobile */}
+        <div className="hidden md:flex">
+          <Sidebar />
+        </div>
 
-      {/* Mobile shell manages all client state (drawer, header, tab bar) */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <MobileShell>
-          {children}
-        </MobileShell>
+        {/* Mobile shell manages all client state (drawer, header, tab bar) */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <MobileShell>
+            {children}
+          </MobileShell>
+        </div>
       </div>
-    </div>
+    </TooltipProviderWrapper>
   );
 }

@@ -5,7 +5,6 @@ import { Check } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -111,24 +110,22 @@ export function ColorFilterGrid({
   const handleKeyDown = useGridKeyboardNav(gridRef, '[role="checkbox"]', 34);
 
   return (
-    <TooltipProvider skipDelayDuration={300}>
-      <div
-        ref={gridRef}
-        className="flex flex-wrap gap-0.5"
-        role="group"
-        aria-label="Filter by color"
-        onKeyDown={handleKeyDown}
-      >
-        {sortedColors.map((color, i) => (
-          <FilterSwatch
-            key={color.id}
-            color={color}
-            isSelected={selectedSet.has(color.id)}
-            onToggle={() => onToggleColor(color.id)}
-            tabIndex={i === 0 ? 0 : -1}
-          />
-        ))}
-      </div>
-    </TooltipProvider>
+    <div
+      ref={gridRef}
+      className="flex flex-wrap gap-0.5"
+      role="group"
+      aria-label="Filter by color"
+      onKeyDown={handleKeyDown}
+    >
+      {sortedColors.map((color, i) => (
+        <FilterSwatch
+          key={color.id}
+          color={color}
+          isSelected={selectedSet.has(color.id)}
+          onToggle={() => onToggleColor(color.id)}
+          tabIndex={i === 0 ? 0 : -1}
+        />
+      ))}
+    </div>
   );
 }

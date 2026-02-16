@@ -22,7 +22,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { WithTooltip } from "@/components/ui/with-tooltip";
 import { toast } from "sonner";
 import {
@@ -367,7 +366,6 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
           <div className="flex-1" />
 
           {/* ── Action buttons ─────────────────────────────────────── */}
-          <TooltipProvider skipDelayDuration={300}>
           {!isSandboxMode ? (
             <div className="hidden md:flex flex-wrap items-center gap-1.5">
               {/* Qty Tiers popover */}
@@ -590,7 +588,6 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               </WithTooltip>
             </div>
           )}
-          </TooltipProvider>
         </div>
       </div>
 
@@ -638,7 +635,6 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               <div className="flex-1" />
 
               {/* Simple / Custom toggle */}
-              <TooltipProvider skipDelayDuration={300}>
               <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5">
                 <WithTooltip tooltip="Formula-computed prices only">
                   <Button
@@ -744,7 +740,6 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                   </div>
                 </PopoverContent>
               </Popover>
-              </TooltipProvider>
             </div>
 
             {/* Row 2: preview selectors (garment + location) */}

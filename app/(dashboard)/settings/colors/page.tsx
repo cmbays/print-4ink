@@ -7,7 +7,6 @@ import {
   FavoritesColorSection,
   ColorSwatch,
 } from "@/components/features/FavoritesColorSection";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -339,45 +338,43 @@ function GroupedColorView({
   const favoriteIds = new Set(favorites.map((c) => c.id));
 
   return (
-    <TooltipProvider skipDelayDuration={300}>
-      <div className="flex flex-col gap-6">
-        {/* Favorites section at top */}
-        {favorites.length > 0 && (
-          <FavoritesColorSection
-            favorites={favorites}
-            allColors={[]}
-            onToggle={onToggle}
-          />
-        )}
+    <div className="flex flex-col gap-6">
+      {/* Favorites section at top */}
+      {favorites.length > 0 && (
+        <FavoritesColorSection
+          favorites={favorites}
+          allColors={[]}
+          onToggle={onToggle}
+        />
+      )}
 
-        {/* Grouped by family */}
-        {Array.from(groupedColors.entries()).map(([family, familyColors]) => {
-          const nonFavorites = familyColors.filter((c) => !favoriteIds.has(c.id));
-          if (nonFavorites.length === 0) return null;
+      {/* Grouped by family */}
+      {Array.from(groupedColors.entries()).map(([family, familyColors]) => {
+        const nonFavorites = familyColors.filter((c) => !favoriteIds.has(c.id));
+        if (nonFavorites.length === 0) return null;
 
-          return (
-            <div key={family}>
-              <p className="mb-2 text-xs font-medium text-muted-foreground">
-                {family} ({nonFavorites.length})
-              </p>
-              <div
-                className="flex flex-wrap gap-1"
-                role="group"
-                aria-label={`${family} colors`}
-              >
-                {nonFavorites.map((color) => (
-                  <ColorSwatch
-                    key={color.id}
-                    color={color}
-                    isFavorite={false}
-                    onClick={() => onToggle(color.id)}
-                  />
-                ))}
-              </div>
+        return (
+          <div key={family}>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">
+              {family} ({nonFavorites.length})
+            </p>
+            <div
+              className="flex flex-wrap gap-1"
+              role="group"
+              aria-label={`${family} colors`}
+            >
+              {nonFavorites.map((color) => (
+                <ColorSwatch
+                  key={color.id}
+                  color={color}
+                  isFavorite={false}
+                  onClick={() => onToggle(color.id)}
+                />
+              ))}
             </div>
-          );
-        })}
-      </div>
-    </TooltipProvider>
+          </div>
+        );
+      })}
+    </div>
   );
 }
