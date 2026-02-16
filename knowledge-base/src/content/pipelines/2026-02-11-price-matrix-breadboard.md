@@ -5,7 +5,7 @@ date: 2026-02-11
 phase: 1
 pipeline: price-matrix
 pipelineType: vertical
-products: [pricing]
+products: [pricing, quotes]
 tools: []
 stage: breadboarding
 tags: [plan, decision]

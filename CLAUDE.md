@@ -442,7 +442,7 @@ All frontmatter is validated by Zod at build time (`knowledge-base/src/content.c
 
 Embed in any session Markdown file:
 ```html
-<div class="gary-question" data-question-id="VERTICAL-q1" data-vertical="VERTICAL_SLUG" data-status="unanswered">
+<div class="gary-question" data-question-id="PIPELINE-q1" data-pipeline="PIPELINE_SLUG" data-status="unanswered">
   <p class="gary-question-text">Your question here?</p>
   <p class="gary-question-context">Why this matters</p>
   <div class="gary-answer" data-answered-date=""></div>

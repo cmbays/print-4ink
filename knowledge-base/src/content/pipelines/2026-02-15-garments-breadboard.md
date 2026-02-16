@@ -5,7 +5,7 @@ date: 2026-02-15
 phase: 1
 pipeline: garments
 pipelineType: vertical
-products: [garments]
+products: [garments, customers]
 tools: []
 stage: breadboarding
 tags: [plan]
@@ -83,13 +83,13 @@ Rather than deleting `garment-catalog-breadboard.md`, the new `garments-breadboa
 
 ## Open Questions
 
-<div class="gary-question" data-question-id="garments-q3" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q3" data-pipeline="garments" data-status="unanswered">
   <p class="gary-question-text">Which 5 garment styles do you use most?</p>
   <p class="gary-question-context">Prioritizes which SVG templates to create first and which S&S API SKUs to calibrate</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="garments-q6" data-vertical="garments" data-status="unanswered">
+<div class="gary-question" data-question-id="garments-q6" data-pipeline="garments" data-status="unanswered">
   <p class="gary-question-text">When a customer supplies their own garments, do you have a standard handling fee, or is it always negotiated per-job?</p>
   <p class="gary-question-context">Determines whether we need a configurable default handling fee or just per-line-item override</p>
   <div class="gary-answer" data-answered-date=""></div>
