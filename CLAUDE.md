@@ -299,10 +299,11 @@ feature/session branches ──PR──→ main ──merge──→ production
 ### Promotion Workflow
 
 ```bash
-# When ready to update the live app:
+# Option A: PR-based promotion (auditable, recommended)
 gh pr create --base production --head main --title "Release: <description>"
-# Or fast-forward directly:
-git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink checkout production && git -C ~/Github/print-4ink merge main && git -C ~/Github/print-4ink push origin production && git -C ~/Github/print-4ink checkout main
+
+# Option B: Fast-forward directly (no branch checkout needed)
+git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink push origin origin/main:production
 ```
 
 ### Rules
@@ -311,6 +312,7 @@ git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink checkout p
 - **Never merge feature branches to `production`** — only `main` flows into `production`
 - **`DEMO_ACCESS_CODE` env var** must be set in Vercel for both Preview and Production environments
 - **Vercel dashboard**: Production Branch setting must be `production` (manual config)
+- **GitHub branch protection**: `production` branch should require PRs (or at minimum prevent force pushes)
 
 ## What NOT to Do
 
@@ -323,6 +325,7 @@ git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink checkout p
 - No decorative gradients — color communicates meaning
 - No `className` string concatenation — use `cn()` from `@/lib/utils`
 - No pushing directly to main — always branch + PR
+- No pushing directly to `production` — only merge from `main` via PR or fast-forward
 
 ## Canonical Documents
 

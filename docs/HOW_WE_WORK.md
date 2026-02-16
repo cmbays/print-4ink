@@ -221,12 +221,9 @@ When `main` is validated and ready for release:
 # Option A: PR-based promotion (auditable, recommended)
 gh pr create --base production --head main --title "Release: <description>"
 
-# Option B: Direct fast-forward (quicker, for small updates)
+# Option B: Direct fast-forward (quicker, no branch checkout needed)
 git -C ~/Github/print-4ink fetch origin
-git -C ~/Github/print-4ink checkout production
-git -C ~/Github/print-4ink merge main
-git -C ~/Github/print-4ink push origin production
-git -C ~/Github/print-4ink checkout main
+git -C ~/Github/print-4ink push origin origin/main:production
 ```
 
 ### Deployment Math
