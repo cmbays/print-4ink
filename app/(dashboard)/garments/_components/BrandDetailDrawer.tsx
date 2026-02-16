@@ -56,9 +56,11 @@ export function BrandDetailDrawer({
   const [version, setVersion] = useState(0);
 
   // N24: getBrandGarments — filter catalog by brand name
+  // version forces recomputation after in-place mock data mutations (Phase 1 only)
   const brandGarments = useMemo(
     () => garmentCatalog.filter((g) => g.brand === brandName),
-    [brandName],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [brandName, version],
   );
 
   // Get or initialize brand preference
@@ -95,10 +97,6 @@ export function BrandDetailDrawer({
     [effectiveFavoriteIds],
   );
 
-  // All colors for the palette — catalogColors is the module-level array.
-  // Phase 1 reads from it directly; Phase 3 replaces with API fetch.
-  const allColors = catalogColors;
-
   // N20: getInheritanceChain for the disclosure section
   const inheritanceChain = useMemo(
     () => getInheritanceChain("brand", brandName),
@@ -134,14 +132,16 @@ export function BrandDetailDrawer({
           existing.explicitColorIds = [];
           existing.removedInheritedColorIds = [];
         } else {
-          // Create new brand preference entry
-          brandPreferences.push({
-            brandName,
-            inheritMode: "customize",
-            favoriteColorIds: [...currentEffective],
-            explicitColorIds: [],
-            removedInheritedColorIds: [],
-          });
+          // Create new brand preference entry (Zod-validated)
+          brandPreferences.push(
+            brandPreferenceSchema.parse({
+              brandName,
+              inheritMode: "customize",
+              favoriteColorIds: [...currentEffective],
+              explicitColorIds: [],
+              removedInheritedColorIds: [],
+            }),
+          );
         }
       } else if (mode === "inherit" && existing) {
         existing.inheritMode = "inherit";
@@ -270,7 +270,7 @@ export function BrandDetailDrawer({
                 // Inheriting: read-only view of global defaults
                 <FavoritesColorSection
                   favorites={favoriteColors}
-                  allColors={allColors}
+                  allColors={catalogColors}
                   onToggle={() => {}}
                   readOnly
                 />
@@ -278,7 +278,7 @@ export function BrandDetailDrawer({
                 // Customizing: editable with per-color badges (U25)
                 <FavoritesColorSection
                   favorites={favoriteColors}
-                  allColors={allColors}
+                  allColors={catalogColors}
                   onToggle={handleToggleFavorite}
                   showBadges
                   badgeData={badgeData}
