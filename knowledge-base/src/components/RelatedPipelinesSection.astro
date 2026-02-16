@@ -1,5 +1,6 @@
 ---
 import DocCard from './DocCard.astro';
+import EmptyDocsState from './EmptyDocsState.astro';
 
 interface Props {
   pipelines: Array<{
@@ -43,7 +44,7 @@ const { pipelines, emptyMessage } = Astro.props;
 )}
 
 {pipelines.length === 0 && (
-  <div class="text-center py-8 mb-8">
-    <p class="text-text-muted text-sm">{emptyMessage}</p>
+  <div class="mb-8">
+    <EmptyDocsState message={emptyMessage} />
   </div>
 )}

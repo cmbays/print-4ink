@@ -4,6 +4,7 @@ import Pipeline from '../../components/Pipeline.astro';
 import BackLink from '../../components/BackLink.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
+import EmptyDocsState from '../../components/EmptyDocsState.astro';
 import { getCollection } from 'astro:content';
 import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../lib/utils';
 
@@ -82,9 +83,7 @@ const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
         Pipeline Docs
       </h2>
       {sorted.length === 0 ? (
-        <p class="text-[14px] text-text-muted py-8 text-center">
-          No pipeline docs found for this pipeline.
-        </p>
+        <EmptyDocsState message="No pipeline docs found for this pipeline." />
       ) : (
         <ul class="space-y-3">
           {sorted.map((doc) => (
