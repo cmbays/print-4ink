@@ -862,18 +862,38 @@ _work_clean() {
 
     # 1. Worktree
     if [[ -n "$WORKTREE_DIR" && -d "$WORKTREE_DIR" ]]; then
-        if git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>/dev/null; then
+        # NB: local and assignment MUST be separate lines. In bash,
+        # 'local var=$(cmd)' clobbers $? with local's exit status (always 0).
+        local wt_err
+        wt_err=$(git -C "$PRINT4INK_REPO" worktree remove "$WORKTREE_DIR" --force 2>&1)
+        if [[ $? -eq 0 ]]; then
             echo "  Removed worktree: $WORKTREE_DIR"
         else
-            echo "  Warning: failed to remove worktree: $WORKTREE_DIR"
+            echo "  FAILED to remove worktree: $WORKTREE_DIR"
+            echo "$wt_err" | sed 's/^/    /'
+            echo "  Skipping branch deletion (branch is still checked out in worktree)."
+            echo "  Fix: close any processes using the worktree, then retry 'work clean $TOPIC'."
+            # Skip branch deletion — it will fail if the worktree still exists
+            BRANCH=""
         fi
     fi
 
-    # 2. Branch
+    # 2. Branch (skipped if worktree removal failed — branch can't be deleted while checked out)
     if [[ -n "$BRANCH" ]]; then
-        if git -C "$PRINT4INK_REPO" branch -d "$BRANCH" 2>/dev/null || \
-           git -C "$PRINT4INK_REPO" branch -D "$BRANCH" 2>/dev/null; then
+        # NB: local and assignment MUST be separate lines (see worktree comment above).
+        local br_err
+        br_err=$(git -C "$PRINT4INK_REPO" branch -d "$BRANCH" 2>&1)
+        if [[ $? -eq 0 ]]; then
             echo "  Deleted branch: $BRANCH"
+        else
+            # -d failed (unmerged?) — try -D
+            br_err=$(git -C "$PRINT4INK_REPO" branch -D "$BRANCH" 2>&1)
+            if [[ $? -eq 0 ]]; then
+                echo "  Deleted branch: $BRANCH (force)"
+            else
+                echo "  FAILED to delete branch: $BRANCH"
+                echo "$br_err" | sed 's/^/    /'
+            fi
         fi
     fi
 
