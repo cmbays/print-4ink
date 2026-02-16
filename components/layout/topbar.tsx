@@ -5,9 +5,10 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import type { BreadcrumbSegment } from "@/lib/helpers/breadcrumbs";
 
 interface TopbarProps {
-  breadcrumbs?: { label: string; href?: string }[];
+  breadcrumbs?: BreadcrumbSegment[];
 }
 
 export function Topbar({ breadcrumbs }: TopbarProps) {

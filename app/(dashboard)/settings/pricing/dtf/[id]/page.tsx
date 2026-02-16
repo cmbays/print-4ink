@@ -1,4 +1,5 @@
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { DTFEditorClient } from "./dtf-editor-client";
 
 export default async function DTFEditorPage({
@@ -11,10 +12,10 @@ export default async function DTFEditorPage({
   return (
     <>
       <Topbar
-        breadcrumbs={[
+        breadcrumbs={buildBreadcrumbs(
           { label: "Pricing", href: "/settings/pricing" },
           { label: "DTF Editor" },
-        ]}
+        )}
       />
       <DTFEditorClient templateId={id} />
     </>

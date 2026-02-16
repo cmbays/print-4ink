@@ -20,6 +20,13 @@ jobs:
 
       - run: npm ci
 
+      - name: Breadcrumb lint — no duplicate Dashboard
+        run: |
+          if grep -rn 'label:.*"Dashboard"' app/ --include='*.tsx'; then
+            echo "::error::Pages must not include 'Dashboard' in breadcrumbs — Topbar renders it automatically. Use buildBreadcrumbs() from lib/helpers/breadcrumbs.ts"
+            exit 1
+          fi
+
       - name: Type check
         run: npx tsc --noEmit
 

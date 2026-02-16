@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { invoices } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { InvoiceForm } from "@/app/(dashboard)/invoices/_components/InvoiceForm";
 
 export default async function EditInvoicePage({
@@ -18,10 +19,10 @@ export default async function EditInvoicePage({
     return (
       <>
         <Topbar
-          breadcrumbs={[
+          breadcrumbs={buildBreadcrumbs(
             { label: "Invoices", href: "/invoices" },
             { label: "Not Found" },
-          ]}
+          )}
         />
         <div className="flex flex-col items-center justify-center py-24">
           <div
@@ -54,11 +55,11 @@ export default async function EditInvoicePage({
   return (
     <>
       <Topbar
-        breadcrumbs={[
+        breadcrumbs={buildBreadcrumbs(
           { label: "Invoices", href: "/invoices" },
           { label: invoice.invoiceNumber, href: `/invoices/${id}` },
           { label: "Edit" },
-        ]}
+        )}
       />
       <div className="mx-auto max-w-4xl space-y-6 py-6">
         <InvoiceForm mode="edit" initialData={invoice} />

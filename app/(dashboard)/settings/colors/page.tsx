@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Palette, Search, LayoutGrid, List } from "lucide-react";
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import {
   FavoritesColorSection,
   ColorSwatch,
@@ -187,10 +188,10 @@ export default function SettingsColorsPage() {
   return (
     <>
       <Topbar
-        breadcrumbs={[
+        breadcrumbs={buildBreadcrumbs(
           { label: "Settings", href: "/settings/pricing" },
           { label: "Colors" },
-        ]}
+        )}
       />
 
       <div className="flex flex-col gap-6 p-6">
