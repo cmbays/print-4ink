@@ -4,8 +4,8 @@ description: "Every screen, route, navigation path, and user journey. The author
 category: canonical
 status: active
 phase: 1
-last_updated: 2026-02-15
-last_verified: 2026-02-15
+last_updated: 2026-02-16
+last_verified: 2026-02-16
 depends_on:
   - docs/PRD.md
   - docs/strategy/jobs-scope-definition.md
@@ -94,6 +94,7 @@ Active state: highlighted background when route matches (exact for `/`, prefix f
 | Pricing Hub | Dashboard > Settings > Pricing |
 | Screen Print Editor | Dashboard > Settings > Pricing > [Template Name] |
 | DTF Editor | Dashboard > Settings > Pricing > [Template Name] |
+| Color Settings | Dashboard > Settings > Colors |
 
 ### Cross-Links (navigation between related entities)
 
@@ -138,6 +139,17 @@ Customer Detail (/customers/[id])
 
 Screen Room (/screens)
   └── [click linked job]        → /jobs/[jobId]
+
+Garment Catalog (/garments)
+  ├── [click brand name on card] → Brand Detail Drawer (sheet overlay)
+  ├── [click brand name in toolbar] → Brand Detail Drawer (sheet overlay)
+  └── [click garment card]       → Garment Detail Drawer (sheet overlay)
+
+Color Settings (/settings/colors)
+  └── [remove global favorite]   → Removal Confirmation Dialog (if children exist)
+
+Customer Detail (/customers/[id])
+  └── [Preferences tab]          → Color/brand/garment favorites management (inline)
 ```
 
 ---
