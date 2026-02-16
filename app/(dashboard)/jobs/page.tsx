@@ -5,14 +5,8 @@ import Link from "next/link";
 import { Plus, LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 
 import { JobsDataTable } from "./_components/JobsDataTable";
 import { MoveLaneDialog } from "./_components/MoveLaneDialog";
@@ -195,21 +189,10 @@ function JobsListInner() {
 
 export default function JobsListPage() {
   return (
-    <div className="flex flex-col gap-4 p-6">
-      {/* Breadcrumb */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Jobs</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      {/* Header */}
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs({ label: "Jobs" })} />
+      <div className="flex flex-col gap-4">
+        {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-lg font-semibold text-foreground">Jobs</h1>
         <div className="flex items-center gap-2">
@@ -266,6 +249,7 @@ export default function JobsListPage() {
       >
         <JobsListInner />
       </Suspense>
-    </div>
+      </div>
+    </>
   );
 }

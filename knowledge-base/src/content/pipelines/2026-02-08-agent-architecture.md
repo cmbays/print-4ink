@@ -3,7 +3,7 @@ title: "Agent Architecture"
 subtitle: "5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows."
 date: 2026-02-08
 phase: 1
-pipeline: meta
+pipelineName: meta
 pipelineType: horizontal
 products: []
 tools: [knowledge-base]

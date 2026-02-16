@@ -3,11 +3,11 @@ title: "Mobile Optimization — Implementation Plan"
 subtitle: "25-task implementation plan across 4 sprints for the mobile optimization vertical"
 date: 2026-02-14
 phase: 1
-pipeline: mobile-optimization
+pipelineName: mobile-optimization
 pipelineType: horizontal
 products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
 tools: []
-stage: implementation-planning
+stage: plan
 tags: [plan, build]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0214-mobile-impl-plan"

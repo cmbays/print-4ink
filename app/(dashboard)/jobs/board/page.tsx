@@ -17,14 +17,8 @@ import {
 } from "@dnd-kit/core";
 import { MockupFilterProvider } from "@/components/features/mockup";
 import { Button } from "@/components/ui/button";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { CapacitySummaryBar } from "../_components/CapacitySummaryBar";
 import {
   BoardFilterBar,
@@ -522,27 +516,10 @@ function ProductionBoardInner() {
 
 export default function ProductionBoardPage() {
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-6">
-      {/* Breadcrumb — desktop only */}
-      <div className="hidden md:block">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/jobs/board">Jobs</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Board</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
-      {/* Header */}
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.jobsBoard, { label: "Board" })} />
+      <div className="flex flex-col gap-4">
+        {/* Header */}
       <div className="hidden items-center justify-between gap-4 md:flex">
         <h1 className="text-lg font-semibold text-foreground">
           Production Board
@@ -593,6 +570,7 @@ export default function ProductionBoardPage() {
       >
         <ProductionBoardInner />
       </Suspense>
-    </div>
+      </div>
+    </>
   );
 }

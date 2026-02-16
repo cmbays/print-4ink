@@ -13,6 +13,20 @@ const eslintConfig = defineConfig([
         argsIgnorePattern: "^_",
         destructuredArrayIgnorePattern: "^_",
       }],
+      // Pages must use <Topbar breadcrumbs={buildBreadcrumbs(...)}> — not raw Breadcrumb
+      "no-restricted-imports": ["error", {
+        paths: [{
+          name: "@/components/ui/breadcrumb",
+          message: "Use <Topbar breadcrumbs={buildBreadcrumbs(...)}> instead of raw <Breadcrumb>. See lib/helpers/breadcrumbs.ts",
+        }],
+      }],
+    },
+  },
+  // Topbar is the only file allowed to import from @/components/ui/breadcrumb
+  {
+    files: ["components/layout/topbar.tsx"],
+    rules: {
+      "no-restricted-imports": "off",
     },
   },
   // Override default ignores of eslint-config-next.

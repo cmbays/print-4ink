@@ -3,14 +3,8 @@ import { ArrowLeft } from "lucide-react";
 import { customers, quotes, jobs, invoices, artworks, customerNotes } from "@/lib/mock-data";
 import { money, round2, toNumber } from "@/lib/helpers/money";
 import { Button } from "@/components/ui/button";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { CustomerDetailHeader } from "./_components/CustomerDetailHeader";
 import { CustomerTabs } from "./_components/CustomerTabs";
 
@@ -81,25 +75,10 @@ export default async function CustomerDetailPage({
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      {/* Breadcrumb */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/customers">Customers</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{customer.company}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      {/* Header */}
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.customers, { label: customer.company })} />
+      <div className="mx-auto max-w-5xl space-y-6">
+        {/* Header */}
       <CustomerDetailHeader customer={customer} stats={stats} />
 
       {/* Tabs */}
@@ -112,6 +91,7 @@ export default async function CustomerDetailPage({
         artworks={customerArtworks}
         notes={notes}
       />
-    </div>
+      </div>
+    </>
   );
 }

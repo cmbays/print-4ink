@@ -3,10 +3,12 @@ title: "Colors Vertical — Quality Review"
 subtitle: "Comprehensive code, design, UX, and documentation audit of the colors vertical (V1–V6)"
 date: 2026-02-16
 phase: 1
-vertical: colors
-verticalSecondary: []
+pipelineName: colors
+pipelineType: vertical
+products: []
+tools: []
 stage: review
-tags: [review, learning]
+tags: [learning]
 sessionId: "e8d6bad3-da1c-4f8d-a986-d9cd38fc94f9"
 branch: "session/0216-colors-review"
 status: complete
@@ -131,4 +133,4 @@ Key takeaway: the inheritance model works correctly under the hood, but the UI d
 - **GitHub Issues**: [#241](https://github.com/cmbays/print-4ink/issues/241) (closed), [#242](https://github.com/cmbays/print-4ink/issues/242) (closed), [#258](https://github.com/cmbays/print-4ink/issues/258) (open — 8 sub-issues)
 - **Files modified**: `docs/APP_FLOW.md`, `lib/helpers/__tests__/color-preferences.test.ts`, `lib/hooks/useDebounce.ts` (new), `lib/hooks/useGridKeyboardNav.ts` (new), `components/features/ColorSwatchPicker.tsx`, `app/(dashboard)/garments/_components/ColorFilterGrid.tsx`, `app/(dashboard)/settings/colors/page.tsx`
 - **Breadboard reference**: `docs/breadboards/color-preference-breadboard.md`
-- **Prior session**: [2026-02-15 Colors Foundation](../2026-02-15-colors-foundation)
+- **Prior session**: [2026-02-15 Colors Foundation](/pipelines/2026-02-15-colors-foundation)

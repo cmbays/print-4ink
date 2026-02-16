@@ -3,11 +3,11 @@ title: "Garment Mockup Engine — Breadboard"
 subtitle: "Affordance mapping for the SVG mockup composition engine before implementation"
 date: 2026-02-14
 phase: 1
-pipeline: garments
+pipelineName: garments
 pipelineType: vertical
 products: [garments]
 tools: []
-stage: breadboarding
+stage: breadboard
 tags: [plan, decision]
 sessionId: "fdf6daba-01b3-4d39-81c8-9c5a44f2b0e6"
 branch: "session/0214-mockup-design"

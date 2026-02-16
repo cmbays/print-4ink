@@ -3,7 +3,7 @@ title: "Vercel Setup with Access Code Protection"
 subtitle: "4Ink demo deployment infrastructure"
 date: 2026-02-08
 phase: 1
-pipeline: meta
+pipelineName: meta
 pipelineType: horizontal
 products: []
 tools: [knowledge-base]

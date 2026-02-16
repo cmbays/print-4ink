@@ -6,51 +6,35 @@ import tagsConfig from '../../config/tags.json';
 import productsConfig from '../../config/products.json';
 import toolsConfig from '../../config/tools.json';
 import pipelineTypesConfig from '../../config/pipeline-types.json';
-import { stageSlugMap, pipelineStageSlugs } from './lib/utils';
+import { pipelineStageSlugs } from './lib/utils';
 
 // Derive enum tuples from canonical config files
 const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
 const products = productsConfig.map((p) => p.slug) as [string, ...string[]];
 const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]];
 const pipelineTypes = pipelineTypesConfig.map((w) => w.slug) as [string, ...string[]];
-const allValidStageSlugs = [
-  ...new Set([...pipelineStageSlugs, ...Object.keys(stageSlugMap)]),
-] as [string, ...string[]];
+const stageSlugs = pipelineStageSlugs as [string, ...string[]];
 
-// ── Pipelines (renamed from sessions) ─────────────────────────────
-// Backward-compat: z.preprocess renames old `pipeline` key to `pipelineName`
-// so existing frontmatter files work without modification.
-// Stage accepts both old slugs (shaping, breadboarding, implementation-planning,
-// learnings) and new canonical slugs (shape, breadboard, plan, wrap-up).
-// Display components normalize old → new via normalizeStage() in lib/utils.ts.
+// ── Pipelines ─────────────────────────────────────────────────────
 const pipelines = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pipelines' }),
-  schema: z.preprocess(
-    (data) => {
-      if (data && typeof data === 'object' && 'pipeline' in data && !('pipelineName' in data)) {
-        const { pipeline, ...rest } = data as Record<string, unknown>;
-        return { ...rest, pipelineName: pipeline };
-      }
-      return data;
-    },
-    z.object({
-      title: z.string(),
-      subtitle: z.string(),
-      date: z.coerce.date(),
-      phase: z.number().int().min(1).max(3),
-      pipelineName: z.string(),
-      pipelineId: z.string().optional(),
-      pipelineType: z.enum(pipelineTypes),
-      products: z.array(z.enum(products)).optional().default([]),
-      tools: z.array(z.enum(tools)).optional().default([]),
-      stage: z.enum(allValidStageSlugs),
-      tags: z.array(z.enum(tags)),
-      sessionId: z.string().optional(),
-      branch: z.string().optional(),
-      pr: z.string().optional(),
-      status: z.enum(['complete', 'in-progress', 'superseded']).default('complete'),
-    }),
-  ),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    date: z.coerce.date(),
+    phase: z.number().int().min(1).max(3),
+    pipelineName: z.string(),
+    pipelineId: z.string().optional(),
+    pipelineType: z.enum(pipelineTypes),
+    products: z.array(z.enum(products)).optional().default([]),
+    tools: z.array(z.enum(tools)).optional().default([]),
+    stage: z.enum(stageSlugs),
+    tags: z.array(z.enum(tags)),
+    sessionId: z.string().optional(),
+    branch: z.string().optional(),
+    pr: z.string().optional(),
+    status: z.enum(['complete', 'in-progress', 'superseded']).default('complete'),
+  }),
 });
 
 // ── Products ──────────────────────────────────────────────────────
@@ -80,8 +64,7 @@ const toolDocs = defineCollection({
 });
 
 // ── Strategy ──────────────────────────────────────────────────────
-// Backward-compat: pipelinesCompleted/Launched changed from z.enum(verticals) to z.string()
-// since pipeline names are now free text (not config-backed enums).
+// Pipeline names are free text (not config-backed enums).
 const strategy = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/strategy' }),
   schema: z.object({

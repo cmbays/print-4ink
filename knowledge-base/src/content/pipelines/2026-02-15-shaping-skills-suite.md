@@ -3,7 +3,7 @@ title: "Shaping Skills Suite Adoption"
 subtitle: "Full rjs/shaping-skills methodology adapted for Screen Print Pro pipeline"
 date: 2026-02-15
 phase: 2
-pipeline: devx
+pipelineName: devx
 pipelineType: horizontal
 products: []
 tools: [skills-framework]

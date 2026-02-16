@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -204,10 +205,10 @@ export default function PricingHubPage() {
   return (
     <>
       <Topbar
-        breadcrumbs={[
-          { label: "Settings", href: "/settings/pricing" },
+        breadcrumbs={buildBreadcrumbs(
+          CRUMBS.settings,
           { label: "Pricing" },
-        ]}
+        )}
       />
 
       <div className="flex flex-col gap-6 p-6">

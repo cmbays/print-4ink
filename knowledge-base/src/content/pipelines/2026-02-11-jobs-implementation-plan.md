@@ -3,11 +3,11 @@ title: "Jobs Implementation Plan"
 subtitle: "5-wave build strategy with 35 files, dependency-ordered waves, parallel Wave 4, quality gates, and 8-risk register"
 date: 2026-02-11
 phase: 1
-pipeline: jobs
+pipelineName: jobs
 pipelineType: vertical
 products: [jobs]
 tools: []
-stage: implementation-planning
+stage: plan
 tags: [plan]
 sessionId: "6df58e54-e1a6-4bef-ae1d-549e6e72ebf7"
 branch: "session/0211-jobs-vertical"

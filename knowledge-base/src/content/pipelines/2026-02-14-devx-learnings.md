@@ -3,11 +3,11 @@ title: "DevX Vertical — Learnings"
 subtitle: "Cross-cutting patterns and insights from building the developer experience workflow tooling"
 date: 2026-02-14
 phase: 1
-pipeline: devx
+pipelineName: devx
 pipelineType: horizontal
 products: []
 tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]
-stage: learnings
+stage: wrap-up
 tags: [learning, decision]
 sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"
 branch: "session/0214-devx-build-w5"

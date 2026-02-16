@@ -3,7 +3,7 @@ title: "Customer Management Quality Gate"
 subtitle: "Comprehensive 5-subagent audit of Customer List + Customer Detail pages. 10 fixes across 11 files."
 date: 2026-02-10
 phase: 1
-pipeline: customer-management
+pipelineName: customer-management
 pipelineType: vertical
 products: [customers, quotes, jobs]
 tools: []
