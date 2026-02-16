@@ -1,0 +1,31 @@
+# PR Auto-Labeler Configuration
+# Maps changed file paths to vertical/* labels (Decision D7: vertical labels only)
+# Cross-cutting paths (lib/schemas/**, docs/**, components/ui/**) deliberately unmapped
+
+'vertical/quoting':
+  - changed-files:
+    - any-glob-to-any-file: 'app/(dashboard)/quotes/**'
+
+'vertical/jobs':
+  - changed-files:
+    - any-glob-to-any-file: 'app/(dashboard)/jobs/**'
+
+'vertical/garments':
+  - changed-files:
+    - any-glob-to-any-file: 'app/(dashboard)/garments/**'
+
+'vertical/price-matrix':
+  - changed-files:
+    - any-glob-to-any-file: 'app/(dashboard)/settings/pricing/**'
+
+'vertical/devx':
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'knowledge-base/**'
+      - 'scripts/**'
+      - 'config/**'
+      - '.github/**'
+
+'vertical/colors':
+  - changed-files:
+    - any-glob-to-any-file: 'app/(dashboard)/settings/colors/**'
