@@ -2,7 +2,7 @@
 title: "PM Overhaul — Breadboard"
 description: "Infrastructure affordances, wiring, and vertical slices for PM system: labels, project board, milestones, sub-issues, templates, Actions, work progress, grooming, PM doc"
 category: breadboard
-status: draft
+status: reflected
 phase: 1
 created: 2026-02-16
 last-verified: 2026-02-16
@@ -18,7 +18,7 @@ depends-on:
 
 **Input**: Shaping doc (Shape B selected — wave-parallel execution across 4 waves), frame (problem: no structural memory, no visual tracking, taxonomy drift), spike (issue types not viable on personal repos — keep `type/*` labels).
 
-**Status**: Draft
+**Status**: Reflected (BB reflection complete — 7 findings, all fixed)
 
 **Infrastructure note**: This is an infrastructure breadboard, not a UI feature. "Places" are system contexts (GitHub Labels, Project Board, etc.) — bounded contexts where distinct sets of operations are available. Affordances are primarily Code (N) — `gh` commands, file writes, GraphQL mutations, shell functions. UI affordances (U) are the visible outputs that humans and agents consume.
 
@@ -174,7 +174,7 @@ All Wave 2 parts execute in **parallel** after Wave 1 completes. Each part has s
 | # | Place | Component | Affordance | Control | Wires Out | Returns To |
 |---|-------|-----------|------------|---------|-----------|------------|
 | N18 | P5.2 | YAML | Write `.github/workflows/auto-project.yml` — triggers: `issues: [opened]`, `pull_request: [opened, ready_for_review]`. Uses `actions/add-to-project@v1.0.2` with project URL from N5 output. Uses `PROJECT_PAT` secret. | write | → S5 | — |
-| N19 | P5.2 | `gh secret set` | Set `PROJECT_PAT` repository secret — requires human to provide PAT value with `project` scope. Separate from `gh auth` token used for CLI. | call | → S5 | — |
+| N19 | P5.2 | `gh secret set` | Set `PROJECT_PAT` repository secret — requires human to provide PAT value with `project` scope. Separate from `gh auth` token used for CLI. **Note**: writes to GitHub repo settings, not git-tracked files. | call | → S5 (repo config) | — |
 
 **Note**: N19 requires human interaction (PAT value). Can be done as part of the board setup (B1.2) or deferred to here.
 
@@ -186,7 +186,7 @@ All Wave 2 parts execute in **parallel** after Wave 1 completes. Each part has s
 
 | # | Place | Component | Affordance | Control | Wires Out | Returns To |
 |---|-------|-----------|------------|---------|-----------|------------|
-| N20 | P5.2 | YAML | Write `.github/labeler.yml` — path-to-label mapping. Maps file paths to existing taxonomy labels: `app/(dashboard)/quotes/**` → `vertical/quoting`, `app/(dashboard)/jobs/**` → `vertical/jobs`, `app/(dashboard)/garments/**` → `vertical/garments`, `app/(dashboard)/settings/pricing/**` → `vertical/price-matrix`, `knowledge-base/**` → `vertical/devx`, `scripts/**` → `vertical/devx`, etc. Only maps to labels that exist in S1 after cleanup. | write | → S5 | — |
+| N20 | P5.2 | YAML | Write `.github/labeler.yml` — path-to-label mapping. Maps file paths to `vertical/*` labels only (per Decision D7): `app/(dashboard)/quotes/**` → `vertical/quoting`, `app/(dashboard)/jobs/**` → `vertical/jobs`, `app/(dashboard)/garments/**` → `vertical/garments`, `app/(dashboard)/settings/pricing/**` → `vertical/price-matrix`, `knowledge-base/**` → `vertical/devx`, `scripts/**` → `vertical/devx`, `config/**` → `vertical/devx`, `.github/**` → `vertical/devx`. Paths without clear vertical mapping (`lib/schemas/**`, `docs/**`, `components/ui/**`) are left unmapped — not every PR needs an auto-label. | write | → S5 | — |
 | N21 | P5.2 | YAML | Write `.github/workflows/labeler.yml` — triggers: `pull_request_target: [opened, synchronize]`. Uses `actions/labeler@v5` with `.github/labeler.yml` config. | write | → S5 | — |
 
 ### B2.4: Work Progress
@@ -199,9 +199,7 @@ All Wave 2 parts execute in **parallel** after Wave 1 completes. Each part has s
 |---|-------|-----------|------------|---------|-----------|------------|
 | N22 | P5.3 | `work.sh` | Add `progress` case to dispatcher — `progress) shift; _work_progress "$@" ;;` in the `work()` function's case statement | write | → S5 | — |
 | N23 | P5.3 | `work.sh` | Write `_work_progress()` function — queries GitHub API via `gh`: milestones with progress (`gh api milestones`), priority/now issues (`gh issue list -l priority/now`), priority/next issues, blocked items (sub-issue dependency queries), recent merged PRs (`gh pr list --state merged --limit 10`), stale issues. Assembles markdown sections. Writes output to `PROGRESS.md` in current working directory. | write | → S5, reads S2/S3/S4 | → U13 |
-| N24 | P5.5 | `.gitignore` | Add `PROGRESS.md` to `.gitignore` — converts from tracked hot file to gitignored compiled artifact (Interview Decision #4) | write | → S5 | — |
-
-**Note**: Existing `PROGRESS.md` on main must be `git rm --cached` when this merges (one-time migration from tracked to gitignored).
+| N24 | P5.5 | `.gitignore` + `git rm` | Untrack and gitignore PROGRESS.md — (1) `git rm --cached PROGRESS.md` to remove from git tracking without deleting the file, (2) add `PROGRESS.md` to `.gitignore`. Both steps on the feature branch so the PR carries the migration. Converts from tracked hot file to gitignored compiled artifact (Interview Decision #4). | write | → S5 | — |
 
 **UI Affordances (Outputs)**
 
@@ -234,7 +232,7 @@ Wave 3 is **serial**. Grooming requires human interaction. PM doc requires every
 | # | Place | Component | Affordance | Control | Wires Out | Returns To |
 |---|-------|-----------|------------|---------|-----------|------------|
 | N26 | P6 | `gh issue list` | Present issue to human — display title, current labels, milestone, last updated, body excerpt. Human decides per issue: keep (with label corrections), icebox (`priority/icebox`), or close. | call | reads S4 | — |
-| N27 | P6 | `gh issue edit` | Apply grooming decisions — add/remove labels to match taxonomy, set milestone, set correct priority | batch | → S4 | — |
+| N27 | P6 | `gh issue edit` + GraphQL | Apply grooming decisions — add/remove labels to match taxonomy, set milestone, set correct priority. For issues with known blockers, set blocked-by/blocking relationships via GraphQL (`addSubIssueDependency` or issue dependency API). | batch | → S4 | — |
 | N28 | P6 | `gh issue close` | Close stale/duplicate issues with reason comment. Known candidates: #85 (superseded by #216), #63 (likely resolved), #73 (duplicate of #15). | batch | → S4 | — |
 | N29 | P6 | `gh project item-add` | Add all surviving issues to project board (bulk add) | batch | → S2, → S4 | — |
 
@@ -245,6 +243,7 @@ Wave 3 is **serial**. Grooming requires human interaction. PM doc requires every
 4. Assigned to milestone or explicitly `priority/icebox`
 5. Added to project board
 6. Stale/duplicate closed with reason comment
+7. Known blocked-by/blocking relationships set (e.g., #144 blocked by #143) — enables R3 dependency visibility
 
 **Target**: ~40-45 clean open issues (from current 67).
 
@@ -334,6 +333,12 @@ flowchart TB
     B12 -->|"S2: board"| B31
     B13 -->|"S3: milestones"| B31
 
+    %% Wave 2 → Wave 3 dependencies
+    B21 -->|"S5: templates"| B32
+    B22 -->|"S5: auto-add"| B32
+    B23 -->|"S5: labeler"| B32
+    B24 -->|"S5: progress"| B32
+
     %% Wave 3 internal
     B31 -->|"S4: groomed state"| B32
 
@@ -410,12 +415,12 @@ flowchart TB
 | R2 | Visual tracking — board + milestones | N5-N7 (board), N8-N9 (milestone), U2-U6 | Yes |
 | R2.1 | User-owned project with fields and views | N4-N7, U2-U5 | Yes |
 | R2.2 | D-Day milestone with 3 assigned issues | N8-N9, U6 | Yes |
-| R3 | Dependency visibility — blocked items identifiable | N11 (sub-issues with blocked-by), N7 (board views), U7 | Yes |
+| R3 | Dependency visibility — blocked items identifiable | N11 (sub-issue hierarchy), N27 (set blocked-by during grooming), N7 (board views), N23 (progress queries blocked items), U7 | Yes — hierarchy via N11, dependencies set during grooming (N27 item 7), queryable via N23 |
 | R4 | Clean taxonomy — one mechanism per dimension | N1-N3 (label cleanup), U1 | Yes |
 | R4.1 | Fold 8 ad-hoc, remove 4 defaults | N2-N3 | Yes |
 | R4.2 | Issue type strategy decided | B0.1 spike (resolved: keep `type/*` labels) | Yes |
 | R5 | Canonical PM doc — lifecycle, taxonomy, dependencies, templates, agent conventions | N30-N31, U15 | Yes |
-| R6 | Automated sync — Tier 1 Actions | N18-N21 (auto-add + labeler) | Yes |
+| R6 | Automated sync — Tier 1 Actions | N18-N21 (auto-add + PR labeler), N12-N15 (template auto-labels via YAML `labels:` field) | Yes |
 | R7 | Progress generation — `work progress` produces PROGRESS.md | N22-N24, U13 | Yes |
 | R8 | Clean backlog — ~40-45 issues, all correctly labeled | N26-N29, U14 | Yes |
 
@@ -432,3 +437,47 @@ flowchart TB
 - [x] Slices defined with demo statements and parallelization markers
 - [x] Mermaid diagram matches dependency wiring narrative
 - [x] Parallelization windows explicitly marked per CLAUDE.md requirement
+
+### BB Reflection Quality Gate
+
+- [x] All user stories from requirements trace through wiring coherently
+- [x] No incoherent wiring (redundant/contradictory paths) — F3 fixed
+- [x] No missing paths (every requirement has a wiring trace) — F1/F2 fixed
+- [x] No diagram-only nodes (every diagram node has a table row)
+- [x] All affordances pass the naming test (one idiomatic verb)
+- [x] Every Wires Out target exists in the tables
+- [x] Every Returns To source has a corresponding Wires Out
+- [x] Tables and diagrams are consistent (tables win if conflict) — F7 fixed
+
+---
+
+## BB Reflection Log
+
+**Date**: 2026-02-16
+**Auditor**: Claude (breadboard-reflection skill)
+
+### Findings and Fixes
+
+| # | Finding | Severity | Fix Applied |
+|---|---------|----------|-------------|
+| F1 | **R3 scope coverage overclaim** — Scope table claimed N11 creates "sub-issues with blocked-by" but `addSubIssue` creates hierarchy (parent→child), not dependency (blocked-by/blocking). Interview Decision #11 distinguishes these as separate relationship types. | Medium | Corrected R3 scope row: N11 = hierarchy, N27 = dependency setting during grooming, N23 = queryable via progress. |
+| F2 | **Grooming checklist missing dependency setting** — 6-item checklist had no item for setting blocked-by/blocking relationships. Without this, R3 (dependency visibility) has infrastructure but no data. | Medium | Added checklist item 7: "Known blocked-by/blocking relationships set." Updated N27 to include GraphQL dependency API alongside label/milestone operations. |
+| F3 | **PR labeler maps to non-existent labels** — N20 referenced `schema`, `docs`, `config`, `ci` labels that won't exist after B1.1 cleanup. Decision D7 says "vertical/* labels only." Shaping doc B2.3 had already caught one case (`knowledge-base` → `vertical/devx`). | Medium | Restricted N20 to `vertical/*` mappings only. `config/**` and `.github/**` → `vertical/devx` (devx tooling). Cross-cutting paths (`lib/schemas/**`, `docs/**`, `components/ui/**`) left unmapped. |
+| F4 | **PROGRESS.md migration incomplete** — N24 added to .gitignore but didn't include `git rm --cached` to untrack the existing file. Without both steps on the feature branch, the file stays tracked after merge. | Low | Expanded N24 to two-step operation: (1) `git rm --cached PROGRESS.md`, (2) add to `.gitignore`. Both on feature branch so PR carries the migration. |
+| F5 | **N19 store target imprecise** — N19 (`gh secret set`) wired to S5 ("Git-tracked artifacts") but repo secrets are stored on GitHub servers, not in git. | Low | Added "repo config" qualifier to N19's Wires Out and note clarifying the distinction. |
+| F6 | **R6 scope coverage incomplete** — Scope table listed only N18-N21 (Actions) but template auto-labeling (N12-N15 via YAML `labels:` field) is also part of R6's "auto-label from templates" requirement. | Low | Added N12-N15 reference to R6 scope coverage row. |
+| F7 | **Mermaid diagram missing Wave 2 → B3.2 edge** — Dependency narrative table showed "B2.* → B3.2 (PM doc describes all infrastructure)" but the Mermaid diagram had no Wave 2 → B32 connections. | Low | Added 4 edges: B21/B22/B23/B24 → B32 via S5. |
+
+### User Story Traces (Post-Fix Verification)
+
+**R3 trace (dependency visibility)**: N11 creates sub-issue hierarchy → N27 sets blocked-by/blocking during grooming → N7 configures board views that surface blocked items → N23 queries blocked items for progress report → U7 shows navigable trees, U14 shows groomed backlog with dependencies.
+
+**R6 trace (automated sync)**: N12-N15 set auto-labels in YAML `labels:` field (template-level) → N18-N19 set up auto-add Action → N20-N21 set up PR auto-labeler. Three mechanisms, all covered.
+
+### Areas Verified (No Issues Found)
+
+1. **Infrastructure Places adaptation** — Each Place passes the adapted blocking test (distinct operational context with own command set). Subplaces P5.1-P5.5 correctly model directory-level boundaries. P6 (Grooming Session) correctly models the interactive context.
+2. **N19 positioning** — N19 is correctly grouped with N18 in B2.2. The note documents the alternative (could move to B1.2). Current placement is logical: both produce auto-add infrastructure.
+3. **`work progress` pre/post grooming** — N23 is a runtime tool that queries current state. Works correctly before grooming (shows messy state) and after (shows clean state). No sequencing issue.
+4. **Sub-issue migration count** — N10 uses "~23" with "may discover more" qualifier. Appropriate hedging for an approximate count. N10 lists known tracking issues as starting points, not exhaustive list.
+5. **Naming test** — All 31 code affordances pass. Each names a single step-level effect with one idiomatic verb. No bundled affordances or naming resistance detected.
