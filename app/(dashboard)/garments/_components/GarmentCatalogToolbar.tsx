@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Search, LayoutGrid, List, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +17,14 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ColorFilterGrid } from "./ColorFilterGrid";
+import { getColorById } from "@/lib/helpers/garment-helpers";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -39,7 +47,9 @@ const PRICE_STORAGE_KEY = "garment-show-prices";
 
 interface GarmentCatalogToolbarProps {
   brands: string[];
-  colorFamilies: string[];
+  selectedColorIds: string[];
+  onToggleColor: (colorId: string) => void;
+  onClearColors: () => void;
   garmentCount: number;
 }
 
@@ -49,7 +59,9 @@ interface GarmentCatalogToolbarProps {
 
 export function GarmentCatalogToolbar({
   brands,
-  colorFamilies,
+  selectedColorIds,
+  onToggleColor,
+  onClearColors,
   garmentCount,
 }: GarmentCatalogToolbarProps) {
   const searchParams = useSearchParams();
@@ -60,7 +72,6 @@ export function GarmentCatalogToolbar({
   const category = searchParams.get("category") ?? "all";
   const query = searchParams.get("q") ?? "";
   const brand = searchParams.get("brand") ?? "";
-  const colorFamily = searchParams.get("colorFamily") ?? "";
   const view = searchParams.get("view") ?? "grid";
 
   // --- Price toggle (localStorage) ---
@@ -95,10 +106,20 @@ export function GarmentCatalogToolbar({
   );
 
   const clearAll = useCallback(() => {
+    onClearColors();
     router.replace(pathname, { scroll: false });
-  }, [router, pathname]);
+  }, [router, pathname, onClearColors]);
 
-  // --- Active filters (for pills) ---
+  // --- Resolved color objects for pills ---
+  const selectedColors = useMemo(
+    () =>
+      selectedColorIds
+        .map((id) => getColorById(id))
+        .filter((c) => c != null),
+    [selectedColorIds]
+  );
+
+  // --- Active filters (for pills — excludes color swatches which get their own row) ---
   const activeFilters: { key: string; label: string; value: string }[] = [];
 
   if (category !== "all") {
@@ -115,13 +136,9 @@ export function GarmentCatalogToolbar({
   if (brand) {
     activeFilters.push({ key: "brand", label: brand, value: brand });
   }
-  if (colorFamily) {
-    activeFilters.push({
-      key: "colorFamily",
-      label: colorFamily,
-      value: colorFamily,
-    });
-  }
+
+  const hasAnyFilter =
+    activeFilters.length > 0 || selectedColorIds.length > 0;
 
   return (
     <div className="space-y-3">
@@ -145,7 +162,7 @@ export function GarmentCatalogToolbar({
         </Tabs>
       </div>
 
-      {/* Row 2: Search + Filters + View Toggle + Price Switch */}
+      {/* Row 2: Search + Brand + View Toggle + Price Switch */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center">
         {/* Search */}
         <div className="relative flex-1 md:max-w-xs">
@@ -189,33 +206,6 @@ export function GarmentCatalogToolbar({
             {brands.map((b) => (
               <SelectItem key={b} value={b}>
                 {b}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Color Family Select */}
-        <Select
-          value={colorFamily || "all"}
-          onValueChange={(v) =>
-            updateParam("colorFamily", v === "all" ? null : v)
-          }
-        >
-          <SelectTrigger
-            className={cn(
-              "h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-40",
-              "min-h-(--mobile-touch-target) md:min-h-0",
-              colorFamily && "border-action/40 text-action",
-            )}
-            aria-label="Filter by color family"
-          >
-            <SelectValue placeholder="Color Family" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Colors</SelectItem>
-            {colorFamilies.map((cf) => (
-              <SelectItem key={cf} value={cf}>
-                {cf}
               </SelectItem>
             ))}
           </SelectContent>
@@ -285,9 +275,15 @@ export function GarmentCatalogToolbar({
         </div>
       </div>
 
-      {/* Row 3: Active filter pills + result count */}
+      {/* Row 3: Color swatch filter grid */}
+      <ColorFilterGrid
+        selectedColorIds={selectedColorIds}
+        onToggleColor={onToggleColor}
+      />
+
+      {/* Row 4: Active filter pills + color pills + result count */}
       <div className="flex flex-wrap items-center gap-2">
-        {activeFilters.length > 0 && (
+        {hasAnyFilter && (
           <>
             {activeFilters.map((filter) => (
               <Badge
@@ -306,6 +302,45 @@ export function GarmentCatalogToolbar({
                 </button>
               </Badge>
             ))}
+
+            {/* Color swatch pills */}
+            {selectedColors.length > 0 && (
+              <TooltipProvider skipDelayDuration={300}>
+                <div className="flex items-center gap-1">
+                  {selectedColors.map((color) => (
+                    <Tooltip key={color.id}>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => onToggleColor(color.id)}
+                          className="flex h-5 w-5 items-center justify-center rounded-sm ring-1 ring-action transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          style={{ backgroundColor: color.hex }}
+                          aria-label={`Remove ${color.name} filter`}
+                        >
+                          <X
+                            size={10}
+                            style={{ color: color.swatchTextColor }}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" sideOffset={6}>
+                        {color.name}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={onClearColors}
+                  >
+                    Clear colors
+                  </Button>
+                </div>
+              </TooltipProvider>
+            )}
+
             <Button
               variant="ghost"
               size="xs"
@@ -321,7 +356,7 @@ export function GarmentCatalogToolbar({
         <span
           className={cn(
             "text-xs text-muted-foreground",
-            activeFilters.length > 0 && "ml-auto",
+            hasAnyFilter && "ml-auto",
           )}
         >
           {garmentCount} {garmentCount === 1 ? "garment" : "garments"}

@@ -1,32 +1,49 @@
 "use client";
 
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/helpers/money";
-import { colors as catalogColors } from "@/lib/mock-data";
+import { getColorById } from "@/lib/helpers/garment-helpers";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
 
 interface GarmentCardProps {
   garment: GarmentCatalog;
   showPrice: boolean;
+  favoriteColorIds: string[];
   onToggleFavorite: (garmentId: string) => void;
+  onBrandClick?: (brandName: string) => void;
   onClick: (garmentId: string) => void;
 }
 
 export function GarmentCard({
   garment,
   showPrice,
+  favoriteColorIds,
   onToggleFavorite,
+  onBrandClick,
   onClick,
 }: GarmentCardProps) {
-  // Get Color objects for garment's available colors
-  const garmentColors = garment.availableColors
-    .map((id) => catalogColors.find((c) => c.id === id))
-    .filter((c): c is Color => c != null);
+  // All Color objects for this garment's palette
+  const garmentColors = useMemo(
+    () =>
+      garment.availableColors
+        .map((id) => getColorById(id))
+        .filter((c): c is Color => c != null),
+    [garment.availableColors]
+  );
+
+  // Only favorite colors that this garment actually has
+  const favoriteSwatchColors = useMemo(() => {
+    const favSet = new Set(favoriteColorIds);
+    return garmentColors.filter((c) => favSet.has(c.id));
+  }, [garmentColors, favoriteColorIds]);
+
+  const totalColorCount = garmentColors.length;
 
   return (
     <div
@@ -54,7 +71,21 @@ export function GarmentCard({
 
       {/* Brand + SKU */}
       <p className="text-xs text-muted-foreground">
-        {garment.brand} · {garment.sku}
+        {onBrandClick ? (
+          <button
+            type="button"
+            className="hover:text-action hover:underline focus-visible:outline-none focus-visible:text-action"
+            onClick={(e) => {
+              e.stopPropagation();
+              onBrandClick(garment.brand);
+            }}
+          >
+            {garment.brand}
+          </button>
+        ) : (
+          garment.brand
+        )}
+        {" "}· {garment.sku}
       </p>
 
       {/* Name */}
@@ -62,13 +93,22 @@ export function GarmentCard({
         {garment.name}
       </p>
 
-      {/* Compact color swatches */}
-      <ColorSwatchPicker
-        colors={garmentColors}
-        onSelect={() => {}}
-        compact
-        maxCompactSwatches={8}
-      />
+      {/* Favorite color swatches + count badge */}
+      <div className="flex items-center gap-2">
+        {favoriteSwatchColors.length > 0 ? (
+          <ColorSwatchPicker
+            colors={favoriteSwatchColors}
+            onSelect={() => {}}
+            compact
+            maxCompactSwatches={6}
+          />
+        ) : (
+          <span className="text-xs text-muted-foreground">No favorites</span>
+        )}
+        <span className="ml-auto whitespace-nowrap text-xs text-muted-foreground">
+          {totalColorCount} {totalColorCount === 1 ? "color" : "colors"}
+        </span>
+      </div>
 
       {/* Bottom row: price + badges + favorite */}
       <div className="flex items-center justify-between gap-2 pt-1">

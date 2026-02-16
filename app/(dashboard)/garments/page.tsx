@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useSyncExternalStore, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Topbar } from "@/components/layout/topbar";
 import { GarmentCatalogToolbar } from "./_components/GarmentCatalogToolbar";
 import { GarmentCard } from "./_components/GarmentCard";
@@ -12,7 +12,7 @@ import {
   jobs,
   customers,
 } from "@/lib/mock-data";
-import { getColorById } from "@/lib/helpers/garment-helpers";
+import { resolveEffectiveFavorites } from "@/lib/helpers/color-preferences";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 
 // ---------------------------------------------------------------------------
@@ -21,13 +21,27 @@ import type { GarmentCatalog } from "@/lib/schemas/garment";
 
 function GarmentCatalogInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // URL state
   const category = searchParams.get("category") ?? "all";
   const searchQuery = searchParams.get("q") ?? "";
   const brand = searchParams.get("brand") ?? "";
-  const colorFamily = searchParams.get("colorFamily") ?? "";
+  const colorsParam = searchParams.get("colors") ?? "";
   const view = searchParams.get("view") ?? "grid";
+
+  // Parse color IDs from URL
+  const selectedColorIds = useMemo(
+    () => (colorsParam ? colorsParam.split(",").filter(Boolean) : []),
+    [colorsParam]
+  );
+
+  // Resolved global favorites for card display
+  const globalFavoriteColorIds = useMemo(
+    () => resolveEffectiveFavorites("global"),
+    []
+  );
 
   // Local state for mock data mutations
   const [catalog, setCatalog] = useState<GarmentCatalog[]>(initialCatalog);
@@ -57,8 +71,39 @@ function GarmentCatalogInner() {
   const selectedGarment =
     catalog.find((g) => g.id === selectedGarmentId) ?? null;
 
-  // Filter garments
+  // --- Color filter URL helpers ---
+  const updateColorsParam = useCallback(
+    (colorIds: string[]) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (colorIds.length === 0) {
+        params.delete("colors");
+      } else {
+        params.set("colors", colorIds.join(","));
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [searchParams, router, pathname]
+  );
+
+  const handleToggleColor = useCallback(
+    (colorId: string) => {
+      const next = selectedColorIds.includes(colorId)
+        ? selectedColorIds.filter((id) => id !== colorId)
+        : [...selectedColorIds, colorId];
+      updateColorsParam(next);
+    },
+    [selectedColorIds, updateColorsParam]
+  );
+
+  const handleClearColors = useCallback(() => {
+    updateColorsParam([]);
+  }, [updateColorsParam]);
+
+  // Filter garments (N23: getFilteredGarmentsByColors)
   const filteredGarments = useMemo(() => {
+    const colorFilterSet =
+      selectedColorIds.length > 0 ? new Set(selectedColorIds) : null;
+
     return catalog.filter((g) => {
       // Category filter
       if (category !== "all" && g.baseCategory !== category) return false;
@@ -76,35 +121,23 @@ function GarmentCatalogInner() {
       // Brand filter
       if (brand && g.brand !== brand) return false;
 
-      // Color family filter
-      if (colorFamily) {
-        const hasColorInFamily = g.availableColors.some((colorId) => {
-          const color = getColorById(colorId);
-          return color?.family === colorFamily;
-        });
-        if (!hasColorInFamily) return false;
+      // Color filter — garment has ANY matching colorId in its palette
+      if (colorFilterSet) {
+        const hasMatchingColor = g.availableColors.some((colorId) =>
+          colorFilterSet.has(colorId)
+        );
+        if (!hasMatchingColor) return false;
       }
 
       return true;
     });
-  }, [catalog, category, searchQuery, brand, colorFamily]);
+  }, [catalog, category, searchQuery, brand, selectedColorIds]);
 
-  // Extract unique brands and color families for filter dropdowns
+  // Extract unique brands for filter dropdown
   const brands = useMemo(
     () => [...new Set(catalog.map((g) => g.brand))].sort(),
     [catalog],
   );
-
-  const colorFamilies = useMemo(() => {
-    const families = new Set<string>();
-    catalog.forEach((g) => {
-      g.availableColors.forEach((colorId) => {
-        const color = getColorById(colorId);
-        if (color) families.add(color.family);
-      });
-    });
-    return [...families].sort();
-  }, [catalog]);
 
   // Linked jobs for drawer
   const linkedJobs = useMemo(() => {
@@ -144,7 +177,9 @@ function GarmentCatalogInner() {
     <>
       <GarmentCatalogToolbar
         brands={brands}
-        colorFamilies={colorFamilies}
+        selectedColorIds={selectedColorIds}
+        onToggleColor={handleToggleColor}
+        onClearColors={handleClearColors}
         garmentCount={filteredGarments.length}
       />
 
@@ -156,6 +191,7 @@ function GarmentCatalogInner() {
               key={garment.id}
               garment={garment}
               showPrice={showPrice}
+              favoriteColorIds={globalFavoriteColorIds}
               onToggleFavorite={handleToggleFavorite}
               onClick={setSelectedGarmentId}
             />
