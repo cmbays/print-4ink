@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import GaryQuestion from '../components/GaryQuestion.astro';
+import PageFooter from '../components/PageFooter.astro';
 import { pipelineLabel } from '../lib/utils';
 
 // Read all pipeline markdown files and extract Gary questions from HTML blocks
@@ -132,11 +133,6 @@ const unansweredCount = totalQuestions - answeredCount;
       </div>
     )}
 
-    <!-- Footer -->
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">
-        Screen Print Pro &mdash; Gary Tracker
-      </p>
-    </footer>
+    <PageFooter label="Gary Tracker" />
   </main>
 </Layout>

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageFooter from '../../components/PageFooter.astro';
 import { getCollection, render } from 'astro:content';
 import { tagColor, pipelineLabel, formatDate } from '../../lib/utils';
 
@@ -110,8 +111,6 @@ const dateStr = formatDate(date);
       <Content />
     </div>
 
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">Screen Print Pro &mdash; {title} &mdash; {dateStr}</p>
-    </footer>
+    <PageFooter label={`${title} \u2014 ${dateStr}`} />
   </main>
 </Layout>

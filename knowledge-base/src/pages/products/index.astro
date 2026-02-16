@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageFooter from '../../components/PageFooter.astro';
 import { getCollection } from 'astro:content';
 import { pluralize } from '../../lib/utils';
 import productsConfig from '../../../../config/products.json';
@@ -50,8 +51,6 @@ const productCards = productsConfig.map((p) => {
       ))}
     </div>
 
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">Screen Print Pro &mdash; Products</p>
-    </footer>
+    <PageFooter label="Products" />
   </main>
 </Layout>

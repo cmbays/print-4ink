@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DecisionRecord from '../components/DecisionRecord.astro';
+import PageFooter from '../components/PageFooter.astro';
 import { getCollection } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../lib/utils';
 
@@ -41,11 +42,6 @@ const decisions = docs
       </div>
     )}
 
-    <!-- Footer -->
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">
-        Screen Print Pro &mdash; Decision Log
-      </p>
-    </footer>
+    <PageFooter label="Decision Log" />
   </main>
 </Layout>
