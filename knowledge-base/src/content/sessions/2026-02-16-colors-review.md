@@ -107,11 +107,28 @@ Audited against three reference documents:
 
 5. **Conditional rendering for state reset** — Colors vertical correctly uses `{pendingRemoval && <RemovalConfirmationDialog />}` pattern per CLAUDE.md React 19 guidance. No `useEffect` state resets found.
 
+## Smoke Test Findings
+
+User walkthrough revealed 8 UX issues tracked under [#258 — Colors & Garments UX Refactor](https://github.com/cmbays/print-4ink/issues/258):
+
+| # | Issue | Severity |
+|---|-------|----------|
+| #259 | Inheritance toggle ("Use [Brand]" vs "Customize") unintuitive, destructive without warning | High |
+| #260 | No save/confirm for preference changes — auto-save invisible | High |
+| #261 | Label dishonesty — says "Use Bella Canvas" but resolves to global defaults | Medium |
+| #262 | Brand chips and garment cards not clickable on customer preferences | Medium |
+| #263 | No way to favorite brands in garment catalog | Medium |
+| #264 | Garment detail drawer doesn't scroll when content overflows | Medium |
+| #265 | Garment catalog is functionally a settings page — consider relocating | Low |
+| #255 | Enabled/disabled vs favorite states can conflict (4 boolean combos) | Medium |
+
+Key takeaway: the inheritance model works correctly under the hood, but the UI doesn't communicate it well. The toggle pattern, auto-save behavior, and label honesty need redesign before Gary demo.
+
 ## Artifacts
 
 - **Branch**: `session/0216-colors-review`
-- **PR**: Created from this session
-- **GitHub Issues**: [#241](https://github.com/cmbays/print-4ink/issues/241), [#242](https://github.com/cmbays/print-4ink/issues/242)
+- **PR**: [#243](https://github.com/cmbays/print-4ink/pull/243) (merged)
+- **GitHub Issues**: [#241](https://github.com/cmbays/print-4ink/issues/241) (closed), [#242](https://github.com/cmbays/print-4ink/issues/242) (closed), [#258](https://github.com/cmbays/print-4ink/issues/258) (open — 8 sub-issues)
 - **Files modified**: `docs/APP_FLOW.md`, `lib/helpers/__tests__/color-preferences.test.ts`, `lib/hooks/useDebounce.ts` (new), `lib/hooks/useGridKeyboardNav.ts` (new), `components/features/ColorSwatchPicker.tsx`, `app/(dashboard)/garments/_components/ColorFilterGrid.tsx`, `app/(dashboard)/settings/colors/page.tsx`
 - **Breadboard reference**: `docs/breadboards/color-preference-breadboard.md`
 - **Prior session**: [2026-02-15 Colors Foundation](../2026-02-15-colors-foundation)
