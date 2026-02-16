@@ -62,7 +62,7 @@ describe("optimizeCost", () => {
   it("calculates utilization percentage correctly", () => {
     // One design: 10 x 12 = 120 sq inches
     // Tier: 22 x 24 = 528 sq inches
-    // Utilization: (120 / 528) * 100 = 22.727272... → rounded to 22.73
+    // Utilization: (120 / 528) * 100 = 22.727... → Math.round → 23
     const sheet = makePackedSheet(
       [{ id: "d1-0", x: 1, y: 1, width: 10, height: 12, label: "Tiger" }],
       20
@@ -70,7 +70,7 @@ describe("optimizeCost", () => {
 
     const result = optimizeCost([sheet], MOCK_TIERS);
 
-    expect(result.sheets[0].utilization).toBeCloseTo(22.73, 2);
+    expect(result.sheets[0].utilization).toBe(23);
   });
 
   it("sums total cost across multiple sheets with big.js precision", () => {
