@@ -17,6 +17,7 @@
 PRINT4INK_REPO="$HOME/Github/print-4ink"
 PRINT4INK_ROOT="$PRINT4INK_REPO"
 PRINT4INK_WORKTREES="$HOME/Github/print-4ink-worktrees"
+PRINT4INK_GH_REPO="cmbays/print-4ink"  # GitHub owner/repo for gh CLI
 PRINT4INK_MAX_WORKTREES=15
 PRINT4INK_PORT_MIN=3001
 PRINT4INK_PORT_MAX=3015
@@ -36,26 +37,45 @@ fi
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-registry.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-registry.sh"
 # shellcheck source=lib/pipeline-entity.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-entity.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-entity.sh"
+# shellcheck source=lib/pipeline-gates.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-gates.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-gates.sh"
+# shellcheck source=lib/pipeline-define.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-define.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-define.sh"
+# shellcheck source=lib/pipeline-status.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-status.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-status.sh"
+# shellcheck source=lib/pipeline-start.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-start.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-start.sh"
+# shellcheck source=lib/pipeline-build.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-build.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-build.sh"
+# shellcheck source=lib/pipeline-end.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-end.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-end.sh"
+# shellcheck source=lib/pipeline-cooldown.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-cooldown.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-cooldown.sh"
 
 # ── Dispatcher ──────────────────────────────────────────────────────────────
 work() {
     case "${1:-}" in
-        # Phase commands (Wave 2 — stubs for now)
+        # Pipeline lifecycle commands
+        define)     shift; _work_define "$@" ;;
+        start)      shift; _work_start "$@" ;;
+        build)      shift; _work_build_dispatch "$@" ;;
+        end)        shift; _work_end "$@" ;;
+        cooldown)   shift; _work_cooldown "$@" ;;
+        status)     shift; _work_pipeline_status "$@" ;;
+
+        # Legacy phase commands (still functional for non-pipeline usage)
         research)   shift; _work_phase "research" "$@" ;;
         interview)  shift; _work_phase "interview" "$@" ;;
         breadboard) shift; _work_phase "breadboard" "$@" ;;
         plan)       shift; _work_phase "plan" "$@" ;;
-        build)      shift; _work_build "$@" ;;
         polish)     shift; _work_phase "polish" "$@" ;;
         review)     shift; _work_phase "review" "$@" ;;
         learnings)  shift; _work_phase "learnings" "$@" ;;
-        cooldown)   shift; _work_phase "cooldown" "$@" ;;
 
         # Session management
         sessions)   shift; _work_sessions "$@" ;;
         resume)     shift; _work_resume "$@" ;;
         fork)       shift; _work_fork "$@" ;;
-        status)     _work_status ;;
         next)       _work_next ;;
         clean)      shift; _work_clean "$@" ;;
 
@@ -115,33 +135,55 @@ work() {
 # ── Help ────────────────────────────────────────────────────────────────────
 _work_help() {
     cat <<'HELP'
-work — Claude + Zellij Worktree Orchestrator
+work — Pipeline-Aware Worktree Orchestrator for Screen Print Pro
 
 USAGE
   work <topic>                            New workstream: worktree + Zellij tab
   work <topic> <base-branch>             Related work: worktree + Zellij tab
   work --stack <topic>                    Stack from current branch (auto-detects $PWD)
   work <topic> --prompt "task desc"       Seed the new Claude with an initial prompt
-  work <topic> --yolo                     Skip Claude permissions (--dangerously-skip-permissions)
+  work <topic> --yolo                     Skip Claude permissions
   work <topic> --claude-args "..."        Pass arbitrary flags to Claude CLI
 
-PHASE COMMANDS
-  work research <pipeline>                Research phase (vertical-discovery skill)
-  work interview <pipeline>               Interview phase (requirements-interrogator)
-  work breadboard <pipeline>              Breadboarding phase (breadboarding skill)
-  work plan <pipeline>                    Implementation planning
-  work build <manifest> [--wave N] [--yolo] [--claude-args "..."] Execute build from YAML manifest (default: wave 0)
-  work polish <pipeline>                  Post-build polish
-  work review <pipeline>                  Quality gate + doc sync
-  work learnings <pipeline>               Cross-cutting pattern synthesis
-  work cooldown <pipeline>                5-step retrospective
+PIPELINE LIFECYCLE
+  work define <name> [flags]              Create a pipeline entity (→ ready state)
+    --type <type>                           Pipeline type: vertical|polish|horizontal|bug-fix (default: vertical)
+    --issue <number>                        Link to existing GitHub issue
+    --prompt "<text>"                       Create GitHub issue from prompt
+    --auto                                  Skip human approvals (plan + merge)
+    --products p1,p2                        Link to products (garments, quotes, etc.)
+    --tools t1,t2                           Link to tools (work-orchestrator, etc.)
+  work start <pipeline-id>                Run pre-build stages (→ active state)
+    --yolo                                  Skip Claude permissions
+    --claude-args "..."                     Pass flags to Claude
+  work build <pipeline-id> [flags]        Run build waves from manifest (→ building state)
+    --wave N                                Start at wave N (default: 0)
+    --yolo / --claude-args "..."            Passed to Claude sessions
+  work build <manifest.yaml> [flags]      Legacy: build from YAML file directly
+  work end <pipeline-id>                  Create final PR, poll for merge, wrap up (→ wrapped)
+    --skip-poll                             Skip merge detection polling
+  work cooldown                           Batch process all wrapped pipelines (→ cooled)
+    --dry-run                               Preview without changes
+    --skip-progress                         Skip PROGRESS.md update
+
+PIPELINE STATUS
+  work status                             Dashboard: all pipelines grouped by state
+  work status <pipeline-id>               Deep dive: single pipeline detail
+
+LEGACY PHASE COMMANDS
+  work research <name>                    Research phase (vertical-discovery skill)
+  work interview <name>                   Interview phase (requirements-interrogator)
+  work breadboard <name>                  Breadboarding phase (breadboarding skill)
+  work plan <name>                        Implementation planning
+  work polish <name>                      Post-build polish
+  work review <name>                      Quality gate + doc sync
+  work learnings <name>                   Cross-cutting pattern synthesis
   (All phase commands accept --yolo and --claude-args)
 
 SESSION MANAGEMENT
   work sessions [--vertical <name>]       List sessions from registry
   work resume <topic>                     Resume Claude session by topic
   work fork <new-topic> <source-topic>    Fork a session with new context
-  work status                             Show all layers (registry, worktrees, Zellij, ports)
   work next                               AI recommendation: what to work on next
 
 PROGRESS
@@ -153,31 +195,38 @@ UTILITIES
   work clean <topic>                      Remove worktree + Zellij + branch + registry
   work help                               This help text
 
-EXAMPLES
-  work invoicing-schema                                     # New workstream
-  work invoicing-schema --prompt "Build the Zod schemas"    # With initial task
-  work invoicing-ui session/0210-invoicing-schema           # Branch from parent
-  work --stack invoicing-tests --prompt "Write tests"       # Stack from $PWD
-  work research quoting                                     # Start quoting research
-  work resume invoicing-schema                              # Resume Claude session
-  work sessions --vertical quoting                          # List quoting sessions
-  work breadboard garments --yolo                            # Phase + skip permissions
-  work my-feature --claude-args "--model sonnet"             # Custom Claude flags
-  work clean invoicing-schema                               # Full cleanup
+PIPELINE LIFECYCLE FLOW
+  define → start → build → end → cooldown
+  (ready)  (active) (building) (reviewing→wrapped) (cooled)
 
-ZELLIJ NAVIGATION
-  Ctrl+t       Tab mode (then arrows or number to switch)
-  Alt+n        New pane
-  Alt+←/→      Switch pane focus
-  Ctrl+p       Pane mode
-  Ctrl+s       Search (scroll mode)
-  Alt+1..9     Quick tab switch
+EXAMPLES
+  # Pipeline workflow
+  work define colors --type vertical --issue 42         # Create pipeline
+  work start 20260216-colors                            # Run pre-build stages
+  work build 20260216-colors                            # Launch build waves
+  work build 20260216-colors --wave 1                   # Next wave
+  work end 20260216-colors                              # Final PR + wrap up
+  work cooldown                                         # Process all wrapped
+
+  # Ad-hoc workstreams (non-pipeline)
+  work invoicing-schema                                 # New workstream
+  work invoicing-schema --prompt "Build the Zod schemas"
+  work --stack invoicing-tests --prompt "Write tests"   # Stack from $PWD
+
+  # Session management
+  work status                                           # Pipeline dashboard
+  work status 20260216-colors                           # Pipeline detail
+  work sessions --vertical quoting                      # List sessions
+  work resume invoicing-schema                          # Resume Claude session
+  work clean invoicing-schema                           # Full cleanup
 
 NOTES
+  - Pipeline IDs: YYYYMMDD-<topic> (e.g., 20260216-colors)
+  - Branch naming: session/<MMDD>-<topic> for sessions, build/<pipeline-id> for base
   - Inside Zellij: new workstreams open as tabs in current session
   - Outside Zellij: creates a new Zellij session to attach to
-  - Branch naming: session/<MMDD>-<topic> (auto-generated, kebab-case enforced)
   - Max 15 concurrent worktrees
+  - Pipeline registry: ~/Github/print-4ink-worktrees/.pipeline-registry.json
   - Session registry: ~/Github/print-4ink-worktrees/.session-registry.json
 HELP
 }
