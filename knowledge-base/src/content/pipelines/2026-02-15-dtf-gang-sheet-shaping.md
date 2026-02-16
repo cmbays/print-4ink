@@ -3,9 +3,11 @@ title: "DTF Gang Sheet Builder — Shaping (R x S)"
 subtitle: "Requirements definition, 4 shapes explored, Shape D selected for Feb 21 demo"
 date: 2026-02-15
 phase: 1
-vertical: dtf-gang-sheet
-verticalSecondary: [quoting, jobs]
-stage: scope
+pipelineName: dtf-gang-sheet
+pipelineType: vertical
+products: [quotes, jobs]
+tools: []
+stage: shape
 tags: [decision, research]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0215-dtf-gang-sheet-research"
@@ -92,6 +94,6 @@ Breadboarding — map Shape D's 6 parts into concrete affordances, wiring, and v
 
 ## Sources
 
-- Pre-build interview (2026-02-15, 17 questions): [KB doc](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/sessions/2026-02-15-dtf-gang-sheet-interview.md)
-- Competitive research (5 competitors): [KB doc](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/sessions/2026-02-15-dtf-gang-sheet-research.md)
+- Pre-build interview (2026-02-15, 17 questions): [KB doc](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/pipelines/2026-02-15-dtf-gang-sheet-interview.md)
+- Competitive research (5 competitors): [KB doc](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/pipelines/2026-02-15-dtf-gang-sheet-research.md)
 - Shaping skill: R x S methodology adapted from [rjs/shaping-skills](https://github.com/rjs/shaping-skills)

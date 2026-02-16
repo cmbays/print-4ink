@@ -3,10 +3,12 @@ title: "DTF Gang Sheet Builder — Pre-Build Interview"
 subtitle: "Exhaustive interview with shop owner on DTF workflow, quoting integration, and demo scope"
 date: 2026-02-15
 phase: 1
-vertical: dtf-gang-sheet
-verticalSecondary: [quoting, invoicing, jobs]
-stage: scope
-tags: [interview, decision, research]
+pipelineName: dtf-gang-sheet
+pipelineType: vertical
+products: [quotes, invoices, jobs]
+tools: []
+stage: interview
+tags: [decision, research]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0215-dtf-gang-sheet-research"
 status: complete
@@ -196,4 +198,4 @@ Full pre-build interrogation spike with affordance table: [`docs/spikes/spike-dt
 - [Screenprinting.com — Industry Standard for Placements and Dimensions](https://www.screenprinting.com/blogs/news/a-guide-to-industry-standard-for-screen-print-placements-and-dimensions)
 
 ### Prior Session
-- [DTF Gang Sheet Builder — Competitive Research](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/sessions/2026-02-15-dtf-gang-sheet-research.md) — 5-competitor analysis, industry workflows, UX patterns
+- [DTF Gang Sheet Builder — Competitive Research](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/pipelines/2026-02-15-dtf-gang-sheet-research.md) — 5-competitor analysis, industry workflows, UX patterns

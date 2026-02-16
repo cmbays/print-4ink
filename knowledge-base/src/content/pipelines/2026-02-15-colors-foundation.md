@@ -3,8 +3,10 @@ title: "Color Preference System: Wave 0 Foundation"
 subtitle: "Schemas, helpers, shared components, and navigation for hierarchical color favorites"
 date: 2026-02-15
 phase: 1
-vertical: colors
-verticalSecondary: []
+pipelineName: colors
+pipelineType: vertical
+products: [garments, customers]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
