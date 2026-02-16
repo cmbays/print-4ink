@@ -14,13 +14,19 @@ import { FavoritesColorSection } from "@/components/features/FavoritesColorSecti
 import { InheritanceToggle } from "@/components/features/InheritanceToggle";
 import { InheritanceDetail } from "@/components/features/InheritanceDetail";
 import { GarmentImage } from "@/components/features/GarmentImage";
+import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
 import { cn } from "@/lib/utils";
 import {
   resolveEffectiveFavorites,
   getInheritanceChain,
   getBrandPreference,
   propagateAddition,
+  getImpactPreview,
+  removeFromAll,
+  removeFromLevelOnly,
+  removeFromSelected,
 } from "@/lib/helpers/color-preferences";
+import type { ImpactPreview } from "@/lib/helpers/color-preferences";
 import {
   colors as catalogColors,
   garmentCatalog,
@@ -54,6 +60,11 @@ export function BrandDetailDrawer({
 }: BrandDetailDrawerProps) {
   // Version counter to force re-render after mock data mutations
   const [version, setVersion] = useState(0);
+  const [pendingRemoval, setPendingRemoval] = useState<{
+    colorId: string;
+    color: Color;
+    impact: ImpactPreview;
+  } | null>(null);
 
   // N24: getBrandGarments — filter catalog by brand name
   // version forces recomputation after in-place mock data mutations (Phase 1 only)
@@ -155,54 +166,98 @@ export function BrandDetailDrawer({
     [brandName],
   );
 
-  // N8: toggleBrandFavorite — add/remove color from brand favorites
-  const handleToggleFavorite = useCallback(
+  // Shared: apply brand-level removal (extracted so dialog handlers can reuse)
+  const applyBrandRemoval = useCallback(
     (colorId: string) => {
       const pref = brandPreferences.find((b) => b.brandName === brandName);
       if (!pref || pref.inheritMode === "inherit") return;
 
       const globalFavoriteIds = resolveEffectiveFavorites("global");
       const isGlobalFavorite = globalFavoriteIds.includes(colorId);
-      const isFavorite = pref.favoriteColorIds.includes(colorId);
 
-      if (isFavorite) {
-        // Removing
-        pref.favoriteColorIds = pref.favoriteColorIds.filter((id) => id !== colorId);
-        pref.explicitColorIds = pref.explicitColorIds.filter((id) => id !== colorId);
+      pref.favoriteColorIds = pref.favoriteColorIds.filter((id) => id !== colorId);
+      pref.explicitColorIds = pref.explicitColorIds.filter((id) => id !== colorId);
 
-        // If it was a global favorite, track as removed
-        if (isGlobalFavorite) {
-          if (!pref.removedInheritedColorIds.includes(colorId)) {
-            pref.removedInheritedColorIds.push(colorId);
-          }
-        }
-
-        // Removal + children → stub P4 (→ V6)
-        // PHASE 1 STUB: RemovalConfirmationDialog wired in V6
-      } else {
-        // Adding
-        pref.favoriteColorIds.push(colorId);
-
-        // If it's not a global favorite, track as explicitly added
-        if (!isGlobalFavorite) {
-          if (!pref.explicitColorIds.includes(colorId)) {
-            pref.explicitColorIds.push(colorId);
-          }
-        }
-
-        // If it was previously removed from inherited, un-remove it
-        pref.removedInheritedColorIds = pref.removedInheritedColorIds.filter(
-          (id) => id !== colorId,
-        );
-
-        // Addition + S8=true → stub N22 (→ V6)
-        // PHASE 1 STUB: brand-level propagation is a no-op
-        propagateAddition("brand", colorId);
+      if (isGlobalFavorite && !pref.removedInheritedColorIds.includes(colorId)) {
+        pref.removedInheritedColorIds.push(colorId);
       }
 
       setVersion((v) => v + 1);
     },
     [brandName],
+  );
+
+  // N8: toggleBrandFavorite — add/remove color from brand favorites
+  const handleToggleFavorite = useCallback(
+    (colorId: string) => {
+      const pref = brandPreferences.find((b) => b.brandName === brandName);
+      if (!pref || pref.inheritMode === "inherit") return;
+
+      const isFavorite = pref.favoriteColorIds.includes(colorId);
+
+      if (isFavorite) {
+        // N8→P4: check impact before removing
+        const impact = getImpactPreview("brand", colorId);
+        if (!impact.isStub && (impact.supplierCount > 0 || impact.customerCount > 0)) {
+          // Open RemovalConfirmationDialog — don't remove yet
+          const color = catalogColors.find((c) => c.id === colorId);
+          if (!color) {
+            // Catalog color missing — remove directly rather than showing broken dialog
+            applyBrandRemoval(colorId);
+            return;
+          }
+          setPendingRemoval({ colorId, color, impact });
+          return;
+        }
+        // No children affected (or stub data) — remove directly
+        applyBrandRemoval(colorId);
+      } else {
+        // Adding
+        const globalFavoriteIds = resolveEffectiveFavorites("global");
+        const isGlobalFavorite = globalFavoriteIds.includes(colorId);
+
+        pref.favoriteColorIds.push(colorId);
+
+        if (!isGlobalFavorite && !pref.explicitColorIds.includes(colorId)) {
+          pref.explicitColorIds.push(colorId);
+        }
+
+        pref.removedInheritedColorIds = pref.removedInheritedColorIds.filter(
+          (id) => id !== colorId,
+        );
+
+        // N22: propagateAddition for brand level
+        propagateAddition("brand", colorId);
+
+        setVersion((v) => v + 1);
+      }
+    },
+    [brandName, applyBrandRemoval],
+  );
+
+  // P4 action handlers — called from RemovalConfirmationDialog
+  const handleRemoveAll = useCallback(() => {
+    if (!pendingRemoval) return;
+    applyBrandRemoval(pendingRemoval.colorId);
+    removeFromAll("brand", pendingRemoval.colorId);
+    setPendingRemoval(null);
+  }, [pendingRemoval, applyBrandRemoval]);
+
+  const handleRemoveLevelOnly = useCallback(() => {
+    if (!pendingRemoval) return;
+    applyBrandRemoval(pendingRemoval.colorId);
+    removeFromLevelOnly("brand", pendingRemoval.colorId);
+    setPendingRemoval(null);
+  }, [pendingRemoval, applyBrandRemoval]);
+
+  const handleRemoveSelected = useCallback(
+    (brandNames: string[], customerCompanies: string[]) => {
+      if (!pendingRemoval) return;
+      applyBrandRemoval(pendingRemoval.colorId);
+      removeFromSelected("brand", pendingRemoval.colorId, brandNames, customerCompanies);
+      setPendingRemoval(null);
+    },
+    [pendingRemoval, applyBrandRemoval],
   );
 
   // N9: restoreInheritedColor — remove from removedInheritedColorIds
@@ -325,6 +380,23 @@ export function BrandDetailDrawer({
           </div>
         </ScrollArea>
       </SheetContent>
+
+      {/* P4: Removal Confirmation Dialog */}
+      {pendingRemoval && (
+        <RemovalConfirmationDialog
+          open={!!pendingRemoval}
+          onOpenChange={(nextOpen) => {
+            if (!nextOpen) setPendingRemoval(null);
+          }}
+          color={pendingRemoval.color}
+          level="brand"
+          levelLabel={brandName}
+          impact={pendingRemoval.impact}
+          onRemoveAll={handleRemoveAll}
+          onRemoveLevelOnly={handleRemoveLevelOnly}
+          onRemoveSelected={handleRemoveSelected}
+        />
+      )}
     </Sheet>
   );
 }
