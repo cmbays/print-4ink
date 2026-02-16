@@ -79,14 +79,17 @@ export function ServiceTypeTabBar({
       {!enabledTypes.includes("embroidery") && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span
+            <button
+              type="button"
+              disabled
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground/40 cursor-not-allowed"
               role="tab"
-              aria-disabled="true"
+              aria-selected={false}
+              tabIndex={-1}
             >
               <EmbroideryIcon className="size-4" />
               <span>Embroidery</span>
-            </span>
+            </button>
           </TooltipTrigger>
           <TooltipContent>Coming soon</TooltipContent>
         </Tooltip>

@@ -186,7 +186,7 @@ export function SheetCalculationPanel({
         type="button"
         onClick={calculateSheetLayout}
         disabled={!canCalculate}
-        className="w-full"
+        className="w-full bg-action text-primary-foreground font-medium shadow-brutal shadow-action/30 hover:shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
       >
         <Calculator size={16} className="mr-2" />
         {sheetCalculation ? "Recalculate Layout" : "Calculate Layout"}
@@ -219,7 +219,7 @@ export function SheetCalculationPanel({
               <span className="text-sm font-medium text-foreground">
                 {sheetCalculation.totalSheets} sheet{sheetCalculation.totalSheets !== 1 ? "s" : ""}
               </span>
-              <span className="text-base font-semibold text-foreground">
+              <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(sheetCalculation.totalCost)}
               </span>
             </div>
@@ -270,7 +270,7 @@ function SheetResultCard({
           <span className="text-xs font-medium text-muted-foreground">
             Sheet {index + 1}
           </span>
-          <span className="text-xs text-muted-foreground font-mono">
+          <span className="text-xs text-muted-foreground">
             {formatSheetDimensions(sheet.tier)}
           </span>
           <span className="text-xs text-muted-foreground">

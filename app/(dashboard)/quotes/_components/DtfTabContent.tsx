@@ -7,6 +7,7 @@ import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
 import { dtfSheetTiers } from "@/lib/mock-data";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
+import { GangSheetCanvas } from "./GangSheetCanvas";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 
@@ -32,9 +33,8 @@ export function DtfTabContent({
   sheetCalculation,
   splitMode,
   setSplitMode,
-  // Wave 4 props — accepted but not yet wired
-  canvasLayout: _canvasLayout,
-  activeSheetIndex: _activeSheetIndex,
+  canvasLayout,
+  activeSheetIndex,
   setActiveSheetIndex,
   setSheetCalculation,
   setCanvasLayout,
@@ -112,13 +112,13 @@ export function DtfTabContent({
         tiers={dtfSheetTiers}
       />
 
-      {/* Placeholder: Visual Canvas (Wave 4) — dev-only */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="rounded-lg border border-dashed border-border bg-surface/50 p-6 text-center">
-          <p className="text-sm text-muted-foreground/60">
-            Visual canvas — coming in Wave 4
-          </p>
-        </div>
+      {/* U88-U92 — Gang Sheet Canvas (Wave 4) */}
+      {canvasLayout && canvasLayout.length > 0 && sheetCalculation && (
+        <GangSheetCanvas
+          canvasLayout={canvasLayout}
+          activeSheetIndex={activeSheetIndex}
+          setActiveSheetIndex={setActiveSheetIndex}
+        />
       )}
     </div>
   );
