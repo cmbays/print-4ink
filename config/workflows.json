@@ -2,7 +2,7 @@
   {
     "slug": "vertical",
     "label": "Vertical",
-    "stages": ["research", "interview", "shape", "breadboarding", "implementation-planning", "build", "review", "wrap-up"]
+    "stages": ["research", "interview", "shaping", "breadboarding", "implementation-planning", "build", "review", "wrap-up"]
   },
   {
     "slug": "polish",

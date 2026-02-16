@@ -66,6 +66,38 @@ Ghostty Quick Terminal (hotkey toggle)
 | `work focus` | Read-only tiled monitor of all windows in current session |
 | `work unfocus` | Exit focus mode |
 | `work clean <topic>` | Remove worktree + tmux + branch (with confirmation) |
+| `work build <manifest> [--wave N] [--yolo]` | Execute build from YAML manifest (see below) |
+
+## Manifest-Driven Builds
+
+`work build` reads a YAML execution manifest (produced by the `implementation-planning` skill) and launches Zellij tabs with Claude sessions for each task in a wave.
+
+```bash
+# Wave 0 (foundation, serial — 1 session)
+work build docs/plans/2026-02-15-colors-manifest.yaml --yolo
+
+# Wave 1 (parallel — 3 sessions open as Zellij tabs)
+work build docs/plans/2026-02-15-colors-manifest.yaml --wave 1 --yolo
+
+# Without --yolo (Claude prompts for permissions)
+work build docs/plans/2026-02-15-colors-manifest.yaml --wave 2
+```
+
+**What it does per wave:**
+1. Pulls latest main
+2. Creates a worktree + branch per session (`session/MMDD-<topic>`)
+3. Runs `npm install` in each worktree
+4. Writes the session prompt to `.session-prompt.md` (gitignored)
+5. Generates a Zellij KDL layout and opens tabs (or prints launch command if outside Zellij)
+
+**Flags:**
+- `--wave N` — which wave to run (0-indexed, default: 0)
+- `--yolo` — passes `--dangerously-skip-permissions` to all Claude sessions
+- `--claude-args "..."` — pass arbitrary CLI flags to Claude
+
+**Wave progression is manual** — you review and merge Wave N's PRs before running `--wave N+1`. The script prints the next command at completion.
+
+**Requires:** `yq` (`brew install yq`) for YAML manifest parsing.
 
 ## Agent Teams Integration
 

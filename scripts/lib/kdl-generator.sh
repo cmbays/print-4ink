@@ -42,8 +42,9 @@ _kdl_render_tab() {
     local claude_args="${4:-}"
 
     # Build KDL args line: [claude_args] [prompt_instruction]
+    # Sanitize claude_args for safe KDL embedding (same escaping as prompts)
     local args_parts=""
-    [[ -n "$claude_args" ]] && args_parts="\"$claude_args\""
+    [[ -n "$claude_args" ]] && args_parts="\"$(_kdl_sanitize_prompt "$claude_args")\""
 
     if [[ -n "$prompt" && "$prompt" != "null" ]]; then
         # Write prompt to file in worktree (gitignored via .session-* pattern)
