@@ -69,8 +69,8 @@ work() {
             while [[ $# -gt 0 ]]; do
                 case "$1" in
                     --prompt)       prompt="${2:-}"; shift 2 ;;
-                    --yolo)         claude_args="--dangerously-skip-permissions"; shift ;;
-                    --claude-args)  claude_args="${2:-}"; shift 2 ;;
+                    --yolo)         claude_args="${claude_args:+$claude_args }--dangerously-skip-permissions"; shift ;;
+                    --claude-args)  claude_args="${claude_args:+$claude_args }${2:-}"; shift 2 ;;
                     *)              shift ;;
                 esac
             done
@@ -94,8 +94,8 @@ work() {
             while [[ $# -gt 0 ]]; do
                 case "$1" in
                     --prompt)       prompt="${2:-}"; shift 2 ;;
-                    --yolo)         claude_args="--dangerously-skip-permissions"; shift ;;
-                    --claude-args)  claude_args="${2:-}"; shift 2 ;;
+                    --yolo)         claude_args="${claude_args:+$claude_args }--dangerously-skip-permissions"; shift ;;
+                    --claude-args)  claude_args="${claude_args:+$claude_args }${2:-}"; shift 2 ;;
                     *)              shift ;;
                 esac
             done
@@ -122,7 +122,7 @@ PHASE COMMANDS
   work interview <vertical>               Interview phase (requirements-interrogator)
   work breadboard <vertical>              Breadboarding phase (breadboarding skill)
   work plan <vertical>                    Implementation planning
-  work build <manifest> [--wave N] [--yolo] Execute build from YAML manifest (default: wave 0)
+  work build <manifest> [--wave N] [--yolo] [--claude-args "..."] Execute build from YAML manifest (default: wave 0)
   work polish <vertical>                  Post-build polish
   work review <vertical>                  Quality gate + doc sync
   work learnings <vertical>               Cross-cutting pattern synthesis
@@ -343,8 +343,8 @@ _work_phase() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --prompt)       PROMPT="${2:-}"; shift 2 ;;
-            --yolo)         CLAUDE_ARGS="--dangerously-skip-permissions"; shift ;;
-            --claude-args)  CLAUDE_ARGS="${2:-}"; shift 2 ;;
+            --yolo)         CLAUDE_ARGS="${CLAUDE_ARGS:+$CLAUDE_ARGS }--dangerously-skip-permissions"; shift ;;
+            --claude-args)  CLAUDE_ARGS="${CLAUDE_ARGS:+$CLAUDE_ARGS }${2:-}"; shift 2 ;;
             *)              shift ;;
         esac
     done
@@ -417,14 +417,14 @@ _work_build() {
     # Check yq dependency once at entry
     _kdl_check_deps || return 1
 
-    # Parse --wave and --yolo flags
+    # Parse --wave, --yolo, and --claude-args flags (stackable)
     local WAVE_IDX=0
     local CLAUDE_ARGS=""
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --wave) WAVE_IDX="${2:-0}"; shift 2 ;;
-            --yolo) CLAUDE_ARGS="--dangerously-skip-permissions"; shift ;;
-            --claude-args) CLAUDE_ARGS="${2:-}"; shift 2 ;;
+            --yolo) CLAUDE_ARGS="${CLAUDE_ARGS:+$CLAUDE_ARGS }--dangerously-skip-permissions"; shift ;;
+            --claude-args) CLAUDE_ARGS="${CLAUDE_ARGS:+$CLAUDE_ARGS }${2:-}"; shift 2 ;;
             *) echo "Error: Unknown flag '$1'"; return 1 ;;
         esac
     done
