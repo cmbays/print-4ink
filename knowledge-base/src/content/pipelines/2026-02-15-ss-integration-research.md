@@ -94,13 +94,13 @@ Post-API-key work:
 9. Add inventory availability to garment selection
 10. Build cache layer (Upstash Redis)
 
-<div class="gary-question" data-question-id="infrastructure-q1" data-vertical="infrastructure" data-status="unanswered">
+<div class="gary-question" data-question-id="devx-ss-q1" data-pipeline="devx" data-status="unanswered">
   <p class="gary-question-text">Do you want to use SanMar or alphabroder in addition to S&S Activewear, or is S&S sufficient for now?</p>
   <p class="gary-question-context">S&S acquired alphabroder, so APIs may converge. SanMar requires separate PromoStandards SOAP integration. This affects whether we need multi-supplier support in Phase 2 or can defer to Phase 3.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="infrastructure-q2" data-vertical="infrastructure" data-status="unanswered">
+<div class="gary-question" data-question-id="devx-ss-q2" data-pipeline="devx" data-status="unanswered">
   <p class="gary-question-text">Is the $45/month production cost (Supabase Pro + Vercel Pro) acceptable for the production app?</p>
   <p class="gary-question-context">This covers database, authentication, file storage, real-time updates, and hosting. The alternative is $0 on free tiers during development with a pause risk after 7 days of inactivity.</p>
   <div class="gary-answer" data-answered-date=""></div>

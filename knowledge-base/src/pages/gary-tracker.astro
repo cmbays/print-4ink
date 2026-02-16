@@ -16,7 +16,7 @@ for (const [path, raw] of Object.entries(sessionFiles)) {
   const filename = path.split('/').pop() || '';
 
   // Match gary-question div blocks embedded in Markdown (named groups)
-  const questionRegex = /<div\s+class="gary-question"\s+data-question-id="(?<questionId>[^"]+)"\s+data-vertical="(?<vertical>[^"]+)"\s+data-status="(?<status>[^"]+)"[^>]*>(?<innerHtml>[\s\S]*?)<\/div>\s*(?=<div\s+class="gary-question"|$)/g;
+  const questionRegex = /<div\s+class="gary-question"\s+data-question-id="(?<questionId>[^"]+)"\s+data-(?:pipeline|vertical)="(?<vertical>[^"]+)"\s+data-status="(?<status>[^"]+)"[^>]*>(?<innerHtml>[\s\S]*?)<\/div>\s*(?=<div\s+class="gary-question"|$)/g;
 
   let match;
   while ((match = questionRegex.exec(content)) !== null) {

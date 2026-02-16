@@ -133,7 +133,7 @@ Added `data-pagefind-body` to the `<main>` element of session detail pages. Page
 Instead of creating HTML files with `data-*` attributes, sessions now create a simple Markdown file:
 
 ```text
-knowledge-base/src/content/sessions/YYYY-MM-DD-topic.md
+knowledge-base/src/content/pipelines/YYYY-MM-DD-topic.md
 ```
 
 With YAML frontmatter validated at build time. Body content is standard Markdown. Build with `npm run kb:build` to verify.

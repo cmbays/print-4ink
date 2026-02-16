@@ -32,22 +32,28 @@ const productCards = productsConfig.map((p) => {
     <h1 class="text-2xl font-bold tracking-tight mb-2">Products</h1>
     <p class="text-text-secondary text-sm mb-8">App features and their documentation</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {productCards.map((p) => (
-        <a href={`/products/${p.slug}`} class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group">
-          <div class="flex items-center justify-between mb-1.5">
-            <h3 class="text-sm font-semibold text-text-primary group-hover:text-action transition-colors">{p.label}</h3>
-            <StatusBadge status={p.status} />
-          </div>
-          <p class="text-[13px] text-text-secondary line-clamp-2 mb-2">{p.subtitle}</p>
-          <div class="flex items-center gap-3 text-[11px] text-text-muted">
-            <span>{pluralize(p.pipelineCount, 'pipeline doc')}</span>
-            <span class="opacity-40">&middot;</span>
-            <code class="font-mono text-[10px] text-text-muted">{p.route}</code>
-          </div>
-        </a>
-      ))}
-    </div>
+    {productCards.length === 0 ? (
+      <div class="text-center py-16">
+        <p class="text-text-muted text-sm">No products configured yet.</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {productCards.map((p) => (
+          <a href={`/products/${p.slug}`} class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group">
+            <div class="flex items-center justify-between mb-1.5">
+              <h3 class="text-sm font-semibold text-text-primary group-hover:text-action transition-colors">{p.label}</h3>
+              <StatusBadge status={p.status} />
+            </div>
+            <p class="text-[13px] text-text-secondary line-clamp-2 mb-2">{p.subtitle}</p>
+            <div class="flex items-center gap-3 text-[11px] text-text-muted">
+              <span>{pluralize(p.pipelineCount, 'pipeline doc')}</span>
+              <span class="opacity-40">&middot;</span>
+              <code class="font-mono text-[10px] text-text-muted">{p.route}</code>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
 
     <PageFooter label="Products" />
   </main>

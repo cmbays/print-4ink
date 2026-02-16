@@ -144,37 +144,37 @@ Research confirmed industry standards for gang sheet layout:
 
 ## Gary Questions
 
-<div class="gary-question" data-question-id="dtf-q7" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q7" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">Which RIP software do you use for DTF printing?</p>
   <p class="gary-question-context">Critical for Phase 2+ export format. We'll abstract the export layer so it supports multiple RIP formats, but need to know Gary's to build first.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q8" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q8" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">Would you ever want to batch designs from different customers onto the same gang sheet to save film?</p>
   <p class="gary-question-context">Currently per-customer sheets only. Cross-customer batching saves film but complicates tracking. Need to know if this is a desired feature.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q9" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q9" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">Should the gang sheet cost appear as its own line item on the quote, or should it be rolled into the decoration fee per design?</p>
   <p class="gary-question-context">Affects how customers see pricing. Separate line item is transparent but adds complexity. Rolled in is simpler but hides the sheet cost.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q10" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q10" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">For DTF + Press orders, is there a setup/press fee beyond the film cost and garment cost?</p>
   <p class="gary-question-context">Need to understand the full cost structure for DTF + Press service type. Currently backlogged but need to know for future scoping.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q11" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q11" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">What are the most common DTF print sizes your customers order? (beyond 4x4")</p>
   <p class="gary-question-context">Need representative sizes for demo mock data. 4x4" confirmed as common for small. Need medium and large examples.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q12" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q12" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">Does the multi-service-type quote flow (service types as tabs, complete each separately) match how you think about building quotes?</p>
   <p class="gary-question-context">The interview identified that 4Ink does cross-service quotes. We designed a tab-based flow but Gary may think about it differently.</p>
   <div class="gary-answer" data-answered-date=""></div>

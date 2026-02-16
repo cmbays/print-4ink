@@ -141,19 +141,19 @@ Customer preferences include favorite colors, favorite brands, and favorite garm
 - **UX research**: See companion KB doc: Colors — UX Research: Hierarchical Settings Inheritance
 - **Issue**: [#169](https://github.com/cmbays/print-4ink/issues/169)
 
-<div class="gary-question" data-question-id="colors-q1" data-vertical="colors" data-status="unanswered">
+<div class="gary-question" data-question-id="colors-q1" data-pipeline="colors" data-status="unanswered">
   <p class="gary-question-text">When you set up color favorites for a supplier like Gildan, would you want to do that from a dedicated supplier/brand page in the garments section, or from a settings screen?</p>
   <p class="gary-question-context">We designed supplier favorites to live in the garments section (brand detail view), but Gary may have a different mental model for where brand configuration belongs.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="colors-q2" data-vertical="colors" data-status="unanswered">
+<div class="gary-question" data-question-id="colors-q2" data-pipeline="colors" data-status="unanswered">
   <p class="gary-question-text">How many colors do you typically consider "favorites" for your shop? Is it 5-10 go-to colors, or closer to 20-30?</p>
   <p class="gary-question-context">The size of the favorites set affects the UI layout — a small set fits in a single row, a large set needs a grid or scrollable section.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="colors-q3" data-vertical="colors" data-status="unanswered">
+<div class="gary-question" data-question-id="colors-q3" data-pipeline="colors" data-status="unanswered">
   <p class="gary-question-text">When you add a new global favorite color, should it automatically show up for all your existing customers, or should each customer's color list stay unchanged until you manually update it?</p>
   <p class="gary-question-context">We designed a configurable setting for this (auto-propagate vs. manual), but Gary's default expectation will determine the out-of-box behavior.</p>
   <div class="gary-answer" data-answered-date=""></div>

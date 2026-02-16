@@ -217,37 +217,37 @@ This is sufficient to validate the concept with Gary. Advanced features (halfton
 
 ## Gary Questions
 
-<div class="gary-question" data-question-id="dtf-q1" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q1" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">When building gang sheets, do you batch orders by due date, by customer, or by whatever's ready to print?</p>
   <p class="gary-question-context">This determines the default sort/grouping in the order queue that feeds the gang sheet builder. Competitors don't solve this — they're customer-facing, not production-focused.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q2" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q2" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">Do you ever put multiple customers' designs on the same gang sheet to fill space, or does each sheet stay per-customer?</p>
   <p class="gary-question-context">This affects the nesting algorithm and job tracking. Multi-customer sheets maximize film but complicate order tracking.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q3" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q3" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">What RIP software do you use for DTF printing? (Cadlink, ErgoSoft, Fiery, SAi, other?)</p>
   <p class="gary-question-context">Determines what file format the gang sheet builder should export. Most RIP software accepts PNG/TIFF/PDF but some have preferred formats.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q4" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q4" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">How many DTF orders per day do you typically process? Is it enough to fill multiple gang sheets?</p>
   <p class="gary-question-context">Volume determines whether auto-nesting is critical now or can be Phase 2. Low volume (5-10/day) makes manual arrangement feasible. High volume (20+/day) makes auto-nesting essential.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q5" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q5" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">Do you use the Drip Apps builder on your Shopify store for all DTF orders, or do some come through other channels (walk-ins, phone, email)?</p>
   <p class="gary-question-context">If orders come from multiple channels, Screen Print Pro needs to be the single place where Gary builds gang sheets regardless of order source. If all orders come through Shopify/Drip Apps, the integration story is simpler.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="dtf-q6" data-vertical="dtf-gang-sheet" data-status="unanswered">
+<div class="gary-question" data-question-id="dtf-q6" data-pipeline="dtf-gang-sheet" data-status="unanswered">
   <p class="gary-question-text">What's your biggest frustration with the current gang sheet building process?</p>
   <p class="gary-question-context">Open-ended question to surface pain points we haven't anticipated. The answer will help prioritize features for the Phase 1 mockup.</p>
   <div class="gary-answer" data-answered-date=""></div>
