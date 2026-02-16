@@ -1,0 +1,85 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import DocCard from '../../components/DocCard.astro';
+import { getCollection, render } from 'astro:content';
+import toolsConfig from '../../../../config/tools.json';
+
+export function getStaticPaths() {
+  return toolsConfig.map((t) => ({ params: { tool: t.slug } }));
+}
+
+const { tool } = Astro.params;
+const config = toolsConfig.find((t) => t.slug === tool)!;
+
+const allToolDocs = await getCollection('toolDocs');
+const docs = allToolDocs.filter((d) => d.data.tool === tool);
+const overview = docs.find((d) => d.data.docType === 'overview');
+const history = docs.find((d) => d.data.docType === 'history');
+const decisions = docs.find((d) => d.data.docType === 'decisions');
+
+const pipelines = await getCollection('pipelines');
+const relatedPipelines = pipelines
+  .filter((p) => p.data.tools?.includes(tool))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+let OverviewContent: any = null;
+if (overview) {
+  const rendered = await render(overview);
+  OverviewContent = rendered.Content;
+}
+---
+
+<Layout title={config.label}>
+  <main class="max-w-[720px] mx-auto px-6 py-12">
+    <a href="/tools" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
+      <span>&larr;</span> Back to Tools
+    </a>
+
+    <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{config.label}</h1>
+    <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || ''}</p>
+    <div class="flex items-center gap-3 text-[12px] text-text-muted mb-6">
+      <span>{relatedPipelines.length} pipeline doc{relatedPipelines.length !== 1 ? 's' : ''}</span>
+    </div>
+
+    {/* Overview content */}
+    {OverviewContent && (
+      <div class="prose mb-8">
+        <OverviewContent />
+      </div>
+    )}
+
+    <hr class="border-t border-border mb-8" />
+
+    {/* Related pipeline docs */}
+    {relatedPipelines.length > 0 && (
+      <div class="mb-8">
+        <h2 class="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-4">Related Pipeline Sessions</h2>
+        <div class="space-y-2.5">
+          {relatedPipelines.map((pl) => (
+            <DocCard
+              title={pl.data.title}
+              subtitle={pl.data.subtitle}
+              date={pl.data.date}
+              pipeline={pl.data.pipeline}
+              pipelineType={pl.data.pipelineType}
+              stage={pl.data.stage}
+              tags={pl.data.tags}
+              status={pl.data.status}
+              slug={pl.id}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+
+    {relatedPipelines.length === 0 && (
+      <div class="text-center py-8 mb-8">
+        <p class="text-text-muted text-sm">No pipeline sessions linked to this tool yet.</p>
+      </div>
+    )}
+
+    <footer class="mt-16 pt-6 border-t border-border">
+      <p class="text-xs text-text-muted text-center">Screen Print Pro &mdash; {config.label}</p>
+    </footer>
+  </main>
+</Layout>
