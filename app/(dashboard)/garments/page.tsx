@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo, useSyncExternalStore, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { Package } from "lucide-react";
 import { Topbar } from "@/components/layout/topbar";
+import { Button } from "@/components/ui/button";
 import { GarmentCatalogToolbar } from "./_components/GarmentCatalogToolbar";
 import { GarmentCard } from "./_components/GarmentCard";
 import { GarmentTableRow } from "./_components/GarmentTableRow";
@@ -12,7 +14,9 @@ import {
   jobs,
   customers,
 } from "@/lib/mock-data";
-import { getColorById } from "@/lib/helpers/garment-helpers";
+import { resolveEffectiveFavorites } from "@/lib/helpers/color-preferences";
+import { useColorFilter } from "@/lib/hooks/useColorFilter";
+import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 
 // ---------------------------------------------------------------------------
@@ -21,13 +25,23 @@ import type { GarmentCatalog } from "@/lib/schemas/garment";
 
 function GarmentCatalogInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // URL state
   const category = searchParams.get("category") ?? "all";
   const searchQuery = searchParams.get("q") ?? "";
   const brand = searchParams.get("brand") ?? "";
-  const colorFamily = searchParams.get("colorFamily") ?? "";
   const view = searchParams.get("view") ?? "grid";
+
+  // Color filter from extracted hook (fix #7)
+  const { selectedColorIds, toggleColor, clearColors } = useColorFilter();
+
+  // Resolved global favorites — single source of truth passed as props (fix #4)
+  const globalFavoriteColorIds = useMemo(
+    () => resolveEffectiveFavorites("global"),
+    [],
+  );
 
   // Local state for mock data mutations
   const [catalog, setCatalog] = useState<GarmentCatalog[]>(initialCatalog);
@@ -46,7 +60,7 @@ function GarmentCatalogInner() {
 
   const showPrice = useSyncExternalStore(
     subscribeToPriceStore,
-    () => localStorage.getItem("garment-show-prices") !== "false",
+    () => localStorage.getItem(PRICE_STORAGE_KEY) !== "false",
     () => true, // server snapshot
   );
 
@@ -57,8 +71,11 @@ function GarmentCatalogInner() {
   const selectedGarment =
     catalog.find((g) => g.id === selectedGarmentId) ?? null;
 
-  // Filter garments
+  // Filter garments (N23: getFilteredGarmentsByColors)
   const filteredGarments = useMemo(() => {
+    const colorFilterSet =
+      selectedColorIds.length > 0 ? new Set(selectedColorIds) : null;
+
     return catalog.filter((g) => {
       // Category filter
       if (category !== "all" && g.baseCategory !== category) return false;
@@ -76,35 +93,23 @@ function GarmentCatalogInner() {
       // Brand filter
       if (brand && g.brand !== brand) return false;
 
-      // Color family filter
-      if (colorFamily) {
-        const hasColorInFamily = g.availableColors.some((colorId) => {
-          const color = getColorById(colorId);
-          return color?.family === colorFamily;
-        });
-        if (!hasColorInFamily) return false;
+      // Color filter — garment has ANY matching colorId in its palette
+      if (colorFilterSet) {
+        const hasMatchingColor = g.availableColors.some((colorId) =>
+          colorFilterSet.has(colorId),
+        );
+        if (!hasMatchingColor) return false;
       }
 
       return true;
     });
-  }, [catalog, category, searchQuery, brand, colorFamily]);
+  }, [catalog, category, searchQuery, brand, selectedColorIds]);
 
-  // Extract unique brands and color families for filter dropdowns
+  // Extract unique brands for filter dropdown
   const brands = useMemo(
     () => [...new Set(catalog.map((g) => g.brand))].sort(),
     [catalog],
   );
-
-  const colorFamilies = useMemo(() => {
-    const families = new Set<string>();
-    catalog.forEach((g) => {
-      g.availableColors.forEach((colorId) => {
-        const color = getColorById(colorId);
-        if (color) families.add(color.family);
-      });
-    });
-    return [...families].sort();
-  }, [catalog]);
 
   // Linked jobs for drawer
   const linkedJobs = useMemo(() => {
@@ -140,12 +145,20 @@ function GarmentCatalogInner() {
     );
   }
 
+  // Fix #11: handleClearAll for empty state CTA
+  const handleClearAll = useCallback(() => {
+    router.replace(pathname, { scroll: false });
+  }, [router, pathname]);
+
   return (
     <>
       <GarmentCatalogToolbar
         brands={brands}
-        colorFamilies={colorFamilies}
+        selectedColorIds={selectedColorIds}
+        onToggleColor={toggleColor}
+        onClearColors={clearColors}
         garmentCount={filteredGarments.length}
+        favoriteColorIds={globalFavoriteColorIds}
       />
 
       {/* Grid View */}
@@ -156,6 +169,7 @@ function GarmentCatalogInner() {
               key={garment.id}
               garment={garment}
               showPrice={showPrice}
+              favoriteColorIds={globalFavoriteColorIds}
               onToggleFavorite={handleToggleFavorite}
               onClick={setSelectedGarmentId}
             />
@@ -208,12 +222,24 @@ function GarmentCatalogInner() {
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Empty state (fix #11) */}
       {filteredGarments.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <Package className="size-12 text-muted-foreground/50 mb-4" />
+          <p className="text-sm font-medium text-muted-foreground">
             No garments match your filters
           </p>
+          <p className="mt-1 text-xs text-muted-foreground/60">
+            Try adjusting your search, category, or color filters
+          </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-3"
+            onClick={handleClearAll}
+          >
+            Clear all filters
+          </Button>
         </div>
       )}
 
