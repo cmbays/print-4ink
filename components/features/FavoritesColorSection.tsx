@@ -38,8 +38,8 @@ function ColorSwatch({
       <TooltipTrigger asChild>
         <button
           type="button"
-          role="option"
-          aria-selected={isFavorite}
+          role="checkbox"
+          aria-checked={isFavorite}
           aria-label={
             readOnly
               ? color.name
@@ -126,7 +126,7 @@ export function FavoritesColorSection({
           ) : (
             <div
               className="flex flex-wrap gap-1"
-              role="listbox"
+              role="group"
               aria-label="Favorite colors"
             >
               {favorites.map((color) => (
@@ -151,7 +151,7 @@ export function FavoritesColorSection({
             </p>
             <div
               className="flex flex-wrap gap-1"
-              role="listbox"
+              role="group"
               aria-label="All colors"
             >
               {nonFavorites.map((color) => (

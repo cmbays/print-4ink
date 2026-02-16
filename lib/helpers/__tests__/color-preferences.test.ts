@@ -1,10 +1,17 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   resolveEffectiveFavorites,
   getInheritanceChain,
   getImpactPreview,
+  propagateAddition,
+  getBrandPreference,
 } from "../color-preferences";
-import { colors, customers } from "@/lib/mock-data";
+import {
+  colors,
+  customers,
+  brandPreferences,
+  autoPropagationConfig,
+} from "@/lib/mock-data";
 
 // Global favorites from mock data: Black, White, Navy, Royal Blue, Red
 const GLOBAL_FAVORITE_IDS = colors
@@ -68,12 +75,10 @@ describe("resolveEffectiveFavorites (N19)", () => {
     expect(result).toEqual(GLOBAL_FAVORITE_IDS);
   });
 
-  it("returns empty array when all levels empty (R5 graceful degradation)", () => {
-    // This tests the edge case where global has no favorites
-    // In our mock data, global always has 5 favorites, so we test
-    // that the function at least returns a valid array
+  it("always returns a valid array for global level", () => {
     const result = resolveEffectiveFavorites("global");
     expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
   });
 });
 
@@ -155,9 +160,134 @@ describe("getImpactPreview (N21)", () => {
     expect(preview.supplierCount).toBeGreaterThanOrEqual(0);
   });
 
-  it("returns empty for brand-level preview (Phase 1 stub)", () => {
+  it("returns stub for brand-level preview (Phase 1)", () => {
     const preview = getImpactPreview("brand", "clr-black");
     expect(preview.supplierCount).toBe(0);
     expect(preview.customerCount).toBe(0);
+    expect(preview.isStub).toBe(true);
+  });
+
+  it("does not flag global-level preview as stub", () => {
+    const preview = getImpactPreview("global", "clr-black");
+    expect(preview.isStub).toBeUndefined();
+  });
+});
+
+describe("propagateAddition (N22)", () => {
+  // Save original values so we can restore after mutation tests
+  let originalGildanFavorites: string[];
+  let originalRiverCityFavorites: string[];
+
+  beforeEach(() => {
+    // Snapshot mutable arrays before each test
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const riverCity = customers[0];
+    originalGildanFavorites = [...gildan.favoriteColorIds];
+    originalRiverCityFavorites = [...riverCity.favoriteColors];
+  });
+
+  afterEach(() => {
+    // Restore mutated arrays
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const riverCity = customers[0];
+    gildan.favoriteColorIds.length = 0;
+    gildan.favoriteColorIds.push(...originalGildanFavorites);
+    riverCity.favoriteColors.length = 0;
+    riverCity.favoriteColors.push(...originalRiverCityFavorites);
+  });
+
+  it("does nothing when autoPropagate is disabled", () => {
+    const original = autoPropagationConfig.autoPropagate;
+    autoPropagationConfig.autoPropagate = false;
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const before = [...gildan.favoriteColorIds];
+    propagateAddition("global", "clr-test-color");
+    expect(gildan.favoriteColorIds).toEqual(before);
+    autoPropagationConfig.autoPropagate = original;
+  });
+
+  it("adds to customize-mode brands at global level", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    expect(gildan.favoriteColorIds).not.toContain("clr-forest-green");
+    propagateAddition("global", "clr-forest-green");
+    expect(gildan.favoriteColorIds).toContain("clr-forest-green");
+  });
+
+  it("skips inherit-mode brands (they get it via resolution)", () => {
+    const bellaCanvas = brandPreferences.find(
+      (b) => b.brandName === "Bella+Canvas"
+    )!;
+    const before = [...bellaCanvas.favoriteColorIds];
+    propagateAddition("global", "clr-forest-green");
+    expect(bellaCanvas.favoriteColorIds).toEqual(before);
+  });
+
+  it("respects removedInheritedColorIds", () => {
+    // Comfort Colors has removed "clr-red"
+    const comfortColors = brandPreferences.find(
+      (b) => b.brandName === "Comfort Colors"
+    )!;
+    const before = [...comfortColors.favoriteColorIds];
+    propagateAddition("global", "clr-red");
+    // Should NOT be added because it's in removedInheritedColorIds
+    expect(comfortColors.favoriteColorIds).toEqual(before);
+  });
+
+  it("adds to customers with customizations", () => {
+    // River City has explicit favorites — should receive propagation
+    const riverCity = customers[0];
+    expect(riverCity.favoriteColors).not.toContain("clr-mint");
+    propagateAddition("global", "clr-mint");
+    expect(riverCity.favoriteColors).toContain("clr-mint");
+  });
+
+  it("skips customers inheriting (empty favorites)", () => {
+    const thompson = customers[2];
+    expect(thompson.favoriteColors).toEqual([]);
+    propagateAddition("global", "clr-mint");
+    expect(thompson.favoriteColors).toEqual([]); // still empty, inheriting
+  });
+
+  it("is idempotent — does not duplicate on repeat calls", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    propagateAddition("global", "clr-forest-green");
+    const countAfterFirst = gildan.favoriteColorIds.filter(
+      (id) => id === "clr-forest-green"
+    ).length;
+    propagateAddition("global", "clr-forest-green");
+    const countAfterSecond = gildan.favoriteColorIds.filter(
+      (id) => id === "clr-forest-green"
+    ).length;
+    expect(countAfterFirst).toBe(1);
+    expect(countAfterSecond).toBe(1);
+  });
+
+  it("warns on brand-level propagation (Phase 1 stub)", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    propagateAddition("brand", "clr-black");
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Phase 1 stub")
+    );
+    warnSpy.mockRestore();
+  });
+});
+
+describe("getBrandPreference", () => {
+  it("returns brand preference for known brand", () => {
+    const result = getBrandPreference("Gildan");
+    expect(result).toBeDefined();
+    expect(result!.brandName).toBe("Gildan");
+    expect(result!.inheritMode).toBe("customize");
+  });
+
+  it("returns undefined for unknown brand", () => {
+    const result = getBrandPreference("NonexistentBrand");
+    expect(result).toBeUndefined();
+  });
+
+  it("returns inherit-mode brand correctly", () => {
+    const result = getBrandPreference("Bella+Canvas");
+    expect(result).toBeDefined();
+    expect(result!.inheritMode).toBe("inherit");
   });
 });

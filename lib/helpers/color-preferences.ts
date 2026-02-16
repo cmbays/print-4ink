@@ -7,43 +7,53 @@ import {
 import type { BrandPreference } from "@/lib/schemas/color-preferences";
 
 // ---------------------------------------------------------------------------
+// Shared: global favorites derived from catalog
+// ---------------------------------------------------------------------------
+
+function getGlobalFavoriteIds(): string[] {
+  return colors.filter((c) => c.isFavorite === true).map((c) => c.id);
+}
+
+// ---------------------------------------------------------------------------
 // N19: resolveEffectiveFavorites
 // Walk global → brand → customer hierarchy, return colorIds[]
 // ---------------------------------------------------------------------------
 
+type EntityType = "global" | "brand" | "customer";
+
 export function resolveEffectiveFavorites(
-  entityType: "global" | "brand" | "customer",
+  entityType: EntityType,
   entityId?: string
 ): string[] {
-  // Global level: colors with isFavorite = true
-  const globalFavorites = colors
-    .filter((c) => c.isFavorite === true)
-    .map((c) => c.id);
+  const globalFavorites = getGlobalFavoriteIds();
 
-  if (entityType === "global") {
-    return globalFavorites;
-  }
-
-  if (entityType === "brand") {
-    const brand = brandPreferences.find((b) => b.brandName === entityId);
-    if (!brand || brand.inheritMode === "inherit") {
+  switch (entityType) {
+    case "global":
       return globalFavorites;
-    }
-    // Customize mode: return the brand's own favorites
-    return brand.favoriteColorIds;
-  }
 
-  if (entityType === "customer") {
-    const customer = customers.find((c) => c.id === entityId);
-    if (!customer || customer.favoriteColors.length === 0) {
-      // No customer customization — fall through to brand or global
-      // For Phase 1: customer inherits from global (brand resolution added in V4)
-      return globalFavorites;
+    case "brand": {
+      const brand = brandPreferences.find((b) => b.brandName === entityId);
+      if (!brand || brand.inheritMode === "inherit") {
+        return globalFavorites;
+      }
+      return brand.favoriteColorIds;
     }
-    return customer.favoriteColors;
-  }
 
-  return [];
+    case "customer": {
+      const customer = customers.find((c) => c.id === entityId);
+      if (!customer || customer.favoriteColors.length === 0) {
+        // No customer customization — fall through to global
+        // For Phase 1: customer inherits from global (brand resolution added in V4)
+        return globalFavorites;
+      }
+      return customer.favoriteColors;
+    }
+
+    default: {
+      const _exhaustive: never = entityType;
+      return _exhaustive;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -58,45 +68,46 @@ export interface InheritanceChain {
 }
 
 export function getInheritanceChain(
-  entityType: "global" | "brand" | "customer",
+  entityType: EntityType,
   entityId?: string
 ): InheritanceChain {
-  const globalDefaults = colors
-    .filter((c) => c.isFavorite === true)
-    .map((c) => c.id);
+  const globalDefaults = getGlobalFavoriteIds();
 
-  if (entityType === "global") {
-    return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
-  }
-
-  if (entityType === "brand") {
-    const brand = brandPreferences.find((b) => b.brandName === entityId);
-    if (!brand || brand.inheritMode === "inherit") {
+  switch (entityType) {
+    case "global":
       return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
-    }
-    return {
-      globalDefaults,
-      addedAtLevel: brand.explicitColorIds,
-      removedAtLevel: brand.removedInheritedColorIds,
-    };
-  }
 
-  if (entityType === "customer") {
-    const customer = customers.find((c) => c.id === entityId);
-    if (!customer || customer.favoriteColors.length === 0) {
-      return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+    case "brand": {
+      const brand = brandPreferences.find((b) => b.brandName === entityId);
+      if (!brand || brand.inheritMode === "inherit") {
+        return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+      }
+      return {
+        globalDefaults,
+        addedAtLevel: brand.explicitColorIds,
+        removedAtLevel: brand.removedInheritedColorIds,
+      };
     }
-    // For customer: added = colors not in global, removed = global colors not in customer
-    const addedAtLevel = customer.favoriteColors.filter(
-      (id) => !globalDefaults.includes(id)
-    );
-    const removedAtLevel = globalDefaults.filter(
-      (id) => !customer.favoriteColors.includes(id)
-    );
-    return { globalDefaults, addedAtLevel, removedAtLevel };
-  }
 
-  return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+    case "customer": {
+      const customer = customers.find((c) => c.id === entityId);
+      if (!customer || customer.favoriteColors.length === 0) {
+        return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+      }
+      const addedAtLevel = customer.favoriteColors.filter(
+        (id) => !globalDefaults.includes(id)
+      );
+      const removedAtLevel = globalDefaults.filter(
+        (id) => !customer.favoriteColors.includes(id)
+      );
+      return { globalDefaults, addedAtLevel, removedAtLevel };
+    }
+
+    default: {
+      const _exhaustive: never = entityType;
+      return _exhaustive;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -140,9 +151,12 @@ export function propagateAddition(
   }
 
   if (level === "brand") {
-    // Brand-level propagation: propagate to inheriting customers
-    // For Phase 1, customers inherit from global, not brand directly.
-    // This will be expanded in V4/V5 when brand→customer hierarchy is wired.
+    // PHASE 1 STUB: Brand→customer propagation not wired until V4/V5.
+    // Callers should check the brand-level propagation is a no-op in Phase 1.
+    // This will be expanded when brand→customer hierarchy is wired.
+    console.warn(
+      "[color-preferences] propagateAddition: brand-level propagation is a Phase 1 stub (no-op)"
+    );
   }
 }
 
@@ -156,6 +170,8 @@ export interface ImpactPreview {
   customerCount: number;
   suppliers: string[];
   customers: string[];
+  /** True when the result is incomplete due to Phase 1 limitations */
+  isStub?: boolean;
 }
 
 export function getImpactPreview(
@@ -185,18 +201,22 @@ export function getImpactPreview(
         affectedCustomers.push(customer.company);
       }
     }
+
+    return {
+      supplierCount: affectedSuppliers.length,
+      customerCount: affectedCustomers.length,
+      suppliers: affectedSuppliers,
+      customers: affectedCustomers,
+    };
   }
 
-  if (level === "brand") {
-    // Brand-level removal: check customers inheriting from this brand
-    // Phase 1: customer→brand link isn't wired yet, so return empty
-  }
-
+  // PHASE 1 STUB: Brand-level impact preview requires customer→brand link (V4/V5)
   return {
-    supplierCount: affectedSuppliers.length,
-    customerCount: affectedCustomers.length,
-    suppliers: affectedSuppliers,
-    customers: affectedCustomers,
+    supplierCount: 0,
+    customerCount: 0,
+    suppliers: [],
+    customers: [],
+    isStub: true,
   };
 }
 
