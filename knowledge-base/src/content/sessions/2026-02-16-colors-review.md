@@ -20,7 +20,7 @@ Full quality review of the colors vertical across all 6 vertical slices (V1–V6
 - 8 helper functions in `lib/helpers/color-preferences.ts`
 - 7 shared/feature components (`FavoritesColorSection`, `InheritanceToggle`, `InheritanceDetail`, `RemovalConfirmationDialog`, `ColorSwatchPicker`, `GarmentMiniCard`, `ColorFilterGrid`)
 - 4 page-level components (settings/colors, BrandDetailDrawer, CustomerPreferencesTab, GarmentCatalogToolbar)
-- 1 custom hook (`useColorFilter`)
+- 3 custom hooks (`useColorFilter`, `useDebounce`, `useGridKeyboardNav`)
 - 1 constants file (`swatch.ts`)
 - 41 helper tests + 19 schema tests
 
@@ -91,11 +91,9 @@ Audited against three reference documents:
 
 2. **Missing test coverage for removal functions** — `removeFromAll`, `removeFromLevelOnly`, `removeFromSelected` had zero tests despite being core N16/N17/N18 breadboard affordances. Added 9 new tests with proper mock data snapshot/restore pattern. Test count: 617 → 626.
 
-### Deferred (GitHub Issues Filed)
+3. **`useDebounce` hook extraction** — General-purpose debounce hook was defined inline in `settings/colors/page.tsx`. Extracted to generic `lib/hooks/useDebounce.ts`. ([#241](https://github.com/cmbays/print-4ink/issues/241) — closed)
 
-3. **`useDebounce` hook inline** — General-purpose debounce hook defined inline in `settings/colors/page.tsx`. Should be extracted to `lib/hooks/useDebounce.ts`. → [#241](https://github.com/cmbays/print-4ink/issues/241)
-
-4. **Duplicate keyboard navigation** — Arrow key grid navigation duplicated between `ColorSwatchPicker` and `ColorFilterGrid`. Should be extracted to shared `useGridKeyboardNav` hook. → [#242](https://github.com/cmbays/print-4ink/issues/242)
+4. **DRY keyboard navigation** — Arrow key grid navigation duplicated between `ColorSwatchPicker` and `ColorFilterGrid`. Extracted to shared `lib/hooks/useGridKeyboardNav.ts` hook. ([#242](https://github.com/cmbays/print-4ink/issues/242) — closed)
 
 ## Cross-Vertical Observations
 
@@ -114,6 +112,6 @@ Audited against three reference documents:
 - **Branch**: `session/0216-colors-review`
 - **PR**: Created from this session
 - **GitHub Issues**: [#241](https://github.com/cmbays/print-4ink/issues/241), [#242](https://github.com/cmbays/print-4ink/issues/242)
-- **Files modified**: `docs/APP_FLOW.md`, `lib/helpers/__tests__/color-preferences.test.ts`
+- **Files modified**: `docs/APP_FLOW.md`, `lib/helpers/__tests__/color-preferences.test.ts`, `lib/hooks/useDebounce.ts` (new), `lib/hooks/useGridKeyboardNav.ts` (new), `components/features/ColorSwatchPicker.tsx`, `app/(dashboard)/garments/_components/ColorFilterGrid.tsx`, `app/(dashboard)/settings/colors/page.tsx`
 - **Breadboard reference**: `docs/breadboards/color-preference-breadboard.md`
 - **Prior session**: [2026-02-15 Colors Foundation](../2026-02-15-colors-foundation)
