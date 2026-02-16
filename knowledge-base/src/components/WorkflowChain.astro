@@ -1,4 +1,6 @@
 ---
+import stagesConfig from '../../../config/stages.json';
+
 interface SessionInfo {
   slug: string;
   title: string;
@@ -8,31 +10,21 @@ interface SessionInfo {
 
 interface Props {
   currentSlug: string;
-  vertical: string;
+  pipeline: string;
   allSessions: SessionInfo[];
 }
 
-const { currentSlug, vertical, allSessions } = Astro.props;
+const { currentSlug, pipeline, allSessions } = Astro.props;
 
-const stageOrder = [
-  'research',
-  'interview',
-  'breadboarding',
-  'implementation-planning',
-  'build',
-  'review',
-  'learnings',
-];
+const stageOrder = stagesConfig
+  .filter((s) => s.pipeline !== false)
+  .map((s) => s.slug);
 
-const shortStageLabels: Record<string, string> = {
-  research: 'Research',
-  interview: 'Interview',
-  breadboarding: 'Breadboard',
-  'implementation-planning': 'Impl Plan',
-  build: 'Build',
-  review: 'Review',
-  learnings: 'Learnings',
-};
+const shortStageLabels: Record<string, string> = Object.fromEntries(
+  stagesConfig
+    .filter((s) => s.pipeline !== false)
+    .map((s) => [s.slug, s.label])
+);
 
 // Sort by stage order, then by date (filtering done by caller)
 const chainSessions = allSessions.sort((a, b) => {
@@ -59,7 +51,7 @@ function truncateTitle(title: string, maxLen: number = 24): string {
         return (
           <>
             <a
-              href={`/sessions/${session.slug}`}
+              href={`/pipelines/${session.slug}`}
               class:list={[
                 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] border transition-colors whitespace-nowrap',
                 isCurrent

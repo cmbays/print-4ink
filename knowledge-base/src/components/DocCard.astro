@@ -7,15 +7,15 @@ interface Props {
   title: string;
   subtitle: string;
   date: Date;
-  vertical: string;
-  verticalSecondary?: string[];
+  pipeline: string;
+  pipelineType?: string;
   stage: string;
   tags: string[];
   status: string;
   slug: string;
 }
 
-const { title, subtitle, date, vertical, verticalSecondary = [], stage, tags, status, slug } = Astro.props;
+const { title, subtitle, date, pipeline, pipelineType, stage, tags, status, slug } = Astro.props;
 
 const dateStr = date.toISOString().split('T')[0];
 
@@ -34,12 +34,12 @@ function tagColor(tag: string): string {
   return tagColorMap[tag] || 'bg-bg-surface text-text-muted';
 }
 
-const verticalLabelMap: Record<string, string> = Object.fromEntries(
+const pipelineLabelMap: Record<string, string> = Object.fromEntries(
   verticalsConfig.map((v) => [v.slug, v.label])
 );
 
-function verticalLabel(v: string): string {
-  return verticalLabelMap[v] || v;
+function pipelineLabel(v: string): string {
+  return pipelineLabelMap[v] || v;
 }
 
 const stageLabelMap: Record<string, string> = Object.fromEntries(
@@ -52,7 +52,7 @@ function stageLabel(s: string): string {
 ---
 
 <a
-  href={`/sessions/${slug}`}
+  href={`/pipelines/${slug}`}
   class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group"
 >
   <!-- Tags row -->
@@ -88,12 +88,12 @@ function stageLabel(s: string): string {
   <div class="flex items-center gap-1.5 mt-2 text-[11px] text-text-muted">
     <span>{dateStr}</span>
     <span class="opacity-40">&middot;</span>
-    <span>{verticalLabel(vertical)}</span>
-    {verticalSecondary.length > 0 && verticalSecondary.map((v) => (
+    <span>{pipelineLabel(pipeline)}</span>
+    {pipelineType && pipelineType !== 'vertical' && (
       <span class="px-1.5 py-0.5 rounded bg-purple/10 text-purple text-[10px]">
-        +{verticalLabel(v)}
+        {pipelineType}
       </span>
-    ))}
+    )}
     <span class="opacity-40">&middot;</span>
     <span class="px-1.5 py-0.5 rounded bg-bg-surface text-text-muted text-[10px]">
       {stageLabel(stage)}
