@@ -3,8 +3,10 @@ title: "Jobs Vertical Discovery"
 subtitle: "Competitive analysis of Printavo and PrintLife, 12-question user interview, journey mapping with 12 friction points, and scope definition for the production backbone"
 date: 2026-02-11
 phase: 1
-vertical: jobs
-verticalSecondary: []
+pipeline: jobs
+pipelineType: vertical
+products: [jobs]
+tools: []
 stage: research
 tags: [research, decision]
 sessionId: "6df58e54-e1a6-4bef-ae1d-549e6e72ebf7"

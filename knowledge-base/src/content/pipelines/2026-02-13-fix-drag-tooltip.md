@@ -3,8 +3,10 @@ title: "Fix: Board Drag-and-Drop Crash"
 subtitle: "DragOverlay outside TooltipProvider caused fatal runtime error on card drag"
 date: 2026-02-13
 phase: 1
-vertical: jobs
-verticalSecondary: []
+pipeline: jobs
+pipelineType: vertical
+products: [jobs]
+tools: []
 stage: build
 tags: [feature, learning]
 sessionId: "fix: kanban card dragging"

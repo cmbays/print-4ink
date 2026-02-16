@@ -3,8 +3,10 @@ title: "Skills Implementation"
 subtitle: "Built two project-specific Claude Code skills -- screen-builder and quality-gate -- encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens."
 date: 2026-02-07
 phase: 1
-vertical: meta
-verticalSecondary: []
+pipeline: meta
+pipelineType: horizontal
+products: []
+tools: [knowledge-base]
 stage: build
 tags: [feature, build]
 sessionId: "58358bf9-61aa-4451-a184-c3d91d1871bd"

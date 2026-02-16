@@ -3,8 +3,10 @@ title: "Vercel Setup with Access Code Protection"
 subtitle: "4Ink demo deployment infrastructure"
 date: 2026-02-08
 phase: 1
-vertical: meta
-verticalSecondary: []
+pipeline: meta
+pipelineType: horizontal
+products: []
+tools: [knowledge-base]
 stage: build
 tags: [build]
 sessionId: "09b70260-83ac-4830-9b02-ed8c0683f699"

@@ -3,8 +3,10 @@ title: "Strategic Pivot: Vertical-by-Vertical"
 subtitle: "Moving from linear 10-step implementation plan to user-validated vertical development focused on 4Ink's core pain points."
 date: 2026-02-08
 phase: 1
-vertical: meta
-verticalSecondary: [quoting]
+pipeline: meta
+pipelineType: horizontal
+products: []
+tools: [knowledge-base]
 stage: implementation-planning
 tags: [plan, decision]
 sessionId: "7b394c57-f392-4fb2-87da-1583c256b010"

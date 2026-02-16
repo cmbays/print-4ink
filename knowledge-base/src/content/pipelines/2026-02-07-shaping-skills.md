@@ -3,8 +3,10 @@ title: "Shaping Skills Evaluation"
 subtitle: "Evaluated Ryan Singer's shaping-skills methodology and extracted three high-value patterns for Screen Print Pro's build process."
 date: 2026-02-07
 phase: 1
-vertical: meta
-verticalSecondary: []
+pipeline: meta
+pipelineType: horizontal
+products: []
+tools: [knowledge-base]
 stage: research
 tags: [decision, research]
 sessionId: "b8b97fce-ca40-4f39-972f-420469febfc5"

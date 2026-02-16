@@ -3,8 +3,10 @@ title: "CI & Testing Setup"
 subtitle: "GitHub Actions CI workflow, Vitest schema tests, and mock data UUID fix. Catches build/lint/type/test failures on every push and PR."
 date: 2026-02-07
 phase: 1
-vertical: meta
-verticalSecondary: []
+pipeline: meta
+pipelineType: horizontal
+products: []
+tools: [knowledge-base]
 stage: build
 tags: [feature, build, learning]
 sessionId: "29d21a39-94a9-4cb3-8ac1-bcc442a85d68"

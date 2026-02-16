@@ -3,8 +3,10 @@ title: "Garment Catalog & Screen Intelligence — Vertical Discovery"
 subtitle: "4-agent research team + owner interview reshapes scope: drop Screen Room vertical, go deep on Garment Catalog, derive screen data from jobs"
 date: 2026-02-14
 phase: 1
-vertical: garments
-verticalSecondary: [screen-room, customer-management]
+pipeline: garments
+pipelineType: vertical
+products: [garments]
+tools: []
 stage: research
 tags: [research, decision]
 sessionId: "screen-garment-discovery-2026-02-14"

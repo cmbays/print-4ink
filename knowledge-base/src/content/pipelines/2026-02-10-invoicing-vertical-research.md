@@ -3,8 +3,10 @@ title: "Invoicing Vertical Research"
 subtitle: "Comprehensive competitive, UX, integration, compliance, and industry research for the Screen Print Pro invoicing vertical"
 date: 2026-02-10
 phase: 1
-vertical: invoicing
-verticalSecondary: []
+pipeline: invoicing
+pipelineType: vertical
+products: [invoices]
+tools: []
 stage: research
 tags: [research, plan]
 sessionId: "2e017579-35ba-4702-9fa6-428c2bbcec28"

@@ -3,8 +3,10 @@ title: "DevX Vertical — Workflow Interview"
 subtitle: "Comprehensive interview on parallel AI workflow, session management, automation, and developer experience optimization"
 date: 2026-02-14
 phase: 1
-vertical: devx
-verticalSecondary: [meta]
+pipeline: devx
+pipelineType: horizontal
+products: []
+tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]
 stage: interview
 tags: [decision, plan]
 sessionId: "52e1d723-fdca-4d58-8f13-3393cf803335"

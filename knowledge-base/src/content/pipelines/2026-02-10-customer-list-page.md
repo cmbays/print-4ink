@@ -3,8 +3,10 @@ title: "Customer List Page"
 subtitle: "Smart views, search, filters, stats bar, responsive table — the /customers browse experience"
 date: 2026-02-10
 phase: 1
-vertical: customer-management
-verticalSecondary: []
+pipeline: customer-management
+pipelineType: vertical
+products: [customers]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "b11a4feb-edb5-44ec-89a2-cedd0cb9c591"

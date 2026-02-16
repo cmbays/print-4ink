@@ -3,8 +3,10 @@ title: "DevX Vertical — Review"
 subtitle: "Quality gate and E2E pipeline test results for the developer experience vertical"
 date: 2026-02-14
 phase: 1
-vertical: devx
-verticalSecondary: [meta]
+pipeline: devx
+pipelineType: horizontal
+products: []
+tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]
 stage: review
 tags: [build, decision]
 sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"

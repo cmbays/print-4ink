@@ -3,8 +3,10 @@ title: "Mobile Optimization — Research & Discovery"
 subtitle: "Competitive analysis, journey mapping, and scope definition for the mobile optimization vertical"
 date: 2026-02-14
 phase: 1
-vertical: mobile-optimization
-verticalSecondary: [quoting, jobs, customer-management, invoicing]
+pipeline: mobile-optimization
+pipelineType: horizontal
+products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
+tools: []
 stage: research
 tags: [research, plan]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"

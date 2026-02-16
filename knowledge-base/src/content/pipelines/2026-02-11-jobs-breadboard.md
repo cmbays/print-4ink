@@ -3,8 +3,10 @@ title: "Jobs Vertical Breadboard"
 subtitle: "126 UI affordances, 34 code affordances, 28 data stores, and 31 components mapped across 10 places for the production board, jobs list, and job detail"
 date: 2026-02-11
 phase: 1
-vertical: jobs
-verticalSecondary: []
+pipeline: jobs
+pipelineType: vertical
+products: [jobs]
+tools: []
 stage: breadboarding
 tags: [plan, build]
 sessionId: "6df58e54-e1a6-4bef-ae1d-549e6e72ebf7"

@@ -3,8 +3,10 @@ title: "Price Matrix Build"
 subtitle: "Full implementation of the pricing engine vertical — schemas, editors, Power Grid, sandbox mode, and the useSpreadsheetEditor data grid widget"
 date: 2026-02-12
 phase: 1
-vertical: price-matrix
-verticalSecondary: []
+pipeline: price-matrix
+pipelineType: vertical
+products: [pricing]
+tools: []
 stage: build
 tags: [feature, build, learning]
 sessionId: "c564ffea-778c-43d0-a35f-2bb32431d23b"

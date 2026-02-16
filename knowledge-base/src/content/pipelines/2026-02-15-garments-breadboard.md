@@ -3,8 +3,10 @@ title: "Garments Vertical — Consolidated Breadboard"
 subtitle: "Comprehensive affordance mapping incorporating catalog build, mockup engine, and interview-driven enhancements"
 date: 2026-02-15
 phase: 1
-vertical: garments
-verticalSecondary: [quoting, customer-management]
+pipeline: garments
+pipelineType: vertical
+products: [garments]
+tools: []
 stage: breadboarding
 tags: [plan]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"

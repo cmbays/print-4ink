@@ -3,8 +3,10 @@ title: "Customer Management Breadboard"
 subtitle: "Interactive visualization of Places, Components, Wiring, and Build Order for the Customer Management vertical"
 date: 2026-02-10
 phase: 1
-vertical: customer-management
-verticalSecondary: []
+pipeline: customer-management
+pipelineType: vertical
+products: [customers]
+tools: []
 stage: breadboarding
 tags: [plan, build]
 sessionId: "69497710-9bb5-46d9-8e49-949cda0e9d65"

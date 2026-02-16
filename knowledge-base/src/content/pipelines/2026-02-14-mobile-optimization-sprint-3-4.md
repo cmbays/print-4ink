@@ -3,8 +3,10 @@ title: "Mobile Optimization Sprint 3+4 — Shared Components, Form Layouts, Deta
 subtitle: "Built reusable mobile components and adapted all detail views for mobile with parallel agent execution"
 date: 2026-02-14
 phase: 1
-vertical: mobile-optimization
-verticalSecondary: [quoting, invoicing, jobs, customer-management]
+pipeline: mobile-optimization
+pipelineType: horizontal
+products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "72f6597a-7b9e-4ce1-8393-ee8ff78c2b34"

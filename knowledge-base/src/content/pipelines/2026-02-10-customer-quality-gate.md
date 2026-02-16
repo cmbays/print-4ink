@@ -3,8 +3,10 @@ title: "Customer Management Quality Gate"
 subtitle: "Comprehensive 5-subagent audit of Customer List + Customer Detail pages. 10 fixes across 11 files."
 date: 2026-02-10
 phase: 1
-vertical: customer-management
-verticalSecondary: []
+pipeline: customer-management
+pipelineType: vertical
+products: [customers]
+tools: []
 stage: review
 tags: [build, feature]
 sessionId: "fb57182f-1dee-41b4-be8c-173b629bb9b1"

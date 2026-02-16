@@ -3,8 +3,10 @@ title: "Quoting-Customer Interconnection"
 subtitle: "Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search."
 date: 2026-02-10
 phase: 1
-vertical: quoting
-verticalSecondary: [customer-management, invoicing]
+pipeline: quoting
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "633cdbe3-a795-443a-b712-f03c868b4c2e"

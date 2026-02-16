@@ -3,8 +3,10 @@ title: "Invoicing Breadboard"
 subtitle: "UI affordances, code affordances, wiring, and component boundaries for the invoicing vertical — the buildable blueprint before code."
 date: 2026-02-11
 phase: 1
-vertical: invoicing
-verticalSecondary: []
+pipeline: invoicing
+pipelineType: vertical
+products: [invoices]
+tools: []
 stage: breadboarding
 tags: [plan, research]
 sessionId: "ba5ae290-306e-47a6-b09b-c2c10320dad0"

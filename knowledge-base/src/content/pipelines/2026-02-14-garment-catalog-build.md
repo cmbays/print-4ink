@@ -3,8 +3,10 @@ title: "Garment Catalog & Customer Screen Intelligence — Build"
 subtitle: "Full vertical build: catalog page, customer screens tab, favorites, and cross-linking polish"
 date: 2026-02-14
 phase: 1
-vertical: garments
-verticalSecondary: [customer-management, jobs]
+pipeline: garments
+pipelineType: vertical
+products: [garments]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"

@@ -3,8 +3,10 @@ title: "Mobile Optimization — User Interview"
 subtitle: "10-question interview validating mobile assumptions and uncovering new priorities"
 date: 2026-02-14
 phase: 1
-vertical: mobile-optimization
-verticalSecondary: [quoting, jobs, customer-management, invoicing]
+pipeline: mobile-optimization
+pipelineType: horizontal
+products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
+tools: []
 stage: interview
 tags: [research, decision]
 sessionId: "dabb8a6a-42cc-4db3-a770-a184cd629875"

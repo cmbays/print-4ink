@@ -3,8 +3,10 @@ title: "Quoting Breadboard"
 subtitle: "Visual blueprint mapping all Places, UI affordances, code affordances, and wiring for the Quoting vertical. Produced by the breadboarding skill as input to the frontend-builder agent."
 date: 2026-02-08
 phase: 1
-vertical: quoting
-verticalSecondary: []
+pipeline: quoting
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: breadboarding
 tags: [plan, build]
 sessionId: "09b70260-83ac-4830-9b02-ed8c0683f699"

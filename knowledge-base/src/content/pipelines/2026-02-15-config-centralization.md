@@ -3,8 +3,10 @@ title: "Centralize Project Configs & Deduplicate Code"
 subtitle: "Consolidated verticals, stages, and tags from 7+ locations into 3 canonical JSON config files. Fixed 4 code duplication issues."
 date: 2026-02-15
 phase: 1
-vertical: devx
-verticalSecondary: [meta]
+pipeline: devx
+pipelineType: horizontal
+products: []
+tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]
 stage: build
 tags: [build, decision]
 sessionId: "48e010ca-a08f-4c6e-b64b-63bcfc798f5b"

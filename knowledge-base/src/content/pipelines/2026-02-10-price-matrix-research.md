@@ -3,8 +3,10 @@ title: "Price Matrix Vertical Research"
 subtitle: "Comprehensive market research, competitor analysis, and prioritized feature recommendations for the pricing engine vertical"
 date: 2026-02-10
 phase: 1
-vertical: price-matrix
-verticalSecondary: []
+pipeline: price-matrix
+pipelineType: vertical
+products: [pricing]
+tools: []
 stage: research
 tags: [research, plan, decision]
 sessionId: "c2b2fb1b-b94a-4b17-bab0-3616c520c716"

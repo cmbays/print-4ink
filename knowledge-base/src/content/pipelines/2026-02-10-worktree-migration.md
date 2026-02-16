@@ -3,8 +3,10 @@ title: "Git Worktree Migration + Memory Refactoring"
 subtitle: "Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%."
 date: 2026-02-10
 phase: 1
-vertical: meta
-verticalSecondary: []
+pipeline: meta
+pipelineType: horizontal
+products: []
+tools: [knowledge-base]
 stage: build
 tags: [build, decision]
 sessionId: "8a3b9d7b-461c-48a8-bdbc-7b4361c6260a"

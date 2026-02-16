@@ -3,8 +3,10 @@ title: "Garment Catalog & Customer Screen Intelligence — Breadboard"
 subtitle: "Mapped all places, affordances, wiring, component boundaries, and build order for the combined Garment Catalog + Customer Screens + Favorites + Cross-linking build"
 date: 2026-02-14
 phase: 1
-vertical: garments
-verticalSecondary: [screen-room, customer-management]
+pipeline: garments
+pipelineType: vertical
+products: [garments]
+tools: []
 stage: breadboarding
 tags: [plan, decision]
 sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"

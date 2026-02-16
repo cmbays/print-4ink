@@ -3,8 +3,10 @@ title: "Invoicing Vertical Build"
 subtitle: "Full invoicing system — schemas, list page, form, detail view, overlays, and integrations. 30 new files, 8 modified, 314 tests passing."
 date: 2026-02-11
 phase: 1
-vertical: invoicing
-verticalSecondary: []
+pipeline: invoicing
+pipelineType: vertical
+products: [invoices]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "ba5ae290-306e-47a6-b09b-c2c10320dad0"

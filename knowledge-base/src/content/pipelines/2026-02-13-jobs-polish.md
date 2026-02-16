@@ -3,8 +3,10 @@ title: "Jobs Polish — Phase 2 Backend Readiness"
 subtitle: "Extracted pure functions for testability, added 26 new tests, accessibility improvements, CodeRabbit review fixes, filter UX refinements, and CI fix"
 date: 2026-02-13
 phase: 1
-vertical: jobs
-verticalSecondary: [price-matrix]
+pipeline: jobs
+pipelineType: vertical
+products: [jobs]
+tools: []
 stage: review
 tags: [feature, build, learning]
 sessionId: "734e42c5-f952-429d-84d9-0c4e52a57ffc"

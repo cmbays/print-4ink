@@ -3,8 +3,10 @@ title: "Customer Management Feedback"
 subtitle: "8 feedback items from 4Ink owner review. Layout consistency, inline column filters, timeline interactivity, workflow improvements, and code quality refinements."
 date: 2026-02-10
 phase: 1
-vertical: customer-management
-verticalSecondary: []
+pipeline: customer-management
+pipelineType: vertical
+products: [customers]
+tools: []
 stage: review
 tags: [feature, build]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"

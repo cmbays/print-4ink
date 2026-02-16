@@ -3,8 +3,10 @@ title: "Quoting Vertical Build"
 subtitle: "Complete implementation of the Quoting vertical — 3 pages, 15+ components, artwork system, flat pricing model, collapsible form sections. Built with parallel agents, polished via CodeRabbit review."
 date: 2026-02-08
 phase: 1
-vertical: quoting
-verticalSecondary: []
+pipeline: quoting
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "13546e08-2ee1-4de3-94a7-c2a596a15e1a"

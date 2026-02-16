@@ -3,8 +3,10 @@ title: "Quoting Discovery: Complete"
 subtitle: "Full competitive analysis, user interview, and improved journey design for the Quoting vertical"
 date: 2026-02-08
 phase: 1
-vertical: quoting
-verticalSecondary: []
+pipeline: quoting
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: research
 tags: [feature, research]
 sessionId: "0fe71069-b9c2-45f3-9a06-5c57de8a013d"

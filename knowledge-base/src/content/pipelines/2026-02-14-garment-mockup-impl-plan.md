@@ -3,8 +3,10 @@ title: "Garment Mockup Engine — Implementation Plan"
 subtitle: "16-task TDD plan for SVG composition engine with breadboard gap fixes"
 date: 2026-02-14
 phase: 1
-vertical: garments
-verticalSecondary: [quoting, jobs]
+pipeline: garments
+pipelineType: vertical
+products: [garments]
+tools: []
 stage: implementation-planning
 tags: [plan, feature]
 sessionId: "fdf6daba-01b3-4d39-81c8-9c5a44f2b0e6"

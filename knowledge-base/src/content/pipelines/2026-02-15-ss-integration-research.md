@@ -3,8 +3,10 @@ title: "S&S Activewear Integration Research Phase"
 subtitle: "4-agent parallel research: security, standards, architecture, infrastructure"
 date: 2026-02-15
 phase: 2
-vertical: meta
-verticalSecondary: [garments]
+pipeline: meta
+pipelineType: horizontal
+products: [garments]
+tools: [knowledge-base]
 stage: research
 tags: [research, plan, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"

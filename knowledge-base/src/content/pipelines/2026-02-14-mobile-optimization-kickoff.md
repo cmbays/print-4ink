@@ -3,8 +3,10 @@ title: "Mobile Optimization Vertical — Kickoff"
 subtitle: "Registered mobile-optimization as a new vertical and laid the foundation for systematic mobile improvement"
 date: 2026-02-14
 phase: 1
-vertical: mobile-optimization
-verticalSecondary: []
+pipeline: mobile-optimization
+pipelineType: horizontal
+products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
+tools: []
 stage: research
 tags: [plan, build]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
