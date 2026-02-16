@@ -16,6 +16,7 @@ const CONTRACT_DISCOUNT_RATE = 0.07;
 interface PricingSummaryProps {
   garmentSubtotal: number;
   decorationSubtotal: number;
+  dtfSubtotal?: number;
   setupFees: number;
   discounts: Discount[];
   onDiscountsChange: (discounts: Discount[]) => void;
@@ -36,6 +37,7 @@ function formatCurrency(value: number): string {
 export function PricingSummary({
   garmentSubtotal,
   decorationSubtotal,
+  dtfSubtotal = 0,
   setupFees,
   discounts,
   onDiscountsChange,
@@ -45,7 +47,7 @@ export function PricingSummary({
   screenReuse,
   screenReuseDiscount,
 }: PricingSummaryProps) {
-  const subtotal = garmentSubtotal + decorationSubtotal;
+  const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
 
   // Contract discount is auto-calculated, not editable
   const contractDiscount = useMemo(() => {
@@ -114,6 +116,16 @@ export function PricingSummary({
             {formatCurrency(decorationSubtotal)}
           </span>
         </div>
+
+        {/* DTF Gang Sheets */}
+        {dtfSubtotal > 0 && (
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">DTF Gang Sheets</span>
+            <span className="text-sm font-medium text-foreground">
+              {formatCurrency(dtfSubtotal)}
+            </span>
+          </div>
+        )}
 
         {/* Setup Fees (auto-calculated, read-only) */}
         <div className="flex items-center justify-between">

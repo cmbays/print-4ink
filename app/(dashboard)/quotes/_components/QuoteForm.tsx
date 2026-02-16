@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
+import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor, Film } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ import { CollapsibleSection } from "./CollapsibleSection";
 import { ArtworkLibrary } from "./ArtworkLibrary";
 import { ArtworkUploadModal } from "./ArtworkUploadModal";
 import { QuoteReviewSheet } from "./QuoteReviewSheet";
+import { ServiceTypeTabBar } from "./ServiceTypeTabBar";
 import {
   customers as mockCustomers,
   colors as mockColors,
@@ -33,7 +34,9 @@ import {
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
-import type { Discount } from "@/lib/schemas/quote";
+import type { Discount, ServiceType } from "@/lib/schemas/quote";
+import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
+import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
 import type { Customer, CustomerTag, CustomerTypeTag } from "@/lib/schemas/customer";
 import { cn } from "@/lib/utils";
@@ -109,6 +112,17 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   const [customerNotes, setCustomerNotes] = useState(
     initialData?.customerNotes || ""
   );
+
+  // Service type tabs (S19, S20)
+  const [activeServiceTab, setActiveServiceTab] = useState<ServiceType>("screen-print");
+  const [enabledServiceTypes, setEnabledServiceTypes] = useState<ServiceType[]>(["screen-print"]);
+
+  // DTF state — lifted to QuoteForm for tab switching preservation (R1.2)
+  const [dtfLineItems, setDtfLineItems] = useState<DtfLineItem[]>([]);
+  const [sheetCalculation, setSheetCalculation] = useState<SheetCalculation | null>(null);
+  const [splitMode, setSplitMode] = useState<"combine" | "split">("combine");
+  const [canvasLayout, setCanvasLayout] = useState<CanvasLayout[] | null>(null);
+  const [activeSheetIndex, setActiveSheetIndex] = useState(0);
 
   // Screen reuse
   const customerScreens = useMemo(() => {
@@ -196,10 +210,13 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     return { garmentSubtotal, decorationSubtotal, setupFees, screenReuseDiscount };
   }, [lineItems, screenReuse]);
 
+  // DTF subtotal (N54)
+  const dtfSubtotal = sheetCalculation?.totalCost ?? 0;
+
   // Grand total for sticky bar
   const grandTotal = useMemo(() => {
     const { garmentSubtotal, decorationSubtotal, setupFees } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal;
+    const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
     const contractDiscount = customerTag === "contract"
       ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
       : 0;
@@ -208,7 +225,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     const preTaxTotal = subtotal + setupFees - totalDiscountAmount + shipping;
     const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
     return preTaxTotal + tax;
-  }, [pricingBreakdown, customerTag, discounts, shipping]);
+  }, [pricingBreakdown, dtfSubtotal, customerTag, discounts, shipping]);
 
   // Handlers
   const handleLineItemChange = useCallback(
@@ -320,6 +337,37 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     },
     [handleCustomerSelect]
   );
+
+  // N40 — handleTabSwitch
+  const handleTabSwitch = useCallback((type: ServiceType) => {
+    setActiveServiceTab(type);
+  }, []);
+
+  // N42 — addServiceType
+  const handleAddServiceType = useCallback((type: ServiceType) => {
+    setEnabledServiceTypes((prev) => [...prev, type]);
+    setActiveServiceTab(type);
+  }, []);
+
+  // N41 — validateTabCompletion (per-tab validation badges)
+  const tabValidation = useMemo((): Record<ServiceType, boolean> => {
+    // Screen print: at least one line item with garment and sizes
+    const spValid = lineItems.some((item) => {
+      if (!item.garmentId) return false;
+      const totalQty = Object.values(item.sizes).reduce((s, q) => s + q, 0);
+      return totalQty > 0;
+    });
+
+    // DTF: at least one item with name and valid dimensions (placeholder until Wave 2)
+    const dtfValid = dtfLineItems.length > 0 &&
+      dtfLineItems.every((item) => item.artworkName && item.width > 0 && item.height > 0 && item.quantity >= 1);
+
+    return {
+      "screen-print": spValid,
+      dtf: dtfValid,
+      embroidery: false,
+    };
+  }, [lineItems, dtfLineItems]);
 
   const handleToggleArtwork = useCallback((artworkId: string) => {
     setArtworkIds((prev) => {
@@ -856,43 +904,68 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           </div>
         </CollapsibleSection>
 
-        {/* Section 3: Line Items */}
-        <CollapsibleSection
-          title="Garments & Print Details"
-          icon={<ShoppingBag size={16} className="text-muted-foreground" />}
-          summary={lineItemSummary}
-          isComplete={lineItems.some((li) => li.garmentId !== "")}
-          defaultOpen
-        >
-          <div className="space-y-4 pt-2">
-            {errors.lineItems && (
-              <p className="text-xs text-error" role="alert">{errors.lineItems}</p>
-            )}
-            {lineItems.map((item, i) => (
-              <LineItemRow
-                key={item.id}
-                index={i}
-                data={item}
-                onChange={handleLineItemChange}
-                onRemove={handleLineItemRemove}
-                canRemove={lineItems.length > 1}
-                garmentCatalog={garmentCatalog}
-                colors={mockColors}
-                quoteArtworks={quoteArtworks}
-                errors={lineItemErrors[i]}
-              />
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleAddLineItem}
-              className="w-full"
-            >
-              <Plus size={16} className="mr-2" />
-              Add Another Line Item
-            </Button>
+        {/* Service Type Tab Bar (P2.3) */}
+        <ServiceTypeTabBar
+          activeTab={activeServiceTab}
+          enabledTypes={enabledServiceTypes}
+          onTabSwitch={handleTabSwitch}
+          onAddType={handleAddServiceType}
+          tabValidation={tabValidation}
+        />
+
+        {/* Screen Print Tab Content */}
+        {activeServiceTab === "screen-print" && (
+          <CollapsibleSection
+            title="Garments & Print Details"
+            icon={<ShoppingBag size={16} className="text-muted-foreground" />}
+            summary={lineItemSummary}
+            isComplete={lineItems.some((li) => li.garmentId !== "")}
+            defaultOpen
+          >
+            <div className="space-y-4 pt-2">
+              {errors.lineItems && (
+                <p className="text-xs text-error" role="alert">{errors.lineItems}</p>
+              )}
+              {lineItems.map((item, i) => (
+                <LineItemRow
+                  key={item.id}
+                  index={i}
+                  data={item}
+                  onChange={handleLineItemChange}
+                  onRemove={handleLineItemRemove}
+                  canRemove={lineItems.length > 1}
+                  garmentCatalog={garmentCatalog}
+                  colors={mockColors}
+                  quoteArtworks={quoteArtworks}
+                  errors={lineItemErrors[i]}
+                />
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleAddLineItem}
+                className="w-full"
+              >
+                <Plus size={16} className="mr-2" />
+                Add Another Line Item
+              </Button>
+            </div>
+          </CollapsibleSection>
+        )}
+
+        {/* DTF Tab Content (P2.4) — placeholder until Wave 2 */}
+        {activeServiceTab === "dtf" && (
+          <div className="rounded-lg border border-border bg-elevated p-8 text-center">
+            <Film className="mx-auto size-10 text-muted-foreground/40" />
+            <p className="mt-3 text-sm font-medium text-foreground">DTF Gang Sheet Builder</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Add designs, set sizes and quantities, then calculate optimal sheet layouts.
+            </p>
+            <p className="mt-4 text-xs text-muted-foreground/60">
+              Coming in next wave
+            </p>
           </div>
-        </CollapsibleSection>
+        )}
 
         {/* Section 4: Pricing Summary */}
         <CollapsibleSection
@@ -905,6 +978,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
             <PricingSummary
               garmentSubtotal={pricingBreakdown.garmentSubtotal}
               decorationSubtotal={pricingBreakdown.decorationSubtotal}
+              dtfSubtotal={dtfSubtotal}
               setupFees={pricingBreakdown.setupFees}
               discounts={discounts}
               onDiscountsChange={setDiscounts}
