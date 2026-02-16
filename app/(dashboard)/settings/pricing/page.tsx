@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -206,7 +206,7 @@ export default function PricingHubPage() {
     <>
       <Topbar
         breadcrumbs={buildBreadcrumbs(
-          { label: "Settings", href: "/settings/pricing" },
+          CRUMBS.settings,
           { label: "Pricing" },
         )}
       />

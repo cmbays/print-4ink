@@ -1,11 +1,5 @@
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../_components/QuoteForm";
 import { quotes } from "@/lib/mock-data";
 import type { LineItemData } from "../_components/LineItemRow";
@@ -63,28 +57,14 @@ export default async function NewQuotePage({
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/quotes">Quotes</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {isDuplicate ? "Copy as New" : "New Quote"}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <h1 className="text-2xl font-semibold tracking-tight">
-        {isDuplicate ? "Copy as New" : "New Quote"}
-      </h1>
-      <QuoteForm key={duplicate || "new"} mode="create" initialData={initialData} />
-    </div>
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.quotes, { label: isDuplicate ? "Copy as New" : "New Quote" })} />
+      <div className="flex flex-col gap-6">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {isDuplicate ? "Copy as New" : "New Quote"}
+        </h1>
+        <QuoteForm key={duplicate || "new"} mode="create" initialData={initialData} />
+      </div>
+    </>
   );
 }

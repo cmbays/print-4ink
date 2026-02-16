@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Palette, Search, LayoutGrid, List } from "lucide-react";
 import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import {
   FavoritesColorSection,
   ColorSwatch,
@@ -189,7 +189,7 @@ export default function SettingsColorsPage() {
     <>
       <Topbar
         breadcrumbs={buildBreadcrumbs(
-          { label: "Settings", href: "/settings/pricing" },
+          CRUMBS.settings,
           { label: "Colors" },
         )}
       />

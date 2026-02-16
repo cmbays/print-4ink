@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { invoices } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { InvoiceForm } from "@/app/(dashboard)/invoices/_components/InvoiceForm";
 
 export default async function EditInvoicePage({
@@ -20,7 +20,7 @@ export default async function EditInvoicePage({
       <>
         <Topbar
           breadcrumbs={buildBreadcrumbs(
-            { label: "Invoices", href: "/invoices" },
+            CRUMBS.invoices,
             { label: "Not Found" },
           )}
         />
@@ -56,7 +56,7 @@ export default async function EditInvoicePage({
     <>
       <Topbar
         breadcrumbs={buildBreadcrumbs(
-          { label: "Invoices", href: "/invoices" },
+          CRUMBS.invoices,
           { label: invoice.invoiceNumber, href: `/invoices/${id}` },
           { label: "Edit" },
         )}

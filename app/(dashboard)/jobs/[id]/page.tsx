@@ -8,14 +8,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BottomActionBar } from "@/components/layout/bottom-action-bar";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 
 import { GarmentMockupCard, MockupFilterProvider } from "@/components/features/mockup";
 import type { ArtworkPlacement } from "@/components/features/mockup";
@@ -326,36 +320,21 @@ export default function JobDetailPage() {
   // ===========================================================================
 
   return (
-    <div className="flex flex-col gap-4 p-4 pb-24 md:p-6 md:pb-6">
-      {/* Mobile: back button */}
-      <div className="md:hidden">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 -ml-2 min-h-(--mobile-touch-target) text-muted-foreground"
-          onClick={() => router.push("/jobs/board")}
-        >
-          <ArrowLeft className="size-4" />
-          Back to Board
-        </Button>
-      </div>
-
-      {/* Desktop: breadcrumb */}
-      <Breadcrumb className="hidden md:flex">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/jobs/board">Jobs</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{job.jobNumber}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.jobsBoard, { label: job.jobNumber })} />
+      <div className="flex flex-col gap-4 pb-24 md:pb-0">
+        {/* Mobile: back button */}
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 -ml-2 min-h-(--mobile-touch-target) text-muted-foreground"
+            onClick={() => router.push("/jobs/board")}
+          >
+            <ArrowLeft className="size-4" />
+            Back to Board
+          </Button>
+        </div>
 
       {/* Block reason banner */}
       {job.lane === "blocked" && (
@@ -528,6 +507,7 @@ export default function JobDetailPage() {
           onCancel={() => setBlockDialogOpen(false)}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 }
