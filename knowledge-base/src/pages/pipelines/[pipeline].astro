@@ -4,32 +4,30 @@ import Pipeline from '../../components/Pipeline.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
-import verticalsConfig from '../../../../config/verticals.json';
+import { pipelineLabel as getPipelineLabel, normalizeStage } from '../../lib/utils';
 import stagesConfig from '../../../../config/stages.json';
 
-const pipelineLabels: Record<string, string> = Object.fromEntries(
-  verticalsConfig.map((v) => [v.slug, v.label])
-);
-
 const allStages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => s.slug);
+  .filter((s: { slug: string; label: string; pipeline?: boolean }) => s.pipeline !== false)
+  .map((s: { slug: string }) => s.slug);
 
-export function getStaticPaths() {
-  return verticalsConfig.map((v) => ({ params: { pipeline: v.slug } }));
+export async function getStaticPaths() {
+  const docs = await getCollection('pipelines');
+  const unique = [...new Set(docs.map((d) => d.data.pipelineName))];
+  return unique.map((slug) => ({ params: { pipeline: slug } }));
 }
 
 const { pipeline } = Astro.params;
-const label = pipelineLabels[pipeline] || pipeline;
+const label = getPipelineLabel(pipeline);
 
 const allDocs = await getCollection('pipelines');
-const pipelineDocs = allDocs.filter((s) => s.data.pipeline === pipeline);
+const pipelineDocs = allDocs.filter((s) => s.data.pipelineName === pipeline);
 const sorted = pipelineDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// Compute stage breakdown
+// Compute stage breakdown (normalize old slugs → canonical before counting)
 const stageBreakdown: Record<string, number> = {};
 for (const stage of allStages) {
-  stageBreakdown[stage] = pipelineDocs.filter((s) => s.data.stage === stage).length;
+  stageBreakdown[stage] = pipelineDocs.filter((s) => normalizeStage(s.data.stage) === stage).length;
 }
 
 // Build pipeline stages
@@ -41,7 +39,7 @@ const pipelineStages = allStages.map((stage) => ({
 }));
 
 // Compute health status
-const coreStages = ['research', 'breadboarding', 'build'];
+const coreStages = ['research', 'breadboard', 'build'];
 const hasCoreStages = coreStages.every((s) => (stageBreakdown[s] || 0) > 0);
 const healthStatus = hasCoreStages ? 'Active' : 'In Progress';
 
@@ -106,7 +104,7 @@ const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
                 title={doc.data.title}
                 subtitle={doc.data.subtitle}
                 date={doc.data.date}
-                pipeline={doc.data.pipeline}
+                pipeline={doc.data.pipelineName}
                 pipelineType={doc.data.pipelineType}
                 stage={doc.data.stage}
                 tags={doc.data.tags}

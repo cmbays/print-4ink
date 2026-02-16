@@ -1,5 +1,5 @@
 ---
-import verticalsConfig from '../../../config/verticals.json';
+import { pipelineLabel, normalizeStage } from '../lib/utils';
 import stagesConfig from '../../../config/stages.json';
 
 interface Props {
@@ -12,18 +12,13 @@ interface Props {
 
 const { pipeline, totalDocs, stageBreakdown, latestDate, status } = Astro.props;
 
-const pipelineLabels: Record<string, string> = Object.fromEntries(
-  verticalsConfig.map((v) => [v.slug, v.label])
-);
-
 const allStages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => s.slug);
+  .filter((s: { slug: string; label: string; pipeline?: boolean }) => s.pipeline !== false)
+  .map((s: { slug: string }) => s.slug);
 
-const coveredStages = allStages.filter((s) => (stageBreakdown[s] || 0) > 0);
-const coverageRatio = coveredStages.length / allStages.length;
+const coveredStages = allStages.filter((s: string) => (stageBreakdown[s] || 0) > 0);
 const dateStr = latestDate.toISOString().split('T')[0];
-const label = pipelineLabels[pipeline] || pipeline;
+const label = pipelineLabel(pipeline);
 ---
 
 <div class="bg-bg-elevated border border-border rounded-lg p-4">

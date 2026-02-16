@@ -1,13 +1,11 @@
 [
   { "slug": "research", "label": "Research" },
   { "slug": "interview", "label": "Interview" },
-  { "slug": "shaping", "label": "Shaping" },
-  { "slug": "breadboarding", "label": "Breadboarding", "workAlias": "breadboard" },
-  { "slug": "implementation-planning", "label": "Implementation Planning", "workAlias": "plan" },
+  { "slug": "shape", "label": "Shape" },
+  { "slug": "breadboard", "label": "Breadboard" },
+  { "slug": "plan", "label": "Plan" },
   { "slug": "build", "label": "Build" },
-  { "slug": "polish", "label": "Polish" },
   { "slug": "review", "label": "Review" },
-  { "slug": "learnings", "label": "Learnings" },
   { "slug": "wrap-up", "label": "Wrap-up" },
   { "slug": "cooldown", "label": "Cooldown", "pipeline": false }
 ]

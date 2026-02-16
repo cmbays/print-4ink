@@ -424,7 +424,7 @@ npm run preview      # Preview
 
 All frontmatter is validated by Zod at build time (`knowledge-base/src/content.config.ts`).
 
-**Verticals, stages, and tags** are defined in canonical config files — see `config/verticals.json`, `config/stages.json`, and `config/tags.json`. All consumers (KB schema, KB UI, `work.sh`) import from these files. Do not duplicate the lists elsewhere.
+**Pipeline types, stages, products, tools, and tags** are defined in canonical config files — see `config/pipeline-types.json`, `config/stages.json`, `config/products.json`, `config/tools.json`, and `config/tags.json`. Pipeline names are free text (not config-backed enums). All consumers (KB schema, KB UI, `work.sh`) import from these files. Do not duplicate the lists elsewhere.
 
 **Status:** `complete`, `in-progress`, `superseded`
 
