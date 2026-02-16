@@ -357,6 +357,12 @@ CONTEXT
     if type _registry_add &>/dev/null; then
         _registry_add "$TOPIC" "$BRANCH"
     fi
+
+    # Capture Claude session ID in background (for `work resume`)
+    if type _poll_claude_session_id &>/dev/null; then
+        _poll_claude_session_id "$TOPIC" "$WORKTREE_DIR" &
+        disown
+    fi
 }
 
 # ── Phase Command (Generic Wrapper) ────────────────────────────────────────
