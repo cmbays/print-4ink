@@ -185,21 +185,24 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
 
   // Compute cost breakdowns for PricingSummary
   const pricingBreakdown = useMemo(() => {
-    let garmentSubtotal = 0;
-    let decorationSubtotal = 0;
-    let lineItemSetupFees = 0;
+    let garmentSubtotalBig = money(0);
+    let decorationSubtotalBig = money(0);
+    let lineItemSetupFeesBig = money(0);
 
     lineItems.forEach((item) => {
       const garment = garmentCatalog.find((g) => g.id === item.garmentId);
       const totalQty = Object.values(item.sizes).reduce((sum, qty) => sum + qty, 0);
-      garmentSubtotal += calculateGarmentCost(garment, totalQty);
-      decorationSubtotal += calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
-      lineItemSetupFees += calculateLineItemSetupFee(item.serviceType);
+      garmentSubtotalBig = garmentSubtotalBig.plus(calculateGarmentCost(garment, totalQty));
+      decorationSubtotalBig = decorationSubtotalBig.plus(calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty));
+      lineItemSetupFeesBig = lineItemSetupFeesBig.plus(calculateLineItemSetupFee(item.serviceType));
     });
 
+    const garmentSubtotal = toNumber(round2(garmentSubtotalBig));
+    const decorationSubtotal = toNumber(round2(decorationSubtotalBig));
+    const lineItemSetupFees = toNumber(round2(lineItemSetupFeesBig));
     const quoteSetupFee = screenReuse ? 0 : calculateQuoteSetupFee(lineItems);
     const screenReuseDiscount = screenReuse ? calculateQuoteSetupFee(lineItems) : 0;
-    const setupFees = lineItemSetupFees + quoteSetupFee;
+    const setupFees = toNumber(money(lineItemSetupFees).plus(quoteSetupFee));
 
     return { garmentSubtotal, decorationSubtotal, setupFees, screenReuseDiscount };
   }, [lineItems, screenReuse]);
@@ -455,7 +458,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     const contractDiscount = customerTag === "contract"
       ? toNumber(round2(subtotalBig.times(CONTRACT_DISCOUNT_RATE)))
       : 0;
-    const manualDiscountTotal = discounts.reduce((s, d) => toNumber(money(s).plus(d.amount)), 0);
+    const manualDiscountTotal = toNumber(discounts.reduce((s, d) => s.plus(d.amount), money(0)));
     const totalDiscountAmount = toNumber(money(contractDiscount).plus(manualDiscountTotal));
 
     const preTaxTotal = toNumber(
@@ -484,8 +487,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         );
         const garmentCost = calculateGarmentCost(garment, totalQty);
         const decoationCost = calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
-        const lineTotal = garmentCost + decoationCost;
-        const unitPrice = totalQty > 0 ? lineTotal / totalQty : 0;
+        const lineTotal = toNumber(money(garmentCost).plus(decoationCost));
+        const unitPrice = totalQty > 0 ? toNumber(round2(money(lineTotal).div(totalQty))) : 0;
         return {
           garmentId: item.garmentId,
           colorId: item.colorId,
@@ -613,7 +616,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       items.push({ label: "Contract Pricing (7%)", amount: contractAmount });
     }
     discounts.forEach((d) => items.push({ label: d.label, amount: d.amount }));
-    const total = items.reduce((s, d) => toNumber(money(s).plus(d.amount)), 0);
+    const total = toNumber(items.reduce((s, d) => s.plus(d.amount), money(0)));
     return { items, total };
   }, [pricingBreakdown, dtfSubtotal, customerTag, discounts]);
 

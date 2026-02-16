@@ -40,7 +40,7 @@ export function PricingSummary({
   screenReuseDiscount,
 }: PricingSummaryProps) {
   const subtotal = toNumber(
-    money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal)
+    round2(money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal))
   );
 
   // Contract discount is auto-calculated, not editable
@@ -56,7 +56,7 @@ export function PricingSummary({
   );
 
   const totalManualDiscounts = useMemo(
-    () => manualDiscounts.reduce((sum, d) => sum + d.amount, 0),
+    () => toNumber(manualDiscounts.reduce((sum, d) => money(sum).plus(d.amount), money(0))),
     [manualDiscounts]
   );
 

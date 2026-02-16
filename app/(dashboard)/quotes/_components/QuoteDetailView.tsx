@@ -30,7 +30,7 @@ import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@/lib/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/helpers/money";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 
 interface QuoteDetailViewProps {
   quote: Quote;
@@ -58,23 +58,25 @@ export function QuoteDetailView({
   const isDraft = quote.status === "draft";
   const isAccepted = quote.status === "accepted";
 
-  const totalDiscounts = quote.discounts.reduce((sum, d) => sum + d.amount, 0);
+  const totalDiscounts = toNumber(quote.discounts.reduce((sum, d) => sum.plus(d.amount), money(0)));
   const artworkMap = new Map(artworks.map((a) => [a.id, a]));
 
   // Compute garment / decoration / setup split from line items
-  let garmentTotal = 0;
-  let decorationTotal = 0;
-  let lineItemSetupFees = 0;
+  let garmentTotalBig = money(0);
+  let decorationTotalBig = money(0);
+  let lineItemSetupFeesBig = money(0);
   quote.lineItems.forEach((item) => {
     const garment = garmentCatalog.find((g) => g.id === item.garmentId);
     const totalQty = getTotalQty(item.sizes);
-    garmentTotal += calculateGarmentCost(garment, totalQty);
-    decorationTotal += calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
-    lineItemSetupFees += calculateLineItemSetupFee(item.serviceType);
+    garmentTotalBig = garmentTotalBig.plus(calculateGarmentCost(garment, totalQty));
+    decorationTotalBig = decorationTotalBig.plus(calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty));
+    lineItemSetupFeesBig = lineItemSetupFeesBig.plus(calculateLineItemSetupFee(item.serviceType));
   });
+  const garmentTotal = toNumber(round2(garmentTotalBig));
+  const decorationTotal = toNumber(round2(decorationTotalBig));
   const quoteSetupFee = calculateQuoteSetupFee(quote.lineItems);
-  const setupFeesTotal = lineItemSetupFees + quoteSetupFee;
-  const subtotal = garmentTotal + decorationTotal + setupFeesTotal;
+  const setupFeesTotal = toNumber(money(lineItemSetupFeesBig).plus(quoteSetupFee));
+  const subtotal = toNumber(money(garmentTotal).plus(decorationTotal).plus(setupFeesTotal));
   const effectiveTotal = quote.total;
 
   const garmentColors = useMemo(
@@ -144,11 +146,11 @@ export function QuoteDetailView({
           const totalQty = getTotalQty(item.sizes);
           const serviceType = item.serviceType as keyof typeof DECORATION_COST_PER_COLOR;
           const garmentUnitCost = garment?.basePrice ?? 0;
-          const decorationPerUnit = item.printLocationDetails.reduce(
-            (sum, d) => sum + d.colorCount * DECORATION_COST_PER_COLOR[serviceType] + LOCATION_FEE_PER_UNIT[serviceType],
-            0
-          );
-          const unitCostCombined = garmentUnitCost + decorationPerUnit;
+          const decorationPerUnit = toNumber(item.printLocationDetails.reduce(
+            (sum, d) => sum.plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType])).plus(LOCATION_FEE_PER_UNIT[serviceType]),
+            money(0)
+          ));
+          const unitCostCombined = toNumber(money(garmentUnitCost).plus(decorationPerUnit));
           const itemSetupFee = calculateLineItemSetupFee(serviceType);
 
           return (
@@ -204,7 +206,7 @@ export function QuoteDetailView({
               <div className="space-y-1">
                 {item.printLocationDetails.map((detail, di) => {
                   const artwork = detail.artworkId ? artworkMap.get(detail.artworkId) : undefined;
-                  const locDecorationPerUnit = detail.colorCount * DECORATION_COST_PER_COLOR[serviceType] + LOCATION_FEE_PER_UNIT[serviceType];
+                  const locDecorationPerUnit = toNumber(money(detail.colorCount).times(DECORATION_COST_PER_COLOR[serviceType]).plus(LOCATION_FEE_PER_UNIT[serviceType]));
                   return (
                     <div key={di} className="flex items-center gap-3 text-sm">
                       {color && (

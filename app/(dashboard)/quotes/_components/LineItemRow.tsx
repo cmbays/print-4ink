@@ -115,10 +115,10 @@ function calculateDecorationCost(
   printLocationDetails: PrintLocationDetail[],
   totalQty: number
 ): number {
-  const colorCostPerUnit = printLocationDetails.reduce(
-    (sum, d) => toNumber(money(sum).plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType]))),
-    0
-  );
+  const colorCostPerUnit = toNumber(printLocationDetails.reduce(
+    (sum, d) => sum.plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType])),
+    money(0)
+  ));
   const locationCostPerUnit = toNumber(
     money(printLocationDetails.length).times(LOCATION_FEE_PER_UNIT[serviceType])
   );
@@ -194,7 +194,7 @@ export function LineItemRow({
     [data.serviceType]
   );
 
-  const lineTotal = garmentCost + decorationCost;
+  const lineTotal = toNumber(money(garmentCost).plus(decorationCost));
 
   function updateField(partial: Partial<LineItemData>) {
     onChange(index, { ...data, ...partial });
