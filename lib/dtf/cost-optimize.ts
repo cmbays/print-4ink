@@ -66,7 +66,7 @@ export function optimizeCost(
       selectedTier = sortedTiers[sortedTiers.length - 1];
     }
 
-    // Calculate total design area for utilization
+    // Calculate total design area for utilization (geometry, not monetary — raw JS math OK)
     const totalDesignArea = packedSheet.designs.reduce(
       (sum, d) => sum + d.width * d.height,
       0

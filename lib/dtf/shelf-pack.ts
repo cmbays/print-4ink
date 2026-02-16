@@ -34,7 +34,7 @@ export interface PackedSheet {
   usedHeight: number;
 }
 
-interface DesignInput {
+export interface DesignInput {
   id: string;
   width: number;
   height: number;
@@ -86,8 +86,24 @@ export function shelfPack(
     return [];
   }
 
-  // --- Step 2: Sort by height descending (tallest first) ---
-  expanded.sort((a, b) => b.height - a.height);
+  // --- Step 1b: Validate dimensions fit on a sheet ---
+  const maxDesignWidth = sheetWidth - 2 * margin;
+  const maxDesignHeight = DTF_MAX_SHEET_LENGTH - 2 * margin;
+  for (const item of expanded) {
+    if (item.width > maxDesignWidth) {
+      throw new Error(
+        `Design "${item.label}" (${item.width}" wide) exceeds usable sheet width of ${maxDesignWidth}"`
+      );
+    }
+    if (item.height > maxDesignHeight) {
+      throw new Error(
+        `Design "${item.label}" (${item.height}" tall) exceeds max sheet height of ${maxDesignHeight}"`
+      );
+    }
+  }
+
+  // --- Step 2: Sort by height descending, width descending as tiebreaker ---
+  expanded.sort((a, b) => b.height - a.height || b.width - a.width);
 
   // --- Step 3: Place designs using shelf algorithm ---
   const sheets: PackedSheet[] = [];
@@ -95,8 +111,6 @@ export function shelfPack(
   let currentX = margin;
   let currentShelfY = margin;
   let tallestInCurrentShelf = 0;
-
-  const usableWidth = sheetWidth - margin; // right edge limit
 
   function finalizeSheet() {
     if (currentSheet.length > 0) {
@@ -117,8 +131,8 @@ export function shelfPack(
   }
 
   for (const item of expanded) {
-    // Check if design fits horizontally on current shelf
-    if (currentX + item.width + margin > usableWidth + margin) {
+    // Check if design fits horizontally on current shelf (only wrap if shelf has items)
+    if (currentX > margin && currentX + item.width + margin > sheetWidth) {
       // Current shelf is full — start a new shelf
       currentShelfY += tallestInCurrentShelf + margin;
       currentX = margin;

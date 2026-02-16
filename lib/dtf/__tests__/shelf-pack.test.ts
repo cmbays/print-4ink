@@ -196,6 +196,30 @@ describe("shelfPack", () => {
     expect(result[0].usedHeight).toBe(DTF_MAX_SHEET_LENGTH);
   });
 
+  it("ignores designs with zero quantity", () => {
+    const result = shelfPack([
+      { id: "d1", width: 4, height: 4, quantity: 0, label: "Ghost" },
+      { id: "d2", width: 4, height: 4, quantity: 1, label: "Real" },
+    ]);
+
+    const allDesigns = result.flatMap((s) => s.designs);
+    expect(allDesigns).toHaveLength(1);
+    expect(allDesigns[0].label).toBe("Real");
+  });
+
+  it("rejects designs wider than usable sheet width", () => {
+    expect(() =>
+      shelfPack([{ id: "d1", width: 25, height: 4, quantity: 1, label: "Too Wide" }])
+    ).toThrow(/exceeds usable sheet width/);
+  });
+
+  it("rejects designs taller than max sheet height", () => {
+    // Default margin=1, so max design height = 60 - 2*1 = 58
+    expect(() =>
+      shelfPack([{ id: "d1", width: 4, height: 59, quantity: 1, label: "Too Tall" }])
+    ).toThrow(/exceeds max sheet height/);
+  });
+
   it("handles multiple design types mixed together", () => {
     const result = shelfPack([
       { id: "tiger", width: 10, height: 12, quantity: 2, label: "Tiger" },

@@ -31,6 +31,7 @@ const PRESET_MAP: Record<Exclude<DtfSizePreset, "custom">, (typeof DTF_SIZE_PRES
 export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineItemRowProps) {
   // N46 — resolveDimensions: when preset changes (not custom), auto-set width/height
   function handlePresetChange(value: string) {
+    // Safe: value constrained by SelectItem values rendered below
     const preset = value as DtfSizePreset;
     onUpdate(item.id, "sizePreset", preset);
     if (preset !== "custom") {
@@ -72,7 +73,7 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
             className="size-8 shrink-0 text-muted-foreground hover:text-error"
             aria-label="Remove design"
           >
-            <Trash2 size={14} />
+            <Trash2 size={16} />
           </Button>
         )}
       </div>
@@ -81,9 +82,9 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
       <div className="flex flex-wrap items-end gap-3">
         {/* U75 — Size preset dropdown */}
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Size Preset</label>
+          <label htmlFor={`preset-${item.id}`} className="text-xs text-muted-foreground">Size Preset</label>
           <Select value={item.sizePreset} onValueChange={handlePresetChange}>
-            <SelectTrigger className="h-8 w-36 text-sm">
+            <SelectTrigger id={`preset-${item.id}`} className="h-8 w-36 text-sm">
               <SelectValue placeholder="Select size" />
             </SelectTrigger>
             <SelectContent>
@@ -104,8 +105,9 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
         {item.sizePreset === "custom" && (
           <>
             <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">Width (in)</label>
+              <label htmlFor={`width-${item.id}`} className="text-xs text-muted-foreground">Width (in)</label>
               <Input
+                id={`width-${item.id}`}
                 type="number"
                 min={0.5}
                 step={0.5}
@@ -115,8 +117,9 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">Height (in)</label>
+              <label htmlFor={`height-${item.id}`} className="text-xs text-muted-foreground">Height (in)</label>
               <Input
+                id={`height-${item.id}`}
                 type="number"
                 min={0.5}
                 step={0.5}
@@ -130,7 +133,7 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
 
         {/* U78 — Dimensions display (always shown) */}
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Dimensions</label>
+          <span className="text-xs text-muted-foreground">Dimensions</span>
           <p className="flex h-8 items-center text-sm text-foreground">
             {item.width}&quot; &times; {item.height}&quot;
           </p>
@@ -138,8 +141,9 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
 
         {/* U79 — Quantity input */}
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Qty</label>
+          <label htmlFor={`qty-${item.id}`} className="text-xs text-muted-foreground">Qty</label>
           <Input
+            id={`qty-${item.id}`}
             type="number"
             min={1}
             step={1}
