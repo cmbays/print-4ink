@@ -3,7 +3,7 @@ title: "Price Matrix Vertical Research"
 subtitle: "Comprehensive market research, competitor analysis, and prioritized feature recommendations for the pricing engine vertical"
 date: 2026-02-10
 phase: 1
-pipeline: price-matrix
+pipelineName: price-matrix
 pipelineType: vertical
 products: [pricing]
 tools: []

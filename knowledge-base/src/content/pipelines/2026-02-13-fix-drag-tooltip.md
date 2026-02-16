@@ -3,7 +3,7 @@ title: "Fix: Board Drag-and-Drop Crash"
 subtitle: "DragOverlay outside TooltipProvider caused fatal runtime error on card drag"
 date: 2026-02-13
 phase: 1
-pipeline: jobs
+pipelineName: jobs
 pipelineType: bug-fix
 products: [jobs]
 tools: []

@@ -3,7 +3,7 @@ title: "Screen Intelligence Integration"
 subtitle: "Smart screen reuse in quoting (setup fee waiver), linked screens in job detail, and helper functions for screen lookups."
 date: 2026-02-14
 phase: 1
-pipeline: screen-room
+pipelineName: screen-room
 pipelineType: vertical
 products: [screens]
 tools: []

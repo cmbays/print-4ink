@@ -3,7 +3,7 @@ title: "Invoicing Vertical Build"
 subtitle: "Full invoicing system — schemas, list page, form, detail view, overlays, and integrations. 30 new files, 8 modified, 314 tests passing."
 date: 2026-02-11
 phase: 1
-pipeline: invoicing
+pipelineName: invoicing
 pipelineType: vertical
 products: [invoices]
 tools: []

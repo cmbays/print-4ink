@@ -3,7 +3,7 @@ title: "Colors — Interview & Design Decisions"
 subtitle: "User interview shaping the color preference system: hierarchy, inheritance, UX patterns"
 date: 2026-02-15
 phase: 1
-pipeline: colors
+pipelineName: colors
 pipelineType: vertical
 products: [garments, customers]
 tools: []

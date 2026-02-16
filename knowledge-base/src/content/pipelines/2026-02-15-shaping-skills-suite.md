@@ -3,7 +3,7 @@ title: "Shaping Skills Suite Adoption"
 subtitle: "Full rjs/shaping-skills methodology adapted for Screen Print Pro pipeline"
 date: 2026-02-15
 phase: 2
-pipeline: meta
+pipelineName: meta
 pipelineType: horizontal
 products: []
 tools: [knowledge-base]

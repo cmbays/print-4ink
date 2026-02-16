@@ -3,7 +3,7 @@ title: "Astro Knowledge Base Migration"
 subtitle: "Migrated for_human/ static HTML docs to Astro 5.3 knowledge base with content collections, Pagefind search, pipeline visualization, and 50 static pages. Deleted 25k lines of old HTML/JS."
 date: 2026-02-12
 phase: 1
-pipeline: meta
+pipelineName: meta
 pipelineType: horizontal
 products: []
 tools: [knowledge-base]

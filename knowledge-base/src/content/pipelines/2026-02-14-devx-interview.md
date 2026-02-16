@@ -3,7 +3,7 @@ title: "DevX Vertical — Workflow Interview"
 subtitle: "Comprehensive interview on parallel AI workflow, session management, automation, and developer experience optimization"
 date: 2026-02-14
 phase: 1
-pipeline: devx
+pipelineName: devx
 pipelineType: horizontal
 products: []
 tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]

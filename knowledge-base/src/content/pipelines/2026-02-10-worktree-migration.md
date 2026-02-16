@@ -3,7 +3,7 @@ title: "Git Worktree Migration + Memory Refactoring"
 subtitle: "Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%."
 date: 2026-02-10
 phase: 1
-pipeline: devx
+pipelineName: devx
 pipelineType: horizontal
 products: []
 tools: [work-orchestrator]

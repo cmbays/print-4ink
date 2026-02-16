@@ -3,11 +3,11 @@ title: "Colors — Shaping: Entity-Owned Favorites with Live Inheritance"
 subtitle: "R x S analysis selecting Shape A for hierarchical color preferences — 3 shapes explored, 12 decisions logged"
 date: 2026-02-15
 phase: 1
-pipeline: colors
+pipelineName: colors
 pipelineType: vertical
 products: [garments, customers]
 tools: []
-stage: shaping
+stage: shape
 tags: [decision, plan]
 sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
 branch: "session/0215-color-prefs"

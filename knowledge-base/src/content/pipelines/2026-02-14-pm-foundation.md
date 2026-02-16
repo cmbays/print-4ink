@@ -3,11 +3,11 @@ title: "PM Foundation: Shape Up, ROADMAP, Cool-Down Skill"
 subtitle: "Established project management philosophy, strategic planning artifacts, and GitHub issue taxonomy"
 date: 2026-02-14
 phase: 1
-pipeline: meta
+pipelineName: meta
 pipelineType: horizontal
 products: []
 tools: [knowledge-base]
-stage: learnings
+stage: wrap-up
 tags: [plan, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0214-pm-foundation"

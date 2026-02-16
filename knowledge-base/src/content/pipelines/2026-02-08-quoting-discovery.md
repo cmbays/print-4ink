@@ -3,7 +3,7 @@ title: "Quoting Discovery: Complete"
 subtitle: "Full competitive analysis, user interview, and improved journey design for the Quoting vertical"
 date: 2026-02-08
 phase: 1
-pipeline: quoting
+pipelineName: quoting
 pipelineType: vertical
 products: [quotes]
 tools: []

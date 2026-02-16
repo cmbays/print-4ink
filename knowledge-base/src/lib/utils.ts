@@ -3,16 +3,6 @@ import tagsConfig from '../../../config/tags.json';
 import productsConfig from '../../../config/products.json';
 import toolsConfig from '../../../config/tools.json';
 
-// ── Stage slug normalization ─────────────────────────────────────
-
-// Old slugs → new canonical slugs
-export const stageSlugMap: Record<string, string> = {
-  shaping: 'shape',
-  breadboarding: 'breadboard',
-  'implementation-planning': 'plan',
-  learnings: 'wrap-up',
-};
-
 // ── Pipeline stage constants (config-driven) ─────────────────────
 
 /** Ordered pipeline stages (excludes non-pipeline stages like cooldown) */
@@ -36,24 +26,11 @@ export const CORE_STAGES: string[] = stagesConfig
 /** Maximum phase number for phase filters */
 export const MAX_PHASE = 3;
 
-/** Normalize a stage slug from old format to new canonical format */
-export function normalizeStage(slug: string): string {
-  return stageSlugMap[slug] || slug;
-}
-
 // ── Label lookups (config-driven) ────────────────────────────────
 
-// Stage label map: includes both new canonical slugs from config AND
-// old slugs for backward-compat during the transition period (Wave 0→1).
-const stageLabelMap: Record<string, string> = {
-  ...Object.fromEntries(stagesConfig.map((s) => [s.slug, s.label])),
-  // Old slug aliases (removed in Wave 1 after frontmatter migration)
-  shaping: 'Shape',
-  breadboarding: 'Breadboard',
-  'implementation-planning': 'Plan',
-  learnings: 'Wrap-up',
-  polish: 'Polish',
-};
+const stageLabelMap: Record<string, string> = Object.fromEntries(
+  stagesConfig.map((s) => [s.slug, s.label]),
+);
 
 const productLabelMap: Record<string, string> = Object.fromEntries(
   productsConfig.map((p) => [p.slug, p.label]),

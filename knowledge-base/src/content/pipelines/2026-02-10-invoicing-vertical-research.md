@@ -3,7 +3,7 @@ title: "Invoicing Vertical Research"
 subtitle: "Comprehensive competitive, UX, integration, compliance, and industry research for the Screen Print Pro invoicing vertical"
 date: 2026-02-10
 phase: 1
-pipeline: invoicing
+pipelineName: invoicing
 pipelineType: vertical
 products: [invoices]
 tools: []

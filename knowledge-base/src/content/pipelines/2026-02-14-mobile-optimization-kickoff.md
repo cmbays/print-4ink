@@ -3,7 +3,7 @@ title: "Mobile Optimization Vertical — Kickoff"
 subtitle: "Registered mobile-optimization as a new vertical and laid the foundation for systematic mobile improvement"
 date: 2026-02-14
 phase: 1
-pipeline: mobile-optimization
+pipelineName: mobile-optimization
 pipelineType: horizontal
 products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
 tools: []
