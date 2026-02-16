@@ -59,6 +59,9 @@ work() {
         next)       _work_next ;;
         clean)      shift; _work_clean "$@" ;;
 
+        # Progress
+        progress)   shift; _work_progress "$@" ;;
+
         # Utilities
         list)       _work_list ;;
         help|--help|-h|"")
@@ -140,6 +143,10 @@ SESSION MANAGEMENT
   work fork <new-topic> <source-topic>    Fork a session with new context
   work status                             Show all layers (registry, worktrees, Zellij, ports)
   work next                               AI recommendation: what to work on next
+
+PROGRESS
+  work progress                           Generate PROGRESS.md from live GitHub data
+  work progress --output <path>           Write report to custom path
 
 UTILITIES
   work list                               Show worktrees, Zellij sessions, ports
@@ -929,4 +936,243 @@ _work_clean() {
     fi
 
     echo "Done."
+}
+
+# ── Progress Report Generator ──────────────────────────────────────────────
+# Usage: work progress [--output <path>]
+#   Queries GitHub API and writes a PROGRESS.md report to repo root (or --output path).
+#   Sections: Milestones, Now (priority/now), Next (priority/next),
+#             Blocked, Recent PRs, Stale (>30 days).
+_work_progress() {
+    local OWNER="cmbays"
+    local REPO="print-4ink"
+    local OUTPUT="${PRINT4INK_ROOT}/PROGRESS.md"
+
+    # Parse flags
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --output) OUTPUT="${2:-${PRINT4INK_ROOT}/PROGRESS.md}"; shift 2 ;;
+            *)        echo "Unknown flag: $1"; return 1 ;;
+        esac
+    done
+
+    if ! command -v gh &>/dev/null; then
+        echo "Error: gh CLI not found. Install GitHub CLI first."
+        return 1
+    fi
+
+    if ! command -v jq &>/dev/null; then
+        echo "Error: jq not found. Install with: brew install jq"
+        return 1
+    fi
+
+    echo "Generating progress report..."
+
+    local TIMESTAMP
+    TIMESTAMP=$(date '+%Y-%m-%d %H:%M')
+
+    # ── Section 1: Milestones ──
+    local milestones_section=""
+    local milestones_json
+    milestones_json=$(gh api "repos/${OWNER}/${REPO}/milestones" --jq '.[]' 2>/dev/null)
+
+    if [[ -n "$milestones_json" ]]; then
+        milestones_section="## Milestones"$'\n'
+        while IFS= read -r milestone_line; do
+            local m_title m_due m_open m_closed m_total m_desc
+            m_title=$(echo "$milestone_line" | jq -r '.title')
+            m_due=$(echo "$milestone_line" | jq -r '.due_on // empty')
+            m_open=$(echo "$milestone_line" | jq -r '.open_issues')
+            m_closed=$(echo "$milestone_line" | jq -r '.closed_issues')
+            m_desc=$(echo "$milestone_line" | jq -r '.description // empty')
+            m_total=$((m_open + m_closed))
+
+            local due_display=""
+            if [[ -n "$m_due" ]]; then
+                due_display=" ($(echo "$m_due" | cut -c1-10))"
+            fi
+
+            milestones_section+=$'\n'"### ${m_title}${due_display} — ${m_closed}/${m_total} complete"$'\n'
+            [[ -n "$m_desc" ]] && milestones_section+="${m_desc}"$'\n'
+
+            # List issues in this milestone
+            local milestone_issues
+            milestone_issues=$(gh issue list --repo "${OWNER}/${REPO}" \
+                --milestone "$m_title" --state all \
+                --json number,title,state --jq '.[]' 2>/dev/null)
+
+            if [[ -n "$milestone_issues" ]]; then
+                while IFS= read -r issue_line; do
+                    local i_num i_title i_state
+                    i_num=$(echo "$issue_line" | jq -r '.number')
+                    i_title=$(echo "$issue_line" | jq -r '.title')
+                    i_state=$(echo "$issue_line" | jq -r '.state')
+
+                    if [[ "$i_state" == "CLOSED" ]]; then
+                        milestones_section+="- [x] #${i_num} ${i_title}"$'\n'
+                    else
+                        milestones_section+="- [ ] #${i_num} ${i_title}"$'\n'
+                    fi
+                done <<< "$milestone_issues"
+            fi
+        done <<< "$milestones_json"
+    else
+        milestones_section="## Milestones"$'\n'"No milestones found."$'\n'
+    fi
+
+    # ── Section 2: Now (priority/now) ──
+    local now_section="## Now (priority/now)"$'\n'
+    local now_issues
+    now_issues=$(gh issue list --repo "${OWNER}/${REPO}" \
+        -l "priority/now" --state open \
+        --json number,title --jq '.[]' 2>/dev/null)
+
+    if [[ -n "$now_issues" ]]; then
+        while IFS= read -r issue_line; do
+            local i_num i_title
+            i_num=$(echo "$issue_line" | jq -r '.number')
+            i_title=$(echo "$issue_line" | jq -r '.title')
+            now_section+="- #${i_num} ${i_title}"$'\n'
+        done <<< "$now_issues"
+    else
+        now_section+="No priority/now issues."$'\n'
+    fi
+
+    # ── Section 3: Next (priority/next) ──
+    local next_section=""
+    local next_issues
+    next_issues=$(gh issue list --repo "${OWNER}/${REPO}" \
+        -l "priority/next" --state open --limit 10 \
+        --json number,title --jq '.[]' 2>/dev/null)
+
+    if [[ -n "$next_issues" ]]; then
+        local next_count=0
+        local next_items=""
+        while IFS= read -r issue_line; do
+            local i_num i_title
+            i_num=$(echo "$issue_line" | jq -r '.number')
+            i_title=$(echo "$issue_line" | jq -r '.title')
+            next_items+="- #${i_num} ${i_title}"$'\n'
+            next_count=$((next_count + 1))
+        done <<< "$next_issues"
+        next_section="## Next (priority/next) — ${next_count} items"$'\n'"${next_items}"
+    else
+        next_section="## Next (priority/next)"$'\n'"No priority/next issues."$'\n'
+    fi
+
+    # ── Section 4: Blocked ──
+    local blocked_section="## Blocked"$'\n'
+    local blocked_json
+    blocked_json=$(gh api graphql \
+        -F owner="$OWNER" -F repo="$REPO" \
+        -f query='
+        query($owner: String!, $repo: String!) {
+            repository(owner: $owner, name: $repo) {
+                issues(first:100, states:OPEN) {
+                    nodes {
+                        number
+                        title
+                        trackedInIssues(first:5) {
+                            nodes { number title }
+                        }
+                    }
+                }
+            }
+        }' --jq '.data.repository.issues.nodes[] | select(.trackedInIssues.nodes | length > 0)' 2>/dev/null)
+
+    if [[ -n "$blocked_json" ]]; then
+        while IFS= read -r issue_line; do
+            local i_num i_title blocked_by
+            i_num=$(echo "$issue_line" | jq -r '.number')
+            i_title=$(echo "$issue_line" | jq -r '.title')
+            blocked_by=$(echo "$issue_line" | jq -r '.trackedInIssues.nodes[] | "#\(.number)"' | paste -sd ", " -)
+            blocked_section+="- #${i_num} ${i_title} (tracked in ${blocked_by})"$'\n'
+        done <<< "$blocked_json"
+    else
+        blocked_section+="No blocked items detected."$'\n'
+    fi
+
+    # ── Section 5: Recent PRs (last 7 days) ──
+    local recent_section="## Recent PRs (last 7 days)"$'\n'
+    local seven_days_ago
+    seven_days_ago=$(date -v-7d '+%Y-%m-%dT00:00:00Z' 2>/dev/null || date -d '7 days ago' '+%Y-%m-%dT00:00:00Z' 2>/dev/null)
+
+    local recent_prs
+    recent_prs=$(gh pr list --repo "${OWNER}/${REPO}" \
+        --state merged --limit 10 \
+        --json number,title,mergedAt --jq '.[]' 2>/dev/null)
+
+    if [[ -n "$recent_prs" ]]; then
+        local pr_found=0
+        while IFS= read -r pr_line; do
+            local p_num p_title p_merged p_date
+            p_num=$(echo "$pr_line" | jq -r '.number')
+            p_title=$(echo "$pr_line" | jq -r '.title')
+            p_merged=$(echo "$pr_line" | jq -r '.mergedAt')
+            p_date=$(echo "$p_merged" | cut -c1-10)
+
+            # Filter to last 7 days (if date computation succeeded)
+            if [[ -n "$seven_days_ago" && "$p_merged" > "$seven_days_ago" ]] || [[ -z "$seven_days_ago" ]]; then
+                recent_section+="- #${p_num} ${p_title} (merged ${p_date})"$'\n'
+                pr_found=$((pr_found + 1))
+            fi
+        done <<< "$recent_prs"
+        if [[ $pr_found -eq 0 ]]; then
+            recent_section+="No PRs merged in the last 7 days."$'\n'
+        fi
+    else
+        recent_section+="No PRs merged in the last 7 days."$'\n'
+    fi
+
+    # ── Section 6: Stale (>30 days) ──
+    local stale_section=""
+    local thirty_days_ago
+    thirty_days_ago=$(date -v-30d '+%Y-%m-%dT00:00:00Z' 2>/dev/null || date -d '30 days ago' '+%Y-%m-%dT00:00:00Z' 2>/dev/null)
+
+    if [[ -z "$thirty_days_ago" ]]; then
+        stale_section="## Stale (>30 days)"$'\n'"Unable to compute stale threshold."$'\n'
+    else
+        local stale_issues
+        stale_issues=$(gh issue list --repo "${OWNER}/${REPO}" \
+            --state open --json number,title,updatedAt \
+            --jq '.' 2>/dev/null | jq -c --arg cutoff "$thirty_days_ago" \
+            '[.[] | select(.updatedAt < $cutoff)] | sort_by(.updatedAt) | .[]' 2>/dev/null)
+
+        if [[ -n "$stale_issues" ]]; then
+            local stale_count=0
+            local stale_items=""
+            while IFS= read -r issue_line; do
+                local i_num i_title i_updated
+                i_num=$(echo "$issue_line" | jq -r '.number')
+                i_title=$(echo "$issue_line" | jq -r '.title')
+                i_updated=$(echo "$issue_line" | jq -r '.updatedAt' | cut -c1-10)
+                stale_items+="- #${i_num} ${i_title} (last updated ${i_updated})"$'\n'
+                stale_count=$((stale_count + 1))
+            done <<< "$stale_issues"
+            stale_section="## Stale (>30 days) — ${stale_count} items"$'\n'"${stale_items}"
+        else
+            stale_section="## Stale (>30 days)"$'\n'"No stale issues."$'\n'
+        fi
+    fi
+
+    # ── Assemble report ──
+    cat > "$OUTPUT" <<REPORT
+# Progress Report
+Generated: ${TIMESTAMP}
+
+${milestones_section}
+${now_section}
+${next_section}
+${blocked_section}
+${recent_section}
+${stale_section}
+REPORT
+
+    echo "Written to ${OUTPUT}"
+    echo ""
+    # Show summary counts
+    local total_open
+    total_open=$(gh issue list --repo "${OWNER}/${REPO}" --state open --json number --jq '. | length' 2>/dev/null)
+    echo "  Open issues: ${total_open:-?}"
+    echo "  Report: ${OUTPUT}"
 }
