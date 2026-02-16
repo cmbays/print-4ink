@@ -20,6 +20,21 @@ jobs:
 
       - run: npm ci
 
+      - name: Breadcrumb lint — no inline Breadcrumb or duplicate Dashboard
+        run: |
+          FAIL=0
+          # 1. No page should import raw <Breadcrumb> — must use <Topbar>
+          if grep -rn 'from.*@/components/ui/breadcrumb' app/ --include='*.tsx'; then
+            echo "::error::Pages must use <Topbar breadcrumbs={buildBreadcrumbs(...)}> — not import from @/components/ui/breadcrumb. See lib/helpers/breadcrumbs.ts"
+            FAIL=1
+          fi
+          # 2. No page should pass Dashboard in breadcrumbs prop
+          if grep -rn 'label:.*["\x27\x60]Dashboard["\x27\x60]' app/ --include='*.tsx'; then
+            echo "::error::Pages must not include Dashboard in breadcrumbs — Topbar renders it automatically."
+            FAIL=1
+          fi
+          exit $FAIL
+
       - name: Type check
         run: npx tsc --noEmit
 

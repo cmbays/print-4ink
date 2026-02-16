@@ -1,11 +1,5 @@
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../../_components/QuoteForm";
 import type { LineItemData } from "../../_components/LineItemRow";
 import { quotes } from "@/lib/mock-data";
@@ -73,30 +67,12 @@ export default async function EditQuotePage({
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/quotes">Quotes</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/quotes/${id}`}>
-              {quote.quoteNumber}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <h1 className="text-2xl font-semibold tracking-tight">Edit Quote — {quote.quoteNumber}</h1>
-      <QuoteForm mode="edit" initialData={initialData} quoteId={quote.id} />
-    </div>
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.quotes, { label: quote.quoteNumber, href: `/quotes/${id}` }, { label: "Edit" })} />
+      <div className="flex flex-col gap-6">
+        <h1 className="text-2xl font-semibold tracking-tight">Edit Quote — {quote.quoteNumber}</h1>
+        <QuoteForm mode="edit" initialData={initialData} quoteId={quote.id} />
+      </div>
+    </>
   );
 }

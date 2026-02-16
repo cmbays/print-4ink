@@ -2,14 +2,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { quotes, customers, artworks } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteDetailView } from "@/app/(dashboard)/quotes/_components/QuoteDetailView";
 
 export default async function QuoteDetailPage({
@@ -47,31 +41,17 @@ export default async function QuoteDetailPage({
   );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      {/* Breadcrumb */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/quotes">Quotes</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{quote.quoteNumber}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      {/* Quote Detail */}
-      <QuoteDetailView
-        quote={quote}
-        customer={customer}
-        artworks={quoteArtworks}
-        mode="detail"
-      />
-    </div>
+    <>
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.quotes, { label: quote.quoteNumber })} />
+      <div className="mx-auto max-w-4xl space-y-6">
+        {/* Quote Detail */}
+        <QuoteDetailView
+          quote={quote}
+          customer={customer}
+          artworks={quoteArtworks}
+          mode="detail"
+        />
+      </div>
+    </>
   );
 }

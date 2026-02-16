@@ -1,4 +1,5 @@
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { ScreenPrintEditor } from "./editor";
 
 export default async function ScreenPrintEditorPage({
@@ -11,10 +12,10 @@ export default async function ScreenPrintEditorPage({
   return (
     <>
       <Topbar
-        breadcrumbs={[
-          { label: "Pricing", href: "/settings/pricing" },
+        breadcrumbs={buildBreadcrumbs(
+          CRUMBS.pricing,
           { label: "Screen Print Editor" },
-        ]}
+        )}
       />
       <ScreenPrintEditor templateId={id} />
     </>

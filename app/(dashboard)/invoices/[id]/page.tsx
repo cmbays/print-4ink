@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { invoices, customers, payments, creditMemos } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { InvoiceDetailView } from "@/app/(dashboard)/invoices/_components/InvoiceDetailView";
 
 export default async function InvoiceDetailPage({
@@ -17,10 +18,10 @@ export default async function InvoiceDetailPage({
     return (
       <>
         <Topbar
-          breadcrumbs={[
-            { label: "Invoices", href: "/invoices" },
+          breadcrumbs={buildBreadcrumbs(
+            CRUMBS.invoices,
             { label: "Not Found" },
-          ]}
+          )}
         />
         <div className="flex flex-col items-center justify-center py-24">
           <div
@@ -54,10 +55,10 @@ export default async function InvoiceDetailPage({
   return (
     <>
       <Topbar
-        breadcrumbs={[
-          { label: "Invoices", href: "/invoices" },
+        breadcrumbs={buildBreadcrumbs(
+          CRUMBS.invoices,
           { label: invoice.invoiceNumber },
-        ]}
+        )}
       />
       <div className="mx-auto max-w-4xl space-y-6 py-6">
         <InvoiceDetailView

@@ -4,6 +4,7 @@ import { useState, useMemo, useSyncExternalStore, useCallback, Suspense } from "
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Package } from "lucide-react";
 import { Topbar } from "@/components/layout/topbar";
+import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { GarmentCatalogToolbar } from "./_components/GarmentCatalogToolbar";
 import { GarmentCard } from "./_components/GarmentCard";
@@ -308,7 +309,7 @@ function GarmentCatalogInner() {
 export default function GarmentCatalogPage() {
   return (
     <>
-      <Topbar breadcrumbs={[{ label: "Garment Catalog" }]} />
+      <Topbar breadcrumbs={buildBreadcrumbs({ label: "Garment Catalog" })} />
       <div className="flex flex-col gap-4">
         <Suspense
           fallback={
