@@ -7,15 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { DiscountRow } from "./DiscountRow";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
 import type { Discount } from "@/lib/schemas/quote";
 import type { CustomerTag } from "@/lib/schemas/customer";
-
-const TAX_RATE = 0.1;
-const CONTRACT_DISCOUNT_RATE = 0.07;
 
 interface PricingSummaryProps {
   garmentSubtotal: number;
   decorationSubtotal: number;
+  dtfSubtotal?: number;
   setupFees: number;
   discounts: Discount[];
   onDiscountsChange: (discounts: Discount[]) => void;
@@ -26,16 +26,10 @@ interface PricingSummaryProps {
   screenReuseDiscount?: number;
 }
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
-
 export function PricingSummary({
   garmentSubtotal,
   decorationSubtotal,
+  dtfSubtotal = 0,
   setupFees,
   discounts,
   onDiscountsChange,
@@ -45,12 +39,14 @@ export function PricingSummary({
   screenReuse,
   screenReuseDiscount,
 }: PricingSummaryProps) {
-  const subtotal = garmentSubtotal + decorationSubtotal;
+  const subtotal = toNumber(
+    round2(money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal))
+  );
 
   // Contract discount is auto-calculated, not editable
   const contractDiscount = useMemo(() => {
     if (customerTag !== "contract") return 0;
-    return Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100;
+    return toNumber(round2(money(subtotal).times(CONTRACT_DISCOUNT_RATE)));
   }, [customerTag, subtotal]);
 
   // Manual discounts only (user-added)
@@ -60,20 +56,26 @@ export function PricingSummary({
   );
 
   const totalManualDiscounts = useMemo(
-    () => manualDiscounts.reduce((sum, d) => sum + d.amount, 0),
+    () => toNumber(manualDiscounts.reduce((sum, d) => money(sum).plus(d.amount), money(0))),
     [manualDiscounts]
   );
 
   const screenDiscount = screenReuse && screenReuseDiscount ? screenReuseDiscount : 0;
-  const totalDiscounts = contractDiscount + totalManualDiscounts + screenDiscount;
+  const totalDiscounts = toNumber(
+    money(contractDiscount).plus(totalManualDiscounts).plus(screenDiscount)
+  );
 
   // Tax is 10% of (subtotal + setupFees - discounts + shipping)
-  const preTaxTotal = subtotal + setupFees - totalDiscounts + shipping;
-  const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
-  const grandTotal = preTaxTotal + tax;
-  const originalPreTax = subtotal + setupFees + shipping;
-  const originalTax = Math.round(originalPreTax * TAX_RATE * 100) / 100;
-  const originalTotal = originalPreTax + originalTax;
+  const preTaxTotal = toNumber(
+    money(subtotal).plus(setupFees).minus(totalDiscounts).plus(shipping)
+  );
+  const tax = toNumber(round2(money(preTaxTotal).times(TAX_RATE)));
+  const grandTotal = toNumber(money(preTaxTotal).plus(tax));
+  const originalPreTax = toNumber(
+    money(subtotal).plus(setupFees).plus(shipping)
+  );
+  const originalTax = toNumber(round2(money(originalPreTax).times(TAX_RATE)));
+  const originalTotal = toNumber(money(originalPreTax).plus(originalTax));
 
   function handleAddDiscount() {
     onDiscountsChange([
@@ -115,6 +117,16 @@ export function PricingSummary({
           </span>
         </div>
 
+        {/* DTF Gang Sheets */}
+        {dtfSubtotal > 0 && (
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">DTF Gang Sheets</span>
+            <span className="text-sm font-medium text-foreground">
+              {formatCurrency(dtfSubtotal)}
+            </span>
+          </div>
+        )}
+
         {/* Setup Fees (auto-calculated, read-only) */}
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Setup Fees</span>
@@ -149,7 +161,7 @@ export function PricingSummary({
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-foreground">Subtotal</span>
           <span className="text-sm font-medium text-foreground">
-            {formatCurrency(subtotal + setupFees)}
+            {formatCurrency(toNumber(money(subtotal).plus(setupFees)))}
           </span>
         </div>
 

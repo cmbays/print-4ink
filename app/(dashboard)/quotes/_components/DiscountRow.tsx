@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/helpers/money";
 
 interface DiscountRowProps {
   label: string;
@@ -21,10 +22,6 @@ const TYPE_STYLES: Record<string, string> = {
   contract: "bg-warning/10 text-warning border border-warning/20",
   volume: "bg-success/10 text-success border border-success/20",
 };
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
-}
 
 export function DiscountRow({
   label,

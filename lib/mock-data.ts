@@ -15,6 +15,7 @@ import type { Invoice, Payment } from "@/lib/schemas/invoice";
 import type { CreditMemo } from "@/lib/schemas/credit-memo";
 import type { MockupTemplate } from "@/lib/schemas/mockup-template";
 import type { BrandPreference, DisplayPreference, PropagationConfig } from "@/lib/schemas/color-preferences";
+import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
 
 // ---------------------------------------------------------------------------
 // Customer IDs (stable — referenced by jobs, quotes, artworks)
@@ -2402,3 +2403,15 @@ export const brandPreferences: BrandPreference[] = [
 export const displayPreference: DisplayPreference = "flat";
 
 export const autoPropagationConfig: PropagationConfig = { autoPropagate: true };
+
+// ---------------------------------------------------------------------------
+// DTF Sheet Tiers (S25) — pricing by sheet size
+// ---------------------------------------------------------------------------
+
+export const dtfSheetTiers: DTFSheetTier[] = [
+  { width: 22, length: 12, retailPrice: 8.99 },
+  { width: 22, length: 24, retailPrice: 14.99 },
+  { width: 22, length: 36, retailPrice: 19.99 },
+  { width: 22, length: 48, retailPrice: 24.99 },
+  { width: 22, length: 60, retailPrice: 29.99 },
+];

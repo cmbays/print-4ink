@@ -34,6 +34,7 @@ import type { GarmentCatalog, GarmentCategory } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
 import type { Artwork } from "@/lib/schemas/artwork";
 import type { ServiceType } from "@/lib/schemas/quote";
+import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 
 export interface PrintLocationDetail {
   location: string;
@@ -106,7 +107,7 @@ const LOCATION_FEE_PER_UNIT: Record<ServiceType, number> = {
 
 function calculateGarmentCost(garment: GarmentCatalog | undefined, totalQty: number): number {
   if (!garment) return 0;
-  return garment.basePrice * totalQty;
+  return toNumber(money(garment.basePrice).times(totalQty));
 }
 
 function calculateDecorationCost(
@@ -114,12 +115,14 @@ function calculateDecorationCost(
   printLocationDetails: PrintLocationDetail[],
   totalQty: number
 ): number {
-  const colorCostPerUnit = printLocationDetails.reduce(
-    (sum, d) => sum + d.colorCount * DECORATION_COST_PER_COLOR[serviceType],
-    0
+  const colorCostPerUnit = toNumber(printLocationDetails.reduce(
+    (sum, d) => sum.plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType])),
+    money(0)
+  ));
+  const locationCostPerUnit = toNumber(
+    money(printLocationDetails.length).times(LOCATION_FEE_PER_UNIT[serviceType])
   );
-  const locationCostPerUnit = printLocationDetails.length * LOCATION_FEE_PER_UNIT[serviceType];
-  return (colorCostPerUnit + locationCostPerUnit) * totalQty;
+  return toNumber(money(colorCostPerUnit).plus(locationCostPerUnit).times(totalQty));
 }
 
 // Per line item setup fee (embroidery only)
@@ -132,13 +135,6 @@ function calculateQuoteSetupFee(lineItems: { serviceType: ServiceType }[]): numb
   return lineItems.some((item) => item.serviceType === "screen-print")
     ? SCREEN_PRINT_QUOTE_SETUP
     : 0;
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
 }
 
 export function LineItemRow({
@@ -198,7 +194,7 @@ export function LineItemRow({
     [data.serviceType]
   );
 
-  const lineTotal = garmentCost + decorationCost;
+  const lineTotal = toNumber(money(garmentCost).plus(decorationCost));
 
   function updateField(partial: Partial<LineItemData>) {
     onChange(index, { ...data, ...partial });

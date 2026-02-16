@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
+import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor, Film } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -24,16 +24,20 @@ import { CollapsibleSection } from "./CollapsibleSection";
 import { ArtworkLibrary } from "./ArtworkLibrary";
 import { ArtworkUploadModal } from "./ArtworkUploadModal";
 import { QuoteReviewSheet } from "./QuoteReviewSheet";
+import { ServiceTypeTabBar } from "./ServiceTypeTabBar";
 import {
   customers as mockCustomers,
   colors as mockColors,
   garmentCatalog,
   artworks as mockArtworks,
 } from "@/lib/mock-data";
-import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
+import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
-import type { Discount } from "@/lib/schemas/quote";
+import type { Discount, ServiceType } from "@/lib/schemas/quote";
+import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
+import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
 import type { Customer, CustomerTag, CustomerTypeTag } from "@/lib/schemas/customer";
 import { cn } from "@/lib/utils";
@@ -62,13 +66,6 @@ function createEmptyLineItem(): LineItemData {
     serviceType: "screen-print",
     printLocationDetails: [],
   };
-}
-
-const TAX_RATE = 0.1;
-const CONTRACT_DISCOUNT_RATE = 0.07;
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 }
 
 export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
@@ -109,6 +106,17 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   const [customerNotes, setCustomerNotes] = useState(
     initialData?.customerNotes || ""
   );
+
+  // Service type tabs (S19, S20)
+  const [activeServiceTab, setActiveServiceTab] = useState<ServiceType>("screen-print");
+  const [enabledServiceTypes, setEnabledServiceTypes] = useState<ServiceType[]>(["screen-print"]);
+
+  // DTF state — lifted to QuoteForm for tab switching preservation (R1.2)
+  const [dtfLineItems, setDtfLineItems] = useState<DtfLineItem[]>([]);
+  const [sheetCalculation, setSheetCalculation] = useState<SheetCalculation | null>(null);
+  const [splitMode, setSplitMode] = useState<"combine" | "split">("combine");
+  const [canvasLayout, setCanvasLayout] = useState<CanvasLayout[] | null>(null);
+  const [activeSheetIndex, setActiveSheetIndex] = useState(0);
 
   // Screen reuse
   const customerScreens = useMemo(() => {
@@ -177,38 +185,44 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
 
   // Compute cost breakdowns for PricingSummary
   const pricingBreakdown = useMemo(() => {
-    let garmentSubtotal = 0;
-    let decorationSubtotal = 0;
-    let lineItemSetupFees = 0;
+    let garmentSubtotalBig = money(0);
+    let decorationSubtotalBig = money(0);
+    let lineItemSetupFeesBig = money(0);
 
     lineItems.forEach((item) => {
       const garment = garmentCatalog.find((g) => g.id === item.garmentId);
       const totalQty = Object.values(item.sizes).reduce((sum, qty) => sum + qty, 0);
-      garmentSubtotal += calculateGarmentCost(garment, totalQty);
-      decorationSubtotal += calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
-      lineItemSetupFees += calculateLineItemSetupFee(item.serviceType);
+      garmentSubtotalBig = garmentSubtotalBig.plus(calculateGarmentCost(garment, totalQty));
+      decorationSubtotalBig = decorationSubtotalBig.plus(calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty));
+      lineItemSetupFeesBig = lineItemSetupFeesBig.plus(calculateLineItemSetupFee(item.serviceType));
     });
 
+    const garmentSubtotal = toNumber(round2(garmentSubtotalBig));
+    const decorationSubtotal = toNumber(round2(decorationSubtotalBig));
+    const lineItemSetupFees = toNumber(round2(lineItemSetupFeesBig));
     const quoteSetupFee = screenReuse ? 0 : calculateQuoteSetupFee(lineItems);
     const screenReuseDiscount = screenReuse ? calculateQuoteSetupFee(lineItems) : 0;
-    const setupFees = lineItemSetupFees + quoteSetupFee;
+    const setupFees = toNumber(money(lineItemSetupFees).plus(quoteSetupFee));
 
     return { garmentSubtotal, decorationSubtotal, setupFees, screenReuseDiscount };
   }, [lineItems, screenReuse]);
 
+  // DTF subtotal (N54)
+  const dtfSubtotal = sheetCalculation?.totalCost ?? 0;
+
   // Grand total for sticky bar
   const grandTotal = useMemo(() => {
     const { garmentSubtotal, decorationSubtotal, setupFees } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal;
+    const subtotal = money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal);
     const contractDiscount = customerTag === "contract"
-      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
-      : 0;
-    const manualDiscountTotal = discounts.reduce((s, d) => s + d.amount, 0);
-    const totalDiscountAmount = contractDiscount + manualDiscountTotal;
-    const preTaxTotal = subtotal + setupFees - totalDiscountAmount + shipping;
-    const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
-    return preTaxTotal + tax;
-  }, [pricingBreakdown, customerTag, discounts, shipping]);
+      ? round2(subtotal.times(CONTRACT_DISCOUNT_RATE))
+      : money(0);
+    const manualDiscountTotal = discounts.reduce((s, d) => money(s).plus(d.amount), money(0));
+    const totalDiscountAmount = contractDiscount.plus(manualDiscountTotal);
+    const preTaxTotal = subtotal.plus(setupFees).minus(totalDiscountAmount).plus(shipping);
+    const tax = round2(preTaxTotal.times(TAX_RATE));
+    return toNumber(preTaxTotal.plus(tax));
+  }, [pricingBreakdown, dtfSubtotal, customerTag, discounts, shipping]);
 
   // Handlers
   const handleLineItemChange = useCallback(
@@ -321,6 +335,37 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     [handleCustomerSelect]
   );
 
+  // N40 — handleTabSwitch
+  const handleTabSwitch = useCallback((type: ServiceType) => {
+    setActiveServiceTab(type);
+  }, []);
+
+  // N42 — addServiceType
+  const handleAddServiceType = useCallback((type: ServiceType) => {
+    setEnabledServiceTypes((prev) => [...prev, type]);
+    setActiveServiceTab(type);
+  }, []);
+
+  // N41 — validateTabCompletion (per-tab validation badges)
+  const tabValidation = useMemo((): Record<ServiceType, boolean> => {
+    // Screen print: at least one line item with garment and sizes
+    const spValid = lineItems.some((item) => {
+      if (!item.garmentId) return false;
+      const totalQty = Object.values(item.sizes).reduce((s, q) => s + q, 0);
+      return totalQty > 0;
+    });
+
+    // DTF: at least one item with name and valid dimensions (placeholder until Wave 2)
+    const dtfValid = dtfLineItems.length > 0 &&
+      dtfLineItems.every((item) => item.artworkName && item.width > 0 && item.height > 0 && item.quantity >= 1);
+
+    return {
+      "screen-print": spValid,
+      dtf: dtfValid,
+      embroidery: false,
+    };
+  }, [lineItems, dtfLineItems]);
+
   const handleToggleArtwork = useCallback((artworkId: string) => {
     setArtworkIds((prev) => {
       const isDeselecting = prev.includes(artworkId);
@@ -406,18 +451,21 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Build a Quote object for the review sheet
   function buildQuoteForReview() {
     const { garmentSubtotal, decorationSubtotal, setupFees } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal;
+    const subtotalBig = money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal);
+    const subtotal = toNumber(subtotalBig);
 
     // Compute contract discount
     const contractDiscount = customerTag === "contract"
-      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
+      ? toNumber(round2(subtotalBig.times(CONTRACT_DISCOUNT_RATE)))
       : 0;
-    const manualDiscountTotal = discounts.reduce((s, d) => s + d.amount, 0);
-    const totalDiscountAmount = contractDiscount + manualDiscountTotal;
+    const manualDiscountTotal = toNumber(discounts.reduce((s, d) => s.plus(d.amount), money(0)));
+    const totalDiscountAmount = toNumber(money(contractDiscount).plus(manualDiscountTotal));
 
-    const preTaxTotal = subtotal + setupFees - totalDiscountAmount + shipping;
-    const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
-    const total = preTaxTotal + tax;
+    const preTaxTotal = toNumber(
+      money(subtotal).plus(setupFees).minus(totalDiscountAmount).plus(shipping)
+    );
+    const tax = toNumber(round2(money(preTaxTotal).times(TAX_RATE)));
+    const total = toNumber(money(preTaxTotal).plus(tax));
 
     // Build discount array for review
     const allDiscounts: Discount[] = [
@@ -439,8 +487,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         );
         const garmentCost = calculateGarmentCost(garment, totalQty);
         const decoationCost = calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
-        const lineTotal = garmentCost + decoationCost;
-        const unitPrice = totalQty > 0 ? lineTotal / totalQty : 0;
+        const lineTotal = toNumber(money(garmentCost).plus(decoationCost));
+        const unitPrice = totalQty > 0 ? toNumber(round2(money(lineTotal).div(totalQty))) : 0;
         return {
           garmentId: item.garmentId,
           colorId: item.colorId,
@@ -559,18 +607,18 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Pricing summary — itemized discounts + total
   const discountDetails = useMemo(() => {
     const { garmentSubtotal, decorationSubtotal } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal;
+    const subtotal = money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal);
     const contractAmount = customerTag === "contract"
-      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
+      ? toNumber(round2(subtotal.times(CONTRACT_DISCOUNT_RATE)))
       : 0;
     const items: { label: string; amount: number }[] = [];
     if (contractAmount > 0) {
       items.push({ label: "Contract Pricing (7%)", amount: contractAmount });
     }
     discounts.forEach((d) => items.push({ label: d.label, amount: d.amount }));
-    const total = items.reduce((s, d) => s + d.amount, 0);
+    const total = toNumber(items.reduce((s, d) => s.plus(d.amount), money(0)));
     return { items, total };
-  }, [pricingBreakdown, customerTag, discounts]);
+  }, [pricingBreakdown, dtfSubtotal, customerTag, discounts]);
 
   const pricingSummary = discountDetails.total > 0
     ? `${formatCurrency(discountDetails.total)} in discounts`
@@ -856,43 +904,70 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           </div>
         </CollapsibleSection>
 
-        {/* Section 3: Line Items */}
-        <CollapsibleSection
-          title="Garments & Print Details"
-          icon={<ShoppingBag size={16} className="text-muted-foreground" />}
-          summary={lineItemSummary}
-          isComplete={lineItems.some((li) => li.garmentId !== "")}
-          defaultOpen
-        >
-          <div className="space-y-4 pt-2">
-            {errors.lineItems && (
-              <p className="text-xs text-error" role="alert">{errors.lineItems}</p>
-            )}
-            {lineItems.map((item, i) => (
-              <LineItemRow
-                key={item.id}
-                index={i}
-                data={item}
-                onChange={handleLineItemChange}
-                onRemove={handleLineItemRemove}
-                canRemove={lineItems.length > 1}
-                garmentCatalog={garmentCatalog}
-                colors={mockColors}
-                quoteArtworks={quoteArtworks}
-                errors={lineItemErrors[i]}
-              />
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleAddLineItem}
-              className="w-full"
-            >
-              <Plus size={16} className="mr-2" />
-              Add Another Line Item
-            </Button>
+        {/* Service Type Tab Bar (P2.3) */}
+        <ServiceTypeTabBar
+          activeTab={activeServiceTab}
+          enabledTypes={enabledServiceTypes}
+          onTabSwitch={handleTabSwitch}
+          onAddType={handleAddServiceType}
+          tabValidation={tabValidation}
+        />
+
+        {/* Screen Print Tab Content */}
+        {activeServiceTab === "screen-print" && (
+          <div id="tabpanel-screen-print" role="tabpanel">
+          <CollapsibleSection
+            title="Garments & Print Details"
+            icon={<ShoppingBag size={16} className="text-muted-foreground" />}
+            summary={lineItemSummary}
+            isComplete={lineItems.some((li) => li.garmentId !== "")}
+            defaultOpen
+          >
+            <div className="space-y-4 pt-2">
+              {errors.lineItems && (
+                <p className="text-xs text-error" role="alert">{errors.lineItems}</p>
+              )}
+              {lineItems.map((item, i) => (
+                <LineItemRow
+                  key={item.id}
+                  index={i}
+                  data={item}
+                  onChange={handleLineItemChange}
+                  onRemove={handleLineItemRemove}
+                  canRemove={lineItems.length > 1}
+                  garmentCatalog={garmentCatalog}
+                  colors={mockColors}
+                  quoteArtworks={quoteArtworks}
+                  errors={lineItemErrors[i]}
+                />
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleAddLineItem}
+                className="w-full"
+              >
+                <Plus size={16} className="mr-2" />
+                Add Another Line Item
+              </Button>
+            </div>
+          </CollapsibleSection>
           </div>
-        </CollapsibleSection>
+        )}
+
+        {/* DTF Tab Content (P2.4) — placeholder until Wave 2 */}
+        {activeServiceTab === "dtf" && (
+          <div id="tabpanel-dtf" role="tabpanel" className="rounded-lg border border-border bg-elevated p-8 text-center">
+            <Film className="mx-auto size-10 text-muted-foreground/40" />
+            <p className="mt-3 text-sm font-medium text-foreground">DTF Gang Sheet Builder</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Add designs, set sizes and quantities, then calculate optimal sheet layouts.
+            </p>
+            <p className="mt-4 text-xs text-muted-foreground/60">
+              Coming in next wave
+            </p>
+          </div>
+        )}
 
         {/* Section 4: Pricing Summary */}
         <CollapsibleSection
@@ -905,6 +980,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
             <PricingSummary
               garmentSubtotal={pricingBreakdown.garmentSubtotal}
               decorationSubtotal={pricingBreakdown.decorationSubtotal}
+              dtfSubtotal={dtfSubtotal}
               setupFees={pricingBreakdown.setupFees}
               discounts={discounts}
               onDiscountsChange={setDiscounts}
