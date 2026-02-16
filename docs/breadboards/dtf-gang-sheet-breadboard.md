@@ -5,7 +5,7 @@ category: breadboard
 status: complete
 phase: 1
 created: 2026-02-15
-last-verified: 2026-02-15
+last-verified: 2026-02-15 (post-reflection)
 depends-on:
   - docs/shaping/dtf-gang-sheet/shaping.md
   - docs/shaping/dtf-gang-sheet/frame.md
@@ -57,7 +57,7 @@ This breadboard extends `docs/breadboards/quoting-breadboard.md`. ID ranges are 
 | **U24** (Add Another Line Item) | Now lives inside Screen Print tab only |
 | **N16** (calculateSubtotal) | Must sum across all service type subtotals (screen print + DTF) |
 | **N20/N21** (saveQuote / saveAndSend) | Must include DTF line items + sheet calculation in payload |
-| **N22** (validateForm) | Extended: calls per-tab validation; quote can't save until all enabled tabs are complete |
+| **N22** (validateForm) | Extended: delegates to N41 for per-tab completion checks; quote can't save until all enabled tabs pass N41 |
 | **S6** (Line items array) | Now screen-print-specific; DTF has separate S21 |
 
 ---
@@ -255,7 +255,7 @@ flowchart TD
 |----|-------|------------|-------|---------|-----------|------------|
 | **D1: Tab Architecture** | | | | | | |
 | N40 | P2 | handleTabSwitch(serviceType) | 1 | U67 click | → set S19 activeServiceTab | → conditional render of tab content |
-| N41 | P2 | validateTabCompletion(serviceType) | 1 | N45 any update, N44 remove, N47 calculate | → check completeness per tab: SP calls existing N22 logic; DTF calls N56 | → U69 badges, → N22 extended |
+| N41 | P2 | validateTabCompletion(serviceType) | 1 | N45 any update, N44 remove, N47 calculate | → run extracted SP validation rules (for SP tab), → N56 (for DTF tab) | → U69 badges |
 | N42 | P2 | addServiceType(serviceType) | 1 | U70 click | → append to S20 enabledServiceTypes, → set S19 to new tab | → U66 re-render tabs |
 | **D2: DTF Line Items** | | | | | | |
 | N43 | P2.4 | addDtfLineItem() | 1 | U72 click | → append empty item to S21 `{id, artworkName:'', width:0, height:0, quantity:1, sizePreset:'small'}` | → U71 re-render |
@@ -263,12 +263,12 @@ flowchart TD
 | N45 | P2.4 | updateDtfLineItem(id, field, value) | 1 | U73, U75, U76, U77, U79 change | → update S21 item field | → trigger N54, N41 |
 | N46 | P2.4 | resolveDimensions(preset) | 1 | U75 select (when preset ≠ "custom") | → read S26 DTF_SIZE_PRESETS, return {width, height} | → N45 (sets width + height) |
 | **D3: Sheet Optimization** | | | | | | |
-| N47 | P2.4 | calculateSheetLayout() | 1 | U82 click | → read S21 (line items) + S23 (splitMode) + S25 (tiers); → N48 shelfPack(); → N49 optimizeCost() | → write S22, S24; → trigger N54 |
+| N47 | P2.4 | calculateSheetLayout() | 1 | U82 click | → read S21 (line items) + S23 (splitMode) + S25 (tiers); → N48 shelfPack(); → N49 optimizeCost(); → write S22, S24; → trigger N54 | — |
 | N48 | P2.4 | shelfPack(designs[], sheetWidth=22, margin=1) | 1 | N47 call | → place designs L→R, T→B with 1" margins; when row full, start new shelf; when sheet full, start new sheet | → return positioned designs per sheet |
 | N49 | P2.4 | optimizeCost(packedSheets[], tiers[]) | 1 | N47 call after N48 | → for each sheet, find cheapest tier that fits; compare 1-large vs 2-small splits | → return optimized sheet assignments with costs |
-| N50 | P2.4 | recalculateOnChange() | 1 | U83 toggle (after initial calculation exists) | → if S22 exists, re-run N47 with new S23 splitMode | → update S22, S24 |
+| N50 | P2.4 | recalculateOnChange() | 1 | U83 toggle (after initial calculation exists) | → if S22 exists, re-run N47 with new S23 splitMode | — |
 | **D4: Visual Canvas** | | | | | | |
-| N51 | P2.4 | generateCanvasSvg(sheetLayout) | 1 | S24 write (after N47) | → read S24 canvasLayout; produce SVG elements: rects for designs, dashed lines for spacing, border for sheet | → U88-U91 render |
+| N51 | P2.4 | generateCanvasSvg(sheetLayout) | 1 | S24 write (after N47) | → read S24 canvasLayout; → N52 scaleToViewport(); produce SVG elements | → U88-U91 render |
 | N52 | P2.4 | scaleToViewport(physicalWidthInches, containerWidthPx) | 1 | N51 call, window resize | → calculate px-per-inch ratio: `containerWidth / physicalWidth` | → N51 uses scale for all positioning |
 | **D5: Production Steps** | | | | | | |
 | N53 | Global | getDtfTaskTemplate() | 1 | Job creation from DTF quote | → return `[{name:'Gang sheet prepared'}, {name:'DTF printed'}, {name:'QC passed'}, {name:'Shipped'}]` | → job.tasks when DTF job is created |
@@ -278,6 +278,8 @@ flowchart TD
 | N56 | P2.4 | validateDtfTab() | 1 | N41 call for DTF tab | → check: ≥1 line item in S21, each has artworkName + valid dimensions + qty ≥ 1, S22 exists (layout calculated) | → N41 (feeds U69 badge) |
 
 **Phase 1 notes**: All N40–N56 are client-side: `useState`, local calculation functions, constants. No API calls, no database. Mock data for sheet tiers from `lib/schemas/dtf-pricing.ts` shape.
+
+**Implementation note — state placement for R1.2**: S21–S24, S27 are conceptually in P2.4 (where they enable behavior) but must survive tab switching. Implementation must either: (a) lift all DTF state to P2 (QuoteForm) and pass as props to DtfTabContent, or (b) use CSS-based show/hide (`display:none`) instead of conditional rendering for tab content. Option (a) is preferred — it matches the existing pattern where S6 (screen print line items) lives in QuoteForm.
 
 ---
 
@@ -305,11 +307,15 @@ flowchart TD
 - [x] No dangling wire references
 - [x] Navigation wiring: N40 switches tab content (conditional render within P2, not Place navigation)
 - [x] Data flow: S21 → N47 → S22/S24 → U84-U92 chain is complete
+- [x] N47/N50 writes correctly placed in Wires Out (not Returns To)
+- [x] N51 → N52 wire present in N51's Wires Out
+- [x] N41/N22 relationship clarified (N22 delegates to N41, not circular)
 
 **Cross-Place wiring (DTF → Existing)**:
 - P2.4 → P2: N54 calculateDtfSubtotal() feeds into existing N16 calculateSubtotal()
 - P2.4 → P2: N55 mergeQuoteData() wraps existing N20/N21 save to include DTF payload
-- P2 → P2.4: N41 validateTabCompletion() calls N56 for DTF tab, existing N22 logic for Screen Print tab
+- P2 → P2.4: N41 validateTabCompletion() calls N56 for DTF tab, runs extracted SP rules for Screen Print tab
+- P2 ← P2: N22 validateForm() delegates to N41 for per-tab completion checks
 - P2.3 → P2: N40 handleTabSwitch() controls which tab content renders (Screen Print S6 vs DTF S21)
 
 ---
@@ -338,7 +344,7 @@ flowchart TD
 | U69 | Completion badge | display | — | ← N41 |
 | U70 | "Add Service Type" dropdown | click | → N42 | ← S20 |
 | N40 | handleTabSwitch() | — | → S19 | → tab content render |
-| N41 | validateTabCompletion() | — | → per-tab check | → U69 |
+| N41 | validateTabCompletion() | — | → extracted SP rules / N56 | → U69 |
 | N42 | addServiceType() | — | → S20, S19 | → U66 |
 | S19 | activeServiceTab | state | — | — |
 | S20 | enabledServiceTypes | state | — | — |
@@ -384,10 +390,10 @@ flowchart TD
 | U85 | Total sheets count | display | — | ← S22 |
 | U86 | Total DTF cost | display | — | ← S22 |
 | U87 | Utilization badge | display | — | ← S22 |
-| N47 | calculateSheetLayout() | — | → N48, N49 | → S22, S24 |
+| N47 | calculateSheetLayout() | — | → N48, N49, → write S22 + S24, → N54 | — |
 | N48 | shelfPack() | — | — | → N47 |
 | N49 | optimizeCost() | — | ← S25 | → N47 |
-| N50 | recalculateOnChange() | — | → N47 | → S22, S24 |
+| N50 | recalculateOnChange() | — | → N47 (conditional) | — |
 | S22 | sheetCalculation | state | — | — |
 | S23 | splitMode | state | — | — |
 | S25 | dtfSheetTiers | mock data | — | — |
@@ -417,7 +423,7 @@ flowchart TD
 | U90 | Spacing indicators | display | — | ← S24 |
 | U91 | Sheet boundary | display | — | ← S24 |
 | U92 | Multi-sheet tabs | click | → S27 | ← S22 |
-| N51 | generateCanvasSvg() | — | ← S24, N52 | → U88-U91 |
+| N51 | generateCanvasSvg() | — | ← S24, → N52 | → U88-U91 |
 | N52 | scaleToViewport() | — | — | → N51 |
 | S24 | canvasLayout | state | — | — |
 | S27 | activeSheetIndex | state | — | — |
@@ -583,6 +589,24 @@ Before marking this breadboard complete:
 - [x] Mermaid diagrams match tables (tables are truth)
 - [x] Parallelization windows marked in build order
 - [x] Connection points to existing quoting breadboard documented
+
+---
+
+## Reflection Audit (2026-02-15)
+
+7 user stories traced through wiring, 17 affordances passed the naming test, 0 diagram-only nodes found.
+
+**Smells found and fixed:**
+
+| # | Smell | Fix Applied |
+|---|-------|-------------|
+| 1 | N47 Returns To contained writes/triggers (should be Wires Out) | Moved S22/S24 writes and N54 trigger to Wires Out; Returns To set to "—" |
+| 2 | N50 Returns To claimed S22/S24 writes belonging to N47 | Returns To set to "—" |
+| 3 | N51 Wires Out missing → N52 call | Added → N52 to N51's Wires Out |
+| 4 | N41/N22 circular reference (N41 "calls N22" and "returns to N22") | Clarified: N41 contains extracted SP validation rules; N22 delegates to N41 |
+| 5 | DTF stores (S21-S27) placed in P2.4 but must survive tab switching (R1.2) | Added implementation note: lift state to P2 or use CSS-based tab visibility |
+
+**No structural changes** — all affordance IDs, slice boundaries, and build order remain unchanged. Fixes were wiring column corrections and an implementation note.
 
 ---
 
