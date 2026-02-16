@@ -288,6 +288,16 @@ export const LANE_BADGE_COLORS: Record<Lane, string> = {
 };
 
 // ---------------------------------------------------------------------------
+// Pricing Constants
+// ---------------------------------------------------------------------------
+
+/** Sales tax rate (10%) */
+export const TAX_RATE = 0.1;
+
+/** Contract customer discount rate (7%) */
+export const CONTRACT_DISCOUNT_RATE = 0.07;
+
+// ---------------------------------------------------------------------------
 // Jobs & Production — Risk Indicators
 // ---------------------------------------------------------------------------
 

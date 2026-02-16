@@ -13,19 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import type { Quote } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
+import { formatCurrency } from "@/lib/helpers/money";
 
 interface EmailPreviewModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   quote: Pick<Quote, "quoteNumber" | "total" | "lineItems">;
   customer: Pick<Customer, "name" | "email" | "company">;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 }
 
 export function EmailPreviewModal({

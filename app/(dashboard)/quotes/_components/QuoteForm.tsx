@@ -31,7 +31,8 @@ import {
   garmentCatalog,
   artworks as mockArtworks,
 } from "@/lib/mock-data";
-import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS } from "@/lib/constants";
+import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount, ServiceType } from "@/lib/schemas/quote";
@@ -65,13 +66,6 @@ function createEmptyLineItem(): LineItemData {
     serviceType: "screen-print",
     printLocationDetails: [],
   };
-}
-
-const TAX_RATE = 0.1;
-const CONTRACT_DISCOUNT_RATE = 0.07;
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 }
 
 export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
@@ -216,15 +210,15 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Grand total for sticky bar
   const grandTotal = useMemo(() => {
     const { garmentSubtotal, decorationSubtotal, setupFees } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
+    const subtotal = money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal);
     const contractDiscount = customerTag === "contract"
-      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
-      : 0;
-    const manualDiscountTotal = discounts.reduce((s, d) => s + d.amount, 0);
-    const totalDiscountAmount = contractDiscount + manualDiscountTotal;
-    const preTaxTotal = subtotal + setupFees - totalDiscountAmount + shipping;
-    const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
-    return preTaxTotal + tax;
+      ? round2(subtotal.times(CONTRACT_DISCOUNT_RATE))
+      : money(0);
+    const manualDiscountTotal = discounts.reduce((s, d) => money(s).plus(d.amount), money(0));
+    const totalDiscountAmount = contractDiscount.plus(manualDiscountTotal);
+    const preTaxTotal = subtotal.plus(setupFees).minus(totalDiscountAmount).plus(shipping);
+    const tax = round2(preTaxTotal.times(TAX_RATE));
+    return toNumber(preTaxTotal.plus(tax));
   }, [pricingBreakdown, dtfSubtotal, customerTag, discounts, shipping]);
 
   // Handlers
@@ -454,18 +448,21 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Build a Quote object for the review sheet
   function buildQuoteForReview() {
     const { garmentSubtotal, decorationSubtotal, setupFees } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
+    const subtotalBig = money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal);
+    const subtotal = toNumber(subtotalBig);
 
     // Compute contract discount
     const contractDiscount = customerTag === "contract"
-      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
+      ? toNumber(round2(subtotalBig.times(CONTRACT_DISCOUNT_RATE)))
       : 0;
-    const manualDiscountTotal = discounts.reduce((s, d) => s + d.amount, 0);
-    const totalDiscountAmount = contractDiscount + manualDiscountTotal;
+    const manualDiscountTotal = discounts.reduce((s, d) => toNumber(money(s).plus(d.amount)), 0);
+    const totalDiscountAmount = toNumber(money(contractDiscount).plus(manualDiscountTotal));
 
-    const preTaxTotal = subtotal + setupFees - totalDiscountAmount + shipping;
-    const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
-    const total = preTaxTotal + tax;
+    const preTaxTotal = toNumber(
+      money(subtotal).plus(setupFees).minus(totalDiscountAmount).plus(shipping)
+    );
+    const tax = toNumber(round2(money(preTaxTotal).times(TAX_RATE)));
+    const total = toNumber(money(preTaxTotal).plus(tax));
 
     // Build discount array for review
     const allDiscounts: Discount[] = [
@@ -607,16 +604,16 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Pricing summary — itemized discounts + total
   const discountDetails = useMemo(() => {
     const { garmentSubtotal, decorationSubtotal } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
+    const subtotal = money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal);
     const contractAmount = customerTag === "contract"
-      ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
+      ? toNumber(round2(subtotal.times(CONTRACT_DISCOUNT_RATE)))
       : 0;
     const items: { label: string; amount: number }[] = [];
     if (contractAmount > 0) {
       items.push({ label: "Contract Pricing (7%)", amount: contractAmount });
     }
     discounts.forEach((d) => items.push({ label: d.label, amount: d.amount }));
-    const total = items.reduce((s, d) => s + d.amount, 0);
+    const total = items.reduce((s, d) => toNumber(money(s).plus(d.amount)), 0);
     return { items, total };
   }, [pricingBreakdown, dtfSubtotal, customerTag, discounts]);
 

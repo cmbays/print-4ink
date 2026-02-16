@@ -7,11 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { DiscountRow } from "./DiscountRow";
+import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
 import type { Discount } from "@/lib/schemas/quote";
 import type { CustomerTag } from "@/lib/schemas/customer";
-
-const TAX_RATE = 0.1;
-const CONTRACT_DISCOUNT_RATE = 0.07;
 
 interface PricingSummaryProps {
   garmentSubtotal: number;
@@ -27,13 +26,6 @@ interface PricingSummaryProps {
   screenReuseDiscount?: number;
 }
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
-}
-
 export function PricingSummary({
   garmentSubtotal,
   decorationSubtotal,
@@ -47,12 +39,14 @@ export function PricingSummary({
   screenReuse,
   screenReuseDiscount,
 }: PricingSummaryProps) {
-  const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
+  const subtotal = toNumber(
+    money(garmentSubtotal).plus(decorationSubtotal).plus(dtfSubtotal)
+  );
 
   // Contract discount is auto-calculated, not editable
   const contractDiscount = useMemo(() => {
     if (customerTag !== "contract") return 0;
-    return Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100;
+    return toNumber(round2(money(subtotal).times(CONTRACT_DISCOUNT_RATE)));
   }, [customerTag, subtotal]);
 
   // Manual discounts only (user-added)
@@ -67,15 +61,21 @@ export function PricingSummary({
   );
 
   const screenDiscount = screenReuse && screenReuseDiscount ? screenReuseDiscount : 0;
-  const totalDiscounts = contractDiscount + totalManualDiscounts + screenDiscount;
+  const totalDiscounts = toNumber(
+    money(contractDiscount).plus(totalManualDiscounts).plus(screenDiscount)
+  );
 
   // Tax is 10% of (subtotal + setupFees - discounts + shipping)
-  const preTaxTotal = subtotal + setupFees - totalDiscounts + shipping;
-  const tax = Math.round(preTaxTotal * TAX_RATE * 100) / 100;
-  const grandTotal = preTaxTotal + tax;
-  const originalPreTax = subtotal + setupFees + shipping;
-  const originalTax = Math.round(originalPreTax * TAX_RATE * 100) / 100;
-  const originalTotal = originalPreTax + originalTax;
+  const preTaxTotal = toNumber(
+    money(subtotal).plus(setupFees).minus(totalDiscounts).plus(shipping)
+  );
+  const tax = toNumber(round2(money(preTaxTotal).times(TAX_RATE)));
+  const grandTotal = toNumber(money(preTaxTotal).plus(tax));
+  const originalPreTax = toNumber(
+    money(subtotal).plus(setupFees).plus(shipping)
+  );
+  const originalTax = toNumber(round2(money(originalPreTax).times(TAX_RATE)));
+  const originalTotal = toNumber(money(originalPreTax).plus(originalTax));
 
   function handleAddDiscount() {
     onDiscountsChange([
@@ -161,7 +161,7 @@ export function PricingSummary({
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-foreground">Subtotal</span>
           <span className="text-sm font-medium text-foreground">
-            {formatCurrency(subtotal + setupFees)}
+            {formatCurrency(toNumber(money(subtotal).plus(setupFees)))}
           </span>
         </div>
 

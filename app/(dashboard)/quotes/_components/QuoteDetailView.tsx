@@ -30,6 +30,7 @@ import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@/lib/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/helpers/money";
 
 interface QuoteDetailViewProps {
   quote: Quote;
@@ -37,10 +38,6 @@ interface QuoteDetailViewProps {
   artworks: Artwork[];
   mode: "detail" | "review";
   onSend?: () => void;
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 }
 
 function getTotalQty(sizes: Record<string, number>): number {
