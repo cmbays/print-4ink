@@ -542,13 +542,19 @@ _work_build() {
     fi
 
     # Generate KDL layout from parallel arrays (uses prefixed prompts, not raw manifest)
+    # NOTE: This script is sourced into Zsh (arrays 1-indexed) despite #!/bin/bash shebang.
+    # Use indexed for-in loop: iterate topics by value, track index for parallel arrays.
+    local _arr_start=0
+    [[ -n "${ZSH_VERSION:-}" ]] && _arr_start=1
     local KDL_FILE
     KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX")
     {
         echo "layout {"
-        local k
-        for (( k=0; k<${#created_topics[@]}; k++ )); do
-            _kdl_render_tab "${created_topics[$k]}" "${session_dirs[$k]}" "${session_prompts[$k]}" "$CLAUDE_ARGS"
+        local _k=$_arr_start
+        local _topic
+        for _topic in "${created_topics[@]}"; do
+            _kdl_render_tab "$_topic" "${session_dirs[$_k]}" "${session_prompts[$_k]}" "$CLAUDE_ARGS"
+            _k=$((_k + 1))
         done
         echo "}"
     } > "$KDL_FILE"
@@ -561,11 +567,11 @@ _work_build() {
     if [[ -n "${ZELLIJ:-}" ]]; then
         # Inside Zellij: open each session as a new tab
         echo "Opening ${#created_topics[@]} tabs in current Zellij session..."
-        local i
-        for (( i=0; i<${#created_topics[@]}; i++ )); do
-            local t="${created_topics[$i]}"
-            local cwd="${session_dirs[$i]}"
-            local tab_prompt="${session_prompts[$i]}"
+        local _j=$_arr_start
+        local _t
+        for _t in "${created_topics[@]}"; do
+            local cwd="${session_dirs[$_j]}"
+            local tab_prompt="${session_prompts[$_j]}"
 
             local tab_kdl
             tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX")
@@ -573,14 +579,15 @@ _work_build() {
             # Use the shared render helper for the tab layout
             {
                 echo "layout {"
-                _kdl_render_tab "$t" "$cwd" "$tab_prompt" "$CLAUDE_ARGS"
+                _kdl_render_tab "$_t" "$cwd" "$tab_prompt" "$CLAUDE_ARGS"
                 echo "}"
             } > "$tab_kdl"
 
-            zellij action new-tab --layout "$tab_kdl" --name "$t"
+            zellij action new-tab --layout "$tab_kdl" --name "$_t"
             (sleep 5 && rm -f "$tab_kdl" 2>/dev/null) &
             disown
-            echo "  Opened tab: $t"
+            echo "  Opened tab: $_t"
+            _j=$((_j + 1))
         done
     else
         # Outside Zellij: tell user to launch
