@@ -15,10 +15,11 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
-import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
+import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
 import { cn } from "@/lib/utils";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { getColorById } from "@/lib/helpers/garment-helpers";
+import { resolveEffectiveFavorites } from "@/lib/helpers/color-preferences";
 import { colors as catalogColors } from "@/lib/mock-data";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
@@ -31,6 +32,8 @@ interface GarmentDetailDrawerProps {
   linkedJobs: Array<{ id: string; jobNumber: string; customerName: string }>;
   onToggleEnabled: (garmentId: string) => void;
   onToggleFavorite: (garmentId: string) => void;
+  /** Stub for V4 brand drawer wiring — opens brand detail drawer */
+  onBrandClick?: (brandName: string) => void;
 }
 
 export function GarmentDetailDrawer({
@@ -41,10 +44,14 @@ export function GarmentDetailDrawer({
   linkedJobs,
   onToggleEnabled,
   onToggleFavorite,
+  onBrandClick,
 }: GarmentDetailDrawerProps) {
   const [selectedColorId, setSelectedColorId] = useState<string | null>(
     garment.availableColors[0] ?? null,
   );
+
+  // Version counter — forces re-render after mock data isFavorite mutation
+  const [favoriteVersion, setFavoriteVersion] = useState(0);
 
   // Resolve Color objects from garment's available color IDs
   const garmentColors = useMemo(
@@ -54,6 +61,34 @@ export function GarmentDetailDrawer({
         .filter((c): c is Color => c != null),
     [garment.availableColors],
   );
+
+  // Resolve effective favorites (Phase 1: always global context)
+  // favoriteVersion is a cache-buster for mock-data mutation;
+  // resolveEffectiveFavorites reads from mutable catalog arrays.
+  // In Phase 3 this becomes a proper data fetch.
+  const favoriteColorIds = useMemo(
+    () => new Set(resolveEffectiveFavorites("global")),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [favoriteVersion],
+  );
+
+  // Split garment's colors into favorites and all for FavoritesColorSection
+  const favoriteColors = useMemo(
+    () => garmentColors.filter((c) => favoriteColorIds.has(c.id)),
+    [garmentColors, favoriteColorIds],
+  );
+
+  // N3: toggleDrawerFavorite — toggle color's isFavorite in mock data (writes S2)
+  // PHASE 1: mock-data mutation — in Phase 3 this becomes an API call
+  function handleToggleColorFavorite(colorId: string) {
+    const color = catalogColors.find((c) => c.id === colorId);
+    if (color) {
+      color.isFavorite = !color.isFavorite;
+      setFavoriteVersion((v) => v + 1);
+    }
+    // Also select the toggled color for display (U14)
+    setSelectedColorId(colorId);
+  }
 
   // Resolve selected color object
   const selectedColor = selectedColorId
@@ -68,7 +103,18 @@ export function GarmentDetailDrawer({
       >
         <SheetHeader className="border-b border-border px-4 py-3">
           <SheetTitle className="text-base">
-            {garment.brand} {garment.sku}
+            {onBrandClick ? (
+              <button
+                type="button"
+                className="text-action hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                onClick={() => onBrandClick(garment.brand)}
+              >
+                {garment.brand}
+              </button>
+            ) : (
+              <span>{garment.brand}</span>
+            )}{" "}
+            {garment.sku}
           </SheetTitle>
           <SheetDescription className="sr-only">
             Detail view for {garment.name}
@@ -137,7 +183,7 @@ export function GarmentDetailDrawer({
               />
             </div>
 
-            {/* Colors section */}
+            {/* Colors section — FavoritesColorSection replaces ColorSwatchPicker (scroll fix: no inner ScrollArea) */}
             <div className="flex flex-col gap-2">
               <h3 className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 <Palette size={14} aria-hidden="true" />
@@ -146,12 +192,12 @@ export function GarmentDetailDrawer({
                   ({garmentColors.length})
                 </span>
               </h3>
-              <ColorSwatchPicker
-                colors={garmentColors}
-                selectedColorId={selectedColorId ?? undefined}
-                onSelect={setSelectedColorId}
+              <FavoritesColorSection
+                favorites={favoriteColors}
+                allColors={garmentColors}
+                onToggle={handleToggleColorFavorite}
               />
-              {/* Selected color display */}
+              {/* Selected color display (U14) */}
               {selectedColor && (
                 <div className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2">
                   <div
