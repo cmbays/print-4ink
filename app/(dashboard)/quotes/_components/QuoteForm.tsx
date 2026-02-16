@@ -347,6 +347,35 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     setActiveServiceTab(type);
   }, []);
 
+  // N56 — validateDtfTab: check DTF line items + sheet calculation
+  const validateDtfTab = useCallback((): { valid: boolean; errors: string[] } => {
+    const errors: string[] = [];
+
+    if (dtfLineItems.length === 0) {
+      errors.push("At least one DTF design is required");
+      return { valid: false, errors };
+    }
+
+    dtfLineItems.forEach((item, i) => {
+      const label = item.artworkName || `Design ${i + 1}`;
+      if (!item.artworkName.trim()) {
+        errors.push(`${label}: artwork name is required`);
+      }
+      if (item.width <= 0 || item.height <= 0) {
+        errors.push(`${label}: valid dimensions are required`);
+      }
+      if (item.quantity < 1) {
+        errors.push(`${label}: quantity must be at least 1`);
+      }
+    });
+
+    if (!sheetCalculation) {
+      errors.push("Sheet layout must be calculated before saving");
+    }
+
+    return { valid: errors.length === 0, errors };
+  }, [dtfLineItems, sheetCalculation]);
+
   // N41 — validateTabCompletion (per-tab validation badges)
   const tabValidation = useMemo((): Record<ServiceType, boolean> => {
     // Screen print: at least one line item with garment and sizes
@@ -356,16 +385,15 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       return totalQty > 0;
     });
 
-    // DTF: at least one item with name and valid dimensions (placeholder until Wave 2)
-    const dtfValid = dtfLineItems.length > 0 &&
-      dtfLineItems.every((item) => item.artworkName && item.width > 0 && item.height > 0 && item.quantity >= 1);
+    // DTF: reuse N56 logic
+    const { valid: dtfValid } = validateDtfTab();
 
     return {
       "screen-print": spValid,
       dtf: dtfValid,
       embroidery: false,
     };
-  }, [lineItems, dtfLineItems]);
+  }, [lineItems, validateDtfTab]);
 
   const handleToggleArtwork = useCallback((artworkId: string) => {
     setArtworkIds((prev) => {
@@ -417,29 +445,56 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       nextErrors.customerId = "Customer is required";
     }
 
-    if (lineItems.length === 0) {
-      nextErrors.lineItems = "At least one line item is required";
+    // Validate screen print tab if enabled
+    if (enabledServiceTypes.includes("screen-print")) {
+      if (lineItems.length === 0) {
+        nextErrors.lineItems = "At least one line item is required";
+      }
+
+      lineItems.forEach((item, i) => {
+        const itemErrors: Record<string, string> = {};
+        if (!item.garmentId) {
+          itemErrors.garmentId = "Garment is required";
+        }
+        const totalQty = Object.values(item.sizes).reduce(
+          (sum, qty) => sum + qty,
+          0
+        );
+        if (totalQty === 0) {
+          itemErrors.sizes = "At least one size with qty > 0 is required";
+        }
+        if (Object.keys(itemErrors).length > 0) {
+          nextLineErrors[i] = itemErrors;
+        }
+      });
     }
 
-    lineItems.forEach((item, i) => {
-      const itemErrors: Record<string, string> = {};
-      if (!item.garmentId) {
-        itemErrors.garmentId = "Garment is required";
+    // Validate DTF tab if enabled (N56)
+    if (enabledServiceTypes.includes("dtf")) {
+      const dtfResult = validateDtfTab();
+      if (!dtfResult.valid) {
+        nextErrors.dtfTab = dtfResult.errors[0];
+        // Switch to DTF tab and show all errors in a toast
+        if (activeServiceTab !== "dtf") {
+          setActiveServiceTab("dtf");
+        }
+        toast.error("DTF tab has errors", {
+          description: dtfResult.errors.join(". "),
+        });
       }
-      const totalQty = Object.values(item.sizes).reduce(
-        (sum, qty) => sum + qty,
-        0
-      );
-      if (totalQty === 0) {
-        itemErrors.sizes = "At least one size with qty > 0 is required";
-      }
-      if (Object.keys(itemErrors).length > 0) {
-        nextLineErrors[i] = itemErrors;
-      }
-    });
+    }
 
     setErrors(nextErrors);
     setLineItemErrors(nextLineErrors);
+
+    const spHasErrors =
+      Object.keys(nextErrors).some((k) => k !== "dtfTab") ||
+      Object.keys(nextLineErrors).length > 0;
+
+    // If SP tab has errors and we're not on SP tab, switch to it
+    if (spHasErrors && activeServiceTab !== "screen-print" && enabledServiceTypes.includes("screen-print")) {
+      setActiveServiceTab("screen-print");
+    }
 
     return (
       Object.keys(nextErrors).length === 0 &&
@@ -476,6 +531,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       ...discounts,
     ];
 
+    // N55 — mergeQuoteData: combine SP + DTF data
     return {
       id: quoteId || "new-preview",
       quoteNumber: quoteId ? `Q-${quoteId.slice(0, 4)}` : "Q-NEW",
@@ -500,6 +556,9 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           lineTotal,
         };
       }),
+      // DTF data merged into quote payload
+      dtfLineItems: enabledServiceTypes.includes("dtf") ? dtfLineItems : [],
+      dtfSheetCalculation: enabledServiceTypes.includes("dtf") ? sheetCalculation : null,
       setupFees,
       subtotal,
       total,
@@ -521,17 +580,33 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       return;
     }
 
+    // N55 — build merged data summary for toast
+    const summaryParts: string[] = [];
+    if (enabledServiceTypes.includes("screen-print")) {
+      const spQty = lineItems.reduce(
+        (sum, item) => sum + Object.values(item.sizes).reduce((s, q) => s + q, 0),
+        0
+      );
+      summaryParts.push(`${lineItems.length} SP line item${lineItems.length !== 1 ? "s" : ""} (${spQty} qty)`);
+    }
+    if (enabledServiceTypes.includes("dtf") && sheetCalculation) {
+      summaryParts.push(
+        `${dtfLineItems.length} DTF design${dtfLineItems.length !== 1 ? "s" : ""} on ${sheetCalculation.totalSheets} sheet${sheetCalculation.totalSheets !== 1 ? "s" : ""}`
+      );
+    }
+    const dataSummary = summaryParts.join(" + ");
+
     if (sendToCustomer) {
       toast.success("Quote sent to customer", {
-        description: "The customer will receive an email with the quote.",
+        description: `${dataSummary}. The customer will receive an email with the quote.`,
       });
     } else {
       toast.success(
         isEdit ? "Quote updated" : "Quote saved as draft",
         {
           description: isEdit
-            ? `Quote ${quoteId ?? ""} has been updated.`
-            : "You can continue editing this quote later.",
+            ? `${dataSummary}. Quote ${quoteId ?? ""} has been updated.`
+            : `${dataSummary}. You can continue editing this quote later.`,
         }
       );
     }
