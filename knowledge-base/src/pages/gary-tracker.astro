@@ -1,21 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import GaryQuestion from '../components/GaryQuestion.astro';
+import PageFooter from '../components/PageFooter.astro';
+import BackLink from '../components/BackLink.astro';
 import { pipelineLabel } from '../lib/utils';
+import type { GaryQuestionData } from '../lib/types';
 
 // Read all pipeline markdown files and extract Gary questions from HTML blocks
 const sessionFiles = import.meta.glob('/src/content/pipelines/*.md', { query: '?raw', import: 'default', eager: true });
-
-interface GaryQuestionData {
-  questionId: string;
-  vertical: string;
-  status: 'unanswered' | 'answered';
-  questionText: string;
-  context: string;
-  answer?: string;
-  answeredDate?: string;
-  sourceFile: string;
-}
 
 const allQuestions: GaryQuestionData[] = [];
 
@@ -23,25 +15,25 @@ for (const [path, raw] of Object.entries(sessionFiles)) {
   const content = raw as string;
   const filename = path.split('/').pop() || '';
 
-  // Match gary-question div blocks embedded in Markdown
-  const questionRegex = /<div\s+class="gary-question"\s+data-question-id="([^"]+)"\s+data-vertical="([^"]+)"\s+data-status="([^"]+)"[^>]*>([\s\S]*?)<\/div>\s*(?=<div\s+class="gary-question"|$)/g;
+  // Match gary-question div blocks embedded in Markdown (named groups)
+  const questionRegex = /<div\s+class="gary-question"\s+data-question-id="(?<questionId>[^"]+)"\s+data-vertical="(?<vertical>[^"]+)"\s+data-status="(?<status>[^"]+)"[^>]*>(?<innerHtml>[\s\S]*?)<\/div>\s*(?=<div\s+class="gary-question"|$)/g;
 
   let match;
   while ((match = questionRegex.exec(content)) !== null) {
-    const [, questionId, vertical, status, innerHtml] = match;
+    const { questionId, vertical, status, innerHtml } = match.groups!;
 
-    // Extract question text
-    const questionTextMatch = innerHtml.match(/<p\s+class="gary-question-text">([\s\S]*?)<\/p>/);
-    const questionText = questionTextMatch ? questionTextMatch[1].trim() : '';
+    // Extract question text (named group)
+    const questionTextMatch = innerHtml.match(/<p\s+class="gary-question-text">(?<text>[\s\S]*?)<\/p>/);
+    const questionText = questionTextMatch?.groups?.text?.trim() ?? '';
 
-    // Extract context
-    const contextMatch = innerHtml.match(/<p\s+class="gary-question-context">([\s\S]*?)<\/p>/);
-    const context = contextMatch ? contextMatch[1].trim() : '';
+    // Extract context (named group)
+    const contextMatch = innerHtml.match(/<p\s+class="gary-question-context">(?<ctx>[\s\S]*?)<\/p>/);
+    const context = contextMatch?.groups?.ctx?.trim() ?? '';
 
-    // Extract answer if present
-    const answerMatch = innerHtml.match(/<div\s+class="gary-answer"\s+data-answered-date="([^"]*)"[^>]*>([\s\S]*?)<\/div>/);
-    const answeredDate = answerMatch?.[1] || undefined;
-    const answerContent = answerMatch?.[2]?.trim() || undefined;
+    // Extract answer if present (named groups)
+    const answerMatch = innerHtml.match(/<div\s+class="gary-answer"\s+data-answered-date="(?<date>[^"]*)"[^>]*>(?<body>[\s\S]*?)<\/div>/);
+    const answeredDate = answerMatch?.groups?.date || undefined;
+    const answerContent = answerMatch?.groups?.body?.trim() || undefined;
     const answer = answerContent && answerContent.length > 0 ? answerContent : undefined;
 
     allQuestions.push({
@@ -74,10 +66,7 @@ const unansweredCount = totalQuestions - answeredCount;
 
 <Layout title="Gary Tracker" description="Questions for Gary across all sessions">
   <main class="max-w-[720px] mx-auto px-6 py-12">
-    <!-- Back link -->
-    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
-      <span>&larr;</span> Back to Index
-    </a>
+    <BackLink href="/" label="Back to Index" />
 
     <!-- Header -->
     <h1 class="text-2xl font-bold tracking-tight mb-2">Gary Tracker</h1>
@@ -132,11 +121,6 @@ const unansweredCount = totalQuestions - answeredCount;
       </div>
     )}
 
-    <!-- Footer -->
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">
-        Screen Print Pro &mdash; Gary Tracker
-      </p>
-    </footer>
+    <PageFooter label="Gary Tracker" />
   </main>
 </Layout>

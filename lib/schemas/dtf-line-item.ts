@@ -8,7 +8,7 @@ export const dtfSizePresetEnum = z.enum(["small", "medium", "large", "custom"]);
 
 export const dtfLineItemSchema = z.object({
   id: z.string().uuid(),
-  artworkName: z.string(),
+  artworkName: z.string().min(1),
   sizePreset: dtfSizePresetEnum,
   width: z.number().positive(),
   height: z.number().positive(),

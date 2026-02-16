@@ -1,5 +1,6 @@
 ---
 import { tagColor, pipelineLabel, stageLabel, formatDate } from '../lib/utils';
+import Badge from './Badge.astro';
 
 interface Props {
   title: string;
@@ -25,19 +26,13 @@ const dateStr = formatDate(date);
   <!-- Tags row -->
   <div class="flex items-center gap-1.5 mb-1.5">
     {tags.map((tag) => (
-      <span class={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${tagColor(tag)}`}>
-        {tag}
-      </span>
+      <Badge colorClass={tagColor(tag)}>{tag}</Badge>
     ))}
     {status === 'in-progress' && (
-      <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-warning/12 text-warning ml-auto">
-        In Progress
-      </span>
+      <Badge colorClass="bg-warning/12 text-warning" class="ml-auto">In Progress</Badge>
     )}
     {status === 'superseded' && (
-      <span class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-error/12 text-error ml-auto">
-        Superseded
-      </span>
+      <Badge colorClass="bg-error/12 text-error" class="ml-auto">Superseded</Badge>
     )}
   </div>
 

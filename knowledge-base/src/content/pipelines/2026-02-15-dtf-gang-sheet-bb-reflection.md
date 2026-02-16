@@ -3,10 +3,12 @@ title: "DTF Gang Sheet Builder — Breadboard Reflection"
 subtitle: "5 wiring smells found and fixed, 17 affordances pass naming test, 7 user stories traced"
 date: 2026-02-15
 phase: 1
-vertical: dtf-gang-sheet
-verticalSecondary: [quoting]
+pipelineName: dtf-gang-sheet
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: breadboard
-tags: [breadboard, decision]
+tags: [plan, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0215-dtf-gang-sheet-research"
 status: complete

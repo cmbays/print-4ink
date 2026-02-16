@@ -1,0 +1,100 @@
+name: Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature] "
+labels: ["type/feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Fill in the required fields below.
+        For agent-created issues, ensure the Product/Tool dropdown matches your vertical.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this feature do?
+      placeholder: Describe the feature and the problem it solves
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Who needs this and why? What workflow pain does it address?
+      placeholder: "As a [shop owner/agent/developer], I need... because..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: product-tool
+    attributes:
+      label: Product/Tool
+      description: Which product or tool does this relate to?
+      # Sync with config/products.json + config/tools.json
+      options:
+        - Dashboard
+        - Quotes
+        - Customers
+        - Invoices
+        - Jobs
+        - Garments
+        - Screens
+        - Pricing
+        - Work Orchestrator
+        - Skills Framework
+        - Agent System
+        - Knowledge Base
+        - CI Pipeline
+        - PM System
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How do we know this is done?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: files-to-read
+    attributes:
+      label: Files to Read
+      description: Entry points for agents picking up this issue
+      render: text
+      placeholder: |
+        app/(dashboard)/quotes/page.tsx
+        lib/schemas/quote.ts
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: When should this be worked on?
+      options:
+        - now
+        - next
+        - later
+        - icebox
+    validations:
+      required: false
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      description: Which project phase does this belong to?
+      options:
+        - Phase 1
+        - Phase 2
+        - Phase 3
+    validations:
+      required: false

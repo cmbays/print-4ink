@@ -1,14 +1,11 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import Pipeline from '../../../components/Pipeline.astro';
+import BackLink from '../../../components/BackLink.astro';
 import DocCard from '../../../components/DocCard.astro';
+import EmptyDocsState from '../../../components/EmptyDocsState.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel, stageLabel as getStageLabel } from '../../../lib/utils';
-import stagesConfig from '../../../../../config/stages.json';
-
-const allStages = stagesConfig
-  .filter((s: { slug: string; label: string; pipeline?: boolean }) => s.pipeline !== false)
-  .map((s: { slug: string }) => s.slug);
+import { pipelineLabel as getPipelineLabel, stageLabel as getStageLabel, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -33,16 +30,16 @@ const allDocs = await getCollection('pipelines');
 const pipelineDocs = allDocs.filter((s) => s.data.pipelineName === pipeline);
 const stageDocs = pipelineDocs
   .filter((s) => s.data.stage === stage)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort(sortByDateDesc);
 
 // Build stage breakdown for pipeline
 const stageBreakdown: Record<string, number> = {};
-for (const s of allStages) {
+for (const s of pipelineStageSlugs) {
   stageBreakdown[s] = pipelineDocs.filter((doc) => doc.data.stage === s).length;
 }
 
 // Build pipeline stages with current stage active
-const pipelineStages = allStages.map((s) => ({
+const pipelineStages = pipelineStageSlugs.map((s) => ({
   name: s,
   slug: s,
   count: stageBreakdown[s] || 0,
@@ -50,16 +47,9 @@ const pipelineStages = allStages.map((s) => ({
 }));
 ---
 
-<Layout title={`${pipelineLabel} — ${stageLabel}`}>
+<Layout title={`${pipelineLabel} — ${stageLabel}`} description={`${pipelineLabel} pipeline — ${stageLabel} stage documentation`}>
   <main class="max-w-[820px] mx-auto px-6 py-10">
-    {/* Back link */}
-    <a
-      href={`/pipelines/${pipeline}`}
-      class="inline-flex items-center gap-1 text-[13px] text-text-muted hover:text-action transition-colors mb-6"
-    >
-      <span>&larr;</span>
-      <span>Back to {pipelineLabel}</span>
-    </a>
+    <BackLink href={`/pipelines/${pipeline}`} label={`Back to ${pipelineLabel}`} />
 
     {/* Title */}
     <h1 class="text-2xl font-bold tracking-tight text-text-primary mb-1">
@@ -68,7 +58,7 @@ const pipelineStages = allStages.map((s) => ({
       <span class="text-action">{stageLabel}</span>
     </h1>
     <p class="text-[14px] text-text-secondary mb-8">
-      {stageDocs.length} pipeline doc{stageDocs.length !== 1 ? 's' : ''} in this stage
+      {pluralize(stageDocs.length, 'pipeline doc')} in this stage
     </p>
 
     {/* Pipeline stepper with active stage */}
@@ -84,9 +74,7 @@ const pipelineStages = allStages.map((s) => ({
         Pipeline Docs
       </h2>
       {stageDocs.length === 0 ? (
-        <p class="text-[14px] text-text-muted py-8 text-center">
-          No pipeline docs found for this stage.
-        </p>
+        <EmptyDocsState message="No pipeline docs found for this stage." />
       ) : (
         <ul class="space-y-3">
           {stageDocs.map((doc) => (

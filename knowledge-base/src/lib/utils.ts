@@ -6,12 +6,35 @@ import toolsConfig from '../../../config/tools.json';
 // ── Stage slug normalization ─────────────────────────────────────
 
 // Old slugs → new canonical slugs
-const stageSlugMap: Record<string, string> = {
+export const stageSlugMap: Record<string, string> = {
   shaping: 'shape',
   breadboarding: 'breadboard',
   'implementation-planning': 'plan',
   learnings: 'wrap-up',
 };
+
+// ── Pipeline stage constants (config-driven) ─────────────────────
+
+/** Ordered pipeline stages (excludes non-pipeline stages like cooldown) */
+export const pipelineStages = stagesConfig
+  .filter((s: { slug: string; pipeline?: boolean }) => s.pipeline !== false)
+  .map((s: { slug: string; label: string }) => ({ slug: s.slug, label: s.label }));
+
+/** Pipeline stage slug → label map */
+export const pipelineStageLabelMap: Record<string, string> = Object.fromEntries(
+  pipelineStages.map((s) => [s.slug, s.label]),
+);
+
+/** Ordered pipeline stage slugs */
+export const pipelineStageSlugs: string[] = pipelineStages.map((s) => s.slug);
+
+/** Core stages that indicate a pipeline is "Active" (config-driven) */
+export const CORE_STAGES: string[] = stagesConfig
+  .filter((s: { slug: string; core?: boolean }) => s.core === true)
+  .map((s: { slug: string }) => s.slug);
+
+/** Maximum phase number for phase filters */
+export const MAX_PHASE = 3;
 
 /** Normalize a stage slug from old format to new canonical format */
 export function normalizeStage(slug: string): string {
@@ -87,6 +110,26 @@ export function tagColor(tag: string): string {
 
 // ── Status display ───────────────────────────────────────────────
 
+/** Badge color classes (background + text) for status/docType values */
+export function statusColorClass(status: string): string {
+  switch (status) {
+    case 'current':
+    case 'complete':
+      return 'bg-success/12 text-success';
+    case 'in-progress':
+    case 'planning':
+      return 'bg-action/12 text-action';
+    case 'draft':
+    case 'deprecated':
+    case 'cooldown':
+      return 'bg-warning/12 text-warning';
+    case 'superseded':
+      return 'bg-surface text-muted-foreground';
+    default:
+      return 'bg-warning/12 text-warning';
+  }
+}
+
 export function statusColor(status: string): string {
   if (status === 'complete') return 'text-success';
   if (status === 'in-progress') return 'text-action';
@@ -103,4 +146,16 @@ export function statusLabel(status: string): string {
 
 export function formatDate(date: Date): string {
   return date.toISOString().split('T')[0];
+}
+
+// ── Collection helpers ──────────────────────────────────────────
+
+/** Sort comparator for collections by date descending (newest first) */
+export function sortByDateDesc(a: { data: { date: Date } }, b: { data: { date: Date } }): number {
+  return b.data.date.getTime() - a.data.date.getTime();
+}
+
+/** Pluralize a word: pluralize(3, 'doc') → '3 docs', pluralize(1, 'entry', 'entries') → '1 entry' */
+export function pluralize(count: number, singular: string, plural?: string): string {
+  return `${count} ${count === 1 ? singular : (plural || singular + 's')}`;
 }

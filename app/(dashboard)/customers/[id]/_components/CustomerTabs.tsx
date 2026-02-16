@@ -17,6 +17,7 @@ import { ArtworkGallery } from "@/components/features/ArtworkGallery";
 import { ContactHierarchy } from "./ContactHierarchy";
 import { CustomerDetailsPanel } from "./CustomerDetailsPanel";
 import { CustomerScreensTab } from "./CustomerScreensTab";
+import { CustomerPreferencesTab } from "./CustomerPreferencesTab";
 import { NotesPanel } from "@/components/features/NotesPanel";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import type { Customer } from "@/lib/schemas/customer";
@@ -41,7 +42,7 @@ interface CustomerTabsProps {
 const PRIMARY_TABS = ["activity", "quotes", "jobs", "invoices", "notes"] as const;
 
 // Secondary tabs behind "More" dropdown on mobile
-const SECONDARY_TABS = ["artwork", "screens", "contacts", "details"] as const;
+const SECONDARY_TABS = ["artwork", "screens", "preferences", "contacts", "details"] as const;
 
 const TAB_LABELS: Record<string, string> = {
   activity: "Activity",
@@ -51,6 +52,7 @@ const TAB_LABELS: Record<string, string> = {
   notes: "Notes",
   artwork: "Artwork",
   screens: "Screens",
+  preferences: "Preferences",
   contacts: "Contacts",
   details: "Details",
 };
@@ -93,7 +95,7 @@ export function CustomerTabs({
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      {/* Desktop: all 9 tabs visible */}
+      {/* Desktop: all 10 tabs visible */}
       <div className="hidden md:block overflow-x-auto scrollbar-none">
         <TabsList
           variant="line"
@@ -105,6 +107,7 @@ export function CustomerTabs({
           <TabsTrigger value="invoices" className={triggerClass}>{tabLabel("invoices")}</TabsTrigger>
           <TabsTrigger value="artwork" className={triggerClass}>{tabLabel("artwork")}</TabsTrigger>
           <TabsTrigger value="screens" className={triggerClass}>{tabLabel("screens")}</TabsTrigger>
+          <TabsTrigger value="preferences" className={triggerClass}>Preferences</TabsTrigger>
           <TabsTrigger value="contacts" className={triggerClass}>{tabLabel("contacts")}</TabsTrigger>
           <TabsTrigger value="details" className={triggerClass}>Details</TabsTrigger>
           <TabsTrigger value="notes" className={triggerClass}>{tabLabel("notes")}</TabsTrigger>
@@ -187,6 +190,10 @@ export function CustomerTabs({
 
       <TabsContent value="screens" className="mt-4">
         <CustomerScreensTab customerId={customer.id} />
+      </TabsContent>
+
+      <TabsContent value="preferences" className="mt-4">
+        <CustomerPreferencesTab customer={customer} />
       </TabsContent>
 
       <TabsContent value="contacts" className="mt-4">

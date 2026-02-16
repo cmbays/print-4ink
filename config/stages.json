@@ -1,10 +1,10 @@
 [
-  { "slug": "research", "label": "Research" },
+  { "slug": "research", "label": "Research", "core": true },
   { "slug": "interview", "label": "Interview" },
   { "slug": "shape", "label": "Shape" },
-  { "slug": "breadboard", "label": "Breadboard" },
+  { "slug": "breadboard", "label": "Breadboard", "core": true },
   { "slug": "plan", "label": "Plan" },
-  { "slug": "build", "label": "Build" },
+  { "slug": "build", "label": "Build", "core": true },
   { "slug": "review", "label": "Review" },
   { "slug": "wrap-up", "label": "Wrap-up" },
   { "slug": "cooldown", "label": "Cooldown", "pipeline": false }

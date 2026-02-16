@@ -1,7 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageFooter from '../../components/PageFooter.astro';
+import BackLink from '../../components/BackLink.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import SessionResume from '../../components/SessionResume.astro';
 import { getCollection, render } from 'astro:content';
-import { tagColor, pipelineLabel, formatDate } from '../../lib/utils';
+import { tagColor, pipelineLabel, formatDate, statusColor, statusLabel } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('strategy');
@@ -19,15 +23,11 @@ const dateStr = formatDate(date);
 
 <Layout title={title} description={subtitle}>
   <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
-    <a href="/strategy" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
-      <span>&larr;</span> Back to Strategy
-    </a>
+    <BackLink href="/strategy" label="Back to Strategy" />
 
     {/* Tags + docType badge */}
     <div class="flex items-center gap-2 mb-4">
-      <span class={`text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ${docType === 'planning' ? 'bg-action/12 text-action' : 'bg-warning/12 text-warning'}`}>
-        {docType}
-      </span>
+      <StatusBadge status={docType} />
       {tags.map((tag) => (
         <span class={`text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ${tagColor(tag)}`}>
           {tag}
@@ -51,8 +51,8 @@ const dateStr = formatDate(date);
         </div>
         <div class="px-4 py-3">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Status</div>
-          <div class={`text-sm font-medium ${status === 'complete' ? 'text-success' : 'text-action'}`}>
-            {status === 'complete' ? 'Complete' : 'In Progress'}
+          <div class={`text-sm font-medium ${statusColor(status)}`}>
+            {statusLabel(status)}
           </div>
         </div>
         <div class="px-4 py-3 border-l border-border">
@@ -96,13 +96,7 @@ const dateStr = formatDate(date);
       </div>
     )}
 
-    {/* Session resume */}
-    {sessionId && (
-      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 mb-6" data-pagefind-ignore>
-        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Resume Session</div>
-        <code class="font-mono text-xs text-action select-all">claude --resume {sessionId}</code>
-      </div>
-    )}
+    <SessionResume sessionId={sessionId} />
 
     <hr class="border-t border-border mb-8" />
 
@@ -110,8 +104,6 @@ const dateStr = formatDate(date);
       <Content />
     </div>
 
-    <footer class="mt-16 pt-6 border-t border-border">
-      <p class="text-xs text-text-muted text-center">Screen Print Pro &mdash; {title} &mdash; {dateStr}</p>
-    </footer>
+    <PageFooter label={`${title} \u2014 ${dateStr}`} />
   </main>
 </Layout>

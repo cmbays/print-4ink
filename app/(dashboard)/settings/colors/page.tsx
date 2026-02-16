@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Palette, Search, LayoutGrid, List } from "lucide-react";
 import { Topbar } from "@/components/layout/topbar";
 import {
@@ -26,6 +26,7 @@ import { displayPreferenceSchema } from "@/lib/schemas/color-preferences";
 import type { Color } from "@/lib/schemas/color";
 import type { ImpactPreview } from "@/lib/helpers/color-preferences";
 import type { DisplayPreference } from "@/lib/schemas/color-preferences";
+import { useDebounce } from "@/lib/hooks/useDebounce";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -37,17 +38,6 @@ const SEARCH_MIN_CHARS = 2;
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function useDebounce(value: string, delay: number): string {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 function getStoredDisplayPreference(): DisplayPreference {
   if (typeof window === "undefined") return "flat";

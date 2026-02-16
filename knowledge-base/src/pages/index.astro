@@ -4,8 +4,7 @@ import Sidebar from '../components/Sidebar.astro';
 import DocCard from '../components/DocCard.astro';
 import PhaseFilter from '../components/PhaseFilter.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel } from '../lib/utils';
-import stagesConfig from '../../../config/stages.json';
+import { pipelineLabel, pipelineStages, sortByDateDesc, pluralize } from '../lib/utils';
 
 // Fetch all pipeline docs
 const allDocs = await getCollection('pipelines');
@@ -18,17 +17,12 @@ for (const s of allDocs) {
 }
 
 // Sort by date descending
-const sorted = allDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sorted = allDocs.sort(sortByDateDesc);
 
 // Pipeline display names (derived from content, not config)
 const pipelineLabels: Record<string, string> = Object.fromEntries(
   Object.keys(pipelineCounts).map((slug) => [slug, pipelineLabel(slug)])
 );
-
-// Pipeline stages in order (exclude non-pipeline stages like cooldown)
-const pipelineStages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => ({ slug: s.slug, label: s.label }));
 
 // Pre-compute which pipelines have which stages
 const pipelineStageMap: Record<string, string[]> = {};
@@ -42,7 +36,7 @@ for (const s of allDocs) {
 }
 ---
 
-<Layout title="Knowledge Base">
+<Layout title="Knowledge Base" description="Screen Print Pro knowledge base — pipeline sessions, products, tools, and strategy documentation">
   <div class="flex min-h-screen">
     <Sidebar
       activeView="all"
@@ -80,7 +74,7 @@ for (const s of allDocs) {
             All Pipelines
           </h1>
           <p id="page-subtitle" class="text-[12px] text-text-muted mt-0.5">
-            {sorted.length} pipeline docs
+            {pluralize(sorted.length, 'pipeline doc')}
           </p>
         </div>
         <PhaseFilter />
@@ -136,7 +130,7 @@ for (const s of allDocs) {
       </div>
 
       <!-- Empty state -->
-      <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center" aria-live="polite" aria-atomic="true">
         <p class="text-text-muted text-sm">No pipeline docs match the current filters.</p>
         <button type="button" id="clear-filters-btn" class="text-action text-[13px] mt-2 hover:underline">
           Clear filters
@@ -152,6 +146,7 @@ for (const s of allDocs) {
 </script>
 
 <script>
+  import type {} from '../lib/types';
   // ── Client-side filtering ──────────────────────────────────────────
 
   let activePipeline: string | null = null;
@@ -171,10 +166,7 @@ for (const s of allDocs) {
   const mobileSelect = document.getElementById('mobile-pipeline-select') as HTMLSelectElement | null;
   const clearBtn = document.getElementById('clear-filters-btn');
 
-  const data = (window as any).__KB_DATA__ as {
-    pipelineStageMap: Record<string, string[]>;
-    pipelineLabels: Record<string, string>;
-  };
+  const data = window.__KB_DATA__;
 
   function applyFilters() {
     let visibleCount = 0;
@@ -252,7 +244,9 @@ for (const s of allDocs) {
     // Highlight active sidebar pipeline
     pipelineBtns.forEach((btn) => {
       const slug = btn.dataset.pipelineFilter;
-      if (slug === activePipeline) {
+      const isActive = slug === activePipeline;
+      btn.setAttribute('aria-pressed', String(isActive));
+      if (isActive) {
         btn.classList.remove('text-text-secondary');
         btn.classList.add('text-action', 'bg-action/5', 'font-medium');
       } else {
@@ -279,6 +273,7 @@ for (const s of allDocs) {
     phasePills.forEach((pill) => {
       const val = pill.dataset.phaseValue;
       const isActive = (val === '' && !activePhase) || val === activePhase;
+      pill.setAttribute('aria-pressed', String(isActive));
       if (isActive) {
         pill.className = pill.className
           .replace(/text-text-muted/g, '')
@@ -295,6 +290,7 @@ for (const s of allDocs) {
     statusPills.forEach((pill) => {
       const val = pill.dataset.statusValue;
       const isActive = (val === '' && !activeStatus) || val === activeStatus;
+      pill.setAttribute('aria-pressed', String(isActive));
       if (isActive) {
         activeClass.split(' ').forEach((c) => pill.classList.add(c));
         inactiveClass.split(' ').forEach((c) => pill.classList.remove(c));
@@ -307,7 +303,9 @@ for (const s of allDocs) {
     // Sidebar phase buttons
     sidebarPhaseBtns.forEach((btn) => {
       const val = btn.dataset.phaseFilter;
-      if (val === activePhase) {
+      const isActive = val === activePhase;
+      btn.setAttribute('aria-pressed', String(isActive));
+      if (isActive) {
         btn.classList.add('bg-action/15', 'text-action', 'border-action/30');
         btn.classList.remove('text-text-muted', 'border-border');
       } else {

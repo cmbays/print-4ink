@@ -3,8 +3,10 @@ title: "DTF Gang Sheet Builder — Competitive Research"
 subtitle: "Competitor analysis, industry workflows, and UX patterns for in-house DTF gang sheet building"
 date: 2026-02-15
 phase: 1
-vertical: dtf-gang-sheet
-verticalSecondary: [quoting, price-matrix]
+pipelineName: dtf-gang-sheet
+pipelineType: vertical
+products: [quotes, pricing]
+tools: []
 stage: research
 tags: [research]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
@@ -41,7 +43,7 @@ Gang sheet builders split into two distinct categories:
 |------|----------|----------|---------|--------------|-------------------|-----------------|-----------------|-----------------|
 | **Drip Apps** (4Ink's current) | Customer-facing | Shopify app | Free + 5% commission (max $12/order) | No (manual drag-drop) | No | Yes (auto cutlines) | Export PNG/PDF | Easy |
 | **Antigro Designer** | Customer-facing | Shopify app | Free + 5% per download | Yes (auto-nesting) | No | Yes | Export PNG/PDF | Moderate (needs setup) |
-| **Kixxl** | Customer-facing | Shopify/WooCommerce | Subscription | Yes (AI-powered) | Yes (halftoning + cleanup) | Yes (Sticker Maker Pro) | Export PNG/PDF/TIFF | Easy |
+| **Kixxl** | Customer-facing | Shopify/WooCommerce | Subscription | Yes (AI-powered) | Yes (halftoning + cleanup) | Yes | Export PNG/PDF/TIFF | Easy |
 | **DTF Transfer Studio** | Production | Desktop (Win/Mac) | Subscription | Yes (multiple algorithms) | Yes (halftoning + dithering) | Yes (cut paths) | TIFF/PDF with spot channels, CutContour | Moderate |
 | **Fiery Digital Factory DTF** | Production/RIP | Desktop | Licensed | Yes (integrated into print queue) | Yes (full color management) | N/A | Native (IS the RIP) | Complex |
 
@@ -274,5 +276,5 @@ This is sufficient to validate the concept with Gary. Advanced features (halfton
 
 ### Prior Research (Internal)
 - [DTF Gang Sheet Pricing Research](https://github.com/cmbays/print-4ink/blob/main/docs/research/05-dtf-gang-sheet-pricing.md) — Cost structures, pricing models, margin analysis
-- [Price Matrix Build Session](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/sessions/2026-02-12-price-matrix-build.md) — DTF editor implementation
+- [Price Matrix Build Session](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/pipelines/2026-02-12-price-matrix-build.md) — DTF editor implementation
 - [GitHub Issue #144](https://github.com/cmbays/print-4ink/issues/144) — DTF Gang Sheet Builder feature request

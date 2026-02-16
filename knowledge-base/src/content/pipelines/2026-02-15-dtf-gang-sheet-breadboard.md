@@ -3,10 +3,12 @@ title: "DTF Gang Sheet Builder — Breadboarding"
 subtitle: "Shape D mapped to 28 UI + 17 code affordances, 5 vertical slices for Feb 21 demo"
 date: 2026-02-15
 phase: 1
-vertical: dtf-gang-sheet
-verticalSecondary: [quoting]
+pipelineName: dtf-gang-sheet
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: breadboard
-tags: [breadboard, decision]
+tags: [plan, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0215-dtf-gang-sheet-research"
 status: complete

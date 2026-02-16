@@ -3,8 +3,8 @@
 ## Current State
 
 **Phase**: 1 — Mockup with mock data
-**Last Updated**: 2026-02-15
-**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Colors vertical initiated** — new vertical for hierarchical color preference system (global → supplier → customer). UX research complete (10+ product patterns analyzed: Figma, Unity, Google Workspace, CrashPlan, CSS cascade). Interview complete with 14 key design decisions. Design doc approved. Next: shaping, then incremental build starting with UX fixes (#169). **Shaping skills suite adopted** — full rjs/shaping-skills methodology as 4 deliverables: R × S shaping skill (609 lines), breadboarding upgrade (250 → 1758 lines from upstream), breadboard-reflection skill (188 lines), and shaping ripple hook (PR #199). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 40+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 17 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed). Bug #154 (lint errors) confirmed already resolved on main and closed.
+**Last Updated**: 2026-02-16
+**Status**: 7 verticals built and demo-ready (Quoting, Customer Management, Invoicing, Price Matrix, Jobs, Garments, Mobile Optimization). **Colors vertical complete and reviewed** — hierarchical color preference system (global → brand → customer) across 6 vertical slices (V1–V6). Quality review passed: 14.5/15 screen audit, 8.5/10 UX heuristics, zero `any` types, 626 tests. Two DRY extractions completed (`useDebounce`, `useGridKeyboardNav`). **KB Wave 2 audit complete** (PR #257, closes #250–#254) — 3 shared components extracted (StatusBadge, RelatedPipelinesSection, EmptyDocsState), config-driven constants (CORE_STAGES, MAX_PHASE), SEO meta descriptions on all pages, accessibility fixes (aria-label, aria-pressed, aria-live), type safety improvements (types.ts, typed window, named regex groups). **Shaping skills suite adopted** — full rjs/shaping-skills methodology as 4 deliverables: R × S shaping skill (609 lines), breadboarding upgrade (250 → 1758 lines from upstream), breadboard-reflection skill (188 lines), and shaping ripple hook (PR #199). **Project configs centralized** — verticals, stages, and tags consolidated from 7+ duplicated locations into 3 canonical JSON files at `config/` (PR #195, closes #190). All KB components, pages, Zod schema, `work.sh`, and CLAUDE.md import from config. 4 code dedup fixes (sidebar nav, StatusBadge, BoardFilterBar, SetupWizard). **Mobile polish complete** — MobileFilterSheet integrated on all 4 list views, customer tab grouping, scroll-to-error, 529 tests across 26 files (PR #167, closes #151-#156). **Mobile pricing fully responsive** — pricing list (PR #175) and screen-print editor (PR #174) mobile-adapted with MobileToolsSheet drill-down, sticky columns, BottomActionBar. Screen Intelligence Integration merged (PR #115). Garment Mockup Engine fully designed, breadboarded, and planned (16-task TDD plan ready for execution). Garments vertical breadboard consolidated (PR #173). Knowledge base on Astro 5.3 with 40+ session docs. PM foundation established (Shape Up methodology, ROADMAP.md, cool-down skill, GitHub label taxonomy). DevX vertical: `work` CLI with `--yolo`/`--claude-args` flags (PR #176), 7 `work clean` bugfixes merged (PRs #168, #172, #178-#182), 8 agents, 17 skills, session orchestration. All 3 demo-blocking bugs resolved (#128, #129, #138 — all closed). Bug #154 (lint errors) confirmed already resolved on main and closed.
 
 ## What's Built
 
@@ -14,7 +14,7 @@
 - Tailwind v4 with design tokens in `globals.css` (`@theme inline`)
 - shadcn/ui components (24 primitives)
 - Fonts: Inter + JetBrains Mono via `next/font`, dark mode default
-- Vitest (529 tests, 26 test files), GitHub Actions CI
+- Vitest (626 tests, 31 test files), GitHub Actions CI
 - Layout shell: sidebar (8 nav links incl. Jobs + Invoices) + per-page Topbar breadcrumbs + main content area
 - Dashboard: summary cards, "Needs Attention", "In Progress" sections
 </details>
@@ -165,6 +165,18 @@
 - Dark theme matching project design tokens (Niji palette)
 - CodeRabbit review: 8 actionable issues fixed, remaining nitpicks tracked in #63
 - Deleted: 43 HTML files, 1445-line generator script
+</details>
+
+<details><summary>KB Refactoring — Wave 1 Shared Modules (PR #244 — merged) + Wave 2 Audit Fixes (PR #257 — merged)</summary>
+
+- **Wave 1** (PR #244): Extracted PageFooter, BackLink, SessionResume, Badge, sortByDateDesc, pluralize into shared modules
+- **Wave 2** (PR #257, closes #250–#254): 30 findings across 5 categories from 4-agent codebase audit
+  - **Components**: StatusBadge (status-to-color mapping), RelatedPipelinesSection (heading + DocCard loop + empty state), EmptyDocsState (consistent empty state)
+  - **Config-driven**: `core: true` in stages.json, CORE_STAGES + MAX_PHASE constants, PhaseFilter/Sidebar generated from MAX_PHASE
+  - **SEO**: `<meta description>` on all 6 pages that were missing it (index, products, tools, strategy, pipeline, stage)
+  - **Accessibility**: aria-label on filter buttons, aria-pressed toggling via client JS, aria-live on empty state, aria-hidden on hamburger SVG
+  - **Type safety**: `lib/types.ts` (KBPageData, GaryQuestionData, Window augmentation), typed window access replaces `(window as any)`, named regex groups in gary-tracker
+- 143 pages built, zero errors after each commit
 </details>
 
 <details><summary>Shaping Skills Suite Adoption (PR #199 — merged)</summary>
@@ -333,6 +345,25 @@
 - KB: `2026-02-15-garments-breadboard.md`
 </details>
 
+<details><summary>Colors Vertical — Full Build + Review (PRs #222, #225, #228, #231, #233, #234, #243 — all merged)</summary>
+
+- **Discovery + Design**: 10+ product patterns analyzed (Figma, Unity, Google Workspace, CrashPlan, CSS cascade), interview with 14 key decisions, design doc approved
+- **Breadboard**: `docs/breadboards/color-preference-breadboard.md` — 6 places, 72+ UI affordances, 25 code affordances, 8 data stores, 6 vertical slices
+- **6 Vertical Slices**:
+  - V1: Swatch filter + honest garment cards (ColorFilterGrid, GarmentCard color badges)
+  - V2: Drawer favorites (GarmentDetailDrawer with FavoritesColorSection)
+  - V3: Global favorites page (`/settings/colors` with grouped view, auto-propagation toggle)
+  - V4: Brand Detail Drawer (inherit/customize mode, brand garment list, badge data)
+  - V5: Customer Preferences Tab (3 independent axes: colors, brands, garments)
+  - V6: Inheritance Engine + Removal Dialog (resolveEffectiveFavorites, 3-action removal, impact preview)
+- **Schemas**: `color-preferences.ts` (5 schemas: inheritanceMode, displayPreference, propagationConfig, brandPreference, customerPreference)
+- **Helpers**: `color-preferences.ts` (8 functions: resolveEffectiveFavorites, getInheritanceChain, propagateAddition, getImpactPreview, removeFromAll/LevelOnly/Selected, getBrandPreference)
+- **Shared components**: FavoritesColorSection, InheritanceToggle, InheritanceDetail, RemovalConfirmationDialog, GarmentMiniCard — reused across 4+ call sites
+- **Hooks extracted**: `useDebounce` (generic debounce), `useGridKeyboardNav` (arrow key grid navigation), `useColorFilter` (URL state)
+- **Quality review** (PR #243): 14.5/15 screen audit, 8.5/10 UX heuristics. Fixed APP_FLOW.md drift, added 9 removal function tests (617→626). DRY extractions: useDebounce (#241), useGridKeyboardNav (#242) — both closed.
+- 626 tests passing, zero `any` types, tsc clean
+</details>
+
 <details><summary>PM Foundation (PR #91 — merged)</summary>
 
 - **Methodology**: Shape Up adapted for solo-dev-with-AI (Shaping → Betting → Building → Cool-down)
@@ -387,6 +418,8 @@
 - [x] **#154** — Fix pre-existing lint errors in garments/page.tsx and PowerModeGrid (React 19 compiler) *(already resolved on main, closed)*
 - [x] **#155** — Customer detail tab grouping for 9-tab mobile bar *(closed by PR #167)*
 - [x] **#156** — Mobile scroll-to-error on form validation *(closed by PR #167)*
+- [x] **#241** — Extract useDebounce hook from settings/colors to lib/hooks/ *(closed by PR #243)*
+- [x] **#242** — DRY keyboard arrow navigation between ColorFilterGrid and ColorSwatchPicker *(closed by PR #243)*
 
 ## Tooling & Process Backlog (GitHub Issues)
 
@@ -403,7 +436,7 @@
 
 ## Next Actions
 
-1. **Colors vertical — Shaping** — Design approved. Next: run shaping skill (R × S) to produce frame + shaping docs, then breadboard, then incremental build.
+1. **Colors vertical — COMPLETE** — All 6 slices built, quality reviewed (14.5/15 screen, 8.5/10 UX), 626 tests. Ready for Gary demo.
 2. **Onboarding Wizards** (#145) — Guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
 3. **DTF Gang Sheet Builder** (#144) — New vertical, direct user request. Full pipeline: discovery → build.
 4. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile. Include Gary questions from colors interview (3 pending).

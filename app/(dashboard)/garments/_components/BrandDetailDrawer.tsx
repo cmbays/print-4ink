@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
 import { InheritanceToggle } from "@/components/features/InheritanceToggle";
 import { InheritanceDetail } from "@/components/features/InheritanceDetail";
-import { GarmentImage } from "@/components/features/GarmentImage";
+import { GarmentMiniCard } from "@/components/features/GarmentMiniCard";
 import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
 import { cn } from "@/lib/utils";
 import {
@@ -35,7 +35,7 @@ import {
 import type { Color } from "@/lib/schemas/color";
 import { brandPreferenceSchema } from "@/lib/schemas/color-preferences";
 import type { InheritanceMode } from "@/lib/schemas/color-preferences";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+
 
 // ---------------------------------------------------------------------------
 // Props
@@ -368,10 +368,12 @@ export function BrandDetailDrawer({
               ) : (
                 <div className="flex flex-col gap-1.5">
                   {brandGarments.map((garment) => (
-                    <BrandGarmentMiniCard
+                    <GarmentMiniCard
                       key={garment.id}
                       garment={garment}
-                      onClick={onGarmentClick}
+                      variant="detail"
+                      onClick={onGarmentClick ? () => onGarmentClick(garment.id) : () => {}}
+                      disabled={!onGarmentClick}
                     />
                   ))}
                 </div>
@@ -401,45 +403,3 @@ export function BrandDetailDrawer({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Brand Garment Mini-Card (U29)
-// ---------------------------------------------------------------------------
-
-function BrandGarmentMiniCard({
-  garment,
-  onClick,
-}: {
-  garment: GarmentCatalog;
-  onClick?: (garmentId: string) => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick ? () => onClick(garment.id) : undefined}
-      disabled={!onClick}
-      className={cn(
-        "flex items-center gap-3 rounded-md border border-border bg-surface px-3 py-2 text-left transition-colors",
-        "min-h-(--mobile-touch-target) md:min-h-0",
-        onClick && "cursor-pointer hover:bg-elevated",
-        !onClick && "cursor-default",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        "motion-reduce:transition-none",
-      )}
-    >
-      <GarmentImage
-        brand={garment.brand}
-        sku={garment.sku}
-        name={garment.name}
-        size="sm"
-      />
-      <div className="flex flex-1 flex-col gap-0.5 overflow-hidden">
-        <span className="truncate text-sm font-medium text-foreground">
-          {garment.name}
-        </span>
-        <span className="text-xs text-muted-foreground">
-          {garment.sku} · {garment.availableColors.length} colors
-        </span>
-      </div>
-    </button>
-  );
-}
