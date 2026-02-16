@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import GaryQuestion from '../components/GaryQuestion.astro';
 
 // Read all session markdown files and extract Gary questions from HTML blocks
-const sessionFiles = import.meta.glob('/src/content/sessions/*.md', { query: '?raw', import: 'default', eager: true });
+const sessionFiles = import.meta.glob('/src/content/pipelines/*.md', { query: '?raw', import: 'default', eager: true });
 
 interface GaryQuestionData {
   questionId: string;

@@ -3,8 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import DecisionRecord from '../components/DecisionRecord.astro';
 import { getCollection } from 'astro:content';
 
-const sessions = await getCollection('sessions');
-const decisions = sessions
+const docs = await getCollection('pipelines');
+const decisions = docs
   .filter((s) => s.data.tags.includes('decision'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
@@ -23,13 +23,13 @@ const decisions = sessions
 
     <!-- Decision cards -->
     <div class="space-y-3">
-      {decisions.map((session) => (
+      {decisions.map((doc) => (
         <DecisionRecord
-          title={session.data.title}
-          subtitle={session.data.subtitle}
-          date={session.data.date}
-          vertical={session.data.vertical}
-          slug={session.id}
+          title={doc.data.title}
+          subtitle={doc.data.subtitle}
+          date={doc.data.date}
+          pipeline={doc.data.pipeline}
+          slug={doc.id}
         />
       ))}
     </div>

@@ -7,21 +7,21 @@ import { getCollection } from 'astro:content';
 import verticalsConfig from '../../../config/verticals.json';
 import stagesConfig from '../../../config/stages.json';
 
-// Fetch all sessions
-const allSessions = await getCollection('sessions');
+// Fetch all pipeline docs
+const allDocs = await getCollection('pipelines');
 
-// Compute vertical counts for sidebar
-const verticalCounts: Record<string, number> = {};
-for (const s of allSessions) {
-  const v = s.data.vertical;
-  verticalCounts[v] = (verticalCounts[v] || 0) + 1;
+// Compute pipeline counts for sidebar
+const pipelineCounts: Record<string, number> = {};
+for (const s of allDocs) {
+  const v = s.data.pipeline;
+  pipelineCounts[v] = (pipelineCounts[v] || 0) + 1;
 }
 
 // Sort by date descending
-const sorted = allSessions.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sorted = allDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// Vertical display names (from canonical config)
-const verticalLabels: Record<string, string> = Object.fromEntries(
+// Pipeline display names (from canonical config)
+const pipelineLabels: Record<string, string> = Object.fromEntries(
   verticalsConfig.map((v) => [v.slug, v.label])
 );
 
@@ -30,14 +30,14 @@ const pipelineStages = stagesConfig
   .filter((s) => s.pipeline !== false)
   .map((s) => ({ slug: s.slug, label: s.label }));
 
-// Pre-compute which verticals have which stages
-const verticalStageMap: Record<string, string[]> = {};
-for (const s of allSessions) {
-  if (!verticalStageMap[s.data.vertical]) {
-    verticalStageMap[s.data.vertical] = [];
+// Pre-compute which pipelines have which stages
+const pipelineStageMap: Record<string, string[]> = {};
+for (const s of allDocs) {
+  if (!pipelineStageMap[s.data.pipeline]) {
+    pipelineStageMap[s.data.pipeline] = [];
   }
-  if (!verticalStageMap[s.data.vertical].includes(s.data.stage)) {
-    verticalStageMap[s.data.vertical].push(s.data.stage);
+  if (!pipelineStageMap[s.data.pipeline].includes(s.data.stage)) {
+    pipelineStageMap[s.data.pipeline].push(s.data.stage);
   }
 }
 ---
@@ -46,12 +46,12 @@ for (const s of allSessions) {
   <div class="flex min-h-screen">
     <Sidebar
       activeView="all"
-      sessionCount={allSessions.length}
-      verticalCounts={verticalCounts}
+      docCount={allDocs.length}
+      pipelineCounts={pipelineCounts}
     />
 
     <main class="flex-1 min-w-0 px-6 md:px-10 py-8">
-      <!-- Pipeline stepper (shown when vertical is selected) -->
+      <!-- Pipeline stepper (shown when pipeline is selected) -->
       <div id="pipeline-stepper" class="mb-6 hidden">
         <div class="flex items-center gap-0">
           {pipelineStages.map((stage, i) => (
@@ -77,25 +77,25 @@ for (const s of allSessions) {
       <div class="flex items-center justify-between mb-6">
         <div>
           <h1 id="page-title" class="text-lg font-bold tracking-tight text-text-primary">
-            All Sessions
+            All Pipelines
           </h1>
           <p id="page-subtitle" class="text-[12px] text-text-muted mt-0.5">
-            {sorted.length} sessions
+            {sorted.length} pipeline docs
           </p>
         </div>
         <PhaseFilter />
       </div>
 
-      <!-- Mobile vertical filter -->
+      <!-- Mobile pipeline filter -->
       <div class="md:hidden mb-4">
         <select
-          id="mobile-vertical-select"
+          id="mobile-pipeline-select"
           class="w-full bg-bg-elevated border border-border rounded-md px-3 py-2 text-[13px] text-text-primary"
         >
-          <option value="">All Verticals</option>
-          {Object.entries(verticalLabels).map(([slug, label]) => (
+          <option value="">All Pipelines</option>
+          {Object.entries(pipelineLabels).map(([slug, label]) => (
             <option value={slug}>
-              {label} ({verticalCounts[slug] || 0})
+              {label} ({pipelineCounts[slug] || 0})
             </option>
           ))}
         </select>
@@ -112,24 +112,24 @@ for (const s of allSessions) {
 
       <!-- Doc cards -->
       <div id="doc-list" class="space-y-2.5">
-        {sorted.map((session) => (
+        {sorted.map((doc) => (
           <div
             class="doc-card-wrapper"
-            data-vertical={session.data.vertical}
-            data-phase={session.data.phase}
-            data-stage={session.data.stage}
-            data-status={session.data.status}
+            data-pipeline={doc.data.pipeline}
+            data-phase={doc.data.phase}
+            data-stage={doc.data.stage}
+            data-status={doc.data.status}
           >
             <DocCard
-              title={session.data.title}
-              subtitle={session.data.subtitle}
-              date={session.data.date}
-              vertical={session.data.vertical}
-              verticalSecondary={session.data.verticalSecondary}
-              stage={session.data.stage}
-              tags={session.data.tags}
-              status={session.data.status}
-              slug={session.id}
+              title={doc.data.title}
+              subtitle={doc.data.subtitle}
+              date={doc.data.date}
+              pipeline={doc.data.pipeline}
+              pipelineType={doc.data.pipelineType}
+              stage={doc.data.stage}
+              tags={doc.data.tags}
+              status={doc.data.status}
+              slug={doc.id}
             />
           </div>
         ))}
@@ -137,7 +137,7 @@ for (const s of allSessions) {
 
       <!-- Empty state -->
       <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
-        <p class="text-text-muted text-sm">No sessions match the current filters.</p>
+        <p class="text-text-muted text-sm">No pipeline docs match the current filters.</p>
         <button type="button" id="clear-filters-btn" class="text-action text-[13px] mt-2 hover:underline">
           Clear filters
         </button>
@@ -146,15 +146,15 @@ for (const s of allSessions) {
   </div>
 </Layout>
 
-<!-- Embed vertical-stage map as JSON for client JS -->
-<script is:inline define:vars={{ verticalStageMap, verticalLabels }}>
-  window.__KB_DATA__ = { verticalStageMap, verticalLabels };
+<!-- Embed pipeline-stage map as JSON for client JS -->
+<script is:inline define:vars={{ pipelineStageMap, pipelineLabels }}>
+  window.__KB_DATA__ = { pipelineStageMap, pipelineLabels };
 </script>
 
 <script>
   // ── Client-side filtering ──────────────────────────────────────────
 
-  let activeVertical: string | null = null;
+  let activePipeline: string | null = null;
   let activePhase: string | null = null;
   let activeStatus: string | null = null;
 
@@ -164,31 +164,31 @@ for (const s of allSessions) {
   const pipelineStepper = document.getElementById('pipeline-stepper');
   const emptyState = document.getElementById('empty-state');
   const docList = document.getElementById('doc-list');
-  const verticalBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-vertical-btn');
+  const pipelineBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-pipeline-btn');
   const phasePills = document.querySelectorAll<HTMLButtonElement>('.phase-pill');
   const statusPills = document.querySelectorAll<HTMLButtonElement>('.status-pill');
   const sidebarPhaseBtns = document.querySelectorAll<HTMLButtonElement>('.sidebar-phase-btn');
-  const mobileSelect = document.getElementById('mobile-vertical-select') as HTMLSelectElement | null;
+  const mobileSelect = document.getElementById('mobile-pipeline-select') as HTMLSelectElement | null;
   const clearBtn = document.getElementById('clear-filters-btn');
 
   const data = (window as any).__KB_DATA__ as {
-    verticalStageMap: Record<string, string[]>;
-    verticalLabels: Record<string, string>;
+    pipelineStageMap: Record<string, string[]>;
+    pipelineLabels: Record<string, string>;
   };
 
   function applyFilters() {
     let visibleCount = 0;
 
     cards.forEach((card) => {
-      const cardVertical = card.dataset.vertical;
+      const cardPipeline = card.dataset.pipeline;
       const cardPhase = card.dataset.phase;
       const cardStatus = card.dataset.status;
 
-      const matchVertical = !activeVertical || cardVertical === activeVertical;
+      const matchPipeline = !activePipeline || cardPipeline === activePipeline;
       const matchPhase = !activePhase || cardPhase === activePhase;
       const matchStatus = !activeStatus || cardStatus === activeStatus;
 
-      if (matchVertical && matchPhase && matchStatus) {
+      if (matchPipeline && matchPhase && matchStatus) {
         card.style.display = '';
         visibleCount++;
       } else {
@@ -198,21 +198,21 @@ for (const s of allSessions) {
 
     // Update header
     if (pageTitle) {
-      pageTitle.textContent = activeVertical
-        ? data.verticalLabels[activeVertical] || activeVertical
-        : 'All Sessions';
+      pageTitle.textContent = activePipeline
+        ? data.pipelineLabels[activePipeline] || activePipeline
+        : 'All Pipelines';
     }
     if (pageSubtitle) {
-      let text = `${visibleCount} session${visibleCount === 1 ? '' : 's'}`;
+      let text = `${visibleCount} pipeline doc${visibleCount === 1 ? '' : 's'}`;
       if (activePhase) text += ` in Phase ${activePhase}`;
       pageSubtitle.textContent = text;
     }
 
     // Pipeline stepper
     if (pipelineStepper) {
-      if (activeVertical) {
+      if (activePipeline) {
         pipelineStepper.classList.remove('hidden');
-        const stages = data.verticalStageMap[activeVertical] || [];
+        const stages = data.pipelineStageMap[activePipeline] || [];
         pipelineStepper.querySelectorAll<HTMLElement>('.pipeline-stage').forEach((el) => {
           const stage = el.dataset.stage;
           const has = stage && stages.includes(stage);
@@ -249,10 +249,10 @@ for (const s of allSessions) {
       }
     }
 
-    // Highlight active sidebar vertical
-    verticalBtns.forEach((btn) => {
-      const slug = btn.dataset.verticalFilter;
-      if (slug === activeVertical) {
+    // Highlight active sidebar pipeline
+    pipelineBtns.forEach((btn) => {
+      const slug = btn.dataset.pipelineFilter;
+      if (slug === activePipeline) {
         btn.classList.remove('text-text-secondary');
         btn.classList.add('text-action', 'bg-action/5', 'font-medium');
       } else {
@@ -263,7 +263,7 @@ for (const s of allSessions) {
 
     // Highlight active sidebar view
     document.querySelectorAll<HTMLElement>('.sidebar-view-link').forEach((link) => {
-      if (!activeVertical && link.dataset.view === 'all') {
+      if (!activePipeline && link.dataset.view === 'all') {
         link.classList.remove('text-text-secondary');
         link.classList.add('text-action', 'bg-action/5', 'font-medium');
       } else {
@@ -318,15 +318,15 @@ for (const s of allSessions) {
 
     // Sync mobile select
     if (mobileSelect) {
-      mobileSelect.value = activeVertical || '';
+      mobileSelect.value = activePipeline || '';
     }
 
     // Update URL without reload
     const url = new URL(window.location.href);
-    if (activeVertical) {
-      url.searchParams.set('vertical', activeVertical);
+    if (activePipeline) {
+      url.searchParams.set('pipeline', activePipeline);
     } else {
-      url.searchParams.delete('vertical');
+      url.searchParams.delete('pipeline');
     }
     if (activePhase) {
       url.searchParams.set('phase', activePhase);
@@ -343,11 +343,11 @@ for (const s of allSessions) {
 
   // ── Event listeners ────────────────────────────────────────────────
 
-  // Sidebar vertical buttons
-  verticalBtns.forEach((btn) => {
+  // Sidebar pipeline buttons
+  pipelineBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const slug = btn.dataset.verticalFilter || null;
-      activeVertical = activeVertical === slug ? null : slug;
+      const slug = btn.dataset.pipelineFilter || null;
+      activePipeline = activePipeline === slug ? null : slug;
       applyFilters();
     });
   });
@@ -382,7 +382,7 @@ for (const s of allSessions) {
   // Mobile select
   if (mobileSelect) {
     mobileSelect.addEventListener('change', () => {
-      activeVertical = mobileSelect.value || null;
+      activePipeline = mobileSelect.value || null;
       applyFilters();
     });
   }
@@ -390,7 +390,7 @@ for (const s of allSessions) {
   // Clear filters
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
-      activeVertical = null;
+      activePipeline = null;
       activePhase = null;
       activeStatus = null;
       applyFilters();
@@ -400,15 +400,15 @@ for (const s of allSessions) {
   // ── Init from URL params ───────────────────────────────────────────
 
   const params = new URLSearchParams(window.location.search);
-  const initVertical = params.get('vertical');
+  const initPipeline = params.get('pipeline');
   const initPhase = params.get('phase');
   const initStatus = params.get('status');
 
-  if (initVertical) activeVertical = initVertical;
+  if (initPipeline) activePipeline = initPipeline;
   if (initPhase) activePhase = initPhase;
   if (initStatus) activeStatus = initStatus;
 
-  if (activeVertical || activePhase || activeStatus) {
+  if (activePipeline || activePhase || activeStatus) {
     applyFilters();
   }
 </script>
