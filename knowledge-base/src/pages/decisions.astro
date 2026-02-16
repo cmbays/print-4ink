@@ -2,11 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import DecisionRecord from '../components/DecisionRecord.astro';
 import { getCollection } from 'astro:content';
+import { sortByDateDesc, pluralize } from '../lib/utils';
 
 const docs = await getCollection('pipelines');
 const decisions = docs
   .filter((s) => s.data.tags.includes('decision'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort(sortByDateDesc);
 ---
 
 <Layout title="Decision Log" description="Key decisions made across the Screen Print Pro project">
@@ -19,7 +20,7 @@ const decisions = docs
     <!-- Header -->
     <h1 class="text-2xl font-bold tracking-tight mb-2">Decision Log</h1>
     <p class="text-text-secondary text-sm mb-2">Key decisions made across the project</p>
-    <p class="text-text-muted text-xs mb-8">{decisions.length} decision{decisions.length !== 1 ? 's' : ''} recorded</p>
+    <p class="text-text-muted text-xs mb-8">{pluralize(decisions.length, 'decision')} recorded</p>
 
     <!-- Decision cards -->
     <div class="space-y-3">

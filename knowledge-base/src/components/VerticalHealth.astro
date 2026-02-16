@@ -1,5 +1,5 @@
 ---
-import { pipelineLabel, pipelineStageSlugs } from '../lib/utils';
+import { pipelineLabel, pipelineStageSlugs, pluralize } from '../lib/utils';
 
 interface Props {
   pipeline: string;
@@ -32,7 +32,7 @@ const label = pipelineLabel(pipeline);
   </div>
 
   <div class="flex items-center gap-3 text-[12px] text-text-muted mb-3">
-    <span>{totalDocs} doc{totalDocs !== 1 ? 's' : ''}</span>
+    <span>{pluralize(totalDocs, 'doc')}</span>
     <span class="opacity-40">&middot;</span>
     <span>Last active {dateStr}</span>
     <span class="opacity-40">&middot;</span>

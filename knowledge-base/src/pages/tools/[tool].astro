@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import DocCard from '../../components/DocCard.astro';
 import { getCollection, render } from 'astro:content';
+import { sortByDateDesc, pluralize } from '../../lib/utils';
 import toolsConfig from '../../../../config/tools.json';
 
 export function getStaticPaths() {
@@ -19,7 +20,7 @@ const overview = docs.find((d) => d.data.docType === 'overview');
 const pipelines = await getCollection('pipelines');
 const relatedPipelines = pipelines
   .filter((p) => p.data.tools?.includes(tool))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort(sortByDateDesc);
 
 let OverviewContent: Awaited<ReturnType<typeof render>>['Content'] | null = null;
 if (overview) {
@@ -37,7 +38,7 @@ if (overview) {
     <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{config.label}</h1>
     <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || ''}</p>
     <div class="flex items-center gap-3 text-[12px] text-text-muted mb-6">
-      <span>{relatedPipelines.length} pipeline doc{relatedPipelines.length !== 1 ? 's' : ''}</span>
+      <span>{pluralize(relatedPipelines.length, 'pipeline doc')}</span>
     </div>
 
     {/* Overview content */}

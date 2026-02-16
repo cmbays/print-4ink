@@ -4,7 +4,7 @@ import Pipeline from '../../components/Pipeline.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs } from '../../lib/utils';
+import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -17,7 +17,7 @@ const label = getPipelineLabel(pipeline);
 
 const allDocs = await getCollection('pipelines');
 const pipelineDocs = allDocs.filter((s) => s.data.pipelineName === pipeline);
-const sorted = pipelineDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sorted = pipelineDocs.sort(sortByDateDesc);
 
 // Compute stage breakdown (normalize old slugs → canonical before counting)
 const stageBreakdown: Record<string, number> = {};
@@ -58,7 +58,7 @@ const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
       {label}
     </h1>
     <p class="text-[14px] text-text-secondary mb-8">
-      {sorted.length} pipeline doc{sorted.length !== 1 ? 's' : ''} across {Object.values(stageBreakdown).filter((c) => c > 0).length} stages
+      {pluralize(sorted.length, 'pipeline doc')} across {Object.values(stageBreakdown).filter((c) => c > 0).length} stages
     </p>
 
     {/* Health summary */}

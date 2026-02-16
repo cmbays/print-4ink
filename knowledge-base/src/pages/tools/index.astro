@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { pluralize } from '../../lib/utils';
 import toolsConfig from '../../../../config/tools.json';
 
 const toolDocs = await getCollection('toolDocs');
@@ -40,7 +41,7 @@ const toolCards = toolsConfig.map((t) => {
           </div>
           <p class="text-[13px] text-text-secondary line-clamp-2 mb-2">{t.subtitle}</p>
           <div class="flex items-center gap-3 text-[11px] text-text-muted">
-            <span>{t.pipelineCount} pipeline doc{t.pipelineCount !== 1 ? 's' : ''}</span>
+            <span>{pluralize(t.pipelineCount, 'pipeline doc')}</span>
           </div>
         </a>
       ))}

@@ -119,3 +119,15 @@ export function statusLabel(status: string): string {
 export function formatDate(date: Date): string {
   return date.toISOString().split('T')[0];
 }
+
+// ── Collection helpers ──────────────────────────────────────────
+
+/** Sort comparator for collections by date descending (newest first) */
+export function sortByDateDesc(a: { data: { date: Date } }, b: { data: { date: Date } }): number {
+  return b.data.date.getTime() - a.data.date.getTime();
+}
+
+/** Pluralize a word: pluralize(3, 'doc') → '3 docs', pluralize(1, 'entry', 'entries') → '1 entry' */
+export function pluralize(count: number, singular: string, plural?: string): string {
+  return `${count} ${count === 1 ? singular : (plural || singular + 's')}`;
+}

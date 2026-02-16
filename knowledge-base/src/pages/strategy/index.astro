@@ -1,10 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { formatDate } from '../../lib/utils';
+import { formatDate, sortByDateDesc } from '../../lib/utils';
 
 const strategyDocs = await getCollection('strategy');
-const sorted = strategyDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sorted = strategyDocs.sort(sortByDateDesc);
 ---
 
 <Layout title="Strategy">

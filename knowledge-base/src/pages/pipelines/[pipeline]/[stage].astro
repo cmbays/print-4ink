@@ -3,7 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Pipeline from '../../../components/Pipeline.astro';
 import DocCard from '../../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel, stageLabel as getStageLabel, pipelineStageSlugs } from '../../../lib/utils';
+import { pipelineLabel as getPipelineLabel, stageLabel as getStageLabel, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -28,7 +28,7 @@ const allDocs = await getCollection('pipelines');
 const pipelineDocs = allDocs.filter((s) => s.data.pipelineName === pipeline);
 const stageDocs = pipelineDocs
   .filter((s) => s.data.stage === stage)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort(sortByDateDesc);
 
 // Build stage breakdown for pipeline
 const stageBreakdown: Record<string, number> = {};
@@ -63,7 +63,7 @@ const pipelineStages = pipelineStageSlugs.map((s) => ({
       <span class="text-action">{stageLabel}</span>
     </h1>
     <p class="text-[14px] text-text-secondary mb-8">
-      {stageDocs.length} pipeline doc{stageDocs.length !== 1 ? 's' : ''} in this stage
+      {pluralize(stageDocs.length, 'pipeline doc')} in this stage
     </p>
 
     {/* Pipeline stepper with active stage */}
