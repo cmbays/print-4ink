@@ -34,6 +34,8 @@ interface GarmentDetailDrawerProps {
   onToggleFavorite: (garmentId: string) => void;
   /** Stub for V4 brand drawer wiring — opens brand detail drawer */
   onBrandClick?: (brandName: string) => void;
+  /** Phase 1: always 'global'. V4 adds 'brand'/'customer' for context-aware writes */
+  favoriteContext?: { context: "global" | "brand" | "customer"; contextId?: string };
 }
 
 export function GarmentDetailDrawer({
@@ -45,6 +47,7 @@ export function GarmentDetailDrawer({
   onToggleEnabled,
   onToggleFavorite,
   onBrandClick,
+  favoriteContext = { context: "global" },
 }: GarmentDetailDrawerProps) {
   const [selectedColorId, setSelectedColorId] = useState<string | null>(
     garment.availableColors[0] ?? null,
@@ -62,14 +65,14 @@ export function GarmentDetailDrawer({
     [garment.availableColors],
   );
 
-  // Resolve effective favorites (Phase 1: always global context)
+  // Resolve effective favorites using context prop (N3 context resolution)
   // favoriteVersion is a cache-buster for mock-data mutation;
   // resolveEffectiveFavorites reads from mutable catalog arrays.
   // In Phase 3 this becomes a proper data fetch.
   const favoriteColorIds = useMemo(
-    () => new Set(resolveEffectiveFavorites("global")),
+    () => new Set(resolveEffectiveFavorites(favoriteContext.context, favoriteContext.contextId)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [favoriteVersion],
+    [favoriteVersion, favoriteContext.context, favoriteContext.contextId],
   );
 
   // Split garment's colors into favorites and all for FavoritesColorSection
@@ -85,9 +88,9 @@ export function GarmentDetailDrawer({
     if (color) {
       color.isFavorite = !color.isFavorite;
       setFavoriteVersion((v) => v + 1);
+      // Also select the toggled color for display (U14)
+      setSelectedColorId(colorId);
     }
-    // Also select the toggled color for display (U14)
-    setSelectedColorId(colorId);
   }
 
   // Resolve selected color object
