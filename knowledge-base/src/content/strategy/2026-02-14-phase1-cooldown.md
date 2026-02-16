@@ -2,10 +2,10 @@
 title: "Phase 1 Cool-Down — Cross-Vertical Learnings"
 subtitle: "Synthesis of patterns, velocity data, and demo week shaping from the full Phase 1 build cycle"
 date: 2026-02-14
+docType: cooldown
 phase: 1
-vertical: meta
-verticalSecondary: [quoting, customer-management, invoicing, price-matrix, jobs, garments, screen-room, mobile-optimization]
-stage: learnings
+pipelinesCompleted: [quoting, customer-management, invoicing, price-matrix, jobs, garments, screen-room, mobile-optimization]
+pipelinesLaunched: []
 tags: [learning, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0214-cooldown"
