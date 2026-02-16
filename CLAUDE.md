@@ -99,7 +99,6 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 
 | Hot File | Update Rule |
 |----------|-------------|
-| `PROGRESS.md` | Update on main after PR merge |
 | `knowledge-base/dist/` | Build output — gitignored, never commit |
 
 **What sessions CAN commit on their feature branch:**
@@ -308,7 +307,7 @@ These documents define the project. Reference them, keep them current, and never
 | `docs/PRD.md` | Features, scope, acceptance criteria | Scope changes or new features |
 | `docs/APP_FLOW.md` | Screens, routes, navigation paths | Adding/changing pages or flows |
 | `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
-| `PROGRESS.md` | Current state, what's built, what's next | After PR merges (on main only) |
+| `PROGRESS.md` | Generated progress report — live GitHub data | Regenerated: `work progress` |
 | `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
 
 **Rules:**
@@ -316,7 +315,7 @@ These documents define the project. Reference them, keep them current, and never
 - Before adding a dependency, check `TECH_STACK.md`. If it's not listed, ask first.
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
 - Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
-- After PR merges, update `PROGRESS.md` on main with what was built and what's next.
+- After PR merges, regenerate PROGRESS.md: `work progress`
 - After completing work, create or update a session doc in `knowledge-base/src/content/sessions/` (see Knowledge Base section below).
 - When a doc becomes stale, update it — don't ignore it.
 - Every canonical doc has a `Last Verified` date. Update it when you confirm the doc still matches reality.
@@ -468,7 +467,7 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Radix Tooltip hover bugs**: Adjacent tooltips need a single shared `<TooltipProvider>` with `skipDelayDuration={300}`, base `sideOffset >= 6`, `data-[state=closed]:pointer-events-none` on content, and `pointer-events-none` on arrow. Do NOT use `disableHoverableContent` — it causes flickering on small targets.
 - **shadcn/ui Tooltip dark mode**: Default `bg-foreground text-background` is invisible in dark mode. Override to `bg-elevated text-foreground border border-border shadow-lg`. Arrow: `bg-elevated fill-elevated`.
 - **Git worktrees**: Main repo (`~/Github/print-4ink/`) always stays on `main`. Worktrees go in `~/Github/print-4ink-worktrees/`. Each worktree needs its own `npm install`. No limit on concurrent worktrees — user handles batch cleanup. Agents must NEVER remove worktrees they didn't create.
-- **Hot files**: Never commit `PROGRESS.md` on feature branches. Update on main after merge. `knowledge-base/dist/` is gitignored.
+- **Hot files**: PROGRESS.md is a generated artifact (`work progress`), not hand-edited — it is gitignored. `knowledge-base/dist/` is also gitignored. Neither should be committed.
 - **CRITICAL — Financial arithmetic**: NEVER use JavaScript floating-point (`+`, `-`, `*`, `/`) for monetary calculations. IEEE 754 causes silent errors (e.g., `0.1 + 0.2 = 0.30000000000000004`). Use `big.js` via the `lib/helpers/money.ts` wrapper (`money()`, `round2()`, `toNumber()`). Schema invariants use `Big.eq()` for exact comparison — no tolerance hacks. Integer-cents workarounds still fail on multiplication/division (tax rates, percentage deposits).
 - **React 19 ESLint — no setState in effects**: Don't use `useEffect` to reset form state when a dialog opens. Instead, have the parent conditionally render the dialog (`{showDialog && <Dialog />}`) so React unmounts/remounts the component, naturally resetting all `useState` hooks.
 - **KB sessionId is per-session, not per-document**: Multiple KB docs can share the same `sessionId` when created in the same Claude Code session. Don't "fix" duplicates without checking context.
