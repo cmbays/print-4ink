@@ -2,17 +2,17 @@
   {
     "slug": "vertical",
     "label": "Vertical",
-    "stages": ["research", "interview", "shape", "breadboard", "plan", "build", "review", "wrap-up"]
+    "stages": ["research", "interview", "shape", "breadboarding", "implementation-planning", "build", "review", "wrap-up"]
   },
   {
     "slug": "polish",
     "label": "Polish",
-    "stages": ["interview", "breadboard", "plan", "build", "review", "wrap-up"]
+    "stages": ["interview", "breadboarding", "implementation-planning", "build", "review", "wrap-up"]
   },
   {
     "slug": "horizontal",
     "label": "Horizontal",
-    "stages": ["research", "plan", "build", "review", "wrap-up"]
+    "stages": ["research", "implementation-planning", "build", "review", "wrap-up"]
   },
   {
     "slug": "bug-fix",

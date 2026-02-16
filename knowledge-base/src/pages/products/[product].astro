@@ -9,29 +9,28 @@ export function getStaticPaths() {
 }
 
 const { product } = Astro.params;
-const config = productsConfig.find((p) => p.slug === product)!;
+const config = productsConfig.find((p) => p.slug === product);
+if (!config) throw new Error(`Unknown product slug: ${product}`);
 
 const allProductDocs = await getCollection('productDocs');
 const docs = allProductDocs.filter((d) => d.data.product === product);
 const overview = docs.find((d) => d.data.docType === 'overview');
-const history = docs.find((d) => d.data.docType === 'history');
-const decisions = docs.find((d) => d.data.docType === 'decisions');
 
 const pipelines = await getCollection('pipelines');
 const relatedPipelines = pipelines
   .filter((p) => p.data.products?.includes(product))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-let OverviewContent: any = null;
+let OverviewContent: Awaited<ReturnType<typeof render>>['Content'] | null = null;
 if (overview) {
   const rendered = await render(overview);
   OverviewContent = rendered.Content;
 }
 ---
 
-<Layout title={config.label}>
-  <main class="max-w-[720px] mx-auto px-6 py-12">
-    <a href="/products" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
+<Layout title={config.label} description={`${config.label} product documentation`}>
+  <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
+    <a href="/products" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
       <span>&larr;</span> Back to Products
     </a>
 

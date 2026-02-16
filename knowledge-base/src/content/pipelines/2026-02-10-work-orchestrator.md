@@ -3,10 +3,10 @@ title: "work() — Worktree Orchestrator"
 subtitle: "Single command to create worktrees, tmux sessions, and launch Claude — with Agent Teams integration via tmux hook."
 date: 2026-02-10
 phase: 1
-pipeline: meta
+pipeline: devx
 pipelineType: horizontal
 products: []
-tools: [knowledge-base]
+tools: [work-orchestrator]
 stage: build
 tags: [build, feature]
 sessionId: "c2b2fb1b-b94a-4b17-bab0-3616c520c716"

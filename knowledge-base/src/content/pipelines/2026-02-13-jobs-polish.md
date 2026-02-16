@@ -4,7 +4,7 @@ subtitle: "Extracted pure functions for testability, added 26 new tests, accessi
 date: 2026-02-13
 phase: 1
 pipeline: jobs
-pipelineType: vertical
+pipelineType: polish
 products: [jobs]
 tools: []
 stage: review

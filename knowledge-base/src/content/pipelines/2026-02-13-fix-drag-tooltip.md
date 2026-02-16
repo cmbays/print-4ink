@@ -4,7 +4,7 @@ subtitle: "DragOverlay outside TooltipProvider caused fatal runtime error on car
 date: 2026-02-13
 phase: 1
 pipeline: jobs
-pipelineType: vertical
+pipelineType: bug-fix
 products: [jobs]
 tools: []
 stage: build
