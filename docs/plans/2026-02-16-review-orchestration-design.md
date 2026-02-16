@@ -31,7 +31,7 @@ As the project scales (7+ verticals, 529+ tests, stacked PRs across concurrent w
 
 ## Professional Patterns Applied
 
-This design is informed by research into 8 established software engineering patterns. We adopt these patterns because the review orchestration engine is infrastructure that must be extensible, robust, and maintainable as the project grows. Each pattern addresses a specific failure mode that ad-hoc review systems encounter at scale.
+This design is informed by research into 7 established software engineering patterns. We adopt these patterns because the review orchestration engine is infrastructure that must be extensible, robust, and maintainable as the project grows. Each pattern addresses a specific failure mode that ad-hoc review systems encounter at scale.
 
 ### 1. Rule Engine Pattern (Drools, OPA)
 
@@ -170,9 +170,13 @@ build-session-protocol Phase 2 triggers
 2. **LLM gap detector** (Stage 4) — analyzes the diff for concerns the config missed. Dispatches additional agents if needed.
 3. **Gap logger** (Stage 4) — records what the config missed. Surfaces in wrap-up phase as GitHub issues to update the rules config. Self-improving system.
 
+**Stage 4 invocation mechanism**: The gap detector runs as the **orchestrating agent itself** (the building agent running the review orchestration skill). It reads the diff and the current agent manifest, then reasons about what the config-based classifier may have missed. This is NOT a separate sub-agent or API call — it is a prompt-guided analysis step within the skill execution. The skill instructions tell the building agent: "Review the diff against the agent manifest. If you identify concerns not covered by the dispatched agents, amend the manifest and log the gap." This keeps Stage 4 lightweight (no additional agent spawn) while leveraging the LLM's ability to spot nuance the deterministic classifier misses.
+
 ### Gate Decision Logic
 
-Metric-based, not rule-based (SonarQube pattern):
+Metric-based, not rule-based (SonarQube pattern). Conditions are evaluated in priority order (top to bottom); the first matching condition determines the gate decision.
+
+**`gateDecisionSchema` enum**: `fail` | `needs_fixes` | `pass_with_warnings` | `pass`
 
 | Condition | Decision | Action |
 |-----------|----------|--------|
@@ -189,7 +193,7 @@ All config and pipeline data is schema-validated. Schemas are the source of trut
 
 | Schema | Validates |
 |--------|-----------|
-| `reviewRuleSchema` | Single review rule (id, name, severity, agent, description, detection, etc.) |
+| `reviewRuleSchema` | Single review rule — fields: `id`, `name`, `severity` (critical/major/warning/info), `agent` (agent ID from registry), `category`, `description`, `detection` (what to look for), `recommendation` (how to fix) |
 | `compositionPolicySchema` | When to dispatch which agent (trigger conditions, dispatch target, priority) |
 | `agentRegistryEntrySchema` | Agent metadata (id, name, tools, capabilities) |
 | `domainMappingSchema` | File glob pattern → domain classification |
@@ -215,11 +219,40 @@ All config and pipeline data is schema-validated. Schemas are the source of trut
 | `config/review-agents.json` | `agentRegistryEntrySchema[]` | Agent registry |
 | `config/review-domains.json` | `domainMappingSchema[]` | Glob→domain mappings |
 
+**Rule consumer**: Rules in `review-rules.json` are consumed by two systems: (1) the **aggregator** (Stage 6) uses rule metadata to enrich findings with category/description context, and (2) **agent prompts** reference rules as the checklist of what to scan for. Rules are NOT consumed by the pipeline classifier or composer — those use composition policies. Derive initial rules from each agent's existing check tables (e.g., `build-reviewer`'s 6 categories, `finance-sme`'s 8 rules, `design-auditor`'s 15 dimensions).
+
+**Example rules** (from `build-reviewer` agent):
+
+```json
+[
+  {
+    "id": "br-type-safety-01",
+    "name": "No any types",
+    "severity": "major",
+    "agent": "build-reviewer",
+    "category": "type-safety",
+    "description": "TypeScript any types bypass the type system and hide bugs",
+    "detection": "Explicit any annotations, type assertions to any, implicit any from missing return types",
+    "recommendation": "Use Zod inference (z.infer<typeof schema>) or explicit types"
+  },
+  {
+    "id": "fin-bigjs-01",
+    "name": "Financial arithmetic uses big.js",
+    "severity": "critical",
+    "agent": "finance-sme",
+    "category": "financial-arithmetic",
+    "description": "IEEE 754 floating-point causes silent rounding errors in monetary calculations",
+    "detection": "Arithmetic operators (+, -, *, /) on variables involved in pricing, totals, tax, or deposit calculations",
+    "recommendation": "Use money(), round2(), toNumber() from lib/helpers/money.ts"
+  }
+]
+```
+
 ### Loaders (`lib/review/load-config.ts`)
 
 Every consumer goes through validated loaders. Raw JSON is never imported directly by pipeline stages.
 
-### Test Coverage (`__tests__/review-config.test.ts`)
+### Test Coverage (`lib/schemas/__tests__/review-config.test.ts`)
 
 - All rules have required fields (schema validation)
 - All rule IDs are unique
@@ -245,6 +278,9 @@ The 3 existing review agents (`build-reviewer`, `finance-sme`, `design-auditor`)
 - Read-only (agents don't modify code)
 - Same tools (Read, Grep, Glob)
 - Same domain expertise and scan strategies
+- Skill preloads are retained (e.g., `design-auditor` keeps its `design-audit` skill)
+
+**Severity mapping for `design-auditor`**: The design-auditor currently uses a 3-value scale (Pass/Warn/Fail) across 15 audit dimensions. Map to the standard 4-level severity: dimension Fail → `major`, dimension Warn → `warning`, dimension Pass → omit (no finding). Aggregate dimension failures: if 3+ dimensions fail → elevate the worst finding to `critical`.
 
 ## build-session-protocol Integration
 
@@ -294,13 +330,27 @@ lib/review/
   dispatch.ts                 # Stage 5: Agent launching
   aggregate.ts                # Stage 6: Finding aggregation + gating
 
-__tests__/
+lib/schemas/__tests__/
   review-config.test.ts       # Config validation tests
+
+lib/review/__tests__/
   review-pipeline.test.ts     # Pipeline stage unit tests
 
 .claude/skills/
   review-orchestration/
     SKILL.md                  # Skill definition (invoked by build-session-protocol)
+    # SKILL.md structure:
+    # 1. Purpose: Automated review quality gate for build PRs
+    # 2. Trigger: Invoked by build-session-protocol Phase 2
+    # 3. Pipeline execution instructions:
+    #    - Stage 1: Run normalize (git diff → PRFacts)
+    #    - Stage 2: Run classify (PRFacts + review-domains.json → PRClassification)
+    #    - Stage 3: Run compose (PRClassification + review-composition.json → AgentManifest)
+    #    - Stage 4: Gap detect (review diff against manifest, amend if needed)
+    #    - Stage 5: Dispatch agents from manifest in parallel (Task tool)
+    #    - Stage 6: Aggregate ReviewFinding[] → ReviewReport + GateDecision
+    # 4. Gate response: How to interpret and act on each gate decision
+    # 5. Output format: ReviewReport JSON to include in PR body
 
 .claude/agents/
   build-reviewer.md           # Updated: structured JSON output

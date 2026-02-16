@@ -6,7 +6,7 @@ phase: 1
 pipelineName: review-orchestration
 pipelineType: horizontal
 products: []
-tools: [knowledge-base]
+tools: [knowledge-base, agent-system, skills-framework]
 stage: plan
 tags: [plan, decision]
 sessionId: "c481fd34-3d4f-4300-807f-7076b4bfdb3f"
@@ -88,7 +88,7 @@ Two distinct review levels, intentionally separated:
 
 ## Artifacts
 
-- Design doc: `docs/plans/2026-02-16-review-orchestration-design.md`
+- Design doc: [`docs/plans/2026-02-16-review-orchestration-design.md`](https://github.com/cmbays/print-4ink/blob/main/docs/plans/2026-02-16-review-orchestration-design.md)
 - Epic: [#302](https://github.com/cmbays/print-4ink/issues/302)
 - Epic context comment: [#302 comment](https://github.com/cmbays/print-4ink/issues/302#issuecomment-3910846910)
 
