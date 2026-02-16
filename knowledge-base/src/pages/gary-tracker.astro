@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import GaryQuestion from '../components/GaryQuestion.astro';
+import { pipelineLabel } from '../lib/utils';
 
-// Read all session markdown files and extract Gary questions from HTML blocks
+// Read all pipeline markdown files and extract Gary questions from HTML blocks
 const sessionFiles = import.meta.glob('/src/content/pipelines/*.md', { query: '?raw', import: 'default', eager: true });
 
 interface GaryQuestionData {
@@ -69,9 +70,6 @@ const totalQuestions = allQuestions.length;
 const answeredCount = allQuestions.filter(q => q.status === 'answered').length;
 const unansweredCount = totalQuestions - answeredCount;
 
-function verticalLabel(v: string): string {
-  return v.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
 ---
 
 <Layout title="Gary Tracker" description="Questions for Gary across all sessions">
@@ -113,7 +111,7 @@ function verticalLabel(v: string): string {
         {verticalNames.map((vertical) => (
           <section>
             <h2 class="text-[11px] font-semibold uppercase tracking-[0.05em] text-text-muted mb-4">
-              {verticalLabel(vertical)}
+              {pipelineLabel(vertical)}
               <span class="ml-2 text-text-muted font-normal">({byVertical[vertical].length})</span>
             </h2>
             <div class="space-y-3">

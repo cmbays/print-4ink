@@ -1,7 +1,5 @@
 ---
-import verticalsConfig from '../../../config/verticals.json';
-import stagesConfig from '../../../config/stages.json';
-import tagsConfig from '../../../config/tags.json';
+import { tagColor, pipelineLabel, stageLabel, formatDate } from '../lib/utils';
 
 interface Props {
   title: string;
@@ -17,38 +15,7 @@ interface Props {
 
 const { title, subtitle, date, pipeline, pipelineType, stage, tags, status, slug } = Astro.props;
 
-const dateStr = date.toISOString().split('T')[0];
-
-const TAG_COLOR_CLASSES: Record<string, string> = {
-  green: 'bg-success/12 text-success',
-  blue: 'bg-action/12 text-action',
-  amber: 'bg-warning/12 text-warning',
-  purple: 'bg-purple/12 text-purple',
-};
-
-const tagColorMap: Record<string, string> = Object.fromEntries(
-  tagsConfig.map((t) => [t.slug, TAG_COLOR_CLASSES[t.color] || 'bg-bg-surface text-text-muted'])
-);
-
-function tagColor(tag: string): string {
-  return tagColorMap[tag] || 'bg-bg-surface text-text-muted';
-}
-
-const pipelineLabelMap: Record<string, string> = Object.fromEntries(
-  verticalsConfig.map((v) => [v.slug, v.label])
-);
-
-function pipelineLabel(v: string): string {
-  return pipelineLabelMap[v] || v;
-}
-
-const stageLabelMap: Record<string, string> = Object.fromEntries(
-  stagesConfig.map((s) => [s.slug, s.label])
-);
-
-function stageLabel(s: string): string {
-  return stageLabelMap[s] || s.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
+const dateStr = formatDate(date);
 ---
 
 <a

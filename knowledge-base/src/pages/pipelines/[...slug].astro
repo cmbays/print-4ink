@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import WorkflowChain from '../../components/WorkflowChain.astro';
 import { getCollection, render } from 'astro:content';
+import { tagColor, pipelineLabel, stageLabel, productLabel, toolLabel, statusColor, statusLabel, formatDate, labelFromSlug } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -26,31 +27,7 @@ const { Content } = await render(doc);
 
 const { title, subtitle, date, phase, pipeline, pipelineType, products, tools, stage, tags, sessionId, branch, pr, status } = doc.data;
 
-const dateStr = date.toISOString().split('T')[0];
-
-function tagColor(tag: string): string {
-  if (tag === 'feature' || tag === 'build') return 'bg-success/12 text-success';
-  if (tag === 'plan') return 'bg-action/12 text-action';
-  if (tag === 'decision' || tag === 'learning') return 'bg-warning/12 text-warning';
-  if (tag === 'research') return 'bg-purple/12 text-purple';
-  return 'bg-bg-surface text-text-muted';
-}
-
-function labelFromSlug(s: string): string {
-  return s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
-
-function statusColor(s: string): string {
-  if (s === 'complete') return 'text-success';
-  if (s === 'in-progress') return 'text-action';
-  if (s === 'superseded') return 'text-text-muted';
-  return 'text-text-secondary';
-}
-
-function statusLabel(s: string): string {
-  if (s === 'in-progress') return 'In Progress';
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
+const dateStr = formatDate(date);
 ---
 
 <Layout title={title} description={subtitle}>
@@ -71,8 +48,8 @@ function statusLabel(s: string): string {
 
     <!-- Title -->
     <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{title}</h1>
-    <span data-pagefind-meta={`pipeline:${labelFromSlug(pipeline)}`} class="hidden"></span>
-    <span data-pagefind-meta={`stage:${labelFromSlug(stage)}`} class="hidden"></span>
+    <span data-pagefind-meta={`pipeline:${pipelineLabel(pipeline)}`} class="hidden"></span>
+    <span data-pagefind-meta={`stage:${stageLabel(stage)}`} class="hidden"></span>
 
     <!-- Subtitle -->
     <p class="text-[15px] text-text-secondary leading-relaxed mb-6">{subtitle}</p>
@@ -104,7 +81,7 @@ function statusLabel(s: string): string {
         <div class="px-4 py-3 border-b border-border border-l border-border">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Pipeline</div>
           <div class="text-sm text-text-primary">
-            <a href={`/pipelines/${pipeline}`} class="text-action hover:underline">{labelFromSlug(pipeline)}</a>
+            <a href={`/pipelines/${pipeline}`} class="text-action hover:underline">{pipelineLabel(pipeline)}</a>
           </div>
         </div>
 
@@ -113,7 +90,7 @@ function statusLabel(s: string): string {
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Stage</div>
           <div class="text-sm">
             <a href={`/pipelines/${pipeline}/${stage}`} class="inline-flex items-center bg-bg-surface text-action text-xs font-medium px-2 py-0.5 rounded hover:bg-action/10 transition-colors">
-              {labelFromSlug(stage)}
+              {stageLabel(stage)}
             </a>
           </div>
         </div>
@@ -128,6 +105,7 @@ function statusLabel(s: string): string {
         <div class="px-4 py-3">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Pipeline Type</div>
           <div class="text-sm text-text-primary">{labelFromSlug(pipelineType)}</div>
+
         </div>
         <div class="px-4 py-3 border-l border-border">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Products</div>
@@ -136,7 +114,7 @@ function statusLabel(s: string): string {
               <div class="flex flex-wrap gap-1">
                 {products.map((p) => (
                   <span class="inline-flex items-center bg-bg-surface text-text-secondary text-xs px-2 py-0.5 rounded">
-                    {labelFromSlug(p)}
+                    {productLabel(p)}
                   </span>
                 ))}
               </div>
@@ -155,7 +133,7 @@ function statusLabel(s: string): string {
         <div class="flex flex-wrap gap-1.5">
           {tools.map((t) => (
             <span class="inline-flex items-center bg-bg-surface text-text-secondary text-xs px-2 py-0.5 rounded border border-border">
-              {labelFromSlug(t)}
+              {toolLabel(t)}
             </span>
           ))}
         </div>

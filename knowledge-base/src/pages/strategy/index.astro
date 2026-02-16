@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { formatDate } from '../../lib/utils';
 
 const strategyDocs = await getCollection('strategy');
 const sorted = strategyDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -17,7 +18,7 @@ const sorted = strategyDocs.sort((a, b) => b.data.date.getTime() - a.data.date.g
 
     <div class="space-y-3">
       {sorted.map((doc) => {
-        const dateStr = doc.data.date.toISOString().split('T')[0];
+        const dateStr = formatDate(doc.data.date);
         const isPlanning = doc.data.docType === 'planning';
         return (
           <a href={`/strategy/${doc.id}`} class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group">

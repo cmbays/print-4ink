@@ -1,4 +1,6 @@
 ---
+import { pipelineLabel, formatDate } from '../lib/utils';
+
 interface Props {
   title: string;
   subtitle: string;
@@ -9,11 +11,7 @@ interface Props {
 
 const { title, subtitle, date, pipeline, slug } = Astro.props;
 
-const dateStr = date.toISOString().split('T')[0];
-
-function pipelineLabel(v: string): string {
-  return v.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
+const dateStr = formatDate(date);
 ---
 
 <a
