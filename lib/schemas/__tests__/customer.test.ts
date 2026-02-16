@@ -267,13 +267,26 @@ describe("customerSchema", () => {
   it("accepts favoriteColors field", () => {
     const result = customerSchema.parse({
       ...validCustomer,
-      favoriteColors: { "gc-001": ["clr-black", "clr-white"] },
+      favoriteColors: ["clr-black", "clr-white"],
     });
-    expect(result.favoriteColors).toEqual({ "gc-001": ["clr-black", "clr-white"] });
+    expect(result.favoriteColors).toEqual(["clr-black", "clr-white"]);
   });
 
-  it("defaults favoriteColors to empty object", () => {
+  it("defaults favoriteColors to empty array", () => {
     const result = customerSchema.parse(validCustomer);
-    expect(result.favoriteColors).toEqual({});
+    expect(result.favoriteColors).toEqual([]);
+  });
+
+  it("accepts favoriteBrandNames field", () => {
+    const result = customerSchema.parse({
+      ...validCustomer,
+      favoriteBrandNames: ["Gildan", "Bella+Canvas"],
+    });
+    expect(result.favoriteBrandNames).toEqual(["Gildan", "Bella+Canvas"]);
+  });
+
+  it("defaults favoriteBrandNames to empty array", () => {
+    const result = customerSchema.parse(validCustomer);
+    expect(result.favoriteBrandNames).toEqual([]);
   });
 });

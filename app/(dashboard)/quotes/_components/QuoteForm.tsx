@@ -310,7 +310,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         pricingTier: "standard",
         taxExempt: false,
         favoriteGarments: [],
-        favoriteColors: {},
+        favoriteColors: [],
+        favoriteBrandNames: [],
         createdAt: now,
         updatedAt: now,
       };

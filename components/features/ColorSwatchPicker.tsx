@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { swatchTextStyle } from "@/lib/constants/swatch";
 import type { Color } from "@/lib/schemas/color";
 import { colors as catalogColors } from "@/lib/mock-data";
 
@@ -22,6 +23,9 @@ interface ColorSwatchPickerProps {
   onToggleFavorite?: (colorId: string) => void;
   compact?: boolean;
   maxCompactSwatches?: number;
+  multiSelect?: boolean;
+  selectedColorIds?: string[];
+  onToggleColor?: (colorId: string) => void;
 }
 
 const DEFAULT_COLORS = catalogColors;
@@ -71,13 +75,7 @@ function Swatch({
           {/* Color name overlay */}
           <span
             className="pointer-events-none select-none text-center leading-tight"
-            style={{
-              color: color.swatchTextColor,
-              fontSize: "8px",
-              lineHeight: "1.1",
-              padding: "1px",
-              wordBreak: "break-word",
-            }}
+            style={swatchTextStyle(color.swatchTextColor)}
           >
             {isSelected ? "" : color.name}
           </span>
@@ -132,6 +130,9 @@ export function ColorSwatchPicker({
   onToggleFavorite,
   compact,
   maxCompactSwatches,
+  multiSelect,
+  selectedColorIds = [],
+  onToggleColor,
 }: ColorSwatchPickerProps) {
   const [search, setSearch] = useState("");
   const gridRef = useRef<HTMLDivElement>(null);
@@ -265,9 +266,17 @@ export function ColorSwatchPicker({
                   <Swatch
                     key={`fav-${color.id}`}
                     color={color}
-                    isSelected={selectedColorId === color.id}
+                    isSelected={
+                      multiSelect
+                        ? selectedColorIds.includes(color.id)
+                        : selectedColorId === color.id
+                    }
                     isFavorite={true}
-                    onSelect={() => onSelect(color.id)}
+                    onSelect={() =>
+                      multiSelect && onToggleColor
+                        ? onToggleColor(color.id)
+                        : onSelect(color.id)
+                    }
                     onToggleFavorite={
                       onToggleFavorite
                         ? () => onToggleFavorite(color.id)
@@ -306,9 +315,17 @@ export function ColorSwatchPicker({
                   <Swatch
                     key={color.id}
                     color={color}
-                    isSelected={selectedColorId === color.id}
+                    isSelected={
+                      multiSelect
+                        ? selectedColorIds.includes(color.id)
+                        : selectedColorId === color.id
+                    }
                     isFavorite={favorites.includes(color.id)}
-                    onSelect={() => onSelect(color.id)}
+                    onSelect={() =>
+                      multiSelect && onToggleColor
+                        ? onToggleColor(color.id)
+                        : onSelect(color.id)
+                    }
                     onToggleFavorite={
                       onToggleFavorite
                         ? () => onToggleFavorite(color.id)

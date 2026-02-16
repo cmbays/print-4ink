@@ -16,6 +16,7 @@ import {
   Printer,
   Shirt,
   Settings,
+  Palette,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,4 +42,5 @@ export const SECONDARY_NAV: NavItem[] = [
   { label: "Screens", href: "/screens", icon: Printer, iconColor: "text-action" },
   { label: "Garments", href: "/garments", icon: Shirt },
   { label: "Pricing Settings", href: "/settings/pricing", icon: Settings },
+  { label: "Color Settings", href: "/settings/colors", icon: Palette },
 ];

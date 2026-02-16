@@ -20,7 +20,7 @@ const SIDEBAR_MAIN_ORDER = [
   "/garments",
 ];
 
-const SIDEBAR_SETTINGS_ORDER = ["/settings/pricing"];
+const SIDEBAR_SETTINGS_ORDER = ["/settings/pricing", "/settings/colors"];
 
 function getNavItem(href: string): NavItem {
   const item = ALL_NAV.get(href);
@@ -31,8 +31,10 @@ function getNavItem(href: string): NavItem {
 const mainNavItems = SIDEBAR_MAIN_ORDER.map(getNavItem);
 const settingsNavItems = SIDEBAR_SETTINGS_ORDER.map((href) => {
   const item = getNavItem(href);
-  // Sidebar shows "Pricing" under a Settings header (not "Pricing Settings")
-  return item.label === "Pricing Settings" ? { ...item, label: "Pricing" } : item;
+  // Sidebar shows short labels under Settings header
+  if (item.label === "Pricing Settings") return { ...item, label: "Pricing" };
+  if (item.label === "Color Settings") return { ...item, label: "Colors" };
+  return item;
 });
 
 export function Sidebar() {

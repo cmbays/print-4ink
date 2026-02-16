@@ -97,9 +97,10 @@ export const customerSchema = z.object({
   // Referral
   referredByCustomerId: z.string().uuid().optional(),
 
-  // Garment preferences
+  // Garment & color preferences
   favoriteGarments: z.array(z.string()).default([]),
-  favoriteColors: z.record(z.string(), z.array(z.string())).default({}),
+  favoriteColors: z.array(z.string()).default([]),
+  favoriteBrandNames: z.array(z.string()).default([]),
 
   // Metadata
   createdAt: z.string().datetime(),
