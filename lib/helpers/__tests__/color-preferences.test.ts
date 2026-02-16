@@ -5,6 +5,9 @@ import {
   getImpactPreview,
   propagateAddition,
   getBrandPreference,
+  removeFromAll,
+  removeFromLevelOnly,
+  removeFromSelected,
 } from "../color-preferences";
 import {
   colors,
@@ -289,5 +292,124 @@ describe("getBrandPreference", () => {
     const result = getBrandPreference("Bella+Canvas");
     expect(result).toBeDefined();
     expect(result!.inheritMode).toBe("inherit");
+  });
+});
+
+describe("removeFromAll (N16)", () => {
+  let originalGildanFavorites: string[];
+  let originalRiverCityFavorites: string[];
+
+  beforeEach(() => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const riverCity = customers[0];
+    originalGildanFavorites = [...gildan.favoriteColorIds];
+    originalRiverCityFavorites = [...riverCity.favoriteColors];
+  });
+
+  afterEach(() => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const riverCity = customers[0];
+    gildan.favoriteColorIds.length = 0;
+    gildan.favoriteColorIds.push(...originalGildanFavorites);
+    riverCity.favoriteColors.length = 0;
+    riverCity.favoriteColors.push(...originalRiverCityFavorites);
+  });
+
+  it("removes color from customize-mode brands at global level", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    expect(gildan.favoriteColorIds).toContain("clr-black");
+    removeFromAll("global", "clr-black");
+    expect(gildan.favoriteColorIds).not.toContain("clr-black");
+  });
+
+  it("removes color from customers with explicit favorites", () => {
+    const riverCity = customers[0];
+    expect(riverCity.favoriteColors).toContain("clr-black");
+    removeFromAll("global", "clr-black");
+    expect(riverCity.favoriteColors).not.toContain("clr-black");
+  });
+
+  it("does not modify customers with empty favorites (inheriting)", () => {
+    const thompson = customers[2];
+    expect(thompson.favoriteColors).toEqual([]);
+    removeFromAll("global", "clr-black");
+    expect(thompson.favoriteColors).toEqual([]);
+  });
+
+  it("is a no-op at brand level (Phase 1 stub)", () => {
+    const riverCity = customers[0];
+    const before = [...riverCity.favoriteColors];
+    removeFromAll("brand", "clr-black");
+    expect(riverCity.favoriteColors).toEqual(before);
+  });
+});
+
+describe("removeFromLevelOnly (N17)", () => {
+  it("is a no-op — inheritance resolution handles downstream", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const before = [...gildan.favoriteColorIds];
+    removeFromLevelOnly("global", "clr-black");
+    // Should not mutate any downstream stores
+    expect(gildan.favoriteColorIds).toEqual(before);
+  });
+});
+
+describe("removeFromSelected (N18)", () => {
+  let originalGildanFavorites: string[];
+  let originalRiverCityFavorites: string[];
+
+  beforeEach(() => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const riverCity = customers[0];
+    originalGildanFavorites = [...gildan.favoriteColorIds];
+    originalRiverCityFavorites = [...riverCity.favoriteColors];
+  });
+
+  afterEach(() => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const riverCity = customers[0];
+    gildan.favoriteColorIds.length = 0;
+    gildan.favoriteColorIds.push(...originalGildanFavorites);
+    riverCity.favoriteColors.length = 0;
+    riverCity.favoriteColors.push(...originalRiverCityFavorites);
+  });
+
+  it("removes from selected brands only", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const comfortColors = brandPreferences.find((b) => b.brandName === "Comfort Colors")!;
+    const gildanBefore = [...gildan.favoriteColorIds];
+    removeFromSelected("global", "clr-black", ["Gildan"], []);
+    expect(gildan.favoriteColorIds).not.toContain("clr-black");
+    // Comfort Colors should be unaffected
+    expect(comfortColors.favoriteColorIds).toEqual(
+      expect.arrayContaining(comfortColors.favoriteColorIds)
+    );
+  });
+
+  it("removes from selected customers only", () => {
+    const riverCity = customers[0];
+    const otherCustomer = customers.find(
+      (c) => c.favoriteColors.length > 0 && c.id !== riverCity.id
+    );
+    removeFromSelected("global", "clr-black", [], [riverCity.company]);
+    expect(riverCity.favoriteColors).not.toContain("clr-black");
+    // Other customers with clr-black should be unaffected
+    if (otherCustomer && otherCustomer.favoriteColors.includes("clr-black")) {
+      expect(otherCustomer.favoriteColors).toContain("clr-black");
+    }
+  });
+
+  it("does nothing for unmatched brand names", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const before = [...gildan.favoriteColorIds];
+    removeFromSelected("global", "clr-black", ["NonexistentBrand"], []);
+    expect(gildan.favoriteColorIds).toEqual(before);
+  });
+
+  it("is a no-op at brand level (Phase 1 stub)", () => {
+    const gildan = brandPreferences.find((b) => b.brandName === "Gildan")!;
+    const before = [...gildan.favoriteColorIds];
+    removeFromSelected("brand", "clr-black", ["Gildan"], []);
+    expect(gildan.favoriteColorIds).toEqual(before);
   });
 });
