@@ -50,7 +50,7 @@ Full affordance tables, wiring verification, component boundaries, and scope cov
 
 The build follows a dependency chain with three parallelization windows. Foundation work is sequential, then the plan fans out.
 
-```
+```text
 PHASE A — Foundation (sequential)
 
 #1 Schemas → #2 Pricing Engine → #3 Mock Data

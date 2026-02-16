@@ -267,37 +267,25 @@ for (const s of allDocs) {
     });
 
     // Phase pills
-    const activeClass = 'bg-action/15 text-action border-action/30';
-    const inactiveClass = 'text-text-muted border-border';
-
     phasePills.forEach((pill) => {
-      const val = pill.dataset.phaseValue;
-      const isActive = (val === '' && !activePhase) || val === activePhase;
+      const isActive = (pill.dataset.phaseValue === '' && !activePhase) || pill.dataset.phaseValue === activePhase;
       pill.setAttribute('aria-pressed', String(isActive));
-      if (isActive) {
-        pill.className = pill.className
-          .replace(/text-text-muted/g, '')
-          .replace(/border-border/g, '');
-        activeClass.split(' ').forEach((c) => pill.classList.add(c));
-        inactiveClass.split(' ').forEach((c) => pill.classList.remove(c));
-      } else {
-        activeClass.split(' ').forEach((c) => pill.classList.remove(c));
-        inactiveClass.split(' ').forEach((c) => pill.classList.add(c));
-      }
+      pill.classList.toggle('bg-action/15', isActive);
+      pill.classList.toggle('text-action', isActive);
+      pill.classList.toggle('border-action/30', isActive);
+      pill.classList.toggle('text-text-muted', !isActive);
+      pill.classList.toggle('border-border', !isActive);
     });
 
     // Status pills
     statusPills.forEach((pill) => {
-      const val = pill.dataset.statusValue;
-      const isActive = (val === '' && !activeStatus) || val === activeStatus;
+      const isActive = (pill.dataset.statusValue === '' && !activeStatus) || pill.dataset.statusValue === activeStatus;
       pill.setAttribute('aria-pressed', String(isActive));
-      if (isActive) {
-        activeClass.split(' ').forEach((c) => pill.classList.add(c));
-        inactiveClass.split(' ').forEach((c) => pill.classList.remove(c));
-      } else {
-        activeClass.split(' ').forEach((c) => pill.classList.remove(c));
-        inactiveClass.split(' ').forEach((c) => pill.classList.add(c));
-      }
+      pill.classList.toggle('bg-action/15', isActive);
+      pill.classList.toggle('text-action', isActive);
+      pill.classList.toggle('border-action/30', isActive);
+      pill.classList.toggle('text-text-muted', !isActive);
+      pill.classList.toggle('border-border', !isActive);
     });
 
     // Sidebar phase buttons
@@ -353,8 +341,7 @@ for (const s of allDocs) {
   // Phase pills (top)
   phasePills.forEach((pill) => {
     pill.addEventListener('click', () => {
-      const val = pill.dataset.phaseValue || null;
-      activePhase = val || null;
+      activePhase = pill.dataset.phaseValue || null;
       applyFilters();
     });
   });
@@ -362,8 +349,7 @@ for (const s of allDocs) {
   // Status pills
   statusPills.forEach((pill) => {
     pill.addEventListener('click', () => {
-      const val = pill.dataset.statusValue || null;
-      activeStatus = val || null;
+      activeStatus = pill.dataset.statusValue || null;
       applyFilters();
     });
   });

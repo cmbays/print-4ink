@@ -54,7 +54,7 @@ status: complete
 
 Every screen printing shop follows this fundamental workflow, with variations in deposit percentage and payment terms:
 
-```
+```text
 Estimate/Quote  →  Customer Approval  →  Deposit (50%)  →  Work Order
      |                                                        |
   Production  →  Quality Check  →  Invoice (balance)  →  Delivery + Payment
@@ -160,7 +160,7 @@ Spoilage affects invoicing through credit memos and adjustments:
 
 ### Master Data Flow: Quote-to-Cash Lifecycle
 
-```
+```text
  QUOTE (Estimate)          JOB (Production)          INVOICE (Billing)
  ┌──────────────┐   Accept  ┌──────────────┐  Convert  ┌──────────────┐
  │ Line items   │ ────────> │ Actual costs │ ────────> │ Locked prices│
@@ -206,7 +206,7 @@ Spoilage affects invoicing through credit memos and adjustments:
 
 Add "Invoices" to sidebar between Quotes and Customers, reflecting the natural workflow order:
 
-```
+```text
 Dashboard    /
 Jobs         /jobs
 Quotes       /quotes
@@ -343,7 +343,7 @@ Extensive reuse from existing components minimizes build effort:
 
 ### Invoice Status State Machine
 
-```
+```text
  draft --> sent --> viewed --> paid
                 --> partial --> paid
  draft --> cancelled
@@ -363,7 +363,7 @@ Extensive reuse from existing components minimizes build effort:
 
 ### Invoice Schema (Key Fields)
 
-```
+```typescript
 invoiceSchema = z.object({
   id: z.string().uuid(),
   invoiceNumber: z.string(),        // INV-1001
@@ -524,7 +524,7 @@ Critical decisions made during user interview with 4Ink owner. These override re
 
 Research initially recommended two separate invoices (deposit + final) as the "textbook" approach. 4Ink owner pushed back — wanted linked tracking, not independent documents. **Final decision:** Single invoice for the full amount. Deposits recorded as partial payments. Balance due updates automatically.
 
-```
+```text
  Step                    Status          Balance Due
  ---------------------------------------------------------
  Invoice created         Draft           $1,000

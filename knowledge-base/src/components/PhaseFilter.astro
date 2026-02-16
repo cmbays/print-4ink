@@ -4,7 +4,7 @@ import { MAX_PHASE } from '../lib/utils';
 const phases = Array.from({ length: MAX_PHASE }, (_, i) => i + 1);
 ---
 
-<div class="flex items-center gap-1.5" id="phase-filter">
+<div class="flex items-center gap-1.5" id="phase-filter" role="group" aria-label="Phase filter">
   <button
     type="button"
     data-phase-value=""
