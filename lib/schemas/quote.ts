@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { dtfLineItemSchema } from "./dtf-line-item";
+import { sheetCalculationSchema } from "./dtf-sheet-calculation";
 
 export const quoteStatusEnum = z.enum([
   "draft",
@@ -48,6 +50,8 @@ export const quoteSchema = z.object({
   discounts: z.array(discountSchema).default([]),
   shipping: z.number().nonnegative().default(0),
   tax: z.number().nonnegative().default(0),
+  dtfLineItems: z.array(dtfLineItemSchema).default([]),
+  dtfSheetCalculation: sheetCalculationSchema.nullable().default(null),
   artworkIds: z.array(z.string()).default([]),
   isArchived: z.boolean().default(false),
   status: quoteStatusEnum,

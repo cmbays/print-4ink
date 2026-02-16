@@ -357,7 +357,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     }
 
     dtfLineItems.forEach((item, i) => {
-      const label = item.artworkName || `Design ${i + 1}`;
+      const label = item.artworkName.trim() || `Design ${i + 1}`;
       if (!item.artworkName.trim()) {
         errors.push(`${label}: artwork name is required`);
       }
@@ -470,17 +470,18 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     }
 
     // Validate DTF tab if enabled (N56)
+    const failedTabs: ServiceType[] = [];
     if (enabledServiceTypes.includes("dtf")) {
       const dtfResult = validateDtfTab();
       if (!dtfResult.valid) {
         nextErrors.dtfTab = dtfResult.errors[0];
-        // Switch to DTF tab and show all errors in a toast
+        failedTabs.push("dtf");
+        // Only show toast when user is NOT on DTF tab (inline error handles it otherwise)
         if (activeServiceTab !== "dtf") {
-          setActiveServiceTab("dtf");
+          toast.error("DTF tab has errors", {
+            description: dtfResult.errors.join(". "),
+          });
         }
-        toast.error("DTF tab has errors", {
-          description: dtfResult.errors.join(". "),
-        });
       }
     }
 
@@ -488,12 +489,16 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     setLineItemErrors(nextLineErrors);
 
     const spHasErrors =
-      Object.keys(nextErrors).some((k) => k !== "dtfTab") ||
+      Object.keys(nextErrors).some((k) => k === "lineItems") ||
       Object.keys(nextLineErrors).length > 0;
 
-    // If SP tab has errors and we're not on SP tab, switch to it
-    if (spHasErrors && activeServiceTab !== "screen-print" && enabledServiceTypes.includes("screen-print")) {
-      setActiveServiceTab("screen-print");
+    if (spHasErrors) {
+      failedTabs.push("screen-print");
+    }
+
+    // Single tab-switch decision: only switch if current tab has no errors but another does
+    if (failedTabs.length > 0 && !failedTabs.includes(activeServiceTab)) {
+      setActiveServiceTab(failedTabs[0]);
     }
 
     return (
@@ -1034,6 +1039,9 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         {/* DTF Tab Content (P2.4) — Wave 2: DTF line items + size presets */}
         {activeServiceTab === "dtf" && (
           <div id="tabpanel-dtf" role="tabpanel">
+            {errors.dtfTab && (
+              <p className="text-xs text-error" role="alert">{errors.dtfTab}</p>
+            )}
             <DtfTabContent
               lineItems={dtfLineItems}
               setLineItems={setDtfLineItems}
