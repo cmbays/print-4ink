@@ -27,7 +27,7 @@ The complete Price Matrix vertical built across 5 phases: foundation schemas and
 
 ## Build Timeline
 
-```
+```text
 PHASE A — Foundation (db27e22)
 
   Zod schemas → Pricing engine (568 LOC) → Mock data → Pricing Hub
@@ -101,7 +101,7 @@ The crown jewel of the build — a reusable 777-line React hook that powers the 
 
 ### Architecture
 
-```
+```text
 React Context (SpreadsheetContext)
   |
   +-- selectedCell    — which cell has focus

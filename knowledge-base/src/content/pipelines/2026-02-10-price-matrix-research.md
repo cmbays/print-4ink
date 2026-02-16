@@ -33,7 +33,7 @@ Four research agents worked in parallel to analyze the screen printing price mat
 
 Pricing is a **multi-dimensional matrix** where per-piece cost is calculated from:
 
-```
+```text
 Price = (Garment Cost x Markup) + (Setup Fees / Quantity) + (Colors x Locations x Per-Hit Rate) + Surcharges
 ```
 
@@ -79,7 +79,7 @@ PrintLife optimizes for *automation at the expense of visibility*. We optimize f
 
 ### Where We Win
 
-```
+```text
                     High Flexibility
                          |
               Teesom o   |   * Screen Print Pro
