@@ -25,21 +25,21 @@ import {
 } from "@/components/ui/tooltip";
 import { ColorFilterGrid } from "./ColorFilterGrid";
 import { getColorById } from "@/lib/helpers/garment-helpers";
+import { garmentCategoryEnum } from "@/lib/schemas/garment";
+import { GARMENT_CATEGORY_LABELS } from "@/lib/constants";
+import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
 
 // ---------------------------------------------------------------------------
-// Constants
+// Constants — derived from canonical Zod enum + label map
 // ---------------------------------------------------------------------------
 
 const CATEGORIES = [
-  { value: "all", label: "All" },
-  { value: "t-shirts", label: "T-Shirts" },
-  { value: "fleece", label: "Fleece" },
-  { value: "outerwear", label: "Outerwear" },
-  { value: "pants", label: "Pants" },
-  { value: "headwear", label: "Headwear" },
-] as const;
-
-const PRICE_STORAGE_KEY = "garment-show-prices";
+  { value: "all" as const, label: "All" },
+  ...garmentCategoryEnum.options.map((v) => ({
+    value: v,
+    label: GARMENT_CATEGORY_LABELS[v],
+  })),
+];
 
 // ---------------------------------------------------------------------------
 // Props
@@ -51,6 +51,8 @@ interface GarmentCatalogToolbarProps {
   onToggleColor: (colorId: string) => void;
   onClearColors: () => void;
   garmentCount: number;
+  favoriteColorIds: string[];
+  onBrandClick?: (brandName: string) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -63,6 +65,8 @@ export function GarmentCatalogToolbar({
   onToggleColor,
   onClearColors,
   garmentCount,
+  favoriteColorIds,
+  onBrandClick,
 }: GarmentCatalogToolbarProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -105,10 +109,11 @@ export function GarmentCatalogToolbar({
     [searchParams, router, pathname],
   );
 
+  // Fix #5: clearAll uses a single router.replace that strips all params (including colors).
+  // No need to call onClearColors separately — router.replace(pathname) already clears ?colors=.
   const clearAll = useCallback(() => {
-    onClearColors();
     router.replace(pathname, { scroll: false });
-  }, [router, pathname, onClearColors]);
+  }, [router, pathname]);
 
   // --- Resolved color objects for pills ---
   const selectedColors = useMemo(
@@ -116,7 +121,7 @@ export function GarmentCatalogToolbar({
       selectedColorIds
         .map((id) => getColorById(id))
         .filter((c) => c != null),
-    [selectedColorIds]
+    [selectedColorIds],
   );
 
   // --- Active filters (for pills — excludes color swatches which get their own row) ---
@@ -139,6 +144,12 @@ export function GarmentCatalogToolbar({
 
   const hasAnyFilter =
     activeFilters.length > 0 || selectedColorIds.length > 0;
+
+  // Fix #9: Show "Clear colors" only when colors are the sole active filter.
+  // Show "Clear all" only when mixed filters are active. Never show both.
+  const showClearColors =
+    activeFilters.length === 0 && selectedColorIds.length > 0;
+  const showClearAll = activeFilters.length > 0;
 
   return (
     <div className="space-y-3">
@@ -279,6 +290,7 @@ export function GarmentCatalogToolbar({
       <ColorFilterGrid
         selectedColorIds={selectedColorIds}
         onToggleColor={onToggleColor}
+        favoriteColorIds={favoriteColorIds}
       />
 
       {/* Row 4: Active filter pills + color pills + result count */}
@@ -291,7 +303,18 @@ export function GarmentCatalogToolbar({
                 variant="outline"
                 className="gap-1 pl-2 pr-1 text-xs"
               >
-                {filter.label}
+                {/* Fix #3: Brand pill is clickable when onBrandClick is provided */}
+                {filter.key === "brand" && onBrandClick ? (
+                  <button
+                    type="button"
+                    className="hover:text-action hover:underline focus-visible:outline-none focus-visible:text-action"
+                    onClick={() => onBrandClick(filter.value)}
+                  >
+                    {filter.label}
+                  </button>
+                ) : (
+                  filter.label
+                )}
                 <button
                   type="button"
                   onClick={() => updateParam(filter.key, null)}
@@ -313,7 +336,7 @@ export function GarmentCatalogToolbar({
                         <button
                           type="button"
                           onClick={() => onToggleColor(color.id)}
-                          className="flex h-5 w-5 items-center justify-center rounded-sm ring-1 ring-action transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="flex h-5 w-5 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0 items-center justify-center rounded-sm ring-1 ring-action transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                           style={{ backgroundColor: color.hex }}
                           aria-label={`Remove ${color.name} filter`}
                         >
@@ -329,27 +352,43 @@ export function GarmentCatalogToolbar({
                       </TooltipContent>
                     </Tooltip>
                   ))}
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={onClearColors}
-                  >
-                    Clear colors
-                  </Button>
+                  {showClearColors && (
+                    <Button
+                      variant="ghost"
+                      size="xs"
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={onClearColors}
+                    >
+                      Clear colors
+                    </Button>
+                  )}
                 </div>
               </TooltipProvider>
             )}
 
-            <Button
-              variant="ghost"
-              size="xs"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={clearAll}
-            >
-              Clear all
-            </Button>
+            {showClearAll && (
+              <Button
+                variant="ghost"
+                size="xs"
+                className="text-muted-foreground hover:text-foreground"
+                onClick={clearAll}
+              >
+                Clear all
+              </Button>
+            )}
           </>
+        )}
+
+        {/* Fix #9 edge case: colors only, no other filters — show Clear colors outside the hasAnyFilter block */}
+        {showClearColors && selectedColors.length === 0 && (
+          <Button
+            variant="ghost"
+            size="xs"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={onClearColors}
+          >
+            Clear colors
+          </Button>
         )}
 
         {/* Result count */}
