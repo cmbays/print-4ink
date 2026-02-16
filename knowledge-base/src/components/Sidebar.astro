@@ -1,6 +1,6 @@
 ---
 import Search from 'astro-pagefind/components/Search';
-import { pipelineLabel } from '../lib/utils';
+import { pipelineLabel, MAX_PHASE } from '../lib/utils';
 
 interface Props {
   activeView?: string;
@@ -95,7 +95,7 @@ const pipelines = Object.keys(pipelineCounts)
   <div class="px-3 pb-5 mt-4 border-t border-border pt-4">
     <p class="px-2 mb-2 text-[10px] font-semibold uppercase tracking-widest text-text-muted">Phase</p>
     <div class="flex gap-1.5 px-2" id="sidebar-phase-filters">
-      {[1, 2, 3].map((phase) => (
+      {Array.from({ length: MAX_PHASE }, (_, i) => i + 1).map((phase) => (
         <button
           type="button"
           data-phase-filter={phase}

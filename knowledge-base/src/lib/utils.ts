@@ -28,6 +28,14 @@ export const pipelineStageLabelMap: Record<string, string> = Object.fromEntries(
 /** Ordered pipeline stage slugs */
 export const pipelineStageSlugs: string[] = pipelineStages.map((s) => s.slug);
 
+/** Core stages that indicate a pipeline is "Active" (config-driven) */
+export const CORE_STAGES: string[] = stagesConfig
+  .filter((s: { slug: string; core?: boolean }) => s.core === true)
+  .map((s: { slug: string }) => s.slug);
+
+/** Maximum phase number for phase filters */
+export const MAX_PHASE = 3;
+
 /** Normalize a stage slug from old format to new canonical format */
 export function normalizeStage(slug: string): string {
   return stageSlugMap[slug] || slug;

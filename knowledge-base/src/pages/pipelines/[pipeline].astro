@@ -6,7 +6,7 @@ import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
 import EmptyDocsState from '../../components/EmptyDocsState.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../lib/utils';
+import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs, CORE_STAGES, sortByDateDesc, pluralize } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -36,8 +36,7 @@ const pipelineStages = pipelineStageSlugs.map((stage) => ({
 }));
 
 // Compute health status
-const coreStages = ['research', 'breadboard', 'build'];
-const hasCoreStages = coreStages.every((s) => (stageBreakdown[s] || 0) > 0);
+const hasCoreStages = CORE_STAGES.every((s) => (stageBreakdown[s] || 0) > 0);
 const healthStatus = hasCoreStages ? 'Active' : 'In Progress';
 
 // Latest date
