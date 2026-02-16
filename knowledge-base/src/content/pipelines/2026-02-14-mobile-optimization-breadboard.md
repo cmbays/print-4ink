@@ -3,11 +3,11 @@ title: "Mobile Optimization — Breadboard"
 subtitle: "Affordance mapping, component boundaries, and build order for the mobile optimization vertical"
 date: 2026-02-14
 phase: 1
-pipeline: mobile-optimization
+pipelineName: mobile-optimization
 pipelineType: horizontal
 products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
 tools: []
-stage: breadboarding
+stage: breadboard
 tags: [plan, build]
 sessionId: "b7ec7c32-c69d-44ed-9672-b6b7676b0ed9"
 branch: "session/0214-mobile-breadboard"

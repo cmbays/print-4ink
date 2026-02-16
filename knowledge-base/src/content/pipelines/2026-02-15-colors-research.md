@@ -3,7 +3,7 @@ title: "Colors — UX Research: Hierarchical Settings Inheritance"
 subtitle: "Industry best practices for cascading color preferences across global, supplier, and customer levels"
 date: 2026-02-15
 phase: 1
-pipeline: colors
+pipelineName: colors
 pipelineType: vertical
 products: [garments, customers]
 tools: []

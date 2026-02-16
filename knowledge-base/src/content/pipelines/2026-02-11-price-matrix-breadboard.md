@@ -3,11 +3,11 @@ title: "Price Matrix Breadboard"
 subtitle: "UI affordance map, wiring, component boundaries, and parallelized build order for the Price Matrix vertical"
 date: 2026-02-11
 phase: 1
-pipeline: price-matrix
+pipelineName: price-matrix
 pipelineType: vertical
 products: [pricing, quotes]
 tools: []
-stage: breadboarding
+stage: breadboard
 tags: [plan, decision]
 sessionId: "ac42f9fb-92e3-4d10-971d-bec20c749009"
 branch: "session/0210-price-matrix"

@@ -3,7 +3,7 @@ title: "Garments Vertical — Requirements Interview"
 subtitle: "Structured interview validates catalog design, confirms mockup quality as demo showpiece, surfaces customer-supplied garment and screen cost intelligence needs"
 date: 2026-02-15
 phase: 1
-pipeline: garments
+pipelineName: garments
 pipelineType: vertical
 products: [garments, customers, screens]
 tools: []

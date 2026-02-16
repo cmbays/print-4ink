@@ -3,7 +3,7 @@ title: "Skills Implementation"
 subtitle: "Built two project-specific Claude Code skills -- screen-builder and quality-gate -- encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens."
 date: 2026-02-07
 phase: 1
-pipeline: devx
+pipelineName: devx
 pipelineType: horizontal
 products: []
 tools: [skills-framework]

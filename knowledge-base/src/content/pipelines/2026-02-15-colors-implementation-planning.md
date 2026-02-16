@@ -3,11 +3,11 @@ title: "Colors — Implementation Plan: 4 Waves, 7 Sessions"
 subtitle: "Wave-parallelized execution manifest for 48 UI + 25 code affordances across 6 vertical slices"
 date: 2026-02-15
 phase: 1
-pipeline: colors
+pipelineName: colors
 pipelineType: vertical
 products: [garments, customers]
 tools: []
-stage: implementation-planning
+stage: plan
 tags: [plan]
 sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
 branch: "session/0215-color-prefs"

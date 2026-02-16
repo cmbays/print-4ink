@@ -3,8 +3,10 @@ title: "DTF Gang Sheet Builder — Wave 4 Canvas + Design Audit"
 subtitle: "Final wave: SVG gang sheet canvas, 5-agent review, design audit with 7 fixes"
 date: 2026-02-16
 phase: 1
-vertical: quotes
-verticalSecondary: []
+pipelineName: quotes
+pipelineType: vertical
+products: [quotes]
+tools: []
 stage: build
 tags: [feature, build]
 sessionId: "48d353c2-d952-478d-a0b8-0a0ccdc54489"

@@ -3,7 +3,7 @@ title: "Mobile Optimization — User Interview"
 subtitle: "10-question interview validating mobile assumptions and uncovering new priorities"
 date: 2026-02-14
 phase: 1
-pipeline: mobile-optimization
+pipelineName: mobile-optimization
 pipelineType: horizontal
 products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
 tools: []

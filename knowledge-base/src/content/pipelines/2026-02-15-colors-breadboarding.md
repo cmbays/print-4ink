@@ -3,11 +3,11 @@ title: "Colors — Breadboard: Affordances, Wiring & Vertical Slices"
 subtitle: "48 UI affordances, 25 code affordances, 8 data stores across 6 places — sliced into 6 vertical increments"
 date: 2026-02-15
 phase: 1
-pipeline: colors
+pipelineName: colors
 pipelineType: vertical
 products: [garments, customers]
 tools: []
-stage: breadboarding
+stage: breadboard
 tags: [plan]
 sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
 branch: "session/0215-color-prefs"
