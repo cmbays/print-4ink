@@ -379,18 +379,6 @@ export function GarmentCatalogToolbar({
           </>
         )}
 
-        {/* Fix #9 edge case: colors only, no other filters — show Clear colors outside the hasAnyFilter block */}
-        {showClearColors && selectedColors.length === 0 && (
-          <Button
-            variant="ghost"
-            size="xs"
-            className="text-muted-foreground hover:text-foreground"
-            onClick={onClearColors}
-          >
-            Clear colors
-          </Button>
-        )}
-
         {/* Result count */}
         <span
           className={cn(
