@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import DocCard from '../../components/DocCard.astro';
 import PageFooter from '../../components/PageFooter.astro';
+import BackLink from '../../components/BackLink.astro';
 import { getCollection, render } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../../lib/utils';
 import toolsConfig from '../../../../config/tools.json';
@@ -32,9 +33,7 @@ if (overview) {
 
 <Layout title={config.label} description={`${config.label} tool documentation`}>
   <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
-    <a href="/tools" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
-      <span>&larr;</span> Back to Tools
-    </a>
+    <BackLink href="/tools" label="Back to Tools" />
 
     <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{config.label}</h1>
     <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || ''}</p>

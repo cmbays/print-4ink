@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import DecisionRecord from '../components/DecisionRecord.astro';
 import PageFooter from '../components/PageFooter.astro';
+import BackLink from '../components/BackLink.astro';
 import { getCollection } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../lib/utils';
 
@@ -13,10 +14,7 @@ const decisions = docs
 
 <Layout title="Decision Log" description="Key decisions made across the Screen Print Pro project">
   <main class="max-w-[720px] mx-auto px-6 py-12">
-    <!-- Back link -->
-    <a href="/" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8">
-      <span>&larr;</span> Back to Index
-    </a>
+    <BackLink href="/" label="Back to Index" />
 
     <!-- Header -->
     <h1 class="text-2xl font-bold tracking-tight mb-2">Decision Log</h1>

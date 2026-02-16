@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PageFooter from '../../components/PageFooter.astro';
+import BackLink from '../../components/BackLink.astro';
 import { getCollection, render } from 'astro:content';
 import { tagColor, pipelineLabel, formatDate } from '../../lib/utils';
 
@@ -20,9 +21,7 @@ const dateStr = formatDate(date);
 
 <Layout title={title} description={subtitle}>
   <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
-    <a href="/strategy" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
-      <span>&larr;</span> Back to Strategy
-    </a>
+    <BackLink href="/strategy" label="Back to Strategy" />
 
     {/* Tags + docType badge */}
     <div class="flex items-center gap-2 mb-4">
