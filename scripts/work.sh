@@ -41,6 +41,8 @@ fi
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-gates.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-gates.sh"
 # shellcheck source=lib/pipeline-define.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-define.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-define.sh"
+# shellcheck source=lib/pipeline-update.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-update.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-update.sh"
 # shellcheck source=lib/pipeline-status.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-status.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-status.sh"
 # shellcheck source=lib/pipeline-start.sh
@@ -57,6 +59,7 @@ work() {
     case "${1:-}" in
         # Pipeline lifecycle commands
         define)     shift; _work_define "$@" ;;
+        update)     shift; _work_update "$@" ;;
         start)      shift; _work_start "$@" ;;
         build)      shift; _work_build_dispatch "$@" ;;
         end)        shift; _work_end "$@" ;;
@@ -153,6 +156,12 @@ PIPELINE LIFECYCLE
     --auto                                  Skip human approvals (plan + merge)
     --products p1,p2                        Link to products (garments, quotes, etc.)
     --tools t1,t2                           Link to tools (work-orchestrator, etc.)
+  work update <pipeline-id> [flags]       Modify pipeline fields after define
+    --auto / --no-auto                      Toggle auto flag
+    --issue <number>                        Link/change GitHub issue
+    --type <type>                           Change pipeline type
+    --products p1,p2                        Update products list
+    --tools t1,t2                           Update tools list
   work start <pipeline-id>                Run pre-build stages (→ active state)
     --yolo                                  Skip Claude permissions
     --claude-args "..."                     Pass flags to Claude
