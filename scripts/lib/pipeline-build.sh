@@ -210,6 +210,7 @@ _work_pipeline_build() {
             tab_prompt="${session_prompts[$_j]}"
 
             tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX")
+            chmod 600 "$tab_kdl"
             {
                 echo "layout {"
                 _kdl_render_tab "$_t" "$cwd" "$tab_prompt" "$claude_args"
@@ -225,6 +226,7 @@ _work_pipeline_build() {
     else
         local KDL_FILE
         KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX")
+        chmod 600 "$KDL_FILE"
         {
             echo "layout {"
             local _k=$_arr_start
@@ -239,6 +241,17 @@ _work_pipeline_build() {
         local session_name="${p_name}-w${wave_idx}"
         echo "Launch the build session:"
         echo "  zellij --new-session-with-layout $KDL_FILE --session $session_name"
+    fi
+
+    # ── Session ID Capture (background) ──────────────────────────────
+    # Poll for each session's Claude JSONL file and write to registry.
+    if type _poll_claude_session_id &>/dev/null; then
+        local _p=$_arr_start
+        for _t in "${created_topics[@]}"; do
+            _poll_claude_session_id "$_t" "${session_dirs[$_p]}" &
+            disown
+            _p=$((_p + 1))
+        done
     fi
 
     echo ""
