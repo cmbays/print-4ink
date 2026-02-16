@@ -5,7 +5,7 @@ date: 2026-02-14
 phase: 1
 pipeline: garments
 pipelineType: vertical
-products: [garments]
+products: [garments, customers]
 tools: []
 stage: breadboarding
 tags: [plan, decision]
