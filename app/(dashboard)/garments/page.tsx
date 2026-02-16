@@ -308,7 +308,7 @@ function GarmentCatalogInner() {
 export default function GarmentCatalogPage() {
   return (
     <>
-      <Topbar breadcrumbs={[{ label: "Dashboard", href: "/" }, { label: "Garment Catalog" }]} />
+      <Topbar breadcrumbs={[{ label: "Garment Catalog" }]} />
       <div className="flex flex-col gap-4">
         <Suspense
           fallback={
