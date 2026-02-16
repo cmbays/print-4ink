@@ -3,9 +3,11 @@ title: "DTF Gang Sheet Builder -- Implementation Planning"
 subtitle: "5 waves, 8 sessions, critical path of 5 sessions targeting Feb 21 demo"
 date: 2026-02-15
 phase: 1
-vertical: dtf-gang-sheet
-verticalSecondary: [quoting]
-stage: impl-planning
+pipelineName: dtf-gang-sheet
+pipelineType: vertical
+products: [quotes]
+tools: []
+stage: plan
 tags: [plan, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0215-dtf-gang-sheet-research"
