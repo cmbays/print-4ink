@@ -146,6 +146,7 @@ for (const s of allDocs) {
 </script>
 
 <script>
+  import type {} from '../lib/types';
   // ── Client-side filtering ──────────────────────────────────────────
 
   let activePipeline: string | null = null;
@@ -165,10 +166,7 @@ for (const s of allDocs) {
   const mobileSelect = document.getElementById('mobile-pipeline-select') as HTMLSelectElement | null;
   const clearBtn = document.getElementById('clear-filters-btn');
 
-  const data = (window as any).__KB_DATA__ as {
-    pipelineStageMap: Record<string, string[]>;
-    pipelineLabels: Record<string, string>;
-  };
+  const data = window.__KB_DATA__;
 
   function applyFilters() {
     let visibleCount = 0;
