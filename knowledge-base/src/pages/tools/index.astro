@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import PageFooter from '../../components/PageFooter.astro';
 import BackLink from '../../components/BackLink.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
 import { getCollection } from 'astro:content';
 import { pluralize } from '../../lib/utils';
 import toolsConfig from '../../../../config/tools.json';
@@ -23,7 +24,7 @@ const toolCards = toolsConfig.map((t) => {
 });
 ---
 
-<Layout title="Tools">
+<Layout title="Tools" description="Development tooling documentation for Screen Print Pro">
   <main class="max-w-[820px] mx-auto px-6 py-12">
     <BackLink href="/" label="Back to Index" />
 
@@ -35,9 +36,7 @@ const toolCards = toolsConfig.map((t) => {
         <a href={`/tools/${t.slug}`} class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group">
           <div class="flex items-center justify-between mb-1.5">
             <h3 class="text-sm font-semibold text-text-primary group-hover:text-action transition-colors">{t.label}</h3>
-            <span class={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${t.status === 'current' ? 'bg-success/12 text-success' : 'bg-warning/12 text-warning'}`}>
-              {t.status}
-            </span>
+            <StatusBadge status={t.status} />
           </div>
           <p class="text-[13px] text-text-secondary line-clamp-2 mb-2">{t.subtitle}</p>
           <div class="flex items-center gap-3 text-[11px] text-text-muted">

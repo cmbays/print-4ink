@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Pipeline from '../../../components/Pipeline.astro';
 import BackLink from '../../../components/BackLink.astro';
 import DocCard from '../../../components/DocCard.astro';
+import EmptyDocsState from '../../../components/EmptyDocsState.astro';
 import { getCollection } from 'astro:content';
 import { pipelineLabel as getPipelineLabel, stageLabel as getStageLabel, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../../lib/utils';
 
@@ -46,7 +47,7 @@ const pipelineStages = pipelineStageSlugs.map((s) => ({
 }));
 ---
 
-<Layout title={`${pipelineLabel} — ${stageLabel}`}>
+<Layout title={`${pipelineLabel} — ${stageLabel}`} description={`${pipelineLabel} pipeline — ${stageLabel} stage documentation`}>
   <main class="max-w-[820px] mx-auto px-6 py-10">
     <BackLink href={`/pipelines/${pipeline}`} label={`Back to ${pipelineLabel}`} />
 
@@ -73,9 +74,7 @@ const pipelineStages = pipelineStageSlugs.map((s) => ({
         Pipeline Docs
       </h2>
       {stageDocs.length === 0 ? (
-        <p class="text-[14px] text-text-muted py-8 text-center">
-          No pipeline docs found for this stage.
-        </p>
+        <EmptyDocsState message="No pipeline docs found for this stage." />
       ) : (
         <ul class="space-y-3">
           {stageDocs.map((doc) => (

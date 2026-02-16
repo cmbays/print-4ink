@@ -4,8 +4,9 @@ import Pipeline from '../../components/Pipeline.astro';
 import BackLink from '../../components/BackLink.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
+import EmptyDocsState from '../../components/EmptyDocsState.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs, sortByDateDesc, pluralize } from '../../lib/utils';
+import { pipelineLabel as getPipelineLabel, normalizeStage, pipelineStageSlugs, CORE_STAGES, sortByDateDesc, pluralize } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -35,15 +36,14 @@ const pipelineStages = pipelineStageSlugs.map((stage) => ({
 }));
 
 // Compute health status
-const coreStages = ['research', 'breadboard', 'build'];
-const hasCoreStages = coreStages.every((s) => (stageBreakdown[s] || 0) > 0);
+const hasCoreStages = CORE_STAGES.every((s) => (stageBreakdown[s] || 0) > 0);
 const healthStatus = hasCoreStages ? 'Active' : 'In Progress';
 
 // Latest date
 const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
 ---
 
-<Layout title={label}>
+<Layout title={label} description={`${label} pipeline — session docs across all stages`}>
   <main class="max-w-[820px] mx-auto px-6 py-10">
     <BackLink href="/" label="Back to Index" />
 
@@ -82,9 +82,7 @@ const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
         Pipeline Docs
       </h2>
       {sorted.length === 0 ? (
-        <p class="text-[14px] text-text-muted py-8 text-center">
-          No pipeline docs found for this pipeline.
-        </p>
+        <EmptyDocsState message="No pipeline docs found for this pipeline." />
       ) : (
         <ul class="space-y-3">
           {sorted.map((doc) => (

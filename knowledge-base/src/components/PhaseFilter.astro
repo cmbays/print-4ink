@@ -1,6 +1,7 @@
 ---
-// PhaseFilter renders pill buttons for phase filtering.
-// Filtering is handled client-side via the main index page script.
+import { MAX_PHASE } from '../lib/utils';
+
+const phases = Array.from({ length: MAX_PHASE }, (_, i) => i + 1);
 ---
 
 <div class="flex items-center gap-1.5" id="phase-filter">
@@ -11,25 +12,13 @@
   >
     All
   </button>
-  <button
-    type="button"
-    data-phase-value="1"
-    class="phase-pill text-[12px] font-medium px-3 py-1 rounded-md border transition-colors text-text-muted border-border hover:text-text-secondary hover:border-action/20"
-  >
-    Phase 1
-  </button>
-  <button
-    type="button"
-    data-phase-value="2"
-    class="phase-pill text-[12px] font-medium px-3 py-1 rounded-md border transition-colors text-text-muted border-border hover:text-text-secondary hover:border-action/20"
-  >
-    Phase 2
-  </button>
-  <button
-    type="button"
-    data-phase-value="3"
-    class="phase-pill text-[12px] font-medium px-3 py-1 rounded-md border transition-colors text-text-muted border-border hover:text-text-secondary hover:border-action/20"
-  >
-    Phase 3
-  </button>
+  {phases.map((phase) => (
+    <button
+      type="button"
+      data-phase-value={phase}
+      class="phase-pill text-[12px] font-medium px-3 py-1 rounded-md border transition-colors text-text-muted border-border hover:text-text-secondary hover:border-action/20"
+    >
+      Phase {phase}
+    </button>
+  ))}
 </div>
