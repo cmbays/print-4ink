@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useCallback } from "react";
+import { useMemo, useRef } from "react";
 import { Check } from "lucide-react";
 import {
   Tooltip,
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
 import { colors as catalogColors } from "@/lib/mock-data";
 import type { Color } from "@/lib/schemas/color";
+import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 
 interface ColorFilterGridProps {
   selectedColorIds: string[];
@@ -107,52 +108,7 @@ export function ColorFilterGrid({
     return [...favorites, ...rest];
   }, [favoriteColorIds]);
 
-  // Keyboard arrow navigation (ported from ColorSwatchPicker)
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      const buttons = gridRef.current?.querySelectorAll<HTMLButtonElement>(
-        '[role="checkbox"]',
-      );
-      if (!buttons || buttons.length === 0) return;
-
-      const active = document.activeElement as HTMLButtonElement;
-      const currentIndex = Array.from(buttons).indexOf(active);
-      if (currentIndex === -1) return;
-
-      // Approximate columns from grid layout
-      const gridWidth = gridRef.current?.offsetWidth ?? 0;
-      const cols = Math.max(1, Math.floor(gridWidth / 34)); // 32px swatch + 2px gap
-
-      let nextIndex = currentIndex;
-
-      switch (e.key) {
-        case "ArrowRight":
-          nextIndex = Math.min(currentIndex + 1, buttons.length - 1);
-          break;
-        case "ArrowLeft":
-          nextIndex = Math.max(currentIndex - 1, 0);
-          break;
-        case "ArrowDown":
-          nextIndex = Math.min(currentIndex + cols, buttons.length - 1);
-          break;
-        case "ArrowUp":
-          nextIndex = Math.max(currentIndex - cols, 0);
-          break;
-        case "Home":
-          nextIndex = 0;
-          break;
-        case "End":
-          nextIndex = buttons.length - 1;
-          break;
-        default:
-          return;
-      }
-
-      e.preventDefault();
-      buttons[nextIndex]?.focus();
-    },
-    [],
-  );
+  const handleKeyDown = useGridKeyboardNav(gridRef, '[role="checkbox"]', 34);
 
   return (
     <TooltipProvider skipDelayDuration={300}>
