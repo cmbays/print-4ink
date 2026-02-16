@@ -1,8 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import DocCard from '../../components/DocCard.astro';
 import PageFooter from '../../components/PageFooter.astro';
 import BackLink from '../../components/BackLink.astro';
+import RelatedPipelinesSection from '../../components/RelatedPipelinesSection.astro';
 import { getCollection, render } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../../lib/utils';
 import productsConfig from '../../../../config/products.json';
@@ -52,33 +52,10 @@ if (overview) {
 
     <hr class="border-t border-border mb-8" />
 
-    {/* Related pipeline docs */}
-    {relatedPipelines.length > 0 && (
-      <div class="mb-8">
-        <h2 class="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-4">Related Pipeline Sessions</h2>
-        <div class="space-y-2.5">
-          {relatedPipelines.map((pl) => (
-            <DocCard
-              title={pl.data.title}
-              subtitle={pl.data.subtitle}
-              date={pl.data.date}
-              pipeline={pl.data.pipelineName}
-              pipelineType={pl.data.pipelineType}
-              stage={pl.data.stage}
-              tags={pl.data.tags}
-              status={pl.data.status}
-              slug={pl.id}
-            />
-          ))}
-        </div>
-      </div>
-    )}
-
-    {relatedPipelines.length === 0 && (
-      <div class="text-center py-8 mb-8">
-        <p class="text-text-muted text-sm">No pipeline sessions linked to this product yet.</p>
-      </div>
-    )}
+    <RelatedPipelinesSection
+      pipelines={relatedPipelines}
+      emptyMessage="No pipeline sessions linked to this product yet."
+    />
 
     <PageFooter label={config.label} />
   </main>
