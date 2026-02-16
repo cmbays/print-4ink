@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Palette, Search, LayoutGrid, List } from "lucide-react";
 import { Topbar } from "@/components/layout/topbar";
 import {
@@ -56,17 +56,8 @@ export default function SettingsColorsPage() {
   // -- State ----------------------------------------------------------------
   const [colorList, setColorList] = useState<Color[]>(() => [...allColorsData]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [displayPref, setDisplayPref] = useState<DisplayPreference>("flat");
+  const [displayPref, setDisplayPref] = useState<DisplayPreference>(getStoredDisplayPreference);
   const [autoPropagate, setAutoPropagate] = useState(autoPropagationConfig.autoPropagate);
-
-  // Hydrate display preference from localStorage after mount
-  const hasHydrated = useRef(false);
-  useEffect(() => {
-    if (!hasHydrated.current) {
-      hasHydrated.current = true;
-      setDisplayPref(getStoredDisplayPreference());
-    }
-  }, []);
 
   const debouncedSearch = useDebounce(searchQuery, SEARCH_DEBOUNCE_MS);
 
