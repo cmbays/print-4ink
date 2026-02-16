@@ -1,7 +1,6 @@
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -20,27 +19,25 @@ interface MarginLegendProps {
 export function MarginLegend({ variant = "simple", className }: MarginLegendProps) {
   if (variant === "tooltip") {
     return (
-      <TooltipProvider skipDelayDuration={300}>
-        <div className={cn("flex items-center gap-3 text-xs text-muted-foreground", className)}>
-          {items.map((item) => (
-            <Tooltip key={item.label}>
-              <TooltipTrigger asChild>
-                <div className="flex cursor-default items-center gap-1">
-                  <span className={cn("inline-block size-2 rounded-full", item.color)} />
-                  {item.label}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                sideOffset={6}
-                className="data-[state=closed]:pointer-events-none"
-              >
-                {item.tooltip}
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-      </TooltipProvider>
+      <div className={cn("flex items-center gap-3 text-xs text-muted-foreground", className)}>
+        {items.map((item) => (
+          <Tooltip key={item.label}>
+            <TooltipTrigger asChild>
+              <div className="flex cursor-default items-center gap-1">
+                <span className={cn("inline-block size-2 rounded-full", item.color)} />
+                {item.label}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              sideOffset={6}
+              className="data-[state=closed]:pointer-events-none"
+            >
+              {item.tooltip}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
     );
   }
 

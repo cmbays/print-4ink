@@ -232,6 +232,7 @@ Before considering any screen done:
 - [ ] Motion uses design tokens, respects `prefers-reduced-motion`
 - [ ] Empty, loading, and error states designed
 - [ ] Keyboard navigable, proper ARIA labels, 4.5:1 contrast minimum
+- [ ] Tooltips: use `<Tooltip>` directly — app-wide `<TooltipProvider>` in dashboard layout handles provider. Never add per-component `<TooltipProvider>`.
 - [ ] Apply Jobs Filter: "Can this be removed without losing meaning?" If yes, remove it.
 
 ## UX Principles
@@ -480,4 +481,5 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Breadboard parallelization windows**: When writing breadboard build orders, explicitly mark which tasks can run concurrently. This enables `superpowers:subagent-driven-development` to parallelize correctly without re-analyzing the dependency graph. Every breadboard since Price Matrix has used this pattern — it's now required.
 - **Mobile tokens before mobile screens**: Define CSS custom properties (`--mobile-nav-height`, `--mobile-touch-target`, etc.) in a foundation sprint before building responsive adaptations. Sprint 1's token layer made Sprint 2 trivially fast. Always establish the token vocabulary first.
 - **Subagent-driven development for large plans**: For implementation plans with 10+ tasks, use `superpowers:subagent-driven-development` with spec-then-quality two-stage reviews. The Garment Catalog build (18 tasks, PR #109) was the cleanest execution pattern — validated across multiple verticals.
+- **App-wide TooltipProvider**: Tooltip is the ONLY Radix primitive requiring a Provider. A single `<TooltipProvider skipDelayDuration={300}>` lives in `app/(dashboard)/layout.tsx` via `TooltipProviderWrapper`. Never add per-component `<TooltipProvider>` — all tooltips inherit from the app-wide provider. Per-tooltip `delayDuration` can be overridden on `<Tooltip delayDuration={X}>` if needed.
 - **Breadcrumbs — never include "Dashboard"**: The `Topbar` component hard-codes "Dashboard" as the root breadcrumb. Pages must NOT include `label: "Dashboard"` in their breadcrumbs prop — this causes a duplicate. Use `buildBreadcrumbs()` from `lib/helpers/breadcrumbs.ts` to construct breadcrumb arrays; it validates this contract at dev time. CI also runs a grep check that fails on any `label:.*"Dashboard"` in `app/`.

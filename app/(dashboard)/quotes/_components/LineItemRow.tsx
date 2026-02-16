@@ -24,7 +24,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
@@ -319,46 +318,44 @@ export function LineItemRow({
         {/* Garment Category */}
         <div className="space-y-1.5">
           <Label className="text-sm text-muted-foreground">Garment Type</Label>
-          <TooltipProvider delayDuration={200}>
-            <div className="flex gap-1">
-              {ALL_GARMENT_CATEGORIES.map((cat) => {
-                const enabled = ENABLED_CATEGORIES.has(cat);
-                const isSelected = selectedCategory === cat;
-                const btn = (
-                  <Button
-                    key={cat}
-                    type="button"
-                    variant={isSelected ? "default" : "outline"}
-                    size="sm"
-                    disabled={!enabled}
-                    className={cn(
-                      "h-7 text-xs",
-                      isSelected && "bg-action text-primary-foreground",
-                      !enabled && "opacity-40 cursor-not-allowed"
-                    )}
-                    onClick={() => {
-                      if (enabled) setSelectedCategory(cat);
-                    }}
-                  >
-                    {GARMENT_CATEGORY_LABELS[cat]}
-                  </Button>
+          <div className="flex gap-1">
+            {ALL_GARMENT_CATEGORIES.map((cat) => {
+              const enabled = ENABLED_CATEGORIES.has(cat);
+              const isSelected = selectedCategory === cat;
+              const btn = (
+                <Button
+                  key={cat}
+                  type="button"
+                  variant={isSelected ? "default" : "outline"}
+                  size="sm"
+                  disabled={!enabled}
+                  className={cn(
+                    "h-7 text-xs",
+                    isSelected && "bg-action text-primary-foreground",
+                    !enabled && "opacity-40 cursor-not-allowed"
+                  )}
+                  onClick={() => {
+                    if (enabled) setSelectedCategory(cat);
+                  }}
+                >
+                  {GARMENT_CATEGORY_LABELS[cat]}
+                </Button>
+              );
+              if (!enabled) {
+                return (
+                  <Tooltip key={cat} delayDuration={200}>
+                    <TooltipTrigger asChild>
+                      <span tabIndex={0}>{btn}</span>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p className="text-xs">Coming soon</p>
+                    </TooltipContent>
+                  </Tooltip>
                 );
-                if (!enabled) {
-                  return (
-                    <Tooltip key={cat}>
-                      <TooltipTrigger asChild>
-                        <span tabIndex={0}>{btn}</span>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">
-                        <p className="text-xs">Coming soon</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                }
-                return btn;
-              })}
-            </div>
-          </TooltipProvider>
+              }
+              return btn;
+            })}
+          </div>
         </div>
 
         {/* Garment Selector */}

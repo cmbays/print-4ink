@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
@@ -741,7 +740,6 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     <>
       <div className="mx-auto w-full max-w-3xl space-y-4">
         {/* Sticky summary bar */}
-        <TooltipProvider delayDuration={200} skipDelayDuration={300}>
         <div className="sticky top-0 z-20 -mx-1 rounded-lg border border-border bg-card/95 backdrop-blur-sm px-4 py-2 shadow-sm">
           {/* Top row: customer, notes, total */}
           <div className="flex items-center justify-between gap-3">
@@ -760,7 +758,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
               {quoteArtworks.length > 0 && (
                 <div className="flex items-center gap-1">
                   {quoteArtworks.map((art) => (
-                      <Tooltip key={art.id}>
+                      <Tooltip key={art.id} delayDuration={200}>
                         <TooltipTrigger asChild>
                           <div className="flex size-6 items-center justify-center rounded border border-border bg-white/90 overflow-hidden cursor-default">
                             <Image
@@ -792,7 +790,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
                   ))}
                 </div>
               )}
-              <Tooltip>
+              <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <button
                     type="button"
@@ -830,7 +828,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
                 </TooltipContent>
               </Tooltip>
               {discountDetails.total > 0 && (
-                <Tooltip>
+                <Tooltip delayDuration={200}>
                   <TooltipTrigger asChild>
                     <span className="flex items-center gap-1 rounded-md bg-success/10 px-2 py-1 text-xs font-medium text-success cursor-default">
                       <Tag size={12} />
@@ -879,7 +877,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
                     {garments.map((g, gi) => {
                       const sizeEntries = Object.entries(g.sizes).filter(([, q]) => q > 0);
                       return (
-                        <Tooltip key={gi}>
+                        <Tooltip key={gi} delayDuration={200}>
                           <TooltipTrigger asChild>
                             <span
                               className="inline-block size-3.5 rounded-sm border border-border cursor-default"
@@ -935,7 +933,6 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
             </div>
           )}
         </div>
-        </TooltipProvider>
 
         {/* Section 1: Customer */}
         <CollapsibleSection

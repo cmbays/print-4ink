@@ -19,7 +19,6 @@ import { MockupFilterProvider } from "@/components/features/mockup";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { CapacitySummaryBar } from "../_components/CapacitySummaryBar";
 import {
   BoardFilterBar,
@@ -451,7 +450,6 @@ function ProductionBoardInner() {
               onDragEnd={handleDragEnd}
               onDragCancel={handleDragCancel}
             >
-              <TooltipProvider skipDelayDuration={300}>
                 <BoardSection
                   label={cardType === "jobs" ? "Jobs" : cardType === "quotes" ? "Quotes" : "All Cards"}
                   section="combined"
@@ -471,7 +469,6 @@ function ProductionBoardInner() {
                 <DragOverlay dropAnimation={prefersReducedMotion ? undefined : springDropAnimation}>
                   {renderDragOverlay()}
                 </DragOverlay>
-              </TooltipProvider>
             </DndContext>
           )}
         </div>

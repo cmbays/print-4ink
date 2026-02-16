@@ -4,7 +4,6 @@ import { Heart, Check } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -111,61 +110,59 @@ export function FavoritesColorSection({
   const nonFavorites = allColors.filter((c) => !favoriteIds.has(c.id));
 
   return (
-    <TooltipProvider skipDelayDuration={300}>
-      <div className="flex flex-col gap-4">
-        {/* Favorites section */}
-        <div>
-          <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-            <Heart size={14} className="fill-current" aria-hidden="true" />
-            Favorites ({favorites.length})
+    <div className="flex flex-col gap-4">
+      {/* Favorites section */}
+      <div>
+        <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+          <Heart size={14} className="fill-current" aria-hidden="true" />
+          Favorites ({favorites.length})
+        </p>
+        {favorites.length === 0 ? (
+          <p className="py-3 text-sm text-muted-foreground">
+            No favorites set
           </p>
-          {favorites.length === 0 ? (
-            <p className="py-3 text-sm text-muted-foreground">
-              No favorites set
-            </p>
-          ) : (
-            <div
-              className="flex flex-wrap gap-1"
-              role="group"
-              aria-label="Favorite colors"
-            >
-              {favorites.map((color) => (
-                <ColorSwatch
-                  key={`fav-${color.id}`}
-                  color={color}
-                  isFavorite={true}
-                  onClick={() => onToggle(color.id)}
-                  readOnly={readOnly}
-                  badge={showBadges ? badgeData?.get(color.id) : undefined}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* All Colors section */}
-        {!readOnly && (
-          <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">
-              All Colors ({nonFavorites.length})
-            </p>
-            <div
-              className="flex flex-wrap gap-1"
-              role="group"
-              aria-label="All colors"
-            >
-              {nonFavorites.map((color) => (
-                <ColorSwatch
-                  key={color.id}
-                  color={color}
-                  isFavorite={false}
-                  onClick={() => onToggle(color.id)}
-                />
-              ))}
-            </div>
+        ) : (
+          <div
+            className="flex flex-wrap gap-1"
+            role="group"
+            aria-label="Favorite colors"
+          >
+            {favorites.map((color) => (
+              <ColorSwatch
+                key={`fav-${color.id}`}
+                color={color}
+                isFavorite={true}
+                onClick={() => onToggle(color.id)}
+                readOnly={readOnly}
+                badge={showBadges ? badgeData?.get(color.id) : undefined}
+              />
+            ))}
           </div>
         )}
       </div>
-    </TooltipProvider>
+
+      {/* All Colors section */}
+      {!readOnly && (
+        <div>
+          <p className="mb-2 text-xs font-medium text-muted-foreground">
+            All Colors ({nonFavorites.length})
+          </p>
+          <div
+            className="flex flex-wrap gap-1"
+            role="group"
+            aria-label="All colors"
+          >
+            {nonFavorites.map((color) => (
+              <ColorSwatch
+                key={color.id}
+                color={color}
+                isFavorite={false}
+                onClick={() => onToggle(color.id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
