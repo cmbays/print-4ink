@@ -9,6 +9,7 @@ import { GarmentCatalogToolbar } from "./_components/GarmentCatalogToolbar";
 import { GarmentCard } from "./_components/GarmentCard";
 import { GarmentTableRow } from "./_components/GarmentTableRow";
 import { GarmentDetailDrawer } from "./_components/GarmentDetailDrawer";
+import { BrandDetailDrawer } from "./_components/BrandDetailDrawer";
 import {
   garmentCatalog as initialCatalog,
   jobs,
@@ -70,6 +71,17 @@ function GarmentCatalogInner() {
   );
   const selectedGarment =
     catalog.find((g) => g.id === selectedGarmentId) ?? null;
+
+  // N25: Brand detail drawer state
+  const [selectedBrandName, setSelectedBrandName] = useState<string | null>(
+    null,
+  );
+
+  // N25: openBrandDrawer — opens brand detail drawer, closes garment drawer
+  const handleBrandClick = useCallback((brandName: string) => {
+    setSelectedGarmentId(null);
+    setSelectedBrandName(brandName);
+  }, []);
 
   // Filter garments (N23: getFilteredGarmentsByColors)
   const filteredGarments = useMemo(() => {
@@ -159,6 +171,7 @@ function GarmentCatalogInner() {
         onClearColors={clearColors}
         garmentCount={filteredGarments.length}
         favoriteColorIds={globalFavoriteColorIds}
+        onBrandClick={handleBrandClick}
       />
 
       {/* Grid View */}
@@ -171,6 +184,7 @@ function GarmentCatalogInner() {
               showPrice={showPrice}
               favoriteColorIds={globalFavoriteColorIds}
               onToggleFavorite={handleToggleFavorite}
+              onBrandClick={handleBrandClick}
               onClick={setSelectedGarmentId}
             />
           ))}
@@ -255,6 +269,22 @@ function GarmentCatalogInner() {
           linkedJobs={linkedJobs}
           onToggleEnabled={handleToggleEnabled}
           onToggleFavorite={handleToggleFavorite}
+          onBrandClick={handleBrandClick}
+        />
+      )}
+
+      {/* Brand Detail Drawer — conditional rendering for state reset */}
+      {selectedBrandName && (
+        <BrandDetailDrawer
+          brandName={selectedBrandName}
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) setSelectedBrandName(null);
+          }}
+          onGarmentClick={(garmentId) => {
+            setSelectedBrandName(null);
+            setSelectedGarmentId(garmentId);
+          }}
         />
       )}
     </>
