@@ -118,7 +118,6 @@ export function DtfTabContent({
           canvasLayout={canvasLayout}
           activeSheetIndex={activeSheetIndex}
           setActiveSheetIndex={setActiveSheetIndex}
-          sheetCalculation={sheetCalculation}
         />
       )}
     </div>

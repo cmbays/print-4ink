@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { CanvasLayout, CanvasDesign } from "@/lib/schemas/dtf-sheet-calculation";
-import type { SheetCalculation } from "@/lib/schemas/dtf-sheet-calculation";
 
 // ---------------------------------------------------------------------------
 // Design color palette — muted fills cycling by design type (label)
@@ -13,8 +12,8 @@ const DESIGN_COLORS = [
   { fill: "rgba(42,185,255,0.10)", stroke: "rgba(42,185,255,0.40)" },   // action
   { fill: "rgba(84,202,116,0.10)", stroke: "rgba(84,202,116,0.40)" },   // success
   { fill: "rgba(255,198,99,0.10)", stroke: "rgba(255,198,99,0.40)" },   // warning
-  { fill: "rgba(168,130,255,0.10)", stroke: "rgba(168,130,255,0.40)" }, // purple accent
-  { fill: "rgba(255,130,168,0.10)", stroke: "rgba(255,130,168,0.40)" }, // pink accent
+  { fill: "rgba(210,62,8,0.10)", stroke: "rgba(210,62,8,0.40)" },       // error/destructive
+  { fill: "rgba(42,185,255,0.06)", stroke: "rgba(42,185,255,0.25)" },   // action (lighter variant)
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -25,7 +24,6 @@ interface GangSheetCanvasProps {
   canvasLayout: CanvasLayout[];
   activeSheetIndex: number;
   setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
-  sheetCalculation: SheetCalculation;
 }
 
 // ---------------------------------------------------------------------------
@@ -88,7 +86,6 @@ export function GangSheetCanvas({
   canvasLayout,
   activeSheetIndex,
   setActiveSheetIndex,
-  sheetCalculation,
 }: GangSheetCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -258,7 +255,7 @@ export function GangSheetCanvas({
                         y={d.y + d.height / 2 + 0.5}
                         textAnchor="middle"
                         dominantBaseline="auto"
-                        fill="rgba(255,255,255,0.50)"
+                        fill="rgba(255,255,255,0.60)"
                         fontSize={Math.min(0.4, d.height * 0.18)}
                         fontFamily="Inter, system-ui, sans-serif"
                       >
