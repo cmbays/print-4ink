@@ -1,4 +1,3 @@
-import verticalsConfig from '../../../config/verticals.json';
 import stagesConfig from '../../../config/stages.json';
 import tagsConfig from '../../../config/tags.json';
 import productsConfig from '../../../config/products.json';
@@ -6,13 +5,17 @@ import toolsConfig from '../../../config/tools.json';
 
 // ── Label lookups (config-driven) ────────────────────────────────
 
-const pipelineLabelMap: Record<string, string> = Object.fromEntries(
-  verticalsConfig.map((v) => [v.slug, v.label]),
-);
-
-const stageLabelMap: Record<string, string> = Object.fromEntries(
-  stagesConfig.map((s) => [s.slug, s.label]),
-);
+// Stage label map: includes both new canonical slugs from config AND
+// old slugs for backward-compat during the transition period (Wave 0→1).
+const stageLabelMap: Record<string, string> = {
+  ...Object.fromEntries(stagesConfig.map((s) => [s.slug, s.label])),
+  // Old slug aliases (removed in Wave 1 after frontmatter migration)
+  shaping: 'Shape',
+  breadboarding: 'Breadboard',
+  'implementation-planning': 'Plan',
+  learnings: 'Wrap-up',
+  polish: 'Polish',
+};
 
 const productLabelMap: Record<string, string> = Object.fromEntries(
   productsConfig.map((p) => [p.slug, p.label]),
@@ -30,9 +33,9 @@ export function labelFromSlug(s: string): string {
     .join(' ');
 }
 
-/** Config-driven pipeline label with fallback */
+/** Pipeline label — free text names, use labelFromSlug fallback only */
 export function pipelineLabel(slug: string): string {
-  return pipelineLabelMap[slug] || labelFromSlug(slug);
+  return labelFromSlug(slug);
 }
 
 /** Config-driven stage label with fallback */
@@ -60,11 +63,11 @@ const TAG_COLOR_CLASSES: Record<string, string> = {
 };
 
 const tagColorMap: Record<string, string> = Object.fromEntries(
-  tagsConfig.map((t) => [t.slug, TAG_COLOR_CLASSES[t.color] || 'bg-bg-surface text-text-muted']),
+  tagsConfig.map((t) => [t.slug, TAG_COLOR_CLASSES[t.color] || 'bg-surface text-muted-foreground']),
 );
 
 export function tagColor(tag: string): string {
-  return tagColorMap[tag] || 'bg-bg-surface text-text-muted';
+  return tagColorMap[tag] || 'bg-surface text-muted-foreground';
 }
 
 // ── Status display ───────────────────────────────────────────────
@@ -72,8 +75,8 @@ export function tagColor(tag: string): string {
 export function statusColor(status: string): string {
   if (status === 'complete') return 'text-success';
   if (status === 'in-progress') return 'text-action';
-  if (status === 'superseded') return 'text-text-muted';
-  return 'text-text-secondary';
+  if (status === 'superseded') return 'text-muted-foreground';
+  return 'text-muted-foreground';
 }
 
 export function statusLabel(status: string): string {

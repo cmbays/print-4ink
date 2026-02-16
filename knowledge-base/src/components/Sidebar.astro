@@ -1,6 +1,6 @@
 ---
 import Search from 'astro-pagefind/components/Search';
-import verticalsConfig from '../../../config/verticals.json';
+import { pipelineLabel } from '../lib/utils';
 
 interface Props {
   activeView?: string;
@@ -19,7 +19,10 @@ const views = [
   { id: 'gary-tracker', label: 'Gary Tracker', href: '/gary-tracker' },
 ];
 
-const pipelines = verticalsConfig.map((v) => ({ slug: v.slug, label: v.label }));
+// Derive pipeline list from content data (pipelineCounts keys) instead of config
+const pipelines = Object.keys(pipelineCounts)
+  .sort()
+  .map((slug) => ({ slug, label: pipelineLabel(slug) }));
 ---
 
 <aside id="sidebar" class="hidden md:flex flex-col w-[260px] min-w-[260px] h-screen bg-bg-primary border-r border-border overflow-y-auto sticky top-0">

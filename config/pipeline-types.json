@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "vertical",
+    "label": "Vertical",
+    "description": "Full end-to-end feature development pipeline",
+    "stages": ["research", "interview", "shape", "breadboard", "plan", "build", "review", "wrap-up"]
+  },
+  {
+    "slug": "polish",
+    "label": "Polish",
+    "description": "Bridging the gap between vision and first build (the other 20%)",
+    "stages": ["interview", "shape", "breadboard", "plan", "build", "review", "wrap-up"]
+  },
+  {
+    "slug": "horizontal",
+    "label": "Horizontal",
+    "description": "Cross-cutting infrastructure work affecting multiple products",
+    "stages": ["research", "plan", "build", "review", "wrap-up"]
+  },
+  {
+    "slug": "bug-fix",
+    "label": "Bug Fix",
+    "description": "Fixing broken functionality",
+    "stages": ["build", "review", "wrap-up"]
+  }
+]

@@ -15,6 +15,7 @@
 
 # ── Config ──────────────────────────────────────────────────────────────────
 PRINT4INK_REPO="$HOME/Github/print-4ink"
+PRINT4INK_ROOT="$PRINT4INK_REPO"
 PRINT4INK_WORKTREES="$HOME/Github/print-4ink-worktrees"
 PRINT4INK_MAX_WORKTREES=15
 PRINT4INK_PORT_MIN=3001
@@ -31,6 +32,10 @@ fi
 [[ -f "${WORK_SCRIPT_DIR}/lib/registry.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/registry.sh"
 # shellcheck source=lib/kdl-generator.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/kdl-generator.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/kdl-generator.sh"
+# shellcheck source=lib/pipeline-registry.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-registry.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-registry.sh"
+# shellcheck source=lib/pipeline-entity.sh
+[[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-entity.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-entity.sh"
 
 # ── Dispatcher ──────────────────────────────────────────────────────────────
 work() {
@@ -118,15 +123,15 @@ USAGE
   work <topic> --claude-args "..."        Pass arbitrary flags to Claude CLI
 
 PHASE COMMANDS
-  work research <vertical>                Research phase (vertical-discovery skill)
-  work interview <vertical>               Interview phase (requirements-interrogator)
-  work breadboard <vertical>              Breadboarding phase (breadboarding skill)
-  work plan <vertical>                    Implementation planning
+  work research <pipeline>                Research phase (vertical-discovery skill)
+  work interview <pipeline>               Interview phase (requirements-interrogator)
+  work breadboard <pipeline>              Breadboarding phase (breadboarding skill)
+  work plan <pipeline>                    Implementation planning
   work build <manifest> [--wave N] [--yolo] [--claude-args "..."] Execute build from YAML manifest (default: wave 0)
-  work polish <vertical>                  Post-build polish
-  work review <vertical>                  Quality gate + doc sync
-  work learnings <vertical>               Cross-cutting pattern synthesis
-  work cooldown <vertical>                5-step retrospective
+  work polish <pipeline>                  Post-build polish
+  work review <pipeline>                  Quality gate + doc sync
+  work learnings <pipeline>               Cross-cutting pattern synthesis
+  work cooldown <pipeline>                5-step retrospective
   (All phase commands accept --yolo and --claude-args)
 
 SESSION MANAGEMENT
@@ -299,40 +304,20 @@ CONTEXT
 }
 
 # ── Phase Command (Generic Wrapper) ────────────────────────────────────────
-# Usage: _work_phase <phase> <vertical> [--prompt "..."] [--yolo] [--claude-args "..."]
+# Usage: _work_phase <phase> <pipeline-name> [--prompt "..."] [--yolo] [--claude-args "..."]
 _work_phase() {
     local PHASE="$1"; shift
     local VERTICAL="${1:-}"
-    # Read valid verticals from canonical config (python3 ships with macOS, no jq needed)
-    local CONFIG_FILE="${PRINT4INK_REPO}/config/verticals.json"
-    if [[ ! -f "$CONFIG_FILE" ]]; then
-        echo "Error: Config file not found: $CONFIG_FILE"
-        echo "  Check that PRINT4INK_REPO is set correctly."
-        return 1
-    fi
-    if ! command -v python3 &>/dev/null; then
-        echo "Error: python3 is required but not found."
-        echo "  Install Xcode Command Line Tools: xcode-select --install"
-        return 1
-    fi
-    local VALID_VERTICALS
-    VALID_VERTICALS=$(python3 -c "import json; data=json.load(open('${CONFIG_FILE}')); print(' '.join(v['slug'] for v in data))" 2>&1)
-    if [[ $? -ne 0 || -z "$VALID_VERTICALS" ]]; then
-        echo "Error: Failed to parse $CONFIG_FILE"
-        echo "  Output: $VALID_VERTICALS"
-        return 1
-    fi
 
     [[ -z "$VERTICAL" ]] && {
-        echo "Error: vertical required. Usage: work $PHASE <vertical>"
-        echo "  Verticals: $VALID_VERTICALS"
+        echo "Error: pipeline name required. Usage: work $PHASE <pipeline-name>"
         return 1
     }
 
-    # Validate vertical against whitelist
-    if [[ ! " $VALID_VERTICALS " == *" $VERTICAL "* ]]; then
-        echo "Error: Unknown vertical '$VERTICAL'"
-        echo "  Valid verticals: $VALID_VERTICALS"
+    # Validate kebab-case format
+    if [[ ! "$VERTICAL" =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$ ]]; then
+        echo "Error: Pipeline name must be kebab-case (lowercase letters, numbers, hyphens)."
+        echo "  Got: '$VERTICAL'"
         return 1
     fi
     shift
@@ -437,6 +422,10 @@ _work_build() {
         return 1
     }
 
+    # Read baseBranch from manifest (defaults to "main" if not set)
+    local BASE_BRANCH
+    BASE_BRANCH=$(yq -r '.baseBranch // "main"' "$MANIFEST")
+
     # Validate wave exists
     local WAVE_COUNT
     WAVE_COUNT=$(_kdl_wave_count "$MANIFEST") || return 1
@@ -453,6 +442,7 @@ _work_build() {
     echo "=== work build ==="
     echo "  Manifest:  $MANIFEST"
     echo "  Vertical:  $VERTICAL"
+    echo "  Base:      $BASE_BRANCH"
     echo "  Wave $WAVE_IDX:   $WAVE_NAME"
     echo "  Mode:      $IS_SERIAL"
     echo ""
@@ -461,9 +451,9 @@ _work_build() {
     local MMDD
     MMDD=$(date +%m%d)
 
-    # Pull latest main once before creating any worktrees
-    echo "Pulling latest main..."
-    git -C "$PRINT4INK_REPO" pull origin main --quiet 2>/dev/null
+    # Pull latest base branch once before creating any worktrees
+    echo "Pulling latest $BASE_BRANCH..."
+    git -C "$PRINT4INK_REPO" pull origin "$BASE_BRANCH" --quiet 2>/dev/null
 
     # Create worktrees for all sessions in this wave
     local TOPICS
@@ -497,7 +487,7 @@ _work_build() {
             echo "  Branch '$BRANCH' already exists — skipping worktree creation"
         else
             # Create worktree
-            if ! git -C "$PRINT4INK_REPO" worktree add "$WORKTREE_DIR" -b "$BRANCH" main --quiet; then
+            if ! git -C "$PRINT4INK_REPO" worktree add "$WORKTREE_DIR" -b "$BRANCH" "$BASE_BRANCH" --quiet; then
                 echo "  Error creating worktree for $topic — skipping"
                 session_idx=$((session_idx + 1))
                 continue

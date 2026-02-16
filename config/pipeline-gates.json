@@ -1,0 +1,48 @@
+{
+  "stages": {
+    "research": {
+      "artifacts": ["research-findings.md"],
+      "gate": "artifact-exists",
+      "next": "interview"
+    },
+    "interview": {
+      "artifacts": ["interview-notes.md"],
+      "gate": "human-confirms",
+      "next": "shape"
+    },
+    "shape": {
+      "artifacts": ["frame.md", "shaping.md"],
+      "gate": "artifact-exists",
+      "next": "breadboard"
+    },
+    "breadboard": {
+      "artifacts": ["breadboard.md", "reflection.md"],
+      "gate": "artifact-exists",
+      "next": "plan"
+    },
+    "plan": {
+      "artifacts": ["manifest.yaml"],
+      "gate": "human-approves-manifest",
+      "next": "build"
+    },
+    "build": {
+      "artifacts": [],
+      "gate": "artifact-exists",
+      "next": "review"
+    },
+    "review": {
+      "artifacts": [],
+      "gate": "human-confirms",
+      "next": "wrap-up"
+    },
+    "wrap-up": {
+      "artifacts": ["wrap-up.md"],
+      "gate": "artifact-exists",
+      "next": null
+    }
+  },
+  "auto-overrides": {
+    "human-confirms": "artifact-exists",
+    "human-approves-manifest": "artifact-exists"
+  }
+}

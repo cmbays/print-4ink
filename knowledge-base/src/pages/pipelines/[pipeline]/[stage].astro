@@ -3,20 +3,12 @@ import Layout from '../../../layouts/Layout.astro';
 import Pipeline from '../../../components/Pipeline.astro';
 import DocCard from '../../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
-import verticalsConfig from '../../../../../config/verticals.json';
+import { pipelineLabel as getPipelineLabel, stageLabel as getStageLabel } from '../../../lib/utils';
 import stagesConfig from '../../../../../config/stages.json';
 
-const pipelineLabels: Record<string, string> = Object.fromEntries(
-  verticalsConfig.map((v) => [v.slug, v.label])
-);
-
-const stageLabels: Record<string, string> = Object.fromEntries(
-  stagesConfig.map((s) => [s.slug, s.label])
-);
-
 const allStages = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => s.slug);
+  .filter((s: { slug: string; label: string; pipeline?: boolean }) => s.pipeline !== false)
+  .map((s: { slug: string }) => s.slug);
 
 export async function getStaticPaths() {
   const docs = await getCollection('pipelines');
@@ -24,7 +16,7 @@ export async function getStaticPaths() {
   // Collect all unique pipeline+stage combinations that have docs
   const combos = new Set<string>();
   for (const doc of docs) {
-    combos.add(`${doc.data.pipeline}::${doc.data.stage}`);
+    combos.add(`${doc.data.pipelineName}::${doc.data.stage}`);
   }
 
   return Array.from(combos).map((combo) => {
@@ -34,11 +26,11 @@ export async function getStaticPaths() {
 }
 
 const { pipeline, stage } = Astro.params;
-const pipelineLabel = pipelineLabels[pipeline] || pipeline;
-const stageLabel = stageLabels[stage] || stage;
+const pipelineLabel = getPipelineLabel(pipeline);
+const stageLabel = getStageLabel(stage);
 
 const allDocs = await getCollection('pipelines');
-const pipelineDocs = allDocs.filter((s) => s.data.pipeline === pipeline);
+const pipelineDocs = allDocs.filter((s) => s.data.pipelineName === pipeline);
 const stageDocs = pipelineDocs
   .filter((s) => s.data.stage === stage)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -103,7 +95,7 @@ const pipelineStages = allStages.map((s) => ({
                 title={doc.data.title}
                 subtitle={doc.data.subtitle}
                 date={doc.data.date}
-                pipeline={doc.data.pipeline}
+                pipeline={doc.data.pipelineName}
                 pipelineType={doc.data.pipelineType}
                 stage={doc.data.stage}
                 tags={doc.data.tags}
