@@ -186,3 +186,61 @@ _registry_exists() {
     count=$(jq --arg t "$topic" '[.sessions[] | select(.topic == $t)] | length' "$REGISTRY_FILE")
     [[ "$count" -gt 0 ]]
 }
+
+# ── Claude Session ID Capture ────────────────────────────────────────────────
+
+# Compute Claude Code's project directory for a given worktree path.
+# Claude encodes absolute paths by replacing / with - (e.g., /Users/foo → -Users-foo).
+# Tested against Claude Code CLI (claude-code 1.x, Feb 2026).
+# Usage: dir=$(_claude_projects_dir "/path/to/worktree")
+_claude_projects_dir() {
+    local worktree_dir="$1"
+    local abs_path
+    abs_path=$(cd "$worktree_dir" 2>/dev/null && pwd) || abs_path="$worktree_dir"
+    echo "${HOME}/.claude/projects/${abs_path//\//-}"
+}
+
+# Poll for a Claude session ID and write it to the session registry.
+# Claude writes session JSONL files to ~/.claude/projects/<encoded-path>/.
+# This function is designed to run in the background after a Claude launch.
+# It uses a timestamp marker to distinguish new session files from pre-existing ones.
+#
+# Usage: _poll_claude_session_id <registry_topic> <worktree_dir> [max_wait_secs] &
+#        disown
+_poll_claude_session_id() {
+    local topic="$1"
+    local worktree_dir="$2"
+    local max_wait="${3:-120}"
+
+    local projects_dir
+    projects_dir=$(_claude_projects_dir "$worktree_dir")
+
+    # Create a timestamp marker so we only pick up NEW session files,
+    # not stale ones from prior sessions in the same worktree.
+    local marker
+    marker=$(mktemp "${TMPDIR:-/tmp}/poll-marker-XXXXXX")
+
+    local elapsed=0 newest session_id
+    while (( elapsed < max_wait )); do
+        sleep 5
+        elapsed=$((elapsed + 5))
+
+        # Exit early if worktree was removed (session aborted)
+        [[ ! -d "$worktree_dir" ]] && break
+
+        if [[ -d "$projects_dir" ]]; then
+            # Find JSONL files newer than our marker (created after polling started)
+            newest=$(find "$projects_dir" -maxdepth 1 -name '*.jsonl' -newer "$marker" -print 2>/dev/null | head -1)
+            if [[ -n "$newest" ]]; then
+                session_id=$(basename "$newest" .jsonl)
+                _registry_update "$topic" "claudeSessionId" "$session_id" 2>/dev/null
+                rm -f "$marker" 2>/dev/null
+                return 0
+            fi
+        fi
+    done
+
+    rm -f "$marker" 2>/dev/null
+    echo "Warning: Could not capture Claude session ID for '$topic' (timed out after ${max_wait}s)" >&2
+    return 1
+}

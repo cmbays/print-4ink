@@ -18,40 +18,8 @@
 # Pre-build stages are all stages BEFORE "build" in the pipeline type's stage list.
 # These run in a single worktree with one Claude session.
 
-# ── Session ID Capture ───────────────────────────────────────────────────────
-
-# Poll for Claude session ID and update the session registry.
-# Claude writes session JSONL files to ~/.claude/projects/<encoded-path>/.
-# This runs in the background and watches for the file to appear after launch.
-# Usage: _poll_claude_session_id <registry_topic> <worktree_dir> [max_wait_secs] &
-_poll_claude_session_id() {
-    local topic="$1"
-    local worktree_dir="$2"
-    local max_wait="${3:-120}"
-
-    # Resolve to absolute path and compute Claude's project directory
-    # Claude encodes /Users/foo/bar as -Users-foo-bar
-    local abs_path
-    abs_path=$(cd "$worktree_dir" 2>/dev/null && pwd) || abs_path="$worktree_dir"
-    local projects_dir="${HOME}/.claude/projects/${abs_path//\//-}"
-
-    local elapsed=0
-    while (( elapsed < max_wait )); do
-        sleep 5
-        elapsed=$((elapsed + 5))
-        if [[ -d "$projects_dir" ]]; then
-            local newest
-            newest=$(command ls -t "$projects_dir"/*.jsonl 2>/dev/null | head -1)
-            if [[ -n "$newest" ]]; then
-                local session_id
-                session_id=$(basename "$newest" .jsonl)
-                _registry_update "$topic" "claudeSessionId" "$session_id" 2>/dev/null
-                return 0
-            fi
-        fi
-    done
-    return 1
-}
+# _poll_claude_session_id and _claude_projects_dir live in registry.sh
+# (shared by pipeline-start.sh, pipeline-build.sh, and work.sh)
 
 # ── Start Command ─────────────────────────────────────────────────────────────
 
@@ -189,6 +157,7 @@ _work_start() {
     # ── Generate Zellij Layout ────────────────────────────────────────
     local LAYOUT_FILE
     LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-start-XXXXXX")
+    chmod 600 "$LAYOUT_FILE"
     {
         echo "layout {"
         _kdl_render_tab "${p_name}-prebuild" "$WORKTREE_DIR" "$context_prompt" "$claude_args"
