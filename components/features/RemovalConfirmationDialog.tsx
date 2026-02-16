@@ -80,6 +80,13 @@ export function RemovalConfirmationDialog({
     return parts.join(" and ");
   }, [impact.supplierCount, impact.customerCount]);
 
+  // Shared className for checkbox labels
+  const checkboxLabelCn = cn(
+    "flex items-center gap-2 rounded px-1.5 py-1 text-sm",
+    "min-h-(--mobile-touch-target) md:min-h-0",
+    "cursor-pointer hover:bg-elevated transition-colors"
+  );
+
   // -- Handlers ---------------------------------------------------------------
 
   function toggleSetItem<T>(
@@ -104,12 +111,12 @@ export function RemovalConfirmationDialog({
 
   function handleRemoveAll() {
     onRemoveAll();
-    onOpenChange(false);
+    // AlertDialogAction auto-closes — no manual onOpenChange(false) needed
   }
 
   function handleRemoveLevelOnly() {
     onRemoveLevelOnly();
-    onOpenChange(false);
+    // AlertDialogAction auto-closes — no manual onOpenChange(false) needed
   }
 
   // -- Render -----------------------------------------------------------------
@@ -166,7 +173,11 @@ export function RemovalConfirmationDialog({
           </CollapsibleTrigger>
 
           <CollapsibleContent>
-            <div className="mt-2 max-h-48 space-y-1 overflow-y-auto rounded-md border border-border bg-surface p-3">
+            <div
+              className="mt-2 max-h-48 space-y-1 overflow-y-auto rounded-md border border-border bg-surface p-3"
+              role="group"
+              aria-label="Select entities to remove color from"
+            >
               {/* Suppliers (brands) */}
               {impact.suppliers.length > 0 && (
                 <div className="space-y-1.5">
@@ -174,14 +185,7 @@ export function RemovalConfirmationDialog({
                     Brands ({impact.suppliers.length})
                   </p>
                   {impact.suppliers.map((name) => (
-                    <label
-                      key={name}
-                      className={cn(
-                        "flex items-center gap-2 rounded px-1.5 py-1 text-sm",
-                        "min-h-(--mobile-touch-target) md:min-h-0",
-                        "cursor-pointer hover:bg-elevated transition-colors"
-                      )}
-                    >
+                    <label key={name} className={checkboxLabelCn}>
                       <Checkbox
                         checked={selectedBrands.has(name)}
                         onCheckedChange={() => toggleSetItem(setSelectedBrands, name)}
@@ -202,14 +206,7 @@ export function RemovalConfirmationDialog({
                     Customers ({impact.customers.length})
                   </p>
                   {impact.customers.map((company) => (
-                    <label
-                      key={company}
-                      className={cn(
-                        "flex items-center gap-2 rounded px-1.5 py-1 text-sm",
-                        "min-h-(--mobile-touch-target) md:min-h-0",
-                        "cursor-pointer hover:bg-elevated transition-colors"
-                      )}
-                    >
+                    <label key={company} className={checkboxLabelCn}>
                       <Checkbox
                         checked={selectedCustomers.has(company)}
                         onCheckedChange={() => toggleSetItem(setSelectedCustomers, company)}

@@ -221,6 +221,18 @@ export function getImpactPreview(
 }
 
 // ---------------------------------------------------------------------------
+// Shared: strip a color from all three brand preference arrays
+// ---------------------------------------------------------------------------
+
+function stripColorFromBrand(brand: BrandPreference, colorId: string): void {
+  brand.favoriteColorIds = brand.favoriteColorIds.filter((id) => id !== colorId);
+  brand.explicitColorIds = brand.explicitColorIds.filter((id) => id !== colorId);
+  brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter(
+    (id) => id !== colorId
+  );
+}
+
+// ---------------------------------------------------------------------------
 // N16: removeFromAll
 // Remove color from all entities at and below the specified level.
 // PHASE 1: Mutates mock-data in-place.
@@ -234,16 +246,7 @@ export function removeFromAll(
     // Remove from all brands that explicitly have this color
     for (const brand of brandPreferences) {
       if (brand.inheritMode === "customize") {
-        brand.favoriteColorIds = brand.favoriteColorIds.filter(
-          (id) => id !== colorId
-        );
-        brand.explicitColorIds = brand.explicitColorIds.filter(
-          (id) => id !== colorId
-        );
-        // No need to track in removedInheritedColorIds — it's gone from global too
-        brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter(
-          (id) => id !== colorId
-        );
+        stripColorFromBrand(brand, colorId);
       }
       // Inherit-mode brands lose it automatically via resolution
     }
@@ -273,9 +276,11 @@ export function removeFromAll(
 // ---------------------------------------------------------------------------
 
 export function removeFromLevelOnly(
-  _level: "global" | "brand",
-  _colorId: string
+  level: "global" | "brand",
+  colorId: string
 ): void {
+  void level;
+  void colorId;
   // No downstream changes needed — let inheritance resolution handle it:
   // - Inherit-mode children: lose it automatically (no longer in parent)
   // - Customize-mode children: keep it (in their own favoriteColorIds)
@@ -298,15 +303,7 @@ export function removeFromSelected(
     // Remove from selected brands
     for (const brand of brandPreferences) {
       if (brandNames.includes(brand.brandName) && brand.inheritMode === "customize") {
-        brand.favoriteColorIds = brand.favoriteColorIds.filter(
-          (id) => id !== colorId
-        );
-        brand.explicitColorIds = brand.explicitColorIds.filter(
-          (id) => id !== colorId
-        );
-        brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter(
-          (id) => id !== colorId
-        );
+        stripColorFromBrand(brand, colorId);
       }
     }
 

@@ -198,15 +198,18 @@ export function BrandDetailDrawer({
       if (isFavorite) {
         // N8→P4: check impact before removing
         const impact = getImpactPreview("brand", colorId);
-        if (impact.supplierCount > 0 || impact.customerCount > 0) {
+        if (!impact.isStub && (impact.supplierCount > 0 || impact.customerCount > 0)) {
           // Open RemovalConfirmationDialog — don't remove yet
           const color = catalogColors.find((c) => c.id === colorId);
-          if (color) {
-            setPendingRemoval({ colorId, color, impact });
+          if (!color) {
+            // Catalog color missing — remove directly rather than showing broken dialog
+            applyBrandRemoval(colorId);
             return;
           }
+          setPendingRemoval({ colorId, color, impact });
+          return;
         }
-        // No children affected — remove directly
+        // No children affected (or stub data) — remove directly
         applyBrandRemoval(colorId);
       } else {
         // Adding
