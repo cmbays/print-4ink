@@ -7,7 +7,7 @@ import { getCollection } from 'astro:content';
 import verticalsConfig from '../../../../config/verticals.json';
 import stagesConfig from '../../../../config/stages.json';
 
-const verticalLabels: Record<string, string> = Object.fromEntries(
+const pipelineLabels: Record<string, string> = Object.fromEntries(
   verticalsConfig.map((v) => [v.slug, v.label])
 );
 
@@ -16,20 +16,20 @@ const allStages = stagesConfig
   .map((s) => s.slug);
 
 export function getStaticPaths() {
-  return verticalsConfig.map((v) => ({ params: { vertical: v.slug } }));
+  return verticalsConfig.map((v) => ({ params: { pipeline: v.slug } }));
 }
 
-const { vertical } = Astro.params;
-const label = verticalLabels[vertical] || vertical;
+const { pipeline } = Astro.params;
+const label = pipelineLabels[pipeline] || pipeline;
 
-const allSessions = await getCollection('sessions');
-const verticalSessions = allSessions.filter((s) => s.data.vertical === vertical);
-const sorted = verticalSessions.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const allDocs = await getCollection('pipelines');
+const pipelineDocs = allDocs.filter((s) => s.data.pipeline === pipeline);
+const sorted = pipelineDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 // Compute stage breakdown
 const stageBreakdown: Record<string, number> = {};
 for (const stage of allStages) {
-  stageBreakdown[stage] = verticalSessions.filter((s) => s.data.stage === stage).length;
+  stageBreakdown[stage] = pipelineDocs.filter((s) => s.data.stage === stage).length;
 }
 
 // Build pipeline stages
@@ -65,14 +65,14 @@ const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
       {label}
     </h1>
     <p class="text-[14px] text-text-secondary mb-8">
-      {sorted.length} session{sorted.length !== 1 ? 's' : ''} across {Object.values(stageBreakdown).filter((c) => c > 0).length} stages
+      {sorted.length} pipeline doc{sorted.length !== 1 ? 's' : ''} across {Object.values(stageBreakdown).filter((c) => c > 0).length} stages
     </p>
 
     {/* Health summary */}
     <div class="mb-8">
       <VerticalHealth
-        vertical={vertical}
-        totalSessions={sorted.length}
+        pipeline={pipeline}
+        totalDocs={sorted.length}
         stageBreakdown={stageBreakdown}
         latestDate={latestDate}
         status={healthStatus}
@@ -85,33 +85,33 @@ const latestDate = sorted.length > 0 ? sorted[0].data.date : new Date();
         Pipeline
       </h2>
       <div class="bg-bg-elevated border border-border rounded-lg px-6 py-4">
-        <Pipeline stages={pipelineStages} vertical={vertical} />
+        <Pipeline stages={pipelineStages} pipeline={pipeline} />
       </div>
     </div>
 
-    {/* Sessions list */}
+    {/* Pipeline docs list */}
     <div>
       <h2 class="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-4">
-        Sessions
+        Pipeline Docs
       </h2>
       {sorted.length === 0 ? (
         <p class="text-[14px] text-text-muted py-8 text-center">
-          No sessions found for this vertical.
+          No pipeline docs found for this pipeline.
         </p>
       ) : (
         <ul class="space-y-3">
-          {sorted.map((session) => (
+          {sorted.map((doc) => (
             <li>
               <DocCard
-                title={session.data.title}
-                subtitle={session.data.subtitle}
-                date={session.data.date}
-                vertical={session.data.vertical}
-                verticalSecondary={session.data.verticalSecondary}
-                stage={session.data.stage}
-                tags={session.data.tags}
-                status={session.data.status}
-                slug={session.id}
+                title={doc.data.title}
+                subtitle={doc.data.subtitle}
+                date={doc.data.date}
+                pipeline={doc.data.pipeline}
+                pipelineType={doc.data.pipelineType}
+                stage={doc.data.stage}
+                tags={doc.data.tags}
+                status={doc.data.status}
+                slug={doc.id}
               />
             </li>
           ))}

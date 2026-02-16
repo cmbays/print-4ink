@@ -6,7 +6,7 @@ import { getCollection } from 'astro:content';
 import verticalsConfig from '../../../../../config/verticals.json';
 import stagesConfig from '../../../../../config/stages.json';
 
-const verticalLabels: Record<string, string> = Object.fromEntries(
+const pipelineLabels: Record<string, string> = Object.fromEntries(
   verticalsConfig.map((v) => [v.slug, v.label])
 );
 
@@ -19,34 +19,34 @@ const allStages = stagesConfig
   .map((s) => s.slug);
 
 export async function getStaticPaths() {
-  const sessions = await getCollection('sessions');
+  const docs = await getCollection('pipelines');
 
-  // Collect all unique vertical+stage combinations that have sessions
+  // Collect all unique pipeline+stage combinations that have docs
   const combos = new Set<string>();
-  for (const session of sessions) {
-    combos.add(`${session.data.vertical}::${session.data.stage}`);
+  for (const doc of docs) {
+    combos.add(`${doc.data.pipeline}::${doc.data.stage}`);
   }
 
   return Array.from(combos).map((combo) => {
-    const [vertical, stage] = combo.split('::');
-    return { params: { vertical, stage } };
+    const [pipeline, stage] = combo.split('::');
+    return { params: { pipeline, stage } };
   });
 }
 
-const { vertical, stage } = Astro.params;
-const verticalLabel = verticalLabels[vertical] || vertical;
+const { pipeline, stage } = Astro.params;
+const pipelineLabel = pipelineLabels[pipeline] || pipeline;
 const stageLabel = stageLabels[stage] || stage;
 
-const allSessions = await getCollection('sessions');
-const verticalSessions = allSessions.filter((s) => s.data.vertical === vertical);
-const stageSessions = verticalSessions
+const allDocs = await getCollection('pipelines');
+const pipelineDocs = allDocs.filter((s) => s.data.pipeline === pipeline);
+const stageDocs = pipelineDocs
   .filter((s) => s.data.stage === stage)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 // Build stage breakdown for pipeline
 const stageBreakdown: Record<string, number> = {};
 for (const s of allStages) {
-  stageBreakdown[s] = verticalSessions.filter((sess) => sess.data.stage === s).length;
+  stageBreakdown[s] = pipelineDocs.filter((doc) => doc.data.stage === s).length;
 }
 
 // Build pipeline stages with current stage active
@@ -58,57 +58,57 @@ const pipelineStages = allStages.map((s) => ({
 }));
 ---
 
-<Layout title={`${verticalLabel} — ${stageLabel}`}>
+<Layout title={`${pipelineLabel} — ${stageLabel}`}>
   <main class="max-w-[820px] mx-auto px-6 py-10">
     {/* Back link */}
     <a
-      href={`/verticals/${vertical}`}
+      href={`/pipelines/${pipeline}`}
       class="inline-flex items-center gap-1 text-[13px] text-text-muted hover:text-action transition-colors mb-6"
     >
       <span>&larr;</span>
-      <span>Back to {verticalLabel}</span>
+      <span>Back to {pipelineLabel}</span>
     </a>
 
     {/* Title */}
     <h1 class="text-2xl font-bold tracking-tight text-text-primary mb-1">
-      {verticalLabel}
+      {pipelineLabel}
       <span class="text-text-muted font-normal"> — </span>
       <span class="text-action">{stageLabel}</span>
     </h1>
     <p class="text-[14px] text-text-secondary mb-8">
-      {stageSessions.length} session{stageSessions.length !== 1 ? 's' : ''} in this stage
+      {stageDocs.length} pipeline doc{stageDocs.length !== 1 ? 's' : ''} in this stage
     </p>
 
     {/* Pipeline stepper with active stage */}
     <div class="mb-10">
       <div class="bg-bg-elevated border border-border rounded-lg px-6 py-4">
-        <Pipeline stages={pipelineStages} vertical={vertical} />
+        <Pipeline stages={pipelineStages} pipeline={pipeline} />
       </div>
     </div>
 
-    {/* Sessions list */}
+    {/* Pipeline docs list */}
     <div>
       <h2 class="text-[11px] font-semibold uppercase tracking-widest text-text-muted mb-4">
-        Sessions
+        Pipeline Docs
       </h2>
-      {stageSessions.length === 0 ? (
+      {stageDocs.length === 0 ? (
         <p class="text-[14px] text-text-muted py-8 text-center">
-          No sessions found for this stage.
+          No pipeline docs found for this stage.
         </p>
       ) : (
         <ul class="space-y-3">
-          {stageSessions.map((session) => (
+          {stageDocs.map((doc) => (
             <li>
               <DocCard
-                title={session.data.title}
-                subtitle={session.data.subtitle}
-                date={session.data.date}
-                vertical={session.data.vertical}
-                verticalSecondary={session.data.verticalSecondary}
-                stage={session.data.stage}
-                tags={session.data.tags}
-                status={session.data.status}
-                slug={session.id}
+                title={doc.data.title}
+                subtitle={doc.data.subtitle}
+                date={doc.data.date}
+                pipeline={doc.data.pipeline}
+                pipelineType={doc.data.pipelineType}
+                stage={doc.data.stage}
+                tags={doc.data.tags}
+                status={doc.data.status}
+                slug={doc.id}
               />
             </li>
           ))}

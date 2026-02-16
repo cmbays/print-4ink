@@ -4,27 +4,27 @@ import WorkflowChain from '../../components/WorkflowChain.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const sessions = await getCollection('sessions');
-  return sessions.map((session) => ({
-    params: { slug: session.id },
-    props: { session },
+  const docs = await getCollection('pipelines');
+  return docs.map((doc) => ({
+    params: { slug: doc.id },
+    props: { doc },
   }));
 }
 
-const { session } = Astro.props;
+const { doc } = Astro.props;
 
-const allSessions = await getCollection('sessions');
-const workflowSessions = allSessions
-  .filter((s) => s.data.vertical === session.data.vertical)
+const allDocs = await getCollection('pipelines');
+const workflowSessions = allDocs
+  .filter((s) => s.data.pipeline === doc.data.pipeline)
   .map((s) => ({
     slug: s.id,
     title: s.data.title,
     stage: s.data.stage,
     date: s.data.date,
   }));
-const { Content } = await render(session);
+const { Content } = await render(doc);
 
-const { title, subtitle, date, phase, vertical, verticalSecondary, stage, tags, sessionId, branch, pr, status } = session.data;
+const { title, subtitle, date, phase, pipeline, pipelineType, products, tools, stage, tags, sessionId, branch, pr, status } = doc.data;
 
 const dateStr = date.toISOString().split('T')[0];
 
@@ -36,7 +36,7 @@ function tagColor(tag: string): string {
   return 'bg-bg-surface text-text-muted';
 }
 
-function stageLabel(s: string): string {
+function labelFromSlug(s: string): string {
   return s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
@@ -71,8 +71,8 @@ function statusLabel(s: string): string {
 
     <!-- Title -->
     <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{title}</h1>
-    <span data-pagefind-meta={`vertical:${stageLabel(vertical)}`} class="hidden"></span>
-    <span data-pagefind-meta={`stage:${stageLabel(stage)}`} class="hidden"></span>
+    <span data-pagefind-meta={`pipeline:${labelFromSlug(pipeline)}`} class="hidden"></span>
+    <span data-pagefind-meta={`stage:${labelFromSlug(stage)}`} class="hidden"></span>
 
     <!-- Subtitle -->
     <p class="text-[15px] text-text-secondary leading-relaxed mb-6">{subtitle}</p>
@@ -102,34 +102,65 @@ function statusLabel(s: string): string {
           <div class="text-sm text-text-primary">Phase {phase}</div>
         </div>
         <div class="px-4 py-3 border-b border-border border-l border-border">
-          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Vertical</div>
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Pipeline</div>
           <div class="text-sm text-text-primary">
-            <a href={`/verticals/${vertical}`} class="text-action hover:underline">{stageLabel(vertical)}</a>
-            {verticalSecondary && verticalSecondary.length > 0 && (
-              <span class="text-text-muted">
-                {' '}+ {verticalSecondary.map(v => stageLabel(v)).join(', ')}
-              </span>
-            )}
+            <a href={`/pipelines/${pipeline}`} class="text-action hover:underline">{labelFromSlug(pipeline)}</a>
           </div>
         </div>
 
         <!-- Row 3 -->
-        <div class="px-4 py-3">
+        <div class="px-4 py-3 border-b border-border">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Stage</div>
           <div class="text-sm">
-            <a href={`/verticals/${vertical}/${stage}`} class="inline-flex items-center bg-bg-surface text-action text-xs font-medium px-2 py-0.5 rounded hover:bg-action/10 transition-colors">
-              {stageLabel(stage)}
+            <a href={`/pipelines/${pipeline}/${stage}`} class="inline-flex items-center bg-bg-surface text-action text-xs font-medium px-2 py-0.5 rounded hover:bg-action/10 transition-colors">
+              {labelFromSlug(stage)}
             </a>
           </div>
         </div>
-        <div class="px-4 py-3 border-l border-border">
+        <div class="px-4 py-3 border-b border-border border-l border-border">
           <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Status</div>
           <div class={`text-sm font-medium ${statusColor(status)}`}>
             {statusLabel(status)}
           </div>
         </div>
+
+        <!-- Row 4: Pipeline Type -->
+        <div class="px-4 py-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Pipeline Type</div>
+          <div class="text-sm text-text-primary">{labelFromSlug(pipelineType)}</div>
+        </div>
+        <div class="px-4 py-3 border-l border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Products</div>
+          <div class="text-sm text-text-primary">
+            {products && products.length > 0 ? (
+              <div class="flex flex-wrap gap-1">
+                {products.map((p) => (
+                  <span class="inline-flex items-center bg-bg-surface text-text-secondary text-xs px-2 py-0.5 rounded">
+                    {labelFromSlug(p)}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span class="text-text-muted">--</span>
+            )}
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Tools -->
+    {tools && tools.length > 0 && (
+      <div class="mb-6" data-pagefind-ignore>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Tools</div>
+        <div class="flex flex-wrap gap-1.5">
+          {tools.map((t) => (
+            <span class="inline-flex items-center bg-bg-surface text-text-secondary text-xs px-2 py-0.5 rounded border border-border">
+              {labelFromSlug(t)}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
 
     <!-- Workflow chain -->
     {workflowSessions.length > 1 && (
@@ -137,8 +168,8 @@ function statusLabel(s: string): string {
         <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Workflow Chain</div>
         <div class="bg-bg-elevated border border-border rounded-lg px-4 py-2">
           <WorkflowChain
-            currentSlug={session.id}
-            vertical={vertical}
+            currentSlug={doc.id}
+            pipeline={pipeline}
             allSessions={workflowSessions}
           />
         </div>
