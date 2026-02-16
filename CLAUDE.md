@@ -309,6 +309,7 @@ These documents define the project. Reference them, keep them current, and never
 | `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
 | `PROGRESS.md` | Generated progress report — live GitHub data | Regenerated: `work progress` |
 | `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
+| `docs/PM.md` | PM workflows, labels, templates, dependencies, agent conventions | PM infrastructure changes |
 
 **Rules:**
 - Before starting any work, read `ROADMAP.md` for strategic context and current bets.
