@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
-import type { DtfLineItem, DtfSizePreset } from "@/lib/schemas/dtf-line-item";
+import { dtfSizePresetEnum, type DtfLineItem, type DtfSizePreset } from "@/lib/schemas/dtf-line-item";
 
 interface DtfLineItemRowProps {
   item: DtfLineItem;
@@ -31,8 +31,9 @@ const PRESET_MAP: Record<Exclude<DtfSizePreset, "custom">, (typeof DTF_SIZE_PRES
 export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineItemRowProps) {
   // N46 — resolveDimensions: when preset changes (not custom), auto-set width/height
   function handlePresetChange(value: string) {
-    // Safe: value constrained by SelectItem values rendered below
-    const preset = value as DtfSizePreset;
+    const parsed = dtfSizePresetEnum.safeParse(value);
+    if (!parsed.success) return;
+    const preset = parsed.data;
     onUpdate(item.id, "sizePreset", preset);
     if (preset !== "custom") {
       const config = PRESET_MAP[preset];

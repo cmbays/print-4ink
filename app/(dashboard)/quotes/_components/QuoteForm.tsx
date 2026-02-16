@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef, Fragment } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
@@ -341,6 +341,15 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     setActiveServiceTab(type);
   }, []);
 
+  // Clear DTF validation error when line items change
+  useEffect(() => {
+    setErrors((prev) => {
+      if (!prev.dtfTab) return prev;
+      const { dtfTab: _, ...rest } = prev;
+      return rest;
+    });
+  }, [dtfLineItems]);
+
   // N42 — addServiceType
   const handleAddServiceType = useCallback((type: ServiceType) => {
     setEnabledServiceTypes((prev) => [...prev, type]);
@@ -369,12 +378,13 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       }
     });
 
-    if (!sheetCalculation) {
-      errors.push("Sheet layout must be calculated before saving");
-    }
+    // TODO(Wave 3): Re-enable when sheet calculation UI is wired
+    // if (!sheetCalculation) {
+    //   errors.push("Sheet layout must be calculated before saving");
+    // }
 
     return { valid: errors.length === 0, errors };
-  }, [dtfLineItems, sheetCalculation]);
+  }, [dtfLineItems]);
 
   // N41 — validateTabCompletion (per-tab validation badges)
   const tabValidation = useMemo((): Record<ServiceType, boolean> => {
@@ -474,7 +484,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     if (enabledServiceTypes.includes("dtf")) {
       const dtfResult = validateDtfTab();
       if (!dtfResult.valid) {
-        nextErrors.dtfTab = dtfResult.errors[0];
+        nextErrors.dtfTab = dtfResult.errors.join(". ");
         failedTabs.push("dtf");
         // Only show toast when user is NOT on DTF tab (inline error handles it otherwise)
         if (activeServiceTab !== "dtf") {
@@ -488,16 +498,20 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     setErrors(nextErrors);
     setLineItemErrors(nextLineErrors);
 
-    const spHasErrors =
-      Object.keys(nextErrors).some((k) => k === "lineItems") ||
-      Object.keys(nextLineErrors).length > 0;
+    if (enabledServiceTypes.includes("screen-print")) {
+      const spHasErrors =
+        Object.keys(nextErrors).some((k) => k === "lineItems") ||
+        Object.keys(nextLineErrors).length > 0;
 
-    if (spHasErrors) {
-      failedTabs.push("screen-print");
+      if (spHasErrors) {
+        failedTabs.push("screen-print");
+      }
     }
 
-    // Single tab-switch decision: only switch if current tab has no errors but another does
-    if (failedTabs.length > 0 && !failedTabs.includes(activeServiceTab)) {
+    // Single tab-switch decision: only switch if current tab has no errors but another does.
+    // Skip tab switch when quote-level errors (e.g. customerId) should take priority.
+    const hasQuoteLevelErrors = !!nextErrors.customerId;
+    if (failedTabs.length > 0 && !failedTabs.includes(activeServiceTab) && !hasQuoteLevelErrors) {
       setActiveServiceTab(failedTabs[0]);
     }
 
@@ -548,8 +562,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           0
         );
         const garmentCost = calculateGarmentCost(garment, totalQty);
-        const decoationCost = calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
-        const lineTotal = toNumber(money(garmentCost).plus(decoationCost));
+        const decorationCost = calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty);
+        const lineTotal = toNumber(money(garmentCost).plus(decorationCost));
         const unitPrice = totalQty > 0 ? toNumber(round2(money(lineTotal).div(totalQty))) : 0;
         return {
           garmentId: item.garmentId,
@@ -594,9 +608,12 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       );
       summaryParts.push(`${lineItems.length} SP line item${lineItems.length !== 1 ? "s" : ""} (${spQty} qty)`);
     }
-    if (enabledServiceTypes.includes("dtf") && sheetCalculation) {
+    if (enabledServiceTypes.includes("dtf") && dtfLineItems.length > 0) {
+      const sheetInfo = sheetCalculation
+        ? ` on ${sheetCalculation.totalSheets} sheet${sheetCalculation.totalSheets !== 1 ? "s" : ""}`
+        : "";
       summaryParts.push(
-        `${dtfLineItems.length} DTF design${dtfLineItems.length !== 1 ? "s" : ""} on ${sheetCalculation.totalSheets} sheet${sheetCalculation.totalSheets !== 1 ? "s" : ""}`
+        `${dtfLineItems.length} DTF design${dtfLineItems.length !== 1 ? "s" : ""}${sheetInfo}`
       );
     }
     const dataSummary = summaryParts.join(" + ");

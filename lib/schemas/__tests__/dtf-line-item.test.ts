@@ -47,9 +47,10 @@ describe("dtfLineItemSchema", () => {
     ).toThrow();
   });
 
-  it("allows empty artworkName", () => {
-    const result = dtfLineItemSchema.parse({ ...validItem, artworkName: "" });
-    expect(result.artworkName).toBe("");
+  it("rejects empty artworkName", () => {
+    expect(() =>
+      dtfLineItemSchema.parse({ ...validItem, artworkName: "" })
+    ).toThrow();
   });
 });
 
