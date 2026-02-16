@@ -10,6 +10,7 @@ import {
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -77,19 +78,24 @@ export function ServiceTypeTabBar({
 
       {/* Embroidery — always disabled with tooltip */}
       {!enabledTypes.includes("embroidery") && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span
-              className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground/40 cursor-not-allowed"
-              role="tab"
-              aria-disabled="true"
-            >
-              <EmbroideryIcon className="size-4" />
-              <span>Embroidery</span>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>Coming soon</TooltipContent>
-        </Tooltip>
+        <TooltipProvider delayDuration={200} skipDelayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                disabled
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground/40 cursor-not-allowed"
+                role="tab"
+                aria-selected={false}
+                tabIndex={-1}
+              >
+                <EmbroideryIcon className="size-4" />
+                <span>Embroidery</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Coming soon</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
 
       {/* Add Service Type dropdown */}

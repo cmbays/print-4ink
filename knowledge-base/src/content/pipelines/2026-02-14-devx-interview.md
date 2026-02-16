@@ -530,7 +530,7 @@ Current `~/.claude/settings.json` uses colon syntax in Bash patterns that doesn'
 
 ---
 
-<div class="gary-question" data-question-id="devx-q1" data-vertical="devx" data-status="unanswered">
+<div class="gary-question" data-question-id="devx-q1" data-pipeline="devx" data-status="unanswered">
   <p class="gary-question-text">How do you currently manage parallel tasks in the shop? Do you use any software for job tracking or is it all manual/whiteboard?</p>
   <p class="gary-question-context">Understanding Gary's current workflow management helps us design the app's production board and potentially inform our own DevX pipeline design for managing parallel work.</p>
   <div class="gary-answer" data-answered-date=""></div>

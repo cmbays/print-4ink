@@ -5,7 +5,7 @@ date: 2026-02-10
 phase: 1
 pipelineName: customer-management
 pipelineType: vertical
-products: [customers]
+products: [customers, quotes, jobs]
 tools: []
 stage: breadboard
 tags: [plan, build]

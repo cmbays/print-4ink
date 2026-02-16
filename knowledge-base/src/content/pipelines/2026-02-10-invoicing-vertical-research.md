@@ -5,7 +5,7 @@ date: 2026-02-10
 phase: 1
 pipelineName: invoicing
 pipelineType: vertical
-products: [invoices]
+products: [invoices, quotes]
 tools: []
 stage: research
 tags: [research, plan]

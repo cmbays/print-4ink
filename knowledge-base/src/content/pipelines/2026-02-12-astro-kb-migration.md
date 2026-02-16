@@ -3,7 +3,7 @@ title: "Astro Knowledge Base Migration"
 subtitle: "Migrated for_human/ static HTML docs to Astro 5.3 knowledge base with content collections, Pagefind search, pipeline visualization, and 50 static pages. Deleted 25k lines of old HTML/JS."
 date: 2026-02-12
 phase: 1
-pipelineName: meta
+pipelineName: devx
 pipelineType: horizontal
 products: []
 tools: [knowledge-base]
@@ -133,7 +133,7 @@ Added `data-pagefind-body` to the `<main>` element of session detail pages. Page
 Instead of creating HTML files with `data-*` attributes, sessions now create a simple Markdown file:
 
 ```text
-knowledge-base/src/content/sessions/YYYY-MM-DD-topic.md
+knowledge-base/src/content/pipelines/YYYY-MM-DD-topic.md
 ```
 
 With YAML frontmatter validated at build time. Body content is standard Markdown. Build with `npm run kb:build` to verify.

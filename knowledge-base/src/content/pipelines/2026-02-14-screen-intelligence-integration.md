@@ -5,7 +5,7 @@ date: 2026-02-14
 phase: 1
 pipelineName: screen-room
 pipelineType: vertical
-products: [screens]
+products: [screens, quotes, jobs]
 tools: []
 stage: build
 tags: [feature, build]

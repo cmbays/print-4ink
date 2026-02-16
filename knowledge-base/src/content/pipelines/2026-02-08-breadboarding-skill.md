@@ -3,10 +3,10 @@ title: "Breadboarding Skill"
 subtitle: "Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Maps UI affordances, code affordances, data stores, and wiring before any code is written."
 date: 2026-02-08
 phase: 1
-pipelineName: meta
+pipelineName: devx
 pipelineType: horizontal
 products: []
-tools: [knowledge-base]
+tools: [skills-framework]
 stage: build
 tags: [feature, decision]
 sessionId: "09b70260-83ac-4830-9b02-ed8c0683f699"

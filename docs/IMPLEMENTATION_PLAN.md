@@ -77,7 +77,7 @@ All 7 verticals built and demo-ready. 529 tests passing, 26 test files, zero rol
 |----------|-------------|-------|--------|
 | **#1** | Mobile Polish (Sprints 3-4) | — | **DONE** — PRs #148, #167, #174, #175 merged. Filter sheets, tab grouping, scroll-to-error, pricing mobile. |
 | **#2** | Onboarding Wizards | #145 | Pending — guided first-time experience across verticals |
-| **#3** | DTF Gang Sheet Builder | #144 | Pending — new vertical, full pipeline needed |
+| **#3** | DTF Gang Sheet Builder | #144 | **DONE** — PRs #232, #237, #249, #280, #284. All 4 waves merged. V5 job card wiring deferred (PRI-155). |
 
 ### Demo Week Schedule
 
@@ -87,7 +87,7 @@ All 7 verticals built and demo-ready. 529 tests passing, 26 test files, zero rol
 | Day 2 | Mobile polish (Sprints 3-4): forms, detail views, animation | **Done** (PRs #148, #167, #174, #175) |
 | Days 2-3 | Demo bug fixes (#128, #129, #138) | **Done** (PR #157) |
 | Days 3-4 | Onboarding Wizards (#145) | Pending |
-| Days 4-5 | DTF Gang Sheet Builder — discovery through build | Pending |
+| Days 4-5 | DTF Gang Sheet Builder — discovery through build | **Done** (PRs #232, #237, #249, #280, #284) |
 | Day 6+ | Minimal backend (stretch) | High |
 
 ### Demo-Blocking Bugs (ALL RESOLVED)

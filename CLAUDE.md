@@ -309,6 +309,8 @@ These documents define the project. Reference them, keep them current, and never
 | `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
 | `PROGRESS.md` | Generated progress report — live GitHub data | Regenerated: `work progress` |
 | `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
+| `docs/PM.md` | PM workflows, labels, templates, dependencies, agent conventions | PM infrastructure changes |
+| `docs/HOW_WE_WORK.md` | Methodology, Shape Up philosophy, PM tools, automation trajectory | Process or tooling changes |
 
 **Rules:**
 - Before starting any work, read `ROADMAP.md` for strategic context and current bets.
@@ -441,7 +443,7 @@ All frontmatter is validated by Zod at build time (`knowledge-base/src/content.c
 
 Embed in any session Markdown file:
 ```html
-<div class="gary-question" data-question-id="VERTICAL-q1" data-vertical="VERTICAL_SLUG" data-status="unanswered">
+<div class="gary-question" data-question-id="PIPELINE-q1" data-pipeline="PIPELINE_SLUG" data-status="unanswered">
   <p class="gary-question-text">Your question here?</p>
   <p class="gary-question-context">Why this matters</p>
   <div class="gary-answer" data-answered-date=""></div>

@@ -205,7 +205,6 @@ export default function PricingHubPage() {
     <>
       <Topbar
         breadcrumbs={[
-          { label: "Dashboard", href: "/" },
           { label: "Settings", href: "/settings/pricing" },
           { label: "Pricing" },
         ]}

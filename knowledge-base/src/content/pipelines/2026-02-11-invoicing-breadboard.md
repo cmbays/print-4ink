@@ -5,7 +5,7 @@ date: 2026-02-11
 phase: 1
 pipelineName: invoicing
 pipelineType: vertical
-products: [invoices]
+products: [invoices, quotes, customers]
 tools: []
 stage: breadboard
 tags: [plan, research]

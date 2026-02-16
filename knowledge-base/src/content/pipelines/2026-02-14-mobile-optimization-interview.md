@@ -155,19 +155,19 @@ Gary uses iPhone, at least one employee uses Android. Reinforces PWA-first appro
 2. **Update scope definition** — Reflect revised build order and new interaction patterns from interview findings.
 3. **Implementation planning** — Detailed sprint breakdown with the hybrid approach.
 
-<div class="gary-question" data-question-id="mobile-q4" data-vertical="mobile-optimization" data-status="unanswered">
+<div class="gary-question" data-question-id="mobile-q4" data-pipeline="mobile-optimization" data-status="unanswered">
   <p class="gary-question-text">What other business apps do you use on your phone? (QuickBooks, Square, bank app, calendar?)</p>
   <p class="gary-question-context">Understanding which apps Gary already uses daily reveals interaction patterns he's comfortable with and expectations for mobile UX quality.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="mobile-q5" data-vertical="mobile-optimization" data-status="unanswered">
+<div class="gary-question" data-question-id="mobile-q5" data-pipeline="mobile-optimization" data-status="unanswered">
   <p class="gary-question-text">Would you want a TV on the shop floor showing the job board that auto-updates when someone moves a card from their phone?</p>
   <p class="gary-question-context">The shop floor display concept emerged from the interview. Need Gary's reaction to validate before designing. Partial answer: no tablets on production floor, use at events. Currently use a whiteboard — auto-refresh is the selling point. TV/display question still needs Gary's direct input.</p>
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-<div class="gary-question" data-question-id="mobile-q6" data-vertical="mobile-optimization" data-status="unanswered">
+<div class="gary-question" data-question-id="mobile-q6" data-pipeline="mobile-optimization" data-status="unanswered">
   <p class="gary-question-text">When you log a note about a blocker, do you want the app to automatically mark the job as blocked, or would you prefer to do that as a separate step?</p>
   <p class="gary-question-context">The "notes with side effects" pattern needs validation. Auto-blocking could be powerful but might cause accidental state changes.</p>
   <div class="gary-answer" data-answered-date=""></div>

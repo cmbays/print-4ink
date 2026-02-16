@@ -97,13 +97,13 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 | Screen Room | Integrated | Demo | TODO |
 | Garments | Complete | Demo | TODO |
 | Mobile Optimization | Complete | Demo | — |
-| DTF Gang Sheet | Not started | Discovery (#144) | — |
+| DTF Gang Sheet | Complete | Demo | PRs #232, #237, #249, #280, #284 |
 
 ## Current Bets (What We're Working On)
 
 1. ~~**Mobile Polish** (Sprints 3-4)~~ — **Done** (PRs #148, #167, #174, #175). Remaining: #177 (5 pricing editor items).
 2. **Onboarding Wizards** (#145) — guided first-time experience for Gary demo. 3 journeys: view job board, close invoice, create customer.
-3. **DTF Gang Sheet Builder** (#144) — new vertical, direct user request. Full pipeline: discovery → build.
+3. ~~**DTF Gang Sheet Builder** (#144)~~ — **Done** (PRs #232, #237, #249, #280, #284). Full pipeline complete: discovery → shaping → breadboard → 4-wave build. V5 job card wiring deferred to Phase 2 (PRI-155).
 4. ~~**Demo-blocking bug fixes**~~ — All 3 resolved (#128, #129, #138)
 5. **Gary demo** (Feb 21) — First real user feedback session. All 7 verticals + mobile + wizards.
 
