@@ -188,7 +188,74 @@ The Work Orchestrator creates the execution environment. Skills and agents provi
 
 ---
 
-## 6. Open Questions
+## 6. Deployment — Two-Branch Model
+
+We use a two-branch deployment model to control Vercel build frequency on the Hobby plan (100 deploys/day, 32 builds/hour).
+
+### Branch Model
+
+```
+feature/session ──PR──→ main ──merge──→ production
+                          │                  │
+                    Preview builds      Production builds
+                  (Gary demo URL)      (4ink live domain)
+```
+
+| Branch | Vercel Role | Build Trigger | Purpose |
+|--------|-------------|---------------|---------|
+| `main` | Preview | Every merge from PR | Integration + stakeholder review |
+| `production` | Production | Manual merge from `main` | Live app for end users |
+| Feature/session | Skipped | Never (via `ignoreCommand`) | Development work |
+
+### How It Works
+
+1. **`vercel.json`** contains an `ignoreCommand` that only allows `main` and `production` to build. All other branches exit early (build skipped).
+2. **`main`** receives all PR merges. Vercel generates a stable preview URL for each build — this is the stakeholder demo link.
+3. **`production`** is updated manually when the team is satisfied with `main`. Vercel builds this as the production deployment with the live domain.
+
+### Promotion Workflow
+
+When `main` is validated and ready for release:
+
+```bash
+# Option A: PR-based promotion (auditable, recommended)
+gh pr create --base production --head main --title "Release: <description>"
+
+# Option B: Direct fast-forward (quicker, for small updates)
+git -C ~/Github/print-4ink fetch origin
+git -C ~/Github/print-4ink checkout production
+git -C ~/Github/print-4ink merge main
+git -C ~/Github/print-4ink push origin production
+git -C ~/Github/print-4ink checkout main
+```
+
+### Deployment Math
+
+- **Before**: ~50+ builds/day (every PR push + every main merge)
+- **After**: ~7-12 builds/day (merges to main + occasional production promotions)
+
+Well within Hobby plan limits.
+
+### Environment Variables
+
+`DEMO_ACCESS_CODE` must be set in Vercel for both Preview and Production environments. The demo login system (`/api/demo-login`) validates against this env var. In local development, it falls back to a default value.
+
+### What Doesn't Change
+
+- Worktree workflow — identical
+- PR process — identical (still merge to `main`)
+- `work.sh` orchestrator — no changes needed
+- Stacked PRs — still work the same
+
+The ONLY new step: when you want to update the live app, merge `main` into `production`.
+
+### Future: Three-Branch (Phase 2+)
+
+When real users are on the app, extend to `dev` / `staging` / `production` with dedicated environment URLs. Requires Vercel Pro ($20/mo) for Custom Environments.
+
+---
+
+## 7. Open Questions
 
 - **When does L3 (self-orienting agents) justify its own build cycle?** Current priority is product features (D-Day), not PM infrastructure. L3 is valuable but not urgent.
 - **Should `work progress` evolve into a real-time dashboard or stay a CLI command?** CLI fits the current workflow. A dashboard adds hosting/maintenance complexity for marginal benefit in a solo-dev context.

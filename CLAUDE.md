@@ -283,6 +283,35 @@ For screens with high interaction complexity (e.g., New Quote Form, Kanban Board
 2. **Phase 2**: Iterate with user (4Ink owner) based on feedback.
 3. **Phase 3**: Lock Zod schemas → build backend, database, real API integration.
 
+## Deployment — Two-Branch Model
+
+```
+feature/session branches ──PR──→ main ──merge──→ production
+                                   │                  │
+                             Preview builds      Production builds
+                           (Gary demo URL)      (4ink live domain)
+```
+
+- **`main`** — Integration branch. All PRs merge here. Vercel builds as **preview** deployment.
+- **`production`** — Stable release branch. Manual merge from `main`. Vercel builds as **production** deployment.
+- **Feature/session branches** — NOT built by Vercel (skipped by `ignoreCommand` in `vercel.json`).
+
+### Promotion Workflow
+
+```bash
+# When ready to update the live app:
+gh pr create --base production --head main --title "Release: <description>"
+# Or fast-forward directly:
+git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink checkout production && git -C ~/Github/print-4ink merge main && git -C ~/Github/print-4ink push origin production && git -C ~/Github/print-4ink checkout main
+```
+
+### Rules
+
+- **Never push directly to `production`** — always merge from `main`
+- **Never merge feature branches to `production`** — only `main` flows into `production`
+- **`DEMO_ACCESS_CODE` env var** must be set in Vercel for both Preview and Production environments
+- **Vercel dashboard**: Production Branch setting must be `production` (manual config)
+
 ## What NOT to Do
 
 - No separate CSS files — Tailwind utilities only
