@@ -27,6 +27,7 @@ interface ServiceTypeTabBarProps {
 }
 
 const ALL_SERVICE_TYPES: ServiceType[] = ["screen-print", "dtf", "embroidery"];
+const EmbroideryIcon = SERVICE_TYPE_ICONS["embroidery"];
 
 export function ServiceTypeTabBar({
   activeTab,
@@ -40,7 +41,7 @@ export function ServiceTypeTabBar({
   );
 
   return (
-    <div className="flex items-center gap-1 border-b border-border bg-elevated rounded-t-lg px-2">
+    <div role="tablist" className="flex items-center gap-1 border-b border-border bg-elevated rounded-t-lg px-2">
       {enabledTypes.map((type) => {
         const Icon = SERVICE_TYPE_ICONS[type];
         const isActive = activeTab === type;
@@ -59,6 +60,7 @@ export function ServiceTypeTabBar({
                 : "text-muted-foreground"
             )}
             aria-selected={isActive}
+            aria-controls={`tabpanel-${type}`}
             role="tab"
           >
             <Icon className="size-4" />
@@ -82,10 +84,7 @@ export function ServiceTypeTabBar({
               role="tab"
               aria-disabled="true"
             >
-              {(() => {
-                const EmbIcon = SERVICE_TYPE_ICONS["embroidery"];
-                return <EmbIcon className="size-4" />;
-              })()}
+              <EmbroideryIcon className="size-4" />
               <span>Embroidery</span>
             </span>
           </TooltipTrigger>

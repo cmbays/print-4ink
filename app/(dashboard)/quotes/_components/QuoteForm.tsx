@@ -454,7 +454,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Build a Quote object for the review sheet
   function buildQuoteForReview() {
     const { garmentSubtotal, decorationSubtotal, setupFees } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal;
+    const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
 
     // Compute contract discount
     const contractDiscount = customerTag === "contract"
@@ -607,7 +607,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   // Pricing summary — itemized discounts + total
   const discountDetails = useMemo(() => {
     const { garmentSubtotal, decorationSubtotal } = pricingBreakdown;
-    const subtotal = garmentSubtotal + decorationSubtotal;
+    const subtotal = garmentSubtotal + decorationSubtotal + dtfSubtotal;
     const contractAmount = customerTag === "contract"
       ? Math.round(subtotal * CONTRACT_DISCOUNT_RATE * 100) / 100
       : 0;
@@ -618,7 +618,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     discounts.forEach((d) => items.push({ label: d.label, amount: d.amount }));
     const total = items.reduce((s, d) => s + d.amount, 0);
     return { items, total };
-  }, [pricingBreakdown, customerTag, discounts]);
+  }, [pricingBreakdown, dtfSubtotal, customerTag, discounts]);
 
   const pricingSummary = discountDetails.total > 0
     ? `${formatCurrency(discountDetails.total)} in discounts`
@@ -915,6 +915,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
 
         {/* Screen Print Tab Content */}
         {activeServiceTab === "screen-print" && (
+          <div id="tabpanel-screen-print" role="tabpanel">
           <CollapsibleSection
             title="Garments & Print Details"
             icon={<ShoppingBag size={16} className="text-muted-foreground" />}
@@ -951,11 +952,12 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
               </Button>
             </div>
           </CollapsibleSection>
+          </div>
         )}
 
         {/* DTF Tab Content (P2.4) — placeholder until Wave 2 */}
         {activeServiceTab === "dtf" && (
-          <div className="rounded-lg border border-border bg-elevated p-8 text-center">
+          <div id="tabpanel-dtf" role="tabpanel" className="rounded-lg border border-border bg-elevated p-8 text-center">
             <Film className="mx-auto size-10 text-muted-foreground/40" />
             <p className="mt-3 text-sm font-medium text-foreground">DTF Gang Sheet Builder</p>
             <p className="mt-1 text-xs text-muted-foreground">
