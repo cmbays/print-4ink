@@ -9,6 +9,7 @@ import { GarmentCatalogToolbar } from "./_components/GarmentCatalogToolbar";
 import { GarmentCard } from "./_components/GarmentCard";
 import { GarmentTableRow } from "./_components/GarmentTableRow";
 import { GarmentDetailDrawer } from "./_components/GarmentDetailDrawer";
+import { BrandDetailDrawer } from "./_components/BrandDetailDrawer";
 import {
   garmentCatalog as initialCatalog,
   jobs,
@@ -37,10 +38,15 @@ function GarmentCatalogInner() {
   // Color filter from extracted hook (fix #7)
   const { selectedColorIds, toggleColor, clearColors } = useColorFilter();
 
+  // Version counter — forces favorite recomputation after mock data mutations
+  // (e.g., brand drawer toggles isFavorite on colors). Phase 3 replaces with API fetch.
+  const [favoriteVersion, setFavoriteVersion] = useState(0);
+
   // Resolved global favorites — single source of truth passed as props (fix #4)
   const globalFavoriteColorIds = useMemo(
     () => resolveEffectiveFavorites("global"),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [favoriteVersion],
   );
 
   // Local state for mock data mutations
@@ -70,6 +76,17 @@ function GarmentCatalogInner() {
   );
   const selectedGarment =
     catalog.find((g) => g.id === selectedGarmentId) ?? null;
+
+  // N25: Brand detail drawer state
+  const [selectedBrandName, setSelectedBrandName] = useState<string | null>(
+    null,
+  );
+
+  // N25: openBrandDrawer — opens brand detail drawer, closes garment drawer
+  const handleBrandClick = useCallback((brandName: string) => {
+    setSelectedGarmentId(null);
+    setSelectedBrandName(brandName);
+  }, []);
 
   // Filter garments (N23: getFilteredGarmentsByColors)
   const filteredGarments = useMemo(() => {
@@ -159,6 +176,7 @@ function GarmentCatalogInner() {
         onClearColors={clearColors}
         garmentCount={filteredGarments.length}
         favoriteColorIds={globalFavoriteColorIds}
+        onBrandClick={handleBrandClick}
       />
 
       {/* Grid View */}
@@ -171,6 +189,7 @@ function GarmentCatalogInner() {
               showPrice={showPrice}
               favoriteColorIds={globalFavoriteColorIds}
               onToggleFavorite={handleToggleFavorite}
+              onBrandClick={handleBrandClick}
               onClick={setSelectedGarmentId}
             />
           ))}
@@ -255,6 +274,27 @@ function GarmentCatalogInner() {
           linkedJobs={linkedJobs}
           onToggleEnabled={handleToggleEnabled}
           onToggleFavorite={handleToggleFavorite}
+          onBrandClick={handleBrandClick}
+        />
+      )}
+
+      {/* Brand Detail Drawer — conditional rendering for state reset */}
+      {selectedBrandName && (
+        <BrandDetailDrawer
+          brandName={selectedBrandName}
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedBrandName(null);
+              // Refresh favorites in case brand drawer mutated color preferences
+              setFavoriteVersion((v) => v + 1);
+            }
+          }}
+          onGarmentClick={(garmentId) => {
+            setSelectedBrandName(null);
+            setFavoriteVersion((v) => v + 1);
+            setSelectedGarmentId(garmentId);
+          }}
         />
       )}
     </>
