@@ -310,6 +310,7 @@ These documents define the project. Reference them, keep them current, and never
 | `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
 | `PROGRESS.md` | Current state, what's built, what's next | After PR merges (on main only) |
 | `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
+| `docs/PM.md` | PM workflows, labels, templates, dependencies, agent conventions | PM infrastructure changes |
 
 **Rules:**
 - Before starting any work, read `ROADMAP.md` for strategic context and current bets.
