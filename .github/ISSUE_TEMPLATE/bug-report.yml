@@ -1,5 +1,6 @@
 name: Bug Report
 description: Report a bug or unexpected behavior
+title: "[Bug] "
 labels: ["type/bug"]
 body:
   - type: textarea
@@ -37,6 +38,7 @@ body:
     attributes:
       label: Product/Tool
       description: Which product or tool is affected?
+      # Sync with config/products.json + config/tools.json
       options:
         - Dashboard
         - Quotes
@@ -51,8 +53,53 @@ body:
         - Agent System
         - Knowledge Base
         - CI Pipeline
+        - PM System
     validations:
       required: true
+
+  - type: input
+    id: url-route
+    attributes:
+      label: URL / Route
+      description: Which page or route does this occur on?
+      placeholder: "e.g., /quotes/new, /dashboard"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser were you using?
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Edge
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Console Errors
+      description: Paste screenshots or browser console output here
+      placeholder: Drag and drop screenshots or paste console errors
+    validations:
+      required: false
+
+  - type: textarea
+    id: files-to-read
+    attributes:
+      label: Files to Read
+      description: Entry points for agents picking up this bug
+      render: text
+      placeholder: |
+        app/(dashboard)/quotes/page.tsx
+        lib/schemas/quote.ts
+    validations:
+      required: false
 
   - type: dropdown
     id: severity

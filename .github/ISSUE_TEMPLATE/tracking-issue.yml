@@ -1,7 +1,14 @@
 name: Tracking Issue
 description: Track a multi-part effort with sub-issues
+title: "[Tracking] "
 labels: ["type/tooling"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Tracking issues coordinate multi-part efforts. After creating this issue,
+        add sub-issues via GitHub's sub-issue feature rather than task-list checkboxes.
+
   - type: textarea
     id: goal
     attributes:
@@ -15,11 +22,11 @@ body:
     id: sub-issues
     attributes:
       label: Sub-issues planned
-      description: List planned child issues (create them as sub-issues after this issue is opened)
+      description: List planned child issues. Use sub-issue links after filing.
       placeholder: |
-        - Task 1: Description
-        - Task 2: Description
-        - Task 3: Description
+        - [ ] #123 — Task description
+        - [ ] #124 — Task description
+        - [ ] Task not yet filed — Description
     validations:
       required: false
 
@@ -28,6 +35,7 @@ body:
     attributes:
       label: Product/Tool
       description: Which product or tool does this relate to?
+      # Sync with config/products.json + config/tools.json
       options:
         - Dashboard
         - Quotes
@@ -42,6 +50,7 @@ body:
         - Agent System
         - Knowledge Base
         - CI Pipeline
+        - PM System
     validations:
       required: true
 

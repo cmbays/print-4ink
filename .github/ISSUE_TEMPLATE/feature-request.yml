@@ -1,7 +1,14 @@
 name: Feature Request
 description: Suggest a new feature or enhancement
+title: "[Feature] "
 labels: ["type/feature"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Fill in the required fields below.
+        For agent-created issues, ensure the Product/Tool dropdown matches your vertical.
+
   - type: textarea
     id: description
     attributes:
@@ -11,11 +18,21 @@ body:
     validations:
       required: true
 
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Who needs this and why? What workflow pain does it address?
+      placeholder: "As a [shop owner/agent/developer], I need... because..."
+    validations:
+      required: false
+
   - type: dropdown
     id: product-tool
     attributes:
       label: Product/Tool
       description: Which product or tool does this relate to?
+      # Sync with config/products.json + config/tools.json
       options:
         - Dashboard
         - Quotes
@@ -30,6 +47,7 @@ body:
         - Agent System
         - Knowledge Base
         - CI Pipeline
+        - PM System
     validations:
       required: true
 
@@ -49,9 +67,10 @@ body:
     attributes:
       label: Files to Read
       description: Entry points for agents picking up this issue
+      render: text
       placeholder: |
-        - `app/(dashboard)/quotes/page.tsx`
-        - `lib/schemas/quote.ts`
+        app/(dashboard)/quotes/page.tsx
+        lib/schemas/quote.ts
     validations:
       required: false
 
