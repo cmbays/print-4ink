@@ -9,11 +9,11 @@ import type { CanvasLayout, CanvasDesign } from "@/lib/schemas/dtf-sheet-calcula
 // ---------------------------------------------------------------------------
 
 const DESIGN_COLORS = [
-  { fill: "rgba(42,185,255,0.10)", stroke: "rgba(42,185,255,0.40)" },   // action
-  { fill: "rgba(84,202,116,0.10)", stroke: "rgba(84,202,116,0.40)" },   // success
-  { fill: "rgba(255,198,99,0.10)", stroke: "rgba(255,198,99,0.40)" },   // warning
-  { fill: "rgba(210,62,8,0.10)", stroke: "rgba(210,62,8,0.40)" },       // error/destructive
-  { fill: "rgba(42,185,255,0.06)", stroke: "rgba(42,185,255,0.25)" },   // action (lighter variant)
+  { fill: "var(--action)", fillOpacity: 0.10, stroke: "var(--action)", strokeOpacity: 0.40 },
+  { fill: "var(--success)", fillOpacity: 0.10, stroke: "var(--success)", strokeOpacity: 0.40 },
+  { fill: "var(--warning)", fillOpacity: 0.10, stroke: "var(--warning)", strokeOpacity: 0.40 },
+  { fill: "var(--error)", fillOpacity: 0.10, stroke: "var(--error)", strokeOpacity: 0.40 },
+  { fill: "var(--action)", fillOpacity: 0.06, stroke: "var(--action)", strokeOpacity: 0.25 },
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -158,7 +158,7 @@ export function GangSheetCanvas({
         )}
 
         {/* Sheet dimensions */}
-        <span className="text-xs text-muted-foreground font-mono">
+        <span className="text-xs text-muted-foreground">
           {sheetWidth}&quot; &times; {sheetHeight}&quot;
         </span>
       </div>
@@ -180,7 +180,7 @@ export function GangSheetCanvas({
               width={sheetWidth - strokeW}
               height={sheetHeight - strokeW}
               fill="none"
-              stroke="rgba(255,255,255,0.12)"
+              stroke="var(--canvas-border)"
               strokeWidth={strokeW}
               rx={0.15}
             />
@@ -191,28 +191,28 @@ export function GangSheetCanvas({
               y={0}
               width={sheetWidth}
               height={margins}
-              fill="rgba(255,255,255,0.03)"
+              fill="var(--canvas-margin-zone)"
             />
             <rect
               x={0}
               y={sheetHeight - margins}
               width={sheetWidth}
               height={margins}
-              fill="rgba(255,255,255,0.03)"
+              fill="var(--canvas-margin-zone)"
             />
             <rect
               x={0}
               y={margins}
               width={margins}
               height={sheetHeight - margins * 2}
-              fill="rgba(255,255,255,0.03)"
+              fill="var(--canvas-margin-zone)"
             />
             <rect
               x={sheetWidth - margins}
               y={margins}
               width={margins}
               height={sheetHeight - margins * 2}
-              fill="rgba(255,255,255,0.03)"
+              fill="var(--canvas-margin-zone)"
             />
 
             {/* U89 — Design rectangles */}
@@ -223,14 +223,19 @@ export function GangSheetCanvas({
               const showLabel = designPxWidth >= minLabelPx;
 
               return (
-                <g key={`${d.id}-${i}`}>
+                <g
+                  key={`${d.id}-${i}`}
+                  style={{ opacity: 0, animation: `canvas-fade-in 0.3s ease-out ${i * 0.05}s forwards` }}
+                >
                   <rect
                     x={d.x}
                     y={d.y}
                     width={d.width}
                     height={d.height}
                     fill={color.fill}
+                    fillOpacity={color.fillOpacity}
                     stroke={color.stroke}
+                    strokeOpacity={color.strokeOpacity}
                     strokeWidth={strokeW}
                     rx={0.1}
                   />
@@ -241,7 +246,7 @@ export function GangSheetCanvas({
                         y={d.y + d.height / 2 - 0.2}
                         textAnchor="middle"
                         dominantBaseline="auto"
-                        fill="rgba(255,255,255,0.87)"
+                        fill="var(--canvas-label)"
                         fontSize={Math.min(0.55, d.height * 0.25)}
                         fontFamily="Inter, system-ui, sans-serif"
                         fontWeight={500}
@@ -255,7 +260,7 @@ export function GangSheetCanvas({
                         y={d.y + d.height / 2 + 0.5}
                         textAnchor="middle"
                         dominantBaseline="auto"
-                        fill="rgba(255,255,255,0.60)"
+                        fill="var(--canvas-dim-label)"
                         fontSize={Math.min(0.4, d.height * 0.18)}
                         fontFamily="Inter, system-ui, sans-serif"
                       >
@@ -276,7 +281,7 @@ export function GangSheetCanvas({
                   y1={designs[0].y + designs[0].height / 2}
                   x2={margins}
                   y2={designs[0].y + designs[0].height / 2}
-                  stroke="rgba(255,255,255,0.25)"
+                  stroke="var(--canvas-spacing-line)"
                   strokeWidth={strokeW * 0.7}
                   strokeDasharray={`${0.15} ${0.1}`}
                 />
@@ -284,7 +289,7 @@ export function GangSheetCanvas({
                   x={margins / 2}
                   y={designs[0].y + designs[0].height / 2 - 0.25}
                   textAnchor="middle"
-                  fill="rgba(255,255,255,0.40)"
+                  fill="var(--canvas-spacing-label)"
                   fontSize={0.3}
                   fontFamily="Inter, system-ui, sans-serif"
                 >
@@ -301,7 +306,7 @@ export function GangSheetCanvas({
                   y1={spacingGap.y}
                   x2={spacingGap.x2}
                   y2={spacingGap.y}
-                  stroke="rgba(255,255,255,0.25)"
+                  stroke="var(--canvas-spacing-line)"
                   strokeWidth={strokeW * 0.7}
                   strokeDasharray={`${0.15} ${0.1}`}
                 />
@@ -309,7 +314,7 @@ export function GangSheetCanvas({
                   x={(spacingGap.x1 + spacingGap.x2) / 2}
                   y={spacingGap.y - 0.25}
                   textAnchor="middle"
-                  fill="rgba(255,255,255,0.40)"
+                  fill="var(--canvas-spacing-label)"
                   fontSize={0.3}
                   fontFamily="Inter, system-ui, sans-serif"
                 >
