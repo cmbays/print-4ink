@@ -221,6 +221,114 @@ export function getImpactPreview(
 }
 
 // ---------------------------------------------------------------------------
+// N16: removeFromAll
+// Remove color from all entities at and below the specified level.
+// PHASE 1: Mutates mock-data in-place.
+// ---------------------------------------------------------------------------
+
+export function removeFromAll(
+  level: "global" | "brand",
+  colorId: string
+): void {
+  if (level === "global") {
+    // Remove from all brands that explicitly have this color
+    for (const brand of brandPreferences) {
+      if (brand.inheritMode === "customize") {
+        brand.favoriteColorIds = brand.favoriteColorIds.filter(
+          (id) => id !== colorId
+        );
+        brand.explicitColorIds = brand.explicitColorIds.filter(
+          (id) => id !== colorId
+        );
+        // No need to track in removedInheritedColorIds — it's gone from global too
+        brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter(
+          (id) => id !== colorId
+        );
+      }
+      // Inherit-mode brands lose it automatically via resolution
+    }
+
+    // Remove from all customers with explicit favorites
+    for (const customer of customers) {
+      if (customer.favoriteColors.length > 0) {
+        customer.favoriteColors = customer.favoriteColors.filter(
+          (id) => id !== colorId
+        );
+      }
+      // Inheriting customers lose it automatically via resolution
+    }
+  }
+
+  if (level === "brand") {
+    // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
+    // When customer-brand hierarchy is wired, iterate linked customers here
+  }
+}
+
+// ---------------------------------------------------------------------------
+// N17: removeFromLevelOnly
+// Remove from specified level only — children retain their customizations.
+// Inherit-mode children lose it naturally; customize-mode children keep it.
+// PHASE 1: No downstream mutation needed — inheritance resolution handles it.
+// ---------------------------------------------------------------------------
+
+export function removeFromLevelOnly(
+  _level: "global" | "brand",
+  _colorId: string
+): void {
+  // No downstream changes needed — let inheritance resolution handle it:
+  // - Inherit-mode children: lose it automatically (no longer in parent)
+  // - Customize-mode children: keep it (in their own favoriteColorIds)
+  // The caller handles the removal at its own level.
+}
+
+// ---------------------------------------------------------------------------
+// N18: removeFromSelected
+// Remove from selected entities only. Caller also removes from its own level.
+// PHASE 1: Mutates mock-data in-place.
+// ---------------------------------------------------------------------------
+
+export function removeFromSelected(
+  level: "global" | "brand",
+  colorId: string,
+  brandNames: string[],
+  customerCompanies: string[]
+): void {
+  if (level === "global") {
+    // Remove from selected brands
+    for (const brand of brandPreferences) {
+      if (brandNames.includes(brand.brandName) && brand.inheritMode === "customize") {
+        brand.favoriteColorIds = brand.favoriteColorIds.filter(
+          (id) => id !== colorId
+        );
+        brand.explicitColorIds = brand.explicitColorIds.filter(
+          (id) => id !== colorId
+        );
+        brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter(
+          (id) => id !== colorId
+        );
+      }
+    }
+
+    // Remove from selected customers
+    for (const customer of customers) {
+      if (
+        customerCompanies.includes(customer.company) &&
+        customer.favoriteColors.length > 0
+      ) {
+        customer.favoriteColors = customer.favoriteColors.filter(
+          (id) => id !== colorId
+        );
+      }
+    }
+  }
+
+  if (level === "brand") {
+    // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Utility: get brand preference by name
 // ---------------------------------------------------------------------------
 

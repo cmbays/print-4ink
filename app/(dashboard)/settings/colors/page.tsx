@@ -13,10 +13,18 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
 import { colors as allColorsData, autoPropagationConfig } from "@/lib/mock-data";
-import { propagateAddition, getImpactPreview } from "@/lib/helpers/color-preferences";
+import {
+  propagateAddition,
+  getImpactPreview,
+  removeFromAll,
+  removeFromLevelOnly,
+  removeFromSelected,
+} from "@/lib/helpers/color-preferences";
 import { displayPreferenceSchema } from "@/lib/schemas/color-preferences";
 import type { Color } from "@/lib/schemas/color";
+import type { ImpactPreview } from "@/lib/helpers/color-preferences";
 import type { DisplayPreference } from "@/lib/schemas/color-preferences";
 
 // ---------------------------------------------------------------------------
@@ -58,6 +66,11 @@ export default function SettingsColorsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayPref, setDisplayPref] = useState<DisplayPreference>(getStoredDisplayPreference);
   const [autoPropagate, setAutoPropagate] = useState(autoPropagationConfig.autoPropagate);
+  const [pendingRemoval, setPendingRemoval] = useState<{
+    colorId: string;
+    color: Color;
+    impact: ImpactPreview;
+  } | null>(null);
 
   const debouncedSearch = useDebounce(searchQuery, SEARCH_DEBOUNCE_MS);
 
@@ -94,40 +107,78 @@ export default function SettingsColorsPage() {
   }, [filteredColors]);
 
   // -- Handlers -------------------------------------------------------------
-  const toggleGlobalFavorite = useCallback(
-    (colorId: string) => {
+
+  // Shared: apply the global isFavorite toggle on a color
+  const applyGlobalToggle = useCallback(
+    (colorId: string, makeFavorite: boolean) => {
       setColorList((prev) => {
         const idx = prev.findIndex((c) => c.id === colorId);
         if (idx === -1) return prev;
-
-        const color = prev[idx];
-        const wasAdding = !color.isFavorite;
         const next = [...prev];
-        next[idx] = { ...color, isFavorite: wasAdding };
+        next[idx] = { ...next[idx], isFavorite: makeFavorite };
 
         // Also update the shared mock-data reference for other consumers
         const mockIdx = allColorsData.findIndex((c) => c.id === colorId);
         if (mockIdx !== -1) {
-          allColorsData[mockIdx] = { ...allColorsData[mockIdx], isFavorite: wasAdding };
+          allColorsData[mockIdx] = { ...allColorsData[mockIdx], isFavorite: makeFavorite };
         }
-
-        // N4 addition path: if adding and autoPropagate enabled → propagate
-        if (wasAdding && autoPropagate) {
-          propagateAddition("global", colorId);
-        }
-
-        // N4 removal path: if removing and children exist → stub P4 (→ V6)
-        if (!wasAdding) {
-          const impact = getImpactPreview("global", colorId);
-          if (impact.supplierCount > 0 || impact.customerCount > 0) {
-            // PHASE 1 STUB: In V6 this opens RemovalConfirmationDialog
-          }
-        }
-
         return next;
       });
     },
-    [autoPropagate]
+    []
+  );
+
+  const toggleGlobalFavorite = useCallback(
+    (colorId: string) => {
+      const color = colorList.find((c) => c.id === colorId);
+      if (!color) return;
+
+      const isAdding = !color.isFavorite;
+
+      if (isAdding) {
+        // N4 addition path: toggle + propagate if enabled
+        applyGlobalToggle(colorId, true);
+        if (autoPropagate) {
+          propagateAddition("global", colorId);
+        }
+      } else {
+        // N4 removal path: check impact before removing
+        const impact = getImpactPreview("global", colorId);
+        if (impact.supplierCount > 0 || impact.customerCount > 0) {
+          // Open RemovalConfirmationDialog — don't toggle yet
+          setPendingRemoval({ colorId, color, impact });
+        } else {
+          // No children affected — remove directly
+          applyGlobalToggle(colorId, false);
+        }
+      }
+    },
+    [colorList, autoPropagate, applyGlobalToggle]
+  );
+
+  // P4 action handlers — called from RemovalConfirmationDialog
+  const handleRemoveAll = useCallback(() => {
+    if (!pendingRemoval) return;
+    applyGlobalToggle(pendingRemoval.colorId, false);
+    removeFromAll("global", pendingRemoval.colorId);
+    setPendingRemoval(null);
+  }, [pendingRemoval, applyGlobalToggle]);
+
+  const handleRemoveLevelOnly = useCallback(() => {
+    if (!pendingRemoval) return;
+    applyGlobalToggle(pendingRemoval.colorId, false);
+    removeFromLevelOnly("global", pendingRemoval.colorId);
+    setPendingRemoval(null);
+  }, [pendingRemoval, applyGlobalToggle]);
+
+  const handleRemoveSelected = useCallback(
+    (brandNames: string[], customerCompanies: string[]) => {
+      if (!pendingRemoval) return;
+      applyGlobalToggle(pendingRemoval.colorId, false);
+      removeFromSelected("global", pendingRemoval.colorId, brandNames, customerCompanies);
+      setPendingRemoval(null);
+    },
+    [pendingRemoval, applyGlobalToggle]
   );
 
   // N5: setDisplayPreference
@@ -262,6 +313,22 @@ export default function SettingsColorsPage() {
           </div>
         </div>
       </div>
+
+      {/* P4: Removal Confirmation Dialog */}
+      {pendingRemoval && (
+        <RemovalConfirmationDialog
+          open={!!pendingRemoval}
+          onOpenChange={(open) => {
+            if (!open) setPendingRemoval(null);
+          }}
+          color={pendingRemoval.color}
+          level="global"
+          impact={pendingRemoval.impact}
+          onRemoveAll={handleRemoveAll}
+          onRemoveLevelOnly={handleRemoveLevelOnly}
+          onRemoveSelected={handleRemoveSelected}
+        />
+      )}
     </>
   );
 }
