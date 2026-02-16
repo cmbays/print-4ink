@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor, Film } from "lucide-react";
+import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import { ArtworkLibrary } from "./ArtworkLibrary";
 import { ArtworkUploadModal } from "./ArtworkUploadModal";
 import { QuoteReviewSheet } from "./QuoteReviewSheet";
 import { ServiceTypeTabBar } from "./ServiceTypeTabBar";
+import { DtfTabContent } from "./DtfTabContent";
 import {
   customers as mockCustomers,
   colors as mockColors,
@@ -955,17 +956,21 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           </div>
         )}
 
-        {/* DTF Tab Content (P2.4) — placeholder until Wave 2 */}
+        {/* DTF Tab Content (P2.4) — Wave 2: DTF line items + size presets */}
         {activeServiceTab === "dtf" && (
-          <div id="tabpanel-dtf" role="tabpanel" className="rounded-lg border border-border bg-elevated p-8 text-center">
-            <Film className="mx-auto size-10 text-muted-foreground/40" />
-            <p className="mt-3 text-sm font-medium text-foreground">DTF Gang Sheet Builder</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Add designs, set sizes and quantities, then calculate optimal sheet layouts.
-            </p>
-            <p className="mt-4 text-xs text-muted-foreground/60">
-              Coming in next wave
-            </p>
+          <div id="tabpanel-dtf" role="tabpanel">
+            <DtfTabContent
+              lineItems={dtfLineItems}
+              setLineItems={setDtfLineItems}
+              sheetCalculation={sheetCalculation}
+              splitMode={splitMode}
+              setSplitMode={setSplitMode}
+              canvasLayout={canvasLayout}
+              activeSheetIndex={activeSheetIndex}
+              setActiveSheetIndex={setActiveSheetIndex}
+              setSheetCalculation={setSheetCalculation}
+              setCanvasLayout={setCanvasLayout}
+            />
           </div>
         )}
 

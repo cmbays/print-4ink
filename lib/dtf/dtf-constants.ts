@@ -1,3 +1,5 @@
+import type { JobTask } from "@/lib/schemas/job";
+
 // ---------------------------------------------------------------------------
 // DTF Size Presets (S26) — standalone presets, NOT artwork-tied
 // ---------------------------------------------------------------------------
@@ -20,6 +22,21 @@ export const DTF_TASK_TEMPLATE = [
   { name: "QC passed" },
   { name: "Shipped" },
 ] as const;
+
+// ---------------------------------------------------------------------------
+// DTF Task Template Factory
+// ---------------------------------------------------------------------------
+
+/** Generate DTF-specific production tasks matching jobTaskSchema shape. */
+export function getDtfTaskTemplate(): JobTask[] {
+  return DTF_TASK_TEMPLATE.map((t, i) => ({
+    id: crypto.randomUUID(),
+    label: t.name,
+    isCompleted: false,
+    isCanonical: true,
+    sortOrder: i,
+  }));
+}
 
 // ---------------------------------------------------------------------------
 // Sheet Constants
