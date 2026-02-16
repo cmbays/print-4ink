@@ -10,7 +10,7 @@ interface Props {
   pipelineType?: string;
   stage: string;
   tags: string[];
-  status: string;
+  status: 'complete' | 'in-progress' | 'superseded';
   slug: string;
 }
 
