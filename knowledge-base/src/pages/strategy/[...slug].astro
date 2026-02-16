@@ -1,0 +1,128 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('strategy');
+  return docs.map((doc) => ({
+    params: { slug: doc.id },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+const { title, subtitle, date, docType, phase, pipelinesCompleted, pipelinesLaunched, tags, sessionId, branch, status } = doc.data;
+const dateStr = date.toISOString().split('T')[0];
+
+function labelFromSlug(s: string): string {
+  return s.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+function tagColor(tag: string): string {
+  if (tag === 'feature' || tag === 'build') return 'bg-success/12 text-success';
+  if (tag === 'plan') return 'bg-action/12 text-action';
+  if (tag === 'decision' || tag === 'learning') return 'bg-warning/12 text-warning';
+  if (tag === 'research') return 'bg-purple/12 text-purple';
+  return 'bg-bg-surface text-text-muted';
+}
+---
+
+<Layout title={title} description={subtitle}>
+  <main class="max-w-[720px] mx-auto px-6 py-12" data-pagefind-body>
+    <a href="/strategy" class="inline-flex items-center gap-1.5 text-text-muted text-sm hover:text-action transition-colors mb-8" data-pagefind-ignore>
+      <span>&larr;</span> Back to Strategy
+    </a>
+
+    {/* Tags + docType badge */}
+    <div class="flex items-center gap-2 mb-4">
+      <span class={`text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ${docType === 'planning' ? 'bg-action/12 text-action' : 'bg-warning/12 text-warning'}`}>
+        {docType}
+      </span>
+      {tags.map((tag) => (
+        <span class={`text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded ${tagColor(tag)}`}>
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{title}</h1>
+    <p class="text-[15px] text-text-secondary leading-relaxed mb-6">{subtitle}</p>
+
+    {/* Meta grid */}
+    <div class="border border-border rounded-lg overflow-hidden mb-6">
+      <div class="grid grid-cols-2">
+        <div class="px-4 py-3 border-b border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Date</div>
+          <div class="text-sm text-text-primary">{dateStr}</div>
+        </div>
+        <div class="px-4 py-3 border-b border-border border-l border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Phase</div>
+          <div class="text-sm text-text-primary">Phase {phase}</div>
+        </div>
+        <div class="px-4 py-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Status</div>
+          <div class={`text-sm font-medium ${status === 'complete' ? 'text-success' : 'text-action'}`}>
+            {status === 'complete' ? 'Complete' : 'In Progress'}
+          </div>
+        </div>
+        <div class="px-4 py-3 border-l border-border">
+          <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-1">Branch</div>
+          <div class="text-sm">
+            {branch ? (
+              <code class="font-mono text-xs bg-bg-surface px-1.5 py-0.5 rounded text-action">{branch}</code>
+            ) : (
+              <span class="text-text-muted">--</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Pipelines completed */}
+    {pipelinesCompleted && pipelinesCompleted.length > 0 && (
+      <div class="mb-4" data-pagefind-ignore>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Pipelines Completed</div>
+        <div class="flex flex-wrap gap-1.5">
+          {pipelinesCompleted.map((p) => (
+            <a href={`/pipelines/${p}`} class="inline-flex items-center bg-success/10 text-success text-xs font-medium px-2 py-0.5 rounded hover:bg-success/20 transition-colors">
+              {labelFromSlug(p)}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Pipelines launched */}
+    {pipelinesLaunched && pipelinesLaunched.length > 0 && (
+      <div class="mb-4" data-pagefind-ignore>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Pipelines Launched</div>
+        <div class="flex flex-wrap gap-1.5">
+          {pipelinesLaunched.map((p) => (
+            <a href={`/pipelines/${p}`} class="inline-flex items-center bg-action/10 text-action text-xs font-medium px-2 py-0.5 rounded hover:bg-action/20 transition-colors">
+              {labelFromSlug(p)}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* Session resume */}
+    {sessionId && (
+      <div class="bg-bg-elevated border border-border rounded-lg px-4 py-3 mb-6" data-pagefind-ignore>
+        <div class="text-[11px] font-semibold uppercase tracking-wide text-text-muted mb-2">Resume Session</div>
+        <code class="font-mono text-xs text-action select-all">claude --resume {sessionId}</code>
+      </div>
+    )}
+
+    <hr class="border-t border-border mb-8" />
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="mt-16 pt-6 border-t border-border">
+      <p class="text-xs text-text-muted text-center">Screen Print Pro &mdash; {title} &mdash; {dateStr}</p>
+    </footer>
+  </main>
+</Layout>
