@@ -1,5 +1,6 @@
 ---
 import { pipelineLabel, pipelineStageSlugs, pluralize } from '../lib/utils';
+import Badge from './Badge.astro';
 
 interface Props {
   pipeline: string;
@@ -19,16 +20,7 @@ const label = pipelineLabel(pipeline);
 <div class="bg-bg-elevated border border-border rounded-lg p-4">
   <div class="flex items-center justify-between mb-3">
     <h3 class="text-[16px] font-semibold text-text-primary">{label}</h3>
-    <span
-      class:list={[
-        'text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded',
-        status === 'Active'
-          ? 'bg-success/12 text-success'
-          : 'bg-warning/12 text-warning',
-      ]}
-    >
-      {status}
-    </span>
+    <Badge colorClass={status === 'Active' ? 'bg-success/12 text-success' : 'bg-warning/12 text-warning'}>{status}</Badge>
   </div>
 
   <div class="flex items-center gap-3 text-[12px] text-text-muted mb-3">
