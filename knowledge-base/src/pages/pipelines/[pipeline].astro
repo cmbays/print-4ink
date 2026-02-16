@@ -4,7 +4,7 @@ import Pipeline from '../../components/Pipeline.astro';
 import VerticalHealth from '../../components/VerticalHealth.astro';
 import DocCard from '../../components/DocCard.astro';
 import { getCollection } from 'astro:content';
-import { pipelineLabel as getPipelineLabel } from '../../lib/utils';
+import { pipelineLabel as getPipelineLabel, normalizeStage } from '../../lib/utils';
 import stagesConfig from '../../../../config/stages.json';
 
 const allStages = stagesConfig
@@ -24,10 +24,10 @@ const allDocs = await getCollection('pipelines');
 const pipelineDocs = allDocs.filter((s) => s.data.pipelineName === pipeline);
 const sorted = pipelineDocs.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// Compute stage breakdown
+// Compute stage breakdown (normalize old slugs → canonical before counting)
 const stageBreakdown: Record<string, number> = {};
 for (const stage of allStages) {
-  stageBreakdown[stage] = pipelineDocs.filter((s) => s.data.stage === stage).length;
+  stageBreakdown[stage] = pipelineDocs.filter((s) => normalizeStage(s.data.stage) === stage).length;
 }
 
 // Build pipeline stages

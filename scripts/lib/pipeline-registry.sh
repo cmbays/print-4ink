@@ -40,6 +40,17 @@ _pipeline_registry_unlock() {
 
 _pipeline_registry_write() {
     local content="$1"
+
+    # Guard: reject empty or invalid content
+    if [[ -z "$content" ]]; then
+        echo "Error: Refusing to write empty content to pipeline registry." >&2
+        return 1
+    fi
+    if ! echo "$content" | jq -e '.pipelines' >/dev/null 2>&1; then
+        echo "Error: Invalid registry content (missing .pipelines key)." >&2
+        return 1
+    fi
+
     local tmp
     tmp=$(mktemp "${PIPELINE_REGISTRY_FILE}.XXXXXX")
     echo "$content" > "$tmp" && mv "$tmp" "$PIPELINE_REGISTRY_FILE"
@@ -157,4 +168,24 @@ _registry_pipeline_exists() {
     local count
     count=$(jq --arg id "$id" '[.pipelines[] | select(.id == $id)] | length' "$PIPELINE_REGISTRY_FILE")
     [[ "$count" -gt 0 ]]
+}
+
+# Delete a pipeline from the registry
+# Usage: _registry_pipeline_delete <pipeline_id>
+_registry_pipeline_delete() {
+    _registry_pipeline_init
+    local id="$1"
+
+    if ! _registry_pipeline_exists "$id"; then
+        echo "Error: Pipeline '$id' not found." >&2
+        return 1
+    fi
+
+    _pipeline_registry_lock || return 1
+    local result
+    result=$(jq --arg id "$id" 'del(.pipelines[] | select(.id == $id))' "$PIPELINE_REGISTRY_FILE") \
+        || { _pipeline_registry_unlock; return 1; }
+    _pipeline_registry_write "$result" \
+        || { _pipeline_registry_unlock; return 1; }
+    _pipeline_registry_unlock
 }

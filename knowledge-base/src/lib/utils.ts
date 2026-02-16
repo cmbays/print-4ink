@@ -3,6 +3,21 @@ import tagsConfig from '../../../config/tags.json';
 import productsConfig from '../../../config/products.json';
 import toolsConfig from '../../../config/tools.json';
 
+// ── Stage slug normalization ─────────────────────────────────────
+
+// Old slugs → new canonical slugs
+const stageSlugMap: Record<string, string> = {
+  shaping: 'shape',
+  breadboarding: 'breadboard',
+  'implementation-planning': 'plan',
+  learnings: 'wrap-up',
+};
+
+/** Normalize a stage slug from old format to new canonical format */
+export function normalizeStage(slug: string): string {
+  return stageSlugMap[slug] || slug;
+}
+
 // ── Label lookups (config-driven) ────────────────────────────────
 
 // Stage label map: includes both new canonical slugs from config AND

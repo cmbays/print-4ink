@@ -13,12 +13,28 @@ const products = productsConfig.map((p) => p.slug) as [string, ...string[]];
 const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]];
 const pipelineTypes = pipelineTypesConfig.map((w) => w.slug) as [string, ...string[]];
 
+// Stage slug mapping: old → new canonical (for backward compat with existing frontmatter)
+const stageSlugMap: Record<string, string> = {
+  shaping: 'shape',
+  breadboarding: 'breadboard',
+  'implementation-planning': 'plan',
+  learnings: 'wrap-up',
+};
+
+// Build union of all valid slugs (canonical + old aliases)
+const canonicalSlugs = stagesConfig
+  .filter((s: { slug: string; pipeline?: boolean }) => s.pipeline !== false)
+  .map((s: { slug: string }) => s.slug);
+const allValidStageSlugs = [
+  ...new Set([...canonicalSlugs, ...Object.keys(stageSlugMap)]),
+] as [string, ...string[]];
+
 // ── Pipelines (renamed from sessions) ─────────────────────────────
 // Backward-compat: z.preprocess renames old `pipeline` key to `pipelineName`
 // so existing frontmatter files work without modification.
-// Stage is temporarily z.string() to accept both old slugs (shaping, breadboarding,
-// implementation-planning, learnings, polish) and new slugs (shape, breadboard, plan, wrap-up).
-// Wave 1 migrates all files and restores strict z.enum().
+// Stage accepts both old slugs (shaping, breadboarding, implementation-planning,
+// learnings) and new canonical slugs (shape, breadboard, plan, wrap-up).
+// Display components normalize old → new via normalizeStage() in lib/utils.ts.
 const pipelines = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/pipelines' }),
   schema: z.preprocess(
@@ -39,7 +55,7 @@ const pipelines = defineCollection({
       pipelineType: z.enum(pipelineTypes),
       products: z.array(z.enum(products)).optional().default([]),
       tools: z.array(z.enum(tools)).optional().default([]),
-      stage: z.string(),
+      stage: z.enum(allValidStageSlugs),
       tags: z.array(z.enum(tags)),
       sessionId: z.string().optional(),
       branch: z.string().optional(),

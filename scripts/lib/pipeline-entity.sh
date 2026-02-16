@@ -11,6 +11,7 @@
 
 # Config paths (resolved lazily via functions — allows PRINT4INK_ROOT override after sourcing)
 _pipeline_types_config() { echo "${PRINT4INK_ROOT}/config/pipeline-types.json"; }
+# Used by Wave 2 (pipeline-gates.sh) — stage gate validation
 _pipeline_gates_config() { echo "${PRINT4INK_ROOT}/config/pipeline-gates.json"; }
 
 # ── Valid States & Transitions ────────────────────────────────────────────────
@@ -118,6 +119,10 @@ _pipeline_create() {
     # Get first stage for this pipeline type
     local first_stage
     first_stage=$(_pipeline_first_stage "$type")
+    if [[ -z "$first_stage" || "$first_stage" == "null" ]]; then
+        echo "Error: No stages defined for pipeline type '$type'." >&2
+        return 1
+    fi
 
     # Build entity JSON
     local now
@@ -152,7 +157,7 @@ _pipeline_create() {
         }')
 
     # Register
-    _registry_pipeline_add "$entity"
+    _registry_pipeline_add "$entity" || { echo "Error: Failed to register pipeline '$id'." >&2; return 1; }
 
     echo "$id"
 }
@@ -261,20 +266,30 @@ _pipeline_transition() {
         return 1
     fi
 
-    # Update state
-    _registry_pipeline_update "$id" "state" "$new_state"
-
-    # Set timestamps for lifecycle milestones
+    # Build jq expression for atomic update
     local now
     now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+    local jq_expr
     case "$new_state" in
         active)
-            _registry_pipeline_update "$id" "startedAt" "$now"
+            jq_expr='(.pipelines[] | select(.id == $id)) |= (.state = $new_state | .startedAt = $now)'
             ;;
         cooled)
-            _registry_pipeline_update "$id" "completedAt" "$now"
+            jq_expr='(.pipelines[] | select(.id == $id)) |= (.state = $new_state | .completedAt = $now)'
+            ;;
+        *)
+            jq_expr='(.pipelines[] | select(.id == $id)).state = $new_state'
             ;;
     esac
+
+    _pipeline_registry_lock || return 1
+    local result
+    result=$(jq --arg id "$id" --arg new_state "$new_state" --arg now "$now" \
+        "$jq_expr" "$PIPELINE_REGISTRY_FILE") \
+        || { _pipeline_registry_unlock; return 1; }
+    _pipeline_registry_write "$result" \
+        || { _pipeline_registry_unlock; return 1; }
+    _pipeline_registry_unlock
 
     echo "Pipeline '$id': $current_state -> $new_state"
 }

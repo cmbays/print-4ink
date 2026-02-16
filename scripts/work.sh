@@ -307,6 +307,8 @@ CONTEXT
 # Usage: _work_phase <phase> <pipeline-name> [--prompt "..."] [--yolo] [--claude-args "..."]
 _work_phase() {
     local PHASE="$1"; shift
+    # NOTE: Variable named VERTICAL for backward compat with manifest .vertical field.
+    # Wave 2 renames to PIPELINE_NAME when manifest schema migrates.
     local VERTICAL="${1:-}"
 
     [[ -z "$VERTICAL" ]] && {
@@ -453,7 +455,11 @@ _work_build() {
 
     # Pull latest base branch once before creating any worktrees
     echo "Pulling latest $BASE_BRANCH..."
-    git -C "$PRINT4INK_REPO" pull origin "$BASE_BRANCH" --quiet 2>/dev/null
+    if ! git -C "$PRINT4INK_REPO" pull origin "$BASE_BRANCH" --quiet; then
+        echo "Error: Failed to pull base branch '$BASE_BRANCH'." >&2
+        echo "  Check the 'baseBranch' field in your execution manifest." >&2
+        return 1
+    fi
 
     # Create worktrees for all sessions in this wave
     local TOPICS
