@@ -1,0 +1,9 @@
+[
+  { "slug": "garments", "label": "Garments" },
+  { "slug": "screens", "label": "Screens" },
+  { "slug": "pricing", "label": "Pricing" },
+  { "slug": "colors", "label": "Colors" },
+  { "slug": "dtf", "label": "Direct-to-Film" },
+  { "slug": "screen-printing", "label": "Screen Printing" },
+  { "slug": "mobile", "label": "Mobile" }
+]
