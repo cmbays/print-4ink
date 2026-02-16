@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import PageFooter from '../../components/PageFooter.astro';
 import BackLink from '../../components/BackLink.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
 import { getCollection } from 'astro:content';
 import { formatDate, sortByDateDesc } from '../../lib/utils';
 
@@ -19,13 +20,10 @@ const sorted = strategyDocs.sort(sortByDateDesc);
     <div class="space-y-3">
       {sorted.map((doc) => {
         const dateStr = formatDate(doc.data.date);
-        const isPlanning = doc.data.docType === 'planning';
         return (
           <a href={`/strategy/${doc.id}`} class="block bg-bg-elevated border border-border rounded-lg p-4 hover:border-action/30 transition-colors group">
             <div class="flex items-center gap-2 mb-1.5">
-              <span class={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${isPlanning ? 'bg-action/12 text-action' : 'bg-warning/12 text-warning'}`}>
-                {doc.data.docType}
-              </span>
+              <StatusBadge status={doc.data.docType} />
             </div>
             <h3 class="text-sm font-semibold text-text-primary group-hover:text-action transition-colors mb-0.5">{doc.data.title}</h3>
             <p class="text-[13px] text-text-secondary line-clamp-2 mb-2">{doc.data.subtitle}</p>
