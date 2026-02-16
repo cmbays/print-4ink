@@ -310,6 +310,7 @@ These documents define the project. Reference them, keep them current, and never
 | `PROGRESS.md` | Generated progress report — live GitHub data | Regenerated: `work progress` |
 | `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
 | `docs/PM.md` | PM workflows, labels, templates, dependencies, agent conventions | PM infrastructure changes |
+| `docs/HOW_WE_WORK.md` | Methodology, Shape Up philosophy, PM tools, automation trajectory | Process or tooling changes |
 
 **Rules:**
 - Before starting any work, read `ROADMAP.md` for strategic context and current bets.
