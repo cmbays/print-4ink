@@ -13,6 +13,4 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/labeler@v5
-        with:
-          configuration-path: .github/labeler.yml
+      - uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b # v6.0.1
