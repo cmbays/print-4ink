@@ -118,6 +118,8 @@ const pipelines = Object.keys(pipelineCounts)
   id="mobile-sidebar-toggle"
   class="md:hidden fixed top-4 left-4 z-50 bg-bg-elevated border border-border rounded-md p-2 text-text-secondary hover:text-text-primary transition-colors"
   aria-label="Toggle sidebar"
+  aria-controls="sidebar"
+  aria-expanded="false"
 >
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -136,6 +138,8 @@ const pipelines = Object.keys(pipelineCounts)
       sidebar.classList.toggle('fixed');
       sidebar.classList.toggle('z-40');
       sidebar.classList.toggle('flex');
+      const expanded = !sidebar.classList.contains('hidden');
+      toggle.setAttribute('aria-expanded', String(expanded));
     });
   }
 </script>
