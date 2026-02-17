@@ -28,7 +28,7 @@ import { displayPreferenceSchema } from "@domain/entities/color-preferences";
 import type { Color } from "@domain/entities/color";
 import type { ImpactPreview } from "@domain/rules/customer.rules";
 import type { DisplayPreference } from "@domain/entities/color-preferences";
-import { useDebounce } from "@/lib/hooks/useDebounce";
+import { useDebounce } from "@shared/hooks/useDebounce";
 
 // ---------------------------------------------------------------------------
 // Constants

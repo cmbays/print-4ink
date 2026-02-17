@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/helpers/swatch";
 import { getColorsMutable } from "@infra/repositories/colors";
 import type { Color } from "@domain/entities/color";
-import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
+import { useGridKeyboardNav } from "@shared/hooks/useGridKeyboardNav";
 
 const catalogColors = getColorsMutable();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useIsMobile } from "@/lib/hooks/use-is-mobile";
+import { useIsMobile } from "@shared/hooks/use-is-mobile";
 import {
   Dialog,
   DialogContent,

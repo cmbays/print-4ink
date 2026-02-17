@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/helpers/swatch";
 import type { Color } from "@domain/entities/color";
 import { getColorsMutable } from "@infra/repositories/colors";
-import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
+import { useGridKeyboardNav } from "@shared/hooks/useGridKeyboardNav";
 
 type ColorSwatchPickerProps = {
   colors: Color[];

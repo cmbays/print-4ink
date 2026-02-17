@@ -21,7 +21,7 @@ import type {
   MarginBreakdown,
 } from "@domain/entities/price-matrix";
 import type { GarmentCategory } from "@domain/entities/garment";
-import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
+import { useSpreadsheetEditor } from "@shared/hooks/useSpreadsheetEditor";
 import { X } from "lucide-react";
 
 const dotColors: Record<MarginIndicator, string> = {
