@@ -1,6 +1,6 @@
 "use client";
 
-import { computeIsOverdue, computeDaysOverdue } from "@/lib/helpers/invoice-utils";
+import { computeIsOverdue, computeDaysOverdue } from "@domain/rules/invoice.rules";
 
 interface OverdueBadgeProps {
   dueDate: string;

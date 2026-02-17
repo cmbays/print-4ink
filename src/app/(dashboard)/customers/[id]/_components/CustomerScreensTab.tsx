@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Monitor } from "lucide-react";
-import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
+import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
 import { ScreenRecordRow } from "./ScreenRecordRow";
 import { ReclaimScreenDialog } from "./ReclaimScreenDialog";
 import type { CustomerScreen } from "@domain/entities/customer-screen";

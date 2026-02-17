@@ -4,7 +4,7 @@ import {
   computeRiskLevel,
   computeTaskProgress,
   computeFilteredCards,
-} from "../job-utils";
+} from "../job.rules";
 import type { BoardCard } from "@domain/entities/board-card";
 import type { JobTask } from "@domain/entities/job";
 

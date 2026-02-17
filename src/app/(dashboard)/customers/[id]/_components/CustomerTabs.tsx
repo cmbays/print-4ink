@@ -19,7 +19,7 @@ import { CustomerDetailsPanel } from "./CustomerDetailsPanel";
 import { CustomerScreensTab } from "./CustomerScreensTab";
 import { CustomerPreferencesTab } from "./CustomerPreferencesTab";
 import { NotesPanel } from "@/components/features/NotesPanel";
-import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
+import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
 import type { Customer } from "@domain/entities/customer";
 import type { Quote } from "@domain/entities/quote";
 import type { Job } from "@domain/entities/job";

@@ -35,7 +35,7 @@ import {
   calculateInvoiceTotal,
   calculateDueDate,
   convertQuoteToInvoiceLineItems,
-} from "@/lib/helpers/invoice-utils";
+} from "@domain/rules/invoice.rules";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
 import type { Customer, PaymentTerms, PricingTier } from "@domain/entities/customer";

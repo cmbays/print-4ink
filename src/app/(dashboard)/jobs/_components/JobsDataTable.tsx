@@ -40,7 +40,7 @@ import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { computeTaskProgress } from "@/lib/helpers/job-utils";
+import { computeTaskProgress } from "@domain/rules/job.rules";
 import { formatDate } from "@/lib/helpers/format";
 import {
   LANE_LABELS,

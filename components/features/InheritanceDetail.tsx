@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { getColorsMutable } from "@infra/repositories/colors";
-import type { InheritanceChain } from "@/lib/helpers/color-preferences";
+import type { InheritanceChain } from "@domain/rules/customer.rules";
 
 const catalogColors = getColorsMutable();
 

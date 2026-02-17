@@ -31,7 +31,7 @@ import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
+import { computeIsOverdue } from "@domain/rules/invoice.rules";
 import { formatDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { ENTITY_STYLES } from "@/lib/constants/entities";

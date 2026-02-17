@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import {
   resolveEffectiveFavorites,
   getInheritanceChain,
-} from "@/lib/helpers/color-preferences";
+} from "@domain/rules/customer.rules";
 import type { Color } from "@domain/entities/color";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { InheritanceMode } from "@domain/entities/color-preferences";

@@ -8,7 +8,7 @@ import {
   removeFromAll,
   removeFromLevelOnly,
   removeFromSelected,
-} from "../color-preferences";
+} from "../customer.rules";
 import {
   colors,
   customers,

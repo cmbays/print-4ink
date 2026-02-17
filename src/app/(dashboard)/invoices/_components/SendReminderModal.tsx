@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { computeIsOverdue, computeDaysOverdue } from "@/lib/helpers/invoice-utils";
+import { computeIsOverdue, computeDaysOverdue } from "@domain/rules/invoice.rules";
 import { formatCurrency } from "@/lib/helpers/money";
 import type { Invoice } from "@domain/entities/invoice";
 

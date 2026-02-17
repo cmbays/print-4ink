@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { TaskItem } from "./TaskItem";
 import { AddCustomTaskInput } from "./AddCustomTaskInput";
-import { computeTaskProgress } from "@/lib/helpers/job-utils";
+import { computeTaskProgress } from "@domain/rules/job.rules";
 import type { JobTask } from "@domain/entities/job";
 
 interface TaskChecklistProps {

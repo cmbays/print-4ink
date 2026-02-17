@@ -30,7 +30,7 @@ import type { GarmentCatalog } from "@domain/entities/garment";
 
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
-import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
+import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount, ServiceType } from "@domain/entities/quote";
 import type { DtfLineItem } from "@domain/entities/dtf-line-item";

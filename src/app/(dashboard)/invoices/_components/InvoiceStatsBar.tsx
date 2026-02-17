@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
+import { computeIsOverdue } from "@domain/rules/invoice.rules";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { money, toNumber } from "@/lib/helpers/money";
 import { MoneyAmount } from "@/components/features/MoneyAmount";

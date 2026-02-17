@@ -23,7 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ColorFilterGrid } from "./ColorFilterGrid";
-import { getColorById } from "@/lib/helpers/garment-helpers";
+import { getColorById } from "@domain/rules/garment.rules";
 import { garmentCategoryEnum } from "@domain/entities/garment";
 import { GARMENT_CATEGORY_LABELS } from "@/lib/constants";
 import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";

@@ -35,17 +35,17 @@ import { LANE_LABELS } from "@/lib/constants";
 import {
   computeCapacitySummary,
   computeFilteredCards,
-} from "@/lib/helpers/job-utils";
+} from "@domain/rules/job.rules";
 import {
   projectJobToCard,
   projectScratchNoteToCard,
-} from "@/lib/helpers/board-projections";
+} from "@domain/rules/board.rules";
 import {
   parseDragId,
   parseDroppableId,
   getCardLabel,
   getCardSortDate,
-} from "@/lib/helpers/board-dnd";
+} from "@domain/rules/board.rules";
 import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@domain/entities/board-card";
 import type { Lane, Job } from "@domain/entities/job";
 import type { ScratchNote } from "@domain/entities/scratch-note";

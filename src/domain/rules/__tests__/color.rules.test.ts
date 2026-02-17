@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { hexToColorMatrix, hexToRgb } from "../color-matrix";
+import { hexToColorMatrix, hexToRgb } from "../color.rules";
 
 describe("hexToRgb", () => {
   it("converts black", () => {

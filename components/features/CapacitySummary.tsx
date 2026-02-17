@@ -1,6 +1,6 @@
 import { Zap, Package, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { CapacitySummary as CapacitySummaryType } from "@/lib/helpers/job-utils";
+import type { CapacitySummary as CapacitySummaryType } from "@domain/rules/job.rules";
 
 interface CapacitySummaryProps {
   summary: CapacitySummaryType;

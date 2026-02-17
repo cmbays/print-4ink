@@ -22,7 +22,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Color } from "@domain/entities/color";
-import type { ImpactPreview } from "@/lib/helpers/color-preferences";
+import type { ImpactPreview } from "@domain/rules/customer.rules";
 
 // ---------------------------------------------------------------------------
 // Props

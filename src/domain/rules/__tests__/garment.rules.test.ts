@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getGarmentById, getColorById } from "../garment-helpers";
+import { getGarmentById, getColorById } from "../garment.rules";
 
 describe("getGarmentById", () => {
   it("finds garment by ID", () => {

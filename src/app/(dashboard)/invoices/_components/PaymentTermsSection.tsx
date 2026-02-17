@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PAYMENT_TERMS_LABELS } from "@/lib/constants";
-import { calculateDueDate } from "@/lib/helpers/invoice-utils";
+import { calculateDueDate } from "@domain/rules/invoice.rules";
 import type { PaymentTerms } from "@domain/entities/customer";
 
 const PAYMENT_TERMS_OPTIONS: PaymentTerms[] = [

@@ -27,7 +27,7 @@ import { riskLevelEnum } from "@domain/entities/job";
 import { serviceTypeEnum } from "@domain/entities/quote";
 import type { RiskLevel } from "@domain/entities/job";
 import type { ServiceType } from "@domain/entities/quote";
-import type { CardFilters } from "@/lib/helpers/job-utils";
+import type { CardFilters } from "@domain/rules/job.rules";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
 const cardTypeEnum = z.enum(["all", "jobs", "quotes"]);

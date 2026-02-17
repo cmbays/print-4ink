@@ -7,7 +7,7 @@ import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/helpers/money";
-import { getColorById } from "@/lib/helpers/garment-helpers";
+import { getColorById } from "@domain/rules/garment.rules";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 
