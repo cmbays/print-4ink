@@ -403,6 +403,8 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 | `feature-strategy` | Feature planning | Product strategy frameworks and feature plan templates |
 | `doc-sync` | After completing steps | Drift detection and doc synchronization |
 | `cool-down` | Between build cycles, after demos | Retrospective synthesis and forward planning (Shape Up) |
+| `build-session-protocol` | Build sessions | Completion protocol — Phase 2 auto-invokes review orchestration |
+| `review-orchestration` | Phase 2 of build sessions (auto-invoked) | Automated quality gate — classifies PR, dispatches review agents, aggregates findings, gates merge |
 
 ### Orchestration Patterns
 
@@ -413,6 +415,7 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 - **Pre-Build Chain** (complex screens): `breadboarding → requirements-interrogator → spike doc → frontend-builder → quality-gate → progress update`
 - **Checkpoint Chain** (milestones): `design-auditor → audit report → user approval → frontend-builder (fixes) → quality-gate`
 - **Competitive Analysis**: `feature-strategist → feature plan → user approval → update IMPLEMENTATION_PLAN`
+- **Build Session completion** (every build PR): `build-session-protocol` Phase 2 auto-invokes `review-orchestration` → gate decision → Phase 3 (PR creation)
 
 ## Knowledge Base (Astro)
 

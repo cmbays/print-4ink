@@ -26,30 +26,23 @@ This skill defines the end-to-end completion flow for every build session in Scr
 
 ### Phase 2: Self-Review
 
-After implementation is complete, launch sub-agent reviews:
+After implementation is complete, run automated review orchestration:
 
-7. **Code quality review**: Use the **build-reviewer** agent to check for:
-   - DRY violations and unused code
-   - `any` types (should use Zod inference)
-   - Proper `cn()` usage (no string concatenation for classNames)
-   - Tailwind tokens (no hardcoded px values)
-   - Component composition patterns
-   - Zod-first types (no standalone interfaces for schema data)
-   - Correct shadcn/ui usage
+7. **Invoke the `review-orchestration` skill** — it runs the full 6-stage pipeline automatically:
+   - Stage 1: Normalize (extract PR facts from git diff)
+   - Stage 2: Classify (map files to domains, compute risk score)
+   - Stage 3: Compose (evaluate dispatch policies → agent manifest)
+   - Stage 4: Gap detect (LLM scan for concerns the config missed)
+   - Stage 5: Dispatch (launch agents from manifest in parallel)
+   - Stage 6: Aggregate (merge findings, compute gate decision)
 
-8. **Financial safety review**: If the diff touches files in `lib/schemas/`, `lib/helpers/`, pricing engines, or any component displaying monetary values, use the **finance-sme** agent to verify:
-   - All monetary arithmetic uses `big.js` via `lib/helpers/money.ts`
-   - No raw `+`, `-`, `*`, `/` on money values
-   - Equality checks use `Big.eq()`, not `===`
-   - `round2()` applied before output
-   - `formatCurrency()` used for display
+8. **Act on the gate decision** returned by the skill:
+   - `fail`: Fix all critical findings, re-run orchestration from Stage 1
+   - `needs_fixes`: Fix all major findings, re-run orchestration from Stage 1
+   - `pass_with_warnings`: Proceed to Phase 3; file warning findings as GitHub Issues with labels: `vertical/<name>`, `type/tech-debt`, `source/review`, `priority/low` or `priority/medium`
+   - `pass`: Proceed directly to Phase 3
 
-9. **Security scan**: Check for:
-   - No hardcoded secrets or credentials
-   - Proper input validation at system boundaries
-   - No raw HTML injection without sanitization (use safe React patterns)
-
-10. Address all critical and high-severity findings before proceeding.
+9. **Do not proceed to Phase 3** until the gate decision is `pass` or `pass_with_warnings`.
 
 ### Phase 3: Create PR
 
@@ -75,7 +68,11 @@ gh pr create --title "<type>(<vertical>): <description>" --body "$(cat <<'EOF'
 - <Decision 1 and rationale>
 
 ### Review summary
-- **Self-review**: <N findings addressed, M deferred>
+- **Agents dispatched**: <list of agent IDs>
+- **Gate decision**: <PASS / PASS_WITH_WARNINGS / NEEDS_FIXES resolved>
+- **Findings addressed**: <N critical, M major fixed before PR>
+- **Warnings deferred**: <X warnings → GitHub Issues #NNN> or "None"
+- **Gaps detected**: <Y gaps logged for config improvement> or "None"
 - **Deferred items**: Filed as GitHub Issues (linked below)
 
 ### Testing
