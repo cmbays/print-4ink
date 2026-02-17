@@ -13,9 +13,17 @@
 - **DevX**: agents, 14 skills, `work` CLI, session orchestration, structured logger, error boundary
 - **Velocity**: 10 PRs merged today alone (architecture + tooling + IA design). Zero rollbacks.
 
-## Must-Have Remaining
+## Demo Objective (Clarified 2026-02-17)
 
-1. **Onboarding Wizards** (#145) — LAST unbuilt demo must-have. End-to-end journey: customer → quote → job board → invoice (both SP and DTF). Not started.
+**Re-anchor Gary from PrintLife to Screen Print Pro.** Gary is cognitively locked into PrintLife's workflows. The demo must be intuitive and responsive enough that he stops comparing to PrintLife and starts thinking about how *his business* fits into *this system*. Once re-anchored, feedback becomes actionable product signal ("I need X to adopt this") rather than comparative noise ("PrintLife does it this way").
+
+**The mechanism**: Wizard orients → Gary creates real data → in-memory backend makes system respond to *his* actions → Gary operates the system rather than observing it → re-anchoring happens.
+
+## Must-Have Remaining (Revised Priority)
+
+1. **In-memory backend adapters** — Enables real workflow continuity (quote → job → invoice with Gary's own data). Core demo differentiator. Port interfaces + bootstrap already in place from today's clean arch work.
+2. **Onboarding Wizards** (#145) — Orientation layer. Lowers "overwhelming" barrier, prevents revert to familiar territory. Feeds naturally into in-memory demo flow.
+3. **S&S API integration** — Stretch. Real garment data if time allows.
 
 ## Demo-Ready Status
 
