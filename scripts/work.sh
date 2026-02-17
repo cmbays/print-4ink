@@ -689,32 +689,102 @@ _work_next() {
 
 # ── Session Management ──────────────────────────────────────────────────────
 
-# Resume a Claude session by topic
+# Resume a Claude session by topic.
+# Usage: work resume <topic> [--new-worktree]
+#
+# Without --new-worktree: launches claude --resume from current directory (context only).
+# With --new-worktree:    creates a fresh worktree from the original base branch
+#                          and launches claude --resume inside it (continue coding).
+#
+# How --new-worktree works:
+#   _work_new is called with claude_args="--resume <id>" and a prompt string.
+#   _kdl_render_tab writes the prompt to .session-prompt.md and builds:
+#     claude --resume <id> 'Read .session-prompt.md for your task instructions...'
+#   The positional string is sent as the first new message in the resumed session.
+#   FALLBACK: if claude --resume + positional prompt doesn't work in your environment,
+#   remove the resume_prompt arg (pass "") and instead prepend the resume context
+#   to .session-context.md after _work_new returns.
 _work_resume() {
-    local topic="$1"
-    [[ -z "$topic" ]] && { echo "Usage: work resume <topic>"; return 1; }
+    local topic="${1:-}"
+    local new_worktree=""
+    shift || true
 
-    if ! type _registry_get &>/dev/null; then
-        echo "Error: Session registry not loaded. Cannot look up sessions."
-        return 1
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --new-worktree) new_worktree="1"; shift ;;
+            *) shift ;;
+        esac
+    done
+
+    [[ -z "$topic" ]] && { echo "Usage: work resume <topic> [--new-worktree]"; return 1; }
+
+    # Look up session ID: persistent store first, then registry
+    local session_id=""
+    if type _sessions_persistent_get_id &>/dev/null; then
+        session_id=$(_sessions_persistent_get_id "$topic")
+    elif type _registry_get &>/dev/null; then
+        # jq may return multiple lines if topic has multiple registry entries;
+        # pipe through head -1 to take the most recent.
+        session_id=$(_registry_get "$topic" | jq -r '.claudeSessionId // empty' | head -1)
     fi
-
-    local session_id
-    session_id=$(_registry_get "$topic" | jq -r '.claudeSessionId // empty')
 
     if [[ -z "$session_id" ]]; then
         echo "Error: No Claude session ID found for topic '$topic'"
-        echo "  The session may not have been registered, or the ID wasn't captured."
+        echo "  The session may not have had its ID captured before cleanup."
         echo "  Run 'work sessions' to see registered sessions."
         echo ""
-        echo "  Tip: You can find session IDs with:"
-        echo "    ls -t ~/.claude/projects/*/*.jsonl | head -5"
+        echo "  Tip: Find session IDs manually:"
+        echo "    ls -t ~/.claude/projects/*/*.jsonl | head -10"
         return 1
     fi
 
-    echo "Resuming Claude session for '$topic'..."
+    echo "Found session for '$topic'"
     echo "  Session ID: $session_id"
-    claude --resume "$session_id"
+
+    if [[ -n "$new_worktree" ]]; then
+        # Look up original branch info
+        local base_ref="main"
+        if type _sessions_persistent_get_base_ref &>/dev/null; then
+            base_ref=$(_sessions_persistent_get_base_ref "$topic")
+        fi
+
+        local resume_topic="${topic}-resume"
+
+        # Check for naming collision (e.g., called twice for the same topic)
+        local mmdd
+        mmdd=$(date +%m%d)
+        local resume_branch="session/${mmdd}-${resume_topic}"
+        if git -C "$PRINT4INK_REPO" rev-parse --verify "$resume_branch" &>/dev/null; then
+            echo "Error: Resume worktree branch '$resume_branch' already exists."
+            echo "  Either clean it first: work clean ${resume_topic}"
+            echo "  Or resume directly into the existing worktree by cd-ing there."
+            return 1
+        fi
+
+        local resume_prompt="You are resuming a previous Claude session for topic '${topic}'. \
+The previous worktree was cleaned (likely after a PR merged). \
+A fresh worktree has been created from '${base_ref}' for you to continue work. \
+Your full conversation history is loaded via --resume. \
+Read .session-context.md then continue where you left off."
+
+        echo ""
+        echo "Creating fresh worktree for resume..."
+        echo "  New topic: $resume_topic"
+        echo "  Base: $base_ref"
+        echo ""
+
+        # Pass --resume as claude_args; prompt goes to .session-prompt.md and is sent
+        # as the first new message in the resumed session.
+        # FALLBACK: if claude --resume + positional prompt doesn't work in your env,
+        # remove the resume_prompt arg (pass "") and instead append resume context
+        # manually to the .session-context.md after _work_new returns.
+        _work_new "$resume_topic" "$base_ref" "$resume_prompt" "--resume ${session_id}"
+    else
+        echo "Resuming session (context only — no worktree)..."
+        echo "  Run with --new-worktree to continue coding in a fresh worktree."
+        echo ""
+        claude --resume "$session_id"
+    fi
 }
 
 # Fork a session (create new worktree + link to source context)
