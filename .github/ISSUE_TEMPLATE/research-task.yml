@@ -1,7 +1,7 @@
 name: Research Task
 description: Investigate a question or explore a technical approach
-title: "[Research] "
-labels: ["type/research"]
+title: '[Research] '
+labels: ['type/research']
 body:
   - type: textarea
     id: goal

@@ -4,4 +4,4 @@ export {
   getScreens,
   getScreensByJobId,
   getScreensMutable,
-} from '@infra/repositories/_providers/mock/screens';
+} from '@infra/repositories/_providers/mock/screens'

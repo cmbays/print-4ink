@@ -1,13 +1,13 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const artworkTagEnum = z.enum([
-  "corporate",
-  "event",
-  "seasonal",
-  "promotional",
-  "sports",
-  "custom",
-]);
+  'corporate',
+  'event',
+  'seasonal',
+  'promotional',
+  'sports',
+  'custom',
+])
 
 export const artworkSchema = z.object({
   id: z.string().min(1),
@@ -21,7 +21,7 @@ export const artworkSchema = z.object({
   lastUsedAt: z.string().datetime().optional(),
   width: z.number().positive().optional(),
   height: z.number().positive().optional(),
-});
+})
 
-export type ArtworkTag = z.infer<typeof artworkTagEnum>;
-export type Artwork = z.infer<typeof artworkSchema>;
+export type ArtworkTag = z.infer<typeof artworkTagEnum>
+export type Artwork = z.infer<typeof artworkSchema>

@@ -38,11 +38,11 @@ Read these before starting (do NOT skip any):
 
 Produce these artifacts in `docs/shaping/{topic}/`:
 
-| File | Contents |
-|---|---|
-| `frame.md` | Source material, Problem statement, Outcome definition |
-| `shaping.md` | Requirements (R), Shapes (A/B/C...), Fit checks, Decision log |
-| `spike-{name}.md` | Investigation docs for flagged unknowns (one per spike) |
+| File              | Contents                                                      |
+| ----------------- | ------------------------------------------------------------- |
+| `frame.md`        | Source material, Problem statement, Outcome definition        |
+| `shaping.md`      | Requirements (R), Shapes (A/B/C...), Fit checks, Decision log |
+| `spike-{name}.md` | Investigation docs for flagged unknowns (one per spike)       |
 
 ### Handoff to Breadboarding
 
@@ -59,11 +59,11 @@ The breadboarding agent reads:
 
 At each decision point, behavior depends on pipeline mode:
 
-| Decision | Interactive | Auto |
-|---|---|---|
-| Requirement status (Must-have/Nice-to-have/Out) | Human negotiates | Agent proposes based on interview, proceeds |
-| Shape selection | Human picks from fit check | Agent selects highest-fit shape, logs reasoning |
-| Spike need | Human decides | Agent spikes all flagged unknowns (⚠️) |
+| Decision                                        | Interactive                | Auto                                            |
+| ----------------------------------------------- | -------------------------- | ----------------------------------------------- |
+| Requirement status (Must-have/Nice-to-have/Out) | Human negotiates           | Agent proposes based on interview, proceeds     |
+| Shape selection                                 | Human picks from fit check | Agent selects highest-fit shape, logs reasoning |
+| Spike need                                      | Human decides              | Agent spikes all flagged unknowns (⚠️)          |
 
 All decisions logged in the Decision Points Log table in the shaping doc.
 
@@ -123,6 +123,7 @@ This gives the user immediate context on where the shaping stands and what needs
 ## Core Concepts
 
 ### R: Requirements
+
 A numbered set defining the problem space.
 
 - **R0, R1, R2...** are members of the requirements set
@@ -133,6 +134,7 @@ A numbered set defining the problem space.
 - **Chunking policy:** Never have more than 9 top-level requirements. When R exceeds 9, group related requirements into chunks with sub-requirements (R3.1, R3.2, etc.) so the top level stays at 9 or fewer. This keeps the requirements scannable and forces meaningful grouping.
 
 ### S: Shapes (Solution Options)
+
 Letters represent mutually exclusive solution approaches.
 
 - **A, B, C...** are top-level shape options (you pick one)
@@ -140,17 +142,19 @@ Letters represent mutually exclusive solution approaches.
 - **C3-A, C3-B, C3-C...** are alternative approaches to component C3 (you pick one)
 
 ### Shape Titles
+
 Give shapes a short descriptive title that characterizes the approach. Display the title when showing the shape:
 
 ```markdown
 ## E: Modify CUR in place to follow S-CUR
 
 | Part | Mechanism |
-|------|-----------|
-| E1 | ... |
+| ---- | --------- |
+| E1   | ...       |
 ```
 
 Good titles capture the essence of the approach in a few words:
+
 - ✓ "E: Modify CUR in place to follow S-CUR"
 - ✓ "C: Two data sources with hybrid pagination"
 - ✗ "E: The solution" (too vague)
@@ -158,14 +162,15 @@ Good titles capture the essence of the approach in a few words:
 
 ### Notation Hierarchy
 
-| Level | Notation | Meaning | Relationship |
-|-------|----------|---------|--------------|
-| Requirements | R0, R1, R2... | Problem constraints | Members of set R |
-| Shapes | A, B, C... | Solution options | Pick one from S |
-| Components | C1, C2, C3... | Parts of a shape | Combine within shape |
+| Level        | Notation      | Meaning                   | Relationship           |
+| ------------ | ------------- | ------------------------- | ---------------------- |
+| Requirements | R0, R1, R2... | Problem constraints       | Members of set R       |
+| Shapes       | A, B, C...    | Solution options          | Pick one from S        |
+| Components   | C1, C2, C3... | Parts of a shape          | Combine within shape   |
 | Alternatives | C3-A, C3-B... | Approaches to a component | Pick one per component |
 
 ### Notation Persistence
+
 Keep notation throughout as an audit trail. When finalizing, compose new options by referencing prior components (e.g., "Shape E = C1 + C2 + C3-A").
 
 ## Phases
@@ -176,13 +181,14 @@ Shaping moves through one phase, then hands off:
 Shaping → [handoff] → Breadboarding (with slicing)
 ```
 
-| Phase | Purpose | Output |
-|-------|---------|--------|
+| Phase       | Purpose                                                       | Output                                                                   |
+| ----------- | ------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | **Shaping** | Explore problem and solution space, select and detail a shape | Shaping doc with R, shapes, fit checks. Selected shape with parts table. |
 
 ### Handoff to Breadboarding
 
 Shaping is complete when:
+
 - A shape is selected (passes fit check, feels right)
 - All flagged unknowns (⚠️) are resolved or explicitly spiked
 - The parts table describes concrete mechanisms
@@ -201,18 +207,20 @@ THE fit check is the single table comparing all shapes against all requirements.
 ```markdown
 ## Fit Check
 
-| Req | Requirement | Status | A | B | C |
-|-----|-------------|--------|---|---|---|
-| R0 | Make items searchable from index page | Core goal | ✅ | ✅ | ✅ |
-| R1 | State survives page refresh | Must-have | ✅ | ❌ | ✅ |
-| R2 | Back button restores state | Must-have | ❌ | ✅ | ✅ |
+| Req | Requirement                           | Status    | A   | B   | C   |
+| --- | ------------------------------------- | --------- | --- | --- | --- |
+| R0  | Make items searchable from index page | Core goal | ✅  | ✅  | ✅  |
+| R1  | State survives page refresh           | Must-have | ✅  | ❌  | ✅  |
+| R2  | Back button restores state            | Must-have | ❌  | ✅  | ✅  |
 
 **Notes:**
+
 - A fails R2: [brief explanation]
 - B fails R1: [brief explanation]
 ```
 
 ### Conventions
+
 - **Always show full requirement text** — never abbreviate or summarize requirements in fit checks
 - **Fit check is BINARY** — Use ✅ for pass, ❌ for fail. No other values.
 - **Shape columns contain only ✅ or ❌** — no inline commentary; explanations go in Notes section
@@ -226,13 +234,14 @@ When comparing alternatives for a specific component (e.g., C3-A vs C3-B), use t
 ```markdown
 ## C3: Component Name
 
-| Req | Requirement | Status | C3-A | C3-B |
-|-----|-------------|--------|------|------|
-| R1 | State survives page refresh | Must-have | ✅ | ❌ |
-| R2 | Back button restores state | Must-have | ✅ | ✅ |
+| Req | Requirement                 | Status    | C3-A | C3-B |
+| --- | --------------------------- | --------- | ---- | ---- |
+| R1  | State survives page refresh | Must-have | ✅   | ❌   |
+| R2  | Back button restores state  | Must-have | ✅   | ✅   |
 ```
 
 ### Missing Requirements
+
 If a shape passes all checks but still feels wrong, there's a missing requirement. Articulate the implicit constraint as a new R, then re-run the fit check.
 
 ### Macro Fit Check
@@ -249,14 +258,15 @@ The macro fit check has two columns per shape instead of one:
 ```markdown
 ## Macro Fit Check: R x A
 
-| Req | Requirement | Addressed? | Answered? |
-|-----|-------------|:----------:|:---------:|
-| R0 | Core goal description | ✅ | ❌ |
-| R1 | Guided workflow | ✅ | ❌ |
-| R2 | Agent boundary | ⚠️ | ❌ |
+| Req | Requirement           | Addressed? | Answered? |
+| --- | --------------------- | :--------: | :-------: |
+| R0  | Core goal description |     ✅     |    ❌     |
+| R1  | Guided workflow       |     ✅     |    ❌     |
+| R2  | Agent boundary        |     ⚠️     |    ❌     |
 ```
 
 **Conventions:**
+
 - Only show top-level requirements (R0, R1, R2...), not sub-requirements
 - **No notes column** — keep the table narrow and scannable
 - Use ✅ (yes), ⚠️ (partially), ❌ (no) for Addressed
@@ -291,6 +301,7 @@ When displaying R (requirements) or any S (shapes), always show every row — ne
 ### Why This Matters
 
 Shaping is collaborative negotiation. The user needs to see the complete picture to:
+
 - Spot missing requirements
 - Notice inconsistencies
 - Make informed decisions
@@ -324,19 +335,22 @@ A spike is an investigation task to learn how the existing system works and what
 ## [Component] Spike: [Title]
 
 ### Context
+
 Why we need this investigation. What problem we're solving.
 
 ### Goal
+
 What we're trying to learn or identify.
 
 ### Questions
 
-| # | Question |
-|---|----------|
+| #         | Question                          |
+| --------- | --------------------------------- |
 | **X1-Q1** | Specific question about mechanics |
-| **X1-Q2** | Another specific question |
+| **X1-Q2** | Another specific question         |
 
 ### Acceptance
+
 Spike is complete when all questions are answered and we can describe [the understanding we'll have].
 ```
 
@@ -354,12 +368,14 @@ The spike gathers information; decisions are made afterward based on that inform
 ### Question Guidelines
 
 Good spike questions ask about mechanics:
+
 - "Where is the [X] logic?"
 - "What changes are needed to [achieve Y]?"
 - "How do we [perform Z]?"
 - "Are there constraints that affect [approach]?"
 
 Avoid:
+
 - Effort estimates ("How long will this take?")
 - Vague questions ("Is this hard?")
 - Yes/no questions that don't reveal mechanics
@@ -370,10 +386,10 @@ Avoid:
 
 A mechanism can be described at a high level without being concretely understood. The **Flag** column tracks this:
 
-| Part | Mechanism | Flag |
-|------|-----------|:----:|
-| **F1** | Create widget (component, def, register) | |
-| **F2** | Magic authentication handler | ⚠️ |
+| Part   | Mechanism                                | Flag |
+| ------ | ---------------------------------------- | :--: |
+| **F1** | Create widget (component, def, register) |      |
+| **F2** | Magic authentication handler             |  ⚠️  |
 
 - **Empty** = mechanism is understood — we know concretely how to build it
 - **⚠️** = flagged unknown — we've described WHAT but don't yet know HOW
@@ -403,7 +419,7 @@ Shape parts describe what we BUILD or CHANGE — not intentions or constraints:
 - Bad: R17: "Admins can bulk request members to sign" + C6.3: "Admin can bulk request members to sign"
 - Good: R17: "Admins can bring existing members into waiver tracking" + C6.3: "Bulk request UI with member filters, creates WaiverRequests in batch"
 
-The requirement describes the capability needed. The shape part describes the concrete mechanism that provides it. If you find yourself copying text from R into S, stop — the shape part should add specificity about *how*.
+The requirement describes the capability needed. The shape part describes the concrete mechanism that provides it. If you find yourself copying text from R into S, stop — the shape part should add specificity about _how_.
 
 ### Parts Should Be Vertical Slices
 
@@ -441,21 +457,21 @@ Start with flat notation (E1, E2, E3...). Only introduce hierarchy (E1.1, E1.2..
 - You're reaching a conclusion and want to show structure
 - Grouping related mechanisms aids communication
 
-| Notation | Meaning |
-|----------|---------|
-| E1 | Top-level component of shape E |
+| Notation   | Meaning                               |
+| ---------- | ------------------------------------- |
+| E1         | Top-level component of shape E        |
 | E1.1, E1.2 | Sub-parts of E1 (add later if needed) |
 
 Example of hierarchical grouping (used when shape is mature):
 
-| Part | Mechanism |
-|------|-----------|
-| **E1** | **Swap data source** |
-| E1.1 | Modify backend indexer |
-| E1.2 | Route letters to new service |
-| E1.3 | Route posts to new service |
-| **E2** | **Add search input** |
-| E2.1 | Add input with debounce |
+| Part   | Mechanism                    |
+| ------ | ---------------------------- |
+| **E1** | **Swap data source**         |
+| E1.1   | Modify backend indexer       |
+| E1.2   | Route letters to new service |
+| E1.3   | Route posts to new service   |
+| **E2** | **Add search input**         |
+| E2.1   | Add input with debounce      |
 
 ## Detailing a Shape
 
@@ -467,18 +483,22 @@ Use "Detail X" (not a new letter) to show this is a breakdown of Shape X, not an
 
 ```markdown
 ## A: First approach
+
 (shape table)
 
 ## B: Second approach
+
 (shape table)
 
 ## Detail B: Concrete affordances
+
 (affordance tables + wiring)
 ```
 
 ### What Detailing Produces
 
 Use the `/breadboarding` skill to produce:
+
 - **UI Affordances table** — Things users see and interact with (inputs, buttons, displays)
 - **Non-UI Affordances table** — Data stores, handlers, queries, services
 - **Wiring diagram** — How affordances connect across places
@@ -496,11 +516,11 @@ Detail B = expansion of B (not a choice)
 
 Shaping produces two documents, with optional spike documents:
 
-| Document | Contains | Purpose |
-|----------|----------|---------|
-| **Frame** | Source, Problem, Outcome | The "why" — concise, stakeholder-level |
+| Document        | Contains                                                 | Purpose                                                      |
+| --------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
+| **Frame**       | Source, Problem, Outcome                                 | The "why" — concise, stakeholder-level                       |
 | **Shaping doc** | Requirements, Shapes (CURRENT/A/B/...), Parts, Fit Check | The working document — exploration and iteration happen here |
-| **Spike docs** | Investigation context, questions, findings | Resolve flagged unknowns |
+| **Spike docs**  | Investigation context, questions, findings               | Resolve flagged unknowns                                     |
 
 ### Document Lifecycle
 
@@ -515,6 +535,7 @@ Shaping (explore, detail, select shape)
 ```
 
 **Frame** can be written first — it captures the "why" before any solution work begins. It contains:
+
 - **Source** — Original requests, quotes, or material that prompted the work (verbatim)
 - **Problem** — What's broken, what pain exists (distilled from source)
 - **Outcome** — What success looks like (high-level, not solution-specific)
@@ -536,16 +557,19 @@ When the user provides source material during framing (user requests, quotes, em
 ---
 
 ## Problem
+
 ...
 ```
 
 **Why this matters:**
+
 - The source is the ground truth — Problem/Outcome are interpretations
 - Preserves context that may be relevant later
 - Allows revisiting the original request if the distillation missed something
 - Multiple sources can be added as they arrive during framing
 
 **When to capture:**
+
 - User pastes a request or quote
 - User shares an email or message from a stakeholder
 - User describes a scenario they were told about
@@ -569,6 +593,7 @@ shaping: true
 ---
 
 # [Feature Name] — Shaping
+
 ...
 ```
 
@@ -587,23 +612,24 @@ shaping: true
 
 ## Requirements (R)
 
-| ID | Requirement | Status |
-|----|-------------|--------|
-| R0 | Make items searchable from index page | Core goal |
-| R1 | State survives page refresh | Undecided |
-| R2 | Back button restores state | Undecided |
+| ID  | Requirement                           | Status    |
+| --- | ------------------------------------- | --------- |
+| R0  | Make items searchable from index page | Core goal |
+| R1  | State survives page refresh           | Undecided |
+| R2  | Back button restores state            | Undecided |
 
 ---
 
 ## C2: State Persistence
 
-| Req | Requirement | Status | C2-A | C2-B | C2-C |
-|-----|-------------|--------|------|------|------|
-| R0 | Make items searchable from index page | Core goal | — | — | — |
-| R1 | State survives page refresh | Undecided | ✅ | ✅ | ❌ |
-| R2 | Back button restores state | Undecided | ✅ | ✅ | ✅ |
+| Req | Requirement                           | Status    | C2-A | C2-B | C2-C |
+| --- | ------------------------------------- | --------- | ---- | ---- | ---- |
+| R0  | Make items searchable from index page | Core goal | —    | —    | —    |
+| R1  | State survives page refresh           | Undecided | ✅   | ✅   | ❌   |
+| R2  | Back button restores state            | Undecided | ✅   | ✅   | ✅   |
 
 **Notes:**
+
 - C2-C fails R1: in-memory state lost on refresh
 - C2-B satisfies R2 but requires custom popstate handler
 ```

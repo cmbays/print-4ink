@@ -11,6 +11,7 @@
 This document synthesizes industry best practices for screen printing price matrix software based on extensive research of industry articles, practitioner forums, competitor solutions, and industry association resources. Key findings reveal a highly structured pricing model centered around **quantity breaks**, **color counts**, **print locations**, and **garment types**, with setup fees as critical cost recovery mechanisms.
 
 **Table Stakes Features:**
+
 - Multi-dimensional pricing (quantity × colors × locations × garment type)
 - Tiered quantity breaks (12, 24, 48, 72, 144+ standard tiers)
 - Per-screen setup fees with reorder discounts
@@ -29,16 +30,16 @@ This document synthesizes industry best practices for screen printing price matr
 
 The most common quantity break structure follows wholesale garment ordering patterns (multiples of 12):
 
-| Tier | Quantity Range | Use Case |
-|------|----------------|----------|
-| 1 | 12-23 | Minimum viable order |
-| 2 | 24-35 | Small team/event |
-| 3 | 36-47 | Mid-size order |
-| 4 | 48-71 | Standard bulk order |
-| 5 | 72-143 | Large order (setup fee often waived) |
-| 6 | 144-199 | Volume order |
-| 7 | 200-299 | High-volume customer |
-| 8 | 300+ | Contract/wholesale pricing |
+| Tier | Quantity Range | Use Case                             |
+| ---- | -------------- | ------------------------------------ |
+| 1    | 12-23          | Minimum viable order                 |
+| 2    | 24-35          | Small team/event                     |
+| 3    | 36-47          | Mid-size order                       |
+| 4    | 48-71          | Standard bulk order                  |
+| 5    | 72-143         | Large order (setup fee often waived) |
+| 6    | 144-199        | Volume order                         |
+| 7    | 200-299        | High-volume customer                 |
+| 8    | 300+           | Contract/wholesale pricing           |
 
 **Why These Numbers?**
 
@@ -53,6 +54,7 @@ The most common quantity break structure follows wholesale garment ordering patt
 - Minimum order typically 12–24 pieces (24 most common)
 
 **Sources:**
+
 - [Fairfax Screen Printing FAQ](https://www.fairfaxscreenprinting.com/faq/)
 - [T-Shirt Forums: Screen Printing Price Breaks](https://www.t-shirtforums.com/threads/screen-printing-price-breaks.341817/)
 - [Printavo Screen Printing Pricing Guide](https://www.printavo.com/blog/screen-printing-pricing/)
@@ -64,20 +66,24 @@ The most common quantity break structure follows wholesale garment ordering patt
 Each color requires a separate screen, impacting both **setup costs** and **per-piece print costs**.
 
 **Typical Structure:**
+
 - **1 color:** Base price
 - **2 colors:** +$0.50 to +$1.00 per garment
 - **3 colors:** +$1.00 to +$2.00 per garment
 - **4+ colors:** +$0.50 per additional color, OR flat upcharge (e.g., +$100 per color beyond 4)
 
 **Per-Color Hit Pricing:**
+
 - **$0.55 per color hit** (common practitioner rate)
 - Example: 2-color back print = $1.10 per shirt
 
 **Setup Impact:**
+
 - Each color = 1 screen = $15–$35 setup fee
 - Multi-color jobs require precise **registration** (alignment), adding labor
 
 **Sources:**
+
 - [T-Shirt Forums: Screen Print Pricing](https://www.t-shirtforums.com/threads/screen-print-pricing-bookkeeping.51655/)
 - [Inksoft Screen Print Pricing](https://help.inksoft.com/hc/en-us/articles/8389455610651-Screen-Print-Pricing)
 
@@ -85,27 +91,30 @@ Each color requires a separate screen, impacting both **setup costs** and **per-
 
 **Standard Locations & Pricing:**
 
-| Location | Typical Upcharge | Notes |
-|----------|------------------|-------|
-| **Front chest** | Base price | Default location |
-| **Full front** | Base price | Same setup as chest |
-| **Back** | +$2.00 per piece | Requires second press pass |
-| **Left sleeve** | +$3.00 per piece | Typically 1-color only |
-| **Right sleeve** | +$3.00 per piece | Small print area, fiddly setup |
-| **Pocket** | +$5.00+ per piece | Complex positioning |
-| **Pant leg** | +$5.00+ per piece | Specialty setup required |
+| Location         | Typical Upcharge  | Notes                          |
+| ---------------- | ----------------- | ------------------------------ |
+| **Front chest**  | Base price        | Default location               |
+| **Full front**   | Base price        | Same setup as chest            |
+| **Back**         | +$2.00 per piece  | Requires second press pass     |
+| **Left sleeve**  | +$3.00 per piece  | Typically 1-color only         |
+| **Right sleeve** | +$3.00 per piece  | Small print area, fiddly setup |
+| **Pocket**       | +$5.00+ per piece | Complex positioning            |
+| **Pant leg**     | +$5.00+ per piece | Specialty setup required       |
 
 **Multi-Location Rules:**
+
 - **Back + sleeve:** Double the cost
 - **Back + both sleeves:** Triple the cost
 - **Setup fees per location:** $30 per location (often waived at 36+ pieces)
 
 **Practitioner Consensus:**
+
 - Front print is always included in base price
 - Back print adds ~50% of original print fee
 - Sleeves limited to 1 color (print area too small)
 
 **Sources:**
+
 - [Hemlock Ink Screen Printing Pricing](https://hemlockink.com/screen-printing-pricing/)
 - [Kreative Dimensions Screen Print Pricing Guide](https://www.kreativedimensions.com/screen-print-pricing)
 
@@ -113,25 +122,28 @@ Each color requires a separate screen, impacting both **setup costs** and **per-
 
 **Cost Hierarchy:**
 
-| Garment Type | Wholesale Cost | Markup | Retail Price |
-|--------------|----------------|--------|--------------|
-| **Cotton T-shirt** | $2–$5 | 150–200% | $5.50–$9 |
-| **Performance/Poly tee** | $5–$8 | 150–200% | $10–$15 |
-| **Long-sleeve tee** | $6–$10 | 150–200% | $12–$18 |
-| **Hoodie/Sweatshirt** | $12–$25 | 100–150% | $18–$35 |
-| **Polo shirt** | $10–$15 | 150–200% | $20–$30 |
+| Garment Type             | Wholesale Cost | Markup   | Retail Price |
+| ------------------------ | -------------- | -------- | ------------ |
+| **Cotton T-shirt**       | $2–$5          | 150–200% | $5.50–$9     |
+| **Performance/Poly tee** | $5–$8          | 150–200% | $10–$15      |
+| **Long-sleeve tee**      | $6–$10         | 150–200% | $12–$18      |
+| **Hoodie/Sweatshirt**    | $12–$25        | 100–150% | $18–$35      |
+| **Polo shirt**           | $10–$15        | 150–200% | $20–$30      |
 
 **Why Garment Type Matters:**
+
 - **Blank garment cost** is the largest variable for high-end garments
 - Hoodies cost more due to **thicker fabric** (more ink absorption) and **larger print area**
 - Specialty fabrics (tri-blend, ring-spun) command premium pricing
 
 **Industry Markup Standards:**
+
 - **150–200% markup** on t-shirts (most common)
 - **100–150% markup** on hoodies/sweatshirts
 - **50% markup** on contract/wholesale orders
 
 **Sources:**
+
 - [Printavo Screen Printing Pricing Guide](https://www.printavo.com/blog/screen-printing-pricing/)
 - [YesWePrint: How Much Do Custom Hoodies Cost?](https://yesweprint.com/page/blog/how-much-do-custom-hoodies-cost)
 
@@ -142,24 +154,29 @@ Each color requires a separate screen, impacting both **setup costs** and **per-
 ### 2.1 Screen Fees (Core Setup Cost)
 
 **Typical Pricing:**
+
 - **$15–$35 per screen** (one-time charge)
 - **Most common:** $20–$25 per screen
 - **Reorders:** Often $10 or waived if within 3–12 months
 
 **What's Included:**
+
 - Burning the screen (emulsion exposure)
 - Screen preparation and taping
 - Registration and alignment on press
 
 **Volume Thresholds:**
+
 - **72+ pieces:** Setup fees often waived entirely
 - **36+ pieces:** Setup fees sometimes waived or reduced 50%
 
 **Screen Storage:**
+
 - Many shops store screens for 3–12 months for free reorders
 - After storage period, screens are reclaimed (customer pays setup again)
 
 **Sources:**
+
 - [Sage Screen Printing: Why Screen Printing Setup Fees](https://sagescreenprinting.com/blogs/news/the-why-and-how-of-screen-printing-set-up-fees)
 - [T-Shirt Forums: Setup Fees Discussion](https://www.t-shirtforums.com/threads/setup-fees.18059/)
 
@@ -167,36 +184,41 @@ Each color requires a separate screen, impacting both **setup costs** and **per-
 
 **Typical Structure:**
 
-| Service | Price Range | Notes |
-|---------|-------------|-------|
-| **Camera-ready vector art** | $0 (included) | Customer provides print-ready file |
-| **Simple text/logo** | $25–$40 | Minimal design work |
-| **Custom artwork** | $40–$65/hour | Complex illustration, hand-drawn art |
-| **Color separation** | $30 per color | Converting full-color to spot colors |
-| **Pantone matching** | $10 per color | Custom ink mixing |
+| Service                     | Price Range   | Notes                                |
+| --------------------------- | ------------- | ------------------------------------ |
+| **Camera-ready vector art** | $0 (included) | Customer provides print-ready file   |
+| **Simple text/logo**        | $25–$40       | Minimal design work                  |
+| **Custom artwork**          | $40–$65/hour  | Complex illustration, hand-drawn art |
+| **Color separation**        | $30 per color | Converting full-color to spot colors |
+| **Pantone matching**        | $10 per color | Custom ink mixing                    |
 
 **Camera-Ready Art Requirements:**
+
 - Vector format (AI, EPS, PDF)
 - Spot colors specified (no gradients)
 - Proper resolution for screen size
 
 **Sources:**
+
 - [Raygun Printing Price Guide](https://www.raygunprinting.com/price-guide)
 - [Anatol: How to Price Screen Printing Orders](https://anatol.com/how-to-price-screen-printing-orders-a-practical-guide-for-print-shop-owners/)
 
 ### 2.3 Film/Transparency Fees
 
 **Structure:**
+
 - **$15 per spot color** (film positive creation)
 - Some shops bundle this into screen fees
 - Digital printers may not charge (direct-to-screen systems)
 
 **What Film Fees Cover:**
+
 - Printing transparency/acetate with design
 - Darkroom time for screen exposure
 - Material costs
 
 **Sources:**
+
 - [Price Guide | Raygun Printing](https://www.raygunprinting.com/price-guide)
 
 ---
@@ -217,25 +239,26 @@ Print Fees = (Colors × Locations × Per-Hit Rate)
 
 **Job:** 50 white t-shirts, 2-color front, 1-color back
 
-| Component | Calculation | Cost |
-|-----------|-------------|------|
-| Garment | $3 blank × 200% markup | $6.00 |
-| Setup fees | 3 screens × $20 ÷ 50 qty | $1.20 |
-| Front print | 2 colors × $0.55/hit | $1.10 |
-| Back print | 1 color × $0.55/hit + $2 location fee | $2.55 |
-| **Total per piece** | | **$10.85** |
+| Component           | Calculation                           | Cost       |
+| ------------------- | ------------------------------------- | ---------- |
+| Garment             | $3 blank × 200% markup                | $6.00      |
+| Setup fees          | 3 screens × $20 ÷ 50 qty              | $1.20      |
+| Front print         | 2 colors × $0.55/hit                  | $1.10      |
+| Back print          | 1 color × $0.55/hit + $2 location fee | $2.55      |
+| **Total per piece** |                                       | **$10.85** |
 
 **Quantity Break Impact:**
 
 | Quantity | Per-Piece Price | Total Order |
-|----------|-----------------|-------------|
-| 12 | $16.00 | $192 |
-| 24 | $13.00 | $312 |
-| 48 | $11.00 | $528 |
-| 72 | $9.50 | $684 |
-| 144 | $8.00 | $1,152 |
+| -------- | --------------- | ----------- |
+| 12       | $16.00          | $192        |
+| 24       | $13.00          | $312        |
+| 48       | $11.00          | $528        |
+| 72       | $9.50           | $684        |
+| 144      | $8.00           | $1,152      |
 
 **Sources:**
+
 - [Printavo: Best Screen Printing Pricing Strategy](https://www.printavo.com/blog/best-screen-printing-pricing-strategy/)
 - [DecoNetwork: Screen Printing Pricing Strategies](https://www.deconetwork.com/screen-printing-pricing-strategies-a-practical-guide-deconetwork/)
 
@@ -250,27 +273,32 @@ Total Costs = Materials + Labor + Overhead + Setup
 ```
 
 **Typical Markups:**
+
 - **30–50% margin** (industry standard)
 - **20% minimum** recommended for sustainability
 - Contract printing: 15–25% (higher volume, lower margin)
 
 **Advantages:**
+
 - Ensures consistent profitability
 - Scales with cost increases (ink, garments, labor)
 - Simple to explain to customers
 
 **Sources:**
+
 - [Printavo: Screen Printing Pricing Guide](https://www.printavo.com/blog/screen-printing-pricing/)
 - [Teesom: Pricing Your Way to Profitability](https://teesom.com/pricing-your-way-to-profitability/)
 
 ### 3.3 Flat-Rate Components
 
 **When Used:**
+
 - **Small order minimums:** "12-piece minimum at $150 flat"
 - **Setup-heavy jobs:** "Complex multi-location = $500 flat + $5/piece"
 - **Sample orders:** "Samples: $75 flat (up to 3 pieces)"
 
 **Common Flat Fees:**
+
 - Screen setup: $20–$35 per screen (flat, regardless of quantity)
 - Artwork: $25–$65 (flat, regardless of complexity)
 - Rush orders: Flat % upcharge (see Section 6.2)
@@ -282,41 +310,50 @@ Total Costs = Materials + Labor + Overhead + Setup
 ### 4.1 Retail Pricing (Direct to End Customer)
 
 **Characteristics:**
+
 - **Higher per-piece prices** (lower volume, more hand-holding)
 - Full setup fees charged
 - Includes customer service overhead
 - Markup: 150–200% on garments
 
 **Typical Minimums:**
+
 - 12–24 pieces
 - Often includes design services
 
 **Example Retail Price:**
+
 - 24 shirts, 1-color front: **$12–$15 per shirt**
 
 **Sources:**
+
 - [Printavo: Retail vs. Contract Screen Printing](https://www.printavo.com/blog/retail-vs-contract-screen-printing-what-is-contract-printing/)
 
 ### 4.2 Contract Pricing (B2B/Trade)
 
 **Characteristics:**
+
 - **Lower per-piece prices** (higher volume, repeat customers)
 - Setup fees often waived (minimum 72+ pieces)
 - Assumes customer provides print-ready art
 - Markup: 100–150% (or 15–25% margin)
 
 **Typical Minimums:**
+
 - 24–72 pieces (often higher)
 - Recurring orders expected
 
 **Example Contract Price:**
+
 - 72+ shirts, 1-color front: **$5–$7 per shirt**
 
 **Practitioner Insights:**
+
 - "$2.50 per print, minimum 12 garments (24 for 2-color)"
 - "Free screens for 72+ pieces, $15/screen under 72"
 
 **Sources:**
+
 - [T-Shirt Forums: Contract Printing Pricing](https://www.t-shirtforums.com/threads/contract-printing-pricing.565858/)
 - [ICS Inks: Contract Pricing Guidelines](https://www.icsinks.com/contract-decorator/)
 
@@ -336,15 +373,16 @@ Screen printing exhibits **inverse pricing** — per-piece cost **decreases** as
 
 **Typical Per-Piece Price Drop:**
 
-| Quantity | Price Drop from Previous Tier |
-|----------|-------------------------------|
-| 12 → 24 | -15% to -20% |
-| 24 → 48 | -10% to -15% |
-| 48 → 72 | -5% to -10% |
+| Quantity | Price Drop from Previous Tier    |
+| -------- | -------------------------------- |
+| 12 → 24  | -15% to -20%                     |
+| 24 → 48  | -10% to -15%                     |
+| 48 → 72  | -5% to -10%                      |
 | 72 → 144 | -10% to -15% (setup fees waived) |
-| 144+ | -5% to -10% per tier |
+| 144+     | -5% to -10% per tier             |
 
 **Real Example (from forum):**
+
 - 12 shirts: **$8.00 each**
 - 24 shirts: **$7.00 each** (-12.5%)
 - 48 shirts: **$6.00 each** (-14.3%)
@@ -353,6 +391,7 @@ Screen printing exhibits **inverse pricing** — per-piece cost **decreases** as
 - 288 shirts: **$3.00 each** (-25%)
 
 **Sources:**
+
 - [Printavo: Screen Printing Pricing Guide](https://www.printavo.com/blog/screen-printing-pricing/)
 - [T-Shirt Forums: Pricing Structure Discussion](https://www.t-shirtforums.com/threads/screen-printing-price-breaks.341817/)
 
@@ -380,50 +419,56 @@ Screen printing exhibits **inverse pricing** — per-piece cost **decreases** as
 
 **Ink Types & Pricing:**
 
-| Ink Type | Base Upcharge | Use Case |
-|----------|---------------|----------|
-| **Plastisol** (standard) | Included | Default, most durable |
-| **Water-based** | +$0.50/print | Soft hand, light garments |
-| **Discharge** | +$0.75/print | Removes dye, prints on dark fabrics |
-| **Metallic/Shimmer** | +$1.00/print | Specialty finish |
-| **Glow-in-the-dark** | +$1.50/print | Novelty prints |
-| **Puff ink** | +$1.00/print | 3D raised effect |
+| Ink Type                 | Base Upcharge | Use Case                            |
+| ------------------------ | ------------- | ----------------------------------- |
+| **Plastisol** (standard) | Included      | Default, most durable               |
+| **Water-based**          | +$0.50/print  | Soft hand, light garments           |
+| **Discharge**            | +$0.75/print  | Removes dye, prints on dark fabrics |
+| **Metallic/Shimmer**     | +$1.00/print  | Specialty finish                    |
+| **Glow-in-the-dark**     | +$1.50/print  | Novelty prints                      |
+| **Puff ink**             | +$1.00/print  | 3D raised effect                    |
 
 **Discharge Ink Specifics:**
+
 - Requires **two-part system** (ink + activator, 9:1 ratio)
 - Only works on **100% cotton** (removes fabric dye)
 - Heat curing required (300°F)
 - Soft hand, breathable finish
 
 **Sources:**
+
 - [Raygun Printing: Specialty Ink Pricing](https://www.raygunprinting.com/price-guide)
 - [Sabio Printing: Water-Based & Discharge](https://sabioprinting.com/what-is-water-based-and-discharge-printing/)
 
 ### 6.2 Rush Orders & Turnaround Time
 
 **Standard Turnaround:**
+
 - **7–10 business days** (most common)
 - **10–14 business days** (conservative shops)
 
 **Rush Fee Structures:**
 
-| Turnaround | Upcharge | Notes |
-|------------|----------|-------|
-| **5–7 days** | +10% to +25% | Requires schedule rearrangement |
-| **3–4 days** | +25% to +50% | Bumps other jobs |
-| **24–48 hours** | +50% to +100% | Emergency only, limited styles |
+| Turnaround      | Upcharge      | Notes                           |
+| --------------- | ------------- | ------------------------------- |
+| **5–7 days**    | +10% to +25%  | Requires schedule rearrangement |
+| **3–4 days**    | +25% to +50%  | Bumps other jobs                |
+| **24–48 hours** | +50% to +100% | Emergency only, limited styles  |
 
 **Rush Order Constraints:**
+
 - Limited garment styles/colors available
 - Minimum quantities may increase
 - Artwork must be 100% camera-ready
 - No revisions allowed
 
 **Real-World Examples:**
+
 - "Rush service 5–7 days +10%, Extra Rush 3–5 days +25%"
 - "25% for 4–5 day, 50% for 3 day, 100% for 24–48 hour"
 
 **Sources:**
+
 - [Inbound Ink: Rush Orders](https://inboundinkonline.com/pages/rush-orders)
 - [Teesom: How to Charge a Rush Fee](https://teesom.com/how-to-charge-a-rush-fee/)
 - [Central Screen Printing: Turnaround & Rush Service](https://www.centralscreenprinting.com/page/turnaround-and-rush-service)
@@ -439,6 +484,7 @@ Screen printing exhibits **inverse pricing** — per-piece cost **decreases** as
 **Why MOQs Exist:**
 
 Setup costs don't change whether printing 1 shirt or 100:
+
 - Screen burning: ~15 minutes per screen
 - Press setup: ~30 minutes (screen loading, ink mixing, registration)
 - Cleanup: ~15 minutes
@@ -460,6 +506,7 @@ Example: ($50/hour × 1.5 hours) ÷ $5 profit = 15 pieces minimum
 - **DTF (Direct-to-Film):** Hybrid method, good for 6–24 pieces
 
 **Sources:**
+
 - [ScreenPrinting.com: What is MOQ and Why Does it Matter?](https://www.screenprinting.com/blogs/news/what-is-minimum-order-quantity-and-why-does-it-matter)
 - [Twin City Tees: Why the 12 Shirt Minimum?](https://www.twincitytees.com/blog/2017/6/22/why-the-12-shirt-minimum-screen-printing-vs-direct-to-garment)
 
@@ -535,6 +582,7 @@ Example: ($50/hour × 1.5 hours) ÷ $5 profit = 15 pieces minimum
    - Flag quotes below minimum margin threshold
 
 **Sources:**
+
 - [Inksoft Screen Print Pricing](https://help.inksoft.com/hc/en-us/articles/8389455610651-Screen-Print-Pricing)
 - [Printavo: Understanding Pricing Matrix](https://support.printavo.com/hc/en-us/articles/360057960833-6-4-Understanding-Importing-a-Printavo-Pricing-Matrix)
 
@@ -604,6 +652,7 @@ Markup: 200%
 - **Competitor price tracking** (scrape competitor sites for benchmarking)
 
 **Sources:**
+
 - [Printavo: Screen Printing Pricing Matrix](https://www.printavo.com/blog/how-to-make-a-screen-printing-pricing-matrix)
 - [ConvertCalculator: Screen Printing Quote Calculator](https://www.convertcalculator.com/markets/screen-printing-quote-calculator/)
 
@@ -614,46 +663,51 @@ Markup: 200%
 ### 9.1 Market Leaders
 
 **Printavo**
+
 - Market leader for screen printing shop management
 - Built-in pricing matrix generator
 - Real-time quote generation
 - Integration with wholesale garment suppliers
 
 **Inksoft**
+
 - Customizable break counts
 - Example default breaks: 12-23, 24-35, 36-47
 - Integrated with online stores
 
 **CloakWork**
+
 - First to automate **capacity-based pricing** (adjusts prices based on shop load)
 - Up to 6 garment styles per quote
 - Up to 12 print colors per location
 - Variable rush fees and early bird discounts
 
 **ConvertCalculator**
+
 - Embeddable web calculator
 - Integrates with Printavo (direct or via Zapier)
 - Supports all Excel formulas (unlimited pricing complexity)
 
 **Sources:**
+
 - [Printavo Features: Screen Printing Pricing](https://www.printavo.com/features/screen-printing-pricing/)
 - [CloakWork: Made By Screen Printers](https://cloak-work.com/)
 - [ConvertCalculator: Screen Printing Quote Calculator](https://www.convertcalculator.com/markets/screen-printing-quote-calculator/)
 
 ### 9.2 Feature Comparison
 
-| Feature | Must-Have | Nice-to-Have | Advanced |
-|---------|-----------|--------------|----------|
-| Quantity breaks | ✅ All | - | - |
-| Multi-color pricing | ✅ All | - | - |
-| Setup fees | ✅ All | - | - |
-| Garment library | ✅ All | - | - |
-| Rush order upcharges | ✅ Most | - | - |
-| Contract/Retail toggle | - | ✅ Printavo, CloakWork | - |
-| Capacity-based pricing | - | - | ✅ CloakWork |
-| Garment API integration | - | ✅ Printavo, Inksoft | - |
-| Quote PDF export | ✅ All | - | - |
-| Online customer portal | - | ✅ Inksoft | - |
+| Feature                 | Must-Have | Nice-to-Have           | Advanced     |
+| ----------------------- | --------- | ---------------------- | ------------ |
+| Quantity breaks         | ✅ All    | -                      | -            |
+| Multi-color pricing     | ✅ All    | -                      | -            |
+| Setup fees              | ✅ All    | -                      | -            |
+| Garment library         | ✅ All    | -                      | -            |
+| Rush order upcharges    | ✅ Most   | -                      | -            |
+| Contract/Retail toggle  | -         | ✅ Printavo, CloakWork | -            |
+| Capacity-based pricing  | -         | -                      | ✅ CloakWork |
+| Garment API integration | -         | ✅ Printavo, Inksoft   | -            |
+| Quote PDF export        | ✅ All    | -                      | -            |
+| Online customer portal  | -         | ✅ Inksoft             | -            |
 
 ---
 
@@ -706,6 +760,7 @@ Markup: 200%
    - Regional pricing varies wildly
 
 **Sources:**
+
 - [T-Shirt Forums: Pricing Structure Discussion](https://www.t-shirtforums.com/threads/pricing-structure-sheet-for-screen-printing-excel.25827/)
 - [Apparelist: Comprehensive Guide to Pricing](https://www.apparelist.com/2024/02/07/a-comprehensive-guide-to-pricing-screen-printing-jobs-for-screen-print-shop-owners/)
 
@@ -746,19 +801,23 @@ Markup: 200%
 ## 11. Research Sources Summary
 
 ### Industry Associations
+
 - [PRINTING United Alliance (SGIA)](https://www.printing.org) — Business planning resources, best practices
 
 ### Software Vendors
+
 - [Printavo](https://www.printavo.com) — Market leader, pricing matrix tools
 - [Inksoft](https://help.inksoft.com) — Customizable pricing system
 - [CloakWork](https://cloak-work.com) — Capacity-based pricing innovator
 - [ConvertCalculator](https://www.convertcalculator.com) — Embeddable calculator
 
 ### Practitioner Forums
+
 - [T-Shirt Forums](https://www.t-shirtforums.com) — Real-world pricing discussions
 - Reddit r/screenprinting — Community insights (searched but not directly cited)
 
 ### Industry Blogs & Guides
+
 - [Raygun Printing Price Guide](https://www.raygunprinting.com/price-guide)
 - [Anatol: How to Price Screen Printing](https://anatol.com/how-to-price-screen-printing-orders-a-practical-guide-for-print-shop-owners/)
 - [ScreenPrinting.com](https://www.screenprinting.com) — Technical guides
@@ -774,6 +833,7 @@ Screen printing price matrix software must balance **simplicity** (easy for cust
 ---
 
 **Next Steps:**
+
 - Review competitor UX patterns (see Task #2: Analyze competitor solutions)
 - Map integration points with other verticals (Quotes, Jobs, Garment Library)
 - Design P0 feature set wireframes

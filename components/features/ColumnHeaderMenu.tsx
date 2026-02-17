@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { ChevronDown, ChevronUp, ListFilter } from "lucide-react";
+import { ChevronDown, ChevronUp, ListFilter } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,26 +9,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@shared/ui/primitives/dropdown-menu";
-import { cn } from "@shared/lib/cn";
+} from '@shared/ui/primitives/dropdown-menu'
+import { cn } from '@shared/lib/cn'
 
-type SortDir = "asc" | "desc";
+type SortDir = 'asc' | 'desc'
 
-interface FilterOption {
-  value: string;
-  label: string;
+type FilterOption = {
+  value: string
+  label: string
 }
 
-interface ColumnHeaderMenuProps {
-  label: string;
-  sortKey: string;
-  currentSortKey: string;
-  currentSortDir: SortDir;
-  onSort: (key: string, dir?: SortDir) => void;
-  filterOptions?: FilterOption[];
-  activeFilters?: string[];
-  onFilterToggle?: (value: string) => void;
-  onFilterClear?: () => void;
+type ColumnHeaderMenuProps = {
+  label: string
+  sortKey: string
+  currentSortKey: string
+  currentSortDir: SortDir
+  onSort: (key: string, dir?: SortDir) => void
+  filterOptions?: FilterOption[]
+  activeFilters?: string[]
+  onFilterToggle?: (value: string) => void
+  onFilterClear?: () => void
 }
 
 export function ColumnHeaderMenu({
@@ -42,9 +42,9 @@ export function ColumnHeaderMenu({
   onFilterToggle,
   onFilterClear,
 }: ColumnHeaderMenuProps) {
-  const isSorted = currentSortKey === sortKey;
-  const hasActiveFilters = activeFilters.length > 0;
-  const hasFilters = filterOptions && filterOptions.length > 0;
+  const isSorted = currentSortKey === sortKey
+  const hasActiveFilters = activeFilters.length > 0
+  const hasFilters = filterOptions && filterOptions.length > 0
 
   return (
     <div className="inline-flex items-center gap-1">
@@ -57,7 +57,7 @@ export function ColumnHeaderMenu({
       >
         {label}
         {isSorted &&
-          (currentSortDir === "asc" ? (
+          (currentSortDir === 'asc' ? (
             <ChevronUp className="size-4" />
           ) : (
             <ChevronDown className="size-4" />
@@ -71,9 +71,9 @@ export function ColumnHeaderMenu({
             <button
               type="button"
               className={cn(
-                "inline-flex items-center justify-center rounded-sm p-0.5 transition-colors",
-                "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                hasActiveFilters ? "text-action" : "text-muted-foreground"
+                'inline-flex items-center justify-center rounded-sm p-0.5 transition-colors',
+                'hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                hasActiveFilters ? 'text-action' : 'text-muted-foreground'
               )}
               aria-label={`Filter by ${label}`}
             >
@@ -81,23 +81,19 @@ export function ColumnHeaderMenu({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-[160px]">
-            <DropdownMenuLabel className="text-xs">
-              Sort
-            </DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => onSort(sortKey, "asc")}>
+            <DropdownMenuLabel className="text-xs">Sort</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onSort(sortKey, 'asc')}>
               <ChevronUp className="size-3.5" />
               Sort Ascending
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSort(sortKey, "desc")}>
+            <DropdownMenuItem onClick={() => onSort(sortKey, 'desc')}>
               <ChevronDown className="size-3.5" />
               Sort Descending
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuLabel className="text-xs">
-              Filter
-            </DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs">Filter</DropdownMenuLabel>
             {filterOptions.map((option) => (
               <DropdownMenuCheckboxItem
                 key={option.value}
@@ -112,14 +108,12 @@ export function ColumnHeaderMenu({
             {hasActiveFilters && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onFilterClear?.()}>
-                  Clear filters
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onFilterClear?.()}>Clear filters</DropdownMenuItem>
               </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
       )}
     </div>
-  );
+  )
 }

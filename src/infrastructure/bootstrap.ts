@@ -24,9 +24,9 @@ export {
   getCustomerNotes,
   getCustomerArtworks,
   getCustomerInvoices,
-} from './repositories/customers';
+} from './repositories/customers'
 
-export { getQuotes, getQuoteById } from './repositories/quotes';
+export { getQuotes, getQuoteById } from './repositories/quotes'
 
 export {
   getJobs,
@@ -34,7 +34,7 @@ export {
   getJobsByLane,
   getJobsByServiceType,
   getJobTasks,
-} from './repositories/jobs';
+} from './repositories/jobs'
 
 export {
   getInvoices,
@@ -42,20 +42,20 @@ export {
   getInvoicePayments,
   getInvoiceCreditMemos,
   getQuoteInvoice,
-} from './repositories/invoices';
+} from './repositories/invoices'
 
 export {
   getGarmentCatalog,
   getGarmentById,
   getAvailableBrands,
   getGarmentCatalogMutable,
-} from './repositories/garments';
+} from './repositories/garments'
 
-export { getScreens, getScreensByJobId } from './repositories/screens';
+export { getScreens, getScreensByJobId } from './repositories/screens'
 
-export { getArtworks, getArtworkById } from './repositories/artworks';
+export { getArtworks, getArtworkById } from './repositories/artworks'
 
-export { getColors, getColorById, getColorsMutable } from './repositories/colors';
+export { getColors, getColorById, getColorsMutable } from './repositories/colors'
 
 export {
   getMockupTemplates,
@@ -63,4 +63,4 @@ export {
   getDisplayPreference,
   getAutoPropagationConfig,
   getDtfSheetTiers,
-} from './repositories/settings';
+} from './repositories/settings'

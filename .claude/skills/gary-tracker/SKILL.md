@@ -45,7 +45,12 @@ Watch for these patterns in conversation (case-insensitive):
 3. **Insert the HTML block** into the current KB doc:
 
 ```html
-<div class="gary-question" data-question-id="{VERTICAL}-q{N}" data-vertical="{VERTICAL}" data-status="unanswered">
+<div
+  class="gary-question"
+  data-question-id="{VERTICAL}-q{N}"
+  data-vertical="{VERTICAL}"
+  data-status="unanswered"
+>
   <p class="gary-question-text">{THE QUESTION}?</p>
   <p class="gary-question-context">{WHY THIS MATTERS — 1-2 sentences}</p>
   <div class="gary-answer" data-answered-date=""></div>
@@ -74,11 +79,13 @@ If the user provides an answer to a previously tagged question during the sessio
 Format: `{vertical}-q{N}`
 
 Examples:
+
 - `quoting-q1`, `quoting-q2`, `quoting-q3`
 - `jobs-q1`, `jobs-q2`
 - `invoicing-q1`
 
 To find the next ID, check existing KB docs for the vertical:
+
 ```bash
 grep -r "data-question-id=\"{VERTICAL}-q" knowledge-base/src/content/sessions/ | wc -l
 ```
@@ -101,9 +108,9 @@ At the end of every interview/research KB doc, include a Gary Questions summary:
 ```markdown
 ## Gary Questions
 
-| ID | Question | Status |
-|----|----------|--------|
-| {VERTICAL}-q1 | {Question text} | unanswered |
+| ID            | Question        | Status                |
+| ------------- | --------------- | --------------------- |
+| {VERTICAL}-q1 | {Question text} | unanswered            |
 | {VERTICAL}-q2 | {Question text} | answered (2026-02-14) |
 ```
 

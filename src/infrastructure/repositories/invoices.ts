@@ -7,4 +7,4 @@ export {
   getInvoiceCreditMemos,
   getQuoteInvoice,
   getInvoicesMutable,
-} from '@infra/repositories/_providers/mock/invoices';
+} from '@infra/repositories/_providers/mock/invoices'

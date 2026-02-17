@@ -22,17 +22,19 @@ All session agents must apply these patterns consistently:
 
 ```tsx
 // BEFORE
-import { jobs, customers } from "@/lib/mock-data";
-const blockedJobs = jobs.filter(j => j.lane === "blocked");
-export default function DashboardPage() { return <div>{blockedJobs.length}</div>; }
+import { jobs, customers } from '@/lib/mock-data'
+const blockedJobs = jobs.filter((j) => j.lane === 'blocked')
+export default function DashboardPage() {
+  return <div>{blockedJobs.length}</div>
+}
 
 // AFTER — move computations inside async component
-import { getJobs } from "@/lib/dal/jobs";
-import { getCustomers } from "@/lib/dal/customers";
+import { getJobs } from '@/lib/dal/jobs'
+import { getCustomers } from '@/lib/dal/customers'
 export default async function DashboardPage() {
-  const [jobs, customers] = await Promise.all([getJobs(), getCustomers()]);
-  const blockedJobs = jobs.filter(j => j.lane === "blocked");
-  return <div>{blockedJobs.length}</div>;
+  const [jobs, customers] = await Promise.all([getJobs(), getCustomers()])
+  const blockedJobs = jobs.filter((j) => j.lane === 'blocked')
+  return <div>{blockedJobs.length}</div>
 }
 ```
 
@@ -40,19 +42,19 @@ export default async function DashboardPage() {
 
 ```tsx
 // BEFORE
-import { customers, quotes } from "@/lib/mock-data";
+import { customers, quotes } from '@/lib/mock-data'
 export default async function CustomerDetailPage({ params }) {
-  const { id } = await params;
-  const customer = customers.find(c => c.id === id);
-  const customerQuotes = quotes.filter(q => q.customerId === id);
+  const { id } = await params
+  const customer = customers.find((c) => c.id === id)
+  const customerQuotes = quotes.filter((q) => q.customerId === id)
 }
 
 // AFTER — replace array ops with DAL function calls
-import { getCustomerById, getCustomerQuotes } from "@/lib/dal/customers";
+import { getCustomerById, getCustomerQuotes } from '@/lib/dal/customers'
 export default async function CustomerDetailPage({ params }) {
-  const { id } = await params;
-  const customer = await getCustomerById(id);
-  const customerQuotes = await getCustomerQuotes(id);
+  const { id } = await params
+  const customer = await getCustomerById(id)
+  const customerQuotes = await getCustomerQuotes(id)
 }
 ```
 
@@ -96,18 +98,21 @@ When a client component imports mock-data for cross-referencing (not its primary
 
 ```tsx
 // BEFORE — CustomersDataTable.tsx ("use client")
-import { quotes } from "@/lib/mock-data";
+import { quotes } from '@/lib/mock-data'
 export function CustomersDataTable({ customers }: Props) {
   // uses quotes.filter(q => q.customerId === c.id)
 }
 
 // AFTER — parent passes quotes as prop
 // customers/page.tsx (Server Component):
-const [customers, quotes] = await Promise.all([getCustomers(), getQuotes()]);
-return <CustomersDataTable customers={customers} quotes={quotes} />;
+const [customers, quotes] = await Promise.all([getCustomers(), getQuotes()])
+return <CustomersDataTable customers={customers} quotes={quotes} />
 
 // CustomersDataTable.tsx — add quotes to Props interface
-interface Props { customers: Customer[]; quotes: Quote[]; }
+interface Props {
+  customers: Customer[]
+  quotes: Quote[]
+}
 ```
 
 ---
@@ -119,17 +124,20 @@ interface Props { customers: Customer[]; quotes: Quote[]; }
 ### Task 0.1: Shared Types and Infrastructure
 
 **Files to create:**
+
 - `lib/dal/_shared/result.ts` — `Result<T, E>` discriminated union, `ok()`, `err()`, `isOk()`, `isErr()`
 - `lib/dal/_shared/validation.ts` — `validateUUID(id)` using `z.string().uuid()`
 - `lib/dal/_shared/errors.ts` — `DalError` base class
 - `lib/dal/_providers/index.ts` — `getProviderName()` fail-closed provider selection
 
 **Files to modify:**
+
 - `next.config.ts` — Add security headers (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`)
 - `CLAUDE.md` — Add DAL import rules under Coding Standards
 - `.env.local` — Add `DATA_PROVIDER=mock`
 
 **Steps:**
+
 1. Create `lib/dal/` directory structure: `_shared/`, `_providers/`, `_providers/mock/`
 2. Write `_shared/result.ts`: `Result<T, E> = { ok: true; value: T } | { ok: false; error: E }` with constructors and type guards
 3. Write `_shared/validation.ts`: `validateUUID(id: string): string | null` — returns sanitized UUID or null on invalid
@@ -143,11 +151,13 @@ interface Props { customers: Customer[]; quotes: Quote[]; }
 ### Task 0.2: Foundation Tests
 
 **Files to create:**
+
 - `lib/dal/__tests__/result.test.ts`
 - `lib/dal/__tests__/validation.test.ts`
 - `lib/dal/__tests__/provider-router.test.ts`
 
 **Steps:**
+
 1. Test Result type: `ok()` creates success, `err()` creates failure, `isOk()`/`isErr()` type guards
 2. Test validation: valid UUIDs pass, invalid strings return null, non-UUID formats return null
 3. Test provider router: `DATA_PROVIDER=mock` returns `'mock'`, `DATA_PROVIDER=supabase` returns `'supabase'`, missing/invalid throws
@@ -167,6 +177,7 @@ This session creates ALL 18 provider files (establishing the complete DAL bounda
 ### Task 1.1: Create All 9 Mock Provider Files
 
 **Files to create (9 files):**
+
 - `lib/dal/_providers/mock/customers.ts`
 - `lib/dal/_providers/mock/jobs.ts`
 - `lib/dal/_providers/mock/quotes.ts`
@@ -178,6 +189,7 @@ This session creates ALL 18 provider files (establishing the complete DAL bounda
 - `lib/dal/_providers/mock/artworks.ts`
 
 **Steps per provider file:**
+
 1. Import raw data arrays from `@/lib/mock-data`
 2. Import validation from `@/lib/dal/_shared/validation`
 3. Import Zod-inferred types from `@/lib/schemas/`
@@ -191,6 +203,7 @@ This session creates ALL 18 provider files (establishing the complete DAL bounda
 ### Task 1.2: Create All 9 DAL Domain Files
 
 **Files to create (9 files):**
+
 - `lib/dal/customers.ts`
 - `lib/dal/jobs.ts`
 - `lib/dal/quotes.ts`
@@ -202,6 +215,7 @@ This session creates ALL 18 provider files (establishing the complete DAL bounda
 - `lib/dal/artworks.ts`
 
 **Pattern:** Each file is a one-line re-export from its mock provider:
+
 ```typescript
 // lib/dal/customers.ts
 export {
@@ -213,7 +227,7 @@ export {
   getCustomerNotes,
   getCustomerArtworks,
   getCustomerInvoices,
-} from './_providers/mock/customers';
+} from './_providers/mock/customers'
 ```
 
 **No barrel index.ts** — consumers import `@/lib/dal/customers`, never `@/lib/dal`.
@@ -221,6 +235,7 @@ export {
 ### Task 1.3: Migrate Customer Route Group (Reference Implementation)
 
 **Files to modify (~6 files):**
+
 - `app/(dashboard)/customers/page.tsx` — Server Component, single domain
 - `app/(dashboard)/customers/[id]/page.tsx` — Server Component, 6 domains
 - `app/(dashboard)/customers/_components/CustomersDataTable.tsx` — Client Component
@@ -229,6 +244,7 @@ export {
 - Any other customer components importing mock-data
 
 **Steps:**
+
 1. Read each file, identify its mock-data imports and component type (Server vs Client)
 2. For Server Components: replace mock-data imports with DAL imports, add `async/await`
 3. For Client Components: remove mock-data imports, add props for the data, update parent to pass data
@@ -238,9 +254,11 @@ export {
 ### Task 1.4: Customer Domain Tests
 
 **Files to create:**
+
 - `lib/dal/__tests__/customers.test.ts`
 
 **Steps:**
+
 1. Test each customer DAL function returns correct type
 2. Test `getCustomerById(validId)` returns customer
 3. Test `getCustomerById(invalidId)` returns null
@@ -260,6 +278,7 @@ Each session handles a non-overlapping set of files to avoid merge conflicts. Al
 ### Task 2.1: Dashboard + Jobs Route Group (Session A — `dal-migrate-dashboard-jobs`)
 
 **Files to modify (~8 files):**
+
 - `app/(dashboard)/page.tsx` — Server Component, imports `jobs` + `customers` at module level (Pattern 1)
 - `app/(dashboard)/jobs/page.tsx` — Server Component
 - `app/(dashboard)/jobs/[id]/page.tsx` — Server Component
@@ -269,6 +288,7 @@ Each session handles a non-overlapping set of files to avoid merge conflicts. Al
 
 **Special handling for `jobs/board/page.tsx`:**
 This is the only client component page that imports from mock-data. Must be split:
+
 1. Extract current content to `jobs/board/_components/ProductionBoard.tsx`
 2. New `page.tsx` becomes Server Component that fetches data via DAL and passes as props
 3. `ProductionBoard.tsx` receives `initialJobs`, `initialQuoteCards`, `initialScratchNotes` as props
@@ -279,6 +299,7 @@ Module-level computations (`const blockedJobs = jobs.filter(...)`) must move ins
 ### Task 2.2: Quotes Route Group (Session B — `dal-migrate-quotes`)
 
 **Files to modify (~7 files):**
+
 - `app/(dashboard)/quotes/page.tsx` — Server Component
 - `app/(dashboard)/quotes/new/page.tsx` — Server Component
 - `app/(dashboard)/quotes/[id]/page.tsx` — Server Component
@@ -293,6 +314,7 @@ Imports from 4 domains (customers, colors, garmentCatalog, artworks). Parent pag
 ### Task 2.3: Invoices Route Group (Session C — `dal-migrate-invoices`)
 
 **Files to modify (~6 files):**
+
 - `app/(dashboard)/invoices/page.tsx` — Server Component
 - `app/(dashboard)/invoices/[id]/page.tsx` — Server Component
 - `app/(dashboard)/invoices/[id]/edit/page.tsx` — Server Component (already async)
@@ -303,6 +325,7 @@ Imports from 4 domains (customers, colors, garmentCatalog, artworks). Parent pag
 ### Task 2.4: Garments + Screens + Settings + Shared (Session D — `dal-migrate-remaining`)
 
 **Files to modify (~8 files):**
+
 - `app/(dashboard)/garments/page.tsx` — Server Component
 - `app/(dashboard)/garments/_components/BrandDetailDrawer.tsx` — Client Component
 - `app/(dashboard)/garments/_components/GarmentCatalogDataTable.tsx` — Client Component
@@ -313,6 +336,7 @@ Imports from 4 domains (customers, colors, garmentCatalog, artworks). Parent pag
 - `components/features/InheritanceDetail.tsx` — Client Component
 
 **Verification (all Wave 2 sessions):**
+
 1. `npm run build` — clean
 2. `npm test` — all 529 existing tests pass
 3. Pages render correctly with mock data
@@ -329,12 +353,15 @@ Extract cross-entity business logic from helper files into services that call DA
 ### Task 3.1: Color Resolution Service (Session A — `dal-service-colors`)
 
 **Files to create:**
+
 - `lib/services/color-resolution.ts`
 
 **Files to modify:**
+
 - All files importing from `lib/helpers/color-preferences.ts` (~7 files)
 
 **Steps:**
+
 1. Read `lib/helpers/color-preferences.ts` — understand the 3-level hierarchy logic
 2. Create `lib/services/color-resolution.ts` with async functions that call DAL:
    - `resolveEffectiveFavorites(entityType, entityId?)` → calls `getColors()`, `getBrandPreferences()`, `getCustomerById()`
@@ -349,12 +376,15 @@ Extract cross-entity business logic from helper files into services that call DA
 ### Task 3.2: Board Projections Service (Session B — `dal-service-board`)
 
 **Files to create:**
+
 - `lib/services/board-projections.ts`
 
 **Files to modify:**
+
 - All files importing from `lib/helpers/board-projections.ts` (~1 file: `jobs/board/page.tsx` or `ProductionBoard.tsx`)
 
 **Steps:**
+
 1. Read `lib/helpers/board-projections.ts` — understand the 5-entity join logic
 2. Create `lib/services/board-projections.ts` with async functions that call DAL:
    - `projectJobToCard(job)` → calls `getCustomerById()`, `getInvoiceById()`, `getGarmentById()`, `getColorById()`, `getArtworkById()`
@@ -365,12 +395,15 @@ Extract cross-entity business logic from helper files into services that call DA
 ### Task 3.3: Screen Helpers Service (Session C — `dal-service-screens`)
 
 **Files to create:**
+
 - `lib/services/screen-helpers.ts`
 
 **Files to modify:**
+
 - All files importing from `lib/helpers/screen-helpers.ts` (~4 files)
 
 **Steps:**
+
 1. Read `lib/helpers/screen-helpers.ts` — understand screen derivation logic
 2. Create `lib/services/screen-helpers.ts` with async functions that call DAL:
    - `getScreensByJobId(jobId)` → calls `dal/screens.getScreensByJobId()`
@@ -388,24 +421,28 @@ Extract cross-entity business logic from helper files into services that call DA
 ### Task 4.1: Remove Unused Mock-Data Exports
 
 **Files to modify:**
+
 - `lib/mock-data.ts` — Add `@deprecated` JSDoc to entity array exports
 - Remove any query functions from mock-data that are now handled by DAL (e.g., `getCustomerQuotes`)
 
 ### Task 4.2: Import Boundary Enforcement
 
 **Steps:**
+
 1. Add CI grep check: `mock-data` imports only allowed in `_providers/mock/` and `__tests__/` files
 2. Verify: `grep -r "from.*mock-data" --include="*.ts" --include="*.tsx" | grep -v "_providers/mock" | grep -v "__tests__" | grep -v "node_modules"` returns zero results
 
 ### Task 4.3: Template and Documentation Updates
 
 **Files to modify:**
+
 - `.claude/skills/screen-builder/templates/` — Update templates to use DAL imports
 - Verify CLAUDE.md rules are current
 
 ### Task 4.4: Final Verification
 
 **Steps:**
+
 1. `npm run build` — clean build
 2. `npm test` — all tests pass (529 existing + new DAL tests)
 3. `npm run lint` — clean
@@ -419,14 +456,14 @@ Extract cross-entity business logic from helper files into services that call DA
 
 ## Summary
 
-| Wave | Sessions | Type | Slice | Key Deliverable |
-|------|----------|------|-------|-----------------|
-| 0 | 1 serial | Foundation | V1 | Shared types, provider router, security headers, CLAUDE.md rules |
-| 1 | 1 serial | Providers + Pattern | V2 + V3a | 18 new DAL files + customer migration as reference |
-| 2 | 4 parallel | Consumer Migration | V3b | All 46 import sites migrated to DAL |
-| 3 | 3 parallel | Services | V4 | color-resolution, board-projections, screen-helpers |
-| 4 | 1 serial | Cleanup | V5 | Import boundary enforcement, deprecation, verification |
-| **Total** | **10 sessions** | | | |
+| Wave      | Sessions        | Type                | Slice    | Key Deliverable                                                  |
+| --------- | --------------- | ------------------- | -------- | ---------------------------------------------------------------- |
+| 0         | 1 serial        | Foundation          | V1       | Shared types, provider router, security headers, CLAUDE.md rules |
+| 1         | 1 serial        | Providers + Pattern | V2 + V3a | 18 new DAL files + customer migration as reference               |
+| 2         | 4 parallel      | Consumer Migration  | V3b      | All 46 import sites migrated to DAL                              |
+| 3         | 3 parallel      | Services            | V4       | color-resolution, board-projections, screen-helpers              |
+| 4         | 1 serial        | Cleanup             | V5       | Import boundary enforcement, deprecation, verification           |
+| **Total** | **10 sessions** |                     |          |                                                                  |
 
 **Estimated new files:** ~25 (9 DAL + 9 providers + 3 shared + 3 services + test files)
 **Estimated modified files:** ~50 (46 consumers + next.config + CLAUDE.md + package.json + .env)

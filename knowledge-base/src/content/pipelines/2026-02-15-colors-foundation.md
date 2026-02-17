@@ -1,6 +1,6 @@
 ---
-title: "Color Preference System: Wave 0 Foundation"
-subtitle: "Schemas, helpers, shared components, and navigation for hierarchical color favorites"
+title: 'Color Preference System: Wave 0 Foundation'
+subtitle: 'Schemas, helpers, shared components, and navigation for hierarchical color favorites'
 date: 2026-02-15
 phase: 1
 pipelineName: colors
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: build
 tags: [feature, build]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0215-colors-foundation"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0215-colors-foundation'
 status: complete
 ---
 
@@ -22,6 +22,7 @@ Built Wave 0 (Foundation) of the Color Preference System — the data model, res
 ## What Was Built
 
 ### Schemas (5 new Zod schemas)
+
 - `inheritanceModeSchema` — "inherit" | "customize" enum
 - `displayPreferenceSchema` — "flat" | "grouped" enum
 - `propagationConfigSchema` — auto-propagation toggle
@@ -29,23 +30,27 @@ Built Wave 0 (Foundation) of the Color Preference System — the data model, res
 - `customerPreferenceSchema` — customer-level preferences
 
 ### Customer Schema Evolution
+
 - `favoriteColors` migrated from `Record<string, string[]>` to `string[]`
 - Added `favoriteBrandNames: string[]` field
 - All 10 customers updated in mock data
 
 ### Shared Helpers (4 functions, 20 tests)
+
 - `resolveEffectiveFavorites(entityType, entityId)` — walks global/brand/customer hierarchy
 - `getInheritanceChain(entityType, entityId)` — computes global defaults + added/removed at level
 - `propagateAddition(level, colorId)` — auto-propagates to inheriting children
 - `getImpactPreview(level, colorId)` — counts affected downstream entities
 
 ### Shared UI Components
+
 - **FavoritesColorSection** — two-section layout (favorites + all colors) with badge support
 - **InheritanceToggle** — Beth Meyer toggle ("Use parent colors" / "Customize")
 - **InheritanceDetail** — progressive disclosure of inheritance chain with restore action
 - **ColorSwatchPicker** — extended with `multiSelect`, `selectedColorIds`, `onToggleColor`
 
 ### Navigation
+
 - `/settings/colors` route added to sidebar, mobile header, APP_FLOW.md
 
 ## Key Decisions

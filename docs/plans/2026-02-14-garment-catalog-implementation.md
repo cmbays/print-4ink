@@ -17,6 +17,7 @@
 ### Cross-Linking Already Complete
 
 Issues #65, #66, #68 from the breadboard build order (steps 17-19) are **already implemented**:
+
 - **#65 Dashboard job rows** — `app/(dashboard)/page.tsx:100-104,140-144` wraps job rows in `<Link href={/jobs/${id}}>`
 - **#66 Customer Detail job rows** — `app/(dashboard)/customers/[id]/_components/CustomerJobsTable.tsx:54-59,84-85` already has clickable links
 - **#68 Invoice Detail linked job** — `app/(dashboard)/invoices/_components/InvoiceDetailView.tsx:152-162` already shows linked job with clickable link
@@ -25,34 +26,35 @@ These tasks are omitted from this plan.
 
 ### Key File Locations
 
-| Area | Path |
-|------|------|
-| Garment schema | `lib/schemas/garment.ts` |
-| Customer schema | `lib/schemas/customer.ts` |
-| Screen schema | `lib/schemas/screen.ts` |
-| Color schema | `lib/schemas/color.ts` |
-| Job schema | `lib/schemas/job.ts` |
-| Mock data | `lib/mock-data.ts` |
-| Garment tests | `lib/schemas/__tests__/garment.test.ts` |
-| Customer tests | `lib/schemas/__tests__/customer.test.ts` |
-| Screen tests | `lib/schemas/__tests__/screen.test.ts` |
-| Mock data tests | `lib/schemas/__tests__/mock-data.test.ts` |
-| Existing helpers | `lib/helpers/` (format.ts, money.ts, job-utils.ts, etc.) |
-| Color swatch picker | `components/features/ColorSwatchPicker.tsx` |
-| Customer tabs | `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx` |
-| Customer detail page | `app/(dashboard)/customers/[id]/page.tsx` |
-| Job detail page | `app/(dashboard)/jobs/[id]/page.tsx` |
-| Job details section | `app/(dashboard)/jobs/_components/JobDetailsSection.tsx` |
+| Area                 | Path                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| Garment schema       | `lib/schemas/garment.ts`                                                                   |
+| Customer schema      | `lib/schemas/customer.ts`                                                                  |
+| Screen schema        | `lib/schemas/screen.ts`                                                                    |
+| Color schema         | `lib/schemas/color.ts`                                                                     |
+| Job schema           | `lib/schemas/job.ts`                                                                       |
+| Mock data            | `lib/mock-data.ts`                                                                         |
+| Garment tests        | `lib/schemas/__tests__/garment.test.ts`                                                    |
+| Customer tests       | `lib/schemas/__tests__/customer.test.ts`                                                   |
+| Screen tests         | `lib/schemas/__tests__/screen.test.ts`                                                     |
+| Mock data tests      | `lib/schemas/__tests__/mock-data.test.ts`                                                  |
+| Existing helpers     | `lib/helpers/` (format.ts, money.ts, job-utils.ts, etc.)                                   |
+| Color swatch picker  | `components/features/ColorSwatchPicker.tsx`                                                |
+| Customer tabs        | `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx`                              |
+| Customer detail page | `app/(dashboard)/customers/[id]/page.tsx`                                                  |
+| Job detail page      | `app/(dashboard)/jobs/[id]/page.tsx`                                                       |
+| Job details section  | `app/(dashboard)/jobs/_components/JobDetailsSection.tsx`                                   |
 | shadcn/ui components | `components/ui/` (sheet.tsx, tabs.tsx, switch.tsx, select.tsx, badge.tsx, input.tsx, etc.) |
 
 ### Raw ID Bug (Task 17)
 
 `app/(dashboard)/jobs/_components/JobDetailsSection.tsx:41-44` currently renders:
+
 ```tsx
 <p className="text-sm text-foreground">
-  {gd.garmentId}         // shows "gc-002" instead of "Gildan Heavy Cotton Tee"
+  {gd.garmentId} // shows "gc-002" instead of "Gildan Heavy Cotton Tee"
   <span className="ml-2 text-xs text-muted-foreground">
-    {gd.colorId}         // shows "clr-black" instead of "Black"
+    {gd.colorId} // shows "clr-black" instead of "Black"
   </span>
 </p>
 ```
@@ -74,6 +76,7 @@ These tasks are omitted from this plan.
 Add `isEnabled` and `isFavorite` to garment catalog schema. Add `favoriteGarments` and `favoriteColors` to customer schema. Add `customerScreenSchema` for derived screen records.
 
 **Files:**
+
 - Modify: `lib/schemas/garment.ts`
 - Modify: `lib/schemas/customer.ts`
 - Create: `lib/schemas/customer-screen.ts`
@@ -88,25 +91,25 @@ Add to `lib/schemas/__tests__/garment.test.ts`:
 ```typescript
 // Inside "garmentCatalogSchema" describe block, add:
 
-it("accepts isEnabled field", () => {
-  const result = garmentCatalogSchema.parse({ ...validCatalog, isEnabled: true });
-  expect(result.isEnabled).toBe(true);
-});
+it('accepts isEnabled field', () => {
+  const result = garmentCatalogSchema.parse({ ...validCatalog, isEnabled: true })
+  expect(result.isEnabled).toBe(true)
+})
 
-it("defaults isEnabled to true", () => {
-  const result = garmentCatalogSchema.parse(validCatalog);
-  expect(result.isEnabled).toBe(true);
-});
+it('defaults isEnabled to true', () => {
+  const result = garmentCatalogSchema.parse(validCatalog)
+  expect(result.isEnabled).toBe(true)
+})
 
-it("accepts isFavorite field", () => {
-  const result = garmentCatalogSchema.parse({ ...validCatalog, isFavorite: true });
-  expect(result.isFavorite).toBe(true);
-});
+it('accepts isFavorite field', () => {
+  const result = garmentCatalogSchema.parse({ ...validCatalog, isFavorite: true })
+  expect(result.isFavorite).toBe(true)
+})
 
-it("defaults isFavorite to false", () => {
-  const result = garmentCatalogSchema.parse(validCatalog);
-  expect(result.isFavorite).toBe(false);
-});
+it('defaults isFavorite to false', () => {
+  const result = garmentCatalogSchema.parse(validCatalog)
+  expect(result.isFavorite).toBe(false)
+})
 ```
 
 **Step 2: Run tests to verify they fail**
@@ -130,7 +133,7 @@ export const garmentCatalogSchema = z.object({
   availableSizes: z.array(garmentSizeSchema),
   isEnabled: z.boolean().default(true),
   isFavorite: z.boolean().default(false),
-});
+})
 ```
 
 **Step 4: Run garment tests to verify they pass**
@@ -145,31 +148,31 @@ Add to `lib/schemas/__tests__/customer.test.ts`:
 ```typescript
 // Inside "customerSchema" describe block, add:
 
-it("accepts favoriteGarments field", () => {
+it('accepts favoriteGarments field', () => {
   const result = customerSchema.parse({
     ...validCustomer,
-    favoriteGarments: ["gc-001", "gc-002"],
-  });
-  expect(result.favoriteGarments).toEqual(["gc-001", "gc-002"]);
-});
+    favoriteGarments: ['gc-001', 'gc-002'],
+  })
+  expect(result.favoriteGarments).toEqual(['gc-001', 'gc-002'])
+})
 
-it("defaults favoriteGarments to empty array", () => {
-  const result = customerSchema.parse(validCustomer);
-  expect(result.favoriteGarments).toEqual([]);
-});
+it('defaults favoriteGarments to empty array', () => {
+  const result = customerSchema.parse(validCustomer)
+  expect(result.favoriteGarments).toEqual([])
+})
 
-it("accepts favoriteColors field", () => {
+it('accepts favoriteColors field', () => {
   const result = customerSchema.parse({
     ...validCustomer,
-    favoriteColors: { "gc-001": ["clr-black", "clr-white"] },
-  });
-  expect(result.favoriteColors).toEqual({ "gc-001": ["clr-black", "clr-white"] });
-});
+    favoriteColors: { 'gc-001': ['clr-black', 'clr-white'] },
+  })
+  expect(result.favoriteColors).toEqual({ 'gc-001': ['clr-black', 'clr-white'] })
+})
 
-it("defaults favoriteColors to empty object", () => {
-  const result = customerSchema.parse(validCustomer);
-  expect(result.favoriteColors).toEqual({});
-});
+it('defaults favoriteColors to empty object', () => {
+  const result = customerSchema.parse(validCustomer)
+  expect(result.favoriteColors).toEqual({})
+})
 ```
 
 **Step 6: Run customer tests to verify they fail**
@@ -197,7 +200,7 @@ Expected: PASS
 Create `lib/schemas/customer-screen.ts`:
 
 ```typescript
-import { z } from "zod";
+import { z } from 'zod'
 
 export const customerScreenSchema = z.object({
   id: z.string(),
@@ -207,9 +210,9 @@ export const customerScreenSchema = z.object({
   colorIds: z.array(z.string()),
   meshCount: z.number().int().positive(),
   createdAt: z.string().datetime(),
-});
+})
 
-export type CustomerScreen = z.infer<typeof customerScreenSchema>;
+export type CustomerScreen = z.infer<typeof customerScreenSchema>
 ```
 
 **Step 10: Write tests for customerScreenSchema**
@@ -217,37 +220,37 @@ export type CustomerScreen = z.infer<typeof customerScreenSchema>;
 Create `lib/schemas/__tests__/customer-screen.test.ts`:
 
 ```typescript
-import { describe, it, expect } from "vitest";
-import { customerScreenSchema } from "../customer-screen";
+import { describe, it, expect } from 'vitest'
+import { customerScreenSchema } from '../customer-screen'
 
-describe("customerScreenSchema", () => {
+describe('customerScreenSchema', () => {
   const valid = {
-    id: "cs-001",
-    customerId: "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
-    jobId: "f1a00001-e5f6-4a01-8b01-0d1e2f3a4b01",
-    artworkName: "River City Logo",
-    colorIds: ["clr-black", "clr-white"],
+    id: 'cs-001',
+    customerId: 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c',
+    jobId: 'f1a00001-e5f6-4a01-8b01-0d1e2f3a4b01',
+    artworkName: 'River City Logo',
+    colorIds: ['clr-black', 'clr-white'],
     meshCount: 160,
-    createdAt: "2026-01-15T10:00:00Z",
-  };
+    createdAt: '2026-01-15T10:00:00Z',
+  }
 
-  it("accepts a valid customer screen record", () => {
-    expect(customerScreenSchema.parse(valid)).toEqual(valid);
-  });
+  it('accepts a valid customer screen record', () => {
+    expect(customerScreenSchema.parse(valid)).toEqual(valid)
+  })
 
-  it("rejects zero mesh count", () => {
-    expect(() => customerScreenSchema.parse({ ...valid, meshCount: 0 })).toThrow();
-  });
+  it('rejects zero mesh count', () => {
+    expect(() => customerScreenSchema.parse({ ...valid, meshCount: 0 })).toThrow()
+  })
 
-  it("rejects empty colorIds", () => {
-    const result = customerScreenSchema.parse({ ...valid, colorIds: [] });
-    expect(result.colorIds).toEqual([]);
-  });
+  it('rejects empty colorIds', () => {
+    const result = customerScreenSchema.parse({ ...valid, colorIds: [] })
+    expect(result.colorIds).toEqual([])
+  })
 
-  it("rejects empty artworkName", () => {
-    expect(() => customerScreenSchema.parse({ ...valid, artworkName: "" })).toThrow();
-  });
-});
+  it('rejects empty artworkName', () => {
+    expect(() => customerScreenSchema.parse({ ...valid, artworkName: '' })).toThrow()
+  })
+})
 ```
 
 **Step 11: Run customer-screen tests**
@@ -274,6 +277,7 @@ git commit -m "feat: add isEnabled/isFavorite to garment, favorites to customer,
 Create `getGarmentById()` and `getColorById()` helpers. These are used by Job Detail (fix raw IDs), garment cards, screen rows, and drawer.
 
 **Files:**
+
 - Create: `lib/helpers/garment-helpers.ts`
 - Test: `lib/helpers/__tests__/garment-helpers.test.ts`
 
@@ -282,32 +286,32 @@ Create `getGarmentById()` and `getColorById()` helpers. These are used by Job De
 Create `lib/helpers/__tests__/garment-helpers.test.ts`:
 
 ```typescript
-import { describe, it, expect } from "vitest";
-import { getGarmentById, getColorById } from "../garment-helpers";
+import { describe, it, expect } from 'vitest'
+import { getGarmentById, getColorById } from '../garment-helpers'
 
-describe("getGarmentById", () => {
-  it("finds garment by ID", () => {
-    const result = getGarmentById("gc-001");
-    expect(result).not.toBeNull();
-    expect(result?.brand).toBe("Bella+Canvas");
-  });
+describe('getGarmentById', () => {
+  it('finds garment by ID', () => {
+    const result = getGarmentById('gc-001')
+    expect(result).not.toBeNull()
+    expect(result?.brand).toBe('Bella+Canvas')
+  })
 
-  it("returns null for unknown ID", () => {
-    expect(getGarmentById("gc-999")).toBeNull();
-  });
-});
+  it('returns null for unknown ID', () => {
+    expect(getGarmentById('gc-999')).toBeNull()
+  })
+})
 
-describe("getColorById", () => {
-  it("finds color by ID", () => {
-    const result = getColorById("clr-black");
-    expect(result).not.toBeNull();
-    expect(result?.name).toBe("Black");
-  });
+describe('getColorById', () => {
+  it('finds color by ID', () => {
+    const result = getColorById('clr-black')
+    expect(result).not.toBeNull()
+    expect(result?.name).toBe('Black')
+  })
 
-  it("returns null for unknown ID", () => {
-    expect(getColorById("clr-999")).toBeNull();
-  });
-});
+  it('returns null for unknown ID', () => {
+    expect(getColorById('clr-999')).toBeNull()
+  })
+})
 ```
 
 **Step 2: Run tests to verify they fail**
@@ -320,16 +324,16 @@ Expected: FAIL — module not found
 Create `lib/helpers/garment-helpers.ts`:
 
 ```typescript
-import { garmentCatalog, colors } from "@/lib/mock-data";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { Color } from "@/lib/schemas/color";
+import { garmentCatalog, colors } from '@/lib/mock-data'
+import type { GarmentCatalog } from '@/lib/schemas/garment'
+import type { Color } from '@/lib/schemas/color'
 
 export function getGarmentById(id: string): GarmentCatalog | null {
-  return garmentCatalog.find((g) => g.id === id) ?? null;
+  return garmentCatalog.find((g) => g.id === id) ?? null
 }
 
 export function getColorById(id: string): Color | null {
-  return colors.find((c) => c.id === id) ?? null;
+  return colors.find((c) => c.id === id) ?? null
 }
 ```
 
@@ -352,26 +356,27 @@ git commit -m "feat: add getGarmentById and getColorById lookup helpers"
 Expand from 5 to 15+ garments across all categories (t-shirts, fleece, outerwear, pants, headwear).
 
 **Files:**
+
 - Modify: `lib/mock-data.ts`
 
 **Step 1: Add 10+ new garment catalog entries**
 
 Add entries after `gc-005` in the `garmentCatalog` array in `lib/mock-data.ts`. Cover all categories. Use realistic S&S/SanMar brands and SKUs. Some should have `isEnabled: false` and `isFavorite: true` to exercise the new fields. Include:
 
-| ID | Brand | SKU | Name | Category |
-|----|-------|-----|------|----------|
-| gc-006 | Gildan | 5000B | Heavy Cotton Youth Tee | t-shirts |
-| gc-007 | Bella+Canvas | 3501 | Unisex Jersey Long Sleeve Tee | t-shirts |
-| gc-008 | Gildan | 18000 | Heavy Blend Crewneck Sweatshirt | fleece |
-| gc-009 | Independent Trading Co. | SS4500 | Midweight Hooded Sweatshirt | fleece |
-| gc-010 | Port Authority | J317 | Core Soft Shell Jacket | outerwear |
-| gc-011 | Columbia | 1568 | Ascender Softshell Jacket | outerwear |
-| gc-012 | Gildan | 18400 | Heavy Blend Open Bottom Sweatpants | pants |
-| gc-013 | Champion | RW10 | Reverse Weave Jogger | pants |
-| gc-014 | Yupoong | 6089 | Classic Snapback Cap | headwear |
-| gc-015 | Richardson | 112 | Trucker Cap | headwear |
-| gc-016 | Port & Company | PC61 | Essential Tee | t-shirts |
-| gc-017 | Nike | NKBQ5233 | Dri-FIT Cotton/Poly Tee | t-shirts |
+| ID     | Brand                   | SKU      | Name                               | Category  |
+| ------ | ----------------------- | -------- | ---------------------------------- | --------- |
+| gc-006 | Gildan                  | 5000B    | Heavy Cotton Youth Tee             | t-shirts  |
+| gc-007 | Bella+Canvas            | 3501     | Unisex Jersey Long Sleeve Tee      | t-shirts  |
+| gc-008 | Gildan                  | 18000    | Heavy Blend Crewneck Sweatshirt    | fleece    |
+| gc-009 | Independent Trading Co. | SS4500   | Midweight Hooded Sweatshirt        | fleece    |
+| gc-010 | Port Authority          | J317     | Core Soft Shell Jacket             | outerwear |
+| gc-011 | Columbia                | 1568     | Ascender Softshell Jacket          | outerwear |
+| gc-012 | Gildan                  | 18400    | Heavy Blend Open Bottom Sweatpants | pants     |
+| gc-013 | Champion                | RW10     | Reverse Weave Jogger               | pants     |
+| gc-014 | Yupoong                 | 6089     | Classic Snapback Cap               | headwear  |
+| gc-015 | Richardson              | 112      | Trucker Cap                        | headwear  |
+| gc-016 | Port & Company          | PC61     | Essential Tee                      | t-shirts  |
+| gc-017 | Nike                    | NKBQ5233 | Dri-FIT Cotton/Poly Tee            | t-shirts  |
 
 Set `gc-010` and `gc-011` to `isEnabled: false` (outerwear not currently offered). Set `gc-001` and `gc-002` to `isFavorite: true` (most popular). Give outerwear and fleece larger size price adjustments. Give headwear only S/M/L/XL or One Size.
 
@@ -399,6 +404,7 @@ git commit -m "feat: expand garment catalog from 5 to 17 garments across all cat
 Shared component that renders a garment placeholder image with brand/SKU text fallback. Phase 1 uses generated placeholders. Phase 2 will pull from supplier API.
 
 **Files:**
+
 - Create: `components/features/GarmentImage.tsx`
 
 **Step 1: Build the component**
@@ -406,52 +412,42 @@ Shared component that renders a garment placeholder image with brand/SKU text fa
 Create `components/features/GarmentImage.tsx`:
 
 ```tsx
-"use client";
+'use client'
 
-import { Shirt } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Shirt } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface GarmentImageProps {
-  brand: string;
-  sku: string;
-  name: string;
-  size?: "sm" | "md" | "lg";
-  className?: string;
+  brand: string
+  sku: string
+  name: string
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 
 const SIZE_CLASSES = {
-  sm: "h-10 w-10",
-  md: "h-20 w-20",
-  lg: "h-40 w-40",
-} as const;
+  sm: 'h-10 w-10',
+  md: 'h-20 w-20',
+  lg: 'h-40 w-40',
+} as const
 
-const ICON_SIZES = { sm: 16, md: 32, lg: 48 } as const;
+const ICON_SIZES = { sm: 16, md: 32, lg: 48 } as const
 
-export function GarmentImage({
-  brand,
-  sku,
-  name,
-  size = "md",
-  className,
-}: GarmentImageProps) {
+export function GarmentImage({ brand, sku, name, size = 'md', className }: GarmentImageProps) {
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center rounded-md bg-surface text-muted-foreground",
+        'flex flex-col items-center justify-center rounded-md bg-surface text-muted-foreground',
         SIZE_CLASSES[size],
-        className,
+        className
       )}
       role="img"
       aria-label={`${brand} ${sku} — ${name}`}
     >
       <Shirt size={ICON_SIZES[size]} aria-hidden="true" />
-      {size !== "sm" && (
-        <span className="mt-1 text-center text-[10px] leading-tight">
-          {sku}
-        </span>
-      )}
+      {size !== 'sm' && <span className="mt-1 text-center text-[10px] leading-tight">{sku}</span>}
     </div>
-  );
+  )
 }
 ```
 
@@ -474,6 +470,7 @@ git commit -m "feat: add GarmentImage shared component with size variants"
 Reusable inline star toggle. Used across catalog cards, drawer, customer context.
 
 **Files:**
+
 - Create: `components/features/FavoriteStar.tsx`
 
 **Step 1: Build the component**
@@ -481,23 +478,23 @@ Reusable inline star toggle. Used across catalog cards, drawer, customer context
 Create `components/features/FavoriteStar.tsx`:
 
 ```tsx
-"use client";
+'use client'
 
-import { Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Star } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface FavoriteStarProps {
-  isFavorite: boolean;
-  onToggle: () => void;
-  label?: string;
-  size?: number;
-  className?: string;
+  isFavorite: boolean
+  onToggle: () => void
+  label?: string
+  size?: number
+  className?: string
 }
 
 export function FavoriteStar({
   isFavorite,
   onToggle,
-  label = "favorite",
+  label = 'favorite',
   size = 16,
   className,
 }: FavoriteStarProps) {
@@ -507,24 +504,20 @@ export function FavoriteStar({
       aria-label={isFavorite ? `Remove from ${label}` : `Add to ${label}`}
       aria-pressed={isFavorite}
       onClick={(e) => {
-        e.stopPropagation();
-        onToggle();
+        e.stopPropagation()
+        onToggle()
       }}
       className={cn(
-        "inline-flex items-center justify-center rounded-sm p-1 transition-colors",
-        "hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        "motion-reduce:transition-none",
-        isFavorite ? "text-warning" : "text-muted-foreground/40 hover:text-muted-foreground",
-        className,
+        'inline-flex items-center justify-center rounded-sm p-1 transition-colors',
+        'hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'motion-reduce:transition-none',
+        isFavorite ? 'text-warning' : 'text-muted-foreground/40 hover:text-muted-foreground',
+        className
       )}
     >
-      <Star
-        size={size}
-        className={cn(isFavorite && "fill-current")}
-        aria-hidden="true"
-      />
+      <Star size={size} className={cn(isFavorite && 'fill-current')} aria-hidden="true" />
     </button>
-  );
+  )
 }
 ```
 
@@ -547,6 +540,7 @@ git commit -m "feat: add FavoriteStar shared component for inline favorite toggl
 Add a `compact` mode to the existing `ColorSwatchPicker` that renders a simple row of small swatches without search, scroll area, or favorites section. Used in garment cards and screen record rows.
 
 **Files:**
+
 - Modify: `components/features/ColorSwatchPicker.tsx`
 
 **Step 1: Add compact prop and compact rendering**
@@ -558,23 +552,25 @@ In `components/features/ColorSwatchPicker.tsx`:
 3. Limit display to first N colors with a "+X more" indicator
 
 Add to the interface:
+
 ```typescript
 interface ColorSwatchPickerProps {
-  colors: Color[];
-  selectedColorId?: string;
-  onSelect: (colorId: string) => void;
-  favorites?: string[];
-  onToggleFavorite?: (colorId: string) => void;
-  compact?: boolean;
-  maxCompactSwatches?: number;
+  colors: Color[]
+  selectedColorId?: string
+  onSelect: (colorId: string) => void
+  favorites?: string[]
+  onToggleFavorite?: (colorId: string) => void
+  compact?: boolean
+  maxCompactSwatches?: number
 }
 ```
 
 Early return in the component when `compact` is true:
+
 ```tsx
 if (compact) {
-  const displayColors = colors.slice(0, maxCompactSwatches ?? 8);
-  const remaining = colors.length - displayColors.length;
+  const displayColors = colors.slice(0, maxCompactSwatches ?? 8)
+  const remaining = colors.length - displayColors.length
   return (
     <TooltipProvider>
       <div className="flex items-center gap-0.5">
@@ -593,13 +589,11 @@ if (compact) {
           </Tooltip>
         ))}
         {remaining > 0 && (
-          <span className="ml-1 text-[10px] text-muted-foreground">
-            +{remaining}
-          </span>
+          <span className="ml-1 text-[10px] text-muted-foreground">+{remaining}</span>
         )}
       </div>
     </TooltipProvider>
-  );
+  )
 }
 ```
 
@@ -622,6 +616,7 @@ git commit -m "feat: add compact mode to ColorSwatchPicker for garment cards"
 Category tabs, search input, brand filter, color family filter, active filter pills, clear all, view toggle, price visibility toggle.
 
 **Files:**
+
 - Create: `app/(dashboard)/garments/_components/GarmentCatalogToolbar.tsx`
 
 **Step 1: Build the toolbar component**
@@ -629,15 +624,17 @@ Category tabs, search input, brand filter, color family filter, active filter pi
 This is a `"use client"` component. It reads and writes URL search params for all filter state: `category`, `q`, `brand`, `colorFamily`, `view`. It also manages `localStorage` for `garment-show-prices`.
 
 Props:
+
 ```typescript
 interface GarmentCatalogToolbarProps {
-  brands: string[];
-  colorFamilies: string[];
-  garmentCount: number;
+  brands: string[]
+  colorFamilies: string[]
+  garmentCount: number
 }
 ```
 
 The component uses:
+
 - `useSearchParams()` and `useRouter()` from Next.js for URL state
 - `Tabs` / `TabsList` / `TabsTrigger` from shadcn/ui for category tabs
 - `Input` for search
@@ -667,24 +664,27 @@ git commit -m "feat: add GarmentCatalogToolbar with filters, search, view toggle
 Grid view card showing garment image, brand, name, SKU, compact color swatches, enabled badge, favorite star, base price (conditional on price visibility).
 
 **Files:**
+
 - Create: `app/(dashboard)/garments/_components/GarmentCard.tsx`
 
 **Step 1: Build the card component**
 
 Props:
+
 ```typescript
 interface GarmentCardProps {
-  garment: GarmentCatalog;
-  colors: Color[];
-  showPrice: boolean;
-  onToggleFavorite: (garmentId: string) => void;
-  onClick: (garmentId: string) => void;
+  garment: GarmentCatalog
+  colors: Color[]
+  showPrice: boolean
+  onToggleFavorite: (garmentId: string) => void
+  onClick: (garmentId: string) => void
 }
 ```
 
 Uses: `GarmentImage` (size="md"), `ColorSwatchPicker` (compact mode), `FavoriteStar`, `Badge` for enabled/disabled state.
 
 Card layout:
+
 - Image top (full width)
 - Brand + SKU line (muted)
 - Name
@@ -714,18 +714,20 @@ git commit -m "feat: add GarmentCard component for catalog grid view"
 Table view row showing brand, SKU, name, category, base price, enabled toggle, favorite star.
 
 **Files:**
+
 - Create: `app/(dashboard)/garments/_components/GarmentTableRow.tsx`
 
 **Step 1: Build the table row component**
 
 Props:
+
 ```typescript
 interface GarmentTableRowProps {
-  garment: GarmentCatalog;
-  showPrice: boolean;
-  onToggleEnabled: (garmentId: string) => void;
-  onToggleFavorite: (garmentId: string) => void;
-  onClick: (garmentId: string) => void;
+  garment: GarmentCatalog
+  showPrice: boolean
+  onToggleEnabled: (garmentId: string) => void
+  onToggleFavorite: (garmentId: string) => void
+  onClick: (garmentId: string) => void
 }
 ```
 
@@ -752,25 +754,28 @@ git commit -m "feat: add GarmentTableRow component for catalog table view"
 Side drawer (using shadcn Sheet) showing full garment details: hero image, brand/SKU/name header, category badge, base price, interactive color swatch grid, selected color display, size/price matrix, enable/disable toggle, favorite star (global + per color), linked jobs table.
 
 **Files:**
+
 - Create: `app/(dashboard)/garments/_components/GarmentDetailDrawer.tsx`
 
 **Step 1: Build the drawer component**
 
 Props:
+
 ```typescript
 interface GarmentDetailDrawerProps {
-  garment: GarmentCatalog;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  showPrice: boolean;
-  linkedJobs: Array<{ id: string; jobNumber: string; customerName: string }>;
-  onToggleEnabled: (garmentId: string) => void;
-  onToggleFavorite: (garmentId: string) => void;
-  onToggleColorFavorite: (garmentId: string, colorId: string) => void;
+  garment: GarmentCatalog
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  showPrice: boolean
+  linkedJobs: Array<{ id: string; jobNumber: string; customerName: string }>
+  onToggleEnabled: (garmentId: string) => void
+  onToggleFavorite: (garmentId: string) => void
+  onToggleColorFavorite: (garmentId: string, colorId: string) => void
 }
 ```
 
 Uses:
+
 - `Sheet`, `SheetContent`, `SheetHeader`, `SheetTitle` from shadcn/ui (opens from right, width ~480px)
 - `GarmentImage` (size="lg") for hero
 - `ColorSwatchPicker` (full mode with favorites) for color selection
@@ -782,6 +787,7 @@ Uses:
 - Linked jobs as a simple list with `<Link>` to `/jobs/[id]`
 
 Key interactions:
+
 - Click swatch → select color → show color name + hex → update size/price matrix
 - Size/price matrix: columns = [Size, Price Adjustment, Final Price]
 - Final Price = basePrice + priceAdjustment (use `money()` helper from `lib/helpers/money.ts`)
@@ -805,6 +811,7 @@ git commit -m "feat: add GarmentDetailDrawer with full details, color selection,
 The main `/garments` page that wires toolbar + grid/table view + drawer together. Handles all URL state, filtering, and mock data mutations.
 
 **Files:**
+
 - Create: `app/(dashboard)/garments/page.tsx`
 
 **Step 1: Build the page**
@@ -821,6 +828,7 @@ This is a `"use client"` component. It:
 8. Renders `Topbar` with breadcrumbs, `GarmentCatalogToolbar`, grid or table of garments, `GarmentDetailDrawer`
 
 Filter logic (`getFilteredGarments`):
+
 - Category: match `baseCategory` (skip if "all")
 - Search: case-insensitive match against `name`, `brand`, `sku`
 - Brand: exact match
@@ -855,6 +863,7 @@ git commit -m "feat: add GarmentCatalogPage with toolbar, grid/table view, drawe
 Create `deriveScreensFromJobs()` that extracts screen records from completed jobs for a given customer.
 
 **Files:**
+
 - Create: `lib/helpers/screen-helpers.ts`
 - Test: `lib/helpers/__tests__/screen-helpers.test.ts`
 
@@ -863,29 +872,29 @@ Create `deriveScreensFromJobs()` that extracts screen records from completed job
 Create `lib/helpers/__tests__/screen-helpers.test.ts`:
 
 ```typescript
-import { describe, it, expect } from "vitest";
-import { deriveScreensFromJobs } from "../screen-helpers";
-import { jobs } from "@/lib/mock-data";
+import { describe, it, expect } from 'vitest'
+import { deriveScreensFromJobs } from '../screen-helpers'
+import { jobs } from '@/lib/mock-data'
 
-describe("deriveScreensFromJobs", () => {
-  it("returns screen records for a customer with completed jobs", () => {
+describe('deriveScreensFromJobs', () => {
+  it('returns screen records for a customer with completed jobs', () => {
     // Find a customer with at least one completed (done lane) job
-    const doneJob = jobs.find((j) => j.lane === "done");
-    if (!doneJob) return; // skip if no done jobs in mock data
+    const doneJob = jobs.find((j) => j.lane === 'done')
+    if (!doneJob) return // skip if no done jobs in mock data
 
-    const screens = deriveScreensFromJobs(doneJob.customerId);
-    expect(screens.length).toBeGreaterThan(0);
-    expect(screens[0]).toHaveProperty("artworkName");
-    expect(screens[0]).toHaveProperty("colorIds");
-    expect(screens[0]).toHaveProperty("meshCount");
-    expect(screens[0]).toHaveProperty("jobId");
-  });
+    const screens = deriveScreensFromJobs(doneJob.customerId)
+    expect(screens.length).toBeGreaterThan(0)
+    expect(screens[0]).toHaveProperty('artworkName')
+    expect(screens[0]).toHaveProperty('colorIds')
+    expect(screens[0]).toHaveProperty('meshCount')
+    expect(screens[0]).toHaveProperty('jobId')
+  })
 
-  it("returns empty array for customer with no jobs", () => {
-    const screens = deriveScreensFromJobs("nonexistent-id");
-    expect(screens).toEqual([]);
-  });
-});
+  it('returns empty array for customer with no jobs', () => {
+    const screens = deriveScreensFromJobs('nonexistent-id')
+    expect(screens).toEqual([])
+  })
+})
 ```
 
 **Step 2: Run tests to verify they fail**
@@ -898,13 +907,11 @@ Expected: FAIL
 Create `lib/helpers/screen-helpers.ts`:
 
 ```typescript
-import { jobs } from "@/lib/mock-data";
-import type { CustomerScreen } from "@/lib/schemas/customer-screen";
+import { jobs } from '@/lib/mock-data'
+import type { CustomerScreen } from '@/lib/schemas/customer-screen'
 
 export function deriveScreensFromJobs(customerId: string): CustomerScreen[] {
-  const customerJobs = jobs.filter(
-    (j) => j.customerId === customerId && j.lane === "done"
-  );
+  const customerJobs = jobs.filter((j) => j.customerId === customerId && j.lane === 'done')
 
   return customerJobs.flatMap((job) =>
     job.printLocations.map((loc, i) => ({
@@ -916,7 +923,7 @@ export function deriveScreensFromJobs(customerId: string): CustomerScreen[] {
       meshCount: loc.colorCount * 110, // rough estimate: 110 mesh per color
       createdAt: job.completedAt ?? job.createdAt,
     }))
-  );
+  )
 }
 ```
 
@@ -939,6 +946,7 @@ git commit -m "feat: add deriveScreensFromJobs helper for customer screen intell
 Tab panel showing derived screen records for a customer. Includes reclaim functionality.
 
 **Files:**
+
 - Create: `app/(dashboard)/customers/[id]/_components/CustomerScreensTab.tsx`
 - Create: `app/(dashboard)/customers/[id]/_components/ScreenRecordRow.tsx`
 - Create: `app/(dashboard)/customers/[id]/_components/ReclaimScreenDialog.tsx`
@@ -949,8 +957,8 @@ A row displaying: artwork name, color swatches (compact), mesh count badge, date
 
 ```typescript
 interface ScreenRecordRowProps {
-  screen: CustomerScreen;
-  onReclaim: (screenId: string) => void;
+  screen: CustomerScreen
+  onReclaim: (screenId: string) => void
 }
 ```
 
@@ -962,10 +970,10 @@ Confirmation dialog before removing a screen. Shows screen summary (artwork, col
 
 ```typescript
 interface ReclaimScreenDialogProps {
-  screen: CustomerScreen;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+  screen: CustomerScreen
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onConfirm: () => void
 }
 ```
 
@@ -977,11 +985,12 @@ Orchestrates the screen list. Calls `deriveScreensFromJobs()`, manages local sta
 
 ```typescript
 interface CustomerScreensTabProps {
-  customerId: string;
+  customerId: string
 }
 ```
 
 Shows:
+
 - Empty state when no screens ("No screens for this customer")
 - List of `ScreenRecordRow` components
 - Manages reclaim dialog state
@@ -1005,6 +1014,7 @@ git commit -m "feat: add CustomerScreensTab with screen records, reclaim dialog"
 Add "Screens" tab with count badge to the existing CustomerTabs component.
 
 **Files:**
+
 - Modify: `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx`
 
 **Step 1: Add Screens tab**
@@ -1050,6 +1060,7 @@ git commit -m "feat: add Screens tab to CustomerTabs with derived screen data"
 Populate `favoriteGarments` and `favoriteColors` on 2-3 existing customers in mock data.
 
 **Files:**
+
 - Modify: `lib/mock-data.ts`
 
 **Step 1: Add favorites to customers**
@@ -1057,6 +1068,7 @@ Populate `favoriteGarments` and `favoriteColors` on 2-3 existing customers in mo
 In `lib/mock-data.ts`, add to existing customer objects:
 
 - **River City Brewing** (repeat customer, uses gc-002 and gc-005):
+
   ```typescript
   favoriteGarments: ["gc-002", "gc-005"],
   favoriteColors: {
@@ -1066,6 +1078,7 @@ In `lib/mock-data.ts`, add to existing customer objects:
   ```
 
 - **Lonestar Lacrosse** (contract, uses gc-001):
+
   ```typescript
   favoriteGarments: ["gc-001"],
   favoriteColors: {
@@ -1100,6 +1113,7 @@ git commit -m "feat: add customer favorites mock data for River City, Lonestar, 
 Wire `FavoriteStar` into the garment catalog drawer for customer-context favoriting. For Phase 1, the global favorite toggle updates local state in the catalog page.
 
 **Files:**
+
 - Modify: `app/(dashboard)/garments/page.tsx` (ensure favorite toggles work)
 - Modify: `app/(dashboard)/garments/_components/GarmentDetailDrawer.tsx` (per-color stars)
 
@@ -1132,14 +1146,16 @@ git commit -m "feat: wire favorite star toggle for garments and per-color favori
 Replace raw `garmentId` and `colorId` with resolved names using lookup helpers. Add `GarmentImage` thumbnail.
 
 **Files:**
+
 - Modify: `app/(dashboard)/jobs/_components/JobDetailsSection.tsx`
 
 **Step 1: Import helpers and component**
 
 Add imports:
+
 ```typescript
-import { getGarmentById, getColorById } from "@/lib/helpers/garment-helpers";
-import { GarmentImage } from "@/components/features/GarmentImage";
+import { getGarmentById, getColorById } from '@/lib/helpers/garment-helpers'
+import { GarmentImage } from '@/components/features/GarmentImage'
 ```
 
 **Step 2: Replace raw IDs with resolved names**
@@ -1147,42 +1163,44 @@ import { GarmentImage } from "@/components/features/GarmentImage";
 In `JobDetailsSection.tsx`, replace lines 38-57 (the garment details map):
 
 ```tsx
-{job.garmentDetails.map((gd) => {
-  const garment = getGarmentById(gd.garmentId);
-  const color = getColorById(gd.colorId);
-  return (
-    <div key={`${gd.garmentId}:${gd.colorId}`} className="flex items-start gap-3">
-      {garment && (
-        <GarmentImage brand={garment.brand} sku={garment.sku} name={garment.name} size="sm" />
-      )}
-      <div>
-        <p className="text-sm text-foreground">
-          {garment ? `${garment.brand} ${garment.sku}` : gd.garmentId}
-          <span className="ml-2 text-xs text-muted-foreground">
-            {color ? color.name : gd.colorId}
-          </span>
-          {color && (
-            <span
-              className="ml-1.5 inline-block h-3 w-3 rounded-sm align-middle"
-              style={{ backgroundColor: color.hex }}
-              aria-hidden="true"
-            />
-          )}
-        </p>
-        <div className="mt-1 flex flex-wrap gap-1.5">
-          {Object.entries(gd.sizes).map(([size, count]) => (
-            <span
-              key={size}
-              className="inline-flex items-center rounded bg-surface px-1.5 py-0.5 text-xs text-secondary-foreground"
-            >
-              {size}: {count}
+{
+  job.garmentDetails.map((gd) => {
+    const garment = getGarmentById(gd.garmentId)
+    const color = getColorById(gd.colorId)
+    return (
+      <div key={`${gd.garmentId}:${gd.colorId}`} className="flex items-start gap-3">
+        {garment && (
+          <GarmentImage brand={garment.brand} sku={garment.sku} name={garment.name} size="sm" />
+        )}
+        <div>
+          <p className="text-sm text-foreground">
+            {garment ? `${garment.brand} ${garment.sku}` : gd.garmentId}
+            <span className="ml-2 text-xs text-muted-foreground">
+              {color ? color.name : gd.colorId}
             </span>
-          ))}
+            {color && (
+              <span
+                className="ml-1.5 inline-block h-3 w-3 rounded-sm align-middle"
+                style={{ backgroundColor: color.hex }}
+                aria-hidden="true"
+              />
+            )}
+          </p>
+          <div className="mt-1 flex flex-wrap gap-1.5">
+            {Object.entries(gd.sizes).map(([size, count]) => (
+              <span
+                key={size}
+                className="inline-flex items-center rounded bg-surface px-1.5 py-0.5 text-xs text-secondary-foreground"
+              >
+                {size}: {count}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-})}
+    )
+  })
+}
 ```
 
 Note: Keep the existing `<Shirt>` icon above this block, but remove it since `GarmentImage` replaces it. Move the `<Shirt>` icon logic into the garment detail map.
@@ -1225,6 +1243,7 @@ At this point, all features should be functional. Run `PORT=3001 npm run dev` an
 Run build, tests, and type check. Create KB session doc.
 
 **Files:**
+
 - Create: `knowledge-base/src/content/sessions/2026-02-14-garment-catalog-implementation-plan.md`
 
 **Step 1: Run all verifications**
@@ -1243,16 +1262,16 @@ Create `knowledge-base/src/content/sessions/2026-02-14-garment-catalog-implement
 
 ```yaml
 ---
-title: "Garment Catalog & Screen Intelligence — Implementation Plan"
-subtitle: "Sequenced 17-task plan from breadboard: schema, helpers, shared components, catalog page, customer screens, favorites, job detail fix"
+title: 'Garment Catalog & Screen Intelligence — Implementation Plan'
+subtitle: 'Sequenced 17-task plan from breadboard: schema, helpers, shared components, catalog page, customer screens, favorites, job detail fix'
 date: 2026-02-14
 phase: 1
 vertical: garments
 verticalSecondary: [screen-room, customer-management]
 stage: implementation-planning
 tags: [plan]
-sessionId: "TBD"
-branch: "session/0214-garment-breadboard"
+sessionId: 'TBD'
+branch: 'session/0214-garment-breadboard'
 status: complete
 ---
 ```
@@ -1268,30 +1287,31 @@ git commit -m "docs: add garment catalog implementation plan KB session doc"
 
 ## Summary
 
-| Task | What | Files | Depends On |
-|------|------|-------|------------|
-| 1 | Schema updates (garment isEnabled/isFavorite, customer favorites, customer-screen) | garment.ts, customer.ts, customer-screen.ts + tests | Nothing |
-| 2 | Lookup helpers (getGarmentById, getColorById) | garment-helpers.ts + test | Task 1 |
-| 3 | Expand mock garment data (5 → 17) | mock-data.ts | Task 1 |
-| 4 | GarmentImage shared component | GarmentImage.tsx | Nothing |
-| 5 | FavoriteStar shared component | FavoriteStar.tsx | Nothing |
-| 6 | ColorSwatchPicker compact variant | ColorSwatchPicker.tsx | Nothing |
-| 7 | GarmentCatalogToolbar | GarmentCatalogToolbar.tsx | Task 1, 3 |
-| 8 | GarmentCard | GarmentCard.tsx | Task 4, 5, 6 |
-| 9 | GarmentTableRow | GarmentTableRow.tsx | Task 5 |
-| 10 | GarmentDetailDrawer | GarmentDetailDrawer.tsx | Task 2, 5, 6 |
-| 11 | GarmentCatalogPage orchestration | garments/page.tsx | Task 7, 8, 9, 10 |
-| 12 | deriveScreensFromJobs helper | screen-helpers.ts + test | Task 2 |
-| 13 | CustomerScreensTab + ScreenRecordRow + ReclaimScreenDialog | 3 new components | Task 6, 12 |
-| 14 | Update CustomerTabs (add Screens tab) | CustomerTabs.tsx | Task 13 |
-| 15 | Customer favorites mock data | mock-data.ts | Task 1 |
-| 16 | Customer favorites integration (stars in drawer) | page.tsx, GarmentDetailDrawer.tsx | Task 5, 15 |
-| 17 | Fix Job Detail raw garment/color IDs | JobDetailsSection.tsx | Task 2, 4 |
-| 18 | Final verification + KB doc | KB session doc | All above |
+| Task | What                                                                               | Files                                               | Depends On       |
+| ---- | ---------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------- |
+| 1    | Schema updates (garment isEnabled/isFavorite, customer favorites, customer-screen) | garment.ts, customer.ts, customer-screen.ts + tests | Nothing          |
+| 2    | Lookup helpers (getGarmentById, getColorById)                                      | garment-helpers.ts + test                           | Task 1           |
+| 3    | Expand mock garment data (5 → 17)                                                  | mock-data.ts                                        | Task 1           |
+| 4    | GarmentImage shared component                                                      | GarmentImage.tsx                                    | Nothing          |
+| 5    | FavoriteStar shared component                                                      | FavoriteStar.tsx                                    | Nothing          |
+| 6    | ColorSwatchPicker compact variant                                                  | ColorSwatchPicker.tsx                               | Nothing          |
+| 7    | GarmentCatalogToolbar                                                              | GarmentCatalogToolbar.tsx                           | Task 1, 3        |
+| 8    | GarmentCard                                                                        | GarmentCard.tsx                                     | Task 4, 5, 6     |
+| 9    | GarmentTableRow                                                                    | GarmentTableRow.tsx                                 | Task 5           |
+| 10   | GarmentDetailDrawer                                                                | GarmentDetailDrawer.tsx                             | Task 2, 5, 6     |
+| 11   | GarmentCatalogPage orchestration                                                   | garments/page.tsx                                   | Task 7, 8, 9, 10 |
+| 12   | deriveScreensFromJobs helper                                                       | screen-helpers.ts + test                            | Task 2           |
+| 13   | CustomerScreensTab + ScreenRecordRow + ReclaimScreenDialog                         | 3 new components                                    | Task 6, 12       |
+| 14   | Update CustomerTabs (add Screens tab)                                              | CustomerTabs.tsx                                    | Task 13          |
+| 15   | Customer favorites mock data                                                       | mock-data.ts                                        | Task 1           |
+| 16   | Customer favorites integration (stars in drawer)                                   | page.tsx, GarmentDetailDrawer.tsx                   | Task 5, 15       |
+| 17   | Fix Job Detail raw garment/color IDs                                               | JobDetailsSection.tsx                               | Task 2, 4        |
+| 18   | Final verification + KB doc                                                        | KB session doc                                      | All above        |
 
 ### Parallel Execution Opportunities
 
 Tasks that can run in parallel (no shared dependencies):
+
 - **Tasks 4, 5, 6** (shared components) — all independent
 - **Tasks 7 + 12** (toolbar + screen helper) — independent after Task 1-3
 - **Tasks 8, 9** (card + table row) — after shared components
@@ -1300,6 +1320,7 @@ Tasks that can run in parallel (no shared dependencies):
 ### Cross-Linking Already Done
 
 Issues #65, #66, #68 (breadboard steps 17-19) were already implemented:
+
 - Dashboard job rows link to `/jobs/[id]` ✓
 - Customer Detail job rows link to `/jobs/[id]` ✓
 - Invoice Detail linked job displays with link ✓

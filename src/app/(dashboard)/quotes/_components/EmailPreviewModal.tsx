@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { Mail } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@shared/ui/primitives/button";
+import { Mail } from 'lucide-react'
+import { toast } from 'sonner'
+import { Button } from '@shared/ui/primitives/button'
 import {
   Dialog,
   DialogContent,
@@ -10,29 +10,24 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import type { Quote } from "@domain/entities/quote";
-import type { Customer } from "@domain/entities/customer";
-import { formatCurrency } from "@domain/lib/money";
+} from '@shared/ui/primitives/dialog'
+import type { Quote } from '@domain/entities/quote'
+import type { Customer } from '@domain/entities/customer'
+import { formatCurrency } from '@domain/lib/money'
 
-interface EmailPreviewModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  quote: Pick<Quote, "quoteNumber" | "total" | "lineItems">;
-  customer: Pick<Customer, "name" | "email" | "company">;
+type EmailPreviewModalProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  quote: Pick<Quote, 'quoteNumber' | 'total' | 'lineItems'>
+  customer: Pick<Customer, 'name' | 'email' | 'company'>
 }
 
-export function EmailPreviewModal({
-  open,
-  onOpenChange,
-  quote,
-  customer,
-}: EmailPreviewModalProps) {
-  const firstName = customer.name.trim().split(" ")[0] || "there";
+export function EmailPreviewModal({ open, onOpenChange, quote, customer }: EmailPreviewModalProps) {
+  const firstName = customer.name.trim().split(' ')[0] || 'there'
 
   function handleSend() {
-    toast.success(`Email sent to ${customer.email}`);
-    onOpenChange(false);
+    toast.success(`Email sent to ${customer.email}`)
+    onOpenChange(false)
   }
 
   return (
@@ -43,9 +38,7 @@ export function EmailPreviewModal({
             <Mail className="size-5" />
             Email Preview
           </DialogTitle>
-          <DialogDescription>
-            Preview the email before sending to the customer.
-          </DialogDescription>
+          <DialogDescription>Preview the email before sending to the customer.</DialogDescription>
         </DialogHeader>
 
         {/* Email metadata */}
@@ -65,10 +58,7 @@ export function EmailPreviewModal({
         {/* Email body preview */}
         <div className="rounded-md border border-border bg-card p-4 space-y-4 text-sm text-foreground">
           <p>Hi {firstName},</p>
-          <p>
-            Here&apos;s your quote for your recent order. Please review the
-            details below.
-          </p>
+          <p>Here&apos;s your quote for your recent order. Please review the details below.</p>
           <div className="space-y-2">
             <p>
               <span className="text-muted-foreground">Quote: </span>
@@ -77,19 +67,15 @@ export function EmailPreviewModal({
             <p>
               <span className="text-muted-foreground">Items: </span>
               {quote.lineItems.length} line item
-              {quote.lineItems.length !== 1 ? "s" : ""}
+              {quote.lineItems.length !== 1 ? 's' : ''}
             </p>
             <p>
               <span className="text-muted-foreground">Total: </span>
-              <span className="font-semibold">
-                {formatCurrency(quote.total)}
-              </span>
+              <span className="font-semibold">{formatCurrency(quote.total)}</span>
             </p>
           </div>
           <div className="rounded-md border border-border bg-surface px-4 py-2">
-            <p className="font-medium text-action">
-              View Quote →
-            </p>
+            <p className="font-medium text-action">View Quote →</p>
             <p className="text-xs text-muted-foreground">
               https://app.4ink.com/quotes/{quote.quoteNumber.toLowerCase()}/view
             </p>
@@ -111,5 +97,5 @@ export function EmailPreviewModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

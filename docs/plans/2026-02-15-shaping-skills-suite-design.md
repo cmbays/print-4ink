@@ -1,6 +1,6 @@
 ---
-title: "Shaping Skills Suite — Design"
-description: "Adopt upstream shaping methodology, upgrade breadboarding, add breadboard-reflection and ripple hook"
+title: 'Shaping Skills Suite — Design'
+description: 'Adopt upstream shaping methodology, upgrade breadboarding, add breadboard-reflection and ripple hook'
 date: 2026-02-15
 status: approved
 related-issues: [112, 192, 197]
@@ -312,14 +312,14 @@ Registered as PostToolUse hook on `Write` and `Edit` tools.
 
 Each skill includes a section documenting behavior at decision points:
 
-| Decision Point | Interactive | Auto |
-|---|---|---|
-| Requirement status (Shaping) | Human negotiates | Agent proposes based on interview |
-| Shape selection (Shaping) | Human picks | Agent selects highest-fit, logs reasoning |
-| Spike need (Shaping) | Human decides | Agent spikes all flagged unknowns |
-| Place validation (Breadboarding) | Human reviews | Agent applies blocking test |
-| Slice grouping (Breadboarding) | Human validates demo-ability | Agent applies slice rules |
-| Smell fixes (BB Reflection) | Human reviews fixes | Agent fixes all, logs changes |
+| Decision Point                   | Interactive                  | Auto                                      |
+| -------------------------------- | ---------------------------- | ----------------------------------------- |
+| Requirement status (Shaping)     | Human negotiates             | Agent proposes based on interview         |
+| Shape selection (Shaping)        | Human picks                  | Agent selects highest-fit, logs reasoning |
+| Spike need (Shaping)             | Human decides                | Agent spikes all flagged unknowns         |
+| Place validation (Breadboarding) | Human reviews                | Agent applies blocking test               |
+| Slice grouping (Breadboarding)   | Human validates demo-ability | Agent applies slice rules                 |
+| Smell fixes (BB Reflection)      | Human reviews fixes          | Agent fixes all, logs changes             |
 
 All decisions logged with reasoning for KB audit trail (#197).
 
@@ -331,23 +331,23 @@ All decisions logged with reasoning for KB audit trail (#197).
 Interview (human) → Shaping (R×S) → Breadboarding (affordances + slicing) → BB Reflection (QA) → Impl Planning (execution)
 ```
 
-| Skill | Responsibility | Produces | Consumes |
-|---|---|---|---|
-| Shaping | R × S, fit checks, spikes, shape selection | Frame doc, Shaping doc with selected shape + parts | Interview notes, research |
-| Breadboarding | Parts → affordances → wiring → slices | Sliced breadboard with tables + Mermaid | Selected shape + parts |
-| BB Reflection | Design smell detection and fixing | Audit report, fixed breadboard | Any breadboard |
-| Impl Planning | Slices → execution manifests | Waves, prompts, YAML manifest | Sliced breadboard |
+| Skill         | Responsibility                             | Produces                                           | Consumes                  |
+| ------------- | ------------------------------------------ | -------------------------------------------------- | ------------------------- |
+| Shaping       | R × S, fit checks, spikes, shape selection | Frame doc, Shaping doc with selected shape + parts | Interview notes, research |
+| Breadboarding | Parts → affordances → wiring → slices      | Sliced breadboard with tables + Mermaid            | Selected shape + parts    |
+| BB Reflection | Design smell detection and fixing          | Audit report, fixed breadboard                     | Any breadboard            |
+| Impl Planning | Slices → execution manifests               | Waves, prompts, YAML manifest                      | Sliced breadboard         |
 
 ---
 
 ## Implementation Order
 
-| # | Deliverable | Depends On | Can Parallel With |
-|---|---|---|---|
-| 1 | Shaping skill | None | #4 |
-| 2 | Breadboarding upgrade | #1 (handoff format) | — |
-| 3 | BB Reflection skill | #2 (table format) | — |
-| 4 | Ripple hook | None | #1 |
+| #   | Deliverable           | Depends On          | Can Parallel With |
+| --- | --------------------- | ------------------- | ----------------- |
+| 1   | Shaping skill         | None                | #4                |
+| 2   | Breadboarding upgrade | #1 (handoff format) | —                 |
+| 3   | BB Reflection skill   | #2 (table format)   | —                 |
+| 4   | Ripple hook           | None                | #1                |
 
 ---
 

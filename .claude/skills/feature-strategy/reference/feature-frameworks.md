@@ -7,6 +7,7 @@ Use these frameworks to categorize and evaluate feature opportunities. Every pro
 Close loops where users start something but can't finish it — or finish it unsatisfied.
 
 **Questions to find them:**
+
 - Where does the user's workflow hit a dead end?
 - What information does the user need to look up outside the app?
 - Where does the user have to switch to another tool to finish a task?
@@ -19,6 +20,7 @@ Close loops where users start something but can't finish it — or finish it uns
 Make existing features more valuable — not standalone additions. These features are cheap because they build on what already exists.
 
 **Questions to find them:**
+
 - What data does the app already collect that isn't being used?
 - What two features, if connected, would be more valuable together?
 - What insights could be derived from existing data?
@@ -31,6 +33,7 @@ Make existing features more valuable — not standalone additions. These feature
 Give users a reason to come back without being reminded. The app should be where the user WANTS to start their day.
 
 **Questions to find them:**
+
 - What does the user need to check every morning?
 - What information changes overnight that matters?
 - What notifications would the user actually appreciate?
@@ -43,6 +46,7 @@ Give users a reason to come back without being reminded. The app should be where
 Small, unexpected touches that make users feel something. These cost almost nothing but create outsized emotional impact.
 
 **Questions to find them:**
+
 - Where can the app surprise the user with helpfulness?
 - What tedious step can be automated without being asked?
 - Where can the app show intelligence about the user's patterns?
@@ -55,6 +59,7 @@ Small, unexpected touches that make users feel something. These cost almost noth
 Remove steps, reduce decisions, eliminate confusion. Every removed step is a saved minute multiplied by every user, every day, forever.
 
 **Questions to find them:**
+
 - Where does the user click more than 3 times to reach a destination?
 - What forms ask for information the app already knows?
 - Where does the user have to make a decision that has an obvious default?
@@ -67,6 +72,7 @@ Remove steps, reduce decisions, eliminate confusion. Every removed step is a sav
 Features so valuable users WANT to pay — not paywalls or artificial limits. These make the product genuinely more valuable for power users.
 
 **Questions to find them:**
+
 - What would a user pay $10/month more for?
 - What capability would justify upgrading from free to paid?
 - What feature would the user's BOSS want to pay for?
@@ -79,6 +85,7 @@ Features so valuable users WANT to pay — not paywalls or artificial limits. Th
 Leverage platform capabilities that most web apps ignore. These create sticky, native-feeling experiences.
 
 **Questions to find them:**
+
 - What desktop shortcuts would power users want? (Cmd+K, Cmd+N)
 - What drag-and-drop interactions feel natural for this domain?
 - What data could be useful offline or in a widget?

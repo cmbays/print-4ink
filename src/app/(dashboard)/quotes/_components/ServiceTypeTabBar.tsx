@@ -1,33 +1,29 @@
-"use client";
+'use client'
 
-import { CheckCircle, Plus } from "lucide-react";
+import { CheckCircle, Plus } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@shared/ui/primitives/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { Button } from "@shared/ui/primitives/button";
-import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
-import { SERVICE_TYPE_LABELS } from "@domain/constants";
-import type { ServiceType } from "@domain/entities/quote";
-import { cn } from "@shared/lib/cn";
+} from '@shared/ui/primitives/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { Button } from '@shared/ui/primitives/button'
+import { SERVICE_TYPE_ICONS } from '@/components/features/ServiceTypeBadge'
+import { SERVICE_TYPE_LABELS } from '@domain/constants'
+import type { ServiceType } from '@domain/entities/quote'
+import { cn } from '@shared/lib/cn'
 
-interface ServiceTypeTabBarProps {
-  activeTab: ServiceType;
-  enabledTypes: ServiceType[];
-  onTabSwitch: (type: ServiceType) => void;
-  onAddType: (type: ServiceType) => void;
-  tabValidation: Record<ServiceType, boolean>;
+type ServiceTypeTabBarProps = {
+  activeTab: ServiceType
+  enabledTypes: ServiceType[]
+  onTabSwitch: (type: ServiceType) => void
+  onAddType: (type: ServiceType) => void
+  tabValidation: Record<ServiceType, boolean>
 }
 
-const ALL_SERVICE_TYPES: ServiceType[] = ["screen-print", "dtf", "embroidery"];
-const EmbroideryIcon = SERVICE_TYPE_ICONS["embroidery"];
+const ALL_SERVICE_TYPES: ServiceType[] = ['screen-print', 'dtf', 'embroidery']
+const EmbroideryIcon = SERVICE_TYPE_ICONS['embroidery']
 
 export function ServiceTypeTabBar({
   activeTab,
@@ -37,15 +33,18 @@ export function ServiceTypeTabBar({
   tabValidation,
 }: ServiceTypeTabBarProps) {
   const availableToAdd = ALL_SERVICE_TYPES.filter(
-    (type) => !enabledTypes.includes(type) && type !== "embroidery"
-  );
+    (type) => !enabledTypes.includes(type) && type !== 'embroidery'
+  )
 
   return (
-    <div role="tablist" className="flex items-center gap-1 border-b border-border bg-elevated rounded-t-lg px-2">
+    <div
+      role="tablist"
+      className="flex items-center gap-1 border-b border-border bg-elevated rounded-t-lg px-2"
+    >
       {enabledTypes.map((type) => {
-        const Icon = SERVICE_TYPE_ICONS[type];
-        const isActive = activeTab === type;
-        const isValid = tabValidation[type];
+        const Icon = SERVICE_TYPE_ICONS[type]
+        const isActive = activeTab === type
+        const isValid = tabValidation[type]
 
         return (
           <button
@@ -53,11 +52,9 @@ export function ServiceTypeTabBar({
             type="button"
             onClick={() => onTabSwitch(type)}
             className={cn(
-              "relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
-              "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background rounded-t-md",
-              isActive
-                ? "text-action"
-                : "text-muted-foreground"
+              'relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors',
+              'hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background rounded-t-md',
+              isActive ? 'text-action' : 'text-muted-foreground'
             )}
             aria-selected={isActive}
             aria-controls={`tabpanel-${type}`}
@@ -65,18 +62,16 @@ export function ServiceTypeTabBar({
           >
             <Icon className="size-4" />
             <span>{SERVICE_TYPE_LABELS[type]}</span>
-            {isValid && (
-              <CheckCircle className="size-3.5 text-success" />
-            )}
+            {isValid && <CheckCircle className="size-3.5 text-success" />}
             {isActive && (
               <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-action rounded-full" />
             )}
           </button>
-        );
+        )
       })}
 
       {/* Embroidery — always disabled with tooltip */}
-      {!enabledTypes.includes("embroidery") && (
+      {!enabledTypes.includes('embroidery') && (
         <Tooltip delayDuration={200}>
           <TooltipTrigger asChild>
             <button
@@ -110,20 +105,17 @@ export function ServiceTypeTabBar({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {availableToAdd.map((type) => {
-              const TypeIcon = SERVICE_TYPE_ICONS[type];
+              const TypeIcon = SERVICE_TYPE_ICONS[type]
               return (
-                <DropdownMenuItem
-                  key={type}
-                  onClick={() => onAddType(type)}
-                >
+                <DropdownMenuItem key={type} onClick={() => onAddType(type)}>
                   <TypeIcon className="size-4 mr-2" />
                   {SERVICE_TYPE_LABELS[type]}
                 </DropdownMenuItem>
-              );
+              )
             })}
           </DropdownMenuContent>
         </DropdownMenu>
       )}
     </div>
-  );
+  )
 }

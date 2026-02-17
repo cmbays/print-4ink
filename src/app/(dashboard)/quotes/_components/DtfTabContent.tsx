@@ -1,33 +1,33 @@
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { DtfLineItemRow } from "./DtfLineItemRow";
-import { DTF_SIZE_PRESETS } from "@domain/rules/dtf.rules";
-import { getDtfSheetTiersSync } from "@infra/repositories/settings";
-import { SheetCalculationPanel } from "./SheetCalculationPanel";
-import { GangSheetCanvas } from "./GangSheetCanvas";
-import type { DtfLineItem } from "@domain/entities/dtf-line-item";
-import type { SheetCalculation, CanvasLayout } from "@domain/entities/dtf-sheet-calculation";
+import { useCallback } from 'react'
+import { Plus } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { DtfLineItemRow } from './DtfLineItemRow'
+import { DTF_SIZE_PRESETS } from '@domain/rules/dtf.rules'
+import { getDtfSheetTiersSync } from '@infra/repositories/settings'
+import { SheetCalculationPanel } from './SheetCalculationPanel'
+import { GangSheetCanvas } from './GangSheetCanvas'
+import type { DtfLineItem } from '@domain/entities/dtf-line-item'
+import type { SheetCalculation, CanvasLayout } from '@domain/entities/dtf-sheet-calculation'
 
-const DTF_SHEET_TIERS = getDtfSheetTiersSync();
+const DTF_SHEET_TIERS = getDtfSheetTiersSync()
 
 type DtfTabContentProps = {
-  lineItems: DtfLineItem[];
-  setLineItems: React.Dispatch<React.SetStateAction<DtfLineItem[]>>;
-  sheetCalculation: SheetCalculation | null;
-  splitMode: "combine" | "split";
-  setSplitMode: React.Dispatch<React.SetStateAction<"combine" | "split">>;
-  canvasLayout: CanvasLayout[] | null;
-  activeSheetIndex: number;
-  setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
-  setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>;
-  setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>;
-};
+  lineItems: DtfLineItem[]
+  setLineItems: React.Dispatch<React.SetStateAction<DtfLineItem[]>>
+  sheetCalculation: SheetCalculation | null
+  splitMode: 'combine' | 'split'
+  setSplitMode: React.Dispatch<React.SetStateAction<'combine' | 'split'>>
+  canvasLayout: CanvasLayout[] | null
+  activeSheetIndex: number
+  setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>
+  setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>
+  setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>
+}
 
 // Default to Small preset resolved dimensions
-const DEFAULT_PRESET = DTF_SIZE_PRESETS[0]; // Small: 4x4
+const DEFAULT_PRESET = DTF_SIZE_PRESETS[0] // Small: 4x4
 
 export function DtfTabContent({
   lineItems,
@@ -47,34 +47,32 @@ export function DtfTabContent({
       ...prev,
       {
         id: crypto.randomUUID(),
-        artworkName: "",
+        artworkName: '',
         width: DEFAULT_PRESET.width,
         height: DEFAULT_PRESET.height,
         quantity: 1,
-        sizePreset: "small",
+        sizePreset: 'small',
       },
-    ]);
-  }, [setLineItems]);
+    ])
+  }, [setLineItems])
 
   // N44 — removeDtfLineItem
   const handleRemoveLineItem = useCallback(
     (id: string) => {
-      setLineItems((prev) => prev.filter((item) => item.id !== id));
+      setLineItems((prev) => prev.filter((item) => item.id !== id))
     },
     [setLineItems]
-  );
+  )
 
   // N45 — updateDtfLineItem
   const handleUpdateLineItem = useCallback(
     (id: string, field: keyof DtfLineItem, value: string | number) => {
       setLineItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, [field]: value } : item
-        )
-      );
+        prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+      )
     },
     [setLineItems]
-  );
+  )
 
   return (
     <div className="space-y-4">
@@ -92,12 +90,7 @@ export function DtfTabContent({
       </div>
 
       {/* U72 — Add Design button */}
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleAddLineItem}
-        className="w-full"
-      >
+      <Button type="button" variant="outline" onClick={handleAddLineItem} className="w-full">
         <Plus size={16} className="mr-2" />
         Add Design
       </Button>
@@ -123,5 +116,5 @@ export function DtfTabContent({
         />
       )}
     </div>
-  );
+  )
 }

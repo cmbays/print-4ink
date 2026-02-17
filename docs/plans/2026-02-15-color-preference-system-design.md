@@ -41,10 +41,10 @@ Based on UX research across Figma, Unity, Google Workspace, CrashPlan, and CSS c
 
 **Core behavior**: Lower levels inherit from higher levels. When the parent changes, children update automatically — except for properties the child explicitly customized.
 
-| Action at Parent | Inheriting children (no customization) | Customized children |
-|---|---|---|
-| **Add a color** | Appears automatically | Appears automatically (additive is always safe) |
-| **Remove a color** | Removed automatically | Notification only — no auto-removal |
+| Action at Parent   | Inheriting children (no customization) | Customized children                             |
+| ------------------ | -------------------------------------- | ----------------------------------------------- |
+| **Add a color**    | Appears automatically                  | Appears automatically (additive is always safe) |
+| **Remove a color** | Removed automatically                  | Notification only — no auto-removal             |
 
 **Per-item tracking**: The system tracks which colors at each level are inherited vs. explicitly set. A customer might accept 8 of 10 global colors and add 2 custom ones. The 8 inherited colors stay in sync; the 2 custom ones are independent.
 
@@ -56,15 +56,16 @@ Based on UX research across Figma, Unity, Google Workspace, CrashPlan, and CSS c
 
 #### Where each level lives
 
-| Level | Location | Starting state |
-|-------|----------|---------------|
-| **Global** | Settings > Colors (new screen) | Empty — pick shop go-to colors |
-| **Supplier** | Garments section, brand/supplier view | Pre-populated with global favorites |
-| **Customer** | Customer detail, Preferences tab | Pre-populated from preferred supplier (or global) |
+| Level        | Location                              | Starting state                                    |
+| ------------ | ------------------------------------- | ------------------------------------------------- |
+| **Global**   | Settings > Colors (new screen)        | Empty — pick shop go-to colors                    |
+| **Supplier** | Garments section, brand/supplier view | Pre-populated with global favorites               |
+| **Customer** | Customer detail, Preferences tab      | Pre-populated from preferred supplier (or global) |
 
 #### Interaction pattern at each level
 
 Two sections:
+
 1. **Favorites** — just color swatches grouped together at the top. Tap to remove.
 2. **All Colors** — full palette below. Tap to add to favorites.
 
@@ -73,6 +74,7 @@ No star overlays on individual swatches. The grouping IS the indication — if i
 #### Section-level inheritance toggle (Beth Meyer pattern)
 
 Each level below global gets a toggle:
+
 - **"Use [Parent] colors"** (inherit) — read-only view of inherited favorites
 - **"Customize colors"** (override) — full editable palette, starts with inherited set
 
@@ -142,12 +144,12 @@ Additive changes (adding a new favorite) do NOT show a confirmation dialog — p
 
 The system gracefully degrades:
 
-| Shop complexity | Setup | What happens |
-|----------------|-------|-------------|
-| **Minimal** | Set nothing | All colors shown equally, no favorites |
-| **Simple** | Global favorites only | Stars appear everywhere, inherited by all brands and customers |
-| **Medium** | Global + some brand tweaks | Brands inherit global + their adjustments |
-| **Full** | All three levels | Complete cascade with customer-specific overrides |
+| Shop complexity | Setup                      | What happens                                                   |
+| --------------- | -------------------------- | -------------------------------------------------------------- |
+| **Minimal**     | Set nothing                | All colors shown equally, no favorites                         |
+| **Simple**      | Global favorites only      | Stars appear everywhere, inherited by all brands and customers |
+| **Medium**      | Global + some brand tweaks | Brands inherit global + their adjustments                      |
+| **Full**        | All three levels           | Complete cascade with customer-specific overrides              |
 
 ## Industry Context
 
@@ -156,6 +158,7 @@ Research confirmed that the promo/decorated apparel industry handles color prefe
 ## Research Sources
 
 Key UX patterns referenced:
+
 - **Figma component overrides** — live inheritance with per-property override preservation
 - **Beth Meyer settings inheritance** — section-level inherit/customize toggle
 - **Unity override bar** — visual indicators for inherited vs. overridden properties
@@ -169,28 +172,33 @@ Full research report available in session context.
 ## Build Phases
 
 ### Phase 1 — UX Fixes (ticket from #169)
+
 - Replace toolbar color family dropdown with visual swatch picker
 - Fix garment card to show favorites only + "N colors available" count
 - Fix detail drawer scroll bug
 - Add flat/grouped display preference toggle
 
 ### Phase 2 — Global Color Favorites
+
 - New Settings > Colors screen
 - Global favorite management with swatch picker
 - Garment cards and toolbar reflect global favorites
 
 ### Phase 3 — Supplier/Brand Favorites
+
 - Brand detail view with inherit/customize toggle
 - Inheritance from global with override tracking
 - Progressive disclosure for inheritance details
 
 ### Phase 4 — Customer Preferences
+
 - Customer Preferences tab with inherit/customize toggle
 - Customer favorite colors, brands, and garments (independent axes)
 - Selective propagation UI for parent-level changes
 - Global config for auto-propagation behavior
 
 ### Phase 5 — Polish
+
 - Impact count previews for all parent-level changes
 - Per-color reset actions
 - Notification system for downstream changes

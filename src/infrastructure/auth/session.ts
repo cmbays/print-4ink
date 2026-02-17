@@ -1,12 +1,12 @@
-import 'server-only';
-import { cache } from 'react';
-import { cookies } from 'next/headers';
+import 'server-only'
+import { cache } from 'react'
+import { cookies } from 'next/headers'
 
 // ---------------------------------------------------------------------------
 // Session type
 // ---------------------------------------------------------------------------
 
-export type UserRole = 'owner' | 'operator';
+export type UserRole = 'owner' | 'operator'
 
 /**
  * Authenticated session for the current request.
@@ -20,12 +20,12 @@ export type UserRole = 'owner' | 'operator';
  */
 export type Session = {
   /** Stable user identifier. Phase 2: Supabase Auth UUID. */
-  userId: string;
+  userId: string
   /** Role within the shop. Drives UI permissions and DAL row filtering. */
-  role: UserRole;
+  role: UserRole
   /** Identifies the shop. Used for RLS row filtering in Phase 2. */
-  shopId: string;
-};
+  shopId: string
+}
 
 // ---------------------------------------------------------------------------
 // Phase 1 mock session (remove in Phase 2)
@@ -35,7 +35,7 @@ const MOCK_SESSION: Session = {
   userId: 'usr_4ink_owner',
   role: 'owner',
   shopId: 'shop_4ink',
-} as const;
+} as const
 
 // ---------------------------------------------------------------------------
 // verifySession
@@ -97,17 +97,17 @@ export const verifySession = cache(async (): Promise<Session | null> => {
   // Use === 'development' (not !== 'production') so test environments
   // also exercise the real cookie path.
   if (process.env.NODE_ENV === 'development') {
-    return { ...MOCK_SESSION };
+    return { ...MOCK_SESSION }
   }
 
   // Production — Phase 1: validate demo-access cookie value
   // Production — Phase 2: replace with Supabase Auth.getUser() (see JSDoc above)
-  const cookieStore = await cookies();
-  const demoAccess = cookieStore.get('demo-access')?.value;
+  const cookieStore = await cookies()
+  const demoAccess = cookieStore.get('demo-access')?.value
 
   if (demoAccess !== 'true') {
-    return null;
+    return null
   }
 
-  return { ...MOCK_SESSION };
-});
+  return { ...MOCK_SESSION }
+})

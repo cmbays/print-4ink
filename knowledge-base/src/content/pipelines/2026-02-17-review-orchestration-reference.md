@@ -1,16 +1,16 @@
 ---
-title: "Review Orchestration Engine — Reference Guide"
-subtitle: "Living reference for the automated PR quality gate: what it is, why it exists, how it works, and how to extend it"
+title: 'Review Orchestration Engine — Reference Guide'
+subtitle: 'Living reference for the automated PR quality gate: what it is, why it exists, how it works, and how to extend it'
 date: 2026-02-17
 phase: 1
-pipelineName: "Review Orchestration Engine"
+pipelineName: 'Review Orchestration Engine'
 pipelineType: horizontal
 products: []
-tools: ["skills-framework", "agent-system"]
+tools: ['skills-framework', 'agent-system']
 stage: wrap-up
 tags: [feature, decision, learning]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0217-i342-review-skills-finish"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0217-i342-review-skills-finish'
 status: complete
 ---
 
@@ -20,7 +20,7 @@ status: complete
 
 ## Why This Tool Exists
 
-Screen Print Pro uses Claude agents to build features. Those agents finish implementation, run tests, and create PRs. The problem: deciding *which review agents to invoke*, and *what to check*, was left to the building agent itself.
+Screen Print Pro uses Claude agents to build features. Those agents finish implementation, run tests, and create PRs. The problem: deciding _which review agents to invoke_, and _what to check_, was left to the building agent itself.
 
 That's the fox guarding the henhouse. The building agent is most likely to overlook its own mistakes. Manual reviewer selection meant:
 
@@ -49,7 +49,7 @@ Each stage has a clear input/output contract, validated by Zod schemas. The fina
 
 ## The 6 Stages in Plain Language
 
-### Stage 1 — Normalize: *What changed?*
+### Stage 1 — Normalize: _What changed?_
 
 Extracts the raw facts from git: which files changed, how many lines, what the commits say. These facts are **immutable** — every subsequent stage reads them but never changes them.
 
@@ -64,7 +64,7 @@ Output: PRFacts { branch, baseBranch, files, totalAdditions, totalDeletions, com
 
 ---
 
-### Stage 2 — Classify: *What kind of change is this?*
+### Stage 2 — Classify: _What kind of change is this?_
 
 Runs deterministic glob-to-domain matching against `config/review-domains.json`. No LLM call. Fast.
 
@@ -74,6 +74,7 @@ Output: PRClassification { domains, riskScore, riskLevel, type, scope, filesChan
 ```
 
 **Example mappings** (from `config/review-domains.json`):
+
 - `lib/schemas/**` → `schemas`
 - `lib/helpers/money.ts` → `financial`
 - `components/features/**` → `ui-components`
@@ -88,7 +89,7 @@ Output: PRClassification { domains, riskScore, riskLevel, type, scope, filesChan
 
 ---
 
-### Stage 3 — Compose: *Which agents should review this?*
+### Stage 3 — Compose: _Which agents should review this?_
 
 Evaluates composition policies from `config/review-composition.json`. Pure function — same input always produces the same output.
 
@@ -98,23 +99,24 @@ Output: AgentManifestEntry[] { agentId, reason, scope, priority, rules, triggere
 ```
 
 **Three trigger types:**
+
 - `always` — dispatch regardless of what changed (currently: `build-reviewer`)
 - `domain` — dispatch when matched domains overlap policy's domain list
 - `risk` — dispatch when `PRClassification.riskLevel` meets or exceeds `trigger.riskLevel` (enum order: `low` < `medium` < `high` < `critical`)
 
 **Current composition policies:**
 
-| Policy ID | Trigger | Dispatches |
-|-----------|---------|------------|
-| `universal-build-reviewer` | always | `build-reviewer` |
-| `financial-domain-reviewer` | domains: `financial`, `dtf-optimization` | `finance-sme` |
-| `design-domain-reviewer` | domains: `ui-components`, `design-system` | `design-auditor` |
+| Policy ID                   | Trigger                                   | Dispatches       |
+| --------------------------- | ----------------------------------------- | ---------------- |
+| `universal-build-reviewer`  | always                                    | `build-reviewer` |
+| `financial-domain-reviewer` | domains: `financial`, `dtf-optimization`  | `finance-sme`    |
+| `design-domain-reviewer`    | domains: `ui-components`, `design-system` | `design-auditor` |
 
 ---
 
-### Stage 4 — Gap Detect: *Did we miss anything?*
+### Stage 4 — Gap Detect: _Did we miss anything?_
 
-The LLM layer. The building agent (not a sub-agent) reads the full diff and asks: *"Are there concerns in this diff that none of the dispatched agents are specialized to catch?"*
+The LLM layer. The building agent (not a sub-agent) reads the full diff and asks: _"Are there concerns in this diff that none of the dispatched agents are specialized to catch?"_
 
 ```
 Input:  full git diff + AgentManifest[]
@@ -122,12 +124,14 @@ Output: amended AgentManifest[] + GapLog[]
 ```
 
 **Examples of gaps it catches:**
+
 - A `+` operator on a money value in a file that didn't match the `financial` glob
 - A new `<input>` element in a TypeScript utility file (UI concern outside `components/`)
 - A hardcoded API URL in a config file that no security reviewer would see
 - Schema changes with downstream implications not covered by existing agents
 
 **If a gap is found:**
+
 - An existing agent can cover it → add to manifest with `reason: "gap-detect"`
 - No existing agent covers it → log to `GapLog[]` (don't invent agents)
 
@@ -135,7 +139,7 @@ Output: amended AgentManifest[] + GapLog[]
 
 ---
 
-### Stage 5 — Dispatch: *Run the agents.*
+### Stage 5 — Dispatch: _Run the agents._
 
 Launches all agents from the final manifest **in parallel** (single message, multiple Task tool calls).
 
@@ -145,12 +149,14 @@ Output: ReviewFinding[] from each agent (merged flat)
 ```
 
 Each agent receives:
+
 1. List of files to review (`scope` from manifest)
 2. Git diff filtered to those files
 3. Instruction to output `ReviewFinding[]` JSON only — no prose, no markdown tables
 4. Reference to `config/review-rules.json` for rule IDs to check against
 
 **Finding schema** (uniform across all agents):
+
 ```json
 {
   "ruleId": "rule-id-from-config",
@@ -171,7 +177,7 @@ For file-level findings (e.g., "this file is missing tests"), omit the `line` fi
 
 ---
 
-### Stage 6 — Aggregate: *What's the verdict?*
+### Stage 6 — Aggregate: _What's the verdict?_
 
 Merges all findings, deduplicates, sorts, counts by severity, and computes the gate decision.
 
@@ -184,12 +190,12 @@ Output: ReviewReport + GateDecision
 
 **Gate decision** (conditions evaluated top-to-bottom, first match wins):
 
-| Condition | Decision | What happens |
-|-----------|----------|-------------|
-| `metrics.critical > 0` | `fail` | Must fix, re-run from Stage 1 |
-| `metrics.major > 0` | `needs_fixes` | Should fix, re-run from Stage 1 |
-| `metrics.warning > 0` | `pass_with_warnings` | File as GitHub Issues, proceed |
-| otherwise | `pass` | Proceed immediately |
+| Condition              | Decision             | What happens                    |
+| ---------------------- | -------------------- | ------------------------------- |
+| `metrics.critical > 0` | `fail`               | Must fix, re-run from Stage 1   |
+| `metrics.major > 0`    | `needs_fixes`        | Should fix, re-run from Stage 1 |
+| `metrics.warning > 0`  | `pass_with_warnings` | File as GitHub Issues, proceed  |
+| otherwise              | `pass`               | Proceed immediately             |
 
 **Metric-based, not rule-based** (SonarQube pattern). Adding new rules to config automatically makes the gate stricter without changing any gate logic code.
 
@@ -214,6 +220,7 @@ Stage 6 returns gate decision
 ```
 
 For `pass_with_warnings`: create GitHub Issues with labels:
+
 - `vertical/<name>` — which vertical owns the deferred item
 - `type/tech-debt` — it's deferred technical debt
 - `source/review` — originated from review, not a feature request
@@ -227,6 +234,7 @@ Every PR created after orchestration includes this block:
 
 ```markdown
 ### Review summary
+
 - **Agents dispatched**: build-reviewer, finance-sme
 - **Gate decision**: PASS (clean on first run)
 - **Findings addressed**: 0
@@ -238,6 +246,7 @@ Or after a fix cycle:
 
 ```markdown
 ### Review summary
+
 - **Agents dispatched**: build-reviewer, finance-sme, design-auditor
 - **Gate decision**: PASS_WITH_WARNINGS (resolved from FAIL on attempt 1)
 - **Findings addressed**: 2 critical fixed (big.js arithmetic in QuoteRow, QuoteTotal)
@@ -276,6 +285,7 @@ Or after a fix cycle:
 **Stage 4**: LLM scans diff. Notices a `+` operator on a `subtotal` variable in `QuoteRow.tsx` — this file matched `ui-components` in Stage 2, but `finance-sme`'s `scope` will include it because Stage 3 set `scope` based on capabilities. No manifest amendment needed, no gap logged.
 
 **Stage 5**: Three agents run in parallel.
+
 - `finance-sme` finds: `+` operator on `subtotal` (critical, `fin-bigjs-01`)
 - `build-reviewer` finds: no issues
 - `design-auditor` finds: `mt-[14px]` hardcoded value (warning, `ds-spacing-01`)
@@ -299,6 +309,7 @@ Or after a fix cycle:
 **Stage 3**: Only `build-reviewer` dispatched.
 
 **Stage 4**: LLM reads the diff. Sees arithmetic like `wastage * pricePerSheet` directly in the utility. `finance-sme` isn't in the manifest. Gap logged:
+
 ```json
 {
   "concern": "Monetary arithmetic operators found in lib/helpers/dtf-waste-calc.ts not covered by finance-sme",
@@ -307,6 +318,7 @@ Or after a fix cycle:
   "suggestedAgent": "finance-sme"
 }
 ```
+
 `finance-sme` added to manifest with `reason: "gap-detect"`.
 
 **Stage 5**: `build-reviewer` + `finance-sme` run in parallel. `finance-sme` finds the raw multiplication on a money value (critical).
@@ -421,34 +433,34 @@ The gate is metric-based — you can't change "thresholds" without changing the 
 
 ### Config schemas (`lib/schemas/review-config.ts`)
 
-| Schema | Fields |
-|--------|--------|
-| `reviewRuleSchema` | id, name, concern, severity, agent, category, scope, description, detection, recommendation, goodExample? |
-| `compositionPolicySchema` | id, trigger (type, domains?, riskLevel?, pattern?), dispatch, priority, description |
-| `agentRegistryEntrySchema` | id, name, tools, capabilities, description, outputFormat |
-| `domainMappingSchema` | pattern, domain, description |
+| Schema                     | Fields                                                                                                    |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `reviewRuleSchema`         | id, name, concern, severity, agent, category, scope, description, detection, recommendation, goodExample? |
+| `compositionPolicySchema`  | id, trigger (type, domains?, riskLevel?, pattern?), dispatch, priority, description                       |
+| `agentRegistryEntrySchema` | id, name, tools, capabilities, description, outputFormat                                                  |
+| `domainMappingSchema`      | pattern, domain, description                                                                              |
 
 ### Pipeline schemas (`lib/schemas/review-pipeline.ts`)
 
-| Schema | Stage | Key fields |
-|--------|-------|-----------|
-| `prFactsSchema` | 1 output | branch, baseBranch, files, totalAdditions, totalDeletions, commits |
-| `prClassificationSchema` | 2 output | domains, riskScore, riskLevel, type, scope, filesChanged, linesChanged |
-| `agentManifestEntrySchema` | 3/4 output | agentId, reason, scope, priority, rules, triggeredBy |
-| `gapLogEntrySchema` | 4 output | concern, recommendation, confidence, suggestedRule?, suggestedAgent? |
-| `reviewFindingSchema` | 5 output | ruleId, agent, severity, category, file, line?, message, fix?, dismissible |
-| `reviewReportSchema` | 6 output | agentResults, findings, gaps, metrics, agentsDispatched, agentsCompleted, deduplicated, timestamp |
-| `gateDecisionSchema` | 6 output | decision, metrics {critical, major, warning, info}, summary |
+| Schema                     | Stage      | Key fields                                                                                        |
+| -------------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| `prFactsSchema`            | 1 output   | branch, baseBranch, files, totalAdditions, totalDeletions, commits                                |
+| `prClassificationSchema`   | 2 output   | domains, riskScore, riskLevel, type, scope, filesChanged, linesChanged                            |
+| `agentManifestEntrySchema` | 3/4 output | agentId, reason, scope, priority, rules, triggeredBy                                              |
+| `gapLogEntrySchema`        | 4 output   | concern, recommendation, confidence, suggestedRule?, suggestedAgent?                              |
+| `reviewFindingSchema`      | 5 output   | ruleId, agent, severity, category, file, line?, message, fix?, dismissible                        |
+| `reviewReportSchema`       | 6 output   | agentResults, findings, gaps, metrics, agentsDispatched, agentsCompleted, deduplicated, timestamp |
+| `gateDecisionSchema`       | 6 output   | decision, metrics {critical, major, warning, info}, summary                                       |
 
 ---
 
 ## Review Agents
 
-| Agent | Capabilities | Triggered When | Output |
-|-------|-------------|----------------|--------|
-| `build-reviewer` | type-safety, dry, modularity, tailwind, naming, patterns, accessibility, schema-consistency | Always (universal) | `ReviewFinding[]` JSON |
-| `finance-sme` | big-js, money-arithmetic, rounding, currency, financial-invariants | `financial`, `dtf-optimization` domains | `ReviewFinding[]` JSON |
-| `design-auditor` | design-system, visual-hierarchy, mobile-responsive, accessibility, color-tokens, spacing | `ui-components`, `design-system` domains | `ReviewFinding[]` JSON |
+| Agent            | Capabilities                                                                                | Triggered When                           | Output                 |
+| ---------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------- | ---------------------- |
+| `build-reviewer` | type-safety, dry, modularity, tailwind, naming, patterns, accessibility, schema-consistency | Always (universal)                       | `ReviewFinding[]` JSON |
+| `finance-sme`    | big-js, money-arithmetic, rounding, currency, financial-invariants                          | `financial`, `dtf-optimization` domains  | `ReviewFinding[]` JSON |
+| `design-auditor` | design-system, visual-hierarchy, mobile-responsive, accessibility, color-tokens, spacing    | `ui-components`, `design-system` domains | `ReviewFinding[]` JSON |
 
 When invoked **directly** (outside review orchestration), all three return human-readable audit reports in `agent-outputs/`.
 
@@ -458,12 +470,12 @@ When invoked **directly** (outside review orchestration), all three return human
 
 This engine handles **build-phase PR quality gates** (issues #337–#342 in epic #302). Future phases extend it without changing the core pipeline:
 
-| Issue | What | When |
-|-------|------|------|
-| #308 | CI/GitHub Actions integration — run on `git push`, not just agent invocation | Phase 2 |
-| #310 | New agents: security-reviewer, architecture-reviewer | Phase 2 |
-| #312 | Pipeline review stage — holistic review before `main` merge (different from per-PR gate) | Phase 2 |
-| #313 | TDD evaluation integration — gate on test coverage metrics | TBD |
+| Issue | What                                                                                     | When    |
+| ----- | ---------------------------------------------------------------------------------------- | ------- |
+| #308  | CI/GitHub Actions integration — run on `git push`, not just agent invocation             | Phase 2 |
+| #310  | New agents: security-reviewer, architecture-reviewer                                     | Phase 2 |
+| #312  | Pipeline review stage — holistic review before `main` merge (different from per-PR gate) | Phase 2 |
+| #313  | TDD evaluation integration — gate on test coverage metrics                               | TBD     |
 
 ---
 

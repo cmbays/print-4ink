@@ -1,16 +1,16 @@
 ---
-title: "DDD Architecture Strategy"
-subtitle: "Domain-Driven Design as the architectural lens for project classification"
+title: 'DDD Architecture Strategy'
+subtitle: 'Domain-Driven Design as the architectural lens for project classification'
 date: 2026-02-16
 phase: 2
-pipelineName: "Infrastructure"
+pipelineName: 'Infrastructure'
 pipelineType: horizontal
 products: []
 tools: []
 stage: research
 tags: [research, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0216-ddd-strategy-doc"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0216-ddd-strategy-doc'
 status: complete
 ---
 
@@ -40,6 +40,7 @@ Established Domain-Driven Design (DDD) as the architectural lens for classifying
 ## Bounded Context Map
 
 Five bounded contexts identified:
+
 - **Quoting Context** - Quote aggregate (root + line items + discounts)
 - **Production Context** - Job aggregate (root + tasks + notes + history + screens)
 - **Billing Context** - Invoice aggregate (root + line items + payments + audit log)

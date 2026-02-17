@@ -1,6 +1,6 @@
 ---
-title: "Price Matrix Build"
-subtitle: "Full implementation of the pricing engine vertical — schemas, editors, Power Grid, sandbox mode, and the useSpreadsheetEditor data grid widget"
+title: 'Price Matrix Build'
+subtitle: 'Full implementation of the pricing engine vertical — schemas, editors, Power Grid, sandbox mode, and the useSpreadsheetEditor data grid widget'
 date: 2026-02-12
 phase: 1
 pipelineName: price-matrix
@@ -10,19 +10,19 @@ domains: [pricing]
 tools: []
 stage: build
 tags: [feature, build, learning]
-sessionId: "c564ffea-778c-43d0-a35f-2bb32431d23b"
-branch: "session/0211-price-matrix-build"
+sessionId: 'c564ffea-778c-43d0-a35f-2bb32431d23b'
+branch: 'session/0211-price-matrix-build'
 status: complete
 ---
 
 ## At a Glance
 
-| Stat | Value |
-|------|-------|
-| Files Changed | 29 |
-| Lines Added | 8,552 |
-| Commits | 10 |
-| Build Phases | 5 |
+| Stat          | Value |
+| ------------- | ----- |
+| Files Changed | 29    |
+| Lines Added   | 8,552 |
+| Commits       | 10    |
+| Build Phases  | 5     |
 
 The complete Price Matrix vertical built across 5 phases: foundation schemas and pricing engine, three parallel editor builds, advanced features (sandbox, power grid, cost config), cross-vertical integration, and final polish. The crown jewel is `useSpreadsheetEditor`, a 777-line reusable hook powering the Power Grid's Excel-like editing UX.
 
@@ -158,14 +158,20 @@ The wrapper div handles arrow key navigation for cell selection. When an input i
 
 ```ts
 const {
-  selectedCell, editingCell, editValue,
-  handleCellClick, handleCellDoubleClick,
-  handleKeyDown, handleBlur, handleEditChange,
-  setEditingCell, setEditValue
+  selectedCell,
+  editingCell,
+  editValue,
+  handleCellClick,
+  handleCellDoubleClick,
+  handleKeyDown,
+  handleBlur,
+  handleEditChange,
+  setEditingCell,
+  setEditValue,
 } = useSpreadsheetEditor({
-  data,          // T[] — row data
-  columns,       // ColumnDef[] — stable, module-level
-  onCellChange,  // (rowIndex, colKey, value) => void
+  data, // T[] — row data
+  columns, // ColumnDef[] — stable, module-level
+  onCellChange, // (rowIndex, colKey, value) => void
 })
 ```
 
@@ -195,33 +201,33 @@ ESLint now flags `useEffect` to reset form state when a dialog opens. Instead, h
 
 ## File Map
 
-| File | Purpose |
-|------|---------|
-| `lib/schemas/price-matrix.ts` | Zod schemas for SP pricing (161 lines) |
-| `lib/schemas/dtf-pricing.ts` | Zod schemas for DTF pricing (107 lines) |
-| `lib/schemas/tag-template-mapping.ts` | Tag-to-template mapping schema (23 lines) |
-| `lib/pricing-engine.ts` | Pure pricing calculation functions (568 lines) |
-| `lib/helpers/money.ts` | big.js wrapper for safe money math |
-| `lib/hooks/useSpreadsheetEditor.ts` | Spreadsheet editing hook (777 lines) |
-| `app/.../settings/pricing/page.tsx` | Pricing Hub page |
-| `app/.../pricing/screen-print/[id]/editor.tsx` | Screen Print Editor (client component) |
-| `app/.../pricing/dtf/[id]/dtf-editor-client.tsx` | DTF Editor (client component) |
-| `app/.../pricing/_components/` | All shared pricing components |
+| File                                             | Purpose                                        |
+| ------------------------------------------------ | ---------------------------------------------- |
+| `lib/schemas/price-matrix.ts`                    | Zod schemas for SP pricing (161 lines)         |
+| `lib/schemas/dtf-pricing.ts`                     | Zod schemas for DTF pricing (107 lines)        |
+| `lib/schemas/tag-template-mapping.ts`            | Tag-to-template mapping schema (23 lines)      |
+| `lib/pricing-engine.ts`                          | Pure pricing calculation functions (568 lines) |
+| `lib/helpers/money.ts`                           | big.js wrapper for safe money math             |
+| `lib/hooks/useSpreadsheetEditor.ts`              | Spreadsheet editing hook (777 lines)           |
+| `app/.../settings/pricing/page.tsx`              | Pricing Hub page                               |
+| `app/.../pricing/screen-print/[id]/editor.tsx`   | Screen Print Editor (client component)         |
+| `app/.../pricing/dtf/[id]/dtf-editor-client.tsx` | DTF Editor (client component)                  |
+| `app/.../pricing/_components/`                   | All shared pricing components                  |
 
 ## PR and Commits
 
-| Hash | Description |
-|------|-------------|
-| db27e22 | **Phase A** — Schemas, pricing engine, mock data, hub page |
+| Hash    | Description                                                                       |
+| ------- | --------------------------------------------------------------------------------- |
+| db27e22 | **Phase A** — Schemas, pricing engine, mock data, hub page                        |
 | 8eb4bf0 | **Phase B** — Setup Wizard, Screen Print and DTF editors (15 files, +3,672 lines) |
-| 166e9bc | **Phase C** — Sandbox Mode, Power Grid, Cost Config (6 files, +1,400 lines) |
-| c6eca5a | **Phase D** — Tag-Template Mapper, Matrix Peek Sheet, big.js migration |
-| e95bffc | Quality gate fixes — lint errors, semantic colors, a11y, empty states |
-| eba7a95 | Power Grid UX — remove sort, per-cell overrides, selection enhancements |
-| 7f697be | Configurable max colors, compact header layout |
-| 3e6a095 | Add tooltips to margin legend in Power Grid header |
-| f204c34 | CodeRabbit review — money helper, schema validation, a11y, guards |
-| 5810ddd | CodeRabbit round 2 — maxColors consistency, a11y, input validation |
+| 166e9bc | **Phase C** — Sandbox Mode, Power Grid, Cost Config (6 files, +1,400 lines)       |
+| c6eca5a | **Phase D** — Tag-Template Mapper, Matrix Peek Sheet, big.js migration            |
+| e95bffc | Quality gate fixes — lint errors, semantic colors, a11y, empty states             |
+| eba7a95 | Power Grid UX — remove sort, per-cell overrides, selection enhancements           |
+| 7f697be | Configurable max colors, compact header layout                                    |
+| 3e6a095 | Add tooltips to margin legend in Power Grid header                                |
+| f204c34 | CodeRabbit review — money helper, schema validation, a11y, guards                 |
+| 5810ddd | CodeRabbit round 2 — maxColors consistency, a11y, input validation                |
 
 ## Next Steps
 

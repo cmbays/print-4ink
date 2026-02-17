@@ -169,9 +169,9 @@ print-4ink/
       "@features/*": ["./src/features/*"],
       "@shared/*": ["./src/shared/*"],
       "@infra/*": ["./src/infrastructure/*"],
-      "@config/*": ["./src/config/*"]
-    }
-  }
+      "@config/*": ["./src/config/*"],
+    },
+  },
 }
 ```
 
@@ -241,31 +241,34 @@ Phased migration — 5 sequential PRs, each passing CI before merge. No big bang
 
 **What**: Move Next.js routing and data access layer
 **Moves**:
+
 - `app/` → `src/app/`
 - `middleware.ts` path update (stays at root, imports from `src/`)
 - `lib/dal/` → `src/infrastructure/repositories/`
 - `lib/auth/` → `src/infrastructure/auth/`
 - Create `src/infrastructure/bootstrap.ts` (composition root)
-**Validates**: Build + dev server works, all pages render
-**Effort**: Half day
+  **Validates**: Build + dev server works, all pages render
+  **Effort**: Half day
 
 ### Phase 2: Domain Extraction (PR #3)
 
 **What**: Create the domain layer — highest-value architectural change
 **Moves**:
+
 - `lib/schemas/` → `src/domain/entities/` (rename files to `.entity.ts`)
 - Extract business rules from `lib/helpers/` → `src/domain/rules/`
 - Extract pricing calculations from `lib/pricing-engine.ts` → `src/domain/services/pricing.service.ts`
 - Extract DTF algorithms from `lib/dtf/` → `src/domain/services/dtf.service.ts`
 - Create `src/domain/ports/` with repository interfaces (extracted from DAL types)
 - Create value objects where appropriate (Money, Quantity)
-**Validates**: All 529 tests pass, `tsc --noEmit` clean
-**Effort**: 1-2 days (most complex phase)
+  **Validates**: All 529 tests pass, `tsc --noEmit` clean
+  **Effort**: 1-2 days (most complex phase)
 
 ### Phase 3: Shared Layer (PR #4)
 
 **What**: Organize reusable UI and cross-cutting concerns
 **Moves**:
+
 - `components/ui/` → `src/shared/ui/primitives/` (shadcn/ui components)
 - Classify feature components: atoms/molecules/organisms
 - `components/layout/` → `src/shared/ui/layouts/`
@@ -273,13 +276,14 @@ Phased migration — 5 sequential PRs, each passing CI before merge. No big bang
 - `lib/utils.ts` (cn()) → `src/shared/lib/utils.ts`
 - `lib/helpers/money.ts` → `src/shared/lib/money.ts`
 - Other cross-cutting helpers → `src/shared/lib/`
-**Validates**: Build + visual smoke test (all pages look identical)
-**Effort**: Half day
+  **Validates**: Build + visual smoke test (all pages look identical)
+  **Effort**: Half day
 
 ### Phase 4: Features + Config + Tools (PR #5)
 
 **What**: Create vertical slices, split configs, separate tools
 **Moves**:
+
 - Create `src/features/{quotes,jobs,customers,invoices,garments,screens,pricing}/`
 - Distribute page-specific `_components/` from `app/` routes into feature components/
 - Move domain-specific helpers into features
@@ -290,8 +294,8 @@ Phased migration — 5 sequential PRs, each passing CI before merge. No big bang
 - `scripts/work.sh` → `tools/orchestration/scripts/`
 - Delete empty old directories
 - Add ESLint boundary rules
-**Validates**: Full CI green (tsc + lint + test + build), lint rule for no cross-imports
-**Effort**: 1-2 days
+  **Validates**: Full CI green (tsc + lint + test + build), lint rule for no cross-imports
+  **Effort**: 1-2 days
 
 ### Post-Migration
 
@@ -327,13 +331,13 @@ Each gets its own issue linked to a separate epic.
 
 ## Decision Log
 
-| Decision | Rationale |
-|----------|-----------|
+| Decision                                                 | Rationale                                                                               |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | Full restructure under `src/` (not "layers inside lib/") | Directory structure communicates architectural intent to agents and future contributors |
-| `infrastructure/repositories/` not `infrastructure/dal/` | More precise naming, room for messaging/storage/outbox siblings |
-| Pricing split: domain/services/ + features/pricing/ | Pure calculations are domain; orchestration is a use case |
-| No webpack aliases | Next.js 16 natively reads tsconfig paths |
-| `tools/` at root, not in `src/` | Dev tooling is not production runtime |
-| Phased migration (5 PRs) | Each PR independently verifiable; avoids 500-file big-bang debugging |
-| Sparse barrel files | Prevents circular imports and tree-shaking issues |
-| Kebab-case + suffix naming | File purpose clear without opening it |
+| `infrastructure/repositories/` not `infrastructure/dal/` | More precise naming, room for messaging/storage/outbox siblings                         |
+| Pricing split: domain/services/ + features/pricing/      | Pure calculations are domain; orchestration is a use case                               |
+| No webpack aliases                                       | Next.js 16 natively reads tsconfig paths                                                |
+| `tools/` at root, not in `src/`                          | Dev tooling is not production runtime                                                   |
+| Phased migration (5 PRs)                                 | Each PR independently verifiable; avoids 500-file big-bang debugging                    |
+| Sparse barrel files                                      | Prevents circular imports and tree-shaking issues                                       |
+| Kebab-case + suffix naming                               | File purpose clear without opening it                                                   |

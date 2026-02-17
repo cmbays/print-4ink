@@ -1,71 +1,73 @@
-"use client";
+'use client'
 
-import { useMemo, useState } from "react";
-import { Calculator } from "lucide-react";
+import { useMemo, useState } from 'react'
+import { Calculator } from 'lucide-react'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@shared/ui/primitives/card";
-import { Label } from "@shared/ui/primitives/label";
+} from '@shared/ui/primitives/card'
+import { Label } from '@shared/ui/primitives/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { Separator } from "@shared/ui/primitives/separator";
-import { MarginIndicator } from "@/components/features/MarginIndicator";
-import { calculateDTFPrice, formatCurrency, formatPercent } from "@domain/services/pricing.service";
-import type { DTFPricingTemplate, DTFRushTurnaround, DTFFilmType } from "@domain/entities/dtf-pricing";
-import type { PricingTier } from "@domain/entities/customer";
+} from '@shared/ui/primitives/select'
+import { Separator } from '@shared/ui/primitives/separator'
+import { MarginIndicator } from '@/components/features/MarginIndicator'
+import { calculateDTFPrice, formatCurrency, formatPercent } from '@domain/services/pricing.service'
+import type {
+  DTFPricingTemplate,
+  DTFRushTurnaround,
+  DTFFilmType,
+} from '@domain/entities/dtf-pricing'
+import type { PricingTier } from '@domain/entities/customer'
 
-interface DTFPricingCalculatorProps {
-  template: DTFPricingTemplate;
+type DTFPricingCalculatorProps = {
+  template: DTFPricingTemplate
 }
 
 const TIER_LABELS: Record<PricingTier, string> = {
-  standard: "Standard",
-  preferred: "Preferred",
-  contract: "Contract",
-  wholesale: "Wholesale",
-};
+  standard: 'Standard',
+  preferred: 'Preferred',
+  contract: 'Contract',
+  wholesale: 'Wholesale',
+}
 
 const RUSH_LABELS: Record<DTFRushTurnaround, string> = {
-  standard: "Standard",
-  "2-day": "2-Day Rush",
-  "next-day": "Next Day",
-  "same-day": "Same Day",
-};
+  standard: 'Standard',
+  '2-day': '2-Day Rush',
+  'next-day': 'Next Day',
+  'same-day': 'Same Day',
+}
 
 const FILM_LABELS: Record<DTFFilmType, string> = {
-  standard: "Standard",
-  glossy: "Glossy",
-  metallic: "Metallic",
-  glow: "Glow-in-Dark",
-};
+  standard: 'Standard',
+  glossy: 'Glossy',
+  metallic: 'Metallic',
+  glow: 'Glow-in-Dark',
+}
 
 export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
-  const [sheetLength, setSheetLength] = useState<number>(
-    template.sheetTiers[0]?.length ?? 24
-  );
-  const [customerTier, setCustomerTier] = useState<PricingTier>("standard");
-  const [rushType, setRushType] = useState<DTFRushTurnaround>("standard");
-  const [filmType, setFilmType] = useState<DTFFilmType>("standard");
+  const [sheetLength, setSheetLength] = useState<number>(template.sheetTiers[0]?.length ?? 24)
+  const [customerTier, setCustomerTier] = useState<PricingTier>('standard')
+  const [rushType, setRushType] = useState<DTFRushTurnaround>('standard')
+  const [filmType, setFilmType] = useState<DTFFilmType>('standard')
 
   // Clamp sheetLength to a valid tier when tiers change (e.g. tier removed)
   const effectiveSheetLength = useMemo(() => {
-    const validLengths = template.sheetTiers.map((t) => t.length);
-    return validLengths.includes(sheetLength) ? sheetLength : (validLengths[0] ?? 24);
-  }, [template.sheetTiers, sheetLength]);
+    const validLengths = template.sheetTiers.map((t) => t.length)
+    return validLengths.includes(sheetLength) ? sheetLength : (validLengths[0] ?? 24)
+  }, [template.sheetTiers, sheetLength])
 
   const result = useMemo(
     () => calculateDTFPrice(effectiveSheetLength, customerTier, rushType, filmType, template),
     [effectiveSheetLength, customerTier, rushType, filmType, template]
-  );
+  )
 
   return (
     <Card>
@@ -103,10 +105,7 @@ export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
           {/* Customer Tier */}
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Customer Tier</Label>
-            <Select
-              value={customerTier}
-              onValueChange={(v) => setCustomerTier(v as PricingTier)}
-            >
+            <Select value={customerTier} onValueChange={(v) => setCustomerTier(v as PricingTier)}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
@@ -123,10 +122,7 @@ export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
           {/* Rush Type */}
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Rush Type</Label>
-            <Select
-              value={rushType}
-              onValueChange={(v) => setRushType(v as DTFRushTurnaround)}
-            >
+            <Select value={rushType} onValueChange={(v) => setRushType(v as DTFRushTurnaround)}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
@@ -143,10 +139,7 @@ export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
           {/* Film Type */}
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Film Type</Label>
-            <Select
-              value={filmType}
-              onValueChange={(v) => setFilmType(v as DTFFilmType)}
-            >
+            <Select value={filmType} onValueChange={(v) => setFilmType(v as DTFFilmType)}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
@@ -210,5 +203,5 @@ export function DTFPricingCalculator({ template }: DTFPricingCalculatorProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

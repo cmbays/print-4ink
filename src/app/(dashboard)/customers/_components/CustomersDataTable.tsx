@@ -1,22 +1,15 @@
-"use client";
+'use client'
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Archive,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  Users,
-  X,
-} from "lucide-react";
-import { toast } from "sonner";
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Archive, Plus, Search, SlidersHorizontal, Users, X } from 'lucide-react'
+import { toast } from 'sonner'
 
-import { z } from "zod";
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Badge } from "@shared/ui/primitives/badge";
+import { z } from 'zod'
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Badge } from '@shared/ui/primitives/badge'
 import {
   Table,
   TableBody,
@@ -24,33 +17,34 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { LifecycleBadge } from "@/components/features/LifecycleBadge";
-import { HealthBadge } from "@/components/features/HealthBadge";
-import { TypeTagBadges } from "@/components/features/TypeTagBadges";
-import { AddCustomerModal } from "@/components/features/AddCustomerModal";
-import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
-import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import type { Quote } from "@domain/entities/quote";
+} from '@shared/ui/primitives/table'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { LifecycleBadge } from '@/components/features/LifecycleBadge'
+import { HealthBadge } from '@/components/features/HealthBadge'
+import { TypeTagBadges } from '@/components/features/TypeTagBadges'
+import { AddCustomerModal } from '@/components/features/AddCustomerModal'
+import { ColumnHeaderMenu } from '@/components/features/ColumnHeaderMenu'
+import { MobileFilterSheet } from '@/components/features/MobileFilterSheet'
+import type { Quote } from '@domain/entities/quote'
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   LIFECYCLE_STAGE_LABELS,
   HEALTH_STATUS_LABELS,
-} from "@domain/constants";
-import type { Customer, CustomerTypeTag, LifecycleStage, HealthStatus } from "@domain/entities/customer";
+} from '@domain/constants'
+import type {
+  Customer,
+  CustomerTypeTag,
+  LifecycleStage,
+  HealthStatus,
+} from '@domain/entities/customer'
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface CustomersDataTableProps {
-  customers: Customer[];
-  quotes: Quote[];
+type CustomersDataTableProps = {
+  customers: Customer[]
+  quotes: Quote[]
 }
 
 // ---------------------------------------------------------------------------
@@ -59,399 +53,403 @@ interface CustomersDataTableProps {
 
 function getCustomerRevenue(customerId: string, quotes: Quote[]): number {
   return quotes
-    .filter((q) => q.customerId === customerId && q.status === "accepted")
-    .reduce((sum, q) => sum + q.total, 0);
+    .filter((q) => q.customerId === customerId && q.status === 'accepted')
+    .reduce((sum, q) => sum + q.total, 0)
 }
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-const sortKeySchema = z.enum(["company", "contact", "type", "lifecycle", "health", "lastOrder", "revenue"]);
-type SortKey = z.infer<typeof sortKeySchema>;
+const sortKeySchema = z.enum([
+  'company',
+  'contact',
+  'type',
+  'lifecycle',
+  'health',
+  'lastOrder',
+  'revenue',
+])
+type SortKey = z.infer<typeof sortKeySchema>
 
-const sortDirSchema = z.enum(["asc", "desc"]);
-type SortDir = z.infer<typeof sortDirSchema>;
+const sortDirSchema = z.enum(['asc', 'desc'])
+type SortDir = z.infer<typeof sortDirSchema>
 
-import { MoneyAmount } from "@/components/features/MoneyAmount";
+import { MoneyAmount } from '@/components/features/MoneyAmount'
 
 function formatRelativeDate(iso: string): string {
-  const now = new Date();
-  const date = new Date(iso);
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const now = new Date()
+  const date = new Date(iso)
+  const diffMs = now.getTime() - date.getTime()
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
 
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays === 0) return 'Today'
+  if (diffDays === 1) return 'Yesterday'
+  if (diffDays < 7) return `${diffDays}d ago`
   if (diffDays < 30) {
-    const weeks = Math.floor(diffDays / 7);
-    return `${weeks}w ago`;
+    const weeks = Math.floor(diffDays / 7)
+    return `${weeks}w ago`
   }
   if (diffDays < 365) {
-    const months = Math.floor(diffDays / 30);
-    return `${months}mo ago`;
+    const months = Math.floor(diffDays / 30)
+    return `${months}mo ago`
   }
-  const years = Math.floor(diffDays / 365);
-  return `${years}y ago`;
+  const years = Math.floor(diffDays / 365)
+  return `${years}y ago`
 }
 
 function getPrimaryContact(customer: Customer): { name: string; email?: string } {
-  const primary = customer.contacts.find((c) => c.isPrimary);
+  const primary = customer.contacts.find((c) => c.isPrimary)
   if (primary) {
-    return { name: primary.name, email: primary.email };
+    return { name: primary.name, email: primary.email }
   }
   // Fallback to customer name + email
-  return { name: customer.name, email: customer.email };
+  return { name: customer.name, email: customer.email }
 }
 
 // All available type tags for filter chips
 const ALL_TYPE_TAGS: CustomerTypeTag[] = [
-  "retail",
-  "sports-school",
-  "corporate",
-  "storefront-merch",
-  "wholesale",
-];
+  'retail',
+  'sports-school',
+  'corporate',
+  'storefront-merch',
+  'wholesale',
+]
 
 // All lifecycle stages for filter dropdown
-const ALL_LIFECYCLE_STAGES: LifecycleStage[] = [
-  "prospect",
-  "new",
-  "repeat",
-  "contract",
-];
+const ALL_LIFECYCLE_STAGES: LifecycleStage[] = ['prospect', 'new', 'repeat', 'contract']
 
 // All health statuses for filter dropdown
-const ALL_HEALTH_STATUSES: HealthStatus[] = [
-  "active",
-  "potentially-churning",
-  "churned",
-];
+const ALL_HEALTH_STATUSES: HealthStatus[] = ['active', 'potentially-churning', 'churned']
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export function CustomersDataTable({ customers, quotes }: CustomersDataTableProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   // ---- Modal state ----------------------------------------------------------
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false)
 
   // ---- URL state reads ------------------------------------------------------
-  const view = searchParams.get("view") ?? "all";
-  const searchQuery = searchParams.get("q") ?? "";
-  const activeTagsRaw = searchParams.get("tags");
-  const activeTags = useMemo(
-    () => activeTagsRaw?.split(",").filter(Boolean) ?? [],
-    [activeTagsRaw],
-  );
-  const lifecycleFilter = searchParams.get("lifecycle") ?? "";
-  const healthFilter = searchParams.get("health") ?? "";
-  const sortKeyParam = sortKeySchema.catch("company").parse(searchParams.get("sort") ?? "company");
-  const sortDirParam = sortDirSchema.catch("asc").parse(searchParams.get("dir") ?? "asc");
-  const showArchived = searchParams.get("archived") === "true";
+  const view = searchParams.get('view') ?? 'all'
+  const searchQuery = searchParams.get('q') ?? ''
+  const activeTagsRaw = searchParams.get('tags')
+  const activeTags = useMemo(() => activeTagsRaw?.split(',').filter(Boolean) ?? [], [activeTagsRaw])
+  const lifecycleFilter = searchParams.get('lifecycle') ?? ''
+  const healthFilter = searchParams.get('health') ?? ''
+  const sortKeyParam = sortKeySchema.catch('company').parse(searchParams.get('sort') ?? 'company')
+  const sortDirParam = sortDirSchema.catch('asc').parse(searchParams.get('dir') ?? 'asc')
+  const showArchived = searchParams.get('archived') === 'true'
 
   // ---- Local state (for debounced search) -----------------------------------
-  const [localSearch, setLocalSearch] = useState(searchQuery);
-  const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
-  const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
-  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [localSearch, setLocalSearch] = useState(searchQuery)
+  const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam)
+  const [sortDir, setSortDir] = useState<SortDir>(sortDirParam)
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false)
 
   // Sync search from URL when navigating back/forward
   useEffect(() => {
-    setLocalSearch(searchQuery);
-  }, [searchQuery]);
+    setLocalSearch(searchQuery)
+  }, [searchQuery])
 
   // Sync sort from URL when navigating back/forward
   useEffect(() => {
-    setSortKey(sortKeyParam);
-    setSortDir(sortDirParam);
-  }, [sortKeyParam, sortDirParam]);
+    setSortKey(sortKeyParam)
+    setSortDir(sortDirParam)
+  }, [sortKeyParam, sortDirParam])
 
   // ---- Debounced search -> URL ----------------------------------------------
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (localSearch) {
-        params.set("q", localSearch);
+        params.set('q', localSearch)
       } else {
-        params.delete("q");
+        params.delete('q')
       }
-      router.replace(`?${params.toString()}`, { scroll: false });
-    }, 300);
-    return () => clearTimeout(timer);
+      router.replace(`?${params.toString()}`, { scroll: false })
+    }, 300)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally omitting searchParams to avoid re-render loop
-  }, [localSearch, router]);
+  }, [localSearch, router])
 
   // ---- URL update helpers ---------------------------------------------------
 
   const updateParam = useCallback(
     (key: string, value: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (value !== null) {
-        params.set(key, value);
+        params.set(key, value)
       } else {
-        params.delete(key);
+        params.delete(key)
       }
-      router.replace(`?${params.toString()}`, { scroll: false });
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [searchParams, router],
-  );
+    [searchParams, router]
+  )
 
   // ---- Tag filter toggle ----------------------------------------------------
 
   const toggleTag = useCallback(
     (tag: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      const current = params.get("tags")?.split(",").filter(Boolean) ?? [];
+      const params = new URLSearchParams(searchParams.toString())
+      const current = params.get('tags')?.split(',').filter(Boolean) ?? []
 
-      let next: string[];
+      let next: string[]
       if (current.includes(tag)) {
-        next = current.filter((t) => t !== tag);
+        next = current.filter((t) => t !== tag)
       } else {
-        next = [...current, tag];
+        next = [...current, tag]
       }
 
       if (next.length > 0) {
-        params.set("tags", next.join(","));
+        params.set('tags', next.join(','))
       } else {
-        params.delete("tags");
+        params.delete('tags')
       }
-      router.replace(`?${params.toString()}`, { scroll: false });
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [searchParams, router],
-  );
+    [searchParams, router]
+  )
 
   // ---- Lifecycle filter -----------------------------------------------------
 
   const handleLifecycleChange = useCallback(
     (stage: string) => {
-      updateParam("lifecycle", stage === lifecycleFilter ? null : stage);
+      updateParam('lifecycle', stage === lifecycleFilter ? null : stage)
     },
-    [lifecycleFilter, updateParam],
-  );
+    [lifecycleFilter, updateParam]
+  )
 
   // ---- Health filter ---------------------------------------------------------
 
   const handleHealthChange = useCallback(
     (status: string) => {
-      updateParam("health", status === healthFilter ? null : status);
+      updateParam('health', status === healthFilter ? null : status)
     },
-    [healthFilter, updateParam],
-  );
+    [healthFilter, updateParam]
+  )
 
   // ---- Archived toggle ------------------------------------------------------
 
   const toggleArchived = useCallback(() => {
-    updateParam("archived", showArchived ? null : "true");
-  }, [showArchived, updateParam]);
+    updateParam('archived', showArchived ? null : 'true')
+  }, [showArchived, updateParam])
 
   // ---- Sort -----------------------------------------------------------------
 
   const handleSort = useCallback(
     (key: SortKey, explicitDir?: SortDir) => {
-      let nextDir: SortDir;
+      let nextDir: SortDir
       if (explicitDir) {
-        nextDir = explicitDir;
+        nextDir = explicitDir
       } else if (sortKey === key) {
-        nextDir = sortDir === "asc" ? "desc" : "asc";
+        nextDir = sortDir === 'asc' ? 'desc' : 'asc'
       } else {
-        nextDir = "asc";
+        nextDir = 'asc'
       }
-      setSortKey(key);
-      setSortDir(nextDir);
+      setSortKey(key)
+      setSortDir(nextDir)
 
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("sort", key);
-      params.set("dir", nextDir);
-      router.replace(`?${params.toString()}`, { scroll: false });
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('sort', key)
+      params.set('dir', nextDir)
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [sortKey, sortDir, searchParams, router],
-  );
+    [sortKey, sortDir, searchParams, router]
+  )
 
   // ---- Revenue cache --------------------------------------------------------
 
   const revenueMap = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, number>()
     for (const c of customers) {
-      map.set(c.id, getCustomerRevenue(c.id, quotes));
+      map.set(c.id, getCustomerRevenue(c.id, quotes))
     }
-    return map;
-  }, [customers, quotes]);
+    return map
+  }, [customers, quotes])
 
   // ---- Filter + sort pipeline -----------------------------------------------
 
   const filteredCustomers = useMemo(() => {
-    let result = customers;
+    let result = customers
 
     // 1. Archived toggle (by default, hide archived)
     if (!showArchived) {
-      result = result.filter((c) => !c.isArchived);
+      result = result.filter((c) => !c.isArchived)
     }
 
     // 2. Smart view filtering
     switch (view) {
-      case "prospects":
-        result = result.filter((c) => c.lifecycleStage === "prospect");
-        break;
-      case "top":
+      case 'prospects':
+        result = result.filter((c) => c.lifecycleStage === 'prospect')
+        break
+      case 'top':
         // Sort by revenue desc handled in sort step; no pre-filtering
-        break;
-      case "attention":
-        result = result.filter((c) => c.healthStatus === "potentially-churning");
-        break;
-      case "seasonal":
-        result = result.filter((c) => c.typeTags.includes("sports-school"));
-        break;
+        break
+      case 'attention':
+        result = result.filter((c) => c.healthStatus === 'potentially-churning')
+        break
+      case 'seasonal':
+        result = result.filter((c) => c.typeTags.includes('sports-school'))
+        break
       // "all" — no additional filter
     }
 
     // 3. Global search (company, contact names, email, phone)
     if (searchQuery) {
-      const lower = searchQuery.toLowerCase();
+      const lower = searchQuery.toLowerCase()
       result = result.filter((c) => {
         // Company name
-        if (c.company.toLowerCase().includes(lower)) return true;
+        if (c.company.toLowerCase().includes(lower)) return true
         // Customer name (legacy convenience)
-        if (c.name.toLowerCase().includes(lower)) return true;
+        if (c.name.toLowerCase().includes(lower)) return true
         // Email & phone
-        if (c.email.toLowerCase().includes(lower)) return true;
-        if (c.phone.toLowerCase().includes(lower)) return true;
+        if (c.email.toLowerCase().includes(lower)) return true
+        if (c.phone.toLowerCase().includes(lower)) return true
         // Contact names and emails
         if (
           c.contacts.some(
             (contact) =>
               contact.name.toLowerCase().includes(lower) ||
               (contact.email?.toLowerCase().includes(lower) ?? false) ||
-              (contact.phone?.toLowerCase().includes(lower) ?? false),
+              (contact.phone?.toLowerCase().includes(lower) ?? false)
           )
         )
-          return true;
-        return false;
-      });
+          return true
+        return false
+      })
     }
 
     // 4. Type tag filter
     if (activeTags.length > 0) {
       result = result.filter((c) =>
-        activeTags.some((tag) => c.typeTags.includes(tag as CustomerTypeTag)),
-      );
+        activeTags.some((tag) => c.typeTags.includes(tag as CustomerTypeTag))
+      )
     }
 
     // 5. Lifecycle filter
     if (lifecycleFilter) {
-      result = result.filter(
-        (c) => c.lifecycleStage === lifecycleFilter,
-      );
+      result = result.filter((c) => c.lifecycleStage === lifecycleFilter)
     }
 
     // 5b. Health filter
     if (healthFilter) {
-      result = result.filter(
-        (c) => c.healthStatus === healthFilter,
-      );
+      result = result.filter((c) => c.healthStatus === healthFilter)
     }
 
     // 6. Sort
-    const effectiveSortKey = view === "top" ? "revenue" as SortKey : sortKey;
-    const effectiveSortDir = view === "top" ? "desc" as SortDir : sortDir;
+    const effectiveSortKey = view === 'top' ? ('revenue' as SortKey) : sortKey
+    const effectiveSortDir = view === 'top' ? ('desc' as SortDir) : sortDir
 
     result = [...result].sort((a, b) => {
-      let cmp = 0;
+      let cmp = 0
       switch (effectiveSortKey) {
-        case "company":
-          cmp = a.company.localeCompare(b.company);
-          break;
-        case "contact": {
-          const aContact = getPrimaryContact(a).name;
-          const bContact = getPrimaryContact(b).name;
-          cmp = aContact.localeCompare(bContact);
-          break;
+        case 'company':
+          cmp = a.company.localeCompare(b.company)
+          break
+        case 'contact': {
+          const aContact = getPrimaryContact(a).name
+          const bContact = getPrimaryContact(b).name
+          cmp = aContact.localeCompare(bContact)
+          break
         }
-        case "type": {
-          const aTag = a.typeTags.length > 0 ? a.typeTags.slice().sort()[0] : "zzz";
-          const bTag = b.typeTags.length > 0 ? b.typeTags.slice().sort()[0] : "zzz";
-          cmp = aTag.localeCompare(bTag);
-          break;
+        case 'type': {
+          const aTag = a.typeTags.length > 0 ? a.typeTags.slice().sort()[0] : 'zzz'
+          const bTag = b.typeTags.length > 0 ? b.typeTags.slice().sort()[0] : 'zzz'
+          cmp = aTag.localeCompare(bTag)
+          break
         }
-        case "lifecycle": {
-          const order: Record<string, number> = { prospect: 0, new: 1, repeat: 2, contract: 3 };
-          cmp = (order[a.lifecycleStage] ?? 0) - (order[b.lifecycleStage] ?? 0);
-          break;
+        case 'lifecycle': {
+          const order: Record<string, number> = { prospect: 0, new: 1, repeat: 2, contract: 3 }
+          cmp = (order[a.lifecycleStage] ?? 0) - (order[b.lifecycleStage] ?? 0)
+          break
         }
-        case "health": {
-          const healthOrder: Record<string, number> = { active: 0, "potentially-churning": 1, churned: 2 };
-          cmp = (healthOrder[a.healthStatus] ?? 0) - (healthOrder[b.healthStatus] ?? 0);
-          break;
+        case 'health': {
+          const healthOrder: Record<string, number> = {
+            active: 0,
+            'potentially-churning': 1,
+            churned: 2,
+          }
+          cmp = (healthOrder[a.healthStatus] ?? 0) - (healthOrder[b.healthStatus] ?? 0)
+          break
         }
-        case "lastOrder": {
-          cmp = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
-          break;
+        case 'lastOrder': {
+          cmp = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+          break
         }
-        case "revenue": {
-          cmp = (revenueMap.get(a.id) ?? 0) - (revenueMap.get(b.id) ?? 0);
-          break;
+        case 'revenue': {
+          cmp = (revenueMap.get(a.id) ?? 0) - (revenueMap.get(b.id) ?? 0)
+          break
         }
       }
-      return effectiveSortDir === "asc" ? cmp : -cmp;
-    });
+      return effectiveSortDir === 'asc' ? cmp : -cmp
+    })
 
-    return result;
-  }, [customers, showArchived, view, searchQuery, activeTags, lifecycleFilter, healthFilter, sortKey, sortDir, revenueMap]);
+    return result
+  }, [
+    customers,
+    showArchived,
+    view,
+    searchQuery,
+    activeTags,
+    lifecycleFilter,
+    healthFilter,
+    sortKey,
+    sortDir,
+    revenueMap,
+  ])
 
   // ---- Effective sort (for "top" view override) ----------------------------
 
-  const effectiveSortKey = view === "top" ? "revenue" as SortKey : sortKey;
-  const effectiveSortDir = view === "top" ? "desc" as SortDir : sortDir;
+  const effectiveSortKey = view === 'top' ? ('revenue' as SortKey) : sortKey
+  const effectiveSortDir = view === 'top' ? ('desc' as SortDir) : sortDir
 
   // ---- Tag/Lifecycle/Health filter toggle helpers for ColumnHeaderMenu ------
 
   const typeFilterOptions = ALL_TYPE_TAGS.map((tag) => ({
     value: tag,
     label: CUSTOMER_TYPE_TAG_LABELS[tag],
-  }));
+  }))
 
   const lifecycleFilterOptions = ALL_LIFECYCLE_STAGES.map((stage) => ({
     value: stage,
     label: LIFECYCLE_STAGE_LABELS[stage],
-  }));
+  }))
 
   const healthFilterOptions = ALL_HEALTH_STATUSES.map((status) => ({
     value: status,
     label: HEALTH_STATUS_LABELS[status],
-  }));
+  }))
 
-  const handleTypeFilterToggle = useCallback(
-    (value: string) => toggleTag(value),
-    [toggleTag],
-  );
+  const handleTypeFilterToggle = useCallback((value: string) => toggleTag(value), [toggleTag])
 
   const handleTypeFilterClear = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("tags");
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [searchParams, router]);
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('tags')
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }, [searchParams, router])
 
   const handleLifecycleFilterToggle = useCallback(
     (value: string) => handleLifecycleChange(value),
-    [handleLifecycleChange],
-  );
+    [handleLifecycleChange]
+  )
 
   const handleLifecycleFilterClear = useCallback(() => {
-    updateParam("lifecycle", null);
-  }, [updateParam]);
+    updateParam('lifecycle', null)
+  }, [updateParam])
 
   const handleHealthFilterToggle = useCallback(
     (value: string) => handleHealthChange(value),
-    [handleHealthChange],
-  );
+    [handleHealthChange]
+  )
 
   const handleHealthFilterClear = useCallback(() => {
-    updateParam("health", null);
-  }, [updateParam]);
+    updateParam('health', null)
+  }, [updateParam])
 
   // ---- Check if any filters are active (for empty state messaging) ----------
 
@@ -460,15 +458,15 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
     activeTags.length > 0 ||
     lifecycleFilter.length > 0 ||
     healthFilter.length > 0 ||
-    view !== "all" ||
-    showArchived;
+    view !== 'all' ||
+    showArchived
 
   // ---- Clear all filters helper ---------------------------------------------
 
   const clearFilters = useCallback(() => {
-    router.replace("?", { scroll: false });
-    setLocalSearch("");
-  }, [router]);
+    router.replace('?', { scroll: false })
+    setLocalSearch('')
+  }, [router])
 
   // ---- Render ---------------------------------------------------------------
 
@@ -478,13 +476,18 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
       <div className="sticky top-0 z-10 bg-background pb-2">
         {/* Header row: title + search + archive toggle + action button */}
         <div className="flex items-center gap-3">
-          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">Customers</h1>
+          <h1 className="hidden md:block text-2xl font-semibold tracking-tight shrink-0">
+            Customers
+          </h1>
 
           <div className="hidden md:block flex-1" />
 
           {/* Search bar — full width on mobile, constrained on desktop */}
           <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Search
+              className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               placeholder="Search company, contact, email, phone..."
               value={localSearch}
@@ -495,7 +498,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
             {localSearch && (
               <button
                 type="button"
-                onClick={() => setLocalSearch("")}
+                onClick={() => setLocalSearch('')}
                 className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
@@ -509,11 +512,11 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
             type="button"
             onClick={() => setFilterSheetOpen(true)}
             className={cn(
-              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
-              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
-              "text-muted-foreground hover:text-foreground transition-colors",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              (activeTags.length > 0 || lifecycleFilter || healthFilter) && "text-action",
+              'inline-flex items-center justify-center rounded-md p-2 md:hidden',
+              'min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)',
+              'text-muted-foreground hover:text-foreground transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              (activeTags.length > 0 || lifecycleFilter || healthFilter) && 'text-action'
             )}
             aria-label="Sort & Filter"
           >
@@ -527,22 +530,20 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                 type="button"
                 onClick={toggleArchived}
                 className={cn(
-                  "inline-flex items-center justify-center rounded-md p-2 transition-colors",
-                  "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                  'inline-flex items-center justify-center rounded-md p-2 transition-colors',
+                  'min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'active:scale-95 disabled:opacity-50 disabled:pointer-events-none',
                   showArchived
-                    ? "bg-error/10 text-error border border-error"
-                    : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
+                    ? 'bg-error/10 text-error border border-error'
+                    : 'bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5'
                 )}
-                aria-label={showArchived ? "Hide Archived" : "Show Archived"}
+                aria-label={showArchived ? 'Hide Archived' : 'Show Archived'}
               >
                 <Archive className="size-4" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              {showArchived ? "Hide Archived" : "Show Archived"}
-            </TooltipContent>
+            <TooltipContent>{showArchived ? 'Hide Archived' : 'Show Archived'}</TooltipContent>
           </Tooltip>
 
           <Button
@@ -582,7 +583,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="company"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("company", dir)}
+                      onSort={(_k, dir) => handleSort('company', dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -591,7 +592,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="contact"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("contact", dir)}
+                      onSort={(_k, dir) => handleSort('contact', dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -600,7 +601,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="type"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("type", dir)}
+                      onSort={(_k, dir) => handleSort('type', dir)}
                       filterOptions={typeFilterOptions}
                       activeFilters={activeTags}
                       onFilterToggle={handleTypeFilterToggle}
@@ -613,7 +614,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="lifecycle"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("lifecycle", dir)}
+                      onSort={(_k, dir) => handleSort('lifecycle', dir)}
                       filterOptions={lifecycleFilterOptions}
                       activeFilters={lifecycleFilter ? [lifecycleFilter] : []}
                       onFilterToggle={handleLifecycleFilterToggle}
@@ -626,7 +627,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="health"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("health", dir)}
+                      onSort={(_k, dir) => handleSort('health', dir)}
                       filterOptions={healthFilterOptions}
                       activeFilters={healthFilter ? [healthFilter] : []}
                       onFilterToggle={handleHealthFilterToggle}
@@ -639,7 +640,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="lastOrder"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("lastOrder", dir)}
+                      onSort={(_k, dir) => handleSort('lastOrder', dir)}
                     />
                   </TableHead>
                   <TableHead>
@@ -648,15 +649,15 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       sortKey="revenue"
                       currentSortKey={effectiveSortKey}
                       currentSortDir={effectiveSortDir}
-                      onSort={(_k, dir) => handleSort("revenue", dir)}
+                      onSort={(_k, dir) => handleSort('revenue', dir)}
                     />
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredCustomers.map((customer) => {
-                  const contact = getPrimaryContact(customer);
-                  const revenue = revenueMap.get(customer.id) ?? 0;
+                  const contact = getPrimaryContact(customer)
+                  const revenue = revenueMap.get(customer.id) ?? 0
 
                   return (
                     <TableRow
@@ -665,17 +666,15 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                       onClick={() => router.push(`/customers/${customer.id}`)}
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          router.push(`/customers/${customer.id}`);
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          router.push(`/customers/${customer.id}`)
                         }
                       }}
                       aria-label={`View ${customer.company}`}
                     >
                       <TableCell className="font-medium">
-                        <span className="text-action hover:underline">
-                          {customer.company}
-                        </span>
+                        <span className="text-action hover:underline">{customer.company}</span>
                         {customer.isArchived && (
                           <Badge
                             variant="ghost"
@@ -689,9 +688,7 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                         <div className="flex flex-col">
                           <span className="text-sm">{contact.name}</span>
                           {contact.email && (
-                            <span className="text-xs text-muted-foreground">
-                              {contact.email}
-                            </span>
+                            <span className="text-xs text-muted-foreground">{contact.email}</span>
                           )}
                         </div>
                       </TableCell>
@@ -708,12 +705,14 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                         {formatRelativeDate(customer.updatedAt)}
                       </TableCell>
                       <TableCell className="text-sm font-medium tabular-nums">
-                        {revenue > 0 ? <MoneyAmount value={revenue} format="compact" /> : (
+                        {revenue > 0 ? (
+                          <MoneyAmount value={revenue} format="compact" />
+                        ) : (
                           <span className="text-muted-foreground">--</span>
                         )}
                       </TableCell>
                     </TableRow>
-                  );
+                  )
                 })}
               </TableBody>
             </Table>
@@ -722,8 +721,8 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
           {/* Mobile card list — visible below md */}
           <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
             {filteredCustomers.map((customer) => {
-              const contact = getPrimaryContact(customer);
-              const revenue = revenueMap.get(customer.id) ?? 0;
+              const contact = getPrimaryContact(customer)
+              const revenue = revenueMap.get(customer.id) ?? 0
 
               return (
                 <button
@@ -731,24 +730,24 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                   type="button"
                   onClick={() => router.push(`/customers/${customer.id}`)}
                   className={cn(
-                    "flex flex-col gap-2 rounded-lg border border-border bg-elevated p-4",
-                    "text-left transition-colors hover:bg-muted/50",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50",
+                    'flex flex-col gap-2 rounded-lg border border-border bg-elevated p-4',
+                    'text-left transition-colors hover:bg-muted/50',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50'
                   )}
                 >
                   {/* Top row: company + revenue */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-medium text-action">
-                        {customer.company}
-                      </span>
+                      <span className="font-medium text-action">{customer.company}</span>
                       <span className="text-sm text-muted-foreground">
                         {contact.name}
                         {contact.email && ` \u00B7 ${contact.email}`}
                       </span>
                     </div>
                     <span className="shrink-0 text-sm font-medium">
-                      {revenue > 0 ? <MoneyAmount value={revenue} format="compact" /> : (
+                      {revenue > 0 ? (
+                        <MoneyAmount value={revenue} format="compact" />
+                      ) : (
                         <span className="text-muted-foreground">--</span>
                       )}
                     </span>
@@ -760,16 +759,13 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
                     <HealthBadge status={customer.healthStatus} />
                     <TypeTagBadges tags={customer.typeTags} />
                     {customer.isArchived && (
-                      <Badge
-                        variant="ghost"
-                        className="bg-muted text-muted-foreground text-xs"
-                      >
+                      <Badge variant="ghost" className="bg-muted text-muted-foreground text-xs">
                         Archived
                       </Badge>
                     )}
                   </div>
                 </button>
-              );
+              )
             })}
           </div>
         </>
@@ -780,15 +776,11 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
           <p className="mt-4 text-sm font-medium">No customers found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
-              ? "Try adjusting your filters or search term"
-              : "Add your first customer to get started"}
+              ? 'Try adjusting your filters or search term'
+              : 'Add your first customer to get started'}
           </p>
           {hasFilters ? (
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={clearFilters}
-            >
+            <Button variant="outline" className="mt-4" onClick={clearFilters}>
               Clear Filters
             </Button>
           ) : (
@@ -805,9 +797,8 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
       {/* ---- Result count ---- */}
       {filteredCustomers.length > 0 && (
         <p className="text-xs text-muted-foreground">
-          {filteredCustomers.length}{" "}
-          {filteredCustomers.length === 1 ? "customer" : "customers"}
-          {hasFilters && " (filtered)"}
+          {filteredCustomers.length} {filteredCustomers.length === 1 ? 'customer' : 'customers'}
+          {hasFilters && ' (filtered)'}
         </p>
       )}
 
@@ -817,30 +808,30 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
           open={filterSheetOpen}
           onOpenChange={setFilterSheetOpen}
           sortOptions={[
-            { value: "company", label: "Company" },
-            { value: "contact", label: "Contact" },
-            { value: "lifecycle", label: "Lifecycle" },
-            { value: "health", label: "Health" },
-            { value: "revenue", label: "Revenue" },
-            { value: "lastOrder", label: "Last Order" },
+            { value: 'company', label: 'Company' },
+            { value: 'contact', label: 'Contact' },
+            { value: 'lifecycle', label: 'Lifecycle' },
+            { value: 'health', label: 'Health' },
+            { value: 'revenue', label: 'Revenue' },
+            { value: 'lastOrder', label: 'Last Order' },
           ]}
           currentSort={sortKey}
           onSortChange={(value) => handleSort(value as SortKey)}
           filterGroups={[
             {
-              label: "Type",
+              label: 'Type',
               options: typeFilterOptions,
               selected: activeTags,
               onToggle: handleTypeFilterToggle,
             },
             {
-              label: "Lifecycle",
+              label: 'Lifecycle',
               options: lifecycleFilterOptions,
               selected: lifecycleFilter ? [lifecycleFilter] : [],
               onToggle: handleLifecycleFilterToggle,
             },
             {
-              label: "Health",
+              label: 'Health',
               options: healthFilterOptions,
               selected: healthFilter ? [healthFilter] : [],
               onToggle: handleHealthFilterToggle,
@@ -856,13 +847,13 @@ export function CustomersDataTable({ customers, quotes }: CustomersDataTableProp
         open={modalOpen}
         onOpenChange={setModalOpen}
         onSave={() => {
-          toast.success("Customer created successfully");
+          toast.success('Customer created successfully')
         }}
         onSaveAndView={(newCustomer) => {
-          toast.success("Customer created successfully");
-          router.push(`/customers/${newCustomer.id}`);
+          toast.success('Customer created successfully')
+          router.push(`/customers/${newCustomer.id}`)
         }}
       />
     </div>
-  );
+  )
 }

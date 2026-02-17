@@ -1,6 +1,6 @@
 vertical: infrastructure
 waves:
-  - name: "Wave 0: Config Schema Gateway"
+  - name: 'Wave 0: Config Schema Gateway'
     serial: true
     sessions:
       - topic: config-schema-gateway

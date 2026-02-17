@@ -1,46 +1,37 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { CheckCircle2, Plus } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import { TaskProgressBar } from "@/components/features/TaskProgressBar";
-import { TaskItem } from "./TaskItem";
-import { AddCustomTaskInput } from "./AddCustomTaskInput";
-import { computeTaskProgress } from "@domain/rules/job.rules";
-import type { JobTask } from "@domain/entities/job";
+import { useState } from 'react'
+import { CheckCircle2, Plus } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { TaskProgressBar } from '@/components/features/TaskProgressBar'
+import { TaskItem } from './TaskItem'
+import { AddCustomTaskInput } from './AddCustomTaskInput'
+import { computeTaskProgress } from '@domain/rules/job.rules'
+import type { JobTask } from '@domain/entities/job'
 
-interface TaskChecklistProps {
-  tasks: JobTask[];
-  onToggleTask: (taskId: string) => void;
-  onAddTask: (label: string, detail?: string) => void;
+type TaskChecklistProps = {
+  tasks: JobTask[]
+  onToggleTask: (taskId: string) => void
+  onAddTask: (label: string, detail?: string) => void
 }
 
-export function TaskChecklist({
-  tasks,
-  onToggleTask,
-  onAddTask,
-}: TaskChecklistProps) {
-  const [showAddForm, setShowAddForm] = useState(false);
-  const progress = computeTaskProgress(tasks);
-  const sortedTasks = [...tasks].sort((a, b) => a.sortOrder - b.sortOrder);
+export function TaskChecklist({ tasks, onToggleTask, onAddTask }: TaskChecklistProps) {
+  const [showAddForm, setShowAddForm] = useState(false)
+  const progress = computeTaskProgress(tasks)
+  const sortedTasks = [...tasks].sort((a, b) => a.sortOrder - b.sortOrder)
 
   function handleAddTask(label: string, detail?: string) {
-    onAddTask(label, detail);
-    setShowAddForm(false);
+    onAddTask(label, detail)
+    setShowAddForm(false)
   }
 
   return (
     <section className="rounded-lg border border-border bg-card">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-          Tasks
-        </h2>
-        <TaskProgressBar
-          completed={progress.completed}
-          total={progress.total}
-        />
+        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">Tasks</h2>
+        <TaskProgressBar completed={progress.completed} total={progress.total} />
       </div>
 
       {/* All complete indicator */}
@@ -68,12 +59,9 @@ export function TaskChecklist({
       )}
 
       {/* Add custom task */}
-      <div className={cn("border-t border-border px-4 py-3")}>
+      <div className={cn('border-t border-border px-4 py-3')}>
         {showAddForm ? (
-          <AddCustomTaskInput
-            onAdd={handleAddTask}
-            onCancel={() => setShowAddForm(false)}
-          />
+          <AddCustomTaskInput onAdd={handleAddTask} onCancel={() => setShowAddForm(false)} />
         ) : (
           <Button
             variant="ghost"
@@ -87,5 +75,5 @@ export function TaskChecklist({
         )}
       </div>
     </section>
-  );
+  )
 }

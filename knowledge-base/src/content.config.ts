@@ -1,20 +1,20 @@
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
-import tagsConfig from '../../config/tags.json';
-import productsConfig from '../../config/products.json';
-import toolsConfig from '../../config/tools.json';
-import domainsConfig from '../../config/domains.json';
-import pipelineTypesConfig from '../../config/pipeline-types.json';
-import { pipelineStageSlugs } from './lib/utils';
+import { defineCollection } from 'astro:content'
+import { glob } from 'astro/loaders'
+import { z } from 'astro/zod'
+import tagsConfig from '../../config/tags.json'
+import productsConfig from '../../config/products.json'
+import toolsConfig from '../../config/tools.json'
+import domainsConfig from '../../config/domains.json'
+import pipelineTypesConfig from '../../config/pipeline-types.json'
+import { pipelineStageSlugs } from './lib/utils'
 
 // Derive enum tuples from canonical config files
-const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
-const products = productsConfig.map((p) => p.slug) as [string, ...string[]];
-const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]];
-const domains = domainsConfig.map((d) => d.slug) as [string, ...string[]];
-const pipelineTypes = pipelineTypesConfig.map((w) => w.slug) as [string, ...string[]];
-const stageSlugs = pipelineStageSlugs as [string, ...string[]];
+const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]]
+const products = productsConfig.map((p) => p.slug) as [string, ...string[]]
+const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]]
+const domains = domainsConfig.map((d) => d.slug) as [string, ...string[]]
+const pipelineTypes = pipelineTypesConfig.map((w) => w.slug) as [string, ...string[]]
+const stageSlugs = pipelineStageSlugs as [string, ...string[]]
 
 // ── Pipelines ─────────────────────────────────────────────────────
 const pipelines = defineCollection({
@@ -38,7 +38,7 @@ const pipelines = defineCollection({
     pr: z.string().optional(),
     status: z.enum(['complete', 'in-progress', 'superseded']).default('complete'),
   }),
-});
+})
 
 // ── Products ──────────────────────────────────────────────────────
 const productDocs = defineCollection({
@@ -51,7 +51,7 @@ const productDocs = defineCollection({
     lastUpdated: z.coerce.date(),
     status: z.enum(['current', 'draft', 'deprecated']).default('current'),
   }),
-});
+})
 
 // ── Tools ─────────────────────────────────────────────────────────
 const toolDocs = defineCollection({
@@ -64,7 +64,7 @@ const toolDocs = defineCollection({
     lastUpdated: z.coerce.date(),
     status: z.enum(['current', 'draft', 'deprecated']).default('current'),
   }),
-});
+})
 
 // ── Domains ───────────────────────────────────────────────────────
 const domainDocs = defineCollection({
@@ -77,7 +77,7 @@ const domainDocs = defineCollection({
     lastUpdated: z.coerce.date(),
     status: z.enum(['current', 'draft', 'deprecated']).default('current'),
   }),
-});
+})
 
 // ── Strategy ──────────────────────────────────────────────────────
 // Pipeline names are free text (not config-backed enums).
@@ -97,6 +97,6 @@ const strategy = defineCollection({
     pr: z.string().optional(),
     status: z.enum(['complete', 'in-progress']).default('complete'),
   }),
-});
+})
 
-export const collections = { pipelines, productDocs, domainDocs, toolDocs, strategy };
+export const collections = { pipelines, productDocs, domainDocs, toolDocs, strategy }

@@ -20,11 +20,13 @@
 ### Task 0.1: Schemas + Mock Data
 
 **Files:**
+
 - Create: `lib/schemas/{vertical}.ts`
 - Create: `lib/mock-data/{vertical}.ts`
 - Test: `__tests__/schemas/{vertical}.test.ts`
 
 **Steps:**
+
 1. Read breadboard doc for entity definitions
 2. Define Zod schemas for all entities
 3. Create realistic mock data (8-12 items per entity)
@@ -41,10 +43,12 @@
 ### Task 1.1: {FEATURE_A} (Session A)
 
 **Files:**
+
 - Create: `app/(dashboard)/{route}/page.tsx`
 - Create: `components/features/{component}.tsx`
 
 **Steps:**
+
 1. Read breadboard affordances for this place
 2. Build page layout and component structure
 3. Wire mock data into components
@@ -55,10 +59,12 @@
 ### Task 1.2: {FEATURE_B} (Session B — parallel with 1.1)
 
 **Files:**
+
 - Create: `app/(dashboard)/{route}/page.tsx`
 - Create: `components/features/{component}.tsx`
 
 **Steps:**
+
 1. Read breadboard affordances for this place
 2. Build page layout and component structure
 3. Wire mock data into components

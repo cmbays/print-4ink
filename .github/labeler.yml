@@ -4,42 +4,42 @@
 
 'product/quotes':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/quotes/**'
+      - any-glob-to-any-file: 'app/(dashboard)/quotes/**'
 
 'product/jobs':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/jobs/**'
+      - any-glob-to-any-file: 'app/(dashboard)/jobs/**'
 
 'product/customers':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/customers/**'
+      - any-glob-to-any-file: 'app/(dashboard)/customers/**'
 
 'product/invoices':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/invoices/**'
+      - any-glob-to-any-file: 'app/(dashboard)/invoices/**'
 
 'domain/garments':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/garments/**'
+      - any-glob-to-any-file: 'app/(dashboard)/garments/**'
 
 'domain/pricing':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/settings/pricing/**'
+      - any-glob-to-any-file: 'app/(dashboard)/settings/pricing/**'
 
 'domain/colors':
   - changed-files:
-    - any-glob-to-any-file: 'app/(dashboard)/settings/colors/**'
+      - any-glob-to-any-file: 'app/(dashboard)/settings/colors/**'
 
 'tool/work-orchestrator':
   - changed-files:
-    - any-glob-to-any-file: 'scripts/**'
+      - any-glob-to-any-file: 'scripts/**'
 
 'tool/knowledge-base':
   - changed-files:
-    - any-glob-to-any-file: 'knowledge-base/**'
+      - any-glob-to-any-file: 'knowledge-base/**'
 
 'tool/pm-system':
   - changed-files:
-    - any-glob-to-any-file:
-      - 'config/**'
-      - '.github/**'
+      - any-glob-to-any-file:
+          - 'config/**'
+          - '.github/**'

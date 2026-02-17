@@ -8,7 +8,7 @@ vertical: pipeline-arch
 
 waves:
   # ── Wave 0: Config + Entity Foundation ──────────────────────────────
-  - name: "Config + Entity Foundation"
+  - name: 'Config + Entity Foundation'
     serial: true
     sessions:
       - topic: pipeline-config-foundation
@@ -69,7 +69,7 @@ waves:
           Commit message prefix: "feat(pipeline): Wave 0 — config + entity foundation"
 
   # ── Wave 1: Parallel Migrations ─────────────────────────────────────
-  - name: "Parallel Migrations"
+  - name: 'Parallel Migrations'
     serial: false
     sessions:
       - topic: kb-pipeline-schema
@@ -239,7 +239,7 @@ waves:
           Commit message prefix: "feat(skills): update stage references to new short slugs"
 
   # ── Wave 2: Orchestrator Execution Pipeline ─────────────────────────
-  - name: "Orchestrator Execution Pipeline"
+  - name: 'Orchestrator Execution Pipeline'
     serial: true
     sessions:
       - topic: work-execution-pipeline

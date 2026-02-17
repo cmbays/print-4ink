@@ -5,18 +5,20 @@
 **Pulse**: Infrastructure transformation day — 14 PRs, DAL complete across all verticals, lint guardrails live, config-driven schemas. Demo in 4 days. Wizards (#145) is the critical path — not started.
 **Focus decided**: Start wizards tomorrow. Nothing displaces it.
 **Key decisions**:
+
 - Gang sheet builder: shipped, "unrefined but good enough" for demo
 - Mobile: largely done, some kinks remaining (pricing editor)
 - Wizards: last remaining demo must-have — 3 journeys scoped tight
 - 2 Gary questions still open (garments-q3, mobile-q5)
-**Open items**:
+  **Open items**:
 - PR #425 (review orchestration v2) — merge status unclear
 - work-core phases #377–#381 — priority/now but no demo milestone — clarify Phase 2 vs demo prep
 - #405 (motion tokens) + #423 (pricing mobile) — demo-blocking or polish?
 - Gary pre-briefing before Feb 21?
-**Story beat**: Tightening bolts before inspection. DAL + lint guardrails = structure that won't crack under Gary's scrutiny. Four days to the door.
+  **Story beat**: Tightening bolts before inspection. DAL + lint guardrails = structure that won't crack under Gary's scrutiny. Four days to the door.
 
 **Follow-up decisions (same session)**:
+
 - PR #425 (review orchestration) merged — review engine live
 - work-core #373–#381 moved to `priority/later` — infrastructure "done what it needed to do"
 - #423 (pricing editor mobile) confirmed demo-blocking
@@ -30,6 +32,7 @@
 **Pulse**: Phase 1 effectively complete. 6 verticals demo-ready, 15 PRs merged today. Gary gap is the top strategic risk.
 **Focus recommended**: Schedule Gary demo. Don't build another feature.
 **Key decisions**:
+
 - Demo confirmed: February 21st (1 week out)
 - Mobile polish is priority #1 before demo — preliminary feedback says huge value add
 - Onboarding wizards (#145) — horizontal feature, cross-vertical guided first-time experience. Demo enabler AND permanent product feature.
@@ -41,6 +44,7 @@
 - Christopher's philosophy: anticipate complexity one phase ahead, establish patterns that scale
 
 **Gary question answers captured**:
+
 - mobile-q1: No mobile experience yet — it's new/exciting for them. Desktop computers in shop corner.
 - mobile-q2: Access website via tablet at events/home. Don't use PrintLife on phone. PWA path confirmed.
 - mobile-q3: Production floor ↔ desk computers. Tablets at events/home, not on floor.
@@ -52,6 +56,7 @@
 - garments-q3: "Which 5 garment styles?" — unanswered, needs Gary
 
 **Refined plan (Christopher's timelines)**:
+
 - Day 1: Cool-down (1 day, not 2)
 - Day 2: Mobile polish (1 day — velocity is there)
 - Days 3-4: Wizards + mockup integration + bug triage (parallel, woven together)
@@ -59,10 +64,11 @@
 - Parallel track: DTF Gang Sheet Builder as own vertical running alongside
 
 **Wizard demo journeys (scoped tight)**:
+
 1. View the job board
 2. Close an invoice
 3. Create a customer
-Goal: Walk through full process interactively, not just showcase features
+   Goal: Walk through full process interactively, not just showcase features
 
 **Mockup clarification**: Gary manually creates mockup images, shares via email. Opportunity: auto-generate mockups and attach to quotes when sending. Integrate into demo flow.
 
@@ -71,6 +77,7 @@ Goal: Walk through full process interactively, not just showcase features
 **DTF Gang Sheet Builder**: Stretch goal for demo week, parallel vertical. Core user request — can't ignore. #144 created.
 
 **Prioritized Gary questions (if limited face time)**:
+
 1. garments-q3 — "Which 5 garment styles do you use most?" (determines SVG template priority)
 2. mobile-q4 — "What other apps do you use on your phone?" (reveals UX expectations)
 3. mobile-q5 — "TV on shop floor showing job board?" (validates display concept)

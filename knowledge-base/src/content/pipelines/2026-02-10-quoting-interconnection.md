@@ -1,6 +1,6 @@
 ---
-title: "Quoting-Customer Interconnection"
-subtitle: "Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search."
+title: 'Quoting-Customer Interconnection'
+subtitle: 'Enhanced CustomerCombobox with lifecycle badges, enriched customer context, and cross-vertical search.'
 date: 2026-02-10
 phase: 1
 pipelineName: quoting
@@ -9,8 +9,8 @@ products: [quotes, customers, invoices]
 tools: []
 stage: build
 tags: [feature, build]
-sessionId: "633cdbe3-a795-443a-b712-f03c868b4c2e"
-branch: "session/0210-quoting-interconnection"
+sessionId: '633cdbe3-a795-443a-b712-f03c868b4c2e'
+branch: 'session/0210-quoting-interconnection'
 status: complete
 ---
 
@@ -18,11 +18,11 @@ status: complete
 
 This session connects the Customer Management data model to the existing Quoting vertical. The CustomerCombobox now surfaces lifecycle stages, type tags, and contact roles — giving the shop owner richer context when selecting a customer on a quote.
 
-| Stat | Value |
-|------|-------|
-| Files Changed | 3 |
-| Tests Passing | 264 |
-| Type Errors | 0 |
+| Stat          | Value |
+| ------------- | ----- |
+| Files Changed | 3     |
+| Tests Passing | 264   |
+| Type Errors   | 0     |
 
 ## What Changed
 

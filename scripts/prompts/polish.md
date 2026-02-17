@@ -32,6 +32,7 @@ Review and refine all screens built for the {VERTICAL} vertical. Fix visual inco
 ## Output
 
 Produce a KB session doc at `{KB_DIR}/` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=polish, tags=[feature]
 - Audit results per screen
 - Changes made

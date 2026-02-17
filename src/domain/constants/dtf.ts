@@ -7,10 +7,10 @@
  */
 
 /** Fixed DTF sheet width in inches */
-export const DTF_SHEET_WIDTH = 22;
+export const DTF_SHEET_WIDTH = 22
 
 /** Recommended spacing between designs in inches */
-export const DTF_DEFAULT_MARGIN = 1;
+export const DTF_DEFAULT_MARGIN = 1
 
 /** Maximum sheet length in inches (largest tier) */
-export const DTF_MAX_SHEET_LENGTH = 60;
+export const DTF_MAX_SHEET_LENGTH = 60

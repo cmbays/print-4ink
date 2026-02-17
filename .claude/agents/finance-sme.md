@@ -22,19 +22,21 @@ You are paranoid about precision. One floating-point operation in a pricing pipe
 ### Critical (Must Fix)
 
 1. **Raw arithmetic on monetary values**: Any `+`, `-`, `*`, `/` on variables that represent money, prices, totals, subtotals, tax, fees, deposits, discounts, or costs
+
    ```typescript
    // BAD — floating-point
-   const total = subtotal + tax;
-   const lineTotal = price * quantity;
-   const discount = total * 0.1;
+   const total = subtotal + tax
+   const lineTotal = price * quantity
+   const discount = total * 0.1
 
    // GOOD — big.js
-   const total = money(subtotal).plus(tax);
-   const lineTotal = money(price).times(quantity);
-   const discount = money(total).times(0.1);
+   const total = money(subtotal).plus(tax)
+   const lineTotal = money(price).times(quantity)
+   const discount = money(total).times(0.1)
    ```
 
 2. **Equality comparisons on monetary values**: Using `===` or `==` to compare money amounts instead of `Big.eq()`
+
    ```typescript
    // BAD
    if (paid === total) { ... }
@@ -44,12 +46,13 @@ You are paranoid about precision. One floating-point operation in a pricing pipe
    ```
 
 3. **Missing `round2()` before output**: Financial values displayed to users or stored in schemas must be rounded to 2 decimal places
+
    ```typescript
    // BAD
-   const displayTotal = money(subtotal).plus(tax).toNumber();
+   const displayTotal = money(subtotal).plus(tax).toNumber()
 
    // GOOD
-   const displayTotal = toNumber(round2(money(subtotal).plus(tax)));
+   const displayTotal = toNumber(round2(money(subtotal).plus(tax)))
    ```
 
 4. **Integer-cents workaround**: Converting to cents via `* 100` then back via `/ 100` — this still fails on multiplication/division (tax rates, percentage deposits)
@@ -82,6 +85,7 @@ When reviewing a diff or set of files:
 ## Files to Focus On
 
 These directories are highest risk:
+
 - `lib/schemas/` — Schema definitions with financial fields
 - `lib/helpers/` — Utility functions that touch money
 - `lib/` root — Pricing engines, invoice utils, quote utils
@@ -125,17 +129,17 @@ Each finding must conform to the `reviewFindingSchema` from `lib/schemas/review-
 
 ### Field Reference
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `ruleId` | string | Yes | Rule ID from `config/review-rules.json` (e.g., `D-FIN-1`, `D-FIN-4`) |
-| `agent` | string | Yes | Always `"finance-sme"` |
-| `severity` | enum | Yes | `"critical"` \| `"major"` \| `"warning"` \| `"info"` |
-| `file` | string | Yes | Repo-relative file path |
-| `line` | number | No | Line number (omit if finding is cross-file) |
-| `message` | string | Yes | What's wrong — include the offending code snippet |
-| `fix` | string | No | Exact fix using `lib/helpers/money.ts` API |
-| `dismissible` | boolean | Yes | `false` for critical/major, `true` for info |
-| `category` | string | Yes | Must match the rule's category in `config/review-rules.json` |
+| Field         | Type    | Required | Description                                                          |
+| ------------- | ------- | -------- | -------------------------------------------------------------------- |
+| `ruleId`      | string  | Yes      | Rule ID from `config/review-rules.json` (e.g., `D-FIN-1`, `D-FIN-4`) |
+| `agent`       | string  | Yes      | Always `"finance-sme"`                                               |
+| `severity`    | enum    | Yes      | `"critical"` \| `"major"` \| `"warning"` \| `"info"`                 |
+| `file`        | string  | Yes      | Repo-relative file path                                              |
+| `line`        | number  | No       | Line number (omit if finding is cross-file)                          |
+| `message`     | string  | Yes      | What's wrong — include the offending code snippet                    |
+| `fix`         | string  | No       | Exact fix using `lib/helpers/money.ts` API                           |
+| `dismissible` | boolean | Yes      | `false` for critical/major, `true` for info                          |
+| `category`    | string  | Yes      | Must match the rule's category in `config/review-rules.json`         |
 
 ### Rules for Output
 

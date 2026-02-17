@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import { cn } from "@shared/lib/cn";
-import { Checkbox } from "@shared/ui/primitives/checkbox";
-import { formatDate } from "@shared/lib/format";
-import type { JobTask } from "@domain/entities/job";
+import { cn } from '@shared/lib/cn'
+import { Checkbox } from '@shared/ui/primitives/checkbox'
+import { formatDate } from '@shared/lib/format'
+import type { JobTask } from '@domain/entities/job'
 
-interface TaskItemProps {
-  task: JobTask;
-  onToggle: (taskId: string) => void;
+type TaskItemProps = {
+  task: JobTask
+  onToggle: (taskId: string) => void
 }
 
 export function TaskItem({ task, onToggle }: TaskItemProps) {
   return (
     <div
       className={cn(
-        "flex items-start gap-3 rounded-md px-3 py-2.5 transition-colors",
-        "hover:bg-surface/50"
+        'flex items-start gap-3 rounded-md px-3 py-2.5 transition-colors',
+        'hover:bg-surface/50'
       )}
     >
       <Checkbox
@@ -23,18 +23,13 @@ export function TaskItem({ task, onToggle }: TaskItemProps) {
         checked={task.isCompleted}
         onCheckedChange={() => onToggle(task.id)}
         className="mt-0.5 shrink-0"
-        aria-label={`Mark "${task.label}" as ${task.isCompleted ? "incomplete" : "complete"}`}
+        aria-label={`Mark "${task.label}" as ${task.isCompleted ? 'incomplete' : 'complete'}`}
       />
-      <label
-        htmlFor={`task-${task.id}`}
-        className="flex-1 cursor-pointer select-none"
-      >
+      <label htmlFor={`task-${task.id}`} className="flex-1 cursor-pointer select-none">
         <span
           className={cn(
-            "block text-sm",
-            task.isCompleted
-              ? "text-muted-foreground line-through"
-              : "text-foreground"
+            'block text-sm',
+            task.isCompleted ? 'text-muted-foreground line-through' : 'text-foreground'
           )}
         >
           {task.label}
@@ -42,8 +37,8 @@ export function TaskItem({ task, onToggle }: TaskItemProps) {
         {task.detail && (
           <span
             className={cn(
-              "mt-0.5 block text-xs text-muted-foreground",
-              task.isCompleted && "line-through"
+              'mt-0.5 block text-xs text-muted-foreground',
+              task.isCompleted && 'line-through'
             )}
           >
             {task.detail}
@@ -56,5 +51,5 @@ export function TaskItem({ task, onToggle }: TaskItemProps) {
         )}
       </label>
     </div>
-  );
+  )
 }

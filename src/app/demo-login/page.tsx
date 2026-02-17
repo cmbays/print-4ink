@@ -1,38 +1,38 @@
-'use client';
+'use client'
 
-import { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { FormEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function DemoLoginPage() {
-  const [code, setCode] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [code, setCode] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
 
     try {
       const response = await fetch('/api/demo-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
-      });
+      })
 
       if (response.ok) {
-        router.push('/');
-        router.refresh();
+        router.push('/')
+        router.refresh()
       } else {
-        setError('Invalid access code. Please try again.');
+        setError('Invalid access code. Please try again.')
       }
     } catch {
-      setError('An error occurred. Please try again.');
+      setError('An error occurred. Please try again.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-bg-primary">
@@ -58,9 +58,7 @@ export default function DemoLoginPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-sm text-error">{error}</p>
-          )}
+          {error && <p className="text-sm text-error">{error}</p>}
 
           <button
             type="submit"
@@ -76,5 +74,5 @@ export default function DemoLoginPage() {
         </p>
       </div>
     </div>
-  );
+  )
 }

@@ -1,32 +1,26 @@
-"use client";
+'use client'
 
-import { Label } from "@shared/ui/primitives/label";
-import { Input } from "@shared/ui/primitives/input";
+import { Label } from '@shared/ui/primitives/label'
+import { Input } from '@shared/ui/primitives/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { PAYMENT_TERMS_LABELS } from "@domain/constants";
-import { calculateDueDate } from "@domain/rules/invoice.rules";
-import type { PaymentTerms } from "@domain/entities/customer";
+} from '@shared/ui/primitives/select'
+import { PAYMENT_TERMS_LABELS } from '@domain/constants'
+import { calculateDueDate } from '@domain/rules/invoice.rules'
+import type { PaymentTerms } from '@domain/entities/customer'
 
-const PAYMENT_TERMS_OPTIONS: PaymentTerms[] = [
-  "cod",
-  "upfront",
-  "net-15",
-  "net-30",
-  "net-60",
-];
+const PAYMENT_TERMS_OPTIONS: PaymentTerms[] = ['cod', 'upfront', 'net-15', 'net-30', 'net-60']
 
-interface PaymentTermsSectionProps {
-  paymentTerms: PaymentTerms;
-  dueDate: string;
-  createdAt: string;
-  onTermsChange: (terms: PaymentTerms) => void;
-  onDueDateChange: (date: string) => void;
+type PaymentTermsSectionProps = {
+  paymentTerms: PaymentTerms
+  dueDate: string
+  createdAt: string
+  onTermsChange: (terms: PaymentTerms) => void
+  onDueDateChange: (date: string) => void
 }
 
 export function PaymentTermsSection({
@@ -37,9 +31,9 @@ export function PaymentTermsSection({
   onDueDateChange,
 }: PaymentTermsSectionProps) {
   function handleTermsChange(terms: PaymentTerms) {
-    onTermsChange(terms);
-    const newDue = calculateDueDate(createdAt, terms);
-    onDueDateChange(newDue);
+    onTermsChange(terms)
+    const newDue = calculateDueDate(createdAt, terms)
+    onDueDateChange(newDue)
   }
 
   return (
@@ -52,9 +46,7 @@ export function PaymentTermsSection({
           </Label>
           <Select
             value={paymentTerms}
-            onValueChange={(value) =>
-              handleTermsChange(value as PaymentTerms)
-            }
+            onValueChange={(value) => handleTermsChange(value as PaymentTerms)}
           >
             <SelectTrigger id="payment-terms" className="h-9 text-sm">
               <SelectValue />
@@ -85,5 +77,5 @@ export function PaymentTermsSection({
         </div>
       </div>
     </div>
-  );
+  )
 }

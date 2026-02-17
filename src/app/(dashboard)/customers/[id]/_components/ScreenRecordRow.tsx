@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Monitor } from "lucide-react";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Button } from "@shared/ui/primitives/button";
-import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
-import { getColorById } from "@domain/rules/garment.rules";
-import { getColorsMutable } from "@infra/repositories/colors";
-import type { CustomerScreen } from "@domain/entities/customer-screen";
-import type { Color } from "@domain/entities/color";
+import Link from 'next/link'
+import { Monitor } from 'lucide-react'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Button } from '@shared/ui/primitives/button'
+import { ColorSwatchPicker } from '@/components/features/ColorSwatchPicker'
+import { getColorById } from '@domain/rules/garment.rules'
+import { getColorsMutable } from '@infra/repositories/colors'
+import type { CustomerScreen } from '@domain/entities/customer-screen'
+import type { Color } from '@domain/entities/color'
 
-interface ScreenRecordRowProps {
-  screen: CustomerScreen;
-  onReclaim: (screenId: string) => void;
+type ScreenRecordRowProps = {
+  screen: CustomerScreen
+  onReclaim: (screenId: string) => void
 }
 
 export function ScreenRecordRow({ screen, onReclaim }: ScreenRecordRowProps) {
   // Resolve color objects
-  const allColors = getColorsMutable();
+  const allColors = getColorsMutable()
   const screenColors = screen.colorIds
     .map((id) => getColorById(id, allColors))
-    .filter((c): c is Color => c != null);
+    .filter((c): c is Color => c != null)
 
-  const dateStr = new Date(screen.createdAt).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const dateStr = new Date(screen.createdAt).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-border bg-elevated p-3 md:flex-row md:items-center md:justify-between md:gap-3">
@@ -64,5 +64,5 @@ export function ScreenRecordRow({ screen, onReclaim }: ScreenRecordRowProps) {
         Reclaim
       </Button>
     </div>
-  );
+  )
 }

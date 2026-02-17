@@ -1,6 +1,6 @@
 vertical: pm-system
 waves:
-  - name: "Wave 1: Foundation"
+  - name: 'Wave 1: Foundation'
     serial: false
     sessions:
       - topic: pm-label-cleanup
@@ -249,7 +249,7 @@ waves:
           Known tracking issues (#166, #192, #216) show sub-issue trees in
           GitHub UI. Clicking parent shows child issues as expandable sub-issues.
 
-  - name: "Wave 2: Infrastructure"
+  - name: 'Wave 2: Infrastructure'
     serial: false
     sessions:
       - topic: pm-issue-templates
@@ -597,7 +597,7 @@ waves:
           - `config/tools.json` includes `pm-system` entry
           - `git rm --cached PROGRESS.md` is committed on the branch
 
-  - name: "Wave 3: Convergence"
+  - name: 'Wave 3: Convergence'
     serial: true
     sessions:
       - topic: pm-backlog-grooming

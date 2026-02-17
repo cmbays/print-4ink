@@ -1,17 +1,17 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 // ---------------------------------------------------------------------------
 // Enums
 // ---------------------------------------------------------------------------
 
 export const creditMemoReasonEnum = z.enum([
-  "shortage",
-  "misprint",
-  "defect",
-  "overcharge",
-  "return",
-  "other",
-]);
+  'shortage',
+  'misprint',
+  'defect',
+  'overcharge',
+  'return',
+  'other',
+])
 
 // ---------------------------------------------------------------------------
 // Sub-schemas
@@ -23,7 +23,7 @@ export const creditMemoLineItemSchema = z.object({
   quantity: z.number().int().positive(),
   unitCredit: z.number().positive(),
   lineTotal: z.number().positive(),
-});
+})
 
 // ---------------------------------------------------------------------------
 // Main schema
@@ -31,7 +31,7 @@ export const creditMemoLineItemSchema = z.object({
 
 export const creditMemoSchema = z.object({
   id: z.string().uuid(),
-  creditMemoNumber: z.string().regex(/^CM-\d{4}$/, "Must match CM-XXXX format"),
+  creditMemoNumber: z.string().regex(/^CM-\d{4}$/, 'Must match CM-XXXX format'),
   invoiceId: z.string().uuid(),
   customerId: z.string().uuid(),
   reason: creditMemoReasonEnum,
@@ -40,12 +40,12 @@ export const creditMemoSchema = z.object({
   notes: z.string().optional(),
   createdAt: z.string().datetime(),
   createdBy: z.string().min(1),
-});
+})
 
 // ---------------------------------------------------------------------------
 // Type exports
 // ---------------------------------------------------------------------------
 
-export type CreditMemoReason = z.infer<typeof creditMemoReasonEnum>;
-export type CreditMemoLineItem = z.infer<typeof creditMemoLineItemSchema>;
-export type CreditMemo = z.infer<typeof creditMemoSchema>;
+export type CreditMemoReason = z.infer<typeof creditMemoReasonEnum>
+export type CreditMemoLineItem = z.infer<typeof creditMemoLineItemSchema>
+export type CreditMemo = z.infer<typeof creditMemoSchema>

@@ -10,4 +10,4 @@ export {
   getCustomerArtworks,
   getCustomerInvoices,
   getCustomersMutable,
-} from '@infra/repositories/_providers/mock/customers';
+} from '@infra/repositories/_providers/mock/customers'

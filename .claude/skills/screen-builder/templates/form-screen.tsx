@@ -6,28 +6,23 @@
 // Do NOT copy-paste without reading APP_FLOW for this route.
 
 // Forms always need "use client" (hooks, event handlers)
-"use client";
+'use client'
 
-import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@shared/ui/primitives/card";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
+import { useRouter } from 'next/navigation'
+import { useForm, useFieldArray } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Card, CardContent, CardHeader, CardTitle } from '@shared/ui/primitives/card'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
+} from '@shared/ui/primitives/select'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,7 +30,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@shared/ui/primitives/breadcrumb";
+} from '@shared/ui/primitives/breadcrumb'
 import {
   Form,
   FormControl,
@@ -43,9 +38,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@shared/ui/primitives/form";
-import { Plus, Trash2 } from "lucide-react";
-import { cn } from "@shared/lib/cn";
+} from '@shared/ui/primitives/form'
+import { Plus, Trash2 } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
 
 // Import mock data for dropdowns
 // import { customers } from "@/lib/mock-data";
@@ -64,7 +59,7 @@ import { cn } from "@shared/lib/cn";
 // type FormValues = z.infer<typeof formSchema>;
 
 export default function ExampleFormPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   // const form = useForm<FormValues>({
   //   resolver: zodResolver(formSchema),
@@ -108,9 +103,7 @@ export default function ExampleFormPage() {
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">New Quote</h1>
-        <p className="text-sm text-muted-foreground">
-          Create a new quote for a customer
-        </p>
+        <p className="text-sm text-muted-foreground">Create a new quote for a customer</p>
       </div>
 
       {/* Form */}
@@ -185,11 +178,7 @@ export default function ExampleFormPage() {
 
       {/* Actions */}
       <div className="flex items-center justify-end gap-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.push("/quotes")}
-        >
+        <Button type="button" variant="outline" onClick={() => router.push('/quotes')}>
           Cancel
         </Button>
         <Button
@@ -203,5 +192,5 @@ export default function ExampleFormPage() {
       {/*   </form> */}
       {/* </Form> */}
     </div>
-  );
+  )
 }

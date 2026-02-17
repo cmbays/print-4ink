@@ -1,6 +1,6 @@
 ---
-title: "ROADMAP"
-description: "Strategic planning document. Vision, phases, vertical inventory, current bets, and forward planning. Every Claude session reads this for strategic context."
+title: 'ROADMAP'
+description: 'Strategic planning document. Vision, phases, vertical inventory, current bets, and forward planning. Every Claude session reads this for strategic context.'
 category: canonical
 status: active
 phase: all
@@ -24,12 +24,12 @@ Production management software for 4Ink, a screen-printing shop. Manages the ful
 
 We follow a Shape Up cycle adapted for one developer working with Claude Code agents:
 
-| Phase | What Happens | Artifacts |
-|-------|-------------|----------|
-| **Shaping** | Define the problem, research competitors, map affordances, set boundaries | Vertical BRIEF, breadboard, spike docs |
-| **Betting** | Decide what to build next and in what order | Updated ROADMAP, IMPLEMENTATION_PLAN |
-| **Building** | Execute the vertical through the 7-step pipeline | Code, KB sessions, PR |
-| **Cool-down** | Synthesize feedback, review progress, shape next cycle | Updated BRIEFs, new issues, shaped pitches |
+| Phase         | What Happens                                                              | Artifacts                                  |
+| ------------- | ------------------------------------------------------------------------- | ------------------------------------------ |
+| **Shaping**   | Define the problem, research competitors, map affordances, set boundaries | Vertical BRIEF, breadboard, spike docs     |
+| **Betting**   | Decide what to build next and in what order                               | Updated ROADMAP, IMPLEMENTATION_PLAN       |
+| **Building**  | Execute the vertical through the 7-step pipeline                          | Code, KB sessions, PR                      |
+| **Cool-down** | Synthesize feedback, review progress, shape next cycle                    | Updated BRIEFs, new issues, shaped pitches |
 
 ### 7-Step Vertical Pipeline
 
@@ -52,6 +52,7 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 **Goal**: Polish mobile, add onboarding wizards, build DTF Gang Sheet Builder, fix demo-blocking bugs. Demo with Gary on February 21.
 
 **Three must-haves** (ranked):
+
 1. ~~**Mobile Polish** (Sprints 3-4)~~ — **Done** (PRs #148, #167, #174, #175). Remaining: #177 (5 pricing editor UX items).
 2. **Onboarding Wizards** (#145) — guided first-time experience across verticals
 3. **DTF Gang Sheet Builder** (#144) — new vertical, direct user request
@@ -63,6 +64,7 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 **Goal**: Incorporate user feedback, build backend horizontal foundation, connect first vertical end-to-end.
 
 **Key bets** (to be shaped during cool-down):
+
 - Process Gary's demo feedback into vertical BRIEFs
 - Backend horizontal: Supabase setup, auth, data model, API patterns (#84)
 - Quoting vertical backend (reference implementation for other verticals)
@@ -73,6 +75,7 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 **Goal**: All verticals connected to real backend. Production-grade reliability.
 
 **Key bets** (not yet shaped):
+
 - Remaining vertical backends
 - Real-time updates (WebSockets or Supabase realtime)
 - Multi-user support (future employees)
@@ -86,18 +89,18 @@ Each vertical passes through these stages. The KB tracks progress per vertical p
 
 ## Vertical Inventory
 
-| Vertical | Phase 1 Status | Pipeline Stage | Vertical BRIEF |
-|----------|---------------|----------------|----------------|
-| Dashboard | Complete | Demo | — |
-| Quoting | Complete | Demo | TODO |
-| Customer Management | Complete | Demo | TODO |
-| Invoicing | Complete | Demo | TODO |
-| Price Matrix | Complete | Demo | TODO |
-| Jobs | Complete | Demo | TODO |
-| Screen Room | Integrated | Demo | TODO |
-| Garments | Complete | Demo | TODO |
-| Mobile Optimization | Complete | Demo | — |
-| DTF Gang Sheet | Complete | Demo | PRs #232, #237, #249, #280, #284 |
+| Vertical            | Phase 1 Status | Pipeline Stage | Vertical BRIEF                   |
+| ------------------- | -------------- | -------------- | -------------------------------- |
+| Dashboard           | Complete       | Demo           | —                                |
+| Quoting             | Complete       | Demo           | TODO                             |
+| Customer Management | Complete       | Demo           | TODO                             |
+| Invoicing           | Complete       | Demo           | TODO                             |
+| Price Matrix        | Complete       | Demo           | TODO                             |
+| Jobs                | Complete       | Demo           | TODO                             |
+| Screen Room         | Integrated     | Demo           | TODO                             |
+| Garments            | Complete       | Demo           | TODO                             |
+| Mobile Optimization | Complete       | Demo           | —                                |
+| DTF Gang Sheet      | Complete       | Demo           | PRs #232, #237, #249, #280, #284 |
 
 ## Current Bets (What We're Working On)
 
@@ -132,16 +135,16 @@ These are shaped ideas waiting for a betting decision post-demo:
 
 Issues are tagged with a consistent multi-dimensional taxonomy:
 
-| Dimension | Labels | Purpose |
-|-----------|--------|--------|
-| **Product** | `product/quotes`, `product/jobs`, `product/invoices`, `product/customers`, `product/dashboard` | Things users DO |
-| **Domain** | `domain/garments`, `domain/screens`, `domain/pricing`, `domain/colors`, `domain/dtf`, `domain/screen-printing`, `domain/mobile` | Things products USE |
-| **Tool** | `tool/work-orchestrator`, `tool/skills-framework`, `tool/agent-system`, `tool/knowledge-base`, `tool/ci-pipeline`, `tool/pm-system` | How we BUILD |
-| **Pipeline** | `pipeline/vertical`, `pipeline/polish`, `pipeline/horizontal`, `pipeline/bug-fix` | What kind of pipeline |
-| **Type** | `type/bug`, `type/feature`, `type/research`, `type/feedback`, `type/tech-debt`, `type/refactor`, `type/tooling` | What kind of thing is it? |
-| **Priority** | `priority/now`, `priority/next`, `priority/later`, `priority/icebox` | When should we address it? |
-| **Source** | `source/testing`, `source/interview`, `source/idea`, `source/review`, `source/cool-down` | Where did it come from? |
-| **Phase** | `phase/1`, `phase/2`, `phase/3` | Which development phase? |
+| Dimension    | Labels                                                                                                                              | Purpose                    |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| **Product**  | `product/quotes`, `product/jobs`, `product/invoices`, `product/customers`, `product/dashboard`                                      | Things users DO            |
+| **Domain**   | `domain/garments`, `domain/screens`, `domain/pricing`, `domain/colors`, `domain/dtf`, `domain/screen-printing`, `domain/mobile`     | Things products USE        |
+| **Tool**     | `tool/work-orchestrator`, `tool/skills-framework`, `tool/agent-system`, `tool/knowledge-base`, `tool/ci-pipeline`, `tool/pm-system` | How we BUILD               |
+| **Pipeline** | `pipeline/vertical`, `pipeline/polish`, `pipeline/horizontal`, `pipeline/bug-fix`                                                   | What kind of pipeline      |
+| **Type**     | `type/bug`, `type/feature`, `type/research`, `type/feedback`, `type/tech-debt`, `type/refactor`, `type/tooling`                     | What kind of thing is it?  |
+| **Priority** | `priority/now`, `priority/next`, `priority/later`, `priority/icebox`                                                                | When should we address it? |
+| **Source**   | `source/testing`, `source/interview`, `source/idea`, `source/review`, `source/cool-down`                                            | Where did it come from?    |
+| **Phase**    | `phase/1`, `phase/2`, `phase/3`                                                                                                     | Which development phase?   |
 
 See `docs/PM.md` Section 3 for full label definitions and litmus tests.
 

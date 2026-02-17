@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { Plus, Trash2 } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
+import { Plus, Trash2 } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@shared/ui/primitives/card";
+} from '@shared/ui/primitives/card'
 import {
   Table,
   TableBody,
@@ -17,18 +17,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
-import { MarginIndicator } from "@/components/features/MarginIndicator";
-import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
-import { calculateDTFTierMargin, formatCurrency } from "@domain/services/pricing.service";
-import type { DTFSheetTier, DTFCostConfig } from "@domain/entities/dtf-pricing";
+} from '@shared/ui/primitives/table'
+import { MarginIndicator } from '@/components/features/MarginIndicator'
+import { CostBreakdownTooltip } from '@/components/features/CostBreakdownTooltip'
+import { calculateDTFTierMargin, formatCurrency } from '@domain/services/pricing.service'
+import type { DTFSheetTier, DTFCostConfig } from '@domain/entities/dtf-pricing'
 
-interface DTFSheetTierEditorProps {
-  tiers: DTFSheetTier[];
-  costConfig: DTFCostConfig;
-  onUpdateTier: (index: number, field: keyof DTFSheetTier, value: number) => void;
-  onAddTier: () => void;
-  onRemoveTier: (index: number) => void;
+type DTFSheetTierEditorProps = {
+  tiers: DTFSheetTier[]
+  costConfig: DTFCostConfig
+  onUpdateTier: (index: number, field: keyof DTFSheetTier, value: number) => void
+  onAddTier: () => void
+  onRemoveTier: (index: number) => void
 }
 
 export function DTFSheetTierEditor({
@@ -59,7 +59,7 @@ export function DTFSheetTierEditor({
           </TableHeader>
           <TableBody>
             {tiers.map((tier, index) => {
-              const margin = calculateDTFTierMargin(tier, costConfig);
+              const margin = calculateDTFTierMargin(tier, costConfig)
 
               return (
                 <CostBreakdownTooltip key={index} breakdown={margin}>
@@ -71,7 +71,7 @@ export function DTFSheetTierEditor({
                           type="number"
                           value={tier.length}
                           onChange={(e) =>
-                            onUpdateTier(index, "length", parseFloat(e.target.value) || 0)
+                            onUpdateTier(index, 'length', parseFloat(e.target.value) || 0)
                           }
                           onFocus={(e) => e.target.select()}
                           className="h-8 w-16 text-sm"
@@ -87,11 +87,7 @@ export function DTFSheetTierEditor({
                           type="number"
                           value={tier.retailPrice}
                           onChange={(e) =>
-                            onUpdateTier(
-                              index,
-                              "retailPrice",
-                              parseFloat(e.target.value) || 0
-                            )
+                            onUpdateTier(index, 'retailPrice', parseFloat(e.target.value) || 0)
                           }
                           onFocus={(e) => e.target.select()}
                           className="h-8 w-20 text-sm"
@@ -105,14 +101,14 @@ export function DTFSheetTierEditor({
                         <span className="text-muted-foreground text-sm">$</span>
                         <Input
                           type="number"
-                          value={tier.contractPrice ?? ""}
+                          value={tier.contractPrice ?? ''}
                           onChange={(e) => {
-                            const val = e.target.value;
+                            const val = e.target.value
                             onUpdateTier(
                               index,
-                              "contractPrice",
-                              val === "" ? 0 : parseFloat(val) || 0
-                            );
+                              'contractPrice',
+                              val === '' ? 0 : parseFloat(val) || 0
+                            )
                           }}
                           onFocus={(e) => e.target.select()}
                           className="h-8 w-20 text-sm"
@@ -146,7 +142,7 @@ export function DTFSheetTierEditor({
                     </TableCell>
                   </TableRow>
                 </CostBreakdownTooltip>
-              );
+              )
             })}
           </TableBody>
         </Table>
@@ -158,5 +154,5 @@ export function DTFSheetTierEditor({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

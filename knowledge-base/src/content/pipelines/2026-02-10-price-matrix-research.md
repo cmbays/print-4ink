@@ -1,6 +1,6 @@
 ---
-title: "Price Matrix Vertical Research"
-subtitle: "Comprehensive market research, competitor analysis, and prioritized feature recommendations for the pricing engine vertical"
+title: 'Price Matrix Vertical Research'
+subtitle: 'Comprehensive market research, competitor analysis, and prioritized feature recommendations for the pricing engine vertical'
 date: 2026-02-10
 phase: 1
 pipelineName: price-matrix
@@ -10,19 +10,19 @@ domains: [pricing]
 tools: []
 stage: research
 tags: [research, plan, decision]
-sessionId: "c2b2fb1b-b94a-4b17-bab0-3616c520c716"
-branch: "session/0210-price-matrix"
+sessionId: 'c2b2fb1b-b94a-4b17-bab0-3616c520c716'
+branch: 'session/0210-price-matrix'
 status: complete
 ---
 
 ## Research at a Glance
 
-| Stat | Value |
-|------|-------|
-| Competitors Analyzed | 10 |
-| Industry Sources | 80+ |
-| Research Agents | 4 |
-| Features Prioritized | 36 |
+| Stat                 | Value |
+| -------------------- | ----- |
+| Competitors Analyzed | 10    |
+| Industry Sources     | 80+   |
+| Research Agents      | 4     |
+| Features Prioritized | 36    |
 
 **The Opportunity:** No competitor has pulled away — PrintLife, YoPrint, Teesom, and PriceIt are all tied at 74%. Screen Print Pro can leapfrog everyone by combining PrintLife's automation with Teesom's flexibility, YoPrint's innovation, and a 10x better UX.
 
@@ -42,7 +42,7 @@ The primary drivers are **quantity breaks** (12, 24, 48, 72, 144+), **color coun
 
 ### The 10x Strategy
 
-PrintLife optimizes for *automation at the expense of visibility*. We optimize for **both**. Three pillars:
+PrintLife optimizes for _automation at the expense of visibility_. We optimize for **both**. Three pillars:
 
 1. **Simplicity** — Wizard setup in 5 minutes with smart defaults (match PrintLife's 5/5)
 2. **Transparency** — Real-time margin % per price cell with green/yellow/red indicators (PrintLife's blind spot)
@@ -54,29 +54,29 @@ PrintLife optimizes for *automation at the expense of visibility*. We optimize f
 
 **4Ink's Current Tool — 74% (26/35)**
 
-| Criterion | Rating | Assessment |
-|-----------|--------|------------|
-| Capabilities | 3/5 | Basic matrix types, recently added measurement-based pricing |
-| User Satisfaction | 3/5 | Positive on automation, limited public reviews |
-| Ease of Use | 4/5 | Designed to "just work" with low learning curve |
-| **Flexibility** | **2/5** | Basic structures only. No custom rules, no breakless pricing |
-| Simplicity | **5/5** | Core strength — prevents overwhelm |
-| Integration | 4/5 | All-in-one: quoting → production → shipping |
-| Automation | **5/5** | Prevents common errors (forgetting setup fees, ink charges) |
+| Criterion         | Rating  | Assessment                                                   |
+| ----------------- | ------- | ------------------------------------------------------------ |
+| Capabilities      | 3/5     | Basic matrix types, recently added measurement-based pricing |
+| User Satisfaction | 3/5     | Positive on automation, limited public reviews               |
+| Ease of Use       | 4/5     | Designed to "just work" with low learning curve              |
+| **Flexibility**   | **2/5** | Basic structures only. No custom rules, no breakless pricing |
+| Simplicity        | **5/5** | Core strength — prevents overwhelm                           |
+| Integration       | 4/5     | All-in-one: quoting → production → shipping                  |
+| Automation        | **5/5** | Prevents common errors (forgetting setup fees, ink charges)  |
 
 ### Competitive Ratings
 
-| Competitor | Score |
-|------------|-------|
-| Print Life | 74% |
-| YoPrint | 74% |
-| Teesom | 74% |
-| PriceIt | 74% |
-| DecoNetwork | 69% |
-| Printavo | 69% |
-| ShopWorx | 69% |
-| OrderMyGear | 66% |
-| InkSoft | 60% |
+| Competitor  | Score |
+| ----------- | ----- |
+| Print Life  | 74%   |
+| YoPrint     | 74%   |
+| Teesom      | 74%   |
+| PriceIt     | 74%   |
+| DecoNetwork | 69%   |
+| Printavo    | 69%   |
+| ShopWorx    | 69%   |
+| OrderMyGear | 66%   |
+| InkSoft     | 60%   |
 
 ### Where We Win
 
@@ -98,14 +98,14 @@ No current competitor occupies the **high automation + high flexibility** quadra
 
 ### Key Innovations to Adopt
 
-| Innovation | Source | Impact |
-|------------|--------|--------|
-| Breakless pricing | YoPrint | Eliminates quantity break gaming, fairer pricing |
-| Vendor cost sync | YoPrint | Auto-update garment costs from SanMar, AlphaBroder |
-| Size matrix entry | ShopWorx | S:10, M:25, L:15 in one line — 3x faster |
-| Production variables | ShopWorx | Price by mesh count, ink type, squeegee |
-| Area-based pricing | DecoNetwork | Per-square-inch pricing by color count |
-| Unlimited matrices | Teesom | No artificial limits on pricing configs |
+| Innovation           | Source      | Impact                                             |
+| -------------------- | ----------- | -------------------------------------------------- |
+| Breakless pricing    | YoPrint     | Eliminates quantity break gaming, fairer pricing   |
+| Vendor cost sync     | YoPrint     | Auto-update garment costs from SanMar, AlphaBroder |
+| Size matrix entry    | ShopWorx    | S:10, M:25, L:15 in one line — 3x faster           |
+| Production variables | ShopWorx    | Price by mesh count, ink type, squeegee            |
+| Area-based pricing   | DecoNetwork | Per-square-inch pricing by color count             |
+| Unlimited matrices   | Teesom      | No artificial limits on pricing configs            |
 
 ## Integration Architecture
 
@@ -139,31 +139,31 @@ TanStack Table with inline editing, keyboard shortcuts (arrow keys, Ctrl+C/V), b
 
 Every price cell gets a color indicator using our Niji palette:
 
-| Margin | Color | Meaning |
-|--------|-------|---------|
-| >= 30% | Green (#54ca74) | Healthy profit |
+| Margin | Color            | Meaning             |
+| ------ | ---------------- | ------------------- |
+| >= 30% | Green (#54ca74)  | Healthy profit      |
 | 15-30% | Yellow (#ffc663) | Low profit, caution |
-| < 15% | Red (#d23e08) | Unprofitable |
+| < 15%  | Red (#d23e08)    | Unprofitable        |
 
-Tooltip on hover: *"Margin: 32% ($450 revenue - $306 cost = $144 profit)"*
+Tooltip on hover: _"Margin: 32% ($450 revenue - $306 cost = $144 profit)"_
 
 ### Pain Points We Solve
 
-| Industry Pain Point | Our Solution |
-|---------------------|-------------|
-| "Don't understand pricing after 3 years" (Shopvox) | Wizard setup, done in 5 minutes |
-| No profitability reporting | Real-time margin % per cell + dashboard |
-| No labor cost tracking | Factor hourly rate, setup time, press time |
-| Can't experiment with pricing | What-if scenarios, undo/redo, version history |
-| Manual Excel workflows | CSV import/export, inline editing |
+| Industry Pain Point                                | Our Solution                                  |
+| -------------------------------------------------- | --------------------------------------------- |
+| "Don't understand pricing after 3 years" (Shopvox) | Wizard setup, done in 5 minutes               |
+| No profitability reporting                         | Real-time margin % per cell + dashboard       |
+| No labor cost tracking                             | Factor hourly rate, setup time, press time    |
+| Can't experiment with pricing                      | What-if scenarios, undo/redo, version history |
+| Manual Excel workflows                             | CSV import/export, inline editing             |
 
 ## Feature Recommendations
 
-| Priority | Count |
-|----------|-------|
-| P0 — Critical | 12 |
-| P1 — Surpass 4Ink | 14 |
-| P2 — Top Market | 10 |
+| Priority          | Count |
+| ----------------- | ----- |
+| P0 — Critical     | 12    |
+| P1 — Surpass 4Ink | 14    |
+| P2 — Top Market   | 10    |
 
 ### P0 — Critical (Table Stakes + PrintLife Parity)
 

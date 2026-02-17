@@ -10,18 +10,19 @@
 
 **z-index Scale (mobile layers):**
 
-| z-index | Component | Notes |
-|---------|-----------|-------|
-| `z-40` | BottomActionBar | Above content, below tab bar |
-| `z-40` | FAB button | Same layer as action bar |
-| `z-50` | BottomTabBar | Primary navigation, always on top |
-| `z-50` | Sheet/Dialog overlays (shadcn default) | Modal layer — backdrop covers tab bar |
+| z-index | Component                              | Notes                                 |
+| ------- | -------------------------------------- | ------------------------------------- |
+| `z-40`  | BottomActionBar                        | Above content, below tab bar          |
+| `z-40`  | FAB button                             | Same layer as action bar              |
+| `z-50`  | BottomTabBar                           | Primary navigation, always on top     |
+| `z-50`  | Sheet/Dialog overlays (shadcn default) | Modal layer — backdrop covers tab bar |
 
 The Sheet/Dialog overlays from shadcn/ui use z-50 and include a backdrop that covers the entire viewport, so they naturally layer above the BottomTabBar when open. BottomActionBar uses z-40 to sit below the tab bar but above page content.
 
 **Breadboard Reference:** `docs/breadboards/mobile-optimization-breadboard.md` — 9 Places, ~100 UI affordances, 38 code affordances, 25 build steps.
 
 **Key Research Findings:**
+
 - Zero responsive infrastructure exists — no mobile tokens, no `useIsMobile` hook, no breakpoint classes on layout
 - `components/ui/sheet.tsx` exists (reusable for drawer/bottom sheets)
 - `components/ui/dialog.tsx` already has `max-w-[calc(100%-2rem)]` mobile consideration
@@ -40,6 +41,7 @@ The Sheet/Dialog overlays from shadcn/ui use z-50 and include a backdrop that co
 ### Task 1: Mobile Design Tokens
 
 **Files:**
+
 - Modify: `app/globals.css:7-88` (inside `@theme inline` block)
 
 **Step 1: Add mobile tokens to globals.css**
@@ -48,14 +50,14 @@ Add these tokens inside the existing `@theme inline` block in `app/globals.css`:
 
 ```css
 /* Mobile-specific tokens */
---mobile-nav-height: 3.5rem;         /* 56px — bottom tab bar height */
---mobile-header-height: 3rem;        /* 48px — mobile header height */
---mobile-touch-target: 2.75rem;      /* 44px — minimum tap target per Apple HIG */
+--mobile-nav-height: 3.5rem; /* 56px — bottom tab bar height */
+--mobile-header-height: 3rem; /* 48px — mobile header height */
+--mobile-touch-target: 2.75rem; /* 44px — minimum tap target per Apple HIG */
 --mobile-bottom-safe-area: env(safe-area-inset-bottom, 0px);
---mobile-card-gap: 0.75rem;          /* 12px — gap between mobile cards */
---mobile-sheet-max-height: 85vh;     /* Bottom sheet max height */
---mobile-fab-size: 3.5rem;           /* 56px — floating action button */
---shadow-brutal-sm: 2px 2px 0px;     /* Smaller neobrutalist shadow for mobile */
+--mobile-card-gap: 0.75rem; /* 12px — gap between mobile cards */
+--mobile-sheet-max-height: 85vh; /* Bottom sheet max height */
+--mobile-fab-size: 3.5rem; /* 56px — floating action button */
+--shadow-brutal-sm: 2px 2px 0px; /* Smaller neobrutalist shadow for mobile */
 ```
 
 **Step 2: Add mobile-specific utility layer**
@@ -84,22 +86,22 @@ Below the `@theme inline` block, add a utility layer for mobile bottom safe area
 
 ```tsx
 export const metadata: Metadata = {
-  title: "Screen Print Pro",
-  description: "Production management software for screen printing shops",
+  title: 'Screen Print Pro',
+  description: 'Production management software for screen printing shops',
   other: {
-    "viewport": "width=device-width, initial-scale=1, viewport-fit=cover",
+    viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
   },
-};
+}
 ```
 
 Or in Next.js 16, use the `viewport` export:
 
 ```tsx
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  viewportFit: "cover",
-};
+  viewportFit: 'cover',
+}
 ```
 
 Without this, `env(safe-area-inset-bottom)` will always resolve to `0px`, making the `pb-safe` utility useless on notched devices.
@@ -122,6 +124,7 @@ Adds viewport-fit=cover for safe area inset support on notched devices."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] All 8 mobile tokens defined in `@theme inline`
 - [ ] `pb-safe` utility available
 - [ ] Desktop appearance unchanged
@@ -132,30 +135,31 @@ Adds viewport-fit=cover for safe area inset support on notched devices."
 ### Task 2: useIsMobile Hook
 
 **Files:**
+
 - Create: `lib/hooks/use-is-mobile.ts`
 
 **Step 1: Create the hook**
 
 ```typescript
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-const MOBILE_BREAKPOINT = 768;
+const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
 
-    setIsMobile(mql.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
+    setIsMobile(mql.matches)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
 
-  return isMobile;
+  return isMobile
 }
 ```
 
@@ -170,6 +174,7 @@ Used by mobile shell components for conditional rendering."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Hook returns `false` on desktop, `true` below 768px
 - [ ] No hydration mismatch (defaults to `false` on server)
 - [ ] `npm run build` passes
@@ -179,6 +184,7 @@ Used by mobile shell components for conditional rendering."
 ### Task 3: BottomTabBar Component (Breadboard P1: U1-U6)
 
 **Files:**
+
 - Create: `components/layout/bottom-tab-bar.tsx`
 - Reference: `components/layout/sidebar.tsx:18-26` (nav items)
 
@@ -197,29 +203,29 @@ import {
   Shirt,
   Settings,
   type LucideIcon,
-} from "lucide-react";
+} from 'lucide-react'
 
 export interface NavItem {
-  label: string;
-  href: string;
-  icon: LucideIcon;
+  label: string
+  href: string
+  icon: LucideIcon
 }
 
 /** Primary navigation — shown in Sidebar + BottomTabBar */
 export const PRIMARY_NAV: NavItem[] = [
-  { label: "Dashboard", href: "/", icon: LayoutDashboard },
-  { label: "Jobs", href: "/jobs/board", icon: Hammer },
-  { label: "Quotes", href: "/quotes", icon: FileSignature },
-  { label: "Customers", href: "/customers", icon: Users },
-];
+  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { label: 'Jobs', href: '/jobs/board', icon: Hammer },
+  { label: 'Quotes', href: '/quotes', icon: FileSignature },
+  { label: 'Customers', href: '/customers', icon: Users },
+]
 
 /** Secondary navigation — shown in Sidebar + MobileDrawer */
 export const SECONDARY_NAV: NavItem[] = [
-  { label: "Invoices", href: "/invoices", icon: Receipt },
-  { label: "Screen Room", href: "/screens", icon: Printer },
-  { label: "Garments", href: "/garments", icon: Shirt },
-  { label: "Pricing Settings", href: "/settings/pricing", icon: Settings },
-];
+  { label: 'Invoices', href: '/invoices', icon: Receipt },
+  { label: 'Screen Room', href: '/screens', icon: Printer },
+  { label: 'Garments', href: '/garments', icon: Shirt },
+  { label: 'Pricing Settings', href: '/settings/pricing', icon: Settings },
+]
 ```
 
 Sidebar, BottomTabBar, and MobileDrawer should all import from this file instead of duplicating nav arrays.
@@ -227,31 +233,28 @@ Sidebar, BottomTabBar, and MobileDrawer should all import from this file instead
 **Step 1: Create BottomTabBar component**
 
 ```tsx
-"use client";
+'use client'
 
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { PRIMARY_NAV } from "@/lib/constants/navigation";
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { MoreHorizontal } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { PRIMARY_NAV } from '@/lib/constants/navigation'
 
-const tabs = [
-  ...PRIMARY_NAV,
-  { label: "More", href: "#more", icon: MoreHorizontal },
-] as const;
+const tabs = [...PRIMARY_NAV, { label: 'More', href: '#more', icon: MoreHorizontal }] as const
 
 interface BottomTabBarProps {
-  onMorePress: () => void;
+  onMorePress: () => void
 }
 
 export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    if (href === "#more") return false;
-    return pathname.startsWith(href.split("/").slice(0, 2).join("/"));
-  };
+    if (href === '/') return pathname === '/'
+    if (href === '#more') return false
+    return pathname.startsWith(href.split('/').slice(0, 2).join('/'))
+  }
 
   return (
     <nav
@@ -259,8 +262,8 @@ export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
       aria-label="Main navigation"
     >
       {tabs.map((tab) => {
-        const active = isActive(tab.href);
-        const isMore = tab.href === "#more";
+        const active = isActive(tab.href)
+        const isMore = tab.href === '#more'
 
         if (isMore) {
           return (
@@ -268,37 +271,35 @@ export function BottomTabBar({ onMorePress }: BottomTabBarProps) {
               key={tab.label}
               onClick={onMorePress}
               className={cn(
-                "flex flex-1 flex-col items-center justify-center gap-0.5 py-1",
-                "text-muted-foreground transition-colors",
-                "min-h-(--mobile-touch-target)"
+                'flex flex-1 flex-col items-center justify-center gap-0.5 py-1',
+                'text-muted-foreground transition-colors',
+                'min-h-(--mobile-touch-target)'
               )}
             >
               <tab.icon className="h-5 w-5" />
               <span className="text-[10px] font-medium">{tab.label}</span>
             </button>
-          );
+          )
         }
 
         return (
           <Link
             key={tab.label}
             href={tab.href}
-            aria-current={active ? "page" : undefined}
+            aria-current={active ? 'page' : undefined}
             className={cn(
-              "flex flex-1 flex-col items-center justify-center gap-0.5 py-1",
-              "transition-colors min-h-(--mobile-touch-target)",
-              active
-                ? "text-action"
-                : "text-muted-foreground hover:text-foreground"
+              'flex flex-1 flex-col items-center justify-center gap-0.5 py-1',
+              'transition-colors min-h-(--mobile-touch-target)',
+              active ? 'text-action' : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <tab.icon className="h-5 w-5" />
             <span className="text-[10px] font-medium">{tab.label}</span>
           </Link>
-        );
+        )
       })}
     </nav>
-  );
+  )
 }
 ```
 
@@ -318,6 +319,7 @@ for height and touch targets. Breadboard P1: U1-U6."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] 5 tabs render with correct icons and labels
 - [ ] Active tab highlighted with `text-action`
 - [ ] Hidden above 768px (`md:hidden`)
@@ -330,6 +332,7 @@ for height and touch targets. Breadboard P1: U1-U6."
 ### Task 4: MobileDrawer Component (Breadboard P2: U10-U14)
 
 **Files:**
+
 - Create: `components/layout/mobile-drawer.tsx`
 - Reference: `components/ui/sheet.tsx` (reuse Sheet as container)
 - Reference: `components/layout/sidebar.tsx:28-30` (settings items)
@@ -337,21 +340,16 @@ for height and touch targets. Breadboard P1: U1-U6."
 **Step 1: Create MobileDrawer component**
 
 ```tsx
-"use client";
+'use client'
 
-import Link from "next/link";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Layers } from "lucide-react";
-import { SECONDARY_NAV } from "@/lib/constants/navigation";
+import Link from 'next/link'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Layers } from 'lucide-react'
+import { SECONDARY_NAV } from '@/lib/constants/navigation'
 
 interface MobileDrawerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) {
@@ -379,7 +377,7 @@ export function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) {
         </nav>
       </SheetContent>
     </Sheet>
-  );
+  )
 }
 ```
 
@@ -395,6 +393,7 @@ Breadboard P2: U10-U14."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Opens as left-side sheet
 - [ ] Shows 4 secondary nav links with icons
 - [ ] Clicking a link navigates and closes the drawer
@@ -406,51 +405,50 @@ Breadboard P2: U10-U14."
 ### Task 5: MobileHeader Component (Breadboard P1: U7-U8)
 
 **Files:**
+
 - Create: `components/layout/mobile-header.tsx`
 
 **Step 1: Create MobileHeader component**
 
 ```tsx
-"use client";
+'use client'
 
-import { usePathname } from "next/navigation";
-import { Bell } from "lucide-react";
+import { usePathname } from 'next/navigation'
+import { Bell } from 'lucide-react'
 
 const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/quotes": "Quotes",
-  "/quotes/new": "New Quote",
-  "/invoices": "Invoices",
-  "/invoices/new": "New Invoice",
-  "/jobs": "Jobs",
-  "/jobs/board": "Production Board",
-  "/screens": "Screen Room",
-  "/customers": "Customers",
-  "/garments": "Garments",
-  "/settings/pricing": "Pricing Settings",
-};
+  '/': 'Dashboard',
+  '/quotes': 'Quotes',
+  '/quotes/new': 'New Quote',
+  '/invoices': 'Invoices',
+  '/invoices/new': 'New Invoice',
+  '/jobs': 'Jobs',
+  '/jobs/board': 'Production Board',
+  '/screens': 'Screen Room',
+  '/customers': 'Customers',
+  '/garments': 'Garments',
+  '/settings/pricing': 'Pricing Settings',
+}
 
 function getPageTitle(pathname: string): string {
   // Exact match first
-  if (pageTitles[pathname]) return pageTitles[pathname];
+  if (pageTitles[pathname]) return pageTitles[pathname]
   // Detail pages: /jobs/[id], /quotes/[id], etc.
-  const segments = pathname.split("/").filter(Boolean);
+  const segments = pathname.split('/').filter(Boolean)
   if (segments.length >= 2) {
-    const base = `/${segments[0]}`;
-    if (pageTitles[base]) return pageTitles[base];
+    const base = `/${segments[0]}`
+    if (pageTitles[base]) return pageTitles[base]
   }
-  return "Screen Print Pro";
+  return 'Screen Print Pro'
 }
 
 export function MobileHeader() {
-  const pathname = usePathname();
-  const title = getPageTitle(pathname);
+  const pathname = usePathname()
+  const title = getPageTitle(pathname)
 
   return (
     <header className="flex h-(--mobile-header-height) items-center justify-between border-b border-border bg-sidebar px-4 md:hidden">
-      <h1 className="text-sm font-semibold text-foreground truncate">
-        {title}
-      </h1>
+      <h1 className="text-sm font-semibold text-foreground truncate">{title}</h1>
       <button
         className="flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground"
         aria-label="Notifications (coming soon)"
@@ -459,7 +457,7 @@ export function MobileHeader() {
         <Bell className="h-5 w-5" />
       </button>
     </header>
-  );
+  )
 }
 ```
 
@@ -475,6 +473,7 @@ Breadboard P1: U7-U8."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Shows correct page title for all routes
 - [ ] Hidden above 768px
 - [ ] Notification bell present but disabled
@@ -485,6 +484,7 @@ Breadboard P1: U7-U8."
 ### Task 6: Integrate Mobile Shell into Dashboard Layout (Breadboard P1 Integration)
 
 **Files:**
+
 - Create: `components/layout/mobile-shell.tsx`
 - Modify: `app/(dashboard)/layout.tsx`
 
@@ -494,19 +494,19 @@ This is the critical integration step — hide sidebar on mobile, show BottomTab
 
 ```tsx
 // components/layout/mobile-shell.tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomTabBar } from "@/components/layout/bottom-tab-bar";
-import { MobileDrawer } from "@/components/layout/mobile-drawer";
-import { MobileHeader } from "@/components/layout/mobile-header";
+import { useState } from 'react'
+import { BottomTabBar } from '@/components/layout/bottom-tab-bar'
+import { MobileDrawer } from '@/components/layout/mobile-drawer'
+import { MobileHeader } from '@/components/layout/mobile-header'
 
 interface MobileShellProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export function MobileShell({ children }: MobileShellProps) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   return (
     <>
@@ -514,15 +514,13 @@ export function MobileShell({ children }: MobileShellProps) {
       <MobileHeader />
 
       {/* Page content with bottom padding for tab bar on mobile */}
-      <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">
-        {children}
-      </main>
+      <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">{children}</main>
 
       {/* Mobile navigation — hidden on desktop */}
       <BottomTabBar onMorePress={() => setDrawerOpen(true)} />
       <MobileDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
     </>
-  );
+  )
 }
 ```
 
@@ -530,14 +528,10 @@ export function MobileShell({ children }: MobileShellProps) {
 
 ```tsx
 // app/(dashboard)/layout.tsx — NO "use client" directive
-import { Sidebar } from "@/components/layout/sidebar";
-import { MobileShell } from "@/components/layout/mobile-shell";
+import { Sidebar } from '@/components/layout/sidebar'
+import { MobileShell } from '@/components/layout/mobile-shell'
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen">
       {/* Desktop sidebar — hidden on mobile */}
@@ -547,16 +541,15 @@ export default function DashboardLayout({
 
       {/* Mobile shell manages all client state (drawer, header, tab bar) */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <MobileShell>
-          {children}
-        </MobileShell>
+        <MobileShell>{children}</MobileShell>
       </div>
     </div>
-  );
+  )
 }
 ```
 
 **Key changes from current layout:**
+
 - Layout remains a **server component** (no `"use client"`)
 - All client state (drawer open/close) extracted to `<MobileShell>` wrapper
 - Wrap `<Sidebar />` in `<div className="hidden md:flex">`
@@ -568,6 +561,7 @@ export default function DashboardLayout({
 **Step 2: Verify mobile navigation works**
 
 Run dev server, resize to mobile width (< 768px):
+
 - [ ] Sidebar disappears
 - [ ] Mobile header appears with page title
 - [ ] Bottom tab bar appears
@@ -577,6 +571,7 @@ Run dev server, resize to mobile width (< 768px):
 - [ ] Content scrolls without overlapping tab bar
 
 Resize to desktop width (>= 768px):
+
 - [ ] Sidebar reappears
 - [ ] Mobile header disappears
 - [ ] Bottom tab bar disappears
@@ -594,6 +589,7 @@ Desktop layout completely unchanged. Breadboard P1 integration."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] `app/(dashboard)/layout.tsx` has NO `"use client"` directive (remains server component)
 - [ ] `components/layout/mobile-shell.tsx` is the only new client component
 - [ ] Desktop: identical to before (sidebar visible, no tab bar, no mobile header)
@@ -608,6 +604,7 @@ Desktop layout completely unchanged. Breadboard P1 integration."
 ### Task 7: Touch Target Audit (Breadboard C4)
 
 **Files:**
+
 - Audit: all new mobile components created in Tasks 3-6
 - Modify: `components/ui/button.tsx` (if needed)
 
@@ -616,6 +613,7 @@ Desktop layout completely unchanged. Breadboard P1 integration."
 **Step 1: Audit key interactive elements**
 
 Check and fix these components for `min-h-(--mobile-touch-target)` (44px) on interactive elements:
+
 - `components/layout/bottom-tab-bar.tsx` — tab buttons (already has `min-h-(--mobile-touch-target)`)
 - `components/layout/mobile-drawer.tsx` — nav links (already has `min-h-(--mobile-touch-target)`)
 - `components/ui/button.tsx` — verify `size="default"` meets 44px on mobile; if not, add `min-h-11` to the default variant
@@ -634,6 +632,7 @@ Breadboard C4."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] All mobile-visible interactive elements ≥ 44px tall
 - [ ] Touch target enforcement is per-component, not global CSS
 - [ ] Desktop interactive elements unchanged
@@ -644,6 +643,7 @@ Breadboard C4."
 ### Task 8: BottomSheet Component (Breadboard shared container)
 
 **Files:**
+
 - Create: `components/ui/bottom-sheet.tsx`
 - Reference: `components/ui/sheet.tsx` (extends Sheet)
 
@@ -652,7 +652,7 @@ The breadboard has 5 different bottom sheets (P4.1, P4.2, P5.1, P5.2, P6.1). We 
 **Step 1: Create BottomSheet component**
 
 ```tsx
-"use client";
+'use client'
 
 import {
   Sheet,
@@ -660,16 +660,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/sheet'
+import { cn } from '@/lib/utils'
 
 interface BottomSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  className?: string;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  description?: string
+  children: React.ReactNode
+  className?: string
 }
 
 export function BottomSheet({
@@ -684,22 +684,17 @@ export function BottomSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className={cn(
-          "max-h-(--mobile-sheet-max-height) rounded-t-xl",
-          className
-        )}
+        className={cn('max-h-(--mobile-sheet-max-height) rounded-t-xl', className)}
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
-          {description && (
-            <SheetDescription>{description}</SheetDescription>
-          )}
+          {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
         <div className="overflow-y-auto pb-safe">{children}</div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }
 ```
 
@@ -715,6 +710,7 @@ padding. Used by all 5 bottom sheet places in breadboard."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Slides up from bottom
 - [ ] Drag handle indicator at top
 - [ ] Max height 85vh with internal scroll
@@ -727,6 +723,7 @@ padding. Used by all 5 bottom sheet places in breadboard."
 ### Task 9: MobileCardList Shared Component (Breadboard P6: U113-U119)
 
 **Files:**
+
 - Create: `components/ui/mobile-card-list.tsx`
 
 Research found that Jobs, Invoices, and Customers lists already have inline mobile card views. This task extracts the shared pattern and creates the missing Quotes mobile cards.
@@ -734,19 +731,19 @@ Research found that Jobs, Invoices, and Customers lists already have inline mobi
 **Step 1: Create MobileCardList container component**
 
 ```tsx
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 interface MobileCardListProps<T> {
-  items: T[];
-  renderCard: (item: T, index: number) => React.ReactNode;
-  emptyMessage?: string;
-  className?: string;
+  items: T[]
+  renderCard: (item: T, index: number) => React.ReactNode
+  emptyMessage?: string
+  className?: string
 }
 
 export function MobileCardList<T>({
   items,
   renderCard,
-  emptyMessage = "No items found",
+  emptyMessage = 'No items found',
   className,
 }: MobileCardListProps<T>) {
   if (items.length === 0) {
@@ -754,19 +751,14 @@ export function MobileCardList<T>({
       <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
         <p className="text-sm">{emptyMessage}</p>
       </div>
-    );
+    )
   }
 
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-(--mobile-card-gap) md:hidden",
-        className
-      )}
-    >
+    <div className={cn('flex flex-col gap-(--mobile-card-gap) md:hidden', className)}>
       {items.map((item, index) => renderCard(item, index))}
     </div>
-  );
+  )
 }
 ```
 
@@ -784,6 +776,7 @@ Breadboard P6: U113-U119."
 **Note:** The existing inline mobile card views in Jobs/Invoices/Customers DataTables can be migrated to use this component later, or left as-is since they already work. The primary value is for new mobile card views (Quotes) and consistency going forward.
 
 **Acceptance Criteria:**
+
 - [ ] Generic component accepts any item type
 - [ ] Hidden above md breakpoint
 - [ ] Empty state rendered when no items
@@ -794,6 +787,7 @@ Breadboard P6: U113-U119."
 **Sprint 1 Complete Checkpoint:**
 
 After all 9 tasks, verify:
+
 - [ ] `npm run build` passes
 - [ ] Desktop: app looks and works identically to before
 - [ ] Mobile (< 768px): bottom tab bar, mobile header, drawer navigation all functional
@@ -811,6 +805,7 @@ After all 9 tasks, verify:
 ### Task 10: MobileKanbanBoard — Lane Tab Bar (Breadboard P4: U30-U32)
 
 **Files:**
+
 - Create: `app/(dashboard)/jobs/board/_components/MobileKanbanBoard.tsx`
 - Create: `app/(dashboard)/jobs/board/_components/MobileLaneTabBar.tsx`
 - Modify: `app/(dashboard)/jobs/board/page.tsx` (conditionally render mobile vs desktop board)
@@ -822,24 +817,24 @@ The mobile Kanban replaces the horizontal multi-lane scroll with a single-column
 Horizontal scrollable tab bar showing lane names with card counts:
 
 ```tsx
-"use client";
+'use client'
 
-import { cn } from "@/lib/utils";
-import type { Lane } from "@/lib/schemas/job";
+import { cn } from '@/lib/utils'
+import type { Lane } from '@/lib/schemas/job'
 
 const laneLabels: Record<string, string> = {
-  ready: "Ready",
-  in_progress: "In Progress",
-  review: "Review",
-  blocked: "Blocked",
-  done: "Done",
-};
+  ready: 'Ready',
+  in_progress: 'In Progress',
+  review: 'Review',
+  blocked: 'Blocked',
+  done: 'Done',
+}
 
 interface MobileLaneTabBarProps {
-  lanes: string[];
-  activeLane: string;
-  onLaneChange: (lane: string) => void;
-  cardCounts: Record<string, number>;
+  lanes: string[]
+  activeLane: string
+  onLaneChange: (lane: string) => void
+  cardCounts: Record<string, number>
 }
 
 export function MobileLaneTabBar({
@@ -855,20 +850,18 @@ export function MobileLaneTabBar({
           key={lane}
           onClick={() => onLaneChange(lane)}
           className={cn(
-            "flex shrink-0 items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
-            "border-b-2 min-h-(--mobile-touch-target)",
+            'flex shrink-0 items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors',
+            'border-b-2 min-h-(--mobile-touch-target)',
             activeLane === lane
-              ? "border-action text-action"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+              ? 'border-action text-action'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
           )}
         >
           {laneLabels[lane] ?? lane}
           <span
             className={cn(
-              "rounded-full px-1.5 py-0.5 text-xs",
-              activeLane === lane
-                ? "bg-action/20 text-action"
-                : "bg-surface text-muted-foreground"
+              'rounded-full px-1.5 py-0.5 text-xs',
+              activeLane === lane ? 'bg-action/20 text-action' : 'bg-surface text-muted-foreground'
             )}
           >
             {cardCounts[lane] ?? 0}
@@ -876,27 +869,27 @@ export function MobileLaneTabBar({
         </button>
       ))}
     </div>
-  );
+  )
 }
 ```
 
 **Step 2: Create MobileKanbanBoard shell**
 
 ```tsx
-"use client";
+'use client'
 
-import { useState, useCallback } from "react";
-import { MobileLaneTabBar } from "./MobileLaneTabBar";
-import type { JobCard, QuoteCard, ScratchNoteCard, BoardCard } from "@/lib/schemas/board-card";
-import type { Lane } from "@/lib/schemas/job";
+import { useState, useCallback } from 'react'
+import { MobileLaneTabBar } from './MobileLaneTabBar'
+import type { JobCard, QuoteCard, ScratchNoteCard, BoardCard } from '@/lib/schemas/board-card'
+import type { Lane } from '@/lib/schemas/job'
 
-const LANES: Lane[] = ["ready", "in_progress", "review", "blocked", "done"];
+const LANES: Lane[] = ['ready', 'in_progress', 'review', 'blocked', 'done']
 
 interface MobileKanbanBoardProps {
-  jobCards: JobCard[];
-  quoteCards: QuoteCard[];
-  scratchNotes: ScratchNoteCard[];
-  onMoveCard: (card: BoardCard, targetLane: Lane, blockReason?: string) => void;
+  jobCards: JobCard[]
+  quoteCards: QuoteCard[]
+  scratchNotes: ScratchNoteCard[]
+  onMoveCard: (card: BoardCard, targetLane: Lane, blockReason?: string) => void
 }
 
 export function MobileKanbanBoard({
@@ -905,22 +898,22 @@ export function MobileKanbanBoard({
   scratchNotes,
   onMoveCard,
 }: MobileKanbanBoardProps) {
-  const [activeLane, setActiveLane] = useState<Lane>("in_progress");
+  const [activeLane, setActiveLane] = useState<Lane>('in_progress')
 
-  const jobsInLane = jobCards.filter((j) => j.lane === activeLane);
+  const jobsInLane = jobCards.filter((j) => j.lane === activeLane)
   const cardCounts = LANES.reduce(
     (acc, lane) => ({
       ...acc,
       [lane]: jobCards.filter((j) => j.lane === lane).length,
     }),
     {} as Record<string, number>
-  );
+  )
 
   // Quote cards in current lane
-  const quotesInLane = quoteCards.filter((q) => q.lane === activeLane);
+  const quotesInLane = quoteCards.filter((q) => q.lane === activeLane)
   // Scratch notes only appear in "ready" lane
-  const notesInLane = activeLane === "ready" ? scratchNotes.filter((n) => !n.isArchived) : [];
-  const hasCards = jobsInLane.length > 0 || quotesInLane.length > 0 || notesInLane.length > 0;
+  const notesInLane = activeLane === 'ready' ? scratchNotes.filter((n) => !n.isArchived) : []
+  const hasCards = jobsInLane.length > 0 || quotesInLane.length > 0 || notesInLane.length > 0
 
   return (
     <div className="flex flex-col gap-0 md:hidden">
@@ -941,9 +934,7 @@ export function MobileKanbanBoard({
       />
       <div className="relative flex flex-col gap-(--mobile-card-gap) p-4">
         {!hasCards ? (
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            No cards in this lane
-          </p>
+          <p className="py-12 text-center text-sm text-muted-foreground">No cards in this lane</p>
         ) : (
           <>
             {/* Scratch notes in Ready lane (U43) */}
@@ -968,13 +959,13 @@ export function MobileKanbanBoard({
                 job={job}
                 activeLane={activeLane}
                 onMoveToNext={() => {
-                  const currentIndex = LANES.indexOf(activeLane);
-                  const nextLane = LANES[currentIndex + 1];
-                  if (nextLane && nextLane !== "blocked") {
-                    onMoveCard(job, nextLane);
+                  const currentIndex = LANES.indexOf(activeLane)
+                  const nextLane = LANES[currentIndex + 1]
+                  if (nextLane && nextLane !== 'blocked') {
+                    onMoveCard(job, nextLane)
                   }
                 }}
-                onBlock={(reason) => onMoveCard(job, "blocked", reason)}
+                onBlock={(reason) => onMoveCard(job, 'blocked', reason)}
               />
             ))}
           </>
@@ -989,7 +980,7 @@ export function MobileKanbanBoard({
         </button>
       </div>
     </div>
-  );
+  )
 }
 ```
 
@@ -998,13 +989,13 @@ export function MobileKanbanBoard({
 The mobile card shows job info + a "Move to [Next Lane] →" button for the two-speed workflow:
 
 ```tsx
-import Link from "next/link";
-import { ArrowRight, AlertTriangle, Plus } from "lucide-react";
-import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
-import { RiskIndicator } from "@/components/features/RiskIndicator";
-import { TaskProgressBar } from "@/components/features/TaskProgressBar";
-import { Button } from "@/components/ui/button";
-import type { JobCard, QuoteCard } from "@/lib/schemas/board-card";
+import Link from 'next/link'
+import { ArrowRight, AlertTriangle, Plus } from 'lucide-react'
+import { ServiceTypeBadge } from '@/components/features/ServiceTypeBadge'
+import { RiskIndicator } from '@/components/features/RiskIndicator'
+import { TaskProgressBar } from '@/components/features/TaskProgressBar'
+import { Button } from '@/components/ui/button'
+import type { JobCard, QuoteCard } from '@/lib/schemas/board-card'
 
 // MobileJobCard — uses JobCard (view model), NOT the raw Job schema
 function MobileJobCard({
@@ -1013,19 +1004,19 @@ function MobileJobCard({
   onMoveToNext,
   onBlock,
 }: {
-  job: JobCard;
-  activeLane: string;
-  onMoveToNext: () => void;
-  onBlock: (reason: string) => void;
+  job: JobCard
+  activeLane: string
+  onMoveToNext: () => void
+  onBlock: (reason: string) => void
 }) {
   // taskProgress is pre-computed on the board card — no need to call computeTaskProgress()
-  const { taskProgress } = job;
+  const { taskProgress } = job
   const nextLaneLabel: Record<string, string> = {
-    ready: "In Progress",
-    in_progress: "Review",
-    review: "Done",
-    blocked: "Ready",
-  };
+    ready: 'In Progress',
+    in_progress: 'Review',
+    review: 'Done',
+    blocked: 'Ready',
+  }
 
   return (
     <div className="rounded-lg border border-border bg-elevated p-4">
@@ -1042,9 +1033,7 @@ function MobileJobCard({
 
         <div className="mt-2 flex items-center gap-2">
           <ServiceTypeBadge type={job.serviceType} />
-          <span className="text-xs text-muted-foreground">
-            {job.quantity} pcs
-          </span>
+          <span className="text-xs text-muted-foreground">{job.quantity} pcs</span>
           {job.dueDate && (
             <span className="text-xs text-muted-foreground">
               Due {new Date(job.dueDate).toLocaleDateString()}
@@ -1058,7 +1047,7 @@ function MobileJobCard({
       </Link>
 
       {/* Quick actions — two-speed workflow */}
-      {activeLane !== "done" && (
+      {activeLane !== 'done' && (
         <div className="mt-3 flex gap-2 border-t border-border pt-3">
           {nextLaneLabel[activeLane] && (
             <Button
@@ -1066,22 +1055,22 @@ function MobileJobCard({
               size="sm"
               className="flex-1 min-h-(--mobile-touch-target)"
               onClick={(e) => {
-                e.preventDefault();
-                onMoveToNext();
+                e.preventDefault()
+                onMoveToNext()
               }}
             >
               Move to {nextLaneLabel[activeLane]}
               <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           )}
-          {activeLane !== "blocked" && (
+          {activeLane !== 'blocked' && (
             <Button
               variant="outline"
               size="sm"
               className="min-h-(--mobile-touch-target) text-warning"
               onClick={(e) => {
-                e.preventDefault();
-                onBlock(""); // Opens BlockReasonSheet (Task 10b)
+                e.preventDefault()
+                onBlock('') // Opens BlockReasonSheet (Task 10b)
               }}
             >
               <AlertTriangle className="h-4 w-4" />
@@ -1091,13 +1080,13 @@ function MobileJobCard({
       )}
 
       {/* Block reason display */}
-      {job.lane === "blocked" && job.blockReason && (
+      {job.lane === 'blocked' && job.blockReason && (
         <div className="mt-2 rounded bg-warning/10 px-3 py-2 text-xs text-warning">
           {job.blockReason}
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // MobileQuoteCard — renders quote cards on the board (U42)
@@ -1116,12 +1105,10 @@ function MobileQuoteCard({ quote }: { quote: QuoteCard }) {
         )}
       </div>
       {quote.total != null && (
-        <p className="mt-1 text-xs text-muted-foreground">
-          ${quote.total.toLocaleString()}
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground">${quote.total.toLocaleString()}</p>
       )}
     </div>
-  );
+  )
 }
 ```
 
@@ -1132,13 +1119,15 @@ Modify `app/(dashboard)/jobs/board/page.tsx` to conditionally render:
 In the `ProductionBoardInner` component, add after the desktop board rendering:
 
 ```tsx
-{/* Desktop board */}
-<div className="hidden md:block">
-  {/* ... existing DndContext board code ... */}
-</div>
+{
+  /* Desktop board */
+}
+;<div className="hidden md:block">{/* ... existing DndContext board code ... */}</div>
 
-{/* Mobile board — uses same moveCard function as desktop DnD */}
-<MobileKanbanBoard
+{
+  /* Mobile board — uses same moveCard function as desktop DnD */
+}
+;<MobileKanbanBoard
   jobCards={jobCards}
   quoteCards={quoteCardState}
   scratchNotes={scratchNoteCards}
@@ -1161,6 +1150,7 @@ Breadboard P4: U30-U44."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Mobile: lane tabs scroll horizontally, active lane highlighted
 - [ ] Mobile: card count badges update when cards move
 - [ ] Mobile: tapping a card navigates to job detail
@@ -1178,6 +1168,7 @@ Breadboard P4: U30-U44."
 ### Task 10b: BlockReasonSheet — Bottom Sheet for Block Reason Input (Breadboard P4.1: U50-U52)
 
 **Files:**
+
 - Create: `components/features/BlockReasonSheet.tsx` (or inline in MobileKanbanBoard)
 - Reference: `components/ui/bottom-sheet.tsx`
 
@@ -1186,19 +1177,19 @@ When a user taps the block button on a MobileJobCard, a bottom sheet slides up f
 **Step 1: Create BlockReasonSheet**
 
 ```tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ShieldAlert } from "lucide-react";
+import { useState } from 'react'
+import { BottomSheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { ShieldAlert } from 'lucide-react'
 
 interface BlockReasonSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  jobTitle: string;
-  onConfirm: (reason: string) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  jobTitle: string
+  onConfirm: (reason: string) => void
 }
 
 export function BlockReasonSheet({
@@ -1207,7 +1198,7 @@ export function BlockReasonSheet({
   jobTitle,
   onConfirm,
 }: BlockReasonSheetProps) {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState('')
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Block Job">
@@ -1225,8 +1216,8 @@ export function BlockReasonSheet({
         />
         <Button
           onClick={() => {
-            onConfirm(reason.trim() || "Blocked (no reason given)");
-            onOpenChange(false);
+            onConfirm(reason.trim() || 'Blocked (no reason given)')
+            onOpenChange(false)
           }}
           className="min-h-(--mobile-touch-target) bg-warning text-warning-foreground hover:bg-warning-hover"
         >
@@ -1234,7 +1225,7 @@ export function BlockReasonSheet({
         </Button>
       </div>
     </BottomSheet>
-  );
+  )
 }
 ```
 
@@ -1255,6 +1246,7 @@ on a mobile job card. Breadboard P4.1: U50-U52."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Bottom sheet opens when block button tapped
 - [ ] Text input for block reason with auto-focus
 - [ ] Confirm moves card to Blocked lane with reason
@@ -1265,6 +1257,7 @@ on a mobile job card. Breadboard P4.1: U50-U52."
 ### Task 11: CapacitySummary Mobile Component (Breadboard U27, U40)
 
 **Files:**
+
 - Create: `components/features/CapacitySummary.tsx`
 - Reference: `app/(dashboard)/jobs/board/_components/CapacitySummaryBar.tsx`
 
@@ -1273,44 +1266,35 @@ The existing `CapacitySummaryBar` is board-specific. We need a shared `CapacityS
 **Step 1: Create shared CapacitySummary component**
 
 ```tsx
-import { Zap, Package, AlertTriangle } from "lucide-react";
-import type { CapacitySummary as CapacitySummaryType } from "@/lib/helpers/job-utils";
+import { Zap, Package, AlertTriangle } from 'lucide-react'
+import type { CapacitySummary as CapacitySummaryType } from '@/lib/helpers/job-utils'
 
 interface CapacitySummaryProps {
-  summary: CapacitySummaryType;
-  variant?: "compact" | "full";
+  summary: CapacitySummaryType
+  variant?: 'compact' | 'full'
 }
 
-export function CapacitySummary({
-  summary,
-  variant = "compact",
-}: CapacitySummaryProps) {
+export function CapacitySummary({ summary, variant = 'compact' }: CapacitySummaryProps) {
   return (
     <div className="flex items-center gap-4 rounded-lg border border-border bg-surface px-3 py-2 text-xs">
       <div className="flex items-center gap-1.5">
         <Package className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-muted-foreground">
-          {summary.totalQuantity.toLocaleString()} pcs
-        </span>
+        <span className="text-muted-foreground">{summary.totalQuantity.toLocaleString()} pcs</span>
       </div>
       {summary.rushQuantity > 0 && (
         <div className="flex items-center gap-1.5">
           <Zap className="h-3.5 w-3.5 text-warning" />
-          <span className="text-warning">
-            {summary.rushQuantity.toLocaleString()} rush
-          </span>
+          <span className="text-warning">{summary.rushQuantity.toLocaleString()} rush</span>
         </div>
       )}
-      {variant === "full" && (
+      {variant === 'full' && (
         <div className="flex items-center gap-1.5">
           <AlertTriangle className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-muted-foreground">
-            {summary.cardsByLane.blocked ?? 0} blocked
-          </span>
+          <span className="text-muted-foreground">{summary.cardsByLane.blocked ?? 0} blocked</span>
         </div>
       )}
     </div>
-  );
+  )
 }
 ```
 
@@ -1330,6 +1314,7 @@ Breadboard U27, U40."
 ### Task 12: NoteCapture with Side Effects (Breadboard P4.2, P5.1: U55-U62, U90-U97)
 
 **Files:**
+
 - Create: `components/features/NoteCapture.tsx`
 - Reference: `components/ui/bottom-sheet.tsx` (container)
 - Reference: `lib/schemas/note.ts` (noteChannelEnum)
@@ -1340,52 +1325,52 @@ This is the "notes with side effects" pattern from the interview — logging a n
 **Step 1: Create NoteCapture component**
 
 ```tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react'
+import { BottomSheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Send, ShieldAlert, ShieldCheck } from "lucide-react";
+} from '@/components/ui/select'
+import { Send, ShieldAlert, ShieldCheck } from 'lucide-react'
 
 const channels = [
-  { value: "phone", label: "Phone" },
-  { value: "email", label: "Email" },
-  { value: "text", label: "Text" },
-  { value: "social", label: "Social" },
-  { value: "in-person", label: "In Person" },
-];
+  { value: 'phone', label: 'Phone' },
+  { value: 'email', label: 'Email' },
+  { value: 'text', label: 'Text' },
+  { value: 'social', label: 'Social' },
+  { value: 'in-person', label: 'In Person' },
+]
 
 const noteTypes = [
-  { value: "internal", label: "Internal" },
-  { value: "customer", label: "Customer" },
-];
+  { value: 'internal', label: 'Internal' },
+  { value: 'customer', label: 'Customer' },
+]
 
 interface NoteCaptureProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
   /** The job this note will be attached to */
-  jobId: string;
-  jobTitle: string;
+  jobId: string
+  jobTitle: string
   /** Current lane of the job — determines if block/unblock toggle is shown */
-  currentLane: string;
+  currentLane: string
   onSave: (data: {
-    content: string;
-    type: "internal" | "customer";
-    channel: string;
-    blockJob?: boolean;
-    blockReason?: string;
-    unblockJob?: boolean;
-  }) => void;
+    content: string
+    type: 'internal' | 'customer'
+    channel: string
+    blockJob?: boolean
+    blockReason?: string
+    unblockJob?: boolean
+  }) => void
 }
 
 export function NoteCapture({
@@ -1396,18 +1381,18 @@ export function NoteCapture({
   currentLane,
   onSave,
 }: NoteCaptureProps) {
-  const [content, setContent] = useState("");
-  const [noteType, setNoteType] = useState<"internal" | "customer">("internal");
-  const [channel, setChannel] = useState("phone");
-  const [blockToggle, setBlockToggle] = useState(false);
-  const [unblockToggle, setUnblockToggle] = useState(false);
-  const [blockReason, setBlockReason] = useState("");
+  const [content, setContent] = useState('')
+  const [noteType, setNoteType] = useState<'internal' | 'customer'>('internal')
+  const [channel, setChannel] = useState('phone')
+  const [blockToggle, setBlockToggle] = useState(false)
+  const [unblockToggle, setUnblockToggle] = useState(false)
+  const [blockReason, setBlockReason] = useState('')
 
-  const isBlocked = currentLane === "blocked";
-  const canSave = content.trim().length > 0;
+  const isBlocked = currentLane === 'blocked'
+  const canSave = content.trim().length > 0
 
   const handleSave = () => {
-    if (!canSave) return;
+    if (!canSave) return
     onSave({
       content: content.trim(),
       type: noteType,
@@ -1415,21 +1400,16 @@ export function NoteCapture({
       blockJob: !isBlocked && blockToggle ? true : undefined,
       blockReason: !isBlocked && blockToggle ? blockReason || content.trim() : undefined,
       unblockJob: isBlocked && unblockToggle ? true : undefined,
-    });
+    })
     // Close the sheet — state reset happens automatically via conditional
     // rendering: parent renders {open && <NoteCapture />} so React
     // unmounts/remounts the component, resetting all useState hooks.
     // See: CLAUDE.md "React 19 ESLint — no setState in effects" lesson.
-    onOpenChange(false);
-  };
+    onOpenChange(false)
+  }
 
   return (
-    <BottomSheet
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Add Note"
-      description={jobTitle}
-    >
+    <BottomSheet open={open} onOpenChange={onOpenChange} title="Add Note" description={jobTitle}>
       <div className="flex flex-col gap-4 p-4">
         {/* Note content */}
         <Textarea
@@ -1442,7 +1422,7 @@ export function NoteCapture({
 
         {/* Type + Channel row */}
         <div className="flex gap-2">
-          <Select value={noteType} onValueChange={(v) => setNoteType(v as "internal" | "customer")}>
+          <Select value={noteType} onValueChange={(v) => setNoteType(v as 'internal' | 'customer')}>
             <SelectTrigger className="flex-1">
               <SelectValue />
             </SelectTrigger>
@@ -1476,15 +1456,9 @@ export function NoteCapture({
               <Label htmlFor="block-toggle" className="text-sm font-medium">
                 Block this job
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Note becomes the block reason
-              </p>
+              <p className="text-xs text-muted-foreground">Note becomes the block reason</p>
             </div>
-            <Switch
-              id="block-toggle"
-              checked={blockToggle}
-              onCheckedChange={setBlockToggle}
-            />
+            <Switch id="block-toggle" checked={blockToggle} onCheckedChange={setBlockToggle} />
           </div>
         )}
 
@@ -1495,9 +1469,7 @@ export function NoteCapture({
               <Label htmlFor="unblock-toggle" className="text-sm font-medium">
                 Unblock this job
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Move back to previous lane
-              </p>
+              <p className="text-xs text-muted-foreground">Move back to previous lane</p>
             </div>
             <Switch
               id="unblock-toggle"
@@ -1508,17 +1480,17 @@ export function NoteCapture({
         )}
 
         {/* Save button */}
-        <Button
-          onClick={handleSave}
-          disabled={!canSave}
-          className="min-h-(--mobile-touch-target)"
-        >
+        <Button onClick={handleSave} disabled={!canSave} className="min-h-(--mobile-touch-target)">
           <Send className="mr-2 h-4 w-4" />
-          {blockToggle ? "Save Note & Block Job" : unblockToggle ? "Save Note & Unblock" : "Save Note"}
+          {blockToggle
+            ? 'Save Note & Block Job'
+            : unblockToggle
+              ? 'Save Note & Unblock'
+              : 'Save Note'}
         </Button>
       </div>
     </BottomSheet>
-  );
+  )
 }
 ```
 
@@ -1535,14 +1507,17 @@ Interview-discovered pattern. Breadboard P4.2, P5.1: U55-U62, U90-U97."
 ```
 
 **Important:** Parent components MUST render NoteCapture with conditional rendering for automatic state reset:
+
 ```tsx
 {noteCaptureOpen && (
   <NoteCapture open={noteCaptureOpen} onOpenChange={setNoteCaptureOpen} ... />
 )}
 ```
+
 This ensures React unmounts/remounts the component when closed, resetting all `useState` hooks without manual reset logic.
 
 **Acceptance Criteria:**
+
 - [ ] Opens as bottom sheet
 - [ ] Text input auto-focuses
 - [ ] Note type (internal/customer) and channel selectors work
@@ -1557,9 +1532,11 @@ This ensures React unmounts/remounts the component when closed, resetting all `u
 ### Task 13: MobileDashboard Layout (Breadboard P3: U20-U28)
 
 **Files:**
+
 - Modify: `app/(dashboard)/page.tsx`
 
 The dashboard has hardcoded `grid-cols-4` and no mobile layout. We need:
+
 - 2-column stat cards on mobile
 - "Coming Up" filter toggle
 - Blocked alert card
@@ -1568,10 +1545,13 @@ The dashboard has hardcoded `grid-cols-4` and no mobile layout. We need:
 **Step 1: Make stat cards responsive**
 
 In `app/(dashboard)/page.tsx`, change the stat cards grid from:
+
 ```tsx
 <div className="grid grid-cols-4 gap-4">
 ```
+
 to:
+
 ```tsx
 <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
 ```
@@ -1581,8 +1561,10 @@ to:
 Add a "Coming Up This Week" section between stat cards and the existing sections, visible only on mobile:
 
 ```tsx
-{/* Coming Up — mobile only */}
-<div className="md:hidden">
+{
+  /* Coming Up — mobile only */
+}
+;<div className="md:hidden">
   <MobileComingUpSection jobs={jobs} />
 </div>
 ```
@@ -1596,6 +1578,7 @@ Import and render `<CapacitySummary>` between the stat cards and the coming-up s
 **Step 4: Make existing sections (Blocked, In Progress) mobile-friendly**
 
 Ensure the blocked jobs and in-progress sections use responsive classes:
+
 - Job rows in these sections should stack vertically on mobile
 - Block reason text should wrap properly
 
@@ -1612,6 +1595,7 @@ Breadboard P3: U20-U28."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Stat cards: 2 columns on mobile, 4 on desktop
 - [ ] "Coming Up" section shows jobs due this week (mobile only)
 - [ ] Capacity summary visible on mobile
@@ -1623,53 +1607,46 @@ Breadboard P3: U20-U28."
 ### Task 14: LaneSelector Component (Breadboard P5.2: U100-U104)
 
 **Files:**
+
 - Create: `components/features/LaneSelector.tsx`
 - Reference: `components/ui/bottom-sheet.tsx` (container)
 
 **Step 1: Create LaneSelector component**
 
 ```tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from 'react'
+import { BottomSheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const lanes = [
-  { value: "ready", label: "Ready", color: "text-foreground" },
-  { value: "in_progress", label: "In Progress", color: "text-action" },
-  { value: "review", label: "Review", color: "text-purple" },
-  { value: "blocked", label: "Blocked", color: "text-warning" },
-  { value: "done", label: "Done", color: "text-success" },
-];
+  { value: 'ready', label: 'Ready', color: 'text-foreground' },
+  { value: 'in_progress', label: 'In Progress', color: 'text-action' },
+  { value: 'review', label: 'Review', color: 'text-purple' },
+  { value: 'blocked', label: 'Blocked', color: 'text-warning' },
+  { value: 'done', label: 'Done', color: 'text-success' },
+]
 
 interface LaneSelectorProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  currentLane: string;
-  onConfirm: (lane: string, blockReason?: string) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  currentLane: string
+  onConfirm: (lane: string, blockReason?: string) => void
 }
 
-export function LaneSelector({
-  open,
-  onOpenChange,
-  currentLane,
-  onConfirm,
-}: LaneSelectorProps) {
-  const [selectedLane, setSelectedLane] = useState(currentLane);
-  const [blockReason, setBlockReason] = useState("");
+export function LaneSelector({ open, onOpenChange, currentLane, onConfirm }: LaneSelectorProps) {
+  const [selectedLane, setSelectedLane] = useState(currentLane)
+  const [blockReason, setBlockReason] = useState('')
 
   const handleConfirm = () => {
-    onConfirm(
-      selectedLane,
-      selectedLane === "blocked" ? blockReason : undefined
-    );
+    onConfirm(selectedLane, selectedLane === 'blocked' ? blockReason : undefined)
     // State reset via conditional rendering — parent renders {open && <LaneSelector />}
-    onOpenChange(false);
-  };
+    onOpenChange(false)
+  }
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Move Lane">
@@ -1679,18 +1656,16 @@ export function LaneSelector({
             key={lane.value}
             onClick={() => setSelectedLane(lane.value)}
             className={cn(
-              "flex items-center justify-between rounded-lg border px-4 py-3 text-left transition-colors",
-              "min-h-(--mobile-touch-target)",
+              'flex items-center justify-between rounded-lg border px-4 py-3 text-left transition-colors',
+              'min-h-(--mobile-touch-target)',
               selectedLane === lane.value
-                ? "border-action bg-action/10"
-                : "border-border hover:bg-surface",
-              lane.value === currentLane && "opacity-50"
+                ? 'border-action bg-action/10'
+                : 'border-border hover:bg-surface',
+              lane.value === currentLane && 'opacity-50'
             )}
             disabled={lane.value === currentLane}
           >
-            <span className={cn("text-sm font-medium", lane.color)}>
-              {lane.label}
-            </span>
+            <span className={cn('text-sm font-medium', lane.color)}>{lane.label}</span>
             {lane.value === currentLane && (
               <span className="text-xs text-muted-foreground">Current</span>
             )}
@@ -1701,7 +1676,7 @@ export function LaneSelector({
         ))}
 
         {/* Block reason input — shown when Blocked is selected */}
-        {selectedLane === "blocked" && selectedLane !== currentLane && (
+        {selectedLane === 'blocked' && selectedLane !== currentLane && (
           <Textarea
             placeholder="Block reason..."
             value={blockReason}
@@ -1719,7 +1694,7 @@ export function LaneSelector({
         </Button>
       </div>
     </BottomSheet>
-  );
+  )
 }
 ```
 
@@ -1735,6 +1710,7 @@ reason input. Breadboard P5.2: U100-U104."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] All 5 lanes shown as tappable options
 - [ ] Current lane disabled and marked
 - [ ] Selecting "Blocked" reveals block reason input
@@ -1746,6 +1722,7 @@ reason input. Breadboard P5.2: U100-U104."
 **Sprint 2 Complete Checkpoint:**
 
 After Tasks 10-14, verify:
+
 - [ ] `npm run build` passes
 - [ ] Mobile board: lane tabs work, cards show, quick actions move cards
 - [ ] Mobile dashboard: 2-col stats, coming up section, capacity summary
@@ -1760,6 +1737,7 @@ After Tasks 10-14, verify:
 ### Task 15: Quotes List Mobile Cards (Breadboard P6)
 
 **Files:**
+
 - Modify: `app/(dashboard)/quotes/_components/QuotesDataTable.tsx`
 - Reference: Jobs DataTable mobile card pattern (lines 627-681)
 
@@ -1770,8 +1748,10 @@ The Quotes list is the only list WITHOUT mobile cards. Add the same `hidden md:b
 After the desktop table `<div className="hidden md:block">`, add:
 
 ```tsx
-{/* Mobile card list */}
-<div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
+{
+  /* Mobile card list */
+}
+;<div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
   {sortedQuotes.map((quote) => (
     <button
       key={quote.id}
@@ -1779,19 +1759,13 @@ After the desktop table `<div className="hidden md:block">`, add:
       className="flex flex-col gap-2 rounded-lg border border-border bg-elevated p-4 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50"
     >
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">
-          {quote.quoteNumber}
-        </span>
+        <span className="text-sm font-medium text-foreground">{quote.quoteNumber}</span>
         <StatusBadge status={quote.status} />
       </div>
-      <p className="text-sm text-muted-foreground truncate">
-        {quote.customerName}
-      </p>
+      <p className="text-sm text-muted-foreground truncate">{quote.customerName}</p>
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>{quote.lineItems?.length ?? 0} items</span>
-        <span className="font-medium text-foreground">
-          ${quote.total?.toLocaleString()}
-        </span>
+        <span className="font-medium text-foreground">${quote.total?.toLocaleString()}</span>
       </div>
     </button>
   ))}
@@ -1812,6 +1786,7 @@ Breadboard P6 — completes all 4 list view mobile cards."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Quotes list shows cards on mobile with quote #, customer, status, item count, total
 - [ ] Desktop table unchanged
 - [ ] Cards are tappable → navigate to quote detail
@@ -1822,11 +1797,13 @@ Breadboard P6 — completes all 4 list view mobile cards."
 ### Task 16: Polish Existing Mobile Cards (Jobs, Invoices, Customers)
 
 **Files:**
+
 - Modify: `app/(dashboard)/jobs/_components/JobsDataTable.tsx`
 - Modify: `app/(dashboard)/invoices/_components/InvoicesDataTable.tsx`
 - Modify: `app/(dashboard)/customers/_components/CustomersDataTable.tsx`
 
 The existing mobile cards work but should be polished:
+
 - Use `--mobile-card-gap` token for consistent spacing
 - Ensure touch targets meet 44px
 - Verify card content hierarchy matches breadboard
@@ -1856,6 +1833,7 @@ targets. No visual changes — consistency improvements."
 ### Task 17: MobileFilterSheet Component (Breadboard P6.1: U120-U125)
 
 **Files:**
+
 - Create: `components/features/MobileFilterSheet.tsx`
 - Reference: `components/ui/bottom-sheet.tsx` (container)
 
@@ -1864,39 +1842,39 @@ Unified filter/sort bottom sheet for all mobile list views.
 **Step 1: Create MobileFilterSheet**
 
 ```tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useState } from 'react'
+import { BottomSheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface FilterOption {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 interface MobileFilterSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title?: string;
-  sortOptions: FilterOption[];
-  currentSort: string;
-  onSortChange: (value: string) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title?: string
+  sortOptions: FilterOption[]
+  currentSort: string
+  onSortChange: (value: string) => void
   filterGroups?: {
-    label: string;
-    options: FilterOption[];
-    selected: string[];
-    onToggle: (value: string) => void;
-  }[];
-  onApply: () => void;
-  onReset: () => void;
+    label: string
+    options: FilterOption[]
+    selected: string[]
+    onToggle: (value: string) => void
+  }[]
+  onApply: () => void
+  onReset: () => void
 }
 
 export function MobileFilterSheet({
   open,
   onOpenChange,
-  title = "Sort & Filter",
+  title = 'Sort & Filter',
   sortOptions,
   currentSort,
   onSortChange,
@@ -1909,20 +1887,18 @@ export function MobileFilterSheet({
       <div className="flex flex-col gap-6 p-4">
         {/* Sort */}
         <div>
-          <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-            Sort by
-          </h3>
+          <h3 className="mb-2 text-sm font-medium text-muted-foreground">Sort by</h3>
           <div className="flex flex-wrap gap-2">
             {sortOptions.map((opt) => (
               <button
                 key={opt.value}
                 onClick={() => onSortChange(opt.value)}
                 className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm transition-colors",
-                  "min-h-(--mobile-touch-target)",
+                  'rounded-full border px-3 py-1.5 text-sm transition-colors',
+                  'min-h-(--mobile-touch-target)',
                   currentSort === opt.value
-                    ? "border-action bg-action/10 text-action"
-                    : "border-border text-muted-foreground hover:bg-surface"
+                    ? 'border-action bg-action/10 text-action'
+                    : 'border-border text-muted-foreground hover:bg-surface'
                 )}
               >
                 {opt.label}
@@ -1934,27 +1910,25 @@ export function MobileFilterSheet({
         {/* Filter groups */}
         {filterGroups.map((group) => (
           <div key={group.label}>
-            <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-              {group.label}
-            </h3>
+            <h3 className="mb-2 text-sm font-medium text-muted-foreground">{group.label}</h3>
             <div className="flex flex-wrap gap-2">
               {group.options.map((opt) => {
-                const isSelected = group.selected.includes(opt.value);
+                const isSelected = group.selected.includes(opt.value)
                 return (
                   <button
                     key={opt.value}
                     onClick={() => group.onToggle(opt.value)}
                     className={cn(
-                      "rounded-full border px-3 py-1.5 text-sm transition-colors",
-                      "min-h-(--mobile-touch-target)",
+                      'rounded-full border px-3 py-1.5 text-sm transition-colors',
+                      'min-h-(--mobile-touch-target)',
                       isSelected
-                        ? "border-action bg-action/10 text-action"
-                        : "border-border text-muted-foreground hover:bg-surface"
+                        ? 'border-action bg-action/10 text-action'
+                        : 'border-border text-muted-foreground hover:bg-surface'
                     )}
                   >
                     {opt.label}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -1971,8 +1945,8 @@ export function MobileFilterSheet({
           </Button>
           <Button
             onClick={() => {
-              onApply();
-              onOpenChange(false);
+              onApply()
+              onOpenChange(false)
             }}
             className="flex-1 min-h-(--mobile-touch-target)"
           >
@@ -1981,7 +1955,7 @@ export function MobileFilterSheet({
         </div>
       </div>
     </BottomSheet>
-  );
+  )
 }
 ```
 
@@ -1997,6 +1971,7 @@ Breadboard P6.1: U120-U125."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Sort options render as toggleable chips
 - [ ] Filter groups render with multi-select chips
 - [ ] Apply button closes sheet
@@ -2008,10 +1983,12 @@ Breadboard P6.1: U120-U125."
 ### Task 18: Form Mobile Layouts (Breadboard P8: U140-U146)
 
 **Files:**
+
 - Modify: `app/(dashboard)/quotes/_components/QuoteForm.tsx`
 - Modify: `app/(dashboard)/invoices/_components/InvoiceForm.tsx`
 
 Both forms need:
+
 - Single-column layout on mobile (they may already be, verify)
 - Sticky save/cancel buttons at bottom
 - Touch-friendly input sizes
@@ -2019,6 +1996,7 @@ Both forms need:
 **Step 1: Audit current form layouts**
 
 Check if forms are already single-column. The research indicates they use `CollapsibleSection` patterns. They likely just need:
+
 - Sticky bottom action bar on mobile
 - Input heights meeting 44px touch target
 
@@ -2045,6 +2023,7 @@ Breadboard P8: U140-U146."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Forms single-column on mobile
 - [ ] Save/Cancel buttons sticky at bottom on mobile
 - [ ] All inputs meet 44px touch target
@@ -2055,6 +2034,7 @@ Breadboard P8: U140-U146."
 **Sprint 3 Complete Checkpoint:**
 
 After Tasks 15-18, verify:
+
 - [ ] All 4 list views have mobile card views
 - [ ] Cards are tappable, navigate to detail
 - [ ] MobileFilterSheet works with sort + filter chips
@@ -2068,6 +2048,7 @@ After Tasks 15-18, verify:
 ### Task 19: BottomActionBar Component (Breadboard P5, P7: U85-U87, U134-U136)
 
 **Files:**
+
 - Create: `components/layout/bottom-action-bar.tsx`
 
 Sticky bottom bar for detail view actions on mobile.
@@ -2075,28 +2056,28 @@ Sticky bottom bar for detail view actions on mobile.
 **Step 1: Create BottomActionBar**
 
 ```tsx
-"use client";
+'use client'
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 interface BottomActionBarProps {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }
 
 export function BottomActionBar({ children, className }: BottomActionBarProps) {
   return (
     <div
       className={cn(
-        "fixed bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40",
-        "flex items-center gap-2 border-t border-border bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-        "md:hidden",
+        'fixed bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom,0px))] left-0 right-0 z-40',
+        'flex items-center gap-2 border-t border-border bg-background/95 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60',
+        'md:hidden',
         className
       )}
     >
       {children}
     </div>
-  );
+  )
 }
 ```
 
@@ -2116,10 +2097,12 @@ Breadboard P5, P7: U85-U87, U134-U136."
 ### Task 20: Job Detail Mobile Layout (Breadboard P5: U70-U82)
 
 **Files:**
+
 - Modify: `app/(dashboard)/jobs/[id]/page.tsx`
 - Modify: `app/(dashboard)/jobs/_components/QuickActionsBar.tsx`
 
 Job detail already has `grid-cols-1 lg:grid-cols-3` responsive grid. Needs:
+
 - Mobile-specific tab navigation (Overview / Tasks / Notes) instead of showing all sections
 - BottomActionBar with Move Lane + Add Note + Block buttons
 - Back button at top
@@ -2129,8 +2112,10 @@ Job detail already has `grid-cols-1 lg:grid-cols-3` responsive grid. Needs:
 On mobile, replace the stacked grid with tabs that show one section at a time:
 
 ```tsx
-{/* Mobile: tabbed layout */}
-<div className="md:hidden">
+{
+  /* Mobile: tabbed layout */
+}
+;<div className="md:hidden">
   <MobileJobTabs
     job={job}
     onAddNote={() => setNoteCaptureOpen(true)}
@@ -2138,8 +2123,10 @@ On mobile, replace the stacked grid with tabs that show one section at a time:
   />
 </div>
 
-{/* Desktop: existing grid layout */}
-<div className="hidden md:grid md:grid-cols-1 md:gap-4 lg:grid-cols-3">
+{
+  /* Desktop: existing grid layout */
+}
+;<div className="hidden md:grid md:grid-cols-1 md:gap-4 lg:grid-cols-3">
   {/* ... existing content ... */}
 </div>
 ```
@@ -2182,6 +2169,7 @@ Desktop grid layout preserved. Breadboard P5: U70-U82."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Mobile: tabbed view with Overview, Tasks, Notes
 - [ ] Mobile: BottomActionBar with Move Lane + Add Note
 - [ ] Mobile: NoteCapture opens with block/unblock toggles
@@ -2194,11 +2182,13 @@ Desktop grid layout preserved. Breadboard P5: U70-U82."
 ### Task 21: Quote Detail Mobile Layout
 
 **Files:**
+
 - Modify: `app/(dashboard)/quotes/_components/QuoteDetailView.tsx`
 
 **Step 1: Make sections stack properly on mobile**
 
 QuoteDetailView uses `mx-auto max-w-4xl space-y-6` which already works on mobile. Main changes:
+
 - Ensure action buttons are accessible (BottomActionBar or inline)
 - Collapsible sections work on mobile
 - Line item cards are readable at small widths
@@ -2231,9 +2221,11 @@ Section layout verified for mobile readability."
 ### Task 22: Invoice Detail Mobile Layout
 
 **Files:**
+
 - Modify: `app/(dashboard)/invoices/_components/InvoiceDetailView.tsx`
 
 Same pattern as Quote Detail:
+
 - BottomActionBar with context-aware actions (Record Payment, Send Reminder)
 - Verify section stacking
 - Balance Due prominently visible
@@ -2255,10 +2247,12 @@ Balance Due section prominent on mobile."
 ### Task 23: Customer Detail Mobile Layout
 
 **Files:**
+
 - Modify: `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx`
 - Modify: `app/(dashboard)/customers/[id]/_components/CustomerDetailHeader.tsx`
 
 Customer detail uses tabs which already work reasonably well on mobile. Main changes:
+
 - Tab bar scrollable on mobile
 - Quick stats responsive (2-col on mobile)
 - Contact info easy to tap-to-copy
@@ -2267,9 +2261,7 @@ Customer detail uses tabs which already work reasonably well on mobile. Main cha
 
 ```tsx
 <div className="overflow-x-auto scrollbar-none">
-  <TabsList>
-    {/* ... existing tabs ... */}
-  </TabsList>
+  <TabsList>{/* ... existing tabs ... */}</TabsList>
 </div>
 ```
 
@@ -2289,6 +2281,7 @@ actions."
 ### Task 24: FullScreenModal Component (Breadboard P9: U150-U152)
 
 **Files:**
+
 - Create: `components/ui/full-screen-modal.tsx`
 - Modify: `components/ui/dialog.tsx` (add mobile full-screen variant)
 
@@ -2297,27 +2290,27 @@ On mobile, dialogs should become full-screen overlays instead of centered modals
 **Step 1: Create FullScreenModal wrapper**
 
 ```tsx
-"use client";
+'use client'
 
-import { useIsMobile } from "@/lib/hooks/use-is-mobile";
+import { useIsMobile } from '@/lib/hooks/use-is-mobile'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface FullScreenModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  description?: string
+  children: React.ReactNode
+  footer?: React.ReactNode
 }
 
 export function FullScreenModal({
@@ -2328,15 +2321,12 @@ export function FullScreenModal({
   children,
   footer,
 }: FullScreenModalProps) {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile()
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={cn(
-          isMobile &&
-            "h-full max-h-full w-full max-w-full rounded-none border-0 p-0"
-        )}
+        className={cn(isMobile && 'h-full max-h-full w-full max-w-full rounded-none border-0 p-0')}
         showCloseButton={!isMobile}
       >
         {isMobile ? (
@@ -2345,34 +2335,22 @@ export function FullScreenModal({
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <div>
                 <h2 className="text-sm font-semibold">{title}</h2>
-                {description && (
-                  <p className="text-xs text-muted-foreground">{description}</p>
-                )}
+                {description && <p className="text-xs text-muted-foreground">{description}</p>}
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onOpenChange(false)}
-              >
+              <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
                 <X className="h-5 w-5" />
               </Button>
             </div>
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto p-4">{children}</div>
             {/* Sticky footer */}
-            {footer && (
-              <div className="border-t border-border p-4 pb-safe">
-                {footer}
-              </div>
-            )}
+            {footer && <div className="border-t border-border p-4 pb-safe">{footer}</div>}
           </div>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
-              {description && (
-                <DialogDescription>{description}</DialogDescription>
-              )}
+              {description && <DialogDescription>{description}</DialogDescription>}
             </DialogHeader>
             {children}
             {footer}
@@ -2380,7 +2358,7 @@ export function FullScreenModal({
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 ```
 
@@ -2396,6 +2374,7 @@ on desktop. Breadboard P9: U150-U152."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] Mobile: dialog becomes full-screen with close button, scrollable content, sticky footer
 - [ ] Desktop: renders as standard centered dialog
 - [ ] Smooth transition between viewport sizes
@@ -2410,23 +2389,23 @@ on desktop. Breadboard P9: U150-U152."
 
 Open dev server at desktop width (>= 1024px) and verify each page:
 
-| Page | Check |
-|------|-------|
-| Dashboard (`/`) | Stat cards 4-col, blocked/in-progress sections, sidebar visible |
-| Jobs Board (`/jobs/board`) | Drag-and-drop works, lanes visible, capacity bar |
-| Jobs List (`/jobs`) | Table visible, sorting, filtering, search |
-| Job Detail (`/jobs/[id]`) | Two-column grid, tasks, notes, quick actions |
-| Quotes List (`/quotes`) | Table visible with all columns |
-| Quote Detail (`/quotes/[id]`) | Line items, pricing, actions |
-| New Quote (`/quotes/new`) | Form sections, line item management |
-| Invoices List (`/invoices`) | Stats bar, smart views, table |
-| Invoice Detail (`/invoices/[id]`) | All sections, payment ledger |
-| New Invoice (`/invoices/new`) | Form sections, pricing |
-| Customers List (`/customers`) | Table, smart views, stats |
-| Customer Detail (`/customers/[id]`) | Tabs, linked entities |
-| Screen Room (`/screens`) | Table with burn status |
-| Garments (`/garments`) | Grouped display |
-| Settings (`/settings/pricing`) | Pricing matrix |
+| Page                                | Check                                                           |
+| ----------------------------------- | --------------------------------------------------------------- |
+| Dashboard (`/`)                     | Stat cards 4-col, blocked/in-progress sections, sidebar visible |
+| Jobs Board (`/jobs/board`)          | Drag-and-drop works, lanes visible, capacity bar                |
+| Jobs List (`/jobs`)                 | Table visible, sorting, filtering, search                       |
+| Job Detail (`/jobs/[id]`)           | Two-column grid, tasks, notes, quick actions                    |
+| Quotes List (`/quotes`)             | Table visible with all columns                                  |
+| Quote Detail (`/quotes/[id]`)       | Line items, pricing, actions                                    |
+| New Quote (`/quotes/new`)           | Form sections, line item management                             |
+| Invoices List (`/invoices`)         | Stats bar, smart views, table                                   |
+| Invoice Detail (`/invoices/[id]`)   | All sections, payment ledger                                    |
+| New Invoice (`/invoices/new`)       | Form sections, pricing                                          |
+| Customers List (`/customers`)       | Table, smart views, stats                                       |
+| Customer Detail (`/customers/[id]`) | Tabs, linked entities                                           |
+| Screen Room (`/screens`)            | Table with burn status                                          |
+| Garments (`/garments`)              | Grouped display                                                 |
+| Settings (`/settings/pricing`)      | Pricing matrix                                                  |
 
 **Step 2: Run build verification**
 
@@ -2447,6 +2426,7 @@ Fixes any visual regressions found during desktop testing pass."
 ```
 
 **Acceptance Criteria:**
+
 - [ ] All 15 pages render correctly at desktop width
 - [ ] No visual regressions from mobile changes
 - [ ] Sidebar navigation works on all pages
@@ -2461,18 +2441,19 @@ Fixes any visual regressions found during desktop testing pass."
 
 ## Summary
 
-| Sprint | Tasks | Key Deliverables |
-|--------|-------|-----------------|
-| Sprint 1 | 1-9 | Design tokens, useIsMobile hook, BottomTabBar, MobileDrawer, MobileHeader, layout integration, touch audit, BottomSheet, MobileCardList |
-| Sprint 2 | 10-14 | MobileKanbanBoard with lane tabs, CapacitySummary, NoteCapture with side effects, MobileDashboard, LaneSelector |
-| Sprint 3 | 15-18 | Quotes mobile cards, polish existing cards, MobileFilterSheet, form mobile layouts |
-| Sprint 4 | 19-25 | BottomActionBar, Job/Quote/Invoice/Customer detail mobile layouts, FullScreenModal, desktop regression |
+| Sprint   | Tasks | Key Deliverables                                                                                                                        |
+| -------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Sprint 1 | 1-9   | Design tokens, useIsMobile hook, BottomTabBar, MobileDrawer, MobileHeader, layout integration, touch audit, BottomSheet, MobileCardList |
+| Sprint 2 | 10-14 | MobileKanbanBoard with lane tabs, CapacitySummary, NoteCapture with side effects, MobileDashboard, LaneSelector                         |
+| Sprint 3 | 15-18 | Quotes mobile cards, polish existing cards, MobileFilterSheet, form mobile layouts                                                      |
+| Sprint 4 | 19-25 | BottomActionBar, Job/Quote/Invoice/Customer detail mobile layouts, FullScreenModal, desktop regression                                  |
 
 **Total new files:** ~15 (12 components + MobileShell wrapper + BlockReasonSheet + shared nav constants)
 **Total modified files:** ~15 existing files (including Sidebar refactor to use shared constants)
 **New dependencies:** None (all using existing shadcn/ui + Framer Motion)
 
 **Risk areas:**
+
 - Mobile Kanban swipe (Task 10) is highest complexity — may need a spike for touch gesture handling with Framer Motion
 - iOS Safari bottom sheet scroll locking — BottomSheet may need `overscroll-behavior: contain` or body scroll lock to prevent background scroll
 - Mobile keyboard handling — NoteCapture/BlockReasonSheet textarea may push content above keyboard on iOS; test with virtual keyboard open

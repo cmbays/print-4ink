@@ -18,23 +18,23 @@ The fix is a `verifySession()` function that runs **inside the server trust boun
 
 ```ts
 // lib/auth/session.ts
-type UserRole = 'owner' | 'operator';
+type UserRole = 'owner' | 'operator'
 
 type Session = {
-  userId: string;   // Phase 2: Supabase Auth UUID
-  role: UserRole;   // Drives UI permissions and future DAL row filtering
-  shopId: string;   // Phase 2: Used for RLS row filtering
-};
+  userId: string // Phase 2: Supabase Auth UUID
+  role: UserRole // Drives UI permissions and future DAL row filtering
+  shopId: string // Phase 2: Used for RLS row filtering
+}
 ```
 
 **Design choices:**
 
-| Choice | Rationale |
-|--------|-----------|
-| `userId` as string, not UUID type | Supabase returns UUID strings; stable across mock and real auth |
-| `role: 'owner' \| 'operator'` | Screen Print Pro is a single-shop tool. `owner` = Gary (full access). `operator` = future employee (read + limited write). |
-| `shopId` included | Multi-tenancy safety valve. Even if we never add a second shop, the field prevents queries from ever returning cross-shop data in Phase 2 RLS policies. |
-| Returns `Session \| null` (not throw) | Callers distinguish "unauthenticated user" from "server error" cleanly. |
+| Choice                                | Rationale                                                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `userId` as string, not UUID type     | Supabase returns UUID strings; stable across mock and real auth                                                                                         |
+| `role: 'owner' \| 'operator'`         | Screen Print Pro is a single-shop tool. `owner` = Gary (full access). `operator` = future employee (read + limited write).                              |
+| `shopId` included                     | Multi-tenancy safety valve. Even if we never add a second shop, the field prevents queries from ever returning cross-shop data in Phase 2 RLS policies. |
+| Returns `Session \| null` (not throw) | Callers distinguish "unauthenticated user" from "server error" cleanly.                                                                                 |
 
 ---
 
@@ -72,6 +72,7 @@ type Session = {
 ```
 
 **Phase 1 status:**
+
 - Layer 1: ✅ Implemented (`middleware.ts`)
 - Layer 2: ✅ Implemented (`lib/auth/session.ts` — Phase 1 stub)
 - Layer 3: 📋 Classified (comments added to all DAL domain files; enforcement deferred to Phase 2)
@@ -85,24 +86,24 @@ type Session = {
 
 These domains contain reference/catalog data with no PII or financial content. In Phase 2, public functions may be safe to expose to unauthenticated customer-facing requests (e.g., a customer browsing garment options for a quote request).
 
-| Domain | Functions | Rationale |
-|--------|-----------|-----------|
+| Domain            | Functions                                                   | Rationale                          |
+| ----------------- | ----------------------------------------------------------- | ---------------------------------- |
 | `dal/garments.ts` | `getGarmentCatalog`, `getGarmentById`, `getAvailableBrands` | Product catalog — no customer data |
-| `dal/colors.ts` | `getColors`, `getColorById` | Reference data — no customer data |
+| `dal/colors.ts`   | `getColors`, `getColorById`                                 | Reference data — no customer data  |
 
 > **Note:** `getGarmentCatalogMutable` and `getColorsMutable` are write-path helpers — classify as AUTHENTICATED when mutations are implemented.
 
 ### AUTHENTICATED — `verifySession()` required in Phase 2
 
-| Domain | Sensitivity | Functions |
-|--------|-------------|-----------|
-| `dal/customers.ts` | PII (name, email, address, phone) | All |
-| `dal/quotes.ts` | Financial (pricing, discounts) | All |
-| `dal/invoices.ts` | Financial (payment records) | All |
-| `dal/jobs.ts` | Operational + links to customer orders | All |
-| `dal/screens.ts` | Operational (shop process data) | All |
-| `dal/artworks.ts` | Intellectual property (artwork files) | All |
-| `dal/settings.ts` | Configuration + pricing data | All |
+| Domain             | Sensitivity                            | Functions |
+| ------------------ | -------------------------------------- | --------- |
+| `dal/customers.ts` | PII (name, email, address, phone)      | All       |
+| `dal/quotes.ts`    | Financial (pricing, discounts)         | All       |
+| `dal/invoices.ts`  | Financial (payment records)            | All       |
+| `dal/jobs.ts`      | Operational + links to customer orders | All       |
+| `dal/screens.ts`   | Operational (shop process data)        | All       |
+| `dal/artworks.ts`  | Intellectual property (artwork files)  | All       |
+| `dal/settings.ts`  | Configuration + pricing data           | All       |
 
 ---
 
@@ -115,6 +116,7 @@ npm install @supabase/supabase-js @supabase/ssr
 ```
 
 Set environment variables:
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
@@ -126,32 +128,33 @@ SUPABASE_SERVICE_ROLE_KEY=...  # server-only, never expose to client
 In `lib/auth/session.ts`, replace the demo-access cookie block:
 
 ```ts
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr'
 
-const cookieStore = await cookies();
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const cookieStore = await cookies()
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabase env vars are not configured');
+  throw new Error('Supabase env vars are not configured')
 }
-const supabase = createServerClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  { cookies: { getAll: () => cookieStore.getAll() } },
-);
+const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+  cookies: { getAll: () => cookieStore.getAll() },
+})
 
-const { data: { user }, error } = await supabase.auth.getUser();
-if (error || !user) return null;
+const {
+  data: { user },
+  error,
+} = await supabase.auth.getUser()
+if (error || !user) return null
 
 const { data: member } = await supabase
   .from('shop_members')
   .select('role, shop_id')
   .eq('user_id', user.id)
-  .single();
+  .single()
 
-if (!member) return null;
+if (!member) return null
 
-return { userId: user.id, role: member.role, shopId: member.shop_id };
+return { userId: user.id, role: member.role, shopId: member.shop_id }
 ```
 
 **Zero consumer changes** — `Session` shape is identical; all callers of `verifySession()` continue to work.
@@ -160,15 +163,15 @@ return { userId: user.id, role: member.role, shopId: member.shop_id };
 
 ```ts
 // Example: lib/dal/_providers/supabase/customers.ts
-import { verifySession } from '@/lib/auth/session';
+import { verifySession } from '@/lib/auth/session'
 
 export async function getCustomers(): Promise<Customer[]> {
-  const session = await verifySession();
-  if (!session) return [];  // or throw new DalError('UNAUTHORIZED', ...)
+  const session = await verifySession()
+  if (!session) return [] // or throw new DalError('UNAUTHORIZED', ...)
 
   // Supabase RLS filters by shopId automatically via auth.uid()
-  const { data } = await supabase.from('customers').select('*');
-  return data ?? [];
+  const { data } = await supabase.from('customers').select('*')
+  return data ?? []
 }
 ```
 
@@ -207,15 +210,15 @@ Without `cache()`, a page that calls 7 DAL functions from authenticated domains 
 
 ## 7. Implementation Files
 
-| File | Change |
-|------|--------|
-| `lib/auth/session.ts` | New — Session type, verifySession() stub, Phase 2 migration JSDoc |
-| `lib/dal/garments.ts` | Classification comment: PUBLIC |
-| `lib/dal/colors.ts` | Classification comment: PUBLIC |
-| `lib/dal/customers.ts` | Classification comment: AUTHENTICATED |
-| `lib/dal/quotes.ts` | Classification comment: AUTHENTICATED |
-| `lib/dal/invoices.ts` | Classification comment: AUTHENTICATED |
-| `lib/dal/jobs.ts` | Classification comment: AUTHENTICATED |
-| `lib/dal/screens.ts` | Classification comment: AUTHENTICATED |
-| `lib/dal/artworks.ts` | Classification comment: AUTHENTICATED |
-| `lib/dal/settings.ts` | Classification comment: AUTHENTICATED |
+| File                   | Change                                                            |
+| ---------------------- | ----------------------------------------------------------------- |
+| `lib/auth/session.ts`  | New — Session type, verifySession() stub, Phase 2 migration JSDoc |
+| `lib/dal/garments.ts`  | Classification comment: PUBLIC                                    |
+| `lib/dal/colors.ts`    | Classification comment: PUBLIC                                    |
+| `lib/dal/customers.ts` | Classification comment: AUTHENTICATED                             |
+| `lib/dal/quotes.ts`    | Classification comment: AUTHENTICATED                             |
+| `lib/dal/invoices.ts`  | Classification comment: AUTHENTICATED                             |
+| `lib/dal/jobs.ts`      | Classification comment: AUTHENTICATED                             |
+| `lib/dal/screens.ts`   | Classification comment: AUTHENTICATED                             |
+| `lib/dal/artworks.ts`  | Classification comment: AUTHENTICATED                             |
+| `lib/dal/settings.ts`  | Classification comment: AUTHENTICATED                             |

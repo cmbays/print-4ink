@@ -1,5 +1,5 @@
 ---
-title: "Mobile Optimization — Improved Journey Design"
+title: 'Mobile Optimization — Improved Journey Design'
 description: "Screen Print Pro's mobile-optimized experience design, patterns, and build order"
 category: strategy
 status: complete
@@ -78,6 +78,7 @@ On mobile: Sidebar hidden. No navigation alternative. Dead end.
 ```
 
 **Tab bar items** (5 max — most used screens):
+
 1. **Dashboard** — Home, morning status check
 2. **Jobs** — Job board / list (most accessed)
 3. **Quotes** — Quote management
@@ -224,17 +225,17 @@ On mobile: Sidebar hidden. No navigation alternative. Dead end.
 
 ## Key Differences: Competitors vs Screen Print Pro
 
-| Aspect | Competitors | Screen Print Pro (Mobile) |
-|--------|------------|--------------------------|
-| Navigation | Hidden sidebar or hamburger | Bottom tab bar (always visible) |
-| Lists | Desktop tables, pinch-to-zoom | Card layout, scannable, tappable |
-| Forms | Multi-column, tiny inputs | Single-column, large inputs, progressive |
-| Job status check | 5-8 taps, 45-90 seconds | 1-2 taps, 3-5 seconds |
-| Quick actions | Walk to desktop | Tap from phone |
-| Status updates | Desktop only | Bottom sheet from any view |
-| Notifications | None | Push notifications (Phase 2) |
-| Offline | None | Cached shell + data (Phase 2) |
-| Camera | None | Photo capture workflow (Phase 2) |
+| Aspect           | Competitors                   | Screen Print Pro (Mobile)                |
+| ---------------- | ----------------------------- | ---------------------------------------- |
+| Navigation       | Hidden sidebar or hamburger   | Bottom tab bar (always visible)          |
+| Lists            | Desktop tables, pinch-to-zoom | Card layout, scannable, tappable         |
+| Forms            | Multi-column, tiny inputs     | Single-column, large inputs, progressive |
+| Job status check | 5-8 taps, 45-90 seconds       | 1-2 taps, 3-5 seconds                    |
+| Quick actions    | Walk to desktop               | Tap from phone                           |
+| Status updates   | Desktop only                  | Bottom sheet from any view               |
+| Notifications    | None                          | Push notifications (Phase 2)             |
+| Offline          | None                          | Cached shell + data (Phase 2)            |
+| Camera           | None                          | Photo capture workflow (Phase 2)         |
 
 ---
 
@@ -270,6 +271,7 @@ Every component uses Tailwind responsive prefixes:
 ```
 
 Navigation toggle:
+
 ```tsx
 // Desktop: sidebar (existing)
 <Sidebar className="hidden md:flex" />
@@ -284,41 +286,41 @@ Navigation toggle:
 
 ### Sprint 1: Navigation Foundation (Steps 1-3)
 
-| Step | Component | Estimated Effort | Dependencies |
-|------|-----------|-----------------|--------------|
-| 1 | `<BottomTabBar>` component | 2-3 hours | None |
-| 2 | `<MobileDrawer>` component | 1-2 hours | Step 1 |
-| 3 | Design tokens in `globals.css` | 30 min | None |
-| 4 | Hide sidebar on mobile, show tab bar | 1 hour | Steps 1-2 |
-| 5 | Global touch target audit + fixes | 2-3 hours | Step 3 |
+| Step | Component                            | Estimated Effort | Dependencies |
+| ---- | ------------------------------------ | ---------------- | ------------ |
+| 1    | `<BottomTabBar>` component           | 2-3 hours        | None         |
+| 2    | `<MobileDrawer>` component           | 1-2 hours        | Step 1       |
+| 3    | Design tokens in `globals.css`       | 30 min           | None         |
+| 4    | Hide sidebar on mobile, show tab bar | 1 hour           | Steps 1-2    |
+| 5    | Global touch target audit + fixes    | 2-3 hours        | Step 3       |
 
 ### Sprint 2: List Views (Steps 4-8)
 
-| Step | Component | Estimated Effort | Dependencies |
-|------|-----------|-----------------|--------------|
-| 6 | `<MobileCardList>` shared component | 2-3 hours | Step 3 |
-| 7 | Quotes list → mobile cards | 1-2 hours | Step 6 |
-| 8 | Jobs list → mobile cards | 1-2 hours | Step 6 |
-| 9 | Invoices list → mobile cards | 1-2 hours | Step 6 |
-| 10 | Customers list → mobile cards | 1-2 hours | Step 6 |
+| Step | Component                           | Estimated Effort | Dependencies |
+| ---- | ----------------------------------- | ---------------- | ------------ |
+| 6    | `<MobileCardList>` shared component | 2-3 hours        | Step 3       |
+| 7    | Quotes list → mobile cards          | 1-2 hours        | Step 6       |
+| 8    | Jobs list → mobile cards            | 1-2 hours        | Step 6       |
+| 9    | Invoices list → mobile cards        | 1-2 hours        | Step 6       |
+| 10   | Customers list → mobile cards       | 1-2 hours        | Step 6       |
 
 ### Sprint 3: Dashboard + Forms (Steps 9-11)
 
-| Step | Component | Estimated Effort | Dependencies |
-|------|-----------|-----------------|--------------|
-| 11 | Dashboard mobile layout | 2-3 hours | Steps 1-5 |
-| 12 | Form mobile layouts (all forms) | 3-4 hours | Step 5 |
-| 13 | `<BottomSheet>` component | 1-2 hours | None |
+| Step | Component                       | Estimated Effort | Dependencies |
+| ---- | ------------------------------- | ---------------- | ------------ |
+| 11   | Dashboard mobile layout         | 2-3 hours        | Steps 1-5    |
+| 12   | Form mobile layouts (all forms) | 3-4 hours        | Step 5       |
+| 13   | `<BottomSheet>` component       | 1-2 hours        | None         |
 
 ### Sprint 4: Complex Views + Polish (Steps 12-14)
 
-| Step | Component | Estimated Effort | Dependencies |
-|------|-----------|-----------------|--------------|
-| 14 | Kanban board mobile (swipe columns) | 3-4 hours | Step 13 |
-| 15 | Detail view layouts (all 4) | 3-4 hours | Step 13 |
-| 16 | `<BottomActionBar>` for detail views | 1-2 hours | Step 15 |
-| 17 | Dialog/modal → full-screen on mobile | 1-2 hours | Step 13 |
-| 18 | Desktop regression testing | 2-3 hours | All above |
+| Step | Component                            | Estimated Effort | Dependencies |
+| ---- | ------------------------------------ | ---------------- | ------------ |
+| 14   | Kanban board mobile (swipe columns)  | 3-4 hours        | Step 13      |
+| 15   | Detail view layouts (all 4)          | 3-4 hours        | Step 13      |
+| 16   | `<BottomActionBar>` for detail views | 1-2 hours        | Step 15      |
+| 17   | Dialog/modal → full-screen on mobile | 1-2 hours        | Step 13      |
+| 18   | Desktop regression testing           | 2-3 hours        | All above    |
 
 **Total estimated: ~30-40 hours of focused development across 4 sprints.**
 
@@ -326,17 +328,17 @@ Navigation toggle:
 
 ## Friction Point Resolution Summary
 
-| # | Friction | Our Fix | Status |
-|---|---------|---------|--------|
-| 1 | No mobile navigation | Bottom tab bar + drawer | Phase 1, Step 1-4 |
-| 2 | Tables unreadable | Card-based mobile layouts | Phase 1, Step 6-10 |
-| 3 | Touch targets too small | Global audit + fix | Phase 1, Step 5 |
-| 4 | Forms broken on mobile | Single-column mobile forms | Phase 1, Step 12 |
-| 5 | Frequent re-login | Long-lived auth tokens | Phase 1, Step 1 |
-| 6 | No "today's view" | Dashboard priority cards | Phase 1, Step 11 |
-| 7 | Kanban unusable on mobile | Swipe columns + quick actions | Phase 1, Step 14 |
-| 8 | Dialogs too small | Full-screen mobile modals | Phase 1, Step 17 |
-| 9 | No push notifications | PWA push notifications | Phase 2 |
-| 10 | No offline access | Service worker caching | Phase 2 |
-| 11 | No camera integration | Photo capture workflow | Phase 2 |
-| 12 | No quick quote tool | Mobile-optimized calculator | Phase 2 |
+| #   | Friction                  | Our Fix                       | Status             |
+| --- | ------------------------- | ----------------------------- | ------------------ |
+| 1   | No mobile navigation      | Bottom tab bar + drawer       | Phase 1, Step 1-4  |
+| 2   | Tables unreadable         | Card-based mobile layouts     | Phase 1, Step 6-10 |
+| 3   | Touch targets too small   | Global audit + fix            | Phase 1, Step 5    |
+| 4   | Forms broken on mobile    | Single-column mobile forms    | Phase 1, Step 12   |
+| 5   | Frequent re-login         | Long-lived auth tokens        | Phase 1, Step 1    |
+| 6   | No "today's view"         | Dashboard priority cards      | Phase 1, Step 11   |
+| 7   | Kanban unusable on mobile | Swipe columns + quick actions | Phase 1, Step 14   |
+| 8   | Dialogs too small         | Full-screen mobile modals     | Phase 1, Step 17   |
+| 9   | No push notifications     | PWA push notifications        | Phase 2            |
+| 10  | No offline access         | Service worker caching        | Phase 2            |
+| 11  | No camera integration     | Photo capture workflow        | Phase 2            |
+| 12  | No quick quote tool       | Mobile-optimized calculator   | Phase 2            |

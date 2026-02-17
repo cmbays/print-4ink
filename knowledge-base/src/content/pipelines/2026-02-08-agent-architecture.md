@@ -1,6 +1,6 @@
 ---
-title: "Agent Architecture"
-subtitle: "5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows."
+title: 'Agent Architecture'
+subtitle: '5 specialized agents, 4 new skills, orchestration patterns, and an agent registry. Agents preload skills for domain expertise and chain together for complex workflows.'
 date: 2026-02-08
 phase: 1
 pipelineName: meta
@@ -9,8 +9,8 @@ products: []
 tools: [knowledge-base]
 stage: build
 tags: [feature, build]
-sessionId: "5799011a-0503-4ea3-b856-2d19cf66b9ac"
-branch: "infra/agent-architecture"
+sessionId: '5799011a-0503-4ea3-b856-2d19cf66b9ac'
+branch: 'infra/agent-architecture'
 status: complete
 ---
 
@@ -26,13 +26,13 @@ Think of agents as specialists hired for specific jobs, and skills as the traini
 
 5 agents in `.claude/agents/`:
 
-| Agent | Purpose | Skills |
-|-------|---------|--------|
-| frontend-builder | Build screens & components | screen-builder, quality-gate |
-| requirements-interrogator | Question features before building | pre-build-interrogator |
-| design-auditor | Audit screens against design system | design-audit |
-| feature-strategist | Competitive analysis & feature planning | feature-strategy |
-| doc-sync | Keep docs synchronized with code | doc-sync |
+| Agent                     | Purpose                                 | Skills                       |
+| ------------------------- | --------------------------------------- | ---------------------------- |
+| frontend-builder          | Build screens & components              | screen-builder, quality-gate |
+| requirements-interrogator | Question features before building       | pre-build-interrogator       |
+| design-auditor            | Audit screens against design system     | design-audit                 |
+| feature-strategist        | Competitive analysis & feature planning | feature-strategy             |
+| doc-sync                  | Keep docs synchronized with code        | doc-sync                     |
 
 ### How to Invoke
 
@@ -50,12 +50,12 @@ Use explicit delegation (recommended):
 
 4 new skills in `.claude/skills/`:
 
-| Skill | Files | Purpose |
-|-------|-------|---------|
-| pre-build-interrogator | SKILL.md + spike template | Exhaustive questioning before building |
-| design-audit | SKILL.md + 15-dimension audit ref | Jobs/Ive-style design review |
-| feature-strategy | SKILL.md + frameworks ref + plan template | Product strategy & feature discovery |
-| doc-sync | SKILL.md + drift detection checklist | Documentation synchronization |
+| Skill                  | Files                                     | Purpose                                |
+| ---------------------- | ----------------------------------------- | -------------------------------------- |
+| pre-build-interrogator | SKILL.md + spike template                 | Exhaustive questioning before building |
+| design-audit           | SKILL.md + 15-dimension audit ref         | Jobs/Ive-style design review           |
+| feature-strategy       | SKILL.md + frameworks ref + plan template | Product strategy & feature discovery   |
+| doc-sync               | SKILL.md + drift detection checklist      | Documentation synchronization          |
 
 Added to existing 2 skills (screen-builder, quality-gate). Total: 6 skills.
 
@@ -65,12 +65,12 @@ Added to existing 2 skills (screen-builder, quality-gate). Total: 6 skills.
 
 4 workflow chains:
 
-| Pattern | Chain | Use For |
-|---------|-------|---------|
-| Linear | builder -> quality-gate -> progress | Steps 2, 3, 5, 7, 8, 9 |
-| Pre-Build | interrogator -> spike -> builder -> gate | Steps 4, 6 |
-| Checkpoint | auditor -> report -> approval -> fixes | After Steps 3, 6, 10 |
-| Competitive | strategist -> plan -> approval | Print Life analysis |
+| Pattern     | Chain                                    | Use For                |
+| ----------- | ---------------------------------------- | ---------------------- |
+| Linear      | builder -> quality-gate -> progress      | Steps 2, 3, 5, 7, 8, 9 |
+| Pre-Build   | interrogator -> spike -> builder -> gate | Steps 4, 6             |
+| Checkpoint  | auditor -> report -> approval -> fixes   | After Steps 3, 6, 10   |
+| Competitive | strategist -> plan -> approval           | Print Life analysis    |
 
 ---
 

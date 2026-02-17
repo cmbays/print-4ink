@@ -1,24 +1,21 @@
-"use client";
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { Separator } from "@shared/ui/primitives/separator";
-import type { SetupFeeConfig } from "@domain/entities/price-matrix";
-import { Settings } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@shared/ui/primitives/card'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { Separator } from '@shared/ui/primitives/separator'
+import type { SetupFeeConfig } from '@domain/entities/price-matrix'
+import { Settings } from 'lucide-react'
 
-interface SetupFeeEditorProps {
-  config: SetupFeeConfig;
-  onConfigChange: (config: SetupFeeConfig) => void;
+type SetupFeeEditorProps = {
+  config: SetupFeeConfig
+  onConfigChange: (config: SetupFeeConfig) => void
 }
 
-export function SetupFeeEditor({
-  config,
-  onConfigChange,
-}: SetupFeeEditorProps) {
+export function SetupFeeEditor({ config, onConfigChange }: SetupFeeEditorProps) {
   const update = (field: keyof SetupFeeConfig, value: number) => {
-    onConfigChange({ ...config, [field]: value });
-  };
+    onConfigChange({ ...config, [field]: value })
+  }
 
   return (
     <Card>
@@ -48,9 +45,7 @@ export function SetupFeeEditor({
                 step={1}
                 min={0}
                 value={config.perScreenFee}
-                onChange={(e) =>
-                  update("perScreenFee", parseFloat(e.target.value) || 0)
-                }
+                onChange={(e) => update('perScreenFee', parseFloat(e.target.value) || 0)}
                 onFocus={(e) => e.target.select()}
                 className="h-8 pl-5 text-xs"
               />
@@ -71,9 +66,7 @@ export function SetupFeeEditor({
               step={1}
               min={0}
               value={config.bulkWaiverThreshold}
-              onChange={(e) =>
-                update("bulkWaiverThreshold", parseInt(e.target.value) || 0)
-              }
+              onChange={(e) => update('bulkWaiverThreshold', parseInt(e.target.value) || 0)}
               onFocus={(e) => e.target.select()}
               className="h-8 w-32 text-xs"
             />
@@ -83,9 +76,7 @@ export function SetupFeeEditor({
 
           {/* Reorder discount */}
           <div className="space-y-3">
-            <p className="text-xs font-medium text-foreground">
-              Reorder Discount
-            </p>
+            <p className="text-xs font-medium text-foreground">Reorder Discount</p>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="reorder-window" className="text-xs">
@@ -97,9 +88,7 @@ export function SetupFeeEditor({
                   step={1}
                   min={0}
                   value={config.reorderDiscountWindow}
-                  onChange={(e) =>
-                    update("reorderDiscountWindow", parseInt(e.target.value) || 0)
-                  }
+                  onChange={(e) => update('reorderDiscountWindow', parseInt(e.target.value) || 0)}
                   onFocus={(e) => e.target.select()}
                   className="h-8 text-xs"
                 />
@@ -117,10 +106,7 @@ export function SetupFeeEditor({
                     max={100}
                     value={config.reorderDiscountPercent}
                     onChange={(e) =>
-                      update(
-                        "reorderDiscountPercent",
-                        parseFloat(e.target.value) || 0
-                      )
+                      update('reorderDiscountPercent', parseFloat(e.target.value) || 0)
                     }
                     onFocus={(e) => e.target.select()}
                     className="h-8 pr-6 text-xs"
@@ -132,12 +118,12 @@ export function SetupFeeEditor({
               </div>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Reorders within {config.reorderDiscountWindow} months get{" "}
+              Reorders within {config.reorderDiscountWindow} months get{' '}
               {config.reorderDiscountPercent}% off setup fees.
             </p>
           </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

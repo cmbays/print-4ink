@@ -1,16 +1,16 @@
 ---
-title: "Pipeline Architecture — Streams A, B, C Audit & Fix"
-subtitle: "Verified Streams A/B/C completion state; added garments + screens to products.json to unblock KB build"
+title: 'Pipeline Architecture — Streams A, B, C Audit & Fix'
+subtitle: 'Verified Streams A/B/C completion state; added garments + screens to products.json to unblock KB build'
 date: 2026-02-17
 phase: 1
-pipelineName: "Pipeline Architecture"
+pipelineName: 'Pipeline Architecture'
 pipelineType: horizontal
 products: []
 tools: [work-orchestrator, knowledge-base]
 stage: wrap-up
 tags: [build, decision]
-sessionId: "d59e8fe4-3461-4489-a1f1-13b5da6d70a2"
-branch: "session/0217-0217-phase2-domain"
+sessionId: 'd59e8fe4-3461-4489-a1f1-13b5da6d70a2'
+branch: 'session/0217-0217-phase2-domain'
 status: complete
 ---
 

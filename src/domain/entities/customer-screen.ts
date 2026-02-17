@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const customerScreenSchema = z.object({
   id: z.string(),
@@ -8,6 +8,6 @@ export const customerScreenSchema = z.object({
   colorIds: z.array(z.string()),
   meshCount: z.number().int().positive(),
   createdAt: z.string().datetime(),
-});
+})
 
-export type CustomerScreen = z.infer<typeof customerScreenSchema>;
+export type CustomerScreen = z.infer<typeof customerScreenSchema>

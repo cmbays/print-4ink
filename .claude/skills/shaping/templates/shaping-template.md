@@ -13,10 +13,10 @@ shaping: true
 
 ## Requirements (R)
 
-| ID | Requirement | Status |
-|----|-------------|--------|
-| R0 | {Core goal — one sentence} | Core goal |
-| R1 | | Undecided |
+| ID  | Requirement                | Status    |
+| --- | -------------------------- | --------- |
+| R0  | {Core goal — one sentence} | Core goal |
+| R1  |                            | Undecided |
 
 **Status values:** Core goal, Undecided, Leaning yes, Leaning no, Must-have, Nice-to-have, Out
 
@@ -27,46 +27,47 @@ shaping: true
 
 ## Shape A: {Title}
 
-| Part | Mechanism | Flag |
-|------|-----------|:----:|
-| **A1** | {mechanism description} | |
-| **A2** | {mechanism description} | ⚠️ |
+| Part   | Mechanism               | Flag |
+| ------ | ----------------------- | :--: |
+| **A1** | {mechanism description} |      |
+| **A2** | {mechanism description} |  ⚠️  |
 
 ---
 
 ## Shape B: {Title}
 
-| Part | Mechanism | Flag |
-|------|-----------|:----:|
-| **B1** | {mechanism description} | |
+| Part   | Mechanism               | Flag |
+| ------ | ----------------------- | :--: |
+| **B1** | {mechanism description} |      |
 
 ---
 
 ## Fit Check
 
-| Req | Requirement | Status | A | B |
-|-----|-------------|--------|---|---|
-| R0 | {full text} | Core goal | ✅ | ✅ |
-| R1 | {full text} | Undecided | ❌ | ✅ |
+| Req | Requirement | Status    | A   | B   |
+| --- | ----------- | --------- | --- | --- |
+| R0  | {full text} | Core goal | ✅  | ✅  |
+| R1  | {full text} | Undecided | ❌  | ✅  |
 
 **Notes:**
+
 - A fails R1: {brief explanation}
 
 ---
 
 ## Spikes
 
-| Spike | Status | File |
-|-------|--------|------|
+| Spike   | Status             | File              |
+| ------- | ------------------ | ----------------- |
 | {topic} | Pending / Complete | `spike-{name}.md` |
 
 ---
 
 ## Decision Points Log
 
-| # | Decision | Mode | Reasoning | Date |
-|---|----------|------|-----------|------|
-| 1 | | human / agent | | |
+| #   | Decision | Mode          | Reasoning | Date |
+| --- | -------- | ------------- | --------- | ---- |
+| 1   |          | human / agent |           |      |
 
 ---
 

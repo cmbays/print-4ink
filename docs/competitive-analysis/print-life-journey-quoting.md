@@ -1,5 +1,5 @@
 ---
-title: "Print Life Quoting Journey Map"
+title: 'Print Life Quoting Journey Map'
 description: "Detailed step-by-step journey map of Print Life's quoting workflow with friction points documented from Playwright exploration and user interview"
 category: competitive-analysis
 status: complete
@@ -18,11 +18,11 @@ last-verified: 2026-02-08
 
 ## Terminology: Internal vs External Quoting
 
-| Term | Definition | Phase |
-|------|-----------|-------|
-| **Internal Quote** | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote. | **Phase 1** (building now) |
-| **External Quote** | Customer submits quote request via customer portal. Shop reviews, adjusts, approves. | **Phase 2** |
-| **Hybrid Approval** | Customer self-service + shop approval gate. | **Phase 2** (shop-side status tracking in Phase 1) |
+| Term                | Definition                                                                                                | Phase                                              |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| **Internal Quote**  | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote. | **Phase 1** (building now)                         |
+| **External Quote**  | Customer submits quote request via customer portal. Shop reviews, adjusts, approves.                      | **Phase 2**                                        |
+| **Hybrid Approval** | Customer self-service + shop approval gate.                                                               | **Phase 2** (shop-side status tracking in Phase 1) |
 
 **Note**: The journey below documents Print Life's **internal quoting** flow (what 4Ink actually uses). Print Life also has a customer portal, but 4Ink doesn't use it. Our Phase 1 redesigns internal quoting. Phase 2 adds external quoting with hybrid approval.
 
@@ -33,6 +33,7 @@ last-verified: 2026-02-08
 ### Simple Quote: 1 Garment, 1 Color, Size Breakdown
 
 **Measured**:
+
 - Clicks: ~20-30
 - Time: ~10 minutes
 - Friction Level: High
@@ -41,6 +42,7 @@ last-verified: 2026-02-08
 ### Complex Quote: 3 Garments, Multiple Colors, Size Breakdowns, Multiple Locations
 
 **Estimated**:
+
 - Clicks: ~40-60+
 - Time: ~15-20 minutes
 - Friction Level: Very High
@@ -127,39 +129,43 @@ END: Quote built → invoice → phone call
 
 ## Friction Point Inventory
 
-| # | Friction Point | Step(s) | Severity | Why It Matters | Our Fix |
-|---|---|---|---|---|---|
-| 1 | **Qty fields block on recalculation** | Step 2 | Critical | Adds 2-3 min per quote, breaks flow | Instant client-side calculation, never block input |
-| 2 | **Mandatory steps can't be skipped** | Steps 4-5 | High | 1+ min wasted per quote on unused steps | Configurable steps, skip what's not needed |
-| 3 | **Art style change resets all selections** | Step 3 | High | Causes data loss, forces re-upload | Non-destructive editing, preserve all data |
-| 4 | **Color swatch grid overwhelming** | Steps 1-2 | Medium | 103 swatches with no search | Searchable color picker with favorites |
-| 5 | **Forced art color swatch selection** | Step 3 | Medium | Unnecessary for shop's workflow | Make optional or remove |
-| 6 | **No quote reuse/duplication** | Post-flow | High | Rebuild from scratch every time | "Duplicate Quote" + customer quote history |
-| 7 | **No quote tracking** | Post-flow | High | Quotes lost in emails/calls | Status dashboard: draft/sent/accepted/declined |
-| 8 | **No approval workflow** | Post-flow | High | Can't use customer self-service | Hybrid: customer submits → shop approves |
-| 9 | **No keyboard navigation** | All steps | Low | Mouse-only, slower workflow | Tab navigation, keyboard shortcuts |
-| 10 | **Session state lost on navigation** | All steps | Medium | Lose progress if browser navigates | Auto-save draft, URL-based state |
+| #   | Friction Point                             | Step(s)   | Severity | Why It Matters                          | Our Fix                                            |
+| --- | ------------------------------------------ | --------- | -------- | --------------------------------------- | -------------------------------------------------- |
+| 1   | **Qty fields block on recalculation**      | Step 2    | Critical | Adds 2-3 min per quote, breaks flow     | Instant client-side calculation, never block input |
+| 2   | **Mandatory steps can't be skipped**       | Steps 4-5 | High     | 1+ min wasted per quote on unused steps | Configurable steps, skip what's not needed         |
+| 3   | **Art style change resets all selections** | Step 3    | High     | Causes data loss, forces re-upload      | Non-destructive editing, preserve all data         |
+| 4   | **Color swatch grid overwhelming**         | Steps 1-2 | Medium   | 103 swatches with no search             | Searchable color picker with favorites             |
+| 5   | **Forced art color swatch selection**      | Step 3    | Medium   | Unnecessary for shop's workflow         | Make optional or remove                            |
+| 6   | **No quote reuse/duplication**             | Post-flow | High     | Rebuild from scratch every time         | "Duplicate Quote" + customer quote history         |
+| 7   | **No quote tracking**                      | Post-flow | High     | Quotes lost in emails/calls             | Status dashboard: draft/sent/accepted/declined     |
+| 8   | **No approval workflow**                   | Post-flow | High     | Can't use customer self-service         | Hybrid: customer submits → shop approves           |
+| 9   | **No keyboard navigation**                 | All steps | Low      | Mouse-only, slower workflow             | Tab navigation, keyboard shortcuts                 |
+| 10  | **Session state lost on navigation**       | All steps | Medium   | Lose progress if browser navigates      | Auto-save draft, URL-based state                   |
 
 ---
 
 ## Interconnections with Other Workflows
 
 ### Quote → Invoice Conversion
+
 - **Current (4Ink)**: Quote IS the invoice. No separate quote state. Once built, it's an invoice.
 - **Pain**: No ability to send a quote for approval before creating an invoice. Quote and invoice are conflated.
 - **Our approach**: Separate Quote and Invoice entities. Quote → Approve → Convert to Invoice.
 
 ### Quote → Customer Communication
+
 - **Current**: Shop calls customer on phone with the price
 - **Pain**: No digital trail, no PDF, no email, no portal link
 - **Our approach**: Send quote via email/portal link. Customer can view, accept, or request changes.
 
 ### Quote → Repeat Orders
+
 - **Current**: Rebuild from scratch every time
 - **Pain**: 10 minutes wasted per repeat order
 - **Our approach**: Save quotes per customer. "Duplicate Quote" button. Quote templates.
 
 ### Customer Data in Quoting
+
 - **Current**: Guest mode in customer portal, internal quoting has customer selection
 - **Pain**: No CRM integration in quoting flow
 - **Our approach**: Customer combobox in quote form, link to customer history
@@ -184,23 +190,24 @@ END: Quote built → invoice → phone call
 
 ## Success Metrics for Redesign
 
-| Metric | Print Life (Actual) | Screen Print Pro (Target) | Improvement |
-|--------|---|---|---|
-| Simple quote time | 10 min | 3-4 min | 60-70% faster |
-| Complex quote time | 15-20 min | 6-8 min | 50-60% faster |
-| Simple quote clicks | 20-30 | 8-12 | 60% fewer |
-| Complex quote clicks | 40-60 | 20-30 | 50% fewer |
-| Mandatory unused steps | 2 | 0 | Eliminated |
-| Recalculation blocking | Every field | Never | 100% eliminated |
-| Quote reuse | Not possible | 1-click duplicate | New capability |
-| Quote tracking | None | Full dashboard | New capability |
-| Customer self-service | No approval gate | Hybrid with approval | Differentiator |
+| Metric                 | Print Life (Actual) | Screen Print Pro (Target) | Improvement     |
+| ---------------------- | ------------------- | ------------------------- | --------------- |
+| Simple quote time      | 10 min              | 3-4 min                   | 60-70% faster   |
+| Complex quote time     | 15-20 min           | 6-8 min                   | 50-60% faster   |
+| Simple quote clicks    | 20-30               | 8-12                      | 60% fewer       |
+| Complex quote clicks   | 40-60               | 20-30                     | 50% fewer       |
+| Mandatory unused steps | 2                   | 0                         | Eliminated      |
+| Recalculation blocking | Every field         | Never                     | 100% eliminated |
+| Quote reuse            | Not possible        | 1-click duplicate         | New capability  |
+| Quote tracking         | None                | Full dashboard            | New capability  |
+| Customer self-service  | No approval gate    | Hybrid with approval      | Differentiator  |
 
 ---
 
 ## Handoff to Designers
 
 **Key Design Principles from Analysis**:
+
 1. **Never block input** — calculations happen instantly in the background, never prevent typing
 2. **Eliminate friction steps** — only show steps the shop actually uses
 3. **Non-destructive editing** — changing one option never wipes other selections
@@ -208,6 +215,7 @@ END: Quote built → invoice → phone call
 5. **Persistent state** — auto-save drafts, URL-based state, never lose work
 
 **Must-Haves for New Design**:
+
 - [ ] Instant, non-blocking price calculations (Phase 1)
 - [ ] Configurable/skippable steps (no mandatory unused steps) (Phase 1)
 - [ ] Quote status tracking dashboard (draft/sent/accepted/declined) (Phase 1)
@@ -217,6 +225,7 @@ END: Quote built → invoice → phone call
 - [ ] Keyboard-navigable quantity entry (Phase 1)
 
 **Nice-to-Haves**:
+
 - [ ] Searchable color picker (vs. 103-swatch grid)
 - [ ] Customer quote history (all past quotes for a customer)
 - [ ] Quote templates for common orders

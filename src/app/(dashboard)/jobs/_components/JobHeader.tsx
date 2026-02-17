@@ -1,37 +1,36 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Calendar, Clock, CalendarPlus } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
-import { RiskIndicator } from "@/components/features/RiskIndicator";
-import { LaneBadge } from "@/components/features/LaneBadge";
-import { PRIORITY_LABELS, PRIORITY_COLORS, SERVICE_TYPE_LEFT_BORDER_COLORS } from "@domain/constants";
-import { formatDate } from "@shared/lib/format";
-import type { Job } from "@domain/entities/job";
+import Link from 'next/link'
+import { Calendar, Clock, CalendarPlus } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { ServiceTypeBadge } from '@/components/features/ServiceTypeBadge'
+import { RiskIndicator } from '@/components/features/RiskIndicator'
+import { LaneBadge } from '@/components/features/LaneBadge'
+import {
+  PRIORITY_LABELS,
+  PRIORITY_COLORS,
+  SERVICE_TYPE_LEFT_BORDER_COLORS,
+} from '@domain/constants'
+import { formatDate } from '@shared/lib/format'
+import type { Job } from '@domain/entities/job'
 
-interface JobHeaderProps {
-  job: Job;
-  customerName: string;
+type JobHeaderProps = {
+  job: Job
+  customerName: string
 }
 
 export function JobHeader({ job, customerName }: JobHeaderProps) {
-  const leftBorderColor = SERVICE_TYPE_LEFT_BORDER_COLORS[job.serviceType];
+  const leftBorderColor = SERVICE_TYPE_LEFT_BORDER_COLORS[job.serviceType]
 
   return (
     <section
-      className={cn(
-        "rounded-lg border border-border bg-card p-5 border-l-[3px]",
-        leftBorderColor
-      )}
+      className={cn('rounded-lg border border-border bg-card p-5 border-l-[3px]', leftBorderColor)}
     >
       {/* Top row: service badge + job number */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <ServiceTypeBadge serviceType={job.serviceType} variant="badge" />
-          <span className="text-xs font-mono text-muted-foreground">
-            {job.jobNumber}
-          </span>
+          <span className="text-xs font-mono text-muted-foreground">{job.jobNumber}</span>
         </div>
         <div className="flex items-center gap-2">
           <RiskIndicator riskLevel={job.riskLevel} showLabel />
@@ -48,17 +47,10 @@ export function JobHeader({ job, customerName }: JobHeaderProps) {
       </Link>
 
       {/* Title */}
-      <h1 className="mt-1 text-lg font-semibold text-foreground">
-        {job.title}
-      </h1>
+      <h1 className="mt-1 text-lg font-semibold text-foreground">{job.title}</h1>
 
       {/* Priority */}
-      <span
-        className={cn(
-          "mt-1 inline-block text-xs font-medium",
-          PRIORITY_COLORS[job.priority]
-        )}
-      >
+      <span className={cn('mt-1 inline-block text-xs font-medium', PRIORITY_COLORS[job.priority])}>
         {PRIORITY_LABELS[job.priority]} Priority
       </span>
 
@@ -78,5 +70,5 @@ export function JobHeader({ job, customerName }: JobHeaderProps) {
         </span>
       </div>
     </section>
-  );
+  )
 }

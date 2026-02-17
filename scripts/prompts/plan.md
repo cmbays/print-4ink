@@ -29,15 +29,18 @@ Create both a human-readable implementation plan AND a machine-readable YAML exe
 Two artifacts:
 
 **1. Implementation plan** at `docs/plans/YYYY-MM-DD-{VERTICAL}-impl-plan.md`:
+
 - Wave breakdown with task descriptions
 - File lists per task
 - Build order rationale
 
 **2. YAML execution manifest** at `docs/plans/YYYY-MM-DD-{VERTICAL}-manifest.yaml`:
+
 - Machine-readable format consumed by `work build`
 - See the implementation-planning skill for the schema
 
 Also produce a KB session doc at `{KB_DIR}/` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=implementation-planning, tags=[plan]
 - Summary of planning decisions
 

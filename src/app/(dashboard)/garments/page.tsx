@@ -1,21 +1,21 @@
-import { Suspense } from "react";
-import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs } from "@shared/lib/breadcrumbs";
-import { getGarmentCatalog } from "@infra/repositories/garments";
-import { getJobs } from "@infra/repositories/jobs";
-import { getCustomers } from "@infra/repositories/customers";
-import { GarmentCatalogClient } from "./_components/GarmentCatalogClient";
+import { Suspense } from 'react'
+import { Topbar } from '@shared/ui/layouts/topbar'
+import { buildBreadcrumbs } from '@shared/lib/breadcrumbs'
+import { getGarmentCatalog } from '@infra/repositories/garments'
+import { getJobs } from '@infra/repositories/jobs'
+import { getCustomers } from '@infra/repositories/customers'
+import { GarmentCatalogClient } from './_components/GarmentCatalogClient'
 
 export default async function GarmentCatalogPage() {
   const [garmentCatalog, jobs, customers] = await Promise.all([
     getGarmentCatalog(),
     getJobs(),
     getCustomers(),
-  ]);
+  ])
 
   return (
     <>
-      <Topbar breadcrumbs={buildBreadcrumbs({ label: "Garment Catalog" })} />
+      <Topbar breadcrumbs={buildBreadcrumbs({ label: 'Garment Catalog' })} />
       <div className="flex flex-col gap-4">
         <Suspense
           fallback={
@@ -32,5 +32,5 @@ export default async function GarmentCatalogPage() {
         </Suspense>
       </div>
     </>
-  );
+  )
 }

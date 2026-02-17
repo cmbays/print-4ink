@@ -4,11 +4,11 @@
 # Required: yq (brew install yq)
 # Validate: yq '.' <this-file>
 
-vertical: VERTICAL_SLUG  # Must match content.config.ts verticals
+vertical: VERTICAL_SLUG # Must match content.config.ts verticals
 
 waves:
-  - name: "Foundation"
-    serial: true  # Sessions run one at a time
+  - name: 'Foundation'
+    serial: true # Sessions run one at a time
     sessions:
       - topic: VERTICAL-w0-schemas
         prompt: |
@@ -26,8 +26,8 @@ waves:
           Commit and create PR when complete.
         stage: build
 
-  - name: "Core Features"
-    serial: false  # Sessions run in parallel
+  - name: 'Core Features'
+    serial: false # Sessions run in parallel
     sessions:
       - topic: VERTICAL-w1-feature-a
         prompt: |

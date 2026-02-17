@@ -1,6 +1,6 @@
 ---
-title: "Pricing"
-subtitle: "Price matrix configuration, markup rules, and quantity break calculations"
+title: 'Pricing'
+subtitle: 'Price matrix configuration, markup rules, and quantity break calculations'
 domain: pricing
 docType: overview
 lastUpdated: 2026-02-15
@@ -9,7 +9,7 @@ status: draft
 
 ## Overview
 
-*To be written. This is a placeholder created during the KB taxonomy restructure.*
+_To be written. This is a placeholder created during the KB taxonomy restructure._
 
 ## Current State
 

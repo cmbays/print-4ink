@@ -1,6 +1,6 @@
 ---
-title: "Colors — Implementation Plan: 4 Waves, 7 Sessions"
-subtitle: "Wave-parallelized execution manifest for 48 UI + 25 code affordances across 6 vertical slices"
+title: 'Colors — Implementation Plan: 4 Waves, 7 Sessions'
+subtitle: 'Wave-parallelized execution manifest for 48 UI + 25 code affordances across 6 vertical slices'
 date: 2026-02-15
 phase: 1
 pipelineName: colors
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: plan
 tags: [plan]
-sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
-branch: "session/0215-color-prefs"
+sessionId: '08cc4e02-a47a-42b3-b9c9-d47e392c498b'
+branch: 'session/0215-color-prefs'
 status: complete
 ---
 
@@ -21,12 +21,12 @@ Transformed the sliced color preference breadboard (6 vertical slices, 48 UI + 2
 
 ## Wave Architecture
 
-| Wave | Sessions | Mode | Topics |
-|------|----------|------|--------|
-| Wave 0: Foundation | 1 | serial | colors-foundation |
-| Wave 1: Catalog UX + Global Settings | 3 | parallel | colors-swatch-filter, colors-drawer-favorites, colors-global-settings |
-| Wave 2: Brand Hierarchy | 1 | serial | colors-brand-drawer |
-| Wave 3: Customer + Removal | 2 | parallel | colors-customer-prefs, colors-removal-dialog |
+| Wave                                 | Sessions | Mode     | Topics                                                                |
+| ------------------------------------ | -------- | -------- | --------------------------------------------------------------------- |
+| Wave 0: Foundation                   | 1        | serial   | colors-foundation                                                     |
+| Wave 1: Catalog UX + Global Settings | 3        | parallel | colors-swatch-filter, colors-drawer-favorites, colors-global-settings |
+| Wave 2: Brand Hierarchy              | 1        | serial   | colors-brand-drawer                                                   |
+| Wave 3: Customer + Removal           | 2        | parallel | colors-customer-prefs, colors-removal-dialog                          |
 
 **Total: 7 sessions, 4 waves**
 
@@ -46,11 +46,11 @@ Single session creating everything subsequent waves need:
 
 Three sessions running concurrently — no file conflicts:
 
-| Session | Slice | Touches | Demo |
-|---------|-------|---------|------|
-| colors-swatch-filter | V1 | Toolbar, Card, page.tsx | "Click color swatches to filter; cards show favorites + count" |
-| colors-drawer-favorites | V2 | GarmentDetailDrawer only | "Open drawer: favorites at top, full palette below, scrolls correctly" |
-| colors-global-settings | V3 | New /settings/colors page | "Settings > Colors: tap swatches to set shop-wide favorites" |
+| Session                 | Slice | Touches                   | Demo                                                                   |
+| ----------------------- | ----- | ------------------------- | ---------------------------------------------------------------------- |
+| colors-swatch-filter    | V1    | Toolbar, Card, page.tsx   | "Click color swatches to filter; cards show favorites + count"         |
+| colors-drawer-favorites | V2    | GarmentDetailDrawer only  | "Open drawer: favorites at top, full palette below, scrolls correctly" |
+| colors-global-settings  | V3    | New /settings/colors page | "Settings > Colors: tap swatches to set shop-wide favorites"           |
 
 ## Wave 2: V4 (Serial)
 
@@ -58,31 +58,33 @@ Brand detail drawer with Beth Meyer inheritance toggle. Wires brand name clicks 
 
 ## Wave 3: V5 + V6 (Parallel)
 
-| Session | Slice | Touches | Demo |
-|---------|-------|---------|------|
-| colors-customer-prefs | V5 | New CustomerPreferencesTab + CustomerTabs modify | "Customer > Preferences: set ACME Corp's colors, brands, garments" |
-| colors-removal-dialog | V6 | New RemovalConfirmationDialog + modify V3 page + V4 drawer | "Remove global color -> '5 customers affected' -> choose targets" |
+| Session               | Slice | Touches                                                    | Demo                                                               |
+| --------------------- | ----- | ---------------------------------------------------------- | ------------------------------------------------------------------ |
+| colors-customer-prefs | V5    | New CustomerPreferencesTab + CustomerTabs modify           | "Customer > Preferences: set ACME Corp's colors, brands, garments" |
+| colors-removal-dialog | V6    | New RemovalConfirmationDialog + modify V3 page + V4 drawer | "Remove global color -> '5 customers affected' -> choose targets"  |
 
 ## Key Decisions
 
-| # | Decision | Rationale |
-|---|----------|-----------|
-| D1 | Extract shared components to Wave 0 | Enables V1+V2+V3 parallelism — all use FavoritesColorSection but touch different page files |
-| D2 | V1+V2+V3 parallel despite breadboard's V3->V4 chain | Runtime hierarchy (brand reads global) is a data dependency, not a file conflict. In Phase 1 with mock data, each session can build independently |
-| D3 | Stubs for forward dependencies | V1 cards have onBrandClick stub (wired in V4); V3/V4 have console.log removal stubs (wired in V6) |
-| D4 | Single Wave 0 session (~1000 lines) | Could split schemas/components into 2 sessions, but all pieces are foundational and interdependent. One session avoids coordination overhead |
-| D5 | Wave 2 depends on V3 not V1+V2 | Brand drawer reads global favorites (from V3). V1/V2 integration is additive (brand name clicks) — can be wired in V4 |
+| #   | Decision                                            | Rationale                                                                                                                                         |
+| --- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Extract shared components to Wave 0                 | Enables V1+V2+V3 parallelism — all use FavoritesColorSection but touch different page files                                                       |
+| D2  | V1+V2+V3 parallel despite breadboard's V3->V4 chain | Runtime hierarchy (brand reads global) is a data dependency, not a file conflict. In Phase 1 with mock data, each session can build independently |
+| D3  | Stubs for forward dependencies                      | V1 cards have onBrandClick stub (wired in V4); V3/V4 have console.log removal stubs (wired in V6)                                                 |
+| D4  | Single Wave 0 session (~1000 lines)                 | Could split schemas/components into 2 sessions, but all pieces are foundational and interdependent. One session avoids coordination overhead      |
+| D5  | Wave 2 depends on V3 not V1+V2                      | Brand drawer reads global favorites (from V3). V1/V2 integration is additive (brand name clicks) — can be wired in V4                             |
 
 ## File Conflict Analysis
 
 Verified no file conflicts within parallel waves:
 
 **Wave 1 (V1 || V2 || V3):**
+
 - V1: GarmentCatalogToolbar, GarmentCard, garments/page.tsx, ColorFilterGrid (new)
 - V2: GarmentDetailDrawer only
 - V3: settings/colors/page.tsx (new), no overlap with garments/
 
 **Wave 3 (V5 || V6):**
+
 - V5: customers/[id]/ components only
 - V6: RemovalConfirmationDialog (new), settings/colors/page.tsx, BrandDetailDrawer
 - No overlap: V5 touches customers, V6 touches settings + garments

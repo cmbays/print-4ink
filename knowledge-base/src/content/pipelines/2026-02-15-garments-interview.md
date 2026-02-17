@@ -1,6 +1,6 @@
 ---
-title: "Garments Vertical — Requirements Interview"
-subtitle: "Structured interview validates catalog design, confirms mockup quality as demo showpiece, surfaces customer-supplied garment and screen cost intelligence needs"
+title: 'Garments Vertical — Requirements Interview'
+subtitle: 'Structured interview validates catalog design, confirms mockup quality as demo showpiece, surfaces customer-supplied garment and screen cost intelligence needs'
 date: 2026-02-15
 phase: 1
 pipelineName: garments
@@ -10,8 +10,8 @@ domains: [garments, screens]
 tools: []
 stage: interview
 tags: [decision, research]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0214-garments-interview"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0214-garments-interview'
 status: complete
 ---
 
@@ -39,10 +39,10 @@ Conducted a structured requirements interview to validate the garment catalog de
 
 ### PrintLife Competitive Intelligence
 
-| PrintLife Does Well | PrintLife Does Poorly |
-|--------------------|--------------------|
-| Auto-updated pricing from distributors | Hard to browse/find styles |
-| Real-time color/size availability | Can't save customer favorites |
+| PrintLife Does Well                    | PrintLife Does Poorly         |
+| -------------------------------------- | ----------------------------- |
+| Auto-updated pricing from distributors | Hard to browse/find styles    |
+| Real-time color/size availability      | Can't save customer favorites |
 
 **Our strategy**: Match PrintLife on API data (Phase 2), beat them on browsing UX and customer favorites (Phase 1 differentiators).
 
@@ -56,6 +56,7 @@ Conducted a structured requirements interview to validate the garment catalog de
 ### Repeat Customer Patterns
 
 Two primary reorder patterns:
+
 1. **Same garments, different designs** — locked into a blank, new artwork each time
 2. **Same styles, rotating color set** — stick with a style, pick from their known palette per design
 
@@ -78,20 +79,22 @@ Maps perfectly to our two-level favorites: garment-level stars + per-garment col
 
 ### Feature Priority Stack
 
-| Priority | Feature | Role |
-|----------|---------|------|
-| 1 | **Garment images everywhere** | Non-negotiable table stakes — PrintLife already does this |
-| 2 | **Fast garment lookup** | Must BEAT PrintLife, not just match |
-| 3 | **Customer favorites** | THE differentiator — what PrintLife can't do |
-| 4 | **Enable/disable scoping** | Important when API data arrives (Phase 2) |
+| Priority | Feature                       | Role                                                      |
+| -------- | ----------------------------- | --------------------------------------------------------- |
+| 1        | **Garment images everywhere** | Non-negotiable table stakes — PrintLife already does this |
+| 2        | **Fast garment lookup**       | Must BEAT PrintLife, not just match                       |
+| 3        | **Customer favorites**        | THE differentiator — what PrintLife can't do              |
+| 4        | **Enable/disable scoping**    | Important when API data arrives (Phase 2)                 |
 
 ### Mockup Requirements
 
 Two-layer image system:
+
 1. **Product photos + color-matched swatches** — In catalog and garment references. Photo updates when swatch is selected.
 2. **Realistic mockup composition** — Artwork overlaid on colored garment at correct print location. Must be color-accurate.
 
 **Critical in both customer-facing AND internal use.** The mockup should be live during quote building:
+
 - Pick garment → see image
 - Pick color → image updates
 - Add artwork → design overlays
@@ -111,6 +114,7 @@ Current catalog filters are category/brand/color. Since the owner recommends gar
 ### D2: Customer-Supplied Garment Support
 
 Add a `customerSupplied` boolean flag to garment line items in quotes/jobs. When true:
+
 - Skip garment cost in pricing
 - Still capture garment info (style, fabric type, weight) for production
 - Allow optional flat handling fee
@@ -149,29 +153,29 @@ PrintLife already has auto-refreshing garment data via API. Our Phase 2 API inte
   <div class="gary-answer" data-answered-date=""></div>
 </div>
 
-| ID | Question | Status |
-|----|----------|--------|
+| ID          | Question                                                   | Status     |
+| ----------- | ---------------------------------------------------------- | ---------- |
 | garments-q4 | Garment ordering method (website vs PrintLife integration) | unanswered |
-| garments-q5 | Screen reclamation dashboard value | unanswered |
-| garments-q6 | Customer-supplied garment handling fee standardization | unanswered |
-| garments-q7 | On-site stock quantities and tracking method | unanswered |
+| garments-q5 | Screen reclamation dashboard value                         | unanswered |
+| garments-q6 | Customer-supplied garment handling fee standardization     | unanswered |
+| garments-q7 | On-site stock quantities and tracking method               | unanswered |
 
 ## Requirements Matrix
 
-| Feature | Priority | Phase | Complexity | Status | Notes |
-|---------|----------|-------|------------|--------|-------|
-| Garment images propagated everywhere | P0 | 1 | Medium | Built | Needs polish for demo |
-| Fast search/filter/browse | P0 | 1 | Medium | Built | Validated as must-beat-PrintLife |
-| Customer favorites (garment + color) | P1 | 1 | Medium | Built | Differentiator vs PrintLife |
-| Mockup composition (design on garment) | P0 | 1 | High | Built | Demo showpiece — polish priority |
-| Color-accurate mockups (garment color) | P0 | 1 | Medium | Built | Critical for internal and customer-facing |
-| Enable/disable scoping | P2 | 1 | Low | Built | Important when API data arrives |
-| Weight/fabric type filters | P1 | 1.5 | Low | Not built | New — primary recommendation drivers |
-| Customer-supplied garment flag | P2 | 1.5 | Low | Not built | ~1x/month use case, schema addition |
-| API auto-refresh (S&S + SanMar) | P1 | 2 | High | Not started | Matching PrintLife baseline |
-| Screen reclamation intelligence | P3 | 2 | Medium | Not started | Cost-saving insight dashboard |
-| Light inventory awareness | P3 | 2 | Medium | Not started | "What's on the shelf" before ordering |
-| One-click garment ordering | P3 | 2+ | High | Not started | Order from quote via API |
+| Feature                                | Priority | Phase | Complexity | Status      | Notes                                     |
+| -------------------------------------- | -------- | ----- | ---------- | ----------- | ----------------------------------------- |
+| Garment images propagated everywhere   | P0       | 1     | Medium     | Built       | Needs polish for demo                     |
+| Fast search/filter/browse              | P0       | 1     | Medium     | Built       | Validated as must-beat-PrintLife          |
+| Customer favorites (garment + color)   | P1       | 1     | Medium     | Built       | Differentiator vs PrintLife               |
+| Mockup composition (design on garment) | P0       | 1     | High       | Built       | Demo showpiece — polish priority          |
+| Color-accurate mockups (garment color) | P0       | 1     | Medium     | Built       | Critical for internal and customer-facing |
+| Enable/disable scoping                 | P2       | 1     | Low        | Built       | Important when API data arrives           |
+| Weight/fabric type filters             | P1       | 1.5   | Low        | Not built   | New — primary recommendation drivers      |
+| Customer-supplied garment flag         | P2       | 1.5   | Low        | Not built   | ~1x/month use case, schema addition       |
+| API auto-refresh (S&S + SanMar)        | P1       | 2     | High       | Not started | Matching PrintLife baseline               |
+| Screen reclamation intelligence        | P3       | 2     | Medium     | Not started | Cost-saving insight dashboard             |
+| Light inventory awareness              | P3       | 2     | Medium     | Not started | "What's on the shelf" before ordering     |
+| One-click garment ordering             | P3       | 2+    | High       | Not started | Order from quote via API                  |
 
 ## Cross-Vertical Implications
 

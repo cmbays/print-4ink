@@ -1,6 +1,6 @@
 ---
-title: "Git Worktree Migration + Memory Refactoring"
-subtitle: "Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%."
+title: 'Git Worktree Migration + Memory Refactoring'
+subtitle: 'Migrated from git checkout to git worktrees for concurrent session isolation, auto-generated for_human index, and slimmed progress/memory files by 70%.'
 date: 2026-02-10
 phase: 1
 pipelineName: devx
@@ -9,8 +9,8 @@ products: []
 tools: [work-orchestrator]
 stage: build
 tags: [build, decision]
-sessionId: "8a3b9d7b-461c-48a8-bdbc-7b4361c6260a"
-branch: "session/0210-worktree-migration"
+sessionId: '8a3b9d7b-461c-48a8-bdbc-7b4361c6260a'
+branch: 'session/0210-worktree-migration'
 status: complete
 ---
 
@@ -22,16 +22,16 @@ Additionally, `progress.txt` (251 lines) and `MEMORY.md` (202+ lines) were bloat
 
 ## What Changed
 
-| Stat | Value |
-|------|-------|
-| progress.txt lines | 251 → 95 |
-| MEMORY.md lines | 202 → 72 |
-| gitbutler-lessons.md | 165 → 0 |
-| auto-indexed entries | 15 |
+| Stat                 | Value    |
+| -------------------- | -------- |
+| progress.txt lines   | 251 → 95 |
+| MEMORY.md lines      | 202 → 72 |
+| gitbutler-lessons.md | 165 → 0  |
+| auto-indexed entries | 15       |
 
 ### Files Created
 
-- **scripts/generate-for-human-index.js** — Zero-dep Node.js script that scans for_human/*.html, extracts metadata, generates index.html + README.md
+- **scripts/generate-for-human-index.js** — Zero-dep Node.js script that scans for_human/\*.html, extracts metadata, generates index.html + README.md
 - **docs/HISTORY.md** — Archived session logs and completed feature details (moved from progress.txt)
 - **memory/worktree-workflow.md** — Detailed worktree rules, stacked PRs, cleanup protocol
 

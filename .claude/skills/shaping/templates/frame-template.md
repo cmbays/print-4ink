@@ -13,8 +13,9 @@ shaping: true
 ## Source
 
 > [Paste verbatim source material here — user requests, interview quotes, emails,
-> slack messages, stakeholder feedback. Preserve exact wording. Multiple sources
-> can be added as they arrive.]
+>
+> > slack messages, stakeholder feedback. Preserve exact wording. Multiple sources
+> > can be added as they arrive.]
 
 ---
 

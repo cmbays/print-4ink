@@ -8,22 +8,22 @@ Files: `stages.json`, `products.json`, `tools.json`, `tags.json`, `pipeline-type
 
 Every entry **must** have:
 
-| Field | Type | Convention |
-|-------|------|------------|
-| `slug` | string | `kebab-case` machine identifier, stable across renames |
-| `label` | string | Title Case human-readable display name |
-| `description` | string | What this value represents and when to use it |
+| Field         | Type   | Convention                                             |
+| ------------- | ------ | ------------------------------------------------------ |
+| `slug`        | string | `kebab-case` machine identifier, stable across renames |
+| `label`       | string | Title Case human-readable display name                 |
+| `description` | string | What this value represents and when to use it          |
 
 Domain-specific fields follow after the three required fields:
 
-| Field | Used by | Convention |
-|-------|---------|------------|
-| `route` | products | App route path (e.g., `/quotes`) |
-| `icon` | products, tools | Lucide React icon name in PascalCase (e.g., `Calculator`) |
-| `color` | tags | Named color string mapped to design system tokens (see below) |
-| `stages` | pipeline-types | Ordered array of stage slugs |
-| `core` | stages | Boolean — stage counts toward "Active" health status |
-| `pipeline` | stages | Boolean — `false` excludes from pipeline stepper (e.g., cooldown) |
+| Field      | Used by         | Convention                                                        |
+| ---------- | --------------- | ----------------------------------------------------------------- |
+| `route`    | products        | App route path (e.g., `/quotes`)                                  |
+| `icon`     | products, tools | Lucide React icon name in PascalCase (e.g., `Calculator`)         |
+| `color`    | tags            | Named color string mapped to design system tokens (see below)     |
+| `stages`   | pipeline-types  | Ordered array of stage slugs                                      |
+| `core`     | stages          | Boolean — stage counts toward "Active" health status              |
+| `pipeline` | stages          | Boolean — `false` excludes from pipeline stepper (e.g., cooldown) |
 
 **Array order is significant** — it defines display order in UI, pipeline stage sequences, and Zod enum defaults. Do not reorder without checking consumers.
 
@@ -35,14 +35,14 @@ Keyed by stage slug. Each entry **must** have a `description` field. Labels are 
 
 ## Consumers
 
-| Consumer | Reads | Location |
-|----------|-------|----------|
-| KB Zod schema | `slug` (enum derivation) | `knowledge-base/src/content.config.ts` |
-| KB utils | `slug`, `label`, `description`, `color`, `core`, `pipeline` | `knowledge-base/src/lib/utils.ts` |
-| KB pages | `slug`, `label`, `description`, `route` | `knowledge-base/src/pages/` |
-| Pipeline entity | `slug`, `stages` | `scripts/lib/pipeline-entity.sh` |
-| Pipeline gates | `artifacts`, `gate`, `next` | `scripts/lib/pipeline-gates.sh` |
-| CLI help (planned) | `slug`, `label`, `description`, `flag` | `scripts/lib/pipeline-update.sh` |
+| Consumer           | Reads                                                       | Location                               |
+| ------------------ | ----------------------------------------------------------- | -------------------------------------- |
+| KB Zod schema      | `slug` (enum derivation)                                    | `knowledge-base/src/content.config.ts` |
+| KB utils           | `slug`, `label`, `description`, `color`, `core`, `pipeline` | `knowledge-base/src/lib/utils.ts`      |
+| KB pages           | `slug`, `label`, `description`, `route`                     | `knowledge-base/src/pages/`            |
+| Pipeline entity    | `slug`, `stages`                                            | `scripts/lib/pipeline-entity.sh`       |
+| Pipeline gates     | `artifacts`, `gate`, `next`                                 | `scripts/lib/pipeline-gates.sh`        |
+| CLI help (planned) | `slug`, `label`, `description`, `flag`                      | `scripts/lib/pipeline-update.sh`       |
 
 ## Adding a new config file
 

@@ -44,8 +44,8 @@
 
 ## Affordance Table
 
-| UI Element | Code Mechanism | Wiring |
-|-----------|----------------|--------|
+| UI Element           | Code Mechanism             | Wiring                |
+| -------------------- | -------------------------- | --------------------- |
 | [What the user sees] | [How it works technically] | [What it connects to] |
 
 ## Findings

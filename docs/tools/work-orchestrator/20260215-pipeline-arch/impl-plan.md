@@ -9,6 +9,7 @@
 **Tech Stack:** Bash/Zsh (work.sh + lib modules), JSON (pipeline registry, config files), Zod (KB frontmatter validation), yq (YAML parsing), gh CLI (GitHub API for PR management, merge detection), Astro (KB static site)
 
 **Input Documents:**
+
 - `docs/research/2026-02-15-pipeline-architecture-research.md` (14 design decisions)
 - GitHub issue #192 (6 implementation streams with checklists)
 - Current config files: `config/stages.json`, `config/workflows.json`, `config/products.json`, `config/tools.json`, `config/verticals.json`
@@ -28,6 +29,7 @@
 ### Task 0.1: Config File Migration
 
 **Files:**
+
 - `config/workflows.json` -> DELETE (replaced by pipeline-types.json)
 - `config/pipeline-types.json` (NEW — renamed + updated content)
 - `config/stages.json` (UPDATE — new short slugs)
@@ -35,6 +37,7 @@
 - `config/pipeline-gates.json` (NEW — stage gate definitions)
 
 **Steps:**
+
 1. Create `config/pipeline-types.json` with updated content from research doc (stage arrays use new short slugs: shape, breadboard, plan). Add descriptions per type. Delete `config/workflows.json`.
 2. Update `config/stages.json`: rename slugs (`shaping` -> `shape`, `breadboarding` -> `breadboard`, `implementation-planning` -> `plan`), remove stale entries (`polish` — it's a pipeline type not a stage, `learnings` — replaced by `wrap-up`), remove `workAlias` fields (no longer needed when slugs are short), keep `cooldown` with `"pipeline": false`.
 3. Delete `config/verticals.json`.
@@ -43,10 +46,12 @@
 ### Task 0.2: KB Schema — Backward-Compatible Transition
 
 **Files:**
+
 - `knowledge-base/src/content.config.ts` (UPDATE)
 - `knowledge-base/src/lib/utils.ts` (UPDATE)
 
 **Steps:**
+
 1. Update `content.config.ts`:
    - Remove `verticalsConfig` and `workflowsConfig` imports
    - Add `pipelineTypesConfig` import from `config/pipeline-types.json`
@@ -65,10 +70,12 @@
 ### Task 0.3: Pipeline Entity + Registry
 
 **Files:**
+
 - `scripts/lib/pipeline-entity.sh` (NEW)
 - `scripts/lib/pipeline-registry.sh` (NEW)
 
 **Steps:**
+
 1. Design pipeline entity JSON schema matching research doc:
    ```json
    {
@@ -109,9 +116,11 @@
 ### Task 0.4: Work.sh Consumer Updates
 
 **Files:**
+
 - `scripts/work.sh` (UPDATE)
 
 **Steps:**
+
 1. Remove `verticals.json` dependency from `_work_phase()`: replace strict vertical validation with lenient topic acceptance (any kebab-case string). The old phase commands remain functional but without enum validation — they'll be replaced by new pipeline commands in Wave 2.
 2. Update `_work_build()` to support `baseBranch` manifest field:
    - Read `baseBranch` from manifest: `yq -r '.baseBranch // "main"' "$MANIFEST"`
@@ -123,6 +132,7 @@
 ### Task 0.5: Entity-First Directory Setup
 
 **Steps:**
+
 1. Create `docs/products/` and `docs/tools/` directory stubs (if not existing)
 2. Implement directory creation in `_pipeline_create()`: `docs/{products|tools}/{slug}/{pipeline-id}/`
 3. Document the directory convention in a comment block in `pipeline-entity.sh`
@@ -138,6 +148,7 @@
 ### Task 1.1: KB Frontmatter Migration + Page Updates (Session: `kb-pipeline-schema`)
 
 **Files:**
+
 - ~57 files in `knowledge-base/src/content/pipelines/` (frontmatter migration)
 - ~7 files in `knowledge-base/src/content/sessions/` (check if migration needed)
 - Strategy collection files (check pipelinesCompleted/Launched)
@@ -149,6 +160,7 @@
 - `knowledge-base/src/components/VerticalHealth.astro`
 
 **Steps:**
+
 1. **Frontmatter migration** (~60 files):
    - Rename `pipeline: <value>` to `pipelineName: <value>` in all pipeline docs
    - Update stage slugs: `shaping` -> `shape`, `breadboarding` -> `breadboard`, `implementation-planning` -> `plan`, `learnings` -> `wrap-up`
@@ -173,11 +185,13 @@
 ### Task 1.2: Work Pipeline Management Commands (Session: `work-pipeline-mgmt`)
 
 **Files:**
+
 - `scripts/work.sh` (UPDATE — dispatcher)
 - `scripts/lib/pipeline-define.sh` (NEW)
 - `scripts/lib/pipeline-status.sh` (NEW)
 
 **Steps:**
+
 1. **Implement `work define`** (`lib/pipeline-define.sh`):
    - Parse args: `work define <name> [--type <type>] [--issue <number>] [--prompt "<text>"] [--auto]`
    - Generate pipeline ID: `YYYYMMDD-<name>` (kebab-case enforced)
@@ -208,6 +222,7 @@
 ### Task 1.3: Skills Stage Reference Update (Session: `skills-stage-update`)
 
 **Files:**
+
 - `.claude/skills/shaping/SKILL.md` + templates + reference
 - `.claude/skills/breadboarding/SKILL.md` + templates + reference
 - `.claude/skills/breadboard-reflection/SKILL.md`
@@ -219,6 +234,7 @@
 - `.claude/skills/one-on-one/1on1-log.md`
 
 **Steps:**
+
 1. Audit all 16 skills for references to old stage names or verticals-based concepts.
 2. Update stage slug references throughout:
    - `shaping` (as stage name) -> `shape`
@@ -249,9 +265,11 @@
 ### Task 2.1: Stage Gate Validation (Session: `work-execution-pipeline`)
 
 **Files:**
+
 - `scripts/lib/pipeline-gates.sh` (NEW)
 
 **Steps:**
+
 1. Load gate definitions from `config/pipeline-gates.json`.
 2. Implement `_pipeline_check_gate()`:
    - `artifact-exists`: Check all required artifacts exist in pipeline artifact directory
@@ -263,10 +281,12 @@
 ### Task 2.2: `work start` — Pre-build Orchestration
 
 **Files:**
+
 - `scripts/lib/pipeline-start.sh` (NEW)
 - `scripts/prompts/` (NEW/UPDATED — prompt templates per stage)
 
 **Steps:**
+
 1. Validate pipeline exists and is in `ready` state.
 2. Create single worktree for entire pre-build phase: `session/MMDD-<pipeline-name>-prebuild`
 3. Create single branch, one PR for all pre-build artifacts.
@@ -287,9 +307,11 @@
 ### Task 2.3: `work build` — Base Branch + Wave Execution
 
 **Files:**
-- `scripts/lib/pipeline-build.sh` (NEW — refactor existing _work_build logic)
+
+- `scripts/lib/pipeline-build.sh` (NEW — refactor existing \_work_build logic)
 
 **Steps:**
+
 1. Validate pipeline exists and has manifest artifact.
 2. Create base branch: `build/<pipeline-id>` from main.
 3. Read manifest from pipeline artifact directory.
@@ -305,9 +327,11 @@
 ### Task 2.4: `work end` — Post-build + Merge Detection
 
 **Files:**
+
 - `scripts/lib/pipeline-end.sh` (NEW)
 
 **Steps:**
+
 1. Create final PR: base branch -> main.
 2. Run review stage:
    - All breadboard affordances implemented? (checklist from breadboard doc)
@@ -336,9 +360,11 @@
 ### Task 2.5: `work cooldown` — Batch Processing
 
 **Files:**
+
 - `scripts/lib/pipeline-cooldown.sh` (NEW)
 
 **Steps:**
+
 1. Find all pipelines in `wrapped` state.
 2. Read all wrap-up docs since last cooldown.
 3. Synthesize cross-cutting themes.
@@ -349,10 +375,12 @@
 ### Task 2.6: `--auto` Mode + Dispatcher + Integration
 
 **Files:**
+
 - `scripts/work.sh` (UPDATE — dispatcher)
-- All lib/pipeline-*.sh files (auto flag propagation)
+- All lib/pipeline-\*.sh files (auto flag propagation)
 
 **Steps:**
+
 1. `--auto` flag stored in pipeline entity at define time.
 2. Propagated to stage gates: skip `human-confirms` and `human-approves-manifest`.
 3. Propagated to merge detection: skip human merge (auto-merge via gh CLI).
@@ -365,12 +393,12 @@
 
 ## Summary
 
-| Wave | Sessions | Mode | Key Deliverables |
-|------|----------|------|------------------|
-| 0 | 1 | Serial | Config migration, KB backward-compat schema, pipeline entity/registry, work build baseBranch |
-| 1 | 3 | Parallel | KB frontmatter migration + pages, work define/status/list, skills stage updates |
-| 2 | 1 | Serial | work start/build/end/cooldown, stage gates, auto mode, integration |
-| **Total** | **5 sessions** | | |
+| Wave      | Sessions       | Mode     | Key Deliverables                                                                             |
+| --------- | -------------- | -------- | -------------------------------------------------------------------------------------------- |
+| 0         | 1              | Serial   | Config migration, KB backward-compat schema, pipeline entity/registry, work build baseBranch |
+| 1         | 3              | Parallel | KB frontmatter migration + pages, work define/status/list, skills stage updates              |
+| 2         | 1              | Serial   | work start/build/end/cooldown, stage gates, auto mode, integration                           |
+| **Total** | **5 sessions** |          |                                                                                              |
 
 ## Dependency Graph
 

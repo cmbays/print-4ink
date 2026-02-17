@@ -1,6 +1,6 @@
 vertical: dtf-gang-sheet
 waves:
-  - name: "Wave 0: Foundation"
+  - name: 'Wave 0: Foundation'
     serial: true
     sessions:
       - topic: dtf-foundation
@@ -66,7 +66,7 @@ waves:
           - Zod-first types — no separate interfaces
           - Follow existing schema patterns in lib/schemas/
 
-  - name: "Wave 1: Tab Architecture"
+  - name: 'Wave 1: Tab Architecture'
     serial: true
     sessions:
       - topic: dtf-tab-architecture
@@ -141,7 +141,7 @@ waves:
           - Modified: QuoteForm.tsx
           - KB session doc
 
-  - name: "Wave 2: Parallel Feature Build"
+  - name: 'Wave 2: Parallel Feature Build'
     serial: false
     sessions:
       - topic: dtf-line-items
@@ -366,7 +366,7 @@ waves:
           - All tests passing
           - KB session doc
 
-  - name: "Wave 3: Integration"
+  - name: 'Wave 3: Integration'
     serial: false
     sessions:
       - topic: dtf-calculation-ui
@@ -493,7 +493,7 @@ waves:
           - Modified: QuoteForm.tsx
           - KB session doc
 
-  - name: "Wave 4: Visual Canvas"
+  - name: 'Wave 4: Visual Canvas'
     serial: true
     sessions:
       - topic: dtf-canvas

@@ -1,7 +1,7 @@
 name: Tracking Issue
 description: Track a multi-part effort with sub-issues
-title: "[Tracking] "
-labels: ["type/tooling"]
+title: '[Tracking] '
+labels: ['type/tooling']
 body:
   - type: markdown
     attributes:

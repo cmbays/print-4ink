@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import { AlertTriangle, ShieldCheck } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { formatDate } from "@shared/lib/format";
+import { AlertTriangle, ShieldCheck } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { formatDate } from '@shared/lib/format'
 
-interface BlockReasonBannerProps {
-  blockReason: string | undefined;
-  blockedAt?: string;
-  blockedBy?: string;
-  onUnblock: () => void;
+type BlockReasonBannerProps = {
+  blockReason: string | undefined
+  blockedAt?: string
+  blockedBy?: string
+  onUnblock: () => void
 }
 
 export function BlockReasonBanner({
@@ -17,7 +17,7 @@ export function BlockReasonBanner({
   blockedBy,
   onUnblock,
 }: BlockReasonBannerProps) {
-  if (!blockReason) return null;
+  if (!blockReason) return null
 
   return (
     <div
@@ -46,5 +46,5 @@ export function BlockReasonBanner({
         Unblock
       </Button>
     </div>
-  );
+  )
 }

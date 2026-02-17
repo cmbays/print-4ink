@@ -8,15 +8,10 @@
 // Detail pages are typically server components (no hooks needed)
 // Add "use client" only if interactive features require it
 
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@shared/ui/primitives/card";
-import { Badge } from "@shared/ui/primitives/badge";
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Card, CardContent, CardHeader, CardTitle } from '@shared/ui/primitives/card'
+import { Badge } from '@shared/ui/primitives/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,11 +19,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@shared/ui/primitives/breadcrumb";
+} from '@shared/ui/primitives/breadcrumb'
 // import { StatusBadge } from "@/components/features/status-badge";
 // import { PriorityBadge } from "@/components/features/priority-badge";
-import { ArrowLeft } from "lucide-react";
-import { cn } from "@shared/lib/cn";
+import { ArrowLeft } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
 
 // Import mock data + constants
 // import { jobs, customers } from "@/lib/mock-data";
@@ -36,11 +31,11 @@ import { cn } from "@shared/lib/cn";
 
 // Next.js dynamic route params
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }
 
 export default async function ExampleDetailPage({ params }: PageProps) {
-  const { id } = await params;
+  const { id } = await params
 
   // Look up item in mock data
   // const item = items.find((i) => i.id === id);
@@ -80,12 +75,8 @@ export default async function ExampleDetailPage({ params }: PageProps) {
       {/* Header: title + badges */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {/* item.title */}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {/* item.subtitle */}
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight">{/* item.title */}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{/* item.subtitle */}</p>
         </div>
         <div className="flex items-center gap-2">
           {/* <StatusBadge status={item.status} /> */}
@@ -104,9 +95,7 @@ export default async function ExampleDetailPage({ params }: PageProps) {
             <CardHeader>
               <CardTitle>Section Title</CardTitle>
             </CardHeader>
-            <CardContent>
-              {/* Section content */}
-            </CardContent>
+            <CardContent>{/* Section content */}</CardContent>
           </Card>
         </div>
 
@@ -135,5 +124,5 @@ export default async function ExampleDetailPage({ params }: PageProps) {
       {/*   <Card>...</Card> */}
       {/* </div> */}
     </div>
-  );
+  )
 }

@@ -1,6 +1,6 @@
 ---
-title: "Screens — History"
-subtitle: "Build history and changelog for the Screens product"
+title: 'Screens — History'
+subtitle: 'Build history and changelog for the Screens product'
 domain: screens
 docType: history
 lastUpdated: 2026-02-15
@@ -9,4 +9,4 @@ status: draft
 
 ## Build History
 
-*Pipeline sessions that built or modified this product will be listed here.*
+_Pipeline sessions that built or modified this product will be listed here._

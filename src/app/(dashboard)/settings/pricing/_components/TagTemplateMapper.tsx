@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,54 +8,54 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@shared/ui/primitives/sheet";
+} from '@shared/ui/primitives/sheet'
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@shared/ui/primitives/select";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Button } from "@shared/ui/primitives/button";
-import { AlertTriangle, Save, X } from "lucide-react";
-import { toast } from "sonner";
-import { customerTypeTagEnum } from "@domain/entities/customer";
-import type { TagTemplateMapping } from "@domain/entities/tag-template-mapping";
-import type { PricingTemplate } from "@domain/entities/price-matrix";
-import type { DTFPricingTemplate } from "@domain/entities/dtf-pricing";
+} from '@shared/ui/primitives/select'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Button } from '@shared/ui/primitives/button'
+import { AlertTriangle, Save, X } from 'lucide-react'
+import { toast } from 'sonner'
+import { customerTypeTagEnum } from '@domain/entities/customer'
+import type { TagTemplateMapping } from '@domain/entities/tag-template-mapping'
+import type { PricingTemplate } from '@domain/entities/price-matrix'
+import type { DTFPricingTemplate } from '@domain/entities/dtf-pricing'
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
-const ALL_TAGS = customerTypeTagEnum.options;
+const ALL_TAGS = customerTypeTagEnum.options
 
 const TAG_DISPLAY: Record<string, { label: string; color: string }> = {
-  retail: { label: "Retail", color: "bg-action/15 text-action" },
-  "sports-school": {
-    label: "Sports / School",
-    color: "bg-success/15 text-success",
+  retail: { label: 'Retail', color: 'bg-action/15 text-action' },
+  'sports-school': {
+    label: 'Sports / School',
+    color: 'bg-success/15 text-success',
   },
-  corporate: { label: "Corporate", color: "bg-muted/50 text-foreground" },
-  "storefront-merch": {
-    label: "Storefront Merch",
-    color: "bg-warning/15 text-warning",
+  corporate: { label: 'Corporate', color: 'bg-muted/50 text-foreground' },
+  'storefront-merch': {
+    label: 'Storefront Merch',
+    color: 'bg-warning/15 text-warning',
   },
-  wholesale: { label: "Wholesale", color: "bg-muted/80 text-foreground" },
-};
+  wholesale: { label: 'Wholesale', color: 'bg-muted/80 text-foreground' },
+}
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface TagTemplateMapperProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  spTemplates: PricingTemplate[];
-  dtfTemplates: DTFPricingTemplate[];
-  mappings: TagTemplateMapping[];
-  onSave: (mappings: TagTemplateMapping[]) => void;
+type TagTemplateMapperProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  spTemplates: PricingTemplate[]
+  dtfTemplates: DTFPricingTemplate[]
+  mappings: TagTemplateMapping[]
+  onSave: (mappings: TagTemplateMapping[]) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -71,7 +71,7 @@ export function TagTemplateMapper({
   onSave,
 }: TagTemplateMapperProps) {
   // Draft state — clone on open, only persist on Save
-  const [draft, setDraft] = useState<TagTemplateMapping[]>([]);
+  const [draft, setDraft] = useState<TagTemplateMapping[]>([])
 
   // Initialize draft when sheet opens.
   // Radix controlled mode does NOT fire onOpenChange when the `open` prop
@@ -79,57 +79,48 @@ export function TagTemplateMapper({
   useEffect(() => {
     if (open) {
       const draftMappings = ALL_TAGS.map((tag) => {
-        const existing = mappings.find((m) => m.customerTypeTag === tag);
+        const existing = mappings.find((m) => m.customerTypeTag === tag)
         return (
           existing ?? {
             customerTypeTag: tag,
             screenPrintTemplateId: null,
             dtfTemplateId: null,
           }
-        );
-      });
+        )
+      })
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Radix controlled mode workaround
-      setDraft(draftMappings);
+      setDraft(draftMappings)
     } else {
-      setDraft([]);
+      setDraft([])
     }
-  }, [open, mappings]);
+  }, [open, mappings])
 
-  const initialized = open && draft.length > 0;
+  const initialized = open && draft.length > 0
 
   const updateMapping = useCallback(
-    (
-      tag: string,
-      field: "screenPrintTemplateId" | "dtfTemplateId",
-      value: string | null
-    ) => {
+    (tag: string, field: 'screenPrintTemplateId' | 'dtfTemplateId', value: string | null) => {
       setDraft((prev) =>
-        prev.map((m) =>
-          m.customerTypeTag === tag ? { ...m, [field]: value } : m
-        )
-      );
+        prev.map((m) => (m.customerTypeTag === tag ? { ...m, [field]: value } : m))
+      )
     },
     []
-  );
+  )
 
   const handleSave = () => {
-    onSave(draft);
-    onOpenChange(false);
-    toast.success("Tag mappings saved");
-  };
+    onSave(draft)
+    onOpenChange(false)
+    toast.success('Tag mappings saved')
+  }
 
   const handleCancel = () => {
-    onOpenChange(false);
-    toast("Mapping changes discarded");
-  };
+    onOpenChange(false)
+    toast('Mapping changes discarded')
+  }
 
   const unmappedCount = useMemo(
-    () =>
-      draft.filter(
-        (m) => m.screenPrintTemplateId === null || m.dtfTemplateId === null
-      ).length,
+    () => draft.filter((m) => m.screenPrintTemplateId === null || m.dtfTemplateId === null).length,
     [draft]
-  );
+  )
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -137,8 +128,8 @@ export function TagTemplateMapper({
         <SheetHeader>
           <SheetTitle>Tag → Template Mappings</SheetTitle>
           <SheetDescription>
-            Assign pricing templates per customer type. When quoting a customer,
-            their tag determines which template is auto-applied.
+            Assign pricing templates per customer type. When quoting a customer, their tag
+            determines which template is auto-applied.
           </SheetDescription>
         </SheetHeader>
 
@@ -149,8 +140,7 @@ export function TagTemplateMapper({
               <div className="flex items-center gap-2 rounded-md bg-warning/10 px-3 py-2 text-sm text-warning">
                 <AlertTriangle className="size-4 shrink-0" />
                 <span>
-                  {unmappedCount} tag{unmappedCount !== 1 ? "s" : ""} missing
-                  template assignment
+                  {unmappedCount} tag{unmappedCount !== 1 ? 's' : ''} missing template assignment
                 </span>
               </div>
             )}
@@ -160,10 +150,10 @@ export function TagTemplateMapper({
               {draft.map((mapping) => {
                 const display = TAG_DISPLAY[mapping.customerTypeTag] ?? {
                   label: mapping.customerTypeTag,
-                  color: "bg-muted text-muted-foreground",
-                };
-                const isMissingSP = mapping.screenPrintTemplateId === null;
-                const isMissingDTF = mapping.dtfTemplateId === null;
+                  color: 'bg-muted text-muted-foreground',
+                }
+                const isMissingSP = mapping.screenPrintTemplateId === null
+                const isMissingDTF = mapping.dtfTemplateId === null
 
                 return (
                   <div
@@ -172,10 +162,7 @@ export function TagTemplateMapper({
                   >
                     {/* Tag badge */}
                     <div className="flex items-center gap-2">
-                      <Badge
-                        variant="ghost"
-                        className={display.color}
-                      >
+                      <Badge variant="ghost" className={display.color}>
                         {display.label}
                       </Badge>
                       {(isMissingSP || isMissingDTF) && (
@@ -194,12 +181,12 @@ export function TagTemplateMapper({
                           Screen Print
                         </label>
                         <Select
-                          value={mapping.screenPrintTemplateId ?? "__none"}
+                          value={mapping.screenPrintTemplateId ?? '__none'}
                           onValueChange={(v) =>
                             updateMapping(
                               mapping.customerTypeTag,
-                              "screenPrintTemplateId",
-                              v === "__none" ? null : v
+                              'screenPrintTemplateId',
+                              v === '__none' ? null : v
                             )
                           }
                         >
@@ -211,9 +198,7 @@ export function TagTemplateMapper({
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="__none">
-                              <span className="text-muted-foreground">
-                                None (use default)
-                              </span>
+                              <span className="text-muted-foreground">None (use default)</span>
                             </SelectItem>
                             {spTemplates.map((t) => (
                               <SelectItem key={t.id} value={t.id}>
@@ -233,12 +218,12 @@ export function TagTemplateMapper({
                           DTF
                         </label>
                         <Select
-                          value={mapping.dtfTemplateId ?? "__none"}
+                          value={mapping.dtfTemplateId ?? '__none'}
                           onValueChange={(v) =>
                             updateMapping(
                               mapping.customerTypeTag,
-                              "dtfTemplateId",
-                              v === "__none" ? null : v
+                              'dtfTemplateId',
+                              v === '__none' ? null : v
                             )
                           }
                         >
@@ -250,9 +235,7 @@ export function TagTemplateMapper({
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="__none">
-                              <span className="text-muted-foreground">
-                                None (use default)
-                              </span>
+                              <span className="text-muted-foreground">None (use default)</span>
                             </SelectItem>
                             {dtfTemplates.map((t) => (
                               <SelectItem key={t.id} value={t.id}>
@@ -264,7 +247,7 @@ export function TagTemplateMapper({
                       </div>
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -282,5 +265,5 @@ export function TagTemplateMapper({
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

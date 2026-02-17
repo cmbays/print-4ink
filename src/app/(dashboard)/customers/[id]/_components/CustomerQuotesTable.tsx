@@ -1,27 +1,24 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Copy } from "lucide-react";
-import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Button } from "@shared/ui/primitives/button";
-import { MoneyAmount } from "@/components/features/MoneyAmount";
+import Link from 'next/link'
+import { Copy } from 'lucide-react'
+import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Button } from '@shared/ui/primitives/button'
+import { MoneyAmount } from '@/components/features/MoneyAmount'
 
-import {
-  QUOTE_STATUS_LABELS,
-  QUOTE_STATUS_COLORS,
-} from "@domain/constants";
-import { formatDate } from "@shared/lib/format";
-import type { Quote } from "@domain/entities/quote";
+import { QUOTE_STATUS_LABELS, QUOTE_STATUS_COLORS } from '@domain/constants'
+import { formatDate } from '@shared/lib/format'
+import type { Quote } from '@domain/entities/quote'
 
-interface CustomerQuotesTableProps {
-  quotes: Quote[];
+type CustomerQuotesTableProps = {
+  quotes: Quote[]
 }
 
 export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
   const sorted = [...quotes].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  )
 
   if (sorted.length === 0) {
     return (
@@ -30,7 +27,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
         <p className="text-sm font-medium">No quotes yet</p>
         <p className="text-xs mt-1">Create one to get started</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -61,9 +58,7 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
                     {quote.quoteNumber}
                   </Link>
                 </td>
-                <td className="py-3 text-muted-foreground">
-                  {formatDate(quote.createdAt)}
-                </td>
+                <td className="py-3 text-muted-foreground">{formatDate(quote.createdAt)}</td>
                 <td className="py-3">
                   <Badge variant="ghost" className={QUOTE_STATUS_COLORS[quote.status]}>
                     {QUOTE_STATUS_LABELS[quote.status]}
@@ -109,13 +104,11 @@ export function CustomerQuotesTable({ quotes }: CustomerQuotesTableProps) {
               <span className="font-mono text-sm text-foreground">
                 <MoneyAmount value={quote.total} />
               </span>
-              <span className="text-xs text-muted-foreground">
-                {formatDate(quote.createdAt)}
-              </span>
+              <span className="text-xs text-muted-foreground">{formatDate(quote.createdAt)}</span>
             </div>
           </Link>
         ))}
       </div>
     </>
-  );
+  )
 }

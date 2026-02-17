@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
+import { useState, useMemo } from 'react'
 import {
   Star,
   UserPlus,
@@ -11,49 +11,47 @@ import {
   Phone,
   Users,
   Building2,
-} from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Button } from "@shared/ui/primitives/button";
+} from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Button } from '@shared/ui/primitives/button'
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from "@shared/ui/primitives/collapsible";
-import { AddContactSheet } from "./AddContactSheet";
-import { AddGroupSheet } from "./AddGroupSheet";
-import type { Customer } from "@domain/entities/customer";
-import type { Contact } from "@domain/entities/contact";
-import type { ContactRole } from "@domain/entities/contact";
-import { CONTACT_ROLE_LABELS } from "@domain/constants";
+} from '@shared/ui/primitives/collapsible'
+import { AddContactSheet } from './AddContactSheet'
+import { AddGroupSheet } from './AddGroupSheet'
+import type { Customer } from '@domain/entities/customer'
+import type { Contact } from '@domain/entities/contact'
+import type { ContactRole } from '@domain/entities/contact'
+import { CONTACT_ROLE_LABELS } from '@domain/constants'
 
-interface ContactHierarchyProps {
-  customer: Customer;
+type ContactHierarchyProps = {
+  customer: Customer
 }
 
 const CONTACT_ROLE_COLORS: Record<ContactRole, string> = {
-  ordering: "bg-action/10 text-action border border-action/20",
-  "art-approver": "bg-success/10 text-success border border-success/20",
-  billing: "bg-warning/10 text-warning border border-warning/20",
-  owner: "bg-muted text-foreground border border-border",
-  other: "bg-muted text-muted-foreground",
-};
+  ordering: 'bg-action/10 text-action border border-action/20',
+  'art-approver': 'bg-success/10 text-success border border-success/20',
+  billing: 'bg-warning/10 text-warning border border-warning/20',
+  owner: 'bg-muted text-foreground border border-border',
+  other: 'bg-muted text-muted-foreground',
+}
 
 function ContactCard({ contact }: { contact: Contact }) {
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-elevated p-3",
-        "transition-colors hover:border-border/80"
+        'rounded-lg border border-border bg-elevated p-3',
+        'transition-colors hover:border-border/80'
       )}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1 space-y-1.5">
           {/* Name + primary star */}
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-medium text-foreground truncate">
-              {contact.name}
-            </p>
+            <p className="text-sm font-medium text-foreground truncate">{contact.name}</p>
             {contact.isPrimary && (
               <Star
                 className="h-3.5 w-3.5 shrink-0 fill-warning text-warning"
@@ -65,10 +63,7 @@ function ContactCard({ contact }: { contact: Contact }) {
           {/* Role badge */}
           <Badge
             variant="ghost"
-            className={cn(
-              "text-[10px] px-1.5 py-0",
-              CONTACT_ROLE_COLORS[contact.role]
-            )}
+            className={cn('text-[10px] px-1.5 py-0', CONTACT_ROLE_COLORS[contact.role])}
           >
             {CONTACT_ROLE_LABELS[contact.role]}
           </Badge>
@@ -103,27 +98,21 @@ function ContactCard({ contact }: { contact: Contact }) {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-function GroupSection({
-  groupName,
-  contacts,
-}: {
-  groupName: string;
-  contacts: Contact[];
-}) {
-  const [open, setOpen] = useState(true);
+function GroupSection({ groupName, contacts }: { groupName: string; contacts: Contact[] }) {
+  const [open, setOpen] = useState(true)
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger
         className={cn(
-          "flex items-center gap-2 w-full text-left py-2 px-1",
-          "text-sm font-medium text-foreground hover:text-action transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
+          'flex items-center gap-2 w-full text-left py-2 px-1',
+          'text-sm font-medium text-foreground hover:text-action transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md'
         )}
-        aria-label={`${open ? "Collapse" : "Expand"} ${groupName} group`}
+        aria-label={`${open ? 'Collapse' : 'Expand'} ${groupName} group`}
       >
         {open ? (
           <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -131,9 +120,7 @@ function GroupSection({
           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
         )}
         <span>{groupName}</span>
-        <span className="text-xs text-muted-foreground ml-1">
-          ({contacts.length})
-        </span>
+        <span className="text-xs text-muted-foreground ml-1">({contacts.length})</span>
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="space-y-2 pl-6 pb-2">
@@ -143,34 +130,34 @@ function GroupSection({
         </div>
       </CollapsibleContent>
     </Collapsible>
-  );
+  )
 }
 
 export function ContactHierarchy({ customer }: ContactHierarchyProps) {
-  const { contacts, groups, company } = customer;
+  const { contacts, groups, company } = customer
 
-  const [addContactOpen, setAddContactOpen] = useState(false);
-  const [addGroupOpen, setAddGroupOpen] = useState(false);
+  const [addContactOpen, setAddContactOpen] = useState(false)
+  const [addGroupOpen, setAddGroupOpen] = useState(false)
 
-  const showAddGroup = contacts.length >= 2;
+  const showAddGroup = contacts.length >= 2
 
   // Partition contacts: those with a groupId vs ungrouped
   const { ungrouped, groupedMap } = useMemo(() => {
-    const ungrouped: Contact[] = [];
-    const groupedMap = new Map<string, Contact[]>();
+    const ungrouped: Contact[] = []
+    const groupedMap = new Map<string, Contact[]>()
 
     for (const contact of contacts) {
       if (contact.groupId) {
-        const existing = groupedMap.get(contact.groupId) ?? [];
-        existing.push(contact);
-        groupedMap.set(contact.groupId, existing);
+        const existing = groupedMap.get(contact.groupId) ?? []
+        existing.push(contact)
+        groupedMap.set(contact.groupId, existing)
       } else {
-        ungrouped.push(contact);
+        ungrouped.push(contact)
       }
     }
 
-    return { ungrouped, groupedMap };
-  }, [contacts]);
+    return { ungrouped, groupedMap }
+  }, [contacts])
 
   if (contacts.length === 0) {
     return (
@@ -178,9 +165,7 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
         <div className="rounded-full bg-surface p-4 mb-4">
           <Users className="h-8 w-8 text-muted-foreground" />
         </div>
-        <p className="text-sm font-medium text-foreground mb-1">
-          No contacts
-        </p>
+        <p className="text-sm font-medium text-foreground mb-1">No contacts</p>
         <p className="text-xs text-muted-foreground mb-4">
           Add your first contact for this customer.
         </p>
@@ -189,7 +174,7 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
           Add Contact
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -225,7 +210,7 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
         <Building2 className="h-4 w-4 text-muted-foreground" />
         <p className="text-sm font-medium text-foreground">{company}</p>
         <span className="text-xs text-muted-foreground">
-          ({contacts.length} contact{contacts.length !== 1 ? "s" : ""})
+          ({contacts.length} contact{contacts.length !== 1 ? 's' : ''})
         </span>
       </div>
 
@@ -240,27 +225,14 @@ export function ContactHierarchy({ customer }: ContactHierarchyProps) {
 
       {/* Grouped contacts */}
       {groups.map((group) => {
-        const groupContacts = groupedMap.get(group.id) ?? [];
-        if (groupContacts.length === 0) return null;
-        return (
-          <GroupSection
-            key={group.id}
-            groupName={group.name}
-            contacts={groupContacts}
-          />
-        );
+        const groupContacts = groupedMap.get(group.id) ?? []
+        if (groupContacts.length === 0) return null
+        return <GroupSection key={group.id} groupName={group.name} contacts={groupContacts} />
       })}
 
       {/* Sheets */}
-      <AddContactSheet
-        open={addContactOpen}
-        onOpenChange={setAddContactOpen}
-        groups={groups}
-      />
-      <AddGroupSheet
-        open={addGroupOpen}
-        onOpenChange={setAddGroupOpen}
-      />
+      <AddContactSheet open={addContactOpen} onOpenChange={setAddContactOpen} groups={groups} />
+      <AddGroupSheet open={addGroupOpen} onOpenChange={setAddGroupOpen} />
     </div>
-  );
+  )
 }

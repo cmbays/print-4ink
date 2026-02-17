@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Table,
@@ -7,16 +7,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
-import { PAYMENT_METHOD_LABELS } from "@domain/constants";
-import type { Payment } from "@domain/entities/invoice";
-import { CreditCard } from "lucide-react";
-import { formatDate } from "@shared/lib/format";
-import { money, toNumber, formatCurrency } from "@domain/lib/money";
+} from '@shared/ui/primitives/table'
+import { PAYMENT_METHOD_LABELS } from '@domain/constants'
+import type { Payment } from '@domain/entities/invoice'
+import { CreditCard } from 'lucide-react'
+import { formatDate } from '@shared/lib/format'
+import { money, toNumber, formatCurrency } from '@domain/lib/money'
 
-interface PaymentLedgerProps {
-  payments: Payment[];
-  total: number;
+type PaymentLedgerProps = {
+  payments: Payment[]
+  total: number
 }
 
 export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
@@ -29,20 +29,20 @@ export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
           <p className="text-sm text-muted-foreground">No payments recorded</p>
         </div>
       </div>
-    );
+    )
   }
 
   // Sort by date ascending and precompute running totals
   const sorted = [...payments].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  );
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  )
 
-  const runningTotals: number[] = [];
+  const runningTotals: number[] = []
   sorted.reduce((acc, payment) => {
-    const next = acc.plus(money(payment.amount));
-    runningTotals.push(toNumber(next));
-    return next;
-  }, money(0));
+    const next = acc.plus(money(payment.amount))
+    runningTotals.push(toNumber(next))
+    return next
+  }, money(0))
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
@@ -63,16 +63,12 @@ export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
           <TableBody>
             {sorted.map((payment, index) => (
               <TableRow key={payment.id}>
-                <TableCell className="text-muted-foreground">
-                  {formatDate(payment.date)}
-                </TableCell>
+                <TableCell className="text-muted-foreground">{formatDate(payment.date)}</TableCell>
                 <TableCell>{PAYMENT_METHOD_LABELS[payment.method]}</TableCell>
                 <TableCell className="text-right font-mono">
                   {formatCurrency(payment.amount)}
                 </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {payment.reference ?? "—"}
-                </TableCell>
+                <TableCell className="text-muted-foreground">{payment.reference ?? '—'}</TableCell>
                 <TableCell className="text-right font-mono font-medium">
                   {formatCurrency(runningTotals[index])}
                 </TableCell>
@@ -90,9 +86,7 @@ export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
             className="rounded-md border border-border bg-surface p-3 space-y-1"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
-                {formatDate(payment.date)}
-              </span>
+              <span className="text-sm text-muted-foreground">{formatDate(payment.date)}</span>
               <span className="text-sm font-mono font-medium text-foreground">
                 {formatCurrency(payment.amount)}
               </span>
@@ -107,13 +101,11 @@ export function PaymentLedger({ payments, total }: PaymentLedgerProps) {
 
       {/* Total row */}
       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-        <span className="text-sm font-medium text-foreground">
-          Total Paid
-        </span>
+        <span className="text-sm font-medium text-foreground">Total Paid</span>
         <span className="text-sm font-mono font-semibold text-foreground">
           {formatCurrency(total)}
         </span>
       </div>
     </div>
-  );
+  )
 }

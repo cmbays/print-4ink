@@ -22,60 +22,60 @@ You are thorough but practical. You distinguish between issues that must be fixe
 
 ### Category 1: Type Safety
 
-| Check | Rule | Severity |
-|-------|------|----------|
-| No `any` types | Use Zod inference (`z.infer<typeof schema>`) or explicit types | Critical |
-| No separate interfaces for schema-backed data | Derive from Zod, don't duplicate | Major |
-| No type assertions (`as`) unless justified with comment | Prefer type narrowing | Warning |
-| No `// @ts-ignore` or `// @ts-expect-error` without explanation | Fix the type, don't suppress | Critical |
+| Check                                                           | Rule                                                           | Severity |
+| --------------------------------------------------------------- | -------------------------------------------------------------- | -------- |
+| No `any` types                                                  | Use Zod inference (`z.infer<typeof schema>`) or explicit types | Critical |
+| No separate interfaces for schema-backed data                   | Derive from Zod, don't duplicate                               | Major    |
+| No type assertions (`as`) unless justified with comment         | Prefer type narrowing                                          | Warning  |
+| No `// @ts-ignore` or `// @ts-expect-error` without explanation | Fix the type, don't suppress                                   | Critical |
 
 ### Category 2: Component Patterns
 
-| Check | Rule | Severity |
-|-------|------|----------|
-| `cn()` for all className composition | No string concatenation or template literals | Major |
-| Check `components/ui/` before creating custom components | Don't reinvent shadcn primitives | Major |
-| `"use client"` only when needed | Hooks, event handlers, browser APIs — nothing else | Warning |
-| Server components as default | Extract client wrappers that receive children | Warning |
-| Conditional rendering for stateful overlays | `{open && <Sheet />}` for form state reset | Major |
+| Check                                                    | Rule                                               | Severity |
+| -------------------------------------------------------- | -------------------------------------------------- | -------- |
+| `cn()` for all className composition                     | No string concatenation or template literals       | Major    |
+| Check `components/ui/` before creating custom components | Don't reinvent shadcn primitives                   | Major    |
+| `"use client"` only when needed                          | Hooks, event handlers, browser APIs — nothing else | Warning  |
+| Server components as default                             | Extract client wrappers that receive children      | Warning  |
+| Conditional rendering for stateful overlays              | `{open && <Sheet />}` for form state reset         | Major    |
 
 ### Category 3: Tailwind & Design System
 
-| Check | Rule | Severity |
-|-------|------|----------|
-| No hardcoded pixel values | Use Tailwind spacing utilities | Major |
-| Design token colors only | No hex/rgb outside `globals.css` tokens | Major |
+| Check                                         | Rule                                            | Severity |
+| --------------------------------------------- | ----------------------------------------------- | -------- |
+| No hardcoded pixel values                     | Use Tailwind spacing utilities                  | Major    |
+| Design token colors only                      | No hex/rgb outside `globals.css` tokens         | Major    |
 | No `text-text-muted` or `text-text-secondary` | These don't exist — use `text-muted-foreground` | Critical |
-| Icons from Lucide React only | No emoji icons, no custom SVGs | Major |
-| Consistent icon sizes | 16/20/24px only | Warning |
-| No separate CSS files | Tailwind utilities only | Critical |
+| Icons from Lucide React only                  | No emoji icons, no custom SVGs                  | Major    |
+| Consistent icon sizes                         | 16/20/24px only                                 | Warning  |
+| No separate CSS files                         | Tailwind utilities only                         | Critical |
 
 ### Category 4: DRY & Structure
 
-| Check | Rule | Severity |
-|-------|------|----------|
-| No duplicated logic across components | Extract to shared components or hooks | Major |
-| No duplicated utility functions | Check `lib/helpers/` and `lib/utils.ts` first | Warning |
-| No inline complex logic in JSX | Extract to named variables or functions | Warning |
-| No files > 500 lines without good reason | Consider splitting into sub-components | Info |
+| Check                                    | Rule                                          | Severity |
+| ---------------------------------------- | --------------------------------------------- | -------- |
+| No duplicated logic across components    | Extract to shared components or hooks         | Major    |
+| No duplicated utility functions          | Check `lib/helpers/` and `lib/utils.ts` first | Warning  |
+| No inline complex logic in JSX           | Extract to named variables or functions       | Warning  |
+| No files > 500 lines without good reason | Consider splitting into sub-components        | Info     |
 
 ### Category 5: State & Data
 
-| Check | Rule | Severity |
-|-------|------|----------|
-| URL state for filters/search/pagination | Not local state, not global state | Major |
-| No Redux, Zustand, or Context for app state | URL params + React state only | Critical |
-| No backend/API calls in Phase 1 | Mock data only | Critical |
-| Zod schemas in `lib/schemas/` | Single source of truth | Major |
+| Check                                       | Rule                              | Severity |
+| ------------------------------------------- | --------------------------------- | -------- |
+| URL state for filters/search/pagination     | Not local state, not global state | Major    |
+| No Redux, Zustand, or Context for app state | URL params + React state only     | Critical |
+| No backend/API calls in Phase 1             | Mock data only                    | Critical |
+| Zod schemas in `lib/schemas/`               | Single source of truth            | Major    |
 
 ### Category 6: Accessibility & UX
 
-| Check | Rule | Severity |
-|-------|------|----------|
-| Interactive elements have focus-visible | `focus-visible:ring-2` or equivalent | Major |
-| Buttons and links have accessible names | ARIA labels where text isn't visible | Major |
-| Touch targets >= 44px on mobile | `min-h-(--mobile-touch-target)` | Warning |
-| `prefers-reduced-motion` respected | Use `motion-safe:` or `motion-reduce:` | Warning |
+| Check                                   | Rule                                   | Severity |
+| --------------------------------------- | -------------------------------------- | -------- |
+| Interactive elements have focus-visible | `focus-visible:ring-2` or equivalent   | Major    |
+| Buttons and links have accessible names | ARIA labels where text isn't visible   | Major    |
+| Touch targets >= 44px on mobile         | `min-h-(--mobile-touch-target)`        | Warning  |
+| `prefers-reduced-motion` respected      | Use `motion-safe:` or `motion-reduce:` | Warning  |
 
 ## Scan Strategy
 
@@ -122,17 +122,17 @@ Each finding must conform to the `reviewFindingSchema` from `lib/schemas/review-
 
 ### Field Reference
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `ruleId` | string | Yes | Rule ID from `config/review-rules.json` (e.g., `U-TYPE-1`, `U-DRY-3`) |
-| `agent` | string | Yes | Always `"build-reviewer"` |
-| `severity` | enum | Yes | `"critical"` \| `"major"` \| `"warning"` \| `"info"` |
-| `file` | string | Yes | Repo-relative file path |
-| `line` | number | No | Line number (omit if finding is cross-file) |
-| `message` | string | Yes | What's wrong — specific and actionable |
-| `fix` | string | No | Exact fix recommendation |
-| `dismissible` | boolean | Yes | `false` for critical/major, `true` for info |
-| `category` | string | Yes | Must match the rule's category in `config/review-rules.json` |
+| Field         | Type    | Required | Description                                                           |
+| ------------- | ------- | -------- | --------------------------------------------------------------------- |
+| `ruleId`      | string  | Yes      | Rule ID from `config/review-rules.json` (e.g., `U-TYPE-1`, `U-DRY-3`) |
+| `agent`       | string  | Yes      | Always `"build-reviewer"`                                             |
+| `severity`    | enum    | Yes      | `"critical"` \| `"major"` \| `"warning"` \| `"info"`                  |
+| `file`        | string  | Yes      | Repo-relative file path                                               |
+| `line`        | number  | No       | Line number (omit if finding is cross-file)                           |
+| `message`     | string  | Yes      | What's wrong — specific and actionable                                |
+| `fix`         | string  | No       | Exact fix recommendation                                              |
+| `dismissible` | boolean | Yes      | `false` for critical/major, `true` for info                           |
+| `category`    | string  | Yes      | Must match the rule's category in `config/review-rules.json`          |
 
 ### Rules for Output
 

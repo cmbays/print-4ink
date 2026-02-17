@@ -1,11 +1,7 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@shared/ui/primitives/tooltip";
+import * as React from 'react'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@shared/ui/primitives/tooltip'
 
 // ---------------------------------------------------------------------------
 // WithTooltip — DRY wrapper that eliminates 5-line tooltip boilerplate.
@@ -18,20 +14,20 @@ import {
 //   </WithTooltip>
 // ---------------------------------------------------------------------------
 
-interface WithTooltipProps {
+type WithTooltipProps = {
   /** Tooltip text shown on hover */
-  tooltip: string;
+  tooltip: string
   /** Which side the tooltip appears on */
-  side?: "top" | "bottom" | "left" | "right";
+  side?: 'top' | 'bottom' | 'left' | 'right'
   /** The element to wrap — must accept a ref (native element or forwardRef) */
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
-export function WithTooltip({ tooltip, side = "bottom", children }: WithTooltipProps) {
+export function WithTooltip({ tooltip, side = 'bottom', children }: WithTooltipProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent side={side}>{tooltip}</TooltipContent>
     </Tooltip>
-  );
+  )
 }

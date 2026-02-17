@@ -1,6 +1,6 @@
 ---
-title: "PM Foundation: Shape Up, ROADMAP, Cool-Down Skill"
-subtitle: "Established project management philosophy, strategic planning artifacts, and GitHub issue taxonomy"
+title: 'PM Foundation: Shape Up, ROADMAP, Cool-Down Skill'
+subtitle: 'Established project management philosophy, strategic planning artifacts, and GitHub issue taxonomy'
 date: 2026-02-14
 phase: 1
 pipelineName: meta
@@ -9,8 +9,8 @@ products: []
 tools: [knowledge-base]
 stage: wrap-up
 tags: [plan, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0214-pm-foundation"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0214-pm-foundation'
 status: complete
 ---
 
@@ -24,12 +24,12 @@ With 5 verticals built and demo-ready, the project had weak project management s
 
 Adopted Basecamp's Shape Up methodology adapted for one developer working with Claude Code agents:
 
-| Shape Up Phase | Our Pipeline | What Happens |
-|----------------|-------------|--------------|
-| **Shaping** | Discovery, Scope, Breadboard | Define the problem, research competitors, map affordances, set boundaries |
-| **Betting** | Implementation Planning | Decide what to build next and in what order |
-| **Building** | Build, Review, Demo | Execute the vertical through the 7-step pipeline |
-| **Cool-down** | New phase | Synthesize feedback, review progress, shape next cycle |
+| Shape Up Phase | Our Pipeline                 | What Happens                                                              |
+| -------------- | ---------------------------- | ------------------------------------------------------------------------- |
+| **Shaping**    | Discovery, Scope, Breadboard | Define the problem, research competitors, map affordances, set boundaries |
+| **Betting**    | Implementation Planning      | Decide what to build next and in what order                               |
+| **Building**   | Build, Review, Demo          | Execute the vertical through the 7-step pipeline                          |
+| **Cool-down**  | New phase                    | Synthesize feedback, review progress, shape next cycle                    |
 
 The cool-down phase was identified as the key missing piece — the structured space between build cycles where feedback is processed, cross-vertical dependencies are surfaced, and the next cycle of work is shaped.
 
@@ -55,13 +55,13 @@ Each layer answers a different question for fresh Claude sessions:
 
 ### Plugin Cleanup
 
-| Plugin | Action | Reasoning |
-|--------|--------|-----------|
-| supabase-toolkit | Removed | Overlaps with official supabase plugin |
-| project-management-suite | Removed | Value is Linear/Neon MCPs — not using Linear |
-| sentry | Keep, activate Phase 2 | No value during mockup phase |
-| firecrawl | Keep | Valuable for competitor research |
-| hookify | Keep, configure soon | Solves permission fatigue |
+| Plugin                   | Action                 | Reasoning                                    |
+| ------------------------ | ---------------------- | -------------------------------------------- |
+| supabase-toolkit         | Removed                | Overlaps with official supabase plugin       |
+| project-management-suite | Removed                | Value is Linear/Neon MCPs — not using Linear |
+| sentry                   | Keep, activate Phase 2 | No value during mockup phase                 |
+| firecrawl                | Keep                   | Valuable for competitor research             |
+| hookify                  | Keep, configure soon   | Solves permission fatigue                    |
 
 ### Backend Architecture: Horizontal Foundation
 
@@ -78,16 +78,19 @@ This is a "big batch" Shape Up bet — platform work that enables all future ver
 ## Artifacts Produced
 
 ### Files
+
 - `docs/ROADMAP.md` — Strategic planning document (canonical)
 - `.claude/skills/cool-down/SKILL.md` — 5-step retrospective skill (Harvest, Synthesize, Shape, Update, Present)
 - `.claude/skills/cool-down/templates/pitch-template.md` — Shape Up pitch template
 - `docs/plans/2026-02-14-pm-foundation-design.md` — Full design rationale
 
 ### GitHub Operations
-- **28 labels** across 5 dimensions: vertical/* (9), type/* (7), priority/* (4), source/* (5), phase/* (3)
+
+- **28 labels** across 5 dimensions: vertical/_ (9), type/_ (7), priority/_ (4), source/_ (5), phase/\* (3)
 - **10 issues** (#80-89): hookify config, firecrawl integration, plugin cleanup, cool-down skill, backend research, gh dash setup, Sentry activation, stale docs, code review workflow, vertical BRIEFs
 
 ### CLAUDE.md Updates
+
 - Added ROADMAP.md to canonical documents table
 - Added "read ROADMAP first" session startup rule
 - Added cool-down skill to skills table

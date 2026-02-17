@@ -9,7 +9,7 @@ Use between verticals, after demos, or whenever the user wants to step back and 
 ## Prerequisites
 
 - `docs/ROADMAP.md` exists with current strategic context
-- GitHub Issues populated with labels (product/*, domain/*, tool/*, type/*, priority/*, source/*)
+- GitHub Issues populated with labels (product/_, domain/_, tool/_, type/_, priority/_, source/_)
 - `PROGRESS.md` reflects recent work
 - KB sessions exist for recent build work
 - Vertical BRIEFs in `docs/verticals/` (create if missing)
@@ -28,6 +28,7 @@ Gather all raw material. Read these sources systematically:
 6. **Recent PRs**: `gh pr list --state merged --limit 10` — what was built and reviewed
 
 **Output**: Write a harvest summary to `.session-context.md` (gitignored scratchpad) with:
+
 - Total open issues by vertical and type
 - Recent completions
 - Accumulated feedback themes
@@ -45,6 +46,7 @@ Analyze the harvest and find patterns:
 6. **Note what's working well** — patterns to preserve and reinforce
 
 **Output**: Synthesis section in `.session-context.md` with:
+
 - 3-5 themes with supporting evidence
 - Cross-vertical dependency map
 - Tech debt clusters
@@ -56,6 +58,7 @@ Analyze the harvest and find patterns:
 Based on synthesis, propose 2-3 shaped pitches for what to work on next:
 
 Each pitch follows this template (see `templates/pitch-template.md`):
+
 - **Problem**: What user pain or project need does this address?
 - **Appetite**: How much time is this worth? (small = 1-2 sessions, medium = 3-5, large = 5+)
 - **Solution sketch**: High-level approach, not detailed spec
@@ -63,6 +66,7 @@ Each pitch follows this template (see `templates/pitch-template.md`):
 - **Dependencies**: What must be true before this can start?
 
 Include at least one pitch from each category when relevant:
+
 - **New vertical or feature** — forward progress
 - **Revisit existing vertical** — based on feedback
 - **Infrastructure or tooling** — platform improvements

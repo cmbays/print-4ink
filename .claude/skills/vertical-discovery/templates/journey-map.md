@@ -1,5 +1,5 @@
 ---
-title: "[COMPETITOR] [VERTICAL] Journey Map"
+title: '[COMPETITOR] [VERTICAL] Journey Map'
 description: "Step-by-step journey map of [COMPETITOR]'s [VERTICAL] workflow with friction points"
 category: competitive-analysis
 status: draft
@@ -18,10 +18,10 @@ last-verified: [DATE]
 
 ## Terminology: Internal vs External [VERTICAL]
 
-| Term | Definition | Phase |
-|------|-----------|-------|
+| Term                    | Definition                                          | Phase                      |
+| ----------------------- | --------------------------------------------------- | -------------------------- |
 | **Internal [VERTICAL]** | Shop operator performs [TASK] using internal tools. | **Phase 1** (building now) |
-| **External [VERTICAL]** | Customer self-service for [TASK]. | **Phase 2** |
+| **External [VERTICAL]** | Customer self-service for [TASK].                   | **Phase 2**                |
 
 ---
 
@@ -30,6 +30,7 @@ last-verified: [DATE]
 ### Simple [TASK]: [DESCRIPTION]
 
 **Measured**:
+
 - Clicks: ~[X]
 - Time: ~[X] minutes
 - Friction Level: [Low / Medium / High / Very High]
@@ -38,6 +39,7 @@ last-verified: [DATE]
 ### Complex [TASK]: [DESCRIPTION]
 
 **Estimated**:
+
 - Clicks: ~[X]
 - Time: ~[X] minutes
 - Friction Level: [Low / Medium / High / Very High]
@@ -85,13 +87,14 @@ END: [RESULT]
 
 ## Friction Point Inventory
 
-| # | Friction Point | Step(s) | Severity | Why It Matters | Our Fix |
-|---|---|---|---|---|---|
-| 1 | | | Critical | | |
-| 2 | | | High | | |
-| 3 | | | Medium | | |
+| #   | Friction Point | Step(s) | Severity | Why It Matters | Our Fix |
+| --- | -------------- | ------- | -------- | -------------- | ------- |
+| 1   |                |         | Critical |                |         |
+| 2   |                |         | High     |                |         |
+| 3   |                |         | Medium   |                |         |
 
 **Severity Guide**:
+
 - **Critical**: Blocks workflow or causes data loss
 - **High**: Adds significant time or causes rework
 - **Medium**: Annoying but workable
@@ -102,11 +105,13 @@ END: [RESULT]
 ## Interconnections with Other Workflows
 
 ### [VERTICAL] -> [ADJACENT VERTICAL 1]
+
 - **Current**: [HOW IT WORKS NOW]
 - **Pain**: [WHAT'S BROKEN]
 - **Our approach**: [OUR FIX]
 
 ### [VERTICAL] -> [ADJACENT VERTICAL 2]
+
 - **Current**: [HOW IT WORKS NOW]
 - **Pain**: [WHAT'S BROKEN]
 - **Our approach**: [OUR FIX]
@@ -117,34 +122,37 @@ END: [RESULT]
 
 ### Simple [TASK] ([X] minutes)
 
-| Activity | Time | % of Total | Could Be |
-|----------|------|-----------|----------|
-| | | | |
-| **Total** | **~[X] min** | **100%** | **~[X] min** |
+| Activity  | Time         | % of Total | Could Be     |
+| --------- | ------------ | ---------- | ------------ |
+|           |              |            |              |
+| **Total** | **~[X] min** | **100%**   | **~[X] min** |
 
 ---
 
 ## Success Metrics for Redesign
 
-| Metric | [COMPETITOR] (Actual) | Screen Print Pro (Target) | Improvement |
-|--------|---|---|---|
-| Simple [TASK] time | [X] min | [X] min | [X]% faster |
-| Complex [TASK] time | [X] min | [X] min | [X]% faster |
-| Simple [TASK] clicks | [X] | [X] | [X]% fewer |
+| Metric               | [COMPETITOR] (Actual) | Screen Print Pro (Target) | Improvement |
+| -------------------- | --------------------- | ------------------------- | ----------- |
+| Simple [TASK] time   | [X] min               | [X] min                   | [X]% faster |
+| Complex [TASK] time  | [X] min               | [X] min                   | [X]% faster |
+| Simple [TASK] clicks | [X]                   | [X]                       | [X]% fewer  |
 
 ---
 
 ## Handoff to Designers
 
 **Key Design Principles from Analysis**:
+
 1. [PRINCIPLE 1]
 2. [PRINCIPLE 2]
 
 **Must-Haves for New Design**:
+
 - [ ] [MUST-HAVE 1] (Phase [X])
 - [ ] [MUST-HAVE 2] (Phase [X])
 
 **Nice-to-Haves**:
+
 - [ ] [NICE-TO-HAVE 1]
 - [ ] [NICE-TO-HAVE 2]
 

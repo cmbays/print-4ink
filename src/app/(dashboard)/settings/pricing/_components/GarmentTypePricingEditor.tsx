@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import { Input } from "@shared/ui/primitives/input";
-import type { GarmentTypePricing } from "@domain/entities/price-matrix";
+import { Input } from '@shared/ui/primitives/input'
+import type { GarmentTypePricing } from '@domain/entities/price-matrix'
 
 const CATEGORY_LABELS: Record<string, string> = {
-  "t-shirts": "T-Shirts",
-  fleece: "Fleece",
-  outerwear: "Outerwear",
-  headwear: "Headwear",
-  pants: "Pants",
-};
+  't-shirts': 'T-Shirts',
+  fleece: 'Fleece',
+  outerwear: 'Outerwear',
+  headwear: 'Headwear',
+  pants: 'Pants',
+}
 
-interface GarmentTypePricingEditorProps {
-  garmentTypes: GarmentTypePricing[];
-  onGarmentTypesChange: (garmentTypes: GarmentTypePricing[]) => void;
+type GarmentTypePricingEditorProps = {
+  garmentTypes: GarmentTypePricing[]
+  onGarmentTypesChange: (garmentTypes: GarmentTypePricing[]) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -25,11 +25,9 @@ export function GarmentTypePricingEditor({
   onGarmentTypesChange,
 }: GarmentTypePricingEditorProps) {
   const updateMarkup = (index: number, value: number) => {
-    const updated = garmentTypes.map((g, i) =>
-      i === index ? { ...g, baseMarkup: value } : g
-    );
-    onGarmentTypesChange(updated);
-  };
+    const updated = garmentTypes.map((g, i) => (i === index ? { ...g, baseMarkup: value } : g))
+    onGarmentTypesChange(updated)
+  }
 
   return (
     <div className="space-y-2">
@@ -56,9 +54,7 @@ export function GarmentTypePricingEditor({
               min={0}
               max={200}
               value={gt.baseMarkup}
-              onChange={(e) =>
-                updateMarkup(index, parseFloat(e.target.value) || 0)
-              }
+              onChange={(e) => updateMarkup(index, parseFloat(e.target.value) || 0)}
               onFocus={(e) => e.target.select()}
               className="h-7 pr-6 text-xs text-right"
             />
@@ -69,5 +65,5 @@ export function GarmentTypePricingEditor({
         </div>
       ))}
     </div>
-  );
+  )
 }

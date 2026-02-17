@@ -1,30 +1,30 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { Copy, Check, Plus, Pencil, Archive, Mail, Phone } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { LifecycleBadge } from "@/components/features/LifecycleBadge";
-import { HealthBadge } from "@/components/features/HealthBadge";
-import { TypeTagBadges } from "@/components/features/TypeTagBadges";
-import { CustomerQuickStats, type CustomerStats } from "@/components/features/CustomerQuickStats";
-import { EditCustomerSheet } from "./EditCustomerSheet";
-import { ArchiveDialog } from "./ArchiveDialog";
-import type { Customer } from "@domain/entities/customer";
+import { useState } from 'react'
+import Link from 'next/link'
+import { Copy, Check, Plus, Pencil, Archive, Mail, Phone } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { LifecycleBadge } from '@/components/features/LifecycleBadge'
+import { HealthBadge } from '@/components/features/HealthBadge'
+import { TypeTagBadges } from '@/components/features/TypeTagBadges'
+import { CustomerQuickStats, type CustomerStats } from '@/components/features/CustomerQuickStats'
+import { EditCustomerSheet } from './EditCustomerSheet'
+import { ArchiveDialog } from './ArchiveDialog'
+import type { Customer } from '@domain/entities/customer'
 
-interface CustomerDetailHeaderProps {
-  customer: Customer;
-  stats: CustomerStats;
+type CustomerDetailHeaderProps = {
+  customer: Customer
+  stats: CustomerStats
 }
 
 function CopyButton({ value, label }: { value: string; label: string }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    await navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <button
@@ -39,14 +39,14 @@ function CopyButton({ value, label }: { value: string; label: string }) {
         <Copy className="size-3 opacity-0 group-hover:opacity-100 transition-opacity" />
       )}
     </button>
-  );
+  )
 }
 
 export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderProps) {
-  const [editOpen, setEditOpen] = useState(false);
-  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false)
+  const [archiveOpen, setArchiveOpen] = useState(false)
 
-  const primaryContact = customer.contacts.find((c) => c.isPrimary) ?? customer.contacts[0];
+  const primaryContact = customer.contacts.find((c) => c.isPrimary) ?? customer.contacts[0]
 
   return (
     <div className="space-y-4">
@@ -61,9 +61,7 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
           {/* Primary contact info */}
           {primaryContact && (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-              <span className="text-sm font-medium text-foreground">
-                {primaryContact.name}
-              </span>
+              <span className="text-sm font-medium text-foreground">{primaryContact.name}</span>
               {primaryContact.email && (
                 <span className="inline-flex items-center gap-1">
                   <Mail className="size-3 text-muted-foreground" aria-hidden="true" />
@@ -136,16 +134,8 @@ export function CustomerDetailHeader({ customer, stats }: CustomerDetailHeaderPr
       <CustomerQuickStats stats={stats} variant="header" />
 
       {/* Modals */}
-      <EditCustomerSheet
-        customer={customer}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-      />
-      <ArchiveDialog
-        customer={customer}
-        open={archiveOpen}
-        onOpenChange={setArchiveOpen}
-      />
+      <EditCustomerSheet customer={customer} open={editOpen} onOpenChange={setEditOpen} />
+      <ArchiveDialog customer={customer} open={archiveOpen} onOpenChange={setArchiveOpen} />
     </div>
-  );
+  )
 }

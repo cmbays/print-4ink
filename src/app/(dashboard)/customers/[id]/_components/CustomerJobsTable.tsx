@@ -1,25 +1,20 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { Badge } from "@shared/ui/primitives/badge";
-import {
-  LANE_LABELS,
-  LANE_COLORS,
-  PRIORITY_LABELS,
-  PRIORITY_COLORS,
-} from "@domain/constants";
-import { formatDate } from "@shared/lib/format";
-import type { Job } from "@domain/entities/job";
+import Link from 'next/link'
+import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { Badge } from '@shared/ui/primitives/badge'
+import { LANE_LABELS, LANE_COLORS, PRIORITY_LABELS, PRIORITY_COLORS } from '@domain/constants'
+import { formatDate } from '@shared/lib/format'
+import type { Job } from '@domain/entities/job'
 
-interface CustomerJobsTableProps {
-  jobs: Job[];
+type CustomerJobsTableProps = {
+  jobs: Job[]
 }
 
 export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
   const sorted = [...jobs].sort(
     (a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()
-  );
+  )
 
   if (sorted.length === 0) {
     return (
@@ -27,7 +22,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
         <ENTITY_ICONS.job className="size-10 mb-3" aria-hidden="true" />
         <p className="text-sm font-medium">No jobs yet</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -51,10 +46,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
                 className="border-b border-border/50 hover:bg-muted/50 transition-colors"
               >
                 <td className="py-3 font-medium text-foreground">
-                  <Link
-                    href={`/jobs/${job.id}`}
-                    className="text-action hover:underline"
-                  >
+                  <Link href={`/jobs/${job.id}`} className="text-action hover:underline">
                     {job.jobNumber}
                   </Link>
                 </td>
@@ -69,9 +61,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
                     {PRIORITY_LABELS[job.priority]}
                   </Badge>
                 </td>
-                <td className="py-3 text-muted-foreground">
-                  {formatDate(job.dueDate)}
-                </td>
+                <td className="py-3 text-muted-foreground">{formatDate(job.dueDate)}</td>
               </tr>
             ))}
           </tbody>
@@ -98,13 +88,11 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
               <Badge variant="ghost" className={PRIORITY_COLORS[job.priority]}>
                 {PRIORITY_LABELS[job.priority]}
               </Badge>
-              <span className="text-xs text-muted-foreground">
-                Due {formatDate(job.dueDate)}
-              </span>
+              <span className="text-xs text-muted-foreground">Due {formatDate(job.dueDate)}</span>
             </div>
           </Link>
         ))}
       </div>
     </>
-  );
+  )
 }

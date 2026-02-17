@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useMemo } from "react";
+import { useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -8,39 +8,32 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import { Badge } from "@shared/ui/primitives/badge";
-import { ScrollArea } from "@shared/ui/primitives/scroll-area";
-import { Separator } from "@shared/ui/primitives/separator";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import { Badge } from '@shared/ui/primitives/badge'
+import { ScrollArea } from '@shared/ui/primitives/scroll-area'
+import { Separator } from '@shared/ui/primitives/separator'
 import {
   buildFullMatrixData,
   calculateDiff,
   formatCurrency,
   formatPercent,
-} from "@domain/services/pricing.service";
-import { cn } from "@shared/lib/cn";
-import type { PricingTemplate } from "@domain/entities/price-matrix";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Check,
-  Pencil,
-  Trash2,
-  GitCompareArrows,
-} from "lucide-react";
+} from '@domain/services/pricing.service'
+import { cn } from '@shared/lib/cn'
+import type { PricingTemplate } from '@domain/entities/price-matrix'
+import { ArrowDownRight, ArrowUpRight, Check, Pencil, Trash2, GitCompareArrows } from 'lucide-react'
 
-const DEFAULT_GARMENT_COST = 3.5;
-const COLOR_COLUMNS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+const DEFAULT_GARMENT_COST = 3.5
+const COLOR_COLUMNS = [1, 2, 3, 4, 5, 6, 7, 8] as const
 
-interface ComparisonViewProps {
-  original: PricingTemplate;
-  proposed: PricingTemplate;
-  onApply: () => void;
-  onKeepEditing: () => void;
-  onDiscardAll: () => void;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+type ComparisonViewProps = {
+  original: PricingTemplate
+  proposed: PricingTemplate
+  onApply: () => void
+  onKeepEditing: () => void
+  onDiscardAll: () => void
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function ComparisonView({
@@ -55,19 +48,16 @@ export function ComparisonView({
   const originalData = useMemo(
     () => buildFullMatrixData(original, DEFAULT_GARMENT_COST),
     [original]
-  );
+  )
 
   const proposedData = useMemo(
     () => buildFullMatrixData(proposed, DEFAULT_GARMENT_COST),
     [proposed]
-  );
+  )
 
-  const diff = useMemo(
-    () => calculateDiff(original, proposed),
-    [original, proposed]
-  );
+  const diff = useMemo(() => calculateDiff(original, proposed), [original, proposed])
 
-  const hasChanges = diff.changedCells > 0;
+  const hasChanges = diff.changedCells > 0
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,10 +77,8 @@ export function ComparisonView({
           <Badge
             variant="outline"
             className={cn(
-              "text-xs",
-              hasChanges
-                ? "border-action/30 text-action"
-                : "border-border text-muted-foreground"
+              'text-xs',
+              hasChanges ? 'border-action/30 text-action' : 'border-border text-muted-foreground'
             )}
           >
             {diff.changedCells} of {diff.totalCells} cells changed
@@ -100,10 +88,10 @@ export function ComparisonView({
             <Badge
               variant="outline"
               className={cn(
-                "gap-1 text-xs",
+                'gap-1 text-xs',
                 diff.avgMarginChange >= 0
-                  ? "border-success/30 text-success"
-                  : "border-error/30 text-error"
+                  ? 'border-success/30 text-success'
+                  : 'border-error/30 text-error'
               )}
             >
               {diff.avgMarginChange >= 0 ? (
@@ -111,15 +99,13 @@ export function ComparisonView({
               ) : (
                 <ArrowDownRight className="size-3" />
               )}
-              Avg margin change: {diff.avgMarginChange >= 0 ? "+" : ""}
+              Avg margin change: {diff.avgMarginChange >= 0 ? '+' : ''}
               {formatPercent(diff.avgMarginChange)}
             </Badge>
           )}
 
           {!hasChanges && (
-            <span className="text-xs text-muted-foreground">
-              No pricing changes detected
-            </span>
+            <span className="text-xs text-muted-foreground">No pricing changes detected</span>
           )}
         </div>
 
@@ -130,26 +116,14 @@ export function ComparisonView({
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Original pricing */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Current Pricing
-              </h3>
-              <ComparisonGrid
-                data={originalData}
-                compareData={proposedData}
-                side="original"
-              />
+              <h3 className="text-sm font-medium text-muted-foreground">Current Pricing</h3>
+              <ComparisonGrid data={originalData} compareData={proposedData} side="original" />
             </div>
 
             {/* Proposed pricing */}
             <div className="space-y-2">
-              <h3 className="text-sm font-medium text-action">
-                Proposed Pricing
-              </h3>
-              <ComparisonGrid
-                data={proposedData}
-                compareData={originalData}
-                side="proposed"
-              />
+              <h3 className="text-sm font-medium text-action">Proposed Pricing</h3>
+              <ComparisonGrid data={proposedData} compareData={originalData} side="proposed" />
             </div>
           </div>
         </ScrollArea>
@@ -177,7 +151,7 @@ export function ComparisonView({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
 // ---------------------------------------------------------------------------
@@ -189,9 +163,9 @@ function ComparisonGrid({
   compareData,
   side,
 }: {
-  data: ReturnType<typeof buildFullMatrixData>;
-  compareData: ReturnType<typeof buildFullMatrixData>;
-  side: "original" | "proposed";
+  data: ReturnType<typeof buildFullMatrixData>
+  compareData: ReturnType<typeof buildFullMatrixData>
+  side: 'original' | 'proposed'
 }) {
   return (
     <div className="overflow-x-auto rounded-md border border-border">
@@ -213,55 +187,50 @@ function ComparisonGrid({
         </thead>
         <tbody>
           {data.map((row, rowIdx) => {
-            const compareRow = compareData[rowIdx];
+            const compareRow = compareData[rowIdx]
             return (
               <tr key={row.tierLabel}>
                 <td className="border-b border-border bg-surface px-2 py-1.5 font-medium text-foreground whitespace-nowrap">
                   {row.tierLabel}
                 </td>
                 {row.cells.map((cell, colIdx) => {
-                  const compareCell = compareRow?.cells[colIdx];
-                  const isChanged =
-                    compareCell !== undefined &&
-                    cell.price !== compareCell.price;
+                  const compareCell = compareRow?.cells[colIdx]
+                  const isChanged = compareCell !== undefined && cell.price !== compareCell.price
 
                   // For proposed: green if price went down, red if went up
                   // For original: just mark that this cell was changed (dim)
-                  let cellBg = "";
-                  if (isChanged && side === "proposed") {
-                    cellBg =
-                      cell.price < compareCell.price
-                        ? "bg-success/10"
-                        : "bg-error/10";
-                  } else if (isChanged && side === "original") {
-                    cellBg = "bg-muted/30";
+                  let cellBg = ''
+                  if (isChanged && side === 'proposed') {
+                    cellBg = cell.price < compareCell.price ? 'bg-success/10' : 'bg-error/10'
+                  } else if (isChanged && side === 'original') {
+                    cellBg = 'bg-muted/30'
                   }
 
                   return (
                     <td
                       key={colIdx}
                       className={cn(
-                        "border-b border-l border-border px-2 py-1.5 text-center tabular-nums",
+                        'border-b border-l border-border px-2 py-1.5 text-center tabular-nums',
                         cellBg
                       )}
                     >
                       <span
                         className={cn(
-                          isChanged && side === "proposed"
-                            ? "font-medium text-foreground"
-                            : "text-foreground"
+                          isChanged && side === 'proposed'
+                            ? 'font-medium text-foreground'
+                            : 'text-foreground'
                         )}
                       >
                         {formatCurrency(cell.price)}
                       </span>
                     </td>
-                  );
+                  )
                 })}
               </tr>
-            );
+            )
           })}
         </tbody>
       </table>
     </div>
-  );
+  )
 }

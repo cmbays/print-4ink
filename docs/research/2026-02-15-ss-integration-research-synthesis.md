@@ -1,6 +1,6 @@
 ---
-title: "S&S Activewear Integration — Research Synthesis"
-description: "Unified findings from 4 parallel research agents: Security, Industry Standards, Multi-Supplier Architecture, and Infrastructure Path"
+title: 'S&S Activewear Integration — Research Synthesis'
+description: 'Unified findings from 4 parallel research agents: Security, Industry Standards, Multi-Supplier Architecture, and Infrastructure Path'
 date: 2026-02-15
 phase: 2
 vertical: infrastructure
@@ -26,30 +26,32 @@ Four parallel research agents investigated the full scope of integrating S&S Act
 
 ### REST API V2 (Proprietary — Recommended Starting Point)
 
-| Property | Value |
-|----------|-------|
-| **Base URL** | `https://api.ssactivewear.com/v2/` |
-| **Auth** | HTTP Basic (Account Number = username, API Key = password) |
-| **Format** | JSON (default) or XML via `?mediatype=json` |
-| **Rate Limit** | 60 requests/minute (`X-Rate-Limit-Remaining` header) |
+| Property       | Value                                                      |
+| -------------- | ---------------------------------------------------------- |
+| **Base URL**   | `https://api.ssactivewear.com/v2/`                         |
+| **Auth**       | HTTP Basic (Account Number = username, API Key = password) |
+| **Format**     | JSON (default) or XML via `?mediatype=json`                |
+| **Rate Limit** | 60 requests/minute (`X-Rate-Limit-Remaining` header)       |
 
 **Key endpoints**:
 
-| Endpoint | Purpose | Screen Print Pro Use |
-|----------|---------|---------------------|
-| `/v2/styles/` | Style-level catalog data | Garment catalog browsing |
-| `/v2/products/` | Full SKU-level data (colors, sizes, pricing, images, inventory) | Garment selection, pricing, mockup images |
-| `/v2/categories/` | Flat category list | Filter/facet UI |
-| `/v2/inventory/` | Streamlined warehouse-level stock | Availability checks |
-| `/v2/brands/` | Brand listing | Filter UI |
+| Endpoint          | Purpose                                                         | Screen Print Pro Use                      |
+| ----------------- | --------------------------------------------------------------- | ----------------------------------------- |
+| `/v2/styles/`     | Style-level catalog data                                        | Garment catalog browsing                  |
+| `/v2/products/`   | Full SKU-level data (colors, sizes, pricing, images, inventory) | Garment selection, pricing, mockup images |
+| `/v2/categories/` | Flat category list                                              | Filter/facet UI                           |
+| `/v2/inventory/`  | Streamlined warehouse-level stock                               | Availability checks                       |
+| `/v2/brands/`     | Brand listing                                                   | Filter UI                                 |
 
 **Product image fields** (per color):
+
 - `colorFrontImage`, `colorBackImage`, `colorSideImage`, `colorDirectSideImage`
 - `colorOnModelFrontImage`, `colorOnModelSideImage`, `colorOnModelBackImage`
 - `colorSwatchImage`
 - URL pattern: `https://www.ssactivewear.com/{path}` with `_fs`/`_fm`/`_fl` size variants
 
 **Pricing fields** (per SKU):
+
 - `piecePrice`, `dozenPrice`, `casePrice`
 - `mapPrice`, `salePrice`, `customerPrice` (account-specific)
 
@@ -57,15 +59,15 @@ Four parallel research agents investigated the full scope of integrating S&S Act
 
 The existing `garmentCatalogSchema` in `lib/schemas/garment.ts` was designed to mirror S&S data (line 3 comment confirms this). The field mapping is near 1:1:
 
-| Our Field | S&S Field | Notes |
-|-----------|-----------|-------|
-| `brand` | `brandName` | Direct match |
-| `sku` | `partNumber` | Direct match (e.g., "3001") |
-| `name` | `styleName` | Direct match |
-| `baseCategory` | `baseCategory` | Direct match |
-| `basePrice` | `piecePrice` | Needs pricing tier logic |
-| `availableColors` | Color objects per product | Needs extraction |
-| `availableSizes` | Size objects per product | Needs order/price adjustment |
+| Our Field         | S&S Field                 | Notes                        |
+| ----------------- | ------------------------- | ---------------------------- |
+| `brand`           | `brandName`               | Direct match                 |
+| `sku`             | `partNumber`              | Direct match (e.g., "3001")  |
+| `name`            | `styleName`               | Direct match                 |
+| `baseCategory`    | `baseCategory`            | Direct match                 |
+| `basePrice`       | `piecePrice`              | Needs pricing tier logic     |
+| `availableColors` | Color objects per product | Needs extraction             |
+| `availableSizes`  | Size objects per product  | Needs order/price adjustment |
 
 ---
 
@@ -73,12 +75,12 @@ The existing `garmentCatalogSchema` in `lib/schemas/garment.ts` was designed to 
 
 ### 4 Must-Fix Blockers
 
-| # | Blocker | Risk | Solution |
-|---|---------|------|----------|
-| 1 | **Endpoint Whitelisting** | No generic proxy — open proxy = SSRF | Whitelist only `/v2/styles/`, `/v2/products/`, `/v2/categories/`, `/v2/inventory/`, `/v2/brands/`. Reject all other paths. |
-| 2 | **Pricing Data Stripping** | `customerPrice` is commercially sensitive | Strip `customerPrice`, `mapPrice` fields from proxy responses. Only expose `piecePrice`, `dozenPrice`, `casePrice`. |
-| 3 | **Distributed Rate Limiting** | In-memory rate limiting fails on Vercel serverless (cold starts, multiple instances) | Use Upstash Redis (`@upstash/ratelimit`) for distributed rate limiting. |
-| 4 | **S&S Rate Limit Circuit Breaker** | Exceeding 60 req/min = account ban risk | Read `X-Rate-Limit-Remaining` header, stop proxying when < 5 remaining, return 429 with `Retry-After`. |
+| #   | Blocker                            | Risk                                                                                 | Solution                                                                                                                   |
+| --- | ---------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Endpoint Whitelisting**          | No generic proxy — open proxy = SSRF                                                 | Whitelist only `/v2/styles/`, `/v2/products/`, `/v2/categories/`, `/v2/inventory/`, `/v2/brands/`. Reject all other paths. |
+| 2   | **Pricing Data Stripping**         | `customerPrice` is commercially sensitive                                            | Strip `customerPrice`, `mapPrice` fields from proxy responses. Only expose `piecePrice`, `dozenPrice`, `casePrice`.        |
+| 3   | **Distributed Rate Limiting**      | In-memory rate limiting fails on Vercel serverless (cold starts, multiple instances) | Use Upstash Redis (`@upstash/ratelimit`) for distributed rate limiting.                                                    |
+| 4   | **S&S Rate Limit Circuit Breaker** | Exceeding 60 req/min = account ban risk                                              | Read `X-Rate-Limit-Remaining` header, stop proxying when < 5 remaining, return 429 with `Retry-After`.                     |
 
 ### Additional Security Measures
 
@@ -97,11 +99,11 @@ PromoStandards is the **nonprofit industry standard** for the promotional produc
 
 **All 3 major distributors support it:**
 
-| Distributor | Products | Key APIs | REST? |
-|-------------|----------|----------|-------|
-| **S&S Activewear** | 4,959 | Product 2.0, MED 1.1, PPC 1.0, INV 2.0, PO 1.0 | **Yes** (proprietary + PromoStandards) |
-| **SanMar** | 2,917 | Product 2.0, MED 1.1, PPC 1.0, INV 2.0, PO 1.0 | No (SOAP only) |
-| **alphabroder** | 5,340 | Product 2.0, MED 1.1, PPC 1.0, INV 2.0, PO 1.0 | No (PromoStandards SOAP) |
+| Distributor        | Products | Key APIs                                       | REST?                                  |
+| ------------------ | -------- | ---------------------------------------------- | -------------------------------------- |
+| **S&S Activewear** | 4,959    | Product 2.0, MED 1.1, PPC 1.0, INV 2.0, PO 1.0 | **Yes** (proprietary + PromoStandards) |
+| **SanMar**         | 2,917    | Product 2.0, MED 1.1, PPC 1.0, INV 2.0, PO 1.0 | No (SOAP only)                         |
+| **alphabroder**    | 5,340    | Product 2.0, MED 1.1, PPC 1.0, INV 2.0, PO 1.0 | No (PromoStandards SOAP)               |
 
 **Critical context**: S&S acquired alphabroder in October 2024. API convergence is likely but unannounced.
 
@@ -136,16 +138,16 @@ When we need SanMar/other suppliers, **PSRESTful** (`psrestful.com`) provides a 
 
 ```typescript
 interface SupplierAdapter {
-  readonly supplierId: string;
-  readonly name: string;
+  readonly supplierId: string
+  readonly name: string
 
-  getStyle(styleId: string): Promise<CanonicalStyle>;
-  searchCatalog(params: CatalogSearchParams): Promise<CatalogSearchResult>;
-  getInventory(skuIds: string[]): Promise<InventoryResult[]>;
-  getStylesBatch(styleIds: string[]): Promise<CanonicalStyle[]>;
-  getBrands(): Promise<Brand[]>;
-  getCategories(): Promise<Category[]>;
-  healthCheck(): Promise<HealthStatus>;
+  getStyle(styleId: string): Promise<CanonicalStyle>
+  searchCatalog(params: CatalogSearchParams): Promise<CatalogSearchResult>
+  getInventory(skuIds: string[]): Promise<InventoryResult[]>
+  getStylesBatch(styleIds: string[]): Promise<CanonicalStyle[]>
+  getBrands(): Promise<Brand[]>
+  getCategories(): Promise<Category[]>
+  healthCheck(): Promise<HealthStatus>
 }
 ```
 
@@ -155,47 +157,47 @@ A normalized product representation that maps from any supplier:
 
 ```typescript
 interface CanonicalStyle {
-  id: string;                    // Internal UUID
-  supplierId: string;            // Which supplier
-  sourceStyleId: string;         // Supplier's style ID
-  gtin?: string;                 // Universal cross-reference
-  brand: string;
-  styleName: string;
-  styleNumber: string;
-  description: string;
-  categories: string[];
-  colors: CanonicalColor[];
-  sizes: CanonicalSize[];
-  images: CanonicalImage[];
-  pricing: CanonicalPricing;
-  lastSynced: Date;
+  id: string // Internal UUID
+  supplierId: string // Which supplier
+  sourceStyleId: string // Supplier's style ID
+  gtin?: string // Universal cross-reference
+  brand: string
+  styleName: string
+  styleNumber: string
+  description: string
+  categories: string[]
+  colors: CanonicalColor[]
+  sizes: CanonicalSize[]
+  images: CanonicalImage[]
+  pricing: CanonicalPricing
+  lastSynced: Date
 }
 ```
 
 ### Adapter Implementations
 
-| Adapter | Data Source | Phase |
-|---------|-----------|-------|
-| `MockAdapter` | `lib/mock-data.ts` | Phase 1 (current) |
-| `SSActivewearAdapter` | S&S REST API V2 | Phase 2 |
-| `PromoStandardsAdapter` | PSRESTful or SOAP | Phase 3 |
+| Adapter                 | Data Source        | Phase             |
+| ----------------------- | ------------------ | ----------------- |
+| `MockAdapter`           | `lib/mock-data.ts` | Phase 1 (current) |
+| `SSActivewearAdapter`   | S&S REST API V2    | Phase 2           |
+| `PromoStandardsAdapter` | PSRESTful or SOAP  | Phase 3           |
 
 ### Cache Strategy
 
 ```typescript
 interface CacheStore {
-  get<T>(key: string): Promise<T | null>;
-  set<T>(key: string, value: T, ttl: number): Promise<void>;
-  delete(key: string): Promise<void>;
+  get<T>(key: string): Promise<T | null>
+  set<T>(key: string, value: T, ttl: number): Promise<void>
+  delete(key: string): Promise<void>
 }
 ```
 
-| Data Type | TTL | Rationale |
-|-----------|-----|-----------|
-| Styles/catalog | 24 hours | Product data changes rarely |
-| Product details | 1 hour | Price/color updates |
-| Inventory | 5 minutes | Stock levels are volatile |
-| Categories/brands | 7 days | Reference data |
+| Data Type         | TTL       | Rationale                   |
+| ----------------- | --------- | --------------------------- |
+| Styles/catalog    | 24 hours  | Product data changes rarely |
+| Product details   | 1 hour    | Price/color updates         |
+| Inventory         | 5 minutes | Stock levels are volatile   |
+| Categories/brands | 7 days    | Reference data              |
 
 **Implementation**: Start with in-memory (for dev/testing), migrate to Upstash Redis for production (required for Vercel serverless).
 
@@ -223,13 +225,13 @@ LATER:   Component → import { getJobs } from "@/lib/dal/jobs"  → Supabase qu
 
 **Recommended stack:**
 
-| Layer | Choice | Rationale |
-|-------|--------|-----------|
-| **Database** | Supabase (PostgreSQL) | DB + Auth + Storage + Realtime in one. $0 dev, $25/mo prod. |
-| **ORM** | Drizzle ORM | TypeScript-native, `drizzle-zod` generates Zod from tables, tiny bundle |
-| **Auth** | Supabase Auth | Native RLS integration, 50K MAU free, JWT claims in DB policies |
-| **File Storage** | Supabase Storage | 1GB free, native auth integration, CDN-backed URLs |
-| **API Pattern** | DAL functions + Server Components (reads) + Server Actions (mutations) | No new dependencies needed |
+| Layer            | Choice                                                                 | Rationale                                                               |
+| ---------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Database**     | Supabase (PostgreSQL)                                                  | DB + Auth + Storage + Realtime in one. $0 dev, $25/mo prod.             |
+| **ORM**          | Drizzle ORM                                                            | TypeScript-native, `drizzle-zod` generates Zod from tables, tiny bundle |
+| **Auth**         | Supabase Auth                                                          | Native RLS integration, 50K MAU free, JWT claims in DB policies         |
+| **File Storage** | Supabase Storage                                                       | 1GB free, native auth integration, CDN-backed URLs                      |
+| **API Pattern**  | DAL functions + Server Components (reads) + Server Actions (mutations) | No new dependencies needed                                              |
 
 **Why NOT tRPC**: Adds dependency + learning curve. Benefits (type safety, middleware) already provided by Zod schemas + DAL. Not worth it for a single-user app.
 
@@ -260,10 +262,10 @@ Step 10: Pricing templates (keep as JSONB)
 
 ### Cost Analysis
 
-| Environment | Stack | Monthly Cost |
-|-------------|-------|-------------|
-| Development | Supabase Free + Vercel Hobby | **$0** |
-| Production | Supabase Pro + Vercel Pro | **~$45** |
+| Environment | Stack                          | Monthly Cost                    |
+| ----------- | ------------------------------ | ------------------------------- |
+| Development | Supabase Free + Vercel Hobby   | **$0**                          |
+| Production  | Supabase Pro + Vercel Pro      | **~$45**                        |
 | Alternative | Vercel Postgres + Blob + Clerk | ~$45+ (3 vendors, 3 dashboards) |
 
 ---
@@ -272,23 +274,23 @@ Step 10: Pricing templates (keep as JSONB)
 
 ### Must Decide NOW (Expensive to Change Later)
 
-| Decision | Recommendation | Why Now |
-|----------|---------------|---------|
-| **DAL abstraction** | Introduce immediately | Every new feature that imports `mock-data` directly adds migration debt |
-| **Database platform** | Supabase | Different SQL dialects, auth models, client patterns across platforms |
-| **ORM** | Drizzle | Schema definitions are ORM-specific |
-| **Nested data normalization** | Contacts/groups/addresses → separate tables | Embedded arrays don't map to relational tables |
+| Decision                      | Recommendation                              | Why Now                                                                 |
+| ----------------------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
+| **DAL abstraction**           | Introduce immediately                       | Every new feature that imports `mock-data` directly adds migration debt |
+| **Database platform**         | Supabase                                    | Different SQL dialects, auth models, client patterns across platforms   |
+| **ORM**                       | Drizzle                                     | Schema definitions are ORM-specific                                     |
+| **Nested data normalization** | Contacts/groups/addresses → separate tables | Embedded arrays don't map to relational tables                          |
 
 ### Can Safely Defer
 
-| Decision | When |
-|----------|------|
-| Real-time subscriptions | Phase 3 (multi-user) |
-| Multi-user auth / RLS | Phase 3 |
-| File storage provider | Phase 2b (artwork upload) |
-| Error monitoring (Sentry) | Phase 2c or 3 |
-| PWA / Service Worker | Phase 3 |
-| Native mobile | Phase 4 |
+| Decision                  | When                      |
+| ------------------------- | ------------------------- |
+| Real-time subscriptions   | Phase 3 (multi-user)      |
+| Multi-user auth / RLS     | Phase 3                   |
+| File storage provider     | Phase 2b (artwork upload) |
+| Error monitoring (Sentry) | Phase 2c or 3             |
+| PWA / Service Worker      | Phase 3                   |
+| Native mobile             | Phase 4                   |
 
 ### Explicitly Do NOT Introduce
 
@@ -303,29 +305,30 @@ Step 10: Pricing templates (keep as JSONB)
 
 These can all begin before receiving the S&S API credentials:
 
-| # | Task | Effort | Blocks |
-|---|------|--------|--------|
-| 1 | **Create `lib/dal/`** with mock passthrough for all entities | M (2-3 days) | Nothing — can start now |
-| 2 | **Update 35+ files** to import from DAL instead of mock-data | M (2-3 days) | Task 1 |
-| 3 | **Design SupplierAdapter interface** + MockAdapter | S (1 day) | Nothing |
-| 4 | **Define Next.js Route Handler structure** for S&S proxy | S (1 day) | Nothing |
-| 5 | **Set up Upstash Redis** for distributed rate limiting | S (half day) | Nothing |
+| #   | Task                                                         | Effort       | Blocks                  |
+| --- | ------------------------------------------------------------ | ------------ | ----------------------- |
+| 1   | **Create `lib/dal/`** with mock passthrough for all entities | M (2-3 days) | Nothing — can start now |
+| 2   | **Update 35+ files** to import from DAL instead of mock-data | M (2-3 days) | Task 1                  |
+| 3   | **Design SupplierAdapter interface** + MockAdapter           | S (1 day)    | Nothing                 |
+| 4   | **Define Next.js Route Handler structure** for S&S proxy     | S (1 day)    | Nothing                 |
+| 5   | **Set up Upstash Redis** for distributed rate limiting       | S (half day) | Nothing                 |
 
 ### Post-API-Key
 
-| # | Task | Effort | Blocks |
-|---|------|--------|--------|
-| 6 | **Build SSActivewearAdapter** with endpoint whitelisting | M (2-3 days) | API key + Task 3 |
-| 7 | **Wire catalog browsing** to real S&S data | M (2-3 days) | Task 6 |
-| 8 | **Replace mockup engine tinting** with real S&S product photos | M (2-3 days) | Task 6 |
-| 9 | **Add inventory availability** to garment selection | S (1-2 days) | Task 6 |
-| 10 | **Build cache layer** (Upstash Redis) | M (2-3 days) | Task 5 + Task 6 |
+| #   | Task                                                           | Effort       | Blocks           |
+| --- | -------------------------------------------------------------- | ------------ | ---------------- |
+| 6   | **Build SSActivewearAdapter** with endpoint whitelisting       | M (2-3 days) | API key + Task 3 |
+| 7   | **Wire catalog browsing** to real S&S data                     | M (2-3 days) | Task 6           |
+| 8   | **Replace mockup engine tinting** with real S&S product photos | M (2-3 days) | Task 6           |
+| 9   | **Add inventory availability** to garment selection            | S (1-2 days) | Task 6           |
+| 10  | **Build cache layer** (Upstash Redis)                          | M (2-3 days) | Task 5 + Task 6  |
 
 ---
 
 ## 8. Key Documentation Links
 
 ### S&S Activewear
+
 - [REST API V2 Documentation](https://api.ssactivewear.com/V2/Default.aspx)
 - [Products Endpoint](https://api.ssactivewear.com/V2/Products.aspx)
 - [Styles Endpoint](https://api.ssactivewear.com/v2/Styles.aspx)
@@ -333,12 +336,14 @@ These can all begin before receiving the S&S API credentials:
 - [Inventory Endpoint](https://api.ssactivewear.com/V2/Inventory.aspx)
 
 ### PromoStandards
+
 - [PromoStandards.org](https://promostandards.org/)
 - [Endpoint Directory](https://promostandards.org/standards-endpoints/)
 - [PSRESTful REST Proxy](https://psrestful.com/)
 - [promostandards-sdk-js](https://www.npmjs.com/package/promostandards-sdk-js)
 
 ### Production Stack
+
 - [Supabase + Next.js Quickstart](https://supabase.com/docs/guides/getting-started/quickstarts/nextjs)
 - [Supabase Server-Side Auth for Next.js](https://supabase.com/docs/guides/auth/server-side/nextjs)
 - [Drizzle ORM + Zod](https://orm.drizzle.team/docs/zod)
@@ -349,9 +354,9 @@ These can all begin before receiving the S&S API credentials:
 
 ## Research Agents
 
-| Agent | Focus | Key Finding |
-|-------|-------|-------------|
-| Security Researcher | API proxy hardening | 4 must-fix blockers before go-live (whitelisting, pricing stripping, distributed rate limiting, circuit breaker) |
-| Standards Researcher | Industry standards | PromoStandards is universal (SOAP/XML), S&S REST is easiest start, GTIN is the universal product key, competitors build per-supplier adapters |
-| Architecture Researcher | Multi-supplier design | SupplierAdapter interface, CanonicalStyle schema, CacheStore abstraction, MockAdapter for backward compatibility |
-| Infrastructure Architect | Demo-to-production path | DAL pattern is highest leverage, Supabase + Drizzle is optimal stack, ~$45/mo production cost, 8-12 weeks migration |
+| Agent                    | Focus                   | Key Finding                                                                                                                                   |
+| ------------------------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Security Researcher      | API proxy hardening     | 4 must-fix blockers before go-live (whitelisting, pricing stripping, distributed rate limiting, circuit breaker)                              |
+| Standards Researcher     | Industry standards      | PromoStandards is universal (SOAP/XML), S&S REST is easiest start, GTIN is the universal product key, competitors build per-supplier adapters |
+| Architecture Researcher  | Multi-supplier design   | SupplierAdapter interface, CanonicalStyle schema, CacheStore abstraction, MockAdapter for backward compatibility                              |
+| Infrastructure Architect | Demo-to-production path | DAL pattern is highest leverage, Supabase + Drizzle is optimal stack, ~$45/mo production cost, 8-12 weeks migration                           |

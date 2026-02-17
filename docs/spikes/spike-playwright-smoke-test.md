@@ -7,6 +7,7 @@ PR #291 fixed a crash where `<Tooltip>` rendered without `<TooltipProvider>`. Th
 ## Goal
 
 Design a Playwright smoke test suite that:
+
 1. Navigates every dashboard route
 2. Asserts zero `console.error` calls on each page
 3. Runs in CI after `npm run build`
@@ -21,51 +22,51 @@ fd 'page.tsx' app/\(dashboard\) --type f | sed 's|app/\(dashboard\)/||;s|/page.t
 
 Expected routes (with mock params for dynamic segments):
 
-| Route | Params |
-|-------|--------|
-| `/` | — |
-| `/jobs/board` | — |
-| `/quotes` | — |
-| `/quotes/new` | — |
-| `/quotes/:id` | Use first mock quote ID |
-| `/garments` | — |
-| `/customers` | — |
-| `/invoices` | — |
-| `/invoices/new` | — |
-| `/settings/colors` | — |
-| `/settings/pricing/screen-print` | — |
+| Route                                | Params                     |
+| ------------------------------------ | -------------------------- |
+| `/`                                  | —                          |
+| `/jobs/board`                        | —                          |
+| `/quotes`                            | —                          |
+| `/quotes/new`                        | —                          |
+| `/quotes/:id`                        | Use first mock quote ID    |
+| `/garments`                          | —                          |
+| `/customers`                         | —                          |
+| `/invoices`                          | —                          |
+| `/invoices/new`                      | —                          |
+| `/settings/colors`                   | —                          |
+| `/settings/pricing/screen-print`     | —                          |
 | `/settings/pricing/screen-print/:id` | Use first mock template ID |
 
 ## Test Design
 
 ```typescript
 // e2e/smoke.spec.ts
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test'
 
 const routes = [
-  "/",
-  "/jobs/board",
-  "/quotes",
-  "/quotes/new",
-  "/garments",
-  "/customers",
-  "/invoices",
-  "/settings/colors",
-  "/settings/pricing/screen-print",
-];
+  '/',
+  '/jobs/board',
+  '/quotes',
+  '/quotes/new',
+  '/garments',
+  '/customers',
+  '/invoices',
+  '/settings/colors',
+  '/settings/pricing/screen-print',
+]
 
 for (const route of routes) {
   test(`${route} loads without console errors`, async ({ page }) => {
-    const errors: string[] = [];
-    page.on("console", (msg) => {
-      if (msg.type() === "error") errors.push(msg.text());
-    });
+    const errors: string[] = []
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text())
+    })
 
-    await page.goto(route);
-    await page.waitForLoadState("networkidle");
+    await page.goto(route)
+    await page.waitForLoadState('networkidle')
 
-    expect(errors).toEqual([]);
-  });
+    expect(errors).toEqual([])
+  })
 }
 ```
 
@@ -95,19 +96,19 @@ playwright:
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from "@playwright/test";
+import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: './e2e',
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: 'http://localhost:3000',
   },
   webServer: {
-    command: "npm run start",
+    command: 'npm run start',
     port: 3000,
     reuseExistingServer: !process.env.CI,
   },
-});
+})
 ```
 
 ## Prerequisites
@@ -123,6 +124,7 @@ This spike is design-only. Actual implementation (creating config, test files, C
 ## Recommendation
 
 Start with the smoke test (zero-error assertion per route), then layer on:
+
 1. Visual regression snapshots for key screens
 2. Interaction tests for critical flows (create quote, drag kanban card)
 3. Accessibility audits via `@axe-core/playwright`

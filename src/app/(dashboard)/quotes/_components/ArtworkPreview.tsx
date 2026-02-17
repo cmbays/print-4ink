@@ -1,10 +1,10 @@
-import Image from "next/image";
+import Image from 'next/image'
 
-interface ArtworkPreviewProps {
-  garmentColor: string;
-  artworkThumbnailUrl?: string;
-  artworkName?: string;
-  location: string;
+type ArtworkPreviewProps = {
+  garmentColor: string
+  artworkThumbnailUrl?: string
+  artworkName?: string
+  location: string
 }
 
 export function ArtworkPreview({
@@ -35,5 +35,5 @@ export function ArtworkPreview({
       </div>
       <span className="text-[10px] text-muted-foreground">{location}</span>
     </div>
-  );
+  )
 }

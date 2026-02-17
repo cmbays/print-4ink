@@ -1,5 +1,5 @@
 ---
-title: "Strategic Pivot: Vertical-by-Vertical"
+title: 'Strategic Pivot: Vertical-by-Vertical'
 subtitle: "Moving from linear 10-step implementation plan to user-validated vertical development focused on 4Ink's core pain points."
 date: 2026-02-08
 phase: 1
@@ -9,8 +9,8 @@ products: []
 tools: [knowledge-base]
 stage: plan
 tags: [plan, decision]
-sessionId: "7b394c57-f392-4fb2-87da-1583c256b010"
-branch: "main"
+sessionId: '7b394c57-f392-4fb2-87da-1583c256b010'
+branch: 'main'
 status: complete
 ---
 
@@ -30,13 +30,13 @@ status: complete
 
 ### What Verticals Are We Building?
 
-| Vertical | Status | Notes |
-|----------|--------|-------|
-| **Quoting** | Discovery planning | PILOT VERTICAL |
-| **Invoicing** | Pending | "Invoice generation is tedious" |
-| **Customer Management** | Pending | "Customer tracking is poor" |
-| **Pricing Matrix** | Pending | "Pricing is inflexible" |
-| **Reporting** | Stretch goal | "Print Life's reporting is broken" |
+| Vertical                | Status             | Notes                              |
+| ----------------------- | ------------------ | ---------------------------------- |
+| **Quoting**             | Discovery planning | PILOT VERTICAL                     |
+| **Invoicing**           | Pending            | "Invoice generation is tedious"    |
+| **Customer Management** | Pending            | "Customer tracking is poor"        |
+| **Pricing Matrix**      | Pending            | "Pricing is inflexible"            |
+| **Reporting**           | Stretch goal       | "Print Life's reporting is broken" |
 
 ---
 
@@ -82,12 +82,12 @@ User rates Clarity, Speed, Polish, Value (target 8+ average).
 
 ### Key Targets
 
-| Metric | Print Life | Our Target |
-|--------|-----------|------------|
-| Simple Quote Time | 3-5 min | 2-3 min |
-| Complex Quote Time | 8-12 min | 5-7 min |
-| Simple Quote Clicks | 13-20 | 10-12 |
-| Complex Quote Clicks | 25-35 | 18-25 |
+| Metric               | Print Life | Our Target |
+| -------------------- | ---------- | ---------- |
+| Simple Quote Time    | 3-5 min    | 2-3 min    |
+| Complex Quote Time   | 8-12 min   | 5-7 min    |
+| Simple Quote Clicks  | 13-20      | 10-12      |
+| Complex Quote Clicks | 25-35      | 18-25      |
 
 ---
 
@@ -119,10 +119,10 @@ User rates Clarity, Speed, Polish, Value (target 8+ average).
 
 ## How This Differs from Original Plan
 
-| Aspect | Original (10 Steps) | New (Vertical-by-Vertical) |
-|--------|---------------------|----------------------------|
-| **Approach** | Linear: Steps 1-10 in order | Iterative: Complete vertical -> feedback -> next |
-| **User Feedback** | After all 11 screens | After each vertical |
-| **Focus** | All screens | 4-5 complete workflows |
-| **Validation** | Assumed features from PRD | Based on 4Ink's stated pain points |
-| **Scope** | Everything at once | CORE + PERIPHERAL + INTERCONNECTIONS per vertical |
+| Aspect            | Original (10 Steps)         | New (Vertical-by-Vertical)                        |
+| ----------------- | --------------------------- | ------------------------------------------------- |
+| **Approach**      | Linear: Steps 1-10 in order | Iterative: Complete vertical -> feedback -> next  |
+| **User Feedback** | After all 11 screens        | After each vertical                               |
+| **Focus**         | All screens                 | 4-5 complete workflows                            |
+| **Validation**    | Assumed features from PRD   | Based on 4Ink's stated pain points                |
+| **Scope**         | Everything at once          | CORE + PERIPHERAL + INTERCONNECTIONS per vertical |

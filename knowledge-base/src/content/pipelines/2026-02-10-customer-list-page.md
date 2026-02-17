@@ -1,6 +1,6 @@
 ---
-title: "Customer List Page"
-subtitle: "Smart views, search, filters, stats bar, responsive table — the /customers browse experience"
+title: 'Customer List Page'
+subtitle: 'Smart views, search, filters, stats bar, responsive table — the /customers browse experience'
 date: 2026-02-10
 phase: 1
 pipelineName: customer-management
@@ -9,19 +9,19 @@ products: [customers]
 tools: []
 stage: build
 tags: [feature, build]
-sessionId: "b11a4feb-edb5-44ec-89a2-cedd0cb9c591"
-branch: "session/0210-customer-list"
+sessionId: 'b11a4feb-edb5-44ec-89a2-cedd0cb9c591'
+branch: 'session/0210-customer-list'
 status: complete
 ---
 
 ## Build Overview
 
-| Stat | Value |
-|------|-------|
-| Components | 4 |
-| Smart Views | 5 |
-| Table Columns | 7 |
-| Tests Pass | 264 |
+| Stat          | Value |
+| ------------- | ----- |
+| Components    | 4     |
+| Smart Views   | 5     |
+| Table Columns | 7     |
+| Tests Pass    | 264   |
 
 Built the Customer List page (`/customers`) using an orchestrator pattern with 4 parallel subagents. Each component was built independently with well-defined interfaces, then integrated and verified.
 

@@ -3,7 +3,16 @@
     "id": "build-reviewer",
     "name": "Code Quality Reviewer",
     "tools": ["Read", "Grep", "Glob"],
-    "capabilities": ["type-safety", "dry", "modularity", "tailwind", "naming", "patterns", "accessibility", "schema-consistency"],
+    "capabilities": [
+      "type-safety",
+      "dry",
+      "modularity",
+      "tailwind",
+      "naming",
+      "patterns",
+      "accessibility",
+      "schema-consistency"
+    ],
     "description": "Reviews code for quality, DRY violations, type safety, design token compliance, naming conventions, and project patterns",
     "outputFormat": "json"
   },
@@ -19,7 +28,14 @@
     "id": "design-auditor",
     "name": "Design System Auditor",
     "tools": ["Read", "Grep", "Glob"],
-    "capabilities": ["design-system", "visual-hierarchy", "mobile-responsive", "accessibility", "color-tokens", "spacing"],
+    "capabilities": [
+      "design-system",
+      "visual-hierarchy",
+      "mobile-responsive",
+      "accessibility",
+      "color-tokens",
+      "spacing"
+    ],
     "description": "Audits UI components against the design system for visual hierarchy, token compliance, mobile responsiveness, and interaction states",
     "outputFormat": "json"
   }

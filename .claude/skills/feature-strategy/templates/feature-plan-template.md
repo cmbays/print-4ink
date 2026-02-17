@@ -17,15 +17,19 @@
 ## Current State
 
 ### Working Well
+
 - [Feature/screen that's solid and ready]
 
 ### Almost There
+
 - [Feature that's 80% done, needs the last 20%]
 
 ### Missing
+
 - [Capability the user journey demands that doesn't exist yet]
 
 ### At Risk
+
 - [Feature that could break or regress without attention]
 
 ## Phase 1 — Ship This Week
@@ -33,6 +37,7 @@
 High impact, low effort. 3-5 features max. The "how is this not already there?" features.
 
 ### Feature 1: [Name]
+
 - **What**: [What it does]
 - **Why now**: [Why this matters immediately]
 - **Builds on**: [What existing feature/data it leverages]
@@ -41,6 +46,7 @@ High impact, low effort. 3-5 features max. The "how is this not already there?" 
 - **Implementation context**: [Enough for build agent to plan, NOT code]
 
 ### Feature 2: [Name]
+
 [Same structure]
 
 ## Phase 2 — Ship This Sprint
@@ -48,6 +54,7 @@ High impact, low effort. 3-5 features max. The "how is this not already there?" 
 More effort, significant value. 4-6 features max. The features that make the app feel professional.
 
 ### Feature 1: [Name]
+
 [Same structure as Phase 1 features]
 
 ## Phase 3 — Ship This Quarter
@@ -55,6 +62,7 @@ More effort, significant value. 4-6 features max. The features that make the app
 Strategic investment. 3-5 features max. The features that create competitive moats.
 
 ### Feature 1: [Name]
+
 [Same structure as Phase 1 features]
 
 ## Parking Lot

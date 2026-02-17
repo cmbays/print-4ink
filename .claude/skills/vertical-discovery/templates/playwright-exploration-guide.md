@@ -48,17 +48,17 @@ Then write `.mjs` scripts to navigate and screenshot.
 - [ ] Complete each step of the workflow:
 
 | Step | URL/Screen | Action Taken | Screenshot | Time | Clicks | Notes |
-|------|-----------|-------------|-----------|------|--------|-------|
-| 1 | | | | | | |
-| 2 | | | | | | |
-| 3 | | | | | | |
-| 4 | | | | | | |
-| 5 | | | | | | |
-| 6 | | | | | | |
+| ---- | ---------- | ------------ | ---------- | ---- | ------ | ----- |
+| 1    |            |              |            |      |        |       |
+| 2    |            |              |            |      |        |       |
+| 3    |            |              |            |      |        |       |
+| 4    |            |              |            |      |        |       |
+| 5    |            |              |            |      |        |       |
+| 6    |            |              |            |      |        |       |
 
 - [ ] Document the end state: What happens after submission?
-- [ ] Total clicks: ___
-- [ ] Estimated time: ___
+- [ ] Total clicks: \_\_\_
+- [ ] Estimated time: \_\_\_
 
 ### Pass 2: Complex Flow (Multi-Item/Edge Cases)
 
@@ -71,9 +71,9 @@ Then write `.mjs` scripts to navigate and screenshot.
 - [ ] Test: What happens with invalid input?
 
 | Step | What Changed from Simple | Friction Added | Screenshot |
-|------|-------------------------|---------------|-----------|
-| | | | |
-| | | | |
+| ---- | ------------------------ | -------------- | ---------- |
+|      |                          |                |            |
+|      |                          |                |            |
 
 ### Pass 3: Hidden Features & Edge Cases
 
@@ -105,13 +105,14 @@ For each screen/step, record:
 
 ## Friction Point Template
 
-| # | Screen/Step | Friction | Severity | Impact | Notes |
-|---|-----------|---------|----------|--------|-------|
-| 1 | | | Critical/High/Medium/Low | | |
-| 2 | | | | | |
-| 3 | | | | | |
+| #   | Screen/Step | Friction | Severity                 | Impact | Notes |
+| --- | ----------- | -------- | ------------------------ | ------ | ----- |
+| 1   |             |          | Critical/High/Medium/Low |        |       |
+| 2   |             |          |                          |        |       |
+| 3   |             |          |                          |        |       |
 
 **Severity Guide**:
+
 - **Critical**: Blocks workflow or causes data loss
 - **High**: Adds significant time or causes rework
 - **Medium**: Annoying but workable

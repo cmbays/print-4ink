@@ -1,6 +1,6 @@
 ---
-title: "Strategy Documentation Index"
-description: "Guide to all strategy documents for the vertical-by-vertical approach"
+title: 'Strategy Documentation Index'
+description: 'Guide to all strategy documents for the vertical-by-vertical approach'
 category: strategy
 status: active
 phase: 1
@@ -18,6 +18,7 @@ This folder contains all strategy-level documents for Screen Print Pro's vertica
 ### [vertical-by-vertical-strategy.md](/.claude/plans/vertical-by-vertical-strategy.md)
 
 **Read this first.** Contains:
+
 - Executive summary of the strategic pivot
 - Core methodology (4-phase approach per vertical)
 - Pilot vertical overview (Quoting)
@@ -38,6 +39,7 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 #### [quoting-discovery-interview-questions.md](quoting-discovery-interview-questions.md)
 
 **30-45 minute interview guide** with 25+ questions structure for talking to Chris (4Ink owner) about:
+
 - Current Print Life workflow (8-10 min)
 - Pain points and friction (8-10 min)
 - Interconnections with other verticals (5 min)
@@ -50,6 +52,7 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 #### [print-life-quoting-analysis.md](../competitive-analysis/print-life-quoting-analysis.md)
 
 **Print Life feature and workflow analysis** to be filled in by:
+
 - Screenshot review
 - Chris's Print Life trial walkthrough
 - Comprehensive feature list
@@ -64,6 +67,7 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 #### [print-life-journey-quoting.md](../competitive-analysis/print-life-journey-quoting.md)
 
 **Detailed journey map** documenting:
+
 - Step-by-step Print Life quoting workflow
 - Friction points with severity/frequency ratings
 - Click-by-click walkthrough
@@ -78,6 +82,7 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 #### [quoting-scope-definition.md](quoting-scope-definition.md)
 
 **Scope boundaries** defining:
+
 - **CORE features** (must build, fully functional):
   - Quotes List page
   - Quote Detail page
@@ -105,9 +110,10 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 
 ### Phase 3: Build Execution
 
-#### [screen-print-pro-journey-quoting.md](screen-print-pro-journey-quoting.md) *(to be created)*
+#### [screen-print-pro-journey-quoting.md](screen-print-pro-journey-quoting.md) _(to be created)_
 
 **Screen Print Pro's improved workflow design** documenting:
+
 - Target click count vs Print Life
 - Target time estimate vs Print Life
 - Key improvements and rationale
@@ -118,9 +124,10 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 
 ### Phase 4: Demo & Iteration
 
-#### Demo Feedback Document *(to be created)*
+#### Demo Feedback Document _(to be created)_
 
 **User feedback from Quoting demo** documenting:
+
 - What resonated ("this is so much better")
 - What confused ("I didn't understand this")
 - Rating feedback (Clarity, Speed, Polish, Value)
@@ -137,21 +144,25 @@ These documents guide the Quoting vertical (pilot), which establishes the repeat
 After Quoting is complete and validated, apply the same 4-phase methodology to:
 
 ### Invoicing Vertical (TBD)
+
 - `docs/competitive-analysis/print-life-invoicing-analysis.md`
 - `docs/competitive-analysis/print-life-journey-invoicing.md`
 - `docs/strategy/invoicing-scope-definition.md`
 - `docs/strategy/screen-print-pro-journey-invoicing.md`
 
 ### Customer Management Vertical (TBD)
+
 - `docs/competitive-analysis/print-life-customer-analysis.md`
 - `docs/competitive-analysis/print-life-journey-customer.md`
 - `docs/strategy/customer-management-scope-definition.md`
 - `docs/strategy/screen-print-pro-journey-customer.md`
 
 ### Pricing Matrix Vertical (TBD)
+
 - Similar 4-document set
 
 ### Reporting Vertical (TBD, STRETCH)
+
 - Similar 4-document set
 
 ---
@@ -159,7 +170,9 @@ After Quoting is complete and validated, apply the same 4-phase methodology to:
 ## Document Types Guide
 
 ### Analysis Documents (`docs/competitive-analysis/`)
+
 **Purpose**: Document Print Life's current experience
+
 - Feature list from screenshots
 - UI patterns observed
 - Workflow steps documented
@@ -170,7 +183,9 @@ After Quoting is complete and validated, apply the same 4-phase methodology to:
 **Status for Quoting**: Template ready, waiting for trial data
 
 ### Journey Documents (`docs/competitive-analysis/`)
+
 **Purpose**: Map workflows with friction points
+
 - Step-by-step walkthroughs
 - Friction inventory with severity
 - Alternative workflows
@@ -181,7 +196,9 @@ After Quoting is complete and validated, apply the same 4-phase methodology to:
 **Status for Quoting**: Template ready, waiting for trial data
 
 ### Strategy Documents (`docs/strategy/`)
+
 **Purpose**: Define scope, goals, and design direction
+
 - Interview questions (discovery)
 - Scope definition (CORE/PERIPHERAL/INTERCONNECTIONS)
 - Improved journey design (goals and rationale)
@@ -195,28 +212,33 @@ After Quoting is complete and validated, apply the same 4-phase methodology to:
 ## How to Use This Folder
 
 ### For Discovery Phase (Weeks 1-2)
+
 1. Read: [vertical-by-vertical-strategy.md](/.claude/plans/vertical-by-vertical-strategy.md)
 2. Conduct: [quoting-discovery-interview-questions.md](quoting-discovery-interview-questions.md)
 3. Fill in: [print-life-quoting-analysis.md](../competitive-analysis/print-life-quoting-analysis.md)
 4. Fill in: [print-life-journey-quoting.md](../competitive-analysis/print-life-journey-quoting.md)
 
 ### For Scope Definition Phase (Week 3)
+
 1. Review: Completed analysis and journey documents
 2. Validate: [quoting-scope-definition.md](quoting-scope-definition.md) with user
 3. Create: [screen-print-pro-journey-quoting.md](screen-print-pro-journey-quoting.md)
 
 ### For Build Phase (Weeks 4-6)
+
 1. Brief: frontend-builder agent with scope definition + improved journey
 2. Use: quality-gate agent for acceptance criteria verification
 3. Record: agent outputs in `agent-outputs/` for audit trail
 
 ### For Demo & Iteration Phase (Week 7)
+
 1. Present: Quoting vertical to user
 2. Capture: Feedback in demo document
 3. Iterate: Minor fixes if needed
 4. Validate: Success criteria met
 
 ### For Next Vertical (Week 8+)
+
 1. Copy: 4-document template for new vertical
 2. Adapt: Interview questions, analysis, scope for new domain
 3. Repeat: 4-phase process

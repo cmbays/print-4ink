@@ -1,34 +1,34 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
+import { useState } from 'react'
+import { Plus, X } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
 
-interface AddCustomTaskInputProps {
-  onAdd: (label: string, detail?: string) => void;
-  onCancel: () => void;
+type AddCustomTaskInputProps = {
+  onAdd: (label: string, detail?: string) => void
+  onCancel: () => void
 }
 
 export function AddCustomTaskInput({ onAdd, onCancel }: AddCustomTaskInputProps) {
-  const [label, setLabel] = useState("");
-  const [detail, setDetail] = useState("");
+  const [label, setLabel] = useState('')
+  const [detail, setDetail] = useState('')
 
   function handleSubmit() {
-    const trimmedLabel = label.trim();
-    if (!trimmedLabel) return;
-    onAdd(trimmedLabel, detail.trim() || undefined);
-    setLabel("");
-    setDetail("");
+    const trimmedLabel = label.trim()
+    if (!trimmedLabel) return
+    onAdd(trimmedLabel, detail.trim() || undefined)
+    setLabel('')
+    setDetail('')
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit()
     }
-    if (e.key === "Escape") {
-      onCancel();
+    if (e.key === 'Escape') {
+      onCancel()
     }
   }
 
@@ -50,25 +50,15 @@ export function AddCustomTaskInput({ onAdd, onCancel }: AddCustomTaskInputProps)
         className="h-8 text-sm"
       />
       <div className="flex items-center gap-2">
-        <Button
-          size="sm"
-          className="gap-1.5"
-          onClick={handleSubmit}
-          disabled={!label.trim()}
-        >
+        <Button size="sm" className="gap-1.5" onClick={handleSubmit} disabled={!label.trim()}>
           <Plus className="size-3.5" />
           Add
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5"
-          onClick={onCancel}
-        >
+        <Button variant="ghost" size="sm" className="gap-1.5" onClick={onCancel}>
           <X className="size-3.5" />
           Cancel
         </Button>
       </div>
     </div>
-  );
+  )
 }

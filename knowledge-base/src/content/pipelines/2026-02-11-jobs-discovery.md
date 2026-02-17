@@ -1,6 +1,6 @@
 ---
-title: "Jobs Vertical Discovery"
-subtitle: "Competitive analysis of Printavo and PrintLife, 12-question user interview, journey mapping with 12 friction points, and scope definition for the production backbone"
+title: 'Jobs Vertical Discovery'
+subtitle: 'Competitive analysis of Printavo and PrintLife, 12-question user interview, journey mapping with 12 friction points, and scope definition for the production backbone'
 date: 2026-02-11
 phase: 1
 pipelineName: jobs
@@ -9,20 +9,20 @@ products: [jobs]
 tools: []
 stage: research
 tags: [research, decision]
-sessionId: "6df58e54-e1a6-4bef-ae1d-549e6e72ebf7"
-branch: "session/0211-jobs-vertical"
+sessionId: '6df58e54-e1a6-4bef-ae1d-549e6e72ebf7'
+branch: 'session/0211-jobs-vertical'
 status: complete
 ---
 
 ## At a Glance
 
-| Stat | Value |
-|------|-------|
-| Discovery Steps | 7 |
-| Competitors Analyzed | 2 (Printavo, PrintLife) |
-| Screenshots Captured | 25 |
-| Interview Questions | 12 |
-| Friction Points Mapped | 12 |
+| Stat                   | Value                   |
+| ---------------------- | ----------------------- |
+| Discovery Steps        | 7                       |
+| Competitors Analyzed   | 2 (Printavo, PrintLife) |
+| Screenshots Captured   | 25                      |
+| Interview Questions    | 12                      |
+| Friction Points Mapped | 12                      |
 
 Complete vertical discovery for the Jobs & Production vertical -- the core production backbone covering F2 (Jobs List), F3 (Job Detail), and F4 (Production Board/Kanban).
 
@@ -39,27 +39,29 @@ Complete vertical discovery for the Jobs & Production vertical -- the core produ
 ## Competitors Analyzed
 
 ### Printavo
+
 Market leader ($109-399/mo, 3,000+ shops). Calendar-centric, 13 customizable statuses, dual dates, preset task lists. **Gap:** No true Kanban board (gated behind $399 Premium), no capacity planning, no QC gates, no production analytics.
 
 ### PrintLife
+
 Indie product by former shop owner. 4-lane fixed Kanban, quote=invoice conflation, customer portal strength. **Gap:** No sub-stages, no urgency indicators, single-user only, no service type visibility.
 
 ## Key Friction Points
 
-| Severity | Friction | Frequency |
-|----------|----------|-----------|
-| Critical | No quick capture -- opportunities lost when busy | Daily |
-| Critical | No capacity awareness -- can't confidently commit dates | Multiple times/week |
+| Severity | Friction                                                  | Frequency                  |
+| -------- | --------------------------------------------------------- | -------------------------- |
+| Critical | No quick capture -- opportunities lost when busy          | Daily                      |
+| Critical | No capacity awareness -- can't confidently commit dates   | Multiple times/week        |
 | Critical | No quality gate -- shipped bad work (embroidery incident) | Occasional but devastating |
-| Critical | Screen prep invisible -- only Gary knows status | Every screen printing job |
-| High | Wall calendar is single source of truth | Constant |
-| High | DTF interrupts disrupt planned work | Several times/day |
-| High | No "what do I work on today?" view | Every morning |
-| High | Quote pipeline has no states | Multiple times/week |
-| Medium | No blocked-item visibility | Weekly |
-| Medium | Customer communication outside system | Constant |
-| Medium | No production analytics | Ongoing blind spot |
-| Medium | Payment disconnected from production | Per job |
+| Critical | Screen prep invisible -- only Gary knows status           | Every screen printing job  |
+| High     | Wall calendar is single source of truth                   | Constant                   |
+| High     | DTF interrupts disrupt planned work                       | Several times/day          |
+| High     | No "what do I work on today?" view                        | Every morning              |
+| High     | Quote pipeline has no states                              | Multiple times/week        |
+| Medium   | No blocked-item visibility                                | Weekly                     |
+| Medium   | Customer communication outside system                     | Constant                   |
+| Medium   | No production analytics                                   | Ongoing blind spot         |
+| Medium   | Payment disconnected from production                      | Per job                    |
 
 ## Board Architecture (User-Designed)
 
@@ -87,18 +89,18 @@ Through the 12-question interview, the user collaboratively designed the entire 
 
 ## Scope Definition
 
-| Component | Scope |
-|-----------|-------|
-| Production Board | CORE -- 2 sections, 5 lanes, drag-drop, filters, capacity bar |
-| Jobs List | CORE -- Table view, search, filter, sort, quick actions |
-| Job Detail | CORE -- Tasks, notes, actions, linked entities, block tracking |
-| Scratch Notes | CORE -- Quick text capture on board |
-| Canonical Tasks | CORE -- 3 service type templates, auto-populate |
-| Review Lane (QC) | CORE -- Mandatory checkpoint, pass/fail |
-| Quote-to-Job | PERIPHERAL -- Conversion button with auto-inherit |
-| Capacity Summary | PERIPHERAL -- Basic stats above board |
-| What-If Picker | NOT BUILDING -- Phase 2 |
-| Notifications | NOT BUILDING -- Phase 2 |
+| Component        | Scope                                                          |
+| ---------------- | -------------------------------------------------------------- |
+| Production Board | CORE -- 2 sections, 5 lanes, drag-drop, filters, capacity bar  |
+| Jobs List        | CORE -- Table view, search, filter, sort, quick actions        |
+| Job Detail       | CORE -- Tasks, notes, actions, linked entities, block tracking |
+| Scratch Notes    | CORE -- Quick text capture on board                            |
+| Canonical Tasks  | CORE -- 3 service type templates, auto-populate                |
+| Review Lane (QC) | CORE -- Mandatory checkpoint, pass/fail                        |
+| Quote-to-Job     | PERIPHERAL -- Conversion button with auto-inherit              |
+| Capacity Summary | PERIPHERAL -- Basic stats above board                          |
+| What-If Picker   | NOT BUILDING -- Phase 2                                        |
+| Notifications    | NOT BUILDING -- Phase 2                                        |
 
 ## Documents Produced
 

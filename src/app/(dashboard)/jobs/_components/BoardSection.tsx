@@ -1,30 +1,30 @@
-"use client";
+'use client'
 
-import { useMemo } from "react";
-import { cn } from "@shared/lib/cn";
-import { BoardLane } from "./BoardLane";
-import type { Lane } from "@domain/entities/job";
-import type { BoardCard } from "@domain/entities/board-card";
+import { useMemo } from 'react'
+import { cn } from '@shared/lib/cn'
+import { BoardLane } from './BoardLane'
+import type { Lane } from '@domain/entities/job'
+import type { BoardCard } from '@domain/entities/board-card'
 
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
 
-const LANE_ORDER: Lane[] = ["ready", "in_progress", "review", "blocked", "done"];
+const LANE_ORDER: Lane[] = ['ready', 'in_progress', 'review', 'blocked', 'done']
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface BoardSectionProps {
-  label: string;
-  section: "quotes" | "jobs" | "combined";
-  cards: BoardCard[];
-  renderCard: (card: BoardCard) => React.ReactNode;
-  onAddScratchNote?: () => void;
+type BoardSectionProps = {
+  label: string
+  section: 'quotes' | 'jobs' | 'combined'
+  cards: BoardCard[]
+  renderCard: (card: BoardCard) => React.ReactNode
+  onAddScratchNote?: () => void
   /** Footer rendered inside the Ready lane (e.g. ScratchNoteCapture) */
-  readyLaneFooter?: React.ReactNode;
-  className?: string;
+  readyLaneFooter?: React.ReactNode
+  className?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -48,15 +48,15 @@ export function BoardSection({
       review: [],
       blocked: [],
       done: [],
-    };
-    for (const card of cards) {
-      buckets[card.lane].push(card);
     }
-    return buckets;
-  }, [cards]);
+    for (const card of cards) {
+      buckets[card.lane].push(card)
+    }
+    return buckets
+  }, [cards])
 
   return (
-    <section className={cn("space-y-2", className)}>
+    <section className={cn('space-y-2', className)}>
       {/* Section label */}
       <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-1">
         {label}
@@ -71,11 +71,11 @@ export function BoardSection({
             section={section}
             cards={cardsByLane[lane]}
             renderCard={renderCard}
-            onAddScratchNote={lane === "ready" ? onAddScratchNote : undefined}
-            footer={lane === "ready" ? readyLaneFooter : undefined}
+            onAddScratchNote={lane === 'ready' ? onAddScratchNote : undefined}
+            footer={lane === 'ready' ? readyLaneFooter : undefined}
           />
         ))}
       </div>
     </section>
-  );
+  )
 }

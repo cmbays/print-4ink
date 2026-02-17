@@ -1,53 +1,51 @@
-"use client";
+'use client'
 
-import { useId, useMemo } from "react";
-import { cn } from "@shared/lib/cn";
-import { getZoneForPosition } from "@domain/constants/print-zones";
-import { hexToColorMatrix } from "@domain/rules/color.rules";
-import type { GarmentCategory } from "@domain/entities/garment";
-import type { MockupView } from "@domain/entities/mockup-template";
+import { useId, useMemo } from 'react'
+import { cn } from '@shared/lib/cn'
+import { getZoneForPosition } from '@domain/constants/print-zones'
+import { hexToColorMatrix } from '@domain/rules/color.rules'
+import type { GarmentCategory } from '@domain/entities/garment'
+import type { MockupView } from '@domain/entities/mockup-template'
 
-export interface ArtworkPlacement {
-  artworkUrl: string;
-  position: string;
-  scale?: number;
-  offsetX?: number;
-  offsetY?: number;
+export type ArtworkPlacement = {
+  artworkUrl: string
+  position: string
+  scale?: number
+  offsetX?: number
+  offsetY?: number
 }
 
 type ResolvedPlacement = ArtworkPlacement & {
-  zone: { x: number; y: number; width: number; height: number };
-};
-
-function isResolved<T extends Record<string, unknown>>(
-  p: T | null
-): p is T & ResolvedPlacement {
-  return p !== null;
+  zone: { x: number; y: number; width: number; height: number }
 }
 
-const EMPTY_PLACEMENTS: ArtworkPlacement[] = [];
+function isResolved<T extends Record<string, unknown>>(p: T | null): p is T & ResolvedPlacement {
+  return p !== null
+}
+
+const EMPTY_PLACEMENTS: ArtworkPlacement[] = []
 
 // Size presets (classes applied to the root wrapper)
 const SIZE_CLASSES = {
-  xs: "w-10 h-12",     // 40x48 — Kanban cards, table rows
-  sm: "w-16 h-20",     // 64x80 — Quote line items
-  md: "w-72 h-80",     // 288x320 — Job detail
-  lg: "w-[400px] h-[480px]", // 400x480 — Editor, approval
-} as const;
+  xs: 'w-10 h-12', // 40x48 — Kanban cards, table rows
+  sm: 'w-16 h-20', // 64x80 — Quote line items
+  md: 'w-72 h-80', // 288x320 — Job detail
+  lg: 'w-[400px] h-[480px]', // 400x480 — Editor, approval
+} as const
 
-interface GarmentMockupProps {
-  garmentCategory: GarmentCategory;
-  colorHex: string;
-  artworkPlacements?: ArtworkPlacement[];
-  view?: MockupView;
-  size?: keyof typeof SIZE_CLASSES;
-  className?: string;
+type GarmentMockupProps = {
+  garmentCategory: GarmentCategory
+  colorHex: string
+  artworkPlacements?: ArtworkPlacement[]
+  view?: MockupView
+  size?: keyof typeof SIZE_CLASSES
+  className?: string
   /** Path to SVG template. Falls back to /mockup-templates/{category}-{view}.svg */
-  templatePath?: string;
+  templatePath?: string
   /** ViewBox width of the SVG template. Defaults to 400. */
-  viewBoxWidth?: number;
+  viewBoxWidth?: number
   /** ViewBox height of the SVG template. Defaults to 480. */
-  viewBoxHeight?: number;
+  viewBoxHeight?: number
 }
 
 /**
@@ -63,40 +61,35 @@ export function GarmentMockup({
   garmentCategory,
   colorHex,
   artworkPlacements = EMPTY_PLACEMENTS,
-  view = "front",
-  size = "md",
+  view = 'front',
+  size = 'md',
   className,
   templatePath,
   viewBoxWidth = 400,
   viewBoxHeight = 480,
 }: GarmentMockupProps) {
-  const instanceId = useId();
-  const svgPath =
-    templatePath ?? `/mockup-templates/${garmentCategory}-${view}.svg`;
-  const filterId = `garment-tint-${colorHex.replace("#", "").toLowerCase()}`;
+  const instanceId = useId()
+  const svgPath = templatePath ?? `/mockup-templates/${garmentCategory}-${view}.svg`
+  const filterId = `garment-tint-${colorHex.replace('#', '').toLowerCase()}`
 
   // Resolve print zones for artwork placements
   const resolvedPlacements = useMemo(
     () =>
       artworkPlacements
         .map((placement) => {
-          const zone = getZoneForPosition(
-            garmentCategory,
-            view,
-            placement.position
-          );
-          if (!zone) return null;
-          return { ...placement, zone };
+          const zone = getZoneForPosition(garmentCategory, view, placement.position)
+          if (!zone) return null
+          return { ...placement, zone }
         })
         .filter(isResolved),
     [artworkPlacements, garmentCategory, view]
-  );
+  )
 
   return (
     <div
       className={cn(
         SIZE_CLASSES[size],
-        "relative rounded-md overflow-hidden bg-surface",
+        'relative rounded-md overflow-hidden bg-surface',
         className
       )}
     >
@@ -125,24 +118,23 @@ export function GarmentMockup({
 
         {/* Artwork overlays */}
         {resolvedPlacements.map((placement, i) => {
-          const { zone, artworkUrl, scale = 1, offsetX = 0, offsetY = 0 } =
-            placement;
+          const { zone, artworkUrl, scale = 1, offsetX = 0, offsetY = 0 } = placement
 
           // Convert percentage coordinates to viewBox units
-          const zx = (zone.x / 100) * viewBoxWidth;
-          const zy = (zone.y / 100) * viewBoxHeight;
-          const zw = (zone.width / 100) * viewBoxWidth;
-          const zh = (zone.height / 100) * viewBoxHeight;
+          const zx = (zone.x / 100) * viewBoxWidth
+          const zy = (zone.y / 100) * viewBoxHeight
+          const zw = (zone.width / 100) * viewBoxWidth
+          const zh = (zone.height / 100) * viewBoxHeight
 
           // Apply scale and offset
-          const scaledW = zw * scale;
-          const scaledH = zh * scale;
-          const cx = zx + zw / 2 + (offsetX / 100) * zw;
-          const cy = zy + zh / 2 + (offsetY / 100) * zh;
-          const ax = cx - scaledW / 2;
-          const ay = cy - scaledH / 2;
+          const scaledW = zw * scale
+          const scaledH = zh * scale
+          const cx = zx + zw / 2 + (offsetX / 100) * zw
+          const cy = zy + zh / 2 + (offsetY / 100) * zh
+          const ax = cx - scaledW / 2
+          const ay = cy - scaledH / 2
 
-          const clipId = `clip-${instanceId}-${view}-${placement.position}-${i}`;
+          const clipId = `clip-${instanceId}-${view}-${placement.position}-${i}`
 
           return (
             <g key={`${placement.position}-${i}`}>
@@ -162,9 +154,9 @@ export function GarmentMockup({
                 className="mix-blend-multiply"
               />
             </g>
-          );
+          )
         })}
       </svg>
     </div>
-  );
+  )
 }

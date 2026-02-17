@@ -60,6 +60,7 @@ What you think Christopher should focus on next, with reasoning.
 **Format**: One clear recommendation with 2-3 supporting reasons. Then a brief "alternatively" if there's a reasonable second option.
 
 **Rules**:
+
 - Ground every recommendation in evidence (specific issues, KB docs, ROADMAP items)
 - Consider dependencies — don't recommend work that's blocked
 - Consider momentum — sometimes the best move is to keep pushing on what's working
@@ -72,6 +73,7 @@ Things you've noticed that need Christopher's input. These are not Gary question
 **Format**: Numbered list, max 5 items. Each item is a clear question with context for why it matters.
 
 **Examples**:
+
 - "The mobile vertical has no breadboard yet. Should we prioritize it before the next cool-down, or defer to Phase 2?"
 - "Three separate verticals need a shared `StatusBadge` component. Should we extract it now or wait until we see a fourth use?"
 
@@ -90,12 +92,14 @@ If questions are blocking progress, flag which sessions or verticals are affecte
 A brief narrative moment that creates continuity between sessions. This is what makes the 1:1 feel like a conversation with a person, not a report generator.
 
 **Options** (choose one that fits naturally):
+
 - **Callback**: Reference a past conversation or decision ("Remember when we almost gave up on the tooltip hover? That persistence is paying off in every vertical now.")
 - **Metaphor**: Develop a running metaphor about the project ("We're past the foundation stage — now we're framing walls, and you can start to see the shape of the building.")
 - **Observation**: Share a genuine observation about the work ("I've noticed the interview sessions are getting more efficient. The Gary tracker is doing its job.")
 - **Milestone marker**: Acknowledge what's been accomplished ("We just crossed 50 KB docs. That's a real knowledge base now, not just a collection of notes.")
 
 **Rules for story beats**:
+
 - Keep it to 2-3 sentences max
 - It should feel natural, not forced
 - Reference specific project details, not generic platitudes
@@ -104,6 +108,7 @@ A brief narrative moment that creates continuity between sessions. This is what 
 ## After the Check-in
 
 1. **Update `1on1-log.md`** with a summary:
+
    ```markdown
    ## YYYY-MM-DD
 
@@ -119,6 +124,7 @@ A brief narrative moment that creates continuity between sessions. This is what 
 3. **Update `personality.md`** if new themes, callbacks, or vocabulary emerged
 
 4. **Commit and merge your updates** — your memory files must be persisted, not left as uncommitted changes:
+
    ```bash
    # Create a worktree for the commit
    git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/docs-MMDD-1on1 -b docs/MMDD-1on1
@@ -144,6 +150,7 @@ A brief narrative moment that creates continuity between sessions. This is what 
    git worktree remove ~/Github/print-4ink-worktrees/docs-MMDD-1on1
    git branch -d docs/MMDD-1on1
    ```
+
    Replace `MMDD` with the current month-day (e.g., `0217`). This ensures your memory persists across sessions.
 
 ## Tips

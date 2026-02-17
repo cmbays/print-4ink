@@ -1,25 +1,21 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Circle, CircleCheck } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { JobCardBody, jobCardContainerClass } from "./JobCardBody";
-import type { JobCard } from "@domain/entities/board-card";
+import Link from 'next/link'
+import { Circle, CircleCheck } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { JobCardBody, jobCardContainerClass } from './JobCardBody'
+import type { JobCard } from '@domain/entities/board-card'
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-interface JobBoardCardProps {
-  card: JobCard;
+type JobBoardCardProps = {
+  card: JobCard
 }
 
 export function JobBoardCard({ card }: JobBoardCardProps) {
-  const isBlocked = !!card.blockReason;
+  const isBlocked = !!card.blockReason
 
   const cardEl = (
     <div
@@ -29,17 +25,17 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
     >
       <JobCardBody card={card} />
     </div>
-  );
+  )
 
   const linked = (
     <Link href={`/jobs/${card.id}`} className="block">
       {cardEl}
     </Link>
-  );
+  )
 
-  const hasTooltip = card.tasks.length > 0 || isBlocked;
+  const hasTooltip = card.tasks.length > 0 || isBlocked
 
-  if (!hasTooltip) return linked;
+  if (!hasTooltip) return linked
 
   return (
     <Tooltip>
@@ -47,9 +43,7 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
       <TooltipContent side="right" className="max-w-60 p-3">
         <div className="flex flex-col gap-2">
           {isBlocked && (
-            <p className="text-xs font-medium text-error">
-              Blocked: {card.blockReason}
-            </p>
+            <p className="text-xs font-medium text-error">Blocked: {card.blockReason}</p>
           )}
           {card.tasks.length > 0 && (
             <div className="flex flex-col gap-1">
@@ -63,7 +57,11 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
                   ) : (
                     <Circle className="size-3.5 shrink-0 mt-px text-muted-foreground" />
                   )}
-                  <span className={task.isCompleted ? "text-muted-foreground line-through" : "text-foreground"}>
+                  <span
+                    className={
+                      task.isCompleted ? 'text-muted-foreground line-through' : 'text-foreground'
+                    }
+                  >
                     {task.label}
                   </span>
                 </div>
@@ -73,5 +71,5 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
         </div>
       </TooltipContent>
     </Tooltip>
-  );
+  )
 }

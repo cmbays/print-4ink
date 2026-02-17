@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
   // Only apply protection in production (Vercel deployments)
   if (process.env.NODE_ENV !== 'production') {
-    return NextResponse.next();
+    return NextResponse.next()
   }
 
   // Skip protection for login page and API routes
@@ -12,18 +12,18 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname === '/demo-login' ||
     request.nextUrl.pathname.startsWith('/api/demo-login')
   ) {
-    return NextResponse.next();
+    return NextResponse.next()
   }
 
   // Check for demo access cookie
-  const demoAccess = request.cookies.get('demo-access')?.value;
+  const demoAccess = request.cookies.get('demo-access')?.value
 
   if (demoAccess !== 'true') {
     // Redirect to login page
-    return NextResponse.redirect(new URL('/demo-login', request.url));
+    return NextResponse.redirect(new URL('/demo-login', request.url))
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
@@ -36,4 +36,4 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
-};
+}

@@ -1,56 +1,42 @@
-"use client";
+'use client'
 
-import { cn } from "@shared/lib/cn";
-import type { MarginIndicator as MarginIndicatorType } from "@domain/entities/price-matrix";
-import { MarginIndicator } from "./MarginIndicator";
-import { ServiceTypeBadge } from "./ServiceTypeBadge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardAction,
-} from "@shared/ui/primitives/card";
-import { Badge } from "@shared/ui/primitives/badge";
+import { cn } from '@shared/lib/cn'
+import type { MarginIndicator as MarginIndicatorType } from '@domain/entities/price-matrix'
+import { MarginIndicator } from './MarginIndicator'
+import { ServiceTypeBadge } from './ServiceTypeBadge'
+import { Card, CardContent, CardHeader, CardTitle, CardAction } from '@shared/ui/primitives/card'
+import { Badge } from '@shared/ui/primitives/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@shared/ui/primitives/dropdown-menu";
-import {
-  Copy,
-  Trash2,
-  Star,
-  MoreHorizontal,
-  Clock,
-  Pencil,
-  Users,
-} from "lucide-react";
-import { formatRelativeTime } from "@shared/lib/format";
+} from '@shared/ui/primitives/dropdown-menu'
+import { Copy, Trash2, Star, MoreHorizontal, Clock, Pencil, Users } from 'lucide-react'
+import { formatRelativeTime } from '@shared/lib/format'
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-interface PricingTemplateCardProps {
+type PricingTemplateCardProps = {
   template: {
-    id: string;
-    name: string;
-    serviceType: "screen-print" | "dtf";
-    pricingTier: string;
-    isDefault: boolean;
-    isIndustryDefault: boolean;
-    updatedAt: string;
-  };
-  healthIndicator: MarginIndicatorType;
-  healthPercentage?: number;
-  customersUsing: number;
-  onEdit: () => void;
-  onDuplicate: () => void;
-  onDelete: () => void;
-  onSetDefault: () => void;
+    id: string
+    name: string
+    serviceType: 'screen-print' | 'dtf'
+    pricingTier: string
+    isDefault: boolean
+    isIndustryDefault: boolean
+    updatedAt: string
+  }
+  healthIndicator: MarginIndicatorType
+  healthPercentage?: number
+  customersUsing: number
+  onEdit: () => void
+  onDuplicate: () => void
+  onDelete: () => void
+  onSetDefault: () => void
 }
 
 // ---------------------------------------------------------------------------
@@ -70,17 +56,17 @@ export function PricingTemplateCard({
   return (
     <Card
       className={cn(
-        "cursor-pointer transition-colors hover:border-border/80 hover:bg-card/80",
-        "group relative",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        'cursor-pointer transition-colors hover:border-border/80 hover:bg-card/80',
+        'group relative',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background'
       )}
       role="button"
       tabIndex={0}
       onClick={onEdit}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onEdit();
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onEdit()
         }
       }}
     >
@@ -88,11 +74,7 @@ export function PricingTemplateCard({
         <div className="flex flex-col gap-1 min-w-0">
           {/* Title row: health dot + title */}
           <div className="flex min-w-0 items-center gap-2">
-            <MarginIndicator
-              percentage={healthPercentage}
-              indicator={healthIndicator}
-              size="md"
-            />
+            <MarginIndicator percentage={healthPercentage} indicator={healthIndicator} size="md" />
             <CardTitle className="truncate text-sm min-w-0">{template.name}</CardTitle>
           </div>
 
@@ -124,20 +106,17 @@ export function PricingTemplateCard({
           <DropdownMenu>
             <DropdownMenuTrigger
               className={cn(
-                "inline-flex items-center justify-center rounded-md p-1",
-                "text-muted-foreground hover:text-foreground hover:bg-surface",
-                "md:opacity-0 transition-opacity md:group-hover:opacity-100",
-                "focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                'inline-flex items-center justify-center rounded-md p-1',
+                'text-muted-foreground hover:text-foreground hover:bg-surface',
+                'md:opacity-0 transition-opacity md:group-hover:opacity-100',
+                'focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
               )}
               onClick={(e) => e.stopPropagation()}
               aria-label="Template actions"
             >
               <MoreHorizontal className="size-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
               <DropdownMenuItem onClick={onEdit}>
                 <Pencil className="size-4" />
                 Edit
@@ -170,10 +149,7 @@ export function PricingTemplateCard({
             variant="badge"
             className="text-[10px] px-1.5 py-0"
           />
-          <Badge
-            variant="ghost"
-            className="text-muted-foreground text-[10px] px-1.5 py-0"
-          >
+          <Badge variant="ghost" className="text-muted-foreground text-[10px] px-1.5 py-0">
             {template.pricingTier}
           </Badge>
         </div>
@@ -182,7 +158,7 @@ export function PricingTemplateCard({
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Users className="size-3" />
-            {customersUsing} customer{customersUsing !== 1 ? "s" : ""}
+            {customersUsing} customer{customersUsing !== 1 ? 's' : ''}
           </span>
           <span className="inline-flex items-center gap-1">
             <Clock className="size-3" />
@@ -191,5 +167,5 @@ export function PricingTemplateCard({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

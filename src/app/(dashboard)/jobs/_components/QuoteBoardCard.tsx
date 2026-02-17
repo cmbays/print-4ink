@@ -1,29 +1,24 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Plus, MessageSquare, User } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { QuoteCardBody, quoteCardContainerClass } from "./QuoteCardBody";
-import type { QuoteCard } from "@domain/entities/board-card";
+import Link from 'next/link'
+import { Plus, MessageSquare, User } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { QuoteCardBody, quoteCardContainerClass } from './QuoteCardBody'
+import type { QuoteCard } from '@domain/entities/board-card'
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-interface QuoteBoardCardProps {
-  card: QuoteCard;
-  onCreateJob?: () => void;
+type QuoteBoardCardProps = {
+  card: QuoteCard
+  onCreateJob?: () => void
 }
 
 export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
-  const isDone = card.lane === "done";
-  const showCreateJob =
-    isDone && card.quoteStatus === "accepted" && onCreateJob;
+  const isDone = card.lane === 'done'
+  const showCreateJob = isDone && card.quoteStatus === 'accepted' && onCreateJob
 
   const cardEl = (
     <div
@@ -33,7 +28,7 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
     >
       <QuoteCardBody card={card} />
     </div>
-  );
+  )
 
   const linked = (
     <div>
@@ -54,12 +49,12 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
         </div>
       )}
     </div>
-  );
+  )
 
-  if (card.notes.length === 0) return linked;
+  if (card.notes.length === 0) return linked
 
-  const internalNotes = card.notes.filter((n) => n.type === "internal");
-  const customerNotes = card.notes.filter((n) => n.type === "customer");
+  const internalNotes = card.notes.filter((n) => n.type === 'internal')
+  const customerNotes = card.notes.filter((n) => n.type === 'customer')
 
   return (
     <Tooltip>
@@ -95,5 +90,5 @@ export function QuoteBoardCard({ card, onCreateJob }: QuoteBoardCardProps) {
         </div>
       </TooltipContent>
     </Tooltip>
-  );
+  )
 }

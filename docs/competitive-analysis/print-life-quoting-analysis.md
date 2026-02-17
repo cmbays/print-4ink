@@ -1,6 +1,6 @@
 ---
-title: "Print Life Quoting Analysis"
-description: "Feature list, UI patterns, workflow analysis from Print Life web research, Playwright exploration, and 4Ink user interview"
+title: 'Print Life Quoting Analysis'
+description: 'Feature list, UI patterns, workflow analysis from Print Life web research, Playwright exploration, and 4Ink user interview'
 category: competitive-analysis
 status: complete
 phase: 1
@@ -18,11 +18,11 @@ last-verified: 2026-02-08
 
 ## Terminology: Internal vs External Quoting
 
-| Term | Definition | Phase |
-|------|-----------|-------|
-| **Internal Quote** | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote. | **Phase 1** (building now) |
-| **External Quote** | Customer submits quote request via customer portal. Shop reviews, adjusts, approves. | **Phase 2** |
-| **Hybrid Approval** | Customer self-service + shop approval gate. | **Phase 2** (shop-side status tracking in Phase 1) |
+| Term                | Definition                                                                                                | Phase                                              |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| **Internal Quote**  | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote. | **Phase 1** (building now)                         |
+| **External Quote**  | Customer submits quote request via customer portal. Shop reviews, adjusts, approves.                      | **Phase 2**                                        |
+| **Hybrid Approval** | Customer self-service + shop approval gate.                                                               | **Phase 2** (shop-side status tracking in Phase 1) |
 
 **Note**: Print Life has both modes (internal admin + customer portal), but 4Ink only uses internal mode. Our Phase 1 builds internal quoting. Phase 2 adds the customer portal with hybrid approval.
 
@@ -148,6 +148,7 @@ Step 6: PROJECT OVERVIEW — Review and submit
 ```
 
 **Metrics**:
+
 - Estimated clicks: 20-30
 - Measured time: ~10 minutes
 - Number of screen transitions: 6 mandatory steps
@@ -161,6 +162,7 @@ Step 6: PROJECT OVERVIEW — Review and submit
 Each additional garment requires repeating Steps 1-5 (product selection, color, qty, art, ink). The "+ PROJECT" button adds a new garment to the same quote.
 
 **Metrics**:
+
 - Estimated clicks: 40-60+
 - Estimated time: 15-20 minutes
 - Multiplier: ~1.5-2x per additional garment
@@ -170,6 +172,7 @@ Each additional garment requires repeating Steps 1-5 (product selection, color, 
 ## UI Pattern Observations
 
 ### Design Language
+
 - White background, light/clean aesthetic
 - Yellow BACK/NEXT buttons
 - Cyan/light blue accent for step labels and links
@@ -177,12 +180,14 @@ Each additional garment requires repeating Steps 1-5 (product selection, color, 
 - Materialize CSS framework (collapsible-header class)
 
 ### Navigation Pattern
+
 - Linear stepper at page bottom (no progress percentage)
 - BACK/NEXT buttons only — no keyboard shortcuts for navigation
 - Steps are strictly sequential — can't jump ahead
 - Session-based state — navigating away loses all progress
 
 ### Data Sources
+
 - Product images: S&S Activewear CDN (`ssactivewear.com/Images/`)
 - Color swatches: S&S Activewear CDN (`ssactivewear.com/Images/ColorSwatch/`)
 - Stock levels: Live from vendor API
@@ -192,18 +197,18 @@ Each additional garment requires repeating Steps 1-5 (product selection, color, 
 
 ## Friction Points Observed
 
-| # | Friction Point | Severity | Frequency | Impact | Notes |
-|---|---|---|---|---|---|
-| 1 | Qty fields block on recalculation — can't tab through sizes | Critical | Every quote | Adds 2-3 min per quote | Most frustrating single issue per user |
-| 2 | Mandatory steps can't be skipped (Ink Style, Finishing) | High | Every quote | Extra clicks + time | 4Ink doesn't use these steps at all |
-| 3 | Changing art style resets all uploaded art + selections | High | When switching styles | Causes rework, data loss | "Bad experience" per user |
-| 4 | Color swatch grid overwhelming | Medium | Every quote | Time to find color | 103 tiny squares, no search/filter |
-| 5 | Forced art color swatch selection | Medium | Every quote | Unnecessary step | Not needed for 4Ink's workflow |
-| 6 | No quote reuse/duplication | High | Repeat customers | Rebuild from scratch | Major time waste for regulars |
-| 7 | No quote tracking/status management | High | Always | Quotes lost in emails/calls | No pending/sent/accepted tracking |
-| 8 | Session state lost on navigation | Medium | Occasionally | Lose all progress | SPA with no state persistence |
-| 9 | No keyboard shortcuts/quick nav | Low | Every quote | Slower workflow | Only mouse click navigation |
-| 10 | No approval workflow for customer quotes | High | Desired feature | Can't use self-service | Would save 10 min/quote if available |
+| #   | Friction Point                                              | Severity | Frequency             | Impact                      | Notes                                  |
+| --- | ----------------------------------------------------------- | -------- | --------------------- | --------------------------- | -------------------------------------- |
+| 1   | Qty fields block on recalculation — can't tab through sizes | Critical | Every quote           | Adds 2-3 min per quote      | Most frustrating single issue per user |
+| 2   | Mandatory steps can't be skipped (Ink Style, Finishing)     | High     | Every quote           | Extra clicks + time         | 4Ink doesn't use these steps at all    |
+| 3   | Changing art style resets all uploaded art + selections     | High     | When switching styles | Causes rework, data loss    | "Bad experience" per user              |
+| 4   | Color swatch grid overwhelming                              | Medium   | Every quote           | Time to find color          | 103 tiny squares, no search/filter     |
+| 5   | Forced art color swatch selection                           | Medium   | Every quote           | Unnecessary step            | Not needed for 4Ink's workflow         |
+| 6   | No quote reuse/duplication                                  | High     | Repeat customers      | Rebuild from scratch        | Major time waste for regulars          |
+| 7   | No quote tracking/status management                         | High     | Always                | Quotes lost in emails/calls | No pending/sent/accepted tracking      |
+| 8   | Session state lost on navigation                            | Medium   | Occasionally          | Lose all progress           | SPA with no state persistence          |
+| 9   | No keyboard shortcuts/quick nav                             | Low      | Every quote           | Slower workflow             | Only mouse click navigation            |
+| 10  | No approval workflow for customer quotes                    | High     | Desired feature       | Can't use self-service      | Would save 10 min/quote if available   |
 
 ---
 
@@ -222,10 +227,12 @@ Each additional garment requires repeating Steps 1-5 (product selection, color, 
 ## Click Analysis
 
 ### Simple Quote (Measured)
+
 - Print Life: ~20-30 clicks
 - Screen Print Pro Target: 8-12 clicks (60% reduction)
 
 ### Complex Quote (Estimated)
+
 - Print Life: ~40-60 clicks
 - Screen Print Pro Target: 20-30 clicks (50% reduction)
 
@@ -234,10 +241,12 @@ Each additional garment requires repeating Steps 1-5 (product selection, color, 
 ## Time Analysis
 
 ### Simple Quote
+
 - Print Life: ~10 minutes (measured via interview)
 - Screen Print Pro Target: 3-4 minutes (60-70% faster)
 
 ### Complex Quote
+
 - Print Life: ~15-20 minutes (estimated)
 - Screen Print Pro Target: 6-8 minutes (50-60% faster)
 
@@ -256,13 +265,13 @@ Each additional garment requires repeating Steps 1-5 (product selection, color, 
 
 ## Competitive Landscape
 
-| Competitor | Pricing | Strengths | Weaknesses |
-|---|---|---|---|
-| **Printavo** | $49-250/mo | Most polished UI, largest user base | Expensive, limited at low tiers |
-| **Teesom** | $67/mo | Free tier, feature-complete | Smaller community |
-| **YoPrint** | $39/mo | Best value, real-time vendor pricing | Newer to market |
-| **ShopVOX** | Varies | Broad feature set, fast setup | Not screen-print specific |
-| **Print Life** | ~$30-80/mo | Built by a printer, customer portal | Solo dev, bugs, missing features |
+| Competitor     | Pricing    | Strengths                            | Weaknesses                       |
+| -------------- | ---------- | ------------------------------------ | -------------------------------- |
+| **Printavo**   | $49-250/mo | Most polished UI, largest user base  | Expensive, limited at low tiers  |
+| **Teesom**     | $67/mo     | Free tier, feature-complete          | Smaller community                |
+| **YoPrint**    | $39/mo     | Best value, real-time vendor pricing | Newer to market                  |
+| **ShopVOX**    | Varies     | Broad feature set, fast setup        | Not screen-print specific        |
+| **Print Life** | ~$30-80/mo | Built by a printer, customer portal  | Solo dev, bugs, missing features |
 
 ---
 

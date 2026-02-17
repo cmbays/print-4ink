@@ -1,58 +1,54 @@
-"use client";
+'use client'
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
-import { Search, LayoutGrid, List, X } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
-import { Input } from "@shared/ui/primitives/input";
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
+import { Search, LayoutGrid, List, X } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Tabs, TabsList, TabsTrigger } from '@shared/ui/primitives/tabs'
+import { Input } from '@shared/ui/primitives/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Switch } from "@shared/ui/primitives/switch";
-import { Button } from "@shared/ui/primitives/button";
-import { Label } from "@shared/ui/primitives/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { ColorFilterGrid } from "./ColorFilterGrid";
-import { getColorById } from "@domain/rules/garment.rules";
-import { getColorsMutable } from "@infra/repositories/colors";
-import { garmentCategoryEnum } from "@domain/entities/garment";
-import { GARMENT_CATEGORY_LABELS } from "@domain/constants";
-import { PRICE_STORAGE_KEY } from "@shared/constants/garment-catalog";
+} from '@shared/ui/primitives/select'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Switch } from '@shared/ui/primitives/switch'
+import { Button } from '@shared/ui/primitives/button'
+import { Label } from '@shared/ui/primitives/label'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { ColorFilterGrid } from './ColorFilterGrid'
+import { getColorById } from '@domain/rules/garment.rules'
+import { getColorsMutable } from '@infra/repositories/colors'
+import { garmentCategoryEnum } from '@domain/entities/garment'
+import { GARMENT_CATEGORY_LABELS } from '@domain/constants'
+import { PRICE_STORAGE_KEY } from '@shared/constants/garment-catalog'
 
 // ---------------------------------------------------------------------------
 // Constants — derived from canonical Zod enum + label map
 // ---------------------------------------------------------------------------
 
 const CATEGORIES = [
-  { value: "all" as const, label: "All" },
+  { value: 'all' as const, label: 'All' },
   ...garmentCategoryEnum.options.map((v) => ({
     value: v,
     label: GARMENT_CATEGORY_LABELS[v],
   })),
-];
+]
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface GarmentCatalogToolbarProps {
-  brands: string[];
-  selectedColorIds: string[];
-  onToggleColor: (colorId: string) => void;
-  onClearColors: () => void;
-  garmentCount: number;
-  favoriteColorIds: string[];
-  onBrandClick?: (brandName: string) => void;
+type GarmentCatalogToolbarProps = {
+  brands: string[]
+  selectedColorIds: string[]
+  onToggleColor: (colorId: string) => void
+  onClearColors: () => void
+  garmentCount: number
+  favoriteColorIds: string[]
+  onBrandClick?: (brandName: string) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -68,99 +64,89 @@ export function GarmentCatalogToolbar({
   favoriteColorIds,
   onBrandClick,
 }: GarmentCatalogToolbarProps) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
 
   // --- Read URL state ---
-  const category = searchParams.get("category") ?? "all";
-  const query = searchParams.get("q") ?? "";
-  const brand = searchParams.get("brand") ?? "";
-  const view = searchParams.get("view") ?? "grid";
+  const category = searchParams.get('category') ?? 'all'
+  const query = searchParams.get('q') ?? ''
+  const brand = searchParams.get('brand') ?? ''
+  const view = searchParams.get('view') ?? 'grid'
 
   // --- Price toggle (localStorage) ---
   const [showPrices, setShowPrices] = useState(() => {
-    if (typeof window === "undefined") return true;
-    const stored = localStorage.getItem(PRICE_STORAGE_KEY);
-    return stored !== null ? stored === "true" : true;
-  });
+    if (typeof window === 'undefined') return true
+    const stored = localStorage.getItem(PRICE_STORAGE_KEY)
+    return stored !== null ? stored === 'true' : true
+  })
 
   const handlePriceToggle = useCallback((checked: boolean) => {
-    setShowPrices(checked);
-    localStorage.setItem(PRICE_STORAGE_KEY, String(checked));
-  }, []);
+    setShowPrices(checked)
+    localStorage.setItem(PRICE_STORAGE_KEY, String(checked))
+  }, [])
 
   // --- URL update helper ---
   const updateParam = useCallback(
     (key: string, value: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (
         value === null ||
-        value === "" ||
-        (key === "category" && value === "all") ||
-        (key === "view" && value === "grid")
+        value === '' ||
+        (key === 'category' && value === 'all') ||
+        (key === 'view' && value === 'grid')
       ) {
-        params.delete(key);
+        params.delete(key)
       } else {
-        params.set(key, value);
+        params.set(key, value)
       }
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     },
-    [searchParams, router, pathname],
-  );
+    [searchParams, router, pathname]
+  )
 
   // Fix #5: clearAll uses a single router.replace that strips all params (including colors).
   // No need to call onClearColors separately — router.replace(pathname) already clears ?colors=.
   const clearAll = useCallback(() => {
-    router.replace(pathname, { scroll: false });
-  }, [router, pathname]);
+    router.replace(pathname, { scroll: false })
+  }, [router, pathname])
 
   // --- Resolved color objects for pills ---
-  const selectedColors = useMemo(
-    () => {
-      const allColors = getColorsMutable();
-      return selectedColorIds
-        .map((id) => getColorById(id, allColors))
-        .filter((c) => c != null);
-    },
-    [selectedColorIds],
-  );
+  const selectedColors = useMemo(() => {
+    const allColors = getColorsMutable()
+    return selectedColorIds.map((id) => getColorById(id, allColors)).filter((c) => c != null)
+  }, [selectedColorIds])
 
   // --- Active filters (for pills — excludes color swatches which get their own row) ---
-  const activeFilters: { key: string; label: string; value: string }[] = [];
+  const activeFilters: { key: string; label: string; value: string }[] = []
 
-  if (category !== "all") {
-    const cat = CATEGORIES.find((c) => c.value === category);
+  if (category !== 'all') {
+    const cat = CATEGORIES.find((c) => c.value === category)
     activeFilters.push({
-      key: "category",
+      key: 'category',
       label: cat?.label ?? category,
       value: category,
-    });
+    })
   }
   if (query) {
-    activeFilters.push({ key: "q", label: `"${query}"`, value: query });
+    activeFilters.push({ key: 'q', label: `"${query}"`, value: query })
   }
   if (brand) {
-    activeFilters.push({ key: "brand", label: brand, value: brand });
+    activeFilters.push({ key: 'brand', label: brand, value: brand })
   }
 
-  const hasAnyFilter =
-    activeFilters.length > 0 || selectedColorIds.length > 0;
+  const hasAnyFilter = activeFilters.length > 0 || selectedColorIds.length > 0
 
   // Fix #9: Show "Clear colors" only when colors are the sole active filter.
   // Show "Clear all" only when mixed filters are active. Never show both.
-  const showClearColors =
-    activeFilters.length === 0 && selectedColorIds.length > 0;
-  const showClearAll = activeFilters.length > 0;
+  const showClearColors = activeFilters.length === 0 && selectedColorIds.length > 0
+  const showClearAll = activeFilters.length > 0
 
   return (
     <div className="space-y-3">
       {/* Row 1: Category Tabs */}
       <div className="-mx-1 overflow-x-auto px-1">
-        <Tabs
-          value={category}
-          onValueChange={(v) => updateParam("category", v)}
-        >
+        <Tabs value={category} onValueChange={(v) => updateParam('category', v)}>
           <TabsList variant="line" className="w-full md:w-auto">
             {CATEGORIES.map((cat) => (
               <TabsTrigger
@@ -183,14 +169,14 @@ export function GarmentCatalogToolbar({
           <Input
             placeholder="Search by name, brand, or SKU..."
             value={query}
-            onChange={(e) => updateParam("q", e.target.value || null)}
+            onChange={(e) => updateParam('q', e.target.value || null)}
             className="h-9 pl-8"
             aria-label="Search garments"
           />
           {query && (
             <button
               type="button"
-              onClick={() => updateParam("q", null)}
+              onClick={() => updateParam('q', null)}
               className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Clear search"
             >
@@ -201,14 +187,14 @@ export function GarmentCatalogToolbar({
 
         {/* Brand Select */}
         <Select
-          value={brand || "all"}
-          onValueChange={(v) => updateParam("brand", v === "all" ? null : v)}
+          value={brand || 'all'}
+          onValueChange={(v) => updateParam('brand', v === 'all' ? null : v)}
         >
           <SelectTrigger
             className={cn(
-              "h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-40",
-              "min-h-(--mobile-touch-target) md:min-h-0",
-              brand && "border-action/40 text-action",
+              'h-9 w-full gap-1 rounded-md border-border/50 bg-transparent px-3 text-sm md:w-40',
+              'min-h-(--mobile-touch-target) md:min-h-0',
+              brand && 'border-action/40 text-action'
             )}
             aria-label="Filter by brand"
           >
@@ -239,14 +225,12 @@ export function GarmentCatalogToolbar({
               variant="ghost"
               size="icon-xs"
               className={cn(
-                "rounded-sm",
-                view === "grid"
-                  ? "bg-surface text-foreground"
-                  : "text-muted-foreground",
+                'rounded-sm',
+                view === 'grid' ? 'bg-surface text-foreground' : 'text-muted-foreground'
               )}
               aria-label="Grid view"
-              aria-pressed={view === "grid"}
-              onClick={() => updateParam("view", "grid")}
+              aria-pressed={view === 'grid'}
+              onClick={() => updateParam('view', 'grid')}
             >
               <LayoutGrid className="size-3.5" />
             </Button>
@@ -254,14 +238,12 @@ export function GarmentCatalogToolbar({
               variant="ghost"
               size="icon-xs"
               className={cn(
-                "rounded-sm",
-                view === "table"
-                  ? "bg-surface text-foreground"
-                  : "text-muted-foreground",
+                'rounded-sm',
+                view === 'table' ? 'bg-surface text-foreground' : 'text-muted-foreground'
               )}
               aria-label="Table view"
-              aria-pressed={view === "table"}
-              onClick={() => updateParam("view", "table")}
+              aria-pressed={view === 'table'}
+              onClick={() => updateParam('view', 'table')}
             >
               <List className="size-3.5" />
             </Button>
@@ -278,10 +260,7 @@ export function GarmentCatalogToolbar({
               checked={showPrices}
               onCheckedChange={handlePriceToggle}
             />
-            <Label
-              htmlFor="price-toggle"
-              className="cursor-pointer text-xs text-muted-foreground"
-            >
+            <Label htmlFor="price-toggle" className="cursor-pointer text-xs text-muted-foreground">
               Prices
             </Label>
           </div>
@@ -300,13 +279,9 @@ export function GarmentCatalogToolbar({
         {hasAnyFilter && (
           <>
             {activeFilters.map((filter) => (
-              <Badge
-                key={filter.key}
-                variant="outline"
-                className="gap-1 pl-2 pr-1 text-xs"
-              >
+              <Badge key={filter.key} variant="outline" className="gap-1 pl-2 pr-1 text-xs">
                 {/* Fix #3: Brand pill is clickable when onBrandClick is provided */}
-                {filter.key === "brand" && onBrandClick ? (
+                {filter.key === 'brand' && onBrandClick ? (
                   <button
                     type="button"
                     className="hover:text-action hover:underline focus-visible:outline-none focus-visible:text-action"
@@ -341,11 +316,7 @@ export function GarmentCatalogToolbar({
                         style={{ backgroundColor: color.hex }}
                         aria-label={`Remove ${color.name} filter`}
                       >
-                        <X
-                          size={10}
-                          style={{ color: color.swatchTextColor }}
-                          aria-hidden="true"
-                        />
+                        <X size={10} style={{ color: color.swatchTextColor }} aria-hidden="true" />
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" sideOffset={6}>
@@ -380,15 +351,10 @@ export function GarmentCatalogToolbar({
         )}
 
         {/* Result count */}
-        <span
-          className={cn(
-            "text-xs text-muted-foreground",
-            hasAnyFilter && "ml-auto",
-          )}
-        >
-          {garmentCount} {garmentCount === 1 ? "garment" : "garments"}
+        <span className={cn('text-xs text-muted-foreground', hasAnyFilter && 'ml-auto')}>
+          {garmentCount} {garmentCount === 1 ? 'garment' : 'garments'}
         </span>
       </div>
     </div>
-  );
+  )
 }

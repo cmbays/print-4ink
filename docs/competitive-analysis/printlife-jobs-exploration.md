@@ -1,5 +1,5 @@
 ---
-title: "Print Life Jobs/Production Workflow — Competitive Exploration"
+title: 'Print Life Jobs/Production Workflow — Competitive Exploration'
 description: "Comprehensive analysis of Print Life's production management, invoice dashboard, job tracking, and workflow stages based on screenshot analysis and web research"
 category: competitive-analysis
 status: complete
@@ -21,19 +21,19 @@ last-verified: 2026-02-12
 
 ### Sidebar Navigation (11 items, observed from screenshot)
 
-| # | Section | Route (estimated) | Sub-sections | Purpose |
-|---|---------|-------------------|--------------|---------|
-| 1 | **Invoices** | `/invoices` | Invoice Dashboard, Purchase Orders, Invoice List | Primary production hub |
-| 2 | **Quotes** | `/quotes` | Quote list | Pre-invoice quotes |
-| 3 | **Stores** | `/stores` | Store management | Fundraising/merch stores |
-| 4 | **Todo** | `/todo` | Task list | Daily task management |
-| 5 | **Receivables** | `/receivables` | Outstanding payments | A/R tracking |
-| 6 | **Clients** | `/clients` | Client list + detail | CRM |
-| 7 | **Staff** | `/staff` | Staff management | Team management (limited — multi-user planned for 2025) |
-| 8 | **Product** | `/product` | Product catalog | Custom products |
-| 9 | **Reports** | `/reports` | Business reports | Analytics |
-| 10 | **Matrix Settings** | `/matrix-settings` | Pricing matrices | Price configuration |
-| 11 | **Settings** | `/settings` | Business Info, Email Templates, etc. | App configuration |
+| #   | Section             | Route (estimated)  | Sub-sections                                     | Purpose                                                 |
+| --- | ------------------- | ------------------ | ------------------------------------------------ | ------------------------------------------------------- |
+| 1   | **Invoices**        | `/invoices`        | Invoice Dashboard, Purchase Orders, Invoice List | Primary production hub                                  |
+| 2   | **Quotes**          | `/quotes`          | Quote list                                       | Pre-invoice quotes                                      |
+| 3   | **Stores**          | `/stores`          | Store management                                 | Fundraising/merch stores                                |
+| 4   | **Todo**            | `/todo`            | Task list                                        | Daily task management                                   |
+| 5   | **Receivables**     | `/receivables`     | Outstanding payments                             | A/R tracking                                            |
+| 6   | **Clients**         | `/clients`         | Client list + detail                             | CRM                                                     |
+| 7   | **Staff**           | `/staff`           | Staff management                                 | Team management (limited — multi-user planned for 2025) |
+| 8   | **Product**         | `/product`         | Product catalog                                  | Custom products                                         |
+| 9   | **Reports**         | `/reports`         | Business reports                                 | Analytics                                               |
+| 10  | **Matrix Settings** | `/matrix-settings` | Pricing matrices                                 | Price configuration                                     |
+| 11  | **Settings**        | `/settings`        | Business Info, Email Templates, etc.             | App configuration                                       |
 
 ### Top Bar (persistent across all pages)
 
@@ -47,6 +47,7 @@ last-verified: 2026-02-12
 ### Invoice Dashboard (Primary Production View)
 
 Three tabs observed at the top:
+
 1. **INVOICE DASHBOARD** — Kanban-style production lanes (active/underlined)
 2. **PURCHASE ORDERS** — Vendor order management
 3. **INVOICE LIST** — Table/list view of all invoices
@@ -72,7 +73,9 @@ The Invoice Dashboard is the production nerve center. It displays **4 production
 ### Lane Details
 
 #### Lane 1: DESIGN
+
 **Substages** (clickable tabs within lane):
+
 - **ASSIGN** — Job assigned to designer, not yet started
 - **MOCK-UP** — Designer creating mockup/proof
 - **SUBMITTED** — Mockup sent to customer for approval
@@ -82,7 +85,9 @@ The Invoice Dashboard is the production nerve center. It displays **4 production
 **Key automation**: "Mocks-ups are sent automatically to your customers for approval" — this is a critical automation point. When a mockup is uploaded and submitted, the customer receives an automatic notification.
 
 #### Lane 2: P.O. (Purchase Order)
+
 **Substages**:
+
 - **ORDER QUEUE** — Items ready to be ordered from vendor
 - **ORDERED** — Purchase order sent to vendor
 
@@ -91,7 +96,9 @@ The Invoice Dashboard is the production nerve center. It displays **4 production
 **From 2025 roadmap**: "Purchase Order (PO) System — Universal vendor support... displays items from invoices with brand, color, size, quantity details... shows which invoice each item belongs to... vendor pricing display and dropdown selection"
 
 #### Lane 3: PRODUCTION
+
 **Substages**:
+
 - **PRODUCTION** — Single stage (no sub-steps)
 
 **Workflow**: Once blanks arrive, job moves to production (screen printing, embroidery, DTF). This is the actual press/printing stage.
@@ -99,7 +106,9 @@ The Invoice Dashboard is the production nerve center. It displays **4 production
 **Notable gap**: No sub-stages for screen room prep (burning screens, registration, etc.). This is a major workflow gap for screen printers who need to track screen prep separately from actual printing.
 
 #### Lane 4: SHIPPING
+
 **Substages**:
+
 - **SHIP** — Standard shipping
 - **LOCAL PICKUP** — Customer picks up in-person
 
@@ -110,6 +119,7 @@ The Invoice Dashboard is the production nerve center. It displays **4 production
 **How jobs move between stages**: Based on the 2024 update notes, there's a feature for "Auto-updating project cards post-mock approval to order queue" — suggesting some automatic transitions exist. However, the primary mechanism appears to be manual stage changes by the shop operator.
 
 **Unknown (not observed)**:
+
 - Whether drag-and-drop is supported between lanes
 - Whether stage transitions trigger automated emails
 - What information is shown on each job card within a lane
@@ -180,16 +190,16 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 
 ### Click Count Breakdown
 
-| Phase | Estimated Clicks | Notes |
-|-------|-----------------|-------|
-| Client creation (new) | 3-5 | Only if new client |
-| Quote creation | 20-30 | 6-step wizard, largest click sink |
-| Design stage | 5-8 | Upload art, change substages |
-| P.O. stage | 3-5 | Create purchase order |
-| Production stage | 2-3 | Move to production |
-| Shipping stage | 3-5 | Ship or pickup |
-| **Total (new client)** | **36-56** | — |
-| **Total (existing client)** | **33-51** | — |
+| Phase                       | Estimated Clicks | Notes                             |
+| --------------------------- | ---------------- | --------------------------------- |
+| Client creation (new)       | 3-5              | Only if new client                |
+| Quote creation              | 20-30            | 6-step wizard, largest click sink |
+| Design stage                | 5-8              | Upload art, change substages      |
+| P.O. stage                  | 3-5              | Create purchase order             |
+| Production stage            | 2-3              | Move to production                |
+| Shipping stage              | 3-5              | Ship or pickup                    |
+| **Total (new client)**      | **36-56**        | —                                 |
+| **Total (existing client)** | **33-51**        | —                                 |
 
 ---
 
@@ -200,6 +210,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 **What it is**: A Kanban-style board with 4 lanes representing production stages. Each lane has clickable substage tabs.
 
 **Observed layout** (from screenshot):
+
 - Lanes displayed horizontally in a single row
 - Each lane has a bold header (DESIGN, P.O., PRODUCTION, SHIPPING)
 - Substage tabs displayed as cyan/blue text links below the header, separated by pipes (|)
@@ -207,11 +218,13 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 - The dashboard was empty in our screenshot (no jobs in progress)
 
 **Strengths**:
+
 - At-a-glance view of entire production pipeline
 - Substages within each lane add granularity
 - Clear left-to-right flow matches physical production flow
 
 **Weaknesses**:
+
 - No visible count of jobs per stage (no badges/numbers)
 - No priority indicators or due date visibility on the board
 - No color coding for urgency (overdue, due today, etc.)
@@ -222,6 +235,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 
 **Status**: Currently being rebuilt (per 2025 roadmap, "close to completion")
 **Planned features**:
+
 - Universal vendor support (not just S&S Activewear)
 - Display items from invoices with brand, color, size, quantity
 - Show which invoice each item belongs to
@@ -231,6 +245,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 ### Invoice List (Tab 3)
 
 **Not directly observed**, but likely a table view of all invoices with:
+
 - Search/filter capabilities
 - Status column
 - Client name
@@ -240,6 +255,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 ### Quotes Section
 
 **Observed** (from screenshots 02 and 03):
+
 - Product catalog with grid layout (3 columns)
 - Product cards showing: image, brand + SKU, price, color count, SBS badge
 - Filter sidebar: Sorting Price, Categories, Brand, Colors, Styles, Fit
@@ -257,6 +273,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 ### Clients
 
 **Known features** (from existing analysis):
+
 - Basic profiles: name, contact info, address
 - Tax-exempt filter (added Q1 2025)
 - No company/contact hierarchy
@@ -275,12 +292,14 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 ### Matrix Settings
 
 **Known features** (from Q1 2025 update):
+
 - Linear inches, linear feet, square feet measurement options
 - Used for pricing matrix configuration
 
 ### Settings > Automated Email Templates
 
 **Not directly observed**, but the system supports:
+
 - Automatic mockup submission emails to customers
 - Production stage notifications to customer's print production manager
 - Email configuration with Gmail, Workspace, or Outlook
@@ -293,37 +312,37 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 
 ### Critical
 
-| # | Friction Point | Impact | Details |
-|---|---------------|--------|---------|
-| 1 | **No screen room stage** | Missing critical workflow step | Screen printing requires burning screens before production. No tracking for mesh count, emulsion, burn status, registration. Jobs jump from mockup approval to ordering to pressing with no prep tracking. |
-| 2 | **Quote = Invoice (no separation)** | Cannot track quotes independently | No draft/sent/accepted/declined states. Quote immediately becomes invoice. Can't send estimates without creating a production item. |
-| 3 | **Qty entry blocks on recalculation** | 2-3 min wasted per quote | Each size qty entry triggers server-side recalc. Can't tab through fields. Single biggest time waste. |
+| #   | Friction Point                        | Impact                            | Details                                                                                                                                                                                                    |
+| --- | ------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **No screen room stage**              | Missing critical workflow step    | Screen printing requires burning screens before production. No tracking for mesh count, emulsion, burn status, registration. Jobs jump from mockup approval to ordering to pressing with no prep tracking. |
+| 2   | **Quote = Invoice (no separation)**   | Cannot track quotes independently | No draft/sent/accepted/declined states. Quote immediately becomes invoice. Can't send estimates without creating a production item.                                                                        |
+| 3   | **Qty entry blocks on recalculation** | 2-3 min wasted per quote          | Each size qty entry triggers server-side recalc. Can't tab through fields. Single biggest time waste.                                                                                                      |
 
 ### High
 
-| # | Friction Point | Impact | Details |
-|---|---------------|--------|---------|
-| 4 | **No job priority/urgency indicators** | Can't see what's overdue | Dashboard shows lanes but no visual urgency. No due dates on cards, no color-coding for at-risk jobs. |
-| 5 | **No drag-and-drop between stages** | Extra clicks to move jobs | Likely requires opening each job to change stage (based on Angular tech stack). |
-| 6 | **Single PRODUCTION substage** | No visibility into production sub-steps | Real production involves: screen prep, registration, printing, quality check, curing. All collapsed into one stage. |
-| 7 | **P.O. system not mature** | Still being built in 2025 | The P.O. system was listed as "close to completion" in early 2025 — indicating it was missing or broken previously. |
-| 8 | **No multi-user/staff assignments** | Can't assign jobs to specific team members | Staff accounts with role-based permissions listed as 2025 roadmap item. Currently single-user. |
+| #   | Friction Point                         | Impact                                     | Details                                                                                                             |
+| --- | -------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| 4   | **No job priority/urgency indicators** | Can't see what's overdue                   | Dashboard shows lanes but no visual urgency. No due dates on cards, no color-coding for at-risk jobs.               |
+| 5   | **No drag-and-drop between stages**    | Extra clicks to move jobs                  | Likely requires opening each job to change stage (based on Angular tech stack).                                     |
+| 6   | **Single PRODUCTION substage**         | No visibility into production sub-steps    | Real production involves: screen prep, registration, printing, quality check, curing. All collapsed into one stage. |
+| 7   | **P.O. system not mature**             | Still being built in 2025                  | The P.O. system was listed as "close to completion" in early 2025 — indicating it was missing or broken previously. |
+| 8   | **No multi-user/staff assignments**    | Can't assign jobs to specific team members | Staff accounts with role-based permissions listed as 2025 roadmap item. Currently single-user.                      |
 
 ### Medium
 
-| # | Friction Point | Impact | Details |
-|---|---------------|--------|---------|
-| 9 | **Mandatory wizard steps** | Wasted clicks on unused features | Ink Style and Finishing are mandatory steps that many shops don't use. |
-| 10 | **No inventory tracking** | Can't track in-house stock | Listed as 2025 stretch goal. Must check vendor stock manually. |
-| 11 | **No job-level notes visible on dashboard** | Must open each job for context | Dashboard cards likely show minimal info (job name, customer). |
-| 12 | **Empty dashboard has no guidance** | New users see a blank white screen | No onboarding, no "create your first quote" CTA, no sample data. |
+| #   | Friction Point                              | Impact                             | Details                                                                |
+| --- | ------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| 9   | **Mandatory wizard steps**                  | Wasted clicks on unused features   | Ink Style and Finishing are mandatory steps that many shops don't use. |
+| 10  | **No inventory tracking**                   | Can't track in-house stock         | Listed as 2025 stretch goal. Must check vendor stock manually.         |
+| 11  | **No job-level notes visible on dashboard** | Must open each job for context     | Dashboard cards likely show minimal info (job name, customer).         |
+| 12  | **Empty dashboard has no guidance**         | New users see a blank white screen | No onboarding, no "create your first quote" CTA, no sample data.       |
 
 ### Low
 
-| # | Friction Point | Impact | Details |
-|---|---------------|--------|---------|
-| 13 | **No keyboard navigation** | Mouse-only workflow | Tab navigation, keyboard shortcuts not documented. |
-| 14 | **Limited reporting** | Can't analyze production throughput | No evidence of production-focused reports (time per stage, bottleneck analysis). |
+| #   | Friction Point             | Impact                              | Details                                                                          |
+| --- | -------------------------- | ----------------------------------- | -------------------------------------------------------------------------------- |
+| 13  | **No keyboard navigation** | Mouse-only workflow                 | Tab navigation, keyboard shortcuts not documented.                               |
+| 14  | **Limited reporting**      | Can't analyze production throughput | No evidence of production-focused reports (time per stage, bottleneck analysis). |
 
 ---
 
@@ -331,16 +350,16 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 
 ### Production-Focused Design
 
-| Strength | Why It Matters | Rating |
-|----------|---------------|--------|
-| **4-lane Kanban matches real workflow** | Design → Order → Print → Ship is the actual production sequence. Intuitive for shop owners. | Strong |
-| **Substage tabs within lanes** | Adds granularity without overwhelming. ASSIGN/MOCK-UP/SUBMITTED under Design is clever. | Strong |
-| **Auto mockup submission** | Automatically emails mockup to customer for approval. Removes manual follow-up step. | Strong |
-| **Invoice = single source of truth** | Everything (art files, mockups, sep files, P.O.s) attaches to the invoice. One place to find everything. | Moderate |
-| **Delivery-date-based organization** | "Production organized based on delivery date set by you and your customer" — simple but effective prioritization. | Moderate |
-| **Integrated vendor catalogs** | S&S, SanMar, Alphabroder catalogs with live stock levels built into quoting. | Strong |
-| **QuickBooks sync** | All invoices auto-sync to QB Online. Critical for most small shops. | Strong |
-| **Multi-payment processor support** | Stripe, Square, PayPal, Authorize.net, QB Payments — flexibility. | Moderate |
+| Strength                                | Why It Matters                                                                                                    | Rating   |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------- |
+| **4-lane Kanban matches real workflow** | Design → Order → Print → Ship is the actual production sequence. Intuitive for shop owners.                       | Strong   |
+| **Substage tabs within lanes**          | Adds granularity without overwhelming. ASSIGN/MOCK-UP/SUBMITTED under Design is clever.                           | Strong   |
+| **Auto mockup submission**              | Automatically emails mockup to customer for approval. Removes manual follow-up step.                              | Strong   |
+| **Invoice = single source of truth**    | Everything (art files, mockups, sep files, P.O.s) attaches to the invoice. One place to find everything.          | Moderate |
+| **Delivery-date-based organization**    | "Production organized based on delivery date set by you and your customer" — simple but effective prioritization. | Moderate |
+| **Integrated vendor catalogs**          | S&S, SanMar, Alphabroder catalogs with live stock levels built into quoting.                                      | Strong   |
+| **QuickBooks sync**                     | All invoices auto-sync to QB Online. Critical for most small shops.                                               | Strong   |
+| **Multi-payment processor support**     | Stripe, Square, PayPal, Authorize.net, QB Payments — flexibility.                                                 | Moderate |
 
 ### What We Should Learn From
 
@@ -353,11 +372,11 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 
 ## 7. Screenshots Index
 
-| # | Filename | Description | Key Observations |
-|---|----------|-------------|------------------|
-| 01 | `printlife-01-dashboard.png` | Invoice Dashboard (empty state) | 4 production lanes visible: Design (Assign/Mock-up/Submitted), P.O. (Order Queue/Ordered), Production (Production), Shipping (Ship/Local Pickup). All lanes empty. 11 sidebar nav items. Search bar + New Client/New Quote buttons in top bar. |
-| 02 | `printlife-02-new-quote-step1.png` | New Quote — Step 1: Add Items | Product catalog grid view. Filter sidebar (Categories, Brand, Colors, Styles, Fit). Product cards with images, prices, color counts. 6-step stepper at bottom. Two tabs: "Customer Supplied Items" and standard catalog. |
-| 03 | `printlife-03-product-detail-modal.png` | Product Detail Modal (Gildan 5000) | Full product specs, description text, color swatches along bottom. BACK and ADD ITEM buttons. Shows detailed product info including sustainability certifications. |
+| #   | Filename                                | Description                        | Key Observations                                                                                                                                                                                                                               |
+| --- | --------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 01  | `printlife-01-dashboard.png`            | Invoice Dashboard (empty state)    | 4 production lanes visible: Design (Assign/Mock-up/Submitted), P.O. (Order Queue/Ordered), Production (Production), Shipping (Ship/Local Pickup). All lanes empty. 11 sidebar nav items. Search bar + New Client/New Quote buttons in top bar. |
+| 02  | `printlife-02-new-quote-step1.png`      | New Quote — Step 1: Add Items      | Product catalog grid view. Filter sidebar (Categories, Brand, Colors, Styles, Fit). Product cards with images, prices, color counts. 6-step stepper at bottom. Two tabs: "Customer Supplied Items" and standard catalog.                       |
+| 03  | `printlife-03-product-detail-modal.png` | Product Detail Modal (Gildan 5000) | Full product specs, description text, color swatches along bottom. BACK and ADD ITEM buttons. Shows detailed product info including sustainability certifications.                                                                             |
 
 **Note**: Browser automation tools were not available for this session, so exploration was limited to these 3 previously captured screenshots plus web research. Additional screenshots needed for: Invoice List, Purchase Orders, Todo, Receivables, Clients, Reports, Settings > Email Templates, and individual job detail views.
 
@@ -409,6 +428,7 @@ TOTAL ESTIMATED TIME: ~15-20 minutes (mostly quote creation)
 ```
 
 **Key additions vs Print Life**:
+
 - **Screen Room** lane (entirely missing in Print Life)
 - **Finishing** lane (quality check, fold/tag)
 - **Revision** substage under Design (for customer change requests)

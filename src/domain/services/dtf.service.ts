@@ -10,36 +10,32 @@
  * rendering layer.
  */
 
-import {
-  DTF_SHEET_WIDTH,
-  DTF_DEFAULT_MARGIN,
-  DTF_MAX_SHEET_LENGTH,
-} from "@domain/constants/dtf";
+import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 export type PackedDesign = {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  label: string;
+  id: string
+  x: number
+  y: number
+  width: number
+  height: number
+  label: string
 }
 
 export type PackedSheet = {
-  designs: PackedDesign[];
-  usedHeight: number;
+  designs: PackedDesign[]
+  usedHeight: number
 }
 
 export type DesignInput = {
-  id: string;
-  width: number;
-  height: number;
-  quantity: number;
-  label: string;
+  id: string
+  width: number
+  height: number
+  quantity: number
+  label: string
 }
 
 // ---------------------------------------------------------------------------
@@ -64,21 +60,21 @@ export function shelfPack(
   margin: number = DTF_DEFAULT_MARGIN
 ): PackedSheet[] {
   // --- Step 0: Guard against quantity overflow ---
-  const MAX_PLACEMENTS = 5000;
-  const totalPlacements = designs.reduce((sum, d) => sum + d.quantity, 0);
+  const MAX_PLACEMENTS = 5000
+  const totalPlacements = designs.reduce((sum, d) => sum + d.quantity, 0)
   if (totalPlacements > MAX_PLACEMENTS) {
     throw new Error(
       `Total placements (${totalPlacements}) exceeds maximum of ${MAX_PLACEMENTS}. Reduce quantities.`
-    );
+    )
   }
 
   // --- Step 1: Expand by quantity ---
   const expanded: Array<{
-    id: string;
-    width: number;
-    height: number;
-    label: string;
-  }> = [];
+    id: string
+    width: number
+    height: number
+    label: string
+  }> = []
 
   for (const design of designs) {
     for (let i = 0; i < design.quantity; i++) {
@@ -87,71 +83,71 @@ export function shelfPack(
         width: design.width,
         height: design.height,
         label: design.label,
-      });
+      })
     }
   }
 
   if (expanded.length === 0) {
-    return [];
+    return []
   }
 
   // --- Step 1b: Validate dimensions fit on a sheet ---
-  const maxDesignWidth = sheetWidth - 2 * margin;
-  const maxDesignHeight = DTF_MAX_SHEET_LENGTH - 2 * margin;
+  const maxDesignWidth = sheetWidth - 2 * margin
+  const maxDesignHeight = DTF_MAX_SHEET_LENGTH - 2 * margin
   for (const item of expanded) {
     if (item.width > maxDesignWidth) {
       throw new Error(
         `Design "${item.label}" (${item.width}" wide) exceeds usable sheet width of ${maxDesignWidth}"`
-      );
+      )
     }
     if (item.height > maxDesignHeight) {
       throw new Error(
         `Design "${item.label}" (${item.height}" tall) exceeds max sheet height of ${maxDesignHeight}"`
-      );
+      )
     }
   }
 
   // --- Step 2: Sort by height descending, width descending as tiebreaker ---
-  expanded.sort((a, b) => b.height - a.height || b.width - a.width);
+  expanded.sort((a, b) => b.height - a.height || b.width - a.width)
 
   // --- Step 3: Place designs using shelf algorithm ---
-  const sheets: PackedSheet[] = [];
-  let currentSheet: PackedDesign[] = [];
-  let currentX = margin;
-  let currentShelfY = margin;
-  let tallestInCurrentShelf = 0;
+  const sheets: PackedSheet[] = []
+  let currentSheet: PackedDesign[] = []
+  let currentX = margin
+  let currentShelfY = margin
+  let tallestInCurrentShelf = 0
 
   function finalizeSheet() {
     if (currentSheet.length > 0) {
-      const usedHeight = currentShelfY + tallestInCurrentShelf + margin;
+      const usedHeight = currentShelfY + tallestInCurrentShelf + margin
       sheets.push({
         designs: currentSheet,
         usedHeight,
-      });
+      })
     }
   }
 
   function startNewSheet() {
-    finalizeSheet();
-    currentSheet = [];
-    currentX = margin;
-    currentShelfY = margin;
-    tallestInCurrentShelf = 0;
+    finalizeSheet()
+    currentSheet = []
+    currentX = margin
+    currentShelfY = margin
+    tallestInCurrentShelf = 0
   }
 
   for (const item of expanded) {
     // Check if design fits horizontally on current shelf (only wrap if shelf has items)
     if (currentX > margin && currentX + item.width + margin > sheetWidth) {
       // Current shelf is full — start a new shelf
-      currentShelfY += tallestInCurrentShelf + margin;
-      currentX = margin;
-      tallestInCurrentShelf = 0;
+      currentShelfY += tallestInCurrentShelf + margin
+      currentX = margin
+      tallestInCurrentShelf = 0
     }
 
     // Check if design fits vertically on current sheet
     if (currentShelfY + item.height + margin > DTF_MAX_SHEET_LENGTH) {
       // Current sheet is full — start a new sheet
-      startNewSheet();
+      startNewSheet()
     }
 
     // Place the design
@@ -162,19 +158,19 @@ export function shelfPack(
       width: item.width,
       height: item.height,
       label: item.label,
-    });
+    })
 
     // Advance horizontal cursor
-    currentX += item.width + margin;
+    currentX += item.width + margin
 
     // Track tallest design in the current shelf
     if (item.height > tallestInCurrentShelf) {
-      tallestInCurrentShelf = item.height;
+      tallestInCurrentShelf = item.height
     }
   }
 
   // Finalize the last sheet
-  finalizeSheet();
+  finalizeSheet()
 
-  return sheets;
+  return sheets
 }

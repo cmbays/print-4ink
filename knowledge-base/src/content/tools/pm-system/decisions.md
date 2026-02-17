@@ -1,6 +1,6 @@
 ---
-title: "PM System — Decisions"
-subtitle: "Key decisions made during PM System development"
+title: 'PM System — Decisions'
+subtitle: 'Key decisions made during PM System development'
 tool: pm-system
 docType: decisions
 lastUpdated: 2026-02-16
@@ -16,6 +16,7 @@ status: current
 **Rationale:** Linear is designed for multi-human team coordination (sprints, triage queues, velocity tracking). Our "team" is one developer + multiple concurrent Claude Code sessions — a fundamentally different coordination model. GitHub Issues are already in the workflow: `gh` CLI for agents, PR-to-issue linking is automatic, and issues live with the code (no sync tax).
 
 **Alternatives rejected:**
+
 - **Linear** — Two MCP plugins available (including Linear MCP from the project-management-suite). Rejected because it optimizes for human-team coordination patterns we don't use. Would require syncing between Linear and GitHub for PR linking.
 - **Jira/Notion** — Not considered seriously. Both add overhead and separation from code without benefits for this project's workflow.
 
@@ -28,11 +29,13 @@ status: current
 **Decision:** Keep `type/*` labels instead of adopting GitHub's native Issue Types.
 
 **Rationale:** Spike tested `gh issue type list`, `gh issue type create`, and `gh issue type list --type` on the personal repo. Findings:
+
 - `gh` CLI 2.86.0 has zero issue type support (no subcommands, no flags)
 - GraphQL `createIssueType` mutation exists but requires `admin:org` scope (only `read:org` available)
 - Types are owner-level (apply across ALL repos), not repo-level
 
 **Alternatives rejected:**
+
 - **Native Issue Types** — would be cleaner but the tooling gap makes them unusable for agent workflows that rely entirely on `gh` CLI.
 
 **Revisit when:** `gh` CLI adds native issue type support.
@@ -45,9 +48,10 @@ status: current
 
 **Decision:** Delete the `type/ux-review` label and reclassify affected issues as `source/review` with appropriate `type/*` labels.
 
-**Rationale:** UX review items describe *how the work was found* (during review), not *what kind of work it is*. The same review finding could be a bug, feature, or refactor. Using `type/ux-review` conflated the source dimension with the type dimension, breaking the one-mechanism-per-dimension rule.
+**Rationale:** UX review items describe _how the work was found_ (during review), not _what kind of work it is_. The same review finding could be a bug, feature, or refactor. Using `type/ux-review` conflated the source dimension with the type dimension, breaking the one-mechanism-per-dimension rule.
 
 **Alternatives rejected:**
+
 - **Fold into `type/feedback`** — considered but `source/review` is more precise. Feedback is broader (user suggestions, ideas). Review findings are specifically from code/design review sessions.
 
 **Source:** Grooming session (Task 3.1)
@@ -61,6 +65,7 @@ status: current
 **Rationale:** 10 tasks with clear dependency boundaries. Wave 1 (4 tasks) has no mutual dependencies — all run concurrently. Wave 2 (4 tasks) depends on Wave 1 outputs but has no internal dependencies. Wave 3 (2 tasks) is inherently serial (grooming needs human, PM doc needs grooming). Shape A passes all requirements but sequential execution risks D-Day deadline — single session failure has no recovery path.
 
 **Alternatives rejected:**
+
 - **Shape A: Monolithic** — passes requirements but sequential with no resilience
 - **Shape C: Quick Wins** — fails R1 (sub-issue structure), R3 (dependency visibility), R7 (progress generation) by deferring them to "if time permits"
 
@@ -85,6 +90,7 @@ status: current
 **Rationale:** PROGRESS.md was a "hot file" — multiple concurrent worktrees would edit it, causing merge conflicts. Making it a compiled artifact from live GitHub API data solves three problems simultaneously: eliminates merge conflicts, prevents staleness (always queries live data), and matches the two-audience pattern (agents read files, humans read boards — both generated from the same GitHub Issues source of truth).
 
 **Alternatives rejected:**
+
 - **Keep as tracked file** — perpetual merge conflicts in concurrent sessions
 - **Update only on main** — still requires manual editing, still goes stale between updates
 

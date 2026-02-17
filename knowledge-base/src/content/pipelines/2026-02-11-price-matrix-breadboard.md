@@ -1,6 +1,6 @@
 ---
-title: "Price Matrix Breadboard"
-subtitle: "UI affordance map, wiring, component boundaries, and parallelized build order for the Price Matrix vertical"
+title: 'Price Matrix Breadboard'
+subtitle: 'UI affordance map, wiring, component boundaries, and parallelized build order for the Price Matrix vertical'
 date: 2026-02-11
 phase: 1
 pipelineName: price-matrix
@@ -10,19 +10,19 @@ domains: [pricing]
 tools: []
 stage: breadboard
 tags: [plan, decision]
-sessionId: "ac42f9fb-92e3-4d10-971d-bec20c749009"
-branch: "session/0210-price-matrix"
+sessionId: 'ac42f9fb-92e3-4d10-971d-bec20c749009'
+branch: 'session/0210-price-matrix'
 status: complete
 ---
 
 ## At a Glance
 
-| Stat | Value |
-|------|-------|
-| Places | 8 |
-| UI Affordances | 167 |
-| Code Affordances | 80 |
-| Data Stores | 14 |
+| Stat             | Value |
+| ---------------- | ----- |
+| Places           | 8     |
+| UI Affordances   | 167   |
+| Code Affordances | 80    |
+| Data Stores      | 14    |
 
 The breadboard maps the full Price Matrix vertical: a centralized pricing engine living under Settings, with a peek/shortcut from Quotes. Two service types (Screen Print + DTF), multiple templates with tag-based customer mapping, real-time margin indicators, sandbox what-if mode, and a 5-minute setup wizard.
 
@@ -36,16 +36,16 @@ Full affordance tables, wiring verification, component boundaries, and scope cov
 
 ## Places Mapped
 
-| ID | Type | Name | Route |
-|----|------|------|-------|
-| P1 | Page | Pricing Hub | /settings/pricing |
-| P1.1 | Modal | New Template Wizard | 5-step setup |
-| P1.2 | Sheet | Tag-Template Mapping | customer tag → template |
-| P2 | Page | Screen Print Matrix Editor | /settings/pricing/screen-print/[id] |
-| P2.1 | Modal | Side-by-Side Comparison | current vs. proposed |
-| P2.2 | Sheet | Cost Configuration | garment + ink + overhead |
-| P3 | Page | DTF Matrix Editor | /settings/pricing/dtf/[id] |
-| P4 | Sheet | Matrix Peek (from Quotes) | read-only + quick adjust |
+| ID   | Type  | Name                       | Route                               |
+| ---- | ----- | -------------------------- | ----------------------------------- |
+| P1   | Page  | Pricing Hub                | /settings/pricing                   |
+| P1.1 | Modal | New Template Wizard        | 5-step setup                        |
+| P1.2 | Sheet | Tag-Template Mapping       | customer tag → template             |
+| P2   | Page  | Screen Print Matrix Editor | /settings/pricing/screen-print/[id] |
+| P2.1 | Modal | Side-by-Side Comparison    | current vs. proposed                |
+| P2.2 | Sheet | Cost Configuration         | garment + ink + overhead            |
+| P3   | Page  | DTF Matrix Editor          | /settings/pricing/dtf/[id]          |
+| P4   | Sheet | Matrix Peek (from Quotes)  | read-only + quick adjust            |
 
 ## Build Plan — Critical Path
 
@@ -136,17 +136,17 @@ Existing `customerTypeTagEnum` (retail, sports-school, corporate, storefront-mer
 
 All 30 interview findings mapped to specific affordances. Every demo must-have covered:
 
-| Demo Must-Have | Affordances |
-|----------------|-------------|
+| Demo Must-Have    | Affordances                                                           |
+| ----------------- | --------------------------------------------------------------------- |
 | Margin visibility | U67, U130, U163, MarginIndicator component, green/yellow/red per cell |
-| 5-minute setup | P1.1 wizard (U20-U37), industry defaults, live preview |
-| What-if scenarios | Sandbox toggle (U53), comparison modal P2.1 (U100-U107) |
-| Quote integration | Matrix Peek P4 (U160-U167), pricing engine feeds quote calculator |
+| 5-minute setup    | P1.1 wizard (U20-U37), industry defaults, live preview                |
+| What-if scenarios | Sandbox toggle (U53), comparison modal P2.1 (U100-U107)               |
+| Quote integration | Matrix Peek P4 (U160-U167), pricing engine feeds quote calculator     |
 
 ## New Files Created
 
-| File | Purpose |
-|------|---------|
+| File                                          | Purpose                                                                                         |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `docs/breadboards/price-matrix-breadboard.md` | Full breadboard: 8 places, 167 UI affordances, 80 code affordances, 14 data stores, build order |
 
 ## Next Steps

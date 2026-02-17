@@ -26,6 +26,7 @@ Conduct comprehensive research on how competing and adjacent products handle the
 ## Output
 
 Produce a KB session doc at `{KB_DIR}/` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=research, tags=[research]
 - Competitor comparison table
 - Key findings and recommendations

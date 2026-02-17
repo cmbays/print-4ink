@@ -27,30 +27,30 @@ This document investigates how to build a PM system for a solo developer working
 
 ### Capabilities
 
-| Feature | Support | Notes |
-|---------|---------|-------|
-| Custom fields | TEXT, NUMBER, DATE, SINGLE_SELECT | Created via `gh project field-create` |
-| Iteration fields | Yes | Web UI only — cannot create via CLI |
-| Views | Table, Board, Roadmap | Web UI only — no CLI for view creation |
-| Built-in automations | Auto-status on close/merge/reopen | 4 workflows |
-| Auto-add items | Filter-based | 1 workflow on Free plan, 5 on Pro |
-| Auto-archive | Filter-based | By closed date, merge date |
-| CLI access | Full CRUD | `gh project` commands (requires `project` scope) |
-| Item limit | 50,000 | Recently increased from 1,200 |
-| Field limit | 50 per project | Custom + built-in combined |
+| Feature              | Support                           | Notes                                            |
+| -------------------- | --------------------------------- | ------------------------------------------------ |
+| Custom fields        | TEXT, NUMBER, DATE, SINGLE_SELECT | Created via `gh project field-create`            |
+| Iteration fields     | Yes                               | Web UI only — cannot create via CLI              |
+| Views                | Table, Board, Roadmap             | Web UI only — no CLI for view creation           |
+| Built-in automations | Auto-status on close/merge/reopen | 4 workflows                                      |
+| Auto-add items       | Filter-based                      | 1 workflow on Free plan, 5 on Pro                |
+| Auto-archive         | Filter-based                      | By closed date, merge date                       |
+| CLI access           | Full CRUD                         | `gh project` commands (requires `project` scope) |
+| Item limit           | 50,000                            | Recently increased from 1,200                    |
+| Field limit          | 50 per project                    | Custom + built-in combined                       |
 
 ### Recommended Field Schema
 
-| Field Name | Type | Options | Purpose |
-|------------|------|---------|---------|
-| Status | SINGLE_SELECT (built-in) | Triage, Backlog, Ready, In Progress, In Review, Done | Board columns |
-| Priority | SINGLE_SELECT | Urgent, High, Normal, Low | Matches `priority/*` labels |
-| Product | SINGLE_SELECT | Dashboard, Quotes, Customers, Invoices, Jobs, Garments, Screens, Pricing | From `config/products.json` |
-| Tool | SINGLE_SELECT | Work Orchestrator, Skills Framework, Agent System, Knowledge Base, CI Pipeline | From `config/tools.json` |
-| Pipeline ID | TEXT | Free text (`YYYYMMDD-topic`) | Links to pipeline instance |
-| Pipeline Stage | SINGLE_SELECT | Research, Interview, Shape, Breadboard, Plan, Build, Review, Wrap-up | Current stage in pipeline |
-| Effort | SINGLE_SELECT | Trivial, Small, Medium, Large | Complexity estimate |
-| Phase | SINGLE_SELECT | Phase 1, Phase 2, Phase 3 | Development phase |
+| Field Name     | Type                     | Options                                                                        | Purpose                     |
+| -------------- | ------------------------ | ------------------------------------------------------------------------------ | --------------------------- |
+| Status         | SINGLE_SELECT (built-in) | Triage, Backlog, Ready, In Progress, In Review, Done                           | Board columns               |
+| Priority       | SINGLE_SELECT            | Urgent, High, Normal, Low                                                      | Matches `priority/*` labels |
+| Product        | SINGLE_SELECT            | Dashboard, Quotes, Customers, Invoices, Jobs, Garments, Screens, Pricing       | From `config/products.json` |
+| Tool           | SINGLE_SELECT            | Work Orchestrator, Skills Framework, Agent System, Knowledge Base, CI Pipeline | From `config/tools.json`    |
+| Pipeline ID    | TEXT                     | Free text (`YYYYMMDD-topic`)                                                   | Links to pipeline instance  |
+| Pipeline Stage | SINGLE_SELECT            | Research, Interview, Shape, Breadboard, Plan, Build, Review, Wrap-up           | Current stage in pipeline   |
+| Effort         | SINGLE_SELECT            | Trivial, Small, Medium, Large                                                  | Complexity estimate         |
+| Phase          | SINGLE_SELECT            | Phase 1, Phase 2, Phase 3                                                      | Development phase           |
 
 ### CLI Workflow (Agent Pattern)
 
@@ -91,14 +91,14 @@ Use GitHub Projects v2 as the **visual board** for humans (web UI views). For ag
 
 ### Issue Forms (YAML) vs Markdown Templates
 
-| Dimension | Markdown (`.md`) | Issue Forms (`.yml`) |
-|-----------|-------------------|----------------------|
-| Structure enforcement | None — user can delete sections | Required fields enforced |
-| Output format | Free text | Labeled markdown sections (machine-parseable) |
-| Field types | None | input, textarea, dropdown, checkboxes, markdown |
-| Auto-labels | No | Yes (`labels:` top-level key) |
-| Validation | None | `required: true/false` only |
-| Private repo enforcement | N/A | **Not enforced** on private repos |
+| Dimension                | Markdown (`.md`)                | Issue Forms (`.yml`)                            |
+| ------------------------ | ------------------------------- | ----------------------------------------------- |
+| Structure enforcement    | None — user can delete sections | Required fields enforced                        |
+| Output format            | Free text                       | Labeled markdown sections (machine-parseable)   |
+| Field types              | None                            | input, textarea, dropdown, checkboxes, markdown |
+| Auto-labels              | No                              | Yes (`labels:` top-level key)                   |
+| Validation               | None                            | `required: true/false` only                     |
+| Private repo enforcement | N/A                             | **Not enforced** on private repos               |
 
 **Verdict**: Issue forms are strictly better. The `required` limitation on private repos is acceptable since agents create most issues programmatically anyway.
 
@@ -126,6 +126,7 @@ Use GitHub Projects v2 as the **visual board** for humans (web UI views). For ag
 ### PR Template
 
 Markdown-only (GitHub doesn't support YAML PR forms). Includes:
+
 - Summary (1-3 bullets)
 - Related Issues (`Closes #X`)
 - Type of Change checkboxes
@@ -139,12 +140,12 @@ Markdown-only (GitHub doesn't support YAML PR forms). Includes:
 
 ### Native GitHub Support (All GA as of 2025)
 
-| Feature | Status | Limits | CLI Support |
-|---------|--------|--------|-------------|
-| **Sub-issues** | GA | 100 per parent, 8 levels deep | `gh api graphql` only (no native CLI yet) |
-| **Dependencies** (blocked-by/blocking) | GA | 50 per type | `gh api` REST only (no native CLI yet) |
-| **Issue types** | GA | Org-level, customizable | Web UI |
-| **Advanced search** | GA | AND, OR, parentheses | Web UI + API |
+| Feature                                | Status | Limits                        | CLI Support                               |
+| -------------------------------------- | ------ | ----------------------------- | ----------------------------------------- |
+| **Sub-issues**                         | GA     | 100 per parent, 8 levels deep | `gh api graphql` only (no native CLI yet) |
+| **Dependencies** (blocked-by/blocking) | GA     | 50 per type                   | `gh api` REST only (no native CLI yet)    |
+| **Issue types**                        | GA     | Org-level, customizable       | Web UI                                    |
+| **Advanced search**                    | GA     | AND, OR, parentheses          | Web UI + API                              |
 
 ### API Patterns for Agents
 
@@ -164,10 +165,12 @@ gh api -X DELETE repos/cmbays/print-4ink/issues/42/dependencies/blocked_by/38
 ### Recommended Pattern
 
 Use **sub-issues** for vertical decomposition:
+
 - Tracking issue (#166 S&S API Integration) → sub-issues (#158, #159, #160, #161, #162, #163, #164, #165)
 - This replaces task-list checkboxes with actual linked issues that have their own labels, assignees, and project fields
 
 Use **dependencies** (blocked-by/blocking) for cross-issue sequencing:
+
 - #162 (SSActivewearAdapter) blocked-by #159 (SupplierAdapter interface)
 - #163 (Wire catalog to API) blocked-by #162 (SSActivewearAdapter)
 
@@ -185,15 +188,15 @@ The 23 issues that currently use task-list checkboxes (`- [ ] #123`) should be m
 
 The dominant pattern across all AI-agent workflows is **structured, version-controlled task state that agents can read and write**. Key patterns:
 
-| Pattern | Source | Description |
-|---------|--------|-------------|
-| **Spec-Driven Development** | GitHub Spec Kit, Kiro | `.specify/` with spec.md, plan.md, tasks.md |
-| **CLAUDE.md / AGENTS.md** | Industry standard | Project-level machine-readable instructions |
-| **Hierarchical orchestration** | Cursor's model | Planner → Worker → Judge roles |
-| **Land the plane** | Beads (Yegge) | Structured handoff at session end |
-| **Robot mode** | Beads Viewer | Machine-parseable query API for agents |
-| **Context budget** | ACE methodology | Keep context at 40-60% capacity |
-| **Issue-as-spec** | Emerging | Issue body IS the spec with structured sections |
+| Pattern                        | Source                | Description                                     |
+| ------------------------------ | --------------------- | ----------------------------------------------- |
+| **Spec-Driven Development**    | GitHub Spec Kit, Kiro | `.specify/` with spec.md, plan.md, tasks.md     |
+| **CLAUDE.md / AGENTS.md**      | Industry standard     | Project-level machine-readable instructions     |
+| **Hierarchical orchestration** | Cursor's model        | Planner → Worker → Judge roles                  |
+| **Land the plane**             | Beads (Yegge)         | Structured handoff at session end               |
+| **Robot mode**                 | Beads Viewer          | Machine-parseable query API for agents          |
+| **Context budget**             | ACE methodology       | Keep context at 40-60% capacity                 |
+| **Issue-as-spec**              | Emerging              | Issue body IS the spec with structured sections |
 
 ### What We Already Do Well
 
@@ -218,6 +221,7 @@ The dominant pattern across all AI-agent workflows is **structured, version-cont
 ### Current State: 42 Labels
 
 **Taxonomy labels** (well-structured, 27 labels):
+
 - `type/*` (7): bug, feature, feedback, research, tech-debt, refactor, tooling
 - `priority/*` (4): now, next, later, icebox
 - `source/*` (5): interview, testing, cool-down, idea, review
@@ -225,53 +229,54 @@ The dominant pattern across all AI-agent workflows is **structured, version-cont
 - `vertical/*` (8): dashboard, jobs, quoting, customers, price-matrix, garments, screen-room, infrastructure, devx, mobile-optimization, invoicing
 
 **Ad-hoc labels** (15 labels outside taxonomy):
+
 - GitHub defaults (7): documentation, duplicate, good first issue, help wanted, invalid, question, wontfix
 - Project-specific ad-hoc (8): enhancement, meta, devx, refactor, data-quality, knowledge-base, polish, accessibility
 
 ### Issues Using Ad-Hoc Labels
 
-| Issue | Ad-Hoc Labels | Correct Taxonomy Labels |
-|-------|---------------|------------------------|
-| #214 | `enhancement`, `devx` | `type/feature`, `vertical/devx` |
-| #209 | `knowledge-base`, `polish` | `type/refactor`, `vertical/devx` (or new `product/knowledge-base`) |
-| #208 | `knowledge-base`, `data-quality` | `type/tech-debt`, `vertical/devx` |
-| #207 | `knowledge-base`, `data-quality` | `type/tech-debt`, `vertical/devx` |
-| #201 | `enhancement`, `devx` | `type/tooling`, `vertical/devx` |
+| Issue | Ad-Hoc Labels                    | Correct Taxonomy Labels                                            |
+| ----- | -------------------------------- | ------------------------------------------------------------------ |
+| #214  | `enhancement`, `devx`            | `type/feature`, `vertical/devx`                                    |
+| #209  | `knowledge-base`, `polish`       | `type/refactor`, `vertical/devx` (or new `product/knowledge-base`) |
+| #208  | `knowledge-base`, `data-quality` | `type/tech-debt`, `vertical/devx`                                  |
+| #207  | `knowledge-base`, `data-quality` | `type/tech-debt`, `vertical/devx`                                  |
+| #201  | `enhancement`, `devx`            | `type/tooling`, `vertical/devx`                                    |
 
 ### Issues Missing Required Labels
 
-| Gap | Count | Issues |
-|-----|-------|--------|
-| Missing `type/*` | 5 | #214, #209, #208, #207, #201 |
-| Missing `priority/*` | 6 | #214, #209, #208, #207, #201, #116 |
-| Missing `vertical/*` | 8 | #214, #213, #209, #208, #207, #201, #85, #81 |
+| Gap                  | Count | Issues                                       |
+| -------------------- | ----- | -------------------------------------------- |
+| Missing `type/*`     | 5     | #214, #209, #208, #207, #201                 |
+| Missing `priority/*` | 6     | #214, #209, #208, #207, #201, #116           |
+| Missing `vertical/*` | 8     | #214, #213, #209, #208, #207, #201, #85, #81 |
 
 ### Recommendation: Label Cleanup
 
 **Phase 1: Fold ad-hoc labels into taxonomy**
 
-| Ad-Hoc Label | Action |
-|-------------|--------|
-| `enhancement` | Delete → use `type/feature` |
-| `meta` | Delete → use `type/tooling` |
-| `devx` | Delete → use `vertical/devx` |
-| `refactor` | Delete → use `type/refactor` |
-| `data-quality` | Delete → use `type/tech-debt` |
-| `knowledge-base` | Delete → use `vertical/devx` (KB is a devx tool) |
-| `polish` | Delete → use `type/refactor` or new `scope/polish` |
-| `accessibility` | Delete → use `type/tech-debt` (or keep if needed) |
+| Ad-Hoc Label     | Action                                             |
+| ---------------- | -------------------------------------------------- |
+| `enhancement`    | Delete → use `type/feature`                        |
+| `meta`           | Delete → use `type/tooling`                        |
+| `devx`           | Delete → use `vertical/devx`                       |
+| `refactor`       | Delete → use `type/refactor`                       |
+| `data-quality`   | Delete → use `type/tech-debt`                      |
+| `knowledge-base` | Delete → use `vertical/devx` (KB is a devx tool)   |
+| `polish`         | Delete → use `type/refactor` or new `scope/polish` |
+| `accessibility`  | Delete → use `type/tech-debt` (or keep if needed)  |
 
 **Phase 2: Remove unused GitHub defaults**
 
-| Default Label | Action |
-|--------------|--------|
-| `documentation` | Delete (no issues use it) |
-| `duplicate` | Keep (useful for close reasons) |
+| Default Label      | Action                                      |
+| ------------------ | ------------------------------------------- |
+| `documentation`    | Delete (no issues use it)                   |
+| `duplicate`        | Keep (useful for close reasons)             |
 | `good first issue` | Delete (solo dev, no external contributors) |
-| `help wanted` | Delete (solo dev) |
-| `invalid` | Keep (useful for close reasons) |
-| `question` | Delete (use discussions or `type/research`) |
-| `wontfix` | Keep (useful for close reasons) |
+| `help wanted`      | Delete (solo dev)                           |
+| `invalid`          | Keep (useful for close reasons)             |
+| `question`         | Delete (use discussions or `type/research`) |
+| `wontfix`          | Keep (useful for close reasons)             |
 
 **Phase 3: Rename `vertical/*` → `product/*`**
 
@@ -294,6 +299,7 @@ vertical/mobile-optimization → scope/mobile
 **Decision needed**: Should pipeline IDs be labels?
 
 **No.** Pipeline IDs (`20260215-pm-overhaul`) are runtime identifiers, not categorical metadata. They belong in:
+
 - A GitHub Project custom field (TEXT type: "Pipeline ID")
 - Issue body text
 - Branch names and PR titles
@@ -306,50 +312,51 @@ Labels are for **categories** that agents filter by. Pipeline IDs are for **trac
 
 ### Issue Health Summary
 
-| Metric | Count |
-|--------|-------|
-| Open issues | 67 |
-| Closed issues | 30 |
-| Issues with all required labels (type + priority + vertical) | ~52 |
-| Issues missing type label | 5 |
-| Issues missing priority label | 6 |
-| Issues missing vertical label | 8 |
-| Issues with ad-hoc labels only | 5 |
-| Milestones | 0 (none exist) |
-| Project boards | 0 (none exist) |
-| Issue templates | 0 (none exist) |
-| PR templates | 0 (none exist) |
-| Issues not updated in 30+ days | 0 (all recently active) |
+| Metric                                                       | Count                   |
+| ------------------------------------------------------------ | ----------------------- |
+| Open issues                                                  | 67                      |
+| Closed issues                                                | 30                      |
+| Issues with all required labels (type + priority + vertical) | ~52                     |
+| Issues missing type label                                    | 5                       |
+| Issues missing priority label                                | 6                       |
+| Issues missing vertical label                                | 8                       |
+| Issues with ad-hoc labels only                               | 5                       |
+| Milestones                                                   | 0 (none exist)          |
+| Project boards                                               | 0 (none exist)          |
+| Issue templates                                              | 0 (none exist)          |
+| PR templates                                                 | 0 (none exist)          |
+| Issues not updated in 30+ days                               | 0 (all recently active) |
 
 ### Priority Distribution
 
-| Priority | Count | % |
-|----------|-------|---|
-| `priority/now` | 4 | 6% |
-| `priority/next` | 37 | 55% |
-| `priority/later` | 23 | 34% |
-| `priority/icebox` | 3 | 4% |
+| Priority          | Count | %   |
+| ----------------- | ----- | --- |
+| `priority/now`    | 4     | 6%  |
+| `priority/next`   | 37    | 55% |
+| `priority/later`  | 23    | 34% |
+| `priority/icebox` | 3     | 4%  |
 
 **Observation**: 55% of issues are `priority/next`. This is too many — it means "next" has lost its signal. Need to either:
+
 - Promote 5-8 truly next items, demote rest to `later`
 - Use milestones to batch `next` items into time-boxed goals
 
 ### Potential Overlaps
 
-| Overlap Area | Issues | Resolution |
-|-------------|--------|-----------|
-| React Hook Form migration | #15, #73 | #73 is subset of #15 — close #73 as duplicate, link in #15 |
-| S&S API integration | #140, #163, #164, #165, #166 | #166 is tracking issue, #163-165 are sub-tasks. Convert to sub-issues. |
-| Backend agent tools | #119, #120, #121, #122, #123 | All Phase 2. Group under a tracking issue or milestone. |
+| Overlap Area              | Issues                       | Resolution                                                             |
+| ------------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| React Hook Form migration | #15, #73                     | #73 is subset of #15 — close #73 as duplicate, link in #15             |
+| S&S API integration       | #140, #163, #164, #165, #166 | #166 is tracking issue, #163-165 are sub-tasks. Convert to sub-issues. |
+| Backend agent tools       | #119, #120, #121, #122, #123 | All Phase 2. Group under a tracking issue or milestone.                |
 
 ### Stale/Close Candidates
 
-| Issue | Reason | Recommendation |
-|-------|--------|----------------|
-| #85 (gh dash filters) | Superseded by #216 (this PM overhaul) | Close as superseded |
-| #63 (KB CodeRabbit feedback) | Old review feedback, likely resolved | Verify and close |
-| #52 (TagTemplateMapper useEffect refactor) | Small refactor, React 19 pattern | Keep, deprioritize to icebox |
-| #54 (SetupWizard focus states) | Minor polish | Keep, deprioritize to icebox |
+| Issue                                      | Reason                                | Recommendation               |
+| ------------------------------------------ | ------------------------------------- | ---------------------------- |
+| #85 (gh dash filters)                      | Superseded by #216 (this PM overhaul) | Close as superseded          |
+| #63 (KB CodeRabbit feedback)               | Old review feedback, likely resolved  | Verify and close             |
+| #52 (TagTemplateMapper useEffect refactor) | Small refactor, React 19 pattern      | Keep, deprioritize to icebox |
+| #54 (SetupWizard focus states)             | Minor polish                          | Keep, deprioritize to icebox |
 
 ---
 
@@ -431,7 +438,7 @@ jobs:
 name: Stale issues
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Weekly on Monday
+    - cron: '0 0 * * 1' # Weekly on Monday
 
 jobs:
   stale:
@@ -466,35 +473,35 @@ Current `gh auth` scopes: `admin:public_key`, `gist`, `read:org`, `repo`, `workf
 
 ### Entity-to-Construct Matrix
 
-| Entity | GitHub Construct | Why |
-|--------|-----------------|-----|
-| **Product** (Dashboard, Quotes, etc.) | Labels (`product/*`) + Project field (Single Select) | Agents filter by label; board groups by field |
-| **Tool** (Work CLI, KB, etc.) | Labels (`tool/*`) + Project field (Single Select) | Same pattern as products |
-| **Pipeline** (20260215-colors) | Project TEXT field + branch name + PR title | Runtime instance, not categorical |
-| **Pipeline Type** (vertical, polish, etc.) | Project SINGLE_SELECT field | Board filtering/grouping |
-| **Pipeline Stage** (research, build, etc.) | Project SINGLE_SELECT field | Track progress on board |
-| **Priority** | Labels (`priority/*`) + Project field | Agents read labels; board sorts by field |
-| **Phase** | Labels (`phase/*`) + Project field | Dual presence for flexibility |
-| **Milestone** (Gary Demo, Phase 2 Foundation) | GitHub Milestones | Time-boxed goals with progress tracking |
+| Entity                                        | GitHub Construct                                     | Why                                           |
+| --------------------------------------------- | ---------------------------------------------------- | --------------------------------------------- |
+| **Product** (Dashboard, Quotes, etc.)         | Labels (`product/*`) + Project field (Single Select) | Agents filter by label; board groups by field |
+| **Tool** (Work CLI, KB, etc.)                 | Labels (`tool/*`) + Project field (Single Select)    | Same pattern as products                      |
+| **Pipeline** (20260215-colors)                | Project TEXT field + branch name + PR title          | Runtime instance, not categorical             |
+| **Pipeline Type** (vertical, polish, etc.)    | Project SINGLE_SELECT field                          | Board filtering/grouping                      |
+| **Pipeline Stage** (research, build, etc.)    | Project SINGLE_SELECT field                          | Track progress on board                       |
+| **Priority**                                  | Labels (`priority/*`) + Project field                | Agents read labels; board sorts by field      |
+| **Phase**                                     | Labels (`phase/*`) + Project field                   | Dual presence for flexibility                 |
+| **Milestone** (Gary Demo, Phase 2 Foundation) | GitHub Milestones                                    | Time-boxed goals with progress tracking       |
 
 ### Recommended Milestones
 
-| Milestone | Target | Purpose |
-|-----------|--------|---------|
-| Gary Demo (Feb 21) | 2026-02-21 | Demo-blocking items: #145, #144, #177 |
-| PM Foundation | 2026-02-28 | This issue (#216): templates, labels, board, docs |
-| Phase 2 Foundation | 2026-03-15 | Backend horizontal: #84, #158, #159, #160, #161 |
-| S&S Integration | 2026-04-01 | API integration: #166 tracking + sub-issues |
+| Milestone          | Target     | Purpose                                           |
+| ------------------ | ---------- | ------------------------------------------------- |
+| Gary Demo (Feb 21) | 2026-02-21 | Demo-blocking items: #145, #144, #177             |
+| PM Foundation      | 2026-02-28 | This issue (#216): templates, labels, board, docs |
+| Phase 2 Foundation | 2026-03-15 | Backend horizontal: #84, #158, #159, #160, #161   |
+| S&S Integration    | 2026-04-01 | API integration: #166 tracking + sub-issues       |
 
 ### View Configuration (Manual, One-Time)
 
-| View | Layout | Group By | Filter |
-|------|--------|----------|--------|
-| **Board** | Board | Status | `is:open` |
-| **By Product** | Table | Product | `is:open` |
-| **Pipeline Tracker** | Table | Pipeline Stage | `Pipeline ID is not empty` |
-| **Phase 2 Backlog** | Table | Priority | `Phase = Phase 2` |
-| **Blocked Items** | Table | — | Issues with blocked-by dependencies |
+| View                 | Layout | Group By       | Filter                              |
+| -------------------- | ------ | -------------- | ----------------------------------- |
+| **Board**            | Board  | Status         | `is:open`                           |
+| **By Product**       | Table  | Product        | `is:open`                           |
+| **Pipeline Tracker** | Table  | Pipeline Stage | `Pipeline ID is not empty`          |
+| **Phase 2 Backlog**  | Table  | Priority       | `Phase = Phase 2`                   |
+| **Blocked Items**    | Table  | —              | Issues with blocked-by dependencies |
 
 ---
 
@@ -506,12 +513,12 @@ PROGRESS.md is stale. It's a hot file that can't be updated on feature branches.
 
 ### Options
 
-| Option | Pros | Cons |
-|--------|------|------|
+| Option                                   | Pros                                       | Cons                                     |
+| ---------------------------------------- | ------------------------------------------ | ---------------------------------------- |
 | **A: Replace with GitHub Project board** | Always current, no merge conflicts, visual | Agents can't read it as easily as a file |
-| **B: Auto-generate from GitHub API** | Always accurate, no manual updates | Requires script, adds tooling |
-| **C: Simplify to status page** | Low maintenance, less conflict-prone | Still manual |
-| **D: Keep as-is + reminder** | No change | Stays stale |
+| **B: Auto-generate from GitHub API**     | Always accurate, no manual updates         | Requires script, adds tooling            |
+| **C: Simplify to status page**           | Low maintenance, less conflict-prone       | Still manual                             |
+| **D: Keep as-is + reminder**             | No change                                  | Stays stale                              |
 
 ### Recommendation: Option B — Auto-generate
 
@@ -565,23 +572,27 @@ The #216 deliverable includes a canonical PM document. Based on this research, i
 ## Sources
 
 ### GitHub Projects v2
+
 - [gh project CLI manual](https://cli.github.com/manual/gh_project)
 - [About Projects - GitHub Docs](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects)
 - [Built-in automations](https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/using-the-built-in-automations)
 - [Automating with Actions](https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/automating-projects-using-actions)
 
 ### Issue Templates
+
 - [Issue forms syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms)
 - [Form schema syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema)
 - [Next.js templates](https://github.com/vercel/next.js/tree/canary/.github/ISSUE_TEMPLATE) (real-world reference)
 
 ### Dependencies
+
 - [Sub-issues docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues)
 - [Issue dependencies docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies)
 - [Evolving GitHub Issues GA](https://github.com/orgs/community/discussions/154148)
 - [gh CLI sub-issues request](https://github.com/cli/cli/issues/10298)
 
 ### AI-Agent PM
+
 - [GitHub Spec Kit](https://github.com/github/spec-kit)
 - [Advanced Context Engineering](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents)
 - [Beads Viewer](https://github.com/Dicklesworthstone/beads_viewer)
@@ -589,6 +600,7 @@ The #216 deliverable includes a canonical PM document. Based on this research, i
 - [AGENTS.md standard](https://www.infoq.com/news/2025/08/agents-md/)
 
 ### GitHub Actions
+
 - [actions/labeler](https://github.com/actions/labeler)
 - [actions/add-to-project](https://github.com/actions/add-to-project)
 - [actions/stale](https://github.com/actions/stale)

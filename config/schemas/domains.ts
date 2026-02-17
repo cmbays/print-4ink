@@ -1,3 +1,3 @@
-import { configEntryBase } from "./base";
+import { configEntryBase } from './base'
 
-export const domainsConfigSchema = configEntryBase.array().nonempty();
+export const domainsConfigSchema = configEntryBase.array().nonempty()

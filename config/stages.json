@@ -1,11 +1,51 @@
 [
-  { "slug": "research", "label": "Research", "description": "Explore the problem space, competitors, and user needs", "core": true },
-  { "slug": "interview", "label": "Interview", "description": "Gather requirements and context from stakeholders" },
-  { "slug": "shape", "label": "Shape", "description": "Define requirements and explore solution shapes using R x S methodology" },
-  { "slug": "breadboard", "label": "Breadboard", "description": "Map shaped solution into affordances, wiring, and vertical slices", "core": true },
-  { "slug": "plan", "label": "Plan", "description": "Produce implementation plan and execution manifest" },
-  { "slug": "build", "label": "Build", "description": "Implement the solution — code, tests, and documentation", "core": true },
-  { "slug": "review", "label": "Review", "description": "Code review, quality gate audit, and user acceptance" },
-  { "slug": "wrap-up", "label": "Wrap-up", "description": "Merge PR, write session doc, and update canonical documents" },
-  { "slug": "cooldown", "label": "Cooldown", "description": "Retrospective synthesis and forward planning between build cycles", "pipeline": false }
+  {
+    "slug": "research",
+    "label": "Research",
+    "description": "Explore the problem space, competitors, and user needs",
+    "core": true
+  },
+  {
+    "slug": "interview",
+    "label": "Interview",
+    "description": "Gather requirements and context from stakeholders"
+  },
+  {
+    "slug": "shape",
+    "label": "Shape",
+    "description": "Define requirements and explore solution shapes using R x S methodology"
+  },
+  {
+    "slug": "breadboard",
+    "label": "Breadboard",
+    "description": "Map shaped solution into affordances, wiring, and vertical slices",
+    "core": true
+  },
+  {
+    "slug": "plan",
+    "label": "Plan",
+    "description": "Produce implementation plan and execution manifest"
+  },
+  {
+    "slug": "build",
+    "label": "Build",
+    "description": "Implement the solution — code, tests, and documentation",
+    "core": true
+  },
+  {
+    "slug": "review",
+    "label": "Review",
+    "description": "Code review, quality gate audit, and user acceptance"
+  },
+  {
+    "slug": "wrap-up",
+    "label": "Wrap-up",
+    "description": "Merge PR, write session doc, and update canonical documents"
+  },
+  {
+    "slug": "cooldown",
+    "label": "Cooldown",
+    "description": "Retrospective synthesis and forward planning between build cycles",
+    "pipeline": false
+  }
 ]

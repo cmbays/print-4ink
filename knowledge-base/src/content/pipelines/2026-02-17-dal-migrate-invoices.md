@@ -1,16 +1,16 @@
 ---
-title: "DAL Migration: Invoices Route Group"
-subtitle: "Wave 2 consumer migration — all mock-data imports replaced with DAL calls"
+title: 'DAL Migration: Invoices Route Group'
+subtitle: 'Wave 2 consumer migration — all mock-data imports replaced with DAL calls'
 date: 2026-02-17
 phase: 1
-pipelineName: "Data Access Layer"
+pipelineName: 'Data Access Layer'
 pipelineType: horizontal
 products: [invoices]
 tools: []
 stage: build
 tags: [build]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0217-dal-migrate-invoices"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0217-dal-migrate-invoices'
 status: complete
 ---
 
@@ -22,15 +22,15 @@ Migrated all 7 mock-data import sites in the invoices route group to use the Dat
 
 ## Files Changed
 
-| File | Pattern | Change |
-|------|---------|--------|
-| `invoices/page.tsx` | Pattern 1 | Made async, `Promise.all([getInvoices(), getCustomers()])`, passes to children |
-| `invoices/[id]/page.tsx` | Pattern 2 | 4 array ops → `getInvoiceById`, `getCustomerById`, `getInvoicePayments`, `getInvoiceCreditMemos` |
-| `invoices/[id]/edit/page.tsx` | Pattern 2 | `invoices.find()` → `getInvoiceById`, fetches customers+sourceQuote for form |
-| `invoices/new/page.tsx` | Pattern 2 | New fetch: customers, sourceQuote, invoiceCount → `initialInvoiceNumber` |
-| `InvoiceStatsBar.tsx` | Pattern 4 | Accepts `invoices: Invoice[]` prop |
-| `InvoicesDataTable.tsx` | Pattern 4 | Accepts `customers: Customer[]` prop |
-| `InvoiceForm.tsx` | Pattern 4 | Replaces `mockCustomers`, `mockQuotes`, `mockInvoices` with props |
+| File                          | Pattern   | Change                                                                                           |
+| ----------------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| `invoices/page.tsx`           | Pattern 1 | Made async, `Promise.all([getInvoices(), getCustomers()])`, passes to children                   |
+| `invoices/[id]/page.tsx`      | Pattern 2 | 4 array ops → `getInvoiceById`, `getCustomerById`, `getInvoicePayments`, `getInvoiceCreditMemos` |
+| `invoices/[id]/edit/page.tsx` | Pattern 2 | `invoices.find()` → `getInvoiceById`, fetches customers+sourceQuote for form                     |
+| `invoices/new/page.tsx`       | Pattern 2 | New fetch: customers, sourceQuote, invoiceCount → `initialInvoiceNumber`                         |
+| `InvoiceStatsBar.tsx`         | Pattern 4 | Accepts `invoices: Invoice[]` prop                                                               |
+| `InvoicesDataTable.tsx`       | Pattern 4 | Accepts `customers: Customer[]` prop                                                             |
+| `InvoiceForm.tsx`             | Pattern 4 | Replaces `mockCustomers`, `mockQuotes`, `mockInvoices` with props                                |
 
 ## Key Decisions
 
@@ -48,12 +48,12 @@ The form previously accepted `quoteId?: string` and resolved the quote from `moc
 
 ## Self-Review Findings
 
-| # | Severity | Finding | Action |
-|---|----------|---------|--------|
-| 1 | warning | `getInvoices` unused import in `edit/page.tsx` | Fixed immediately |
-| 2 | major | Duplicate "not found" block across `[id]` and `[id]/edit` pages | Filed #409 |
-| 3 | major | Dead `<Suspense>` boundary — data pre-fetched, fallback can never fire | Filed #410 |
-| 4 | warning | `sm:grid-cols-4` in `InvoiceStatsBar` should be `md:` | Filed #411 |
+| #   | Severity | Finding                                                                | Action            |
+| --- | -------- | ---------------------------------------------------------------------- | ----------------- |
+| 1   | warning  | `getInvoices` unused import in `edit/page.tsx`                         | Fixed immediately |
+| 2   | major    | Duplicate "not found" block across `[id]` and `[id]/edit` pages        | Filed #409        |
+| 3   | major    | Dead `<Suspense>` boundary — data pre-fetched, fallback can never fire | Filed #410        |
+| 4   | warning  | `sm:grid-cols-4` in `InvoiceStatsBar` should be `md:`                  | Filed #411        |
 
 ## Verification
 

@@ -1,5 +1,5 @@
 ---
-title: "PRD"
+title: 'PRD'
 description: "Phase 1 features, user stories, acceptance criteria, and scope boundaries. Defines what 'done' means for the mockup."
 category: canonical
 status: active
@@ -28,6 +28,7 @@ Screen Print Pro replaces this with a unified production dashboard that gives in
 ## User Persona
 
 **Chris** — Owner/operator of 4Ink
+
 - Runs a small screen-printing shop (1-3 employees)
 - Manages 5-20 active jobs at any time
 - Needs to know: What's blocked? What's due soon? What's next?
@@ -41,34 +42,34 @@ Screen Print Pro replaces this with a unified production dashboard that gives in
 
 ### IN Scope (build these)
 
-| # | Feature | Description | Acceptance Criteria |
-|---|---------|-------------|---------------------|
-| F1 | **Dashboard** | Production overview with priority-ordered sections | Shows blocked items first, then in-progress, then recently shipped. Summary cards for key metrics. |
-| F2 | **Jobs List** | Sortable, filterable table of all jobs | Sort by status, priority, due date, customer. Filter by status. Search by job number or title. |
-| F3 | **Job Detail** | Full view of a single job | Shows customer, garments (with sizes), print locations (with artwork status), production state, priority, due date. Status timeline visualization. |
-| F4 | **Kanban Board** | Drag-and-drop production board | Columns for each production state. Cards show job number, title, customer, due date. Drag to change status. |
-| F5 | **Quotes List** | Table of quotes with status | Sort/filter by status, customer, date. Show line item count and total. |
-| F6 | **Quote Detail** | Full view of a single quote | Customer info, line items with pricing breakdown, setup fees, total. Status badge. |
-| F7 | **New Quote Form** | Create a quote with dynamic line items | Add/remove line items. Auto-calculate unit price, line total, setup fees, grand total. Customer selection. |
-| F8 | **Customers List** | Table of customers | Name, company, email, phone. Click to view details. |
-| F9 | **Customer Detail** | Single customer view | Contact info, linked jobs (with status), linked quotes (with status). |
-| F10 | **Screen Room** | Screen inventory and status | Table of screens with mesh count, emulsion type, burn status, linked job. Filter by burn status. |
-| F11 | **Garment Catalog** | Browse available garment styles | List of garments used across jobs. Group by brand. Show SKU, style, color. |
+| #   | Feature             | Description                                        | Acceptance Criteria                                                                                                                                |
+| --- | ------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | **Dashboard**       | Production overview with priority-ordered sections | Shows blocked items first, then in-progress, then recently shipped. Summary cards for key metrics.                                                 |
+| F2  | **Jobs List**       | Sortable, filterable table of all jobs             | Sort by status, priority, due date, customer. Filter by status. Search by job number or title.                                                     |
+| F3  | **Job Detail**      | Full view of a single job                          | Shows customer, garments (with sizes), print locations (with artwork status), production state, priority, due date. Status timeline visualization. |
+| F4  | **Kanban Board**    | Drag-and-drop production board                     | Columns for each production state. Cards show job number, title, customer, due date. Drag to change status.                                        |
+| F5  | **Quotes List**     | Table of quotes with status                        | Sort/filter by status, customer, date. Show line item count and total.                                                                             |
+| F6  | **Quote Detail**    | Full view of a single quote                        | Customer info, line items with pricing breakdown, setup fees, total. Status badge.                                                                 |
+| F7  | **New Quote Form**  | Create a quote with dynamic line items             | Add/remove line items. Auto-calculate unit price, line total, setup fees, grand total. Customer selection.                                         |
+| F8  | **Customers List**  | Table of customers                                 | Name, company, email, phone. Click to view details.                                                                                                |
+| F9  | **Customer Detail** | Single customer view                               | Contact info, linked jobs (with status), linked quotes (with status).                                                                              |
+| F10 | **Screen Room**     | Screen inventory and status                        | Table of screens with mesh count, emulsion type, burn status, linked job. Filter by burn status.                                                   |
+| F11 | **Garment Catalog** | Browse available garment styles                    | List of garments used across jobs. Group by brand. Show SKU, style, color.                                                                         |
 
 ### OUT of Scope (Phase 2/3)
 
-| Feature | Why Deferred |
-|---------|-------------|
-| User authentication / login | Phase 3 — no multi-user in Phase 1 |
-| Real API / database | Phase 3 — Zod schemas inform future backend |
-| Garment supplier integration (SanMar/AlphaBroder) | Phase 3 — requires real API |
-| ~~Invoice generation~~ | **BUILT** in Phase 1 (PRs #48, #50) — full invoicing vertical with payments, credit memos, reminders |
-| Email notifications | Phase 3 — requires backend |
-| File upload (artwork images) | Phase 2 — requires storage backend |
-| Reporting / analytics | Phase 2 — need real data first |
-| ~~Mobile-optimized layout~~ | **BUILT** in Phase 1 (PRs #101, #114, #148, #167, #174, #175) — full responsive mobile with bottom tabs, filter sheets, scroll-to-error |
-| Print labels / packing slips | Phase 2 — need user feedback on shipping flow |
-| Multi-shop / multi-user | Phase 3+ — single operator for now |
+| Feature                                           | Why Deferred                                                                                                                            |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| User authentication / login                       | Phase 3 — no multi-user in Phase 1                                                                                                      |
+| Real API / database                               | Phase 3 — Zod schemas inform future backend                                                                                             |
+| Garment supplier integration (SanMar/AlphaBroder) | Phase 3 — requires real API                                                                                                             |
+| ~~Invoice generation~~                            | **BUILT** in Phase 1 (PRs #48, #50) — full invoicing vertical with payments, credit memos, reminders                                    |
+| Email notifications                               | Phase 3 — requires backend                                                                                                              |
+| File upload (artwork images)                      | Phase 2 — requires storage backend                                                                                                      |
+| Reporting / analytics                             | Phase 2 — need real data first                                                                                                          |
+| ~~Mobile-optimized layout~~                       | **BUILT** in Phase 1 (PRs #101, #114, #148, #167, #174, #175) — full responsive mobile with bottom tabs, filter sheets, scroll-to-error |
+| Print labels / packing slips                      | Phase 2 — need user feedback on shipping flow                                                                                           |
+| Multi-shop / multi-user                           | Phase 3+ — single operator for now                                                                                                      |
 
 ---
 
@@ -121,6 +122,7 @@ Screen Print Pro replaces this with a unified production dashboard that gives in
 See `docs/APP_FLOW.md` for the complete route map and navigation paths.
 
 **Sidebar** (always visible on desktop, bottom tab bar on mobile):
+
 - Dashboard (`/`)
 - Jobs (`/jobs/board`)
 - Quotes (`/quotes`)
@@ -136,18 +138,18 @@ See `docs/APP_FLOW.md` for the complete route map and navigation paths.
 
 All data shapes defined as Zod schemas in `lib/schemas/`. See source files for exact definitions.
 
-| Entity | Schema File | Key Fields |
-|--------|-------------|------------|
-| Job | `lib/schemas/job.ts` | jobNumber, title, customerId, lane, serviceType, priority, dueDate, tasks[], garments[], printLocations[] |
-| Quote | `lib/schemas/quote.ts` | quoteNumber, customerId, lineItems[], setupFees, total, status |
-| Customer | `lib/schemas/customer.ts` | name, company, lifecycle, health, typeTags, favoriteGarments, favoriteColors |
-| Garment | `lib/schemas/garment.ts` | sku, style, brand, color, sizes (record), isEnabled, isFavorite |
-| Screen | `lib/schemas/screen.ts` | meshCount, emulsionType, burnStatus, jobId |
-| Invoice | `lib/schemas/invoice.ts` | invoiceNumber, customerId, lineItems[], status, payments[], balance, dueDate |
-| Credit Memo | `lib/schemas/credit-memo.ts` | invoiceId, reason, lineItems[], total |
-| Board Card | `lib/schemas/board-card.ts` | JobCard, QuoteCard, ScratchNoteCard union types |
-| Price Matrix | `lib/schemas/price-matrix.ts` | templateName, serviceType, tiers[], margins |
-| DTF Pricing | `lib/schemas/dtf-pricing.ts` | sheetTiers[], filmTypes, rushFees |
+| Entity       | Schema File                   | Key Fields                                                                                                |
+| ------------ | ----------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Job          | `lib/schemas/job.ts`          | jobNumber, title, customerId, lane, serviceType, priority, dueDate, tasks[], garments[], printLocations[] |
+| Quote        | `lib/schemas/quote.ts`        | quoteNumber, customerId, lineItems[], setupFees, total, status                                            |
+| Customer     | `lib/schemas/customer.ts`     | name, company, lifecycle, health, typeTags, favoriteGarments, favoriteColors                              |
+| Garment      | `lib/schemas/garment.ts`      | sku, style, brand, color, sizes (record), isEnabled, isFavorite                                           |
+| Screen       | `lib/schemas/screen.ts`       | meshCount, emulsionType, burnStatus, jobId                                                                |
+| Invoice      | `lib/schemas/invoice.ts`      | invoiceNumber, customerId, lineItems[], status, payments[], balance, dueDate                              |
+| Credit Memo  | `lib/schemas/credit-memo.ts`  | invoiceId, reason, lineItems[], total                                                                     |
+| Board Card   | `lib/schemas/board-card.ts`   | JobCard, QuoteCard, ScratchNoteCard union types                                                           |
+| Price Matrix | `lib/schemas/price-matrix.ts` | templateName, serviceType, tiers[], margins                                                               |
+| DTF Pricing  | `lib/schemas/dtf-pricing.ts`  | sheetTiers[], filmTypes, rushFees                                                                         |
 
 **Universal Lanes**: `ready -> in_progress -> review -> blocked -> done` (same for quotes and jobs)
 **Quote Statuses**: `draft -> sent -> accepted -> declined -> revised`

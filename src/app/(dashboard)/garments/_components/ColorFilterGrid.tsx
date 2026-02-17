@@ -1,25 +1,21 @@
-"use client";
+'use client'
 
-import { useMemo, useRef } from "react";
-import { Check } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { cn } from "@shared/lib/cn";
-import { swatchTextStyle } from "@/lib/helpers/swatch";
-import { getColorsMutable } from "@infra/repositories/colors";
-import type { Color } from "@domain/entities/color";
-import { useGridKeyboardNav } from "@shared/hooks/useGridKeyboardNav";
+import { useMemo, useRef } from 'react'
+import { Check } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { cn } from '@shared/lib/cn'
+import { swatchTextStyle } from '@/lib/helpers/swatch'
+import { getColorsMutable } from '@infra/repositories/colors'
+import type { Color } from '@domain/entities/color'
+import { useGridKeyboardNav } from '@shared/hooks/useGridKeyboardNav'
 
-const catalogColors = getColorsMutable();
+const catalogColors = getColorsMutable()
 
 type ColorFilterGridProps = {
-  selectedColorIds: string[];
-  onToggleColor: (colorId: string) => void;
-  favoriteColorIds: string[];
-};
+  selectedColorIds: string[]
+  onToggleColor: (colorId: string) => void
+  favoriteColorIds: string[]
+}
 
 function FilterSwatch({
   color,
@@ -27,10 +23,10 @@ function FilterSwatch({
   onToggle,
   tabIndex,
 }: {
-  color: Color;
-  isSelected: boolean;
-  onToggle: () => void;
-  tabIndex: number;
+  color: Color
+  isSelected: boolean
+  onToggle: () => void
+  tabIndex: number
 }) {
   return (
     <Tooltip>
@@ -43,26 +39,22 @@ function FilterSwatch({
           tabIndex={tabIndex}
           onClick={onToggle}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onToggle();
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              onToggle()
             }
           }}
           className={cn(
-            "relative flex h-8 w-8 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0 flex-shrink-0 items-center justify-center rounded-sm transition-all",
-            "cursor-pointer hover:scale-105 hover:ring-1 hover:ring-foreground/30",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            "motion-reduce:transition-none",
-            isSelected && "ring-2 ring-action scale-110",
+            'relative flex h-8 w-8 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0 flex-shrink-0 items-center justify-center rounded-sm transition-all',
+            'cursor-pointer hover:scale-105 hover:ring-1 hover:ring-foreground/30',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            'motion-reduce:transition-none',
+            isSelected && 'ring-2 ring-action scale-110'
           )}
           style={{ backgroundColor: color.hex }}
         >
           {isSelected ? (
-            <Check
-              size={14}
-              style={{ color: color.swatchTextColor }}
-              aria-hidden="true"
-            />
+            <Check size={14} style={{ color: color.swatchTextColor }} aria-hidden="true" />
           ) : (
             <span
               className="pointer-events-none select-none text-center leading-tight"
@@ -77,7 +69,7 @@ function FilterSwatch({
         {color.name}
       </TooltipContent>
     </Tooltip>
-  );
+  )
 }
 
 export function ColorFilterGrid({
@@ -85,31 +77,28 @@ export function ColorFilterGrid({
   onToggleColor,
   favoriteColorIds,
 }: ColorFilterGridProps) {
-  const gridRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null)
 
-  const selectedSet = useMemo(
-    () => new Set(selectedColorIds),
-    [selectedColorIds],
-  );
+  const selectedSet = useMemo(() => new Set(selectedColorIds), [selectedColorIds])
 
   // Favorites first, then remaining by catalog order
   const sortedColors = useMemo(() => {
-    const favoriteSet = new Set(favoriteColorIds);
-    const favorites: Color[] = [];
-    const rest: Color[] = [];
+    const favoriteSet = new Set(favoriteColorIds)
+    const favorites: Color[] = []
+    const rest: Color[] = []
 
     for (const color of catalogColors) {
       if (favoriteSet.has(color.id)) {
-        favorites.push(color);
+        favorites.push(color)
       } else {
-        rest.push(color);
+        rest.push(color)
       }
     }
 
-    return [...favorites, ...rest];
-  }, [favoriteColorIds]);
+    return [...favorites, ...rest]
+  }, [favoriteColorIds])
 
-  const handleKeyDown = useGridKeyboardNav(gridRef, '[role="checkbox"]', 34);
+  const handleKeyDown = useGridKeyboardNav(gridRef, '[role="checkbox"]', 34)
 
   return (
     <div
@@ -129,5 +118,5 @@ export function ColorFilterGrid({
         />
       ))}
     </div>
-  );
+  )
 }

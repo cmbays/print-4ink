@@ -1,6 +1,6 @@
 ---
-title: "PM System — History"
-subtitle: "Build history and changelog for the PM System"
+title: 'PM System — History'
+subtitle: 'Build history and changelog for the PM System'
 tool: pm-system
 docType: history
 lastUpdated: 2026-02-16
@@ -30,22 +30,26 @@ Established the PM philosophy and initial taxonomy:
 Full infrastructure build across 10 tasks in 3 waves:
 
 **Wave 1 — Foundation (API operations):**
+
 - Label cleanup: folded 8 ad-hoc labels, removed 4 unused defaults, clean ~37 labels
 - Project board: user-owned Projects v2 (#4) with 8 custom fields and 4 views
 - D-Day milestone: created with Feb 21 due date, 3 issues assigned
 - Sub-issue migration: converted checkbox task-lists to native sub-issues via GraphQL
 
 **Wave 2 — Infrastructure (PRs):**
+
 - Issue templates: 4 YAML forms (feature, bug, research, tracking) + PR template + config
 - Auto-add Action: issues/PRs auto-added to project board
 - PR auto-labeler: `vertical/*` labels applied by file path
 - `work progress`: CLI command generating PROGRESS.md from GitHub API, PROGRESS.md migrated to gitignored artifact
 
 **Wave 3 — Convergence (serial):**
+
 - Backlog grooming: 98 issues groomed, all labeled, 4 closed, `priority/next` triaged 36→16, all issues on project board
 - PM doc: `docs/PM.md` — 10-section canonical PM reference, added to CLAUDE.md
 
 **Key additions:**
+
 - `pm-system` slug added to `config/tools.json`
 - `vertical/dtf` label created
 - `enhancement` and `type/ux-review` labels deleted

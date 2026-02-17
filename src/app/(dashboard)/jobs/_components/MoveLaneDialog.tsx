@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { ArrowRightLeft } from "lucide-react";
+import { useState } from 'react'
+import { ArrowRightLeft } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -9,34 +9,28 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import { Textarea } from "@shared/ui/primitives/textarea";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import { Textarea } from '@shared/ui/primitives/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { LANE_LABELS } from "@domain/constants";
-import type { Lane } from "@domain/entities/job";
+} from '@shared/ui/primitives/select'
+import { LANE_LABELS } from '@domain/constants'
+import type { Lane } from '@domain/entities/job'
 
-const LANE_OPTIONS: Lane[] = [
-  "ready",
-  "in_progress",
-  "review",
-  "blocked",
-  "done",
-];
+const LANE_OPTIONS: Lane[] = ['ready', 'in_progress', 'review', 'blocked', 'done']
 
-interface MoveLaneDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  cardLabel: string;
-  currentLane: Lane;
-  onConfirm: (targetLane: Lane, blockReason?: string) => void;
-  onCancel: () => void;
+type MoveLaneDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  cardLabel: string
+  currentLane: Lane
+  onConfirm: (targetLane: Lane, blockReason?: string) => void
+  onCancel: () => void
 }
 
 export function MoveLaneDialog({
@@ -47,36 +41,33 @@ export function MoveLaneDialog({
   onConfirm,
   onCancel,
 }: MoveLaneDialogProps) {
-  const [targetLane, setTargetLane] = useState<Lane | "">("");
-  const [blockReason, setBlockReason] = useState("");
+  const [targetLane, setTargetLane] = useState<Lane | ''>('')
+  const [blockReason, setBlockReason] = useState('')
 
-  const isBlocked = targetLane === "blocked";
-  const canConfirm = targetLane && targetLane !== currentLane && (!isBlocked || blockReason.trim());
+  const isBlocked = targetLane === 'blocked'
+  const canConfirm = targetLane && targetLane !== currentLane && (!isBlocked || blockReason.trim())
 
   function handleConfirm() {
-    if (!targetLane || targetLane === currentLane) return;
-    onConfirm(
-      targetLane,
-      isBlocked ? blockReason.trim() : undefined,
-    );
-    resetState();
+    if (!targetLane || targetLane === currentLane) return
+    onConfirm(targetLane, isBlocked ? blockReason.trim() : undefined)
+    resetState()
   }
 
   function handleCancel() {
-    resetState();
-    onCancel();
+    resetState()
+    onCancel()
   }
 
   function resetState() {
-    setTargetLane("");
-    setBlockReason("");
+    setTargetLane('')
+    setBlockReason('')
   }
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      resetState();
+      resetState()
     }
-    onOpenChange(nextOpen);
+    onOpenChange(nextOpen)
   }
 
   return (
@@ -88,17 +79,13 @@ export function MoveLaneDialog({
             Move Lane
           </DialogTitle>
           <DialogDescription>
-            Move{" "}
-            <span className="font-medium text-foreground">{cardLabel}</span>{" "}
-            to a different lane.
+            Move <span className="font-medium text-foreground">{cardLabel}</span> to a different
+            lane.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3">
-          <Select
-            value={targetLane}
-            onValueChange={(v) => setTargetLane(v as Lane)}
-          >
+          <Select value={targetLane} onValueChange={(v) => setTargetLane(v as Lane)}>
             <SelectTrigger>
               <SelectValue placeholder="Select target lane" />
             </SelectTrigger>
@@ -132,5 +119,5 @@ export function MoveLaneDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

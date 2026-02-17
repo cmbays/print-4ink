@@ -40,6 +40,7 @@ Survives repo transfers, supports Projects v2 fully. Requires PAT with `project`
 **Decision**: Auto-generate (gitignored) + Project board for visual.
 
 PROGRESS.md becomes a **compiled artifact**, not a source file:
+
 - Gitignored — not tracked in version control
 - Generated on-the-fly by `work progress` command at session start
 - Queries GitHub API: milestones, priorities, blocked items, recent PRs
@@ -48,6 +49,7 @@ PROGRESS.md becomes a **compiled artifact**, not a source file:
 - KB sessions handle historical documentation (not PROGRESS.md's job)
 
 Project board provides the visual layer for the human:
+
 - Board, Table, Roadmap views (set up once, self-maintaining)
 - Auto-add Action keeps board complete
 - GraphQL API available for targeted agent queries when needed
@@ -59,6 +61,7 @@ Project board provides the visual layer for the human:
 **Decision**: Adopt native types, replace `type/*` labels (spike CLI support first).
 
 Clean separation of concerns:
+
 - **Issue types** (native) → what kind of work (Bug, Feature, Research, Tech Debt, Tooling, Refactor, Feedback)
 - **Labels** → categorical dimensions (`priority/*`, `product/*`, `tool/*`, `phase/*`, `source/*`)
 - **Project fields** → runtime/contextual data (Pipeline ID, Pipeline Stage, Effort, Status)
@@ -67,6 +70,7 @@ Clean separation of concerns:
 No dual metadata — delete `type/*` labels after enabling native types. One mechanism per dimension.
 
 **Prerequisite**: Quick spike to verify CLI support on personal repos:
+
 ```bash
 gh issue create --type "Bug" --title "test" --body "test"
 gh issue type list
@@ -84,6 +88,7 @@ Hard triage `priority/next` down to ~8-10 truly-next items. Milestones provide g
 **Decision**: Milestones represent Shape Up cycles. Cooldown concludes a milestone. Enables future releases.
 
 **Cycle flow**:
+
 ```
 Milestone opens → Pipelines run → All work done →
 Cooldown (smoke test → polish → push to prod → close milestone → tag release) →
@@ -92,6 +97,7 @@ Next milestone begins
 ```
 
 **Three human touchpoints per cycle**:
+
 1. **Bet** (during Cooldown): Strategy, priority setting, issue selection
 2. **Interview** (during Pipeline): Domain decisions, requirements validation
 3. **Smoke Test** (during Cooldown): Human QA on preview deployment
@@ -109,6 +115,7 @@ Issues can have multiple `product/*` or `tool/*` labels. Project SINGLE_SELECT f
 **Decision**: Cooldown includes Bet phase. Bet involves human issue selection + agent-assisted grooming.
 
 **Bet phase workflow**:
+
 1. Human selects issues from backlog ("let's do X, Y, Z next")
 2. Agent assists grooming: adds labels, links dependencies, fills "Files to Read", drafts acceptance criteria
 3. Agent asks human async questions where context is missing (posted as `@cmbays` comments on issues)
@@ -122,6 +129,7 @@ Issues can have multiple `product/*` or `tool/*` labels. Project SINGLE_SELECT f
 **Decision**: Adopt epic pattern. Parent issue = goal/pipeline. Sub-issues = pipeline stages + build tasks.
 
 **Structure**:
+
 ```
 Milestone: D-Day
 ├── Epic #144: DTF Pricing (parent issue)
@@ -139,10 +147,12 @@ Milestone: D-Day
 ```
 
 **Progress measurement**:
+
 - Milestone progress = closed epics / total epics
 - Epic progress = closed sub-issues / total sub-issues
 
 **Issue creation is progressive**, not front-loaded:
+
 - Epic creation → only Research issue exists
 - Each stage completion → creates next stage issue
 - Plan completion → creates all Build + Review + Wrap-up issues with wave dependencies
@@ -155,13 +165,14 @@ Milestone: D-Day
 
 **Three relationship types** (clear separation of concerns):
 
-| Relationship | GitHub Mechanism | Purpose |
-|-------------|-----------------|---------|
-| **Hierarchy** | Sub-issues | Decomposition: "this is part of that" |
-| **Dependency** | Blocked-by / Blocking | Sequencing: "this must finish before that starts" |
-| **Context** | Issue mentions (`#123`) | Narrative: "this relates to that" |
+| Relationship   | GitHub Mechanism        | Purpose                                           |
+| -------------- | ----------------------- | ------------------------------------------------- |
+| **Hierarchy**  | Sub-issues              | Decomposition: "this is part of that"             |
+| **Dependency** | Blocked-by / Blocking   | Sequencing: "this must finish before that starts" |
+| **Context**    | Issue mentions (`#123`) | Narrative: "this relates to that"                 |
 
 **Where to use formal dependencies**:
+
 - Between pipeline stages (research → interview → shape → ...)
 - Between build waves (wave 1 → wave 2 → wave 3)
 - Between epics (epic A → epic B)
@@ -173,13 +184,13 @@ Milestone: D-Day
 
 **Decision**: Three layers of defense, built incrementally.
 
-| Layer | Description | Build when |
-|-------|------------|-----------|
-| Agent discovery protocol | Convention: agents create shared issues + `@cmbays` flag when crossing epics | PM doc now |
-| Implementation plan conflict check | Before build, check for overlapping file sets with other merged plans | Near-term (post D-Day) |
-| Pre-flight overlap check | At epic creation, cross-reference "Files to Read" across active epics | Medium-term |
-| Runtime file-touch tracking | Periodic scan of modified files across active builds | Medium-term |
-| PM monitoring agent | Cron-style conflict detection across all active work | Long-term |
+| Layer                              | Description                                                                  | Build when             |
+| ---------------------------------- | ---------------------------------------------------------------------------- | ---------------------- |
+| Agent discovery protocol           | Convention: agents create shared issues + `@cmbays` flag when crossing epics | PM doc now             |
+| Implementation plan conflict check | Before build, check for overlapping file sets with other merged plans        | Near-term (post D-Day) |
+| Pre-flight overlap check           | At epic creation, cross-reference "Files to Read" across active epics        | Medium-term            |
+| Runtime file-touch tracking        | Periodic scan of modified files across active builds                         | Medium-term            |
+| PM monitoring agent                | Cron-style conflict detection across all active work                         | Long-term              |
 
 ### 13. Agent Comment Routing
 
@@ -194,11 +205,13 @@ Milestone: D-Day
 **Decision**: Tier 1 Actions before D-Day. Prioritized backlog for Tiers 2-3.
 
 **Before D-Day**:
+
 - Auto-add to project (every new issue/PR → board)
 - Auto-label PRs (by file path)
 - Auto-label issues from templates (built into YAML forms)
 
 **Prioritized backlog**:
+
 1. Sub-issue cascade check (when sub-issue closes → update parent status)
 2. PROGRESS.md auto-generation (on push to main)
 3. Stale issue management (weekly schedule)
@@ -245,25 +258,16 @@ Matches current label taxonomy. Update templates when #202 renames to `product/*
 ### After D-Day (PM Foundation milestone)
 
 **Near-term**:
+
 1. Sub-issue cascade check (Action)
 2. PROGRESS.md auto-generation (Action on push to main)
 3. Implementation plan conflict check (`work plan check-conflicts`)
 4. Agent discovery protocol tooling (wrapper for `work deps`)
 5. Epic management commands (`work epic create`, `work stage complete`)
 
-**Medium-term**:
-6. Stale issue management (Action)
-7. Milestone progress notification (Action)
-8. Pipeline stage advance (Action)
-9. Pre-flight overlap check
-10. Runtime file-touch tracking
+**Medium-term**: 6. Stale issue management (Action) 7. Milestone progress notification (Action) 8. Pipeline stage advance (Action) 9. Pre-flight overlap check 10. Runtime file-touch tracking
 
-**Long-term**:
-11. PM monitoring agent
-12. Cross-epic agent resolution protocol
-13. Dependency graph visualization
-14. Async question system for bet phase
-15. Preview deployment staging model
+**Long-term**: 11. PM monitoring agent 12. Cross-epic agent resolution protocol 13. Dependency graph visualization 14. Async question system for bet phase 15. Preview deployment staging model
 
 ---
 

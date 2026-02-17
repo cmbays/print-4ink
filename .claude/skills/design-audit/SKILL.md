@@ -23,6 +23,7 @@ You must understand the current system completely before proposing changes. You 
 ### 2. Audit Each Screen
 
 For each screen being audited, read:
+
 - The page file: `app/(dashboard)/<route>/page.tsx`
 - All components imported by the page
 - The APP_FLOW entry for that route
@@ -34,6 +35,7 @@ For each dimension, record: **Pass**, **Warn** (minor), or **Fail** (must fix) w
 ### 3. Apply the Jobs Filter
 
 For every element on every screen:
+
 - "Can this be removed without losing meaning?" — if yes, remove it
 - "Would a user need to be told this exists?" — if yes, redesign until obvious
 - "Does this feel inevitable?" — if no, it's not done
@@ -50,27 +52,33 @@ Organize findings into a phased plan. Do NOT implement changes. Present the plan
 **Screens audited**: [list with routes]
 
 ## Overall Assessment
+
 [1-2 sentences on the current state of the design]
 
 ## Phase 1 — Critical
+
 Issues that actively hurt the experience (hierarchy, usability, consistency).
 
 - [Screen/Component]: [What's wrong] → [What it should be] → [Why this matters]
 
 ## Phase 2 — Refinement
+
 Spacing, typography, color, alignment adjustments that elevate the experience.
 
 - [Screen/Component]: [What's wrong] → [What it should be] → [Why this matters]
 
 ## Phase 3 — Polish
+
 Micro-interactions, transitions, empty states, subtle details that make it feel premium.
 
 - [Screen/Component]: [What's wrong] → [What it should be] → [Why this matters]
 
 ## Design System Updates Required
+
 - [Any new tokens, colors, spacing values needed — must be approved before implementation]
 
 ## Implementation Notes for Build Agent
+
 - [Exact file, exact component, exact property, exact old value → exact new value]
 - No ambiguity. "Make the cards feel softer" is NOT an instruction.
 - "CardComponent border-radius: 8px → 12px" IS an instruction.

@@ -27,11 +27,11 @@ If a required shared component doesn't exist yet, build it first in `components/
 
 Choose the matching template from `.claude/skills/screen-builder/templates/`:
 
-| Screen Type | Template | Examples |
-|------------|----------|----------|
+| Screen Type     | Template                | Examples                                                      |
+| --------------- | ----------------------- | ------------------------------------------------------------- |
 | List/table page | `data-table-screen.tsx` | Jobs List, Quotes List, Customers List, Screen Room, Garments |
-| Detail page | `detail-screen.tsx` | Job Detail, Quote Detail, Customer Detail |
-| Form page | `form-screen.tsx` | New Quote |
+| Detail page     | `detail-screen.tsx`     | Job Detail, Quote Detail, Customer Detail                     |
+| Form page       | `form-screen.tsx`       | New Quote                                                     |
 
 Read the template. Use it as structural guidance, not copy-paste. Adapt to the specific screen's needs from APP_FLOW.
 
@@ -42,6 +42,7 @@ Follow these rules strictly:
 **File placement**: `app/(dashboard)/<route>/page.tsx` (and `[id]/page.tsx` for details)
 
 **Component rules**:
+
 - Server component by default. Only add `"use client"` when hooks/events/browser APIs are needed.
 - Import from `@/components/ui/` for shadcn primitives
 - Import from `@/components/features/` for shared domain components
@@ -51,6 +52,7 @@ Follow these rules strictly:
 - Use `cn()` from `@shared/lib/cn` for conditional classes — never concatenate className strings
 
 **Design system** (reference `.claude/skills/screen-builder/reference/design-tokens-quick-ref.md`):
+
 - Page header: `text-2xl font-semibold tracking-tight` + subtitle in `text-sm text-muted-foreground`
 - Cards: shadcn `<Card>` with `<CardHeader>` + `<CardContent>`
 - Tables: Use shared `DataTable` component or shadcn `<Table>` directly
@@ -62,16 +64,19 @@ Follow these rules strictly:
 - Spacing: Tailwind utilities only, no hardcoded px. Use `space-y-6` for page sections, `gap-4` for grids.
 
 **Navigation**:
+
 - Wire breadcrumbs per APP_FLOW breadcrumb trail
 - Wire cross-links per APP_FLOW cross-links section (e.g., customer name links to `/customers/[id]`)
 - Row clicks in tables navigate to detail pages via `Link` or `useRouter`
 
 **States** (check `.claude/skills/screen-builder/checklists/quality-checklist.md`):
+
 - Empty state: icon + message + optional CTA (per APP_FLOW State Definitions)
 - Error state: "not found" message + link back to list (for detail pages with invalid IDs)
 - Loading: Not needed in Phase 1 (mock data is synchronous)
 
 **URL state** (for list pages):
+
 - Search query → `?q=` URL param
 - Status filter → `?status=` URL param
 - Use `useSearchParams()` (requires `"use client"`)

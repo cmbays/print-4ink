@@ -26,6 +26,7 @@ Documents cascade: PRD defines features. APP_FLOW defines how users experience t
 ### Step 1: Identify Sync Scope
 
 Determine what to check:
+
 - **After a step**: Docs related to what was built (APP_FLOW, IMPLEMENTATION_PLAN, PROGRESS.md)
 - **Full audit**: All 6 canonical docs against current codebase
 - **Targeted**: Specific doc flagged as potentially stale
@@ -33,6 +34,7 @@ Determine what to check:
 ### Step 2: Read & Compare
 
 For each doc being checked:
+
 1. Read the doc itself
 2. Read the relevant code it describes
 3. Read other docs that cross-reference it
@@ -43,6 +45,7 @@ For each doc being checked:
 Use `.claude/skills/doc-sync/checklists/drift-detection.md` as the checklist.
 
 Check each relevant section:
+
 - **APP_FLOW.md**: Routes match `app/(dashboard)/` structure, sections match components, cross-links match `<Link>` elements
 - **IMPLEMENTATION_PLAN.md**: Completed steps marked, descriptions match reality, dependencies accurate
 - **TECH_STACK.md**: Dependencies match `package.json`, versions match, forbidden list intact
@@ -54,6 +57,7 @@ Check each relevant section:
 ### Step 4: Compile Drift Report
 
 Document all findings:
+
 - What the doc says vs what reality shows
 - Exact location of each discrepancy
 - Proposed fix for each
@@ -61,6 +65,7 @@ Document all findings:
 ### Step 5: Apply Updates (After Approval)
 
 For each approved change:
+
 1. Make the edit
 2. Update "Last Verified" date
 3. Log the change
@@ -71,32 +76,39 @@ For each approved change:
 # Doc Sync Report — [Date]
 
 ## Scope
+
 [What was checked and why]
 
 ## Docs Checked
-| Doc | Last Verified | Status |
-|-----|--------------|--------|
-| APP_FLOW.md | YYYY-MM-DD | In sync / Drift detected |
-| ... | ... | ... |
+
+| Doc         | Last Verified | Status                   |
+| ----------- | ------------- | ------------------------ |
+| APP_FLOW.md | YYYY-MM-DD    | In sync / Drift detected |
+| ...         | ...           | ...                      |
 
 ## Drift Detected
 
 ### [Doc Name]
+
 - **Section**: [where]
 - **Doc says**: [current text]
 - **Reality**: [what code shows]
 - **Fix**: [exact edit]
 
 ## No Drift
+
 - [Docs that are accurate]
 
 ## Cross-Reference Issues
+
 - [Contradictions between docs]
 
 ## Updates Applied
+
 - [List of changes made, with before/after]
 
 ## Next Sync
+
 [When to run next — suggest after which step or milestone]
 ```
 

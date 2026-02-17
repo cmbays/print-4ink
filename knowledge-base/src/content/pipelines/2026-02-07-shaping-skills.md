@@ -1,5 +1,5 @@
 ---
-title: "Shaping Skills Evaluation"
+title: 'Shaping Skills Evaluation'
 subtitle: "Evaluated Ryan Singer's shaping-skills methodology and extracted three high-value patterns for Screen Print Pro's build process."
 date: 2026-02-07
 phase: 1
@@ -9,8 +9,8 @@ products: []
 tools: [skills-framework]
 stage: research
 tags: [decision, research]
-sessionId: "b8b97fce-ca40-4f39-972f-420469febfc5"
-branch: "main"
+sessionId: 'b8b97fce-ca40-4f39-972f-420469febfc5'
+branch: 'main'
 status: complete
 ---
 
@@ -39,12 +39,12 @@ Ryan Singer (author of Basecamp's "Shape Up") published a [shaping-skills repo](
 
 Screen Print Pro is past the 0-to-1 phase where shaping provides maximum value. The project already has equivalent coverage:
 
-| Shaping Provides | We Already Have |
-|------------------|-----------------|
-| Frame (Problem/Outcome) | `docs/PRD.md` |
-| Requirements (R0, R1...) | PRD features + APP_FLOW specs |
+| Shaping Provides          | We Already Have                      |
+| ------------------------- | ------------------------------------ |
+| Frame (Problem/Outcome)   | `docs/PRD.md`                        |
+| Requirements (R0, R1...)  | PRD features + APP_FLOW specs        |
 | Shape selection (A, B, C) | Single solution -- tech stack locked |
-| Vertical slicing | `IMPLEMENTATION_PLAN.md` |
+| Vertical slicing          | `IMPLEMENTATION_PLAN.md`             |
 
 Installing the full skills would add ~2400 lines of prompt overhead to every session and create conflicting sources of truth.
 
@@ -52,15 +52,15 @@ Installing the full skills would add ~2400 lines of prompt overhead to every ses
 
 Only 2 of the 10 remaining steps are complex enough to warrant the ritual:
 
-| Step | Screen | Complexity | Pre-Build? |
-|------|--------|------------|------------|
-| 1 | Shared Components | Low | No |
-| 2 | Jobs List | Low | No |
-| 3 | Job Detail | Medium | No |
-| 4 | Kanban Board | High | Yes |
-| 5 | Quotes List + Detail | Low | No |
-| 6 | New Quote Form | High | Yes |
-| 7-10 | Customers, Screens, Garments, Polish | Low-Med | No |
+| Step | Screen                               | Complexity | Pre-Build? |
+| ---- | ------------------------------------ | ---------- | ---------- |
+| 1    | Shared Components                    | Low        | No         |
+| 2    | Jobs List                            | Low        | No         |
+| 3    | Job Detail                           | Medium     | No         |
+| 4    | Kanban Board                         | High       | Yes        |
+| 5    | Quotes List + Detail                 | Low        | No         |
+| 6    | New Quote Form                       | High       | Yes        |
+| 7-10 | Customers, Screens, Garments, Polish | Low-Med    | No         |
 
 ## Phase 1 Workflow
 
@@ -83,9 +83,9 @@ At that point, revisit importing from [rjs/shaping-skills](https://github.com/rj
 
 ## Artifacts
 
-| File | Change |
-|------|--------|
-| `CLAUDE.md` | Added "Pre-Build Ritual (Complex Steps Only)" section |
-| `docs/IMPLEMENTATION_PLAN.md` | Added pre-build tasks to Steps 4 and 6 |
-| `docs/spikes/` | Created directory for spike investigation documents |
-| `progress.txt` | Logged methodology evaluation decision |
+| File                          | Change                                                |
+| ----------------------------- | ----------------------------------------------------- |
+| `CLAUDE.md`                   | Added "Pre-Build Ritual (Complex Steps Only)" section |
+| `docs/IMPLEMENTATION_PLAN.md` | Added pre-build tasks to Steps 4 and 6                |
+| `docs/spikes/`                | Created directory for spike investigation documents   |
+| `progress.txt`                | Logged methodology evaluation decision                |

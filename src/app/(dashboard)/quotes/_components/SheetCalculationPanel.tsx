@@ -1,40 +1,38 @@
-"use client";
+'use client'
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, Calculator, Layers, Combine } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import { Badge } from "@shared/ui/primitives/badge";
-import { WithTooltip } from "@shared/ui/primitives/with-tooltip";
-import { shelfPack } from "@domain/services/dtf.service";
-import { optimizeCost } from "@domain/rules/dtf.rules";
-import { isValidDtfLineItem } from "@domain/rules/dtf.rules";
-import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from "@domain/rules/dtf.rules";
-import { formatCurrency } from "@domain/lib/money";
-import type { DtfLineItem } from "@domain/entities/dtf-line-item";
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { AlertCircle, Calculator, Layers, Combine } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { Badge } from '@shared/ui/primitives/badge'
+import { WithTooltip } from '@shared/ui/primitives/with-tooltip'
+import { shelfPack } from '@domain/services/dtf.service'
+import { optimizeCost } from '@domain/rules/dtf.rules'
+import { isValidDtfLineItem } from '@domain/rules/dtf.rules'
+import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from '@domain/rules/dtf.rules'
+import { formatCurrency } from '@domain/lib/money'
+import type { DtfLineItem } from '@domain/entities/dtf-line-item'
 import type {
   OptimizedSheet,
   SheetCalculation,
   CanvasLayout,
-} from "@domain/entities/dtf-sheet-calculation";
-import type { DTFSheetTier } from "@domain/entities/dtf-pricing";
+} from '@domain/entities/dtf-sheet-calculation'
+import type { DTFSheetTier } from '@domain/entities/dtf-pricing'
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface SheetCalculationPanelProps {
-  lineItems: DtfLineItem[];
-  sheetCalculation: SheetCalculation | null;
-  setSheetCalculation: React.Dispatch<
-    React.SetStateAction<SheetCalculation | null>
-  >;
-  splitMode: "combine" | "split";
-  setSplitMode: React.Dispatch<React.SetStateAction<"combine" | "split">>;
-  setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>;
-  setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
-  tiers: DTFSheetTier[];
+type SheetCalculationPanelProps = {
+  lineItems: DtfLineItem[]
+  sheetCalculation: SheetCalculation | null
+  setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>
+  splitMode: 'combine' | 'split'
+  setSplitMode: React.Dispatch<React.SetStateAction<'combine' | 'split'>>
+  setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>
+  setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>
+  tiers: DTFSheetTier[]
 }
 
 // ---------------------------------------------------------------------------
@@ -42,25 +40,25 @@ interface SheetCalculationPanelProps {
 // ---------------------------------------------------------------------------
 
 function getUtilizationColor(utilization: number): string {
-  if (utilization > 70) return "text-success";
-  if (utilization >= 40) return "text-warning";
-  return "text-error";
+  if (utilization > 70) return 'text-success'
+  if (utilization >= 40) return 'text-warning'
+  return 'text-error'
 }
 
 function getUtilizationBg(utilization: number): string {
-  if (utilization > 70) return "bg-success/10 border-success/20";
-  if (utilization >= 40) return "bg-warning/10 border-warning/20";
-  return "bg-error/10 border-error/20";
+  if (utilization > 70) return 'bg-success/10 border-success/20'
+  if (utilization >= 40) return 'bg-warning/10 border-warning/20'
+  return 'bg-error/10 border-error/20'
 }
 
 function formatSheetDimensions(tier: DTFSheetTier): string {
-  return `${tier.width}" x ${tier.length}"`;
+  return `${tier.width}" x ${tier.length}"`
 }
 
 function getUtilizationTooltip(utilization: number): string {
-  if (utilization > 70) return "Good sheet utilization";
-  if (utilization >= 40) return "Moderate utilization — consider adding designs";
-  return "Low utilization — add more designs to save cost";
+  if (utilization > 70) return 'Good sheet utilization'
+  if (utilization >= 40) return 'Moderate utilization — consider adding designs'
+  return 'Low utilization — add more designs to save cost'
 }
 
 // ---------------------------------------------------------------------------
@@ -77,68 +75,62 @@ export function SheetCalculationPanel({
   setActiveSheetIndex,
   tiers,
 }: SheetCalculationPanelProps) {
-  const prevSplitModeRef = useRef(splitMode);
-  const [calcError, setCalcError] = useState<string | null>(null);
-  const canCalculate = lineItems.some(isValidDtfLineItem);
+  const prevSplitModeRef = useRef(splitMode)
+  const [calcError, setCalcError] = useState<string | null>(null)
+  const canCalculate = lineItems.some(isValidDtfLineItem)
 
   // N47 — calculateSheetLayout
   const calculateSheetLayout = useCallback(() => {
-    setCalcError(null);
+    setCalcError(null)
 
-    const designs = lineItems
-      .filter(isValidDtfLineItem)
-      .map((item) => ({
-        id: item.id,
-        width: item.width,
-        height: item.height,
-        quantity: item.quantity,
-        label: item.artworkName,
-      }));
+    const designs = lineItems.filter(isValidDtfLineItem).map((item) => ({
+      id: item.id,
+      width: item.width,
+      height: item.height,
+      quantity: item.quantity,
+      label: item.artworkName,
+    }))
 
-    if (designs.length === 0) return;
+    if (designs.length === 0) return
 
     try {
-      const packedSheets = shelfPack(designs, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN);
-      const result = optimizeCost(packedSheets, tiers, splitMode);
+      const packedSheets = shelfPack(designs, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN)
+      const result = optimizeCost(packedSheets, tiers, splitMode)
 
-      setSheetCalculation(result);
+      setSheetCalculation(result)
 
       const layouts: CanvasLayout[] = result.sheets.map((sheet) => ({
         sheetWidth: DTF_SHEET_WIDTH,
         sheetHeight: sheet.tier.length,
         designs: sheet.designs,
         margins: DTF_DEFAULT_MARGIN,
-      }));
-      setCanvasLayout(layouts);
-      setActiveSheetIndex(0);
+      }))
+      setCanvasLayout(layouts)
+      setActiveSheetIndex(0)
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Sheet calculation failed unexpectedly";
-      setCalcError(message);
-      setSheetCalculation(null);
-      setCanvasLayout(null);
-      setActiveSheetIndex(0);
+        error instanceof Error ? error.message : 'Sheet calculation failed unexpectedly'
+      setCalcError(message)
+      setSheetCalculation(null)
+      setCanvasLayout(null)
+      setActiveSheetIndex(0)
     }
-  }, [lineItems, splitMode, tiers, setSheetCalculation, setCanvasLayout, setActiveSheetIndex]);
+  }, [lineItems, splitMode, tiers, setSheetCalculation, setCanvasLayout, setActiveSheetIndex])
 
   // N50 — recalculateOnChange: when splitMode toggles AND calculation exists, re-run
   useEffect(() => {
     if (prevSplitModeRef.current !== splitMode && sheetCalculation !== null) {
-      calculateSheetLayout();
+      calculateSheetLayout()
     }
-    prevSplitModeRef.current = splitMode;
+    prevSplitModeRef.current = splitMode
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run on splitMode change
-  }, [splitMode]);
+  }, [splitMode])
 
   return (
     <div className="space-y-3">
       {/* Header + controls */}
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-medium text-foreground">
-          Sheet Calculation
-        </h3>
+        <h3 className="text-sm font-medium text-foreground">Sheet Calculation</h3>
 
         {/* U83 — Split/Combine toggle */}
         <div
@@ -149,14 +141,14 @@ export function SheetCalculationPanel({
           <button
             type="button"
             role="radio"
-            aria-checked={splitMode === "combine"}
-            onClick={() => setSplitMode("combine")}
+            aria-checked={splitMode === 'combine'}
+            onClick={() => setSplitMode('combine')}
             className={cn(
-              "flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-              splitMode === "combine"
-                ? "bg-elevated text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+              'flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+              splitMode === 'combine'
+                ? 'bg-elevated text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <Combine size={16} />
@@ -165,14 +157,14 @@ export function SheetCalculationPanel({
           <button
             type="button"
             role="radio"
-            aria-checked={splitMode === "split"}
-            onClick={() => setSplitMode("split")}
+            aria-checked={splitMode === 'split'}
+            onClick={() => setSplitMode('split')}
             className={cn(
-              "flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-              splitMode === "split"
-                ? "bg-elevated text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+              'flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+              splitMode === 'split'
+                ? 'bg-elevated text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <Layers size={16} />
@@ -189,7 +181,7 @@ export function SheetCalculationPanel({
         className="w-full bg-action text-primary-foreground font-medium shadow-brutal shadow-action/30 hover:shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
       >
         <Calculator size={16} className="mr-2" />
-        {sheetCalculation ? "Recalculate Layout" : "Calculate Layout"}
+        {sheetCalculation ? 'Recalculate Layout' : 'Calculate Layout'}
       </Button>
 
       {/* Error state */}
@@ -211,13 +203,13 @@ export function SheetCalculationPanel({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
+            transition={{ type: 'spring', duration: 0.35, bounce: 0.1 }}
             className="space-y-3"
           >
             {/* U85 + U86 — Summary row */}
             <div className="flex items-center justify-between rounded-lg border border-border bg-elevated px-4 py-3">
               <span className="text-sm font-medium text-foreground">
-                {sheetCalculation.totalSheets} sheet{sheetCalculation.totalSheets !== 1 ? "s" : ""}
+                {sheetCalculation.totalSheets} sheet{sheetCalculation.totalSheets !== 1 ? 's' : ''}
               </span>
               <span className="text-lg font-semibold text-foreground">
                 {formatCurrency(sheetCalculation.totalCost)}
@@ -226,15 +218,9 @@ export function SheetCalculationPanel({
 
             {/* U84 — Sheet result cards */}
             <div className="space-y-2">
-              {sheetCalculation.sheets.map(
-                (sheet: OptimizedSheet, index: number) => (
-                  <SheetResultCard
-                    key={`sheet-${index}`}
-                    sheet={sheet}
-                    index={index}
-                  />
-                )
-              )}
+              {sheetCalculation.sheets.map((sheet: OptimizedSheet, index: number) => (
+                <SheetResultCard key={`sheet-${index}`} sheet={sheet} index={index} />
+              ))}
             </div>
           </motion.div>
         )}
@@ -249,32 +235,22 @@ export function SheetCalculationPanel({
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ---------------------------------------------------------------------------
 // Sheet Result Card (U84 + U87)
 // ---------------------------------------------------------------------------
 
-function SheetResultCard({
-  sheet,
-  index,
-}: {
-  sheet: OptimizedSheet;
-  index: number;
-}) {
+function SheetResultCard({ sheet, index }: { sheet: OptimizedSheet; index: number }) {
   return (
     <div className="rounded-lg border border-border bg-elevated px-4 py-3 transition-colors hover:border-white/20">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-muted-foreground">
-            Sheet {index + 1}
-          </span>
+          <span className="text-xs font-medium text-muted-foreground">Sheet {index + 1}</span>
+          <span className="text-xs text-muted-foreground">{formatSheetDimensions(sheet.tier)}</span>
           <span className="text-xs text-muted-foreground">
-            {formatSheetDimensions(sheet.tier)}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {sheet.designs.length} design{sheet.designs.length !== 1 ? "s" : ""}
+            {sheet.designs.length} design{sheet.designs.length !== 1 ? 's' : ''}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -283,7 +259,7 @@ function SheetResultCard({
             <Badge
               variant="outline"
               className={cn(
-                "text-xs border",
+                'text-xs border',
                 getUtilizationBg(sheet.utilization),
                 getUtilizationColor(sheet.utilization)
               )}
@@ -291,11 +267,9 @@ function SheetResultCard({
               {sheet.utilization.toFixed(0)}%
             </Badge>
           </WithTooltip>
-          <span className="text-sm font-medium text-foreground">
-            {formatCurrency(sheet.cost)}
-          </span>
+          <span className="text-sm font-medium text-foreground">{formatCurrency(sheet.cost)}</span>
         </div>
       </div>
     </div>
-  );
+  )
 }

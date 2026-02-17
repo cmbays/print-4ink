@@ -1,6 +1,6 @@
 ---
-title: "Screen Print Pro — Improved Jobs & Production Journey"
-description: "Redesigned production workflow addressing all friction points with universal board, capacity awareness, and quality gates"
+title: 'Screen Print Pro — Improved Jobs & Production Journey'
+description: 'Redesigned production workflow addressing all friction points with universal board, capacity awareness, and quality gates'
 category: strategy
 status: complete
 phase: 1
@@ -53,17 +53,18 @@ depends-on:
 
 ### Lane Definitions
 
-| Lane | Meaning | Quote Context | Job Context |
-|------|---------|--------------|-------------|
-| **Ready** | Logged, not started yet | Phone call noted, need to build quote | Quote accepted, need to prep for production |
-| **In Progress** | Actively being worked on | Drafting/building the quote | Screens being burned, shirts being printed |
-| **Review** | Quality gate / approval pending | Customer reviewing our quote | QC check before shipping, customer sign-off |
-| **Blocked** | External dependency — nothing we can do | Waiting on customer decision/info | Blanks not arrived, waiting on art approval |
-| **Done** | Work complete, still tracking | Accepted → auto-generates Job card | Shipped, may still need payment |
+| Lane            | Meaning                                 | Quote Context                         | Job Context                                 |
+| --------------- | --------------------------------------- | ------------------------------------- | ------------------------------------------- |
+| **Ready**       | Logged, not started yet                 | Phone call noted, need to build quote | Quote accepted, need to prep for production |
+| **In Progress** | Actively being worked on                | Drafting/building the quote           | Screens being burned, shirts being printed  |
+| **Review**      | Quality gate / approval pending         | Customer reviewing our quote          | QC check before shipping, customer sign-off |
+| **Blocked**     | External dependency — nothing we can do | Waiting on customer decision/info     | Blanks not arrived, waiting on art approval |
+| **Done**        | Work complete, still tracking           | Accepted → auto-generates Job card    | Shipped, may still need payment             |
 
 ### Review Lane
 
 Configurable via settings (enabled by default). When enabled:
+
 - Jobs MUST pass through Review before Done
 - Review = quality checkpoint (QC checklist completed)
 - Can also be used for customer sign-off on completed work
@@ -95,6 +96,7 @@ Configurable via settings (enabled by default). When enabled:
 ```
 
 **Visual encoding:**
+
 - **Service type**: Card left-border color + small icon (🖨️ Screen, 🎨 DTF, 🧵 Embroidery)
 - **Quantity**: Plain number + unit (shirts, hats, transfers)
 - **Complexity**: Location count, screen count — shown as "2 locations" or "4 screens"
@@ -154,6 +156,7 @@ Configurable via settings (enabled by default). When enabled:
 ```
 
 **Key features of detail view:**
+
 - **Quick Actions**: Move lane, mark blocked, view invoice — one-click operations
 - **Task checklist**: Canonical tasks per service type + custom tasks. Completing all tasks makes card eligible for next lane.
 - **Notes feed**: Chronological feed mixing internal notes, customer messages, and system events. Each note tagged with visibility (internal/customer/system).
@@ -276,12 +279,12 @@ When Gary is on a call and needs to commit a delivery date:
 
 ### Other Notifications (In-App Bell)
 
-| Event | Notification |
-|-------|-------------|
-| Quote accepted | "Quote #Q-1024 accepted by John Smith" |
-| Card blocked for 2+ days | "Job #1024 has been blocked for 2 days (blanks not arrived)" |
-| Due date approaching + at risk | "Job #1024 due in 2 days — 3 tasks remaining" |
-| All tasks completed | "Job #1024 — all tasks complete, ready for QC" |
+| Event                          | Notification                                                 |
+| ------------------------------ | ------------------------------------------------------------ |
+| Quote accepted                 | "Quote #Q-1024 accepted by John Smith"                       |
+| Card blocked for 2+ days       | "Job #1024 has been blocked for 2 days (blanks not arrived)" |
+| Due date approaching + at risk | "Job #1024 due in 2 days — 3 tasks remaining"                |
+| All tasks completed            | "Job #1024 — all tasks complete, ready for QC"               |
 
 ---
 
@@ -292,9 +295,10 @@ When Gary is on a call and needs to commit a delivery date:
 The board lanes are universal. What differs per service type is the **canonical task list** that auto-populates when a job is created:
 
 **Screen Printing Tasks:**
+
 1. ☐ Art files finalized
 2. ☐ Film positives printed
-3. ☐ Screens burned (mesh count: ___)
+3. ☐ Screens burned (mesh count: \_\_\_)
 4. ☐ Screens registered on press
 5. ☐ Blanks received and counted
 6. ☐ Press run complete
@@ -302,6 +306,7 @@ The board lanes are universal. What differs per service type is the **canonical 
 8. ☐ Packed and labeled
 
 **DTF Tasks:**
+
 1. ☐ Art files finalized
 2. ☐ Gang sheet prepared
 3. ☐ DTF printed
@@ -310,6 +315,7 @@ The board lanes are universal. What differs per service type is the **canonical 
 6. ☐ Packed and labeled
 
 **Embroidery Tasks:**
+
 1. ☐ Art files finalized
 2. ☐ Design digitized (stitch file created)
 3. ☐ Digitizer machine set up
@@ -324,37 +330,40 @@ The board lanes are universal. What differs per service type is the **canonical 
 
 ## Friction Point Resolution Map
 
-| # | Friction Point | Solution | Where It Lives |
-|---|---------------|----------|---------------|
-| 1 | No quick capture | Scratch notes in Ready lane | Board → "+" button → scratch note |
-| 2 | No capacity awareness | What-if date picker + overbooking warnings | Board header tools |
-| 3 | No quality gate | Review lane with QC checklist | Review lane (configurable) |
-| 4 | Screen prep invisible | Canonical task list for screen printing | Job card tasks |
-| 5 | Wall calendar as SOT | Board replaces wall calendar | Board is primary view |
-| 6 | DTF interrupts | DTF cards visible on same board with service type color | Board with color-coded cards |
-| 7 | No "today" view | Today filter on board (start-date based) | Board filter bar |
-| 8 | No quote pipeline states | Quotes row on board with lane states | Board upper section |
-| 9 | No blocked visibility | Blocked lane with reason tracking | Dedicated board lane |
-| 10 | Communication outside system | Notes feed on card (internal + customer) | Card detail view |
-| 11 | No production analytics | Inferred daily output, weekly averages | Settings + optional end-of-day summary |
-| 12 | Payment disconnected | Linked invoice on job card, Done lane tracks payment state | Card detail → linked entities |
+| #   | Friction Point               | Solution                                                   | Where It Lives                         |
+| --- | ---------------------------- | ---------------------------------------------------------- | -------------------------------------- |
+| 1   | No quick capture             | Scratch notes in Ready lane                                | Board → "+" button → scratch note      |
+| 2   | No capacity awareness        | What-if date picker + overbooking warnings                 | Board header tools                     |
+| 3   | No quality gate              | Review lane with QC checklist                              | Review lane (configurable)             |
+| 4   | Screen prep invisible        | Canonical task list for screen printing                    | Job card tasks                         |
+| 5   | Wall calendar as SOT         | Board replaces wall calendar                               | Board is primary view                  |
+| 6   | DTF interrupts               | DTF cards visible on same board with service type color    | Board with color-coded cards           |
+| 7   | No "today" view              | Today filter on board (start-date based)                   | Board filter bar                       |
+| 8   | No quote pipeline states     | Quotes row on board with lane states                       | Board upper section                    |
+| 9   | No blocked visibility        | Blocked lane with reason tracking                          | Dedicated board lane                   |
+| 10  | Communication outside system | Notes feed on card (internal + customer)                   | Card detail view                       |
+| 11  | No production analytics      | Inferred daily output, weekly averages                     | Settings + optional end-of-day summary |
+| 12  | Payment disconnected         | Linked invoice on job card, Done lane tracks payment state | Card detail → linked entities          |
 
 ---
 
 ## Screens Required (Build Scope)
 
 ### F2: Jobs List (alternative list view of the board)
+
 - Sortable, filterable table of all cards
 - Columns: Service Type, Customer, Job Name, Quantity, Due Date, Lane, Risk, Assignee
 - Search by customer name, job name, or ID
 - Useful for bulk operations and detailed filtering
 
 ### F3: Job Detail (card detail view)
+
 - Full command center as designed above
 - Task management, notes feed, quick actions, linked entities
 - Accessible from board click or jobs list click
 
 ### F4: Production Board (primary view)
+
 - Two-section layout (Quotes row + Jobs row)
 - 5 universal lanes
 - Card design with service type, quantity, due date, risk, tasks
@@ -363,6 +372,7 @@ The board lanes are universal. What differs per service type is the **canonical 
 - Capacity tools (what-if picker, summary stats)
 
 ### Settings: Board Configuration
+
 - Enable/disable Review lane
 - Configure service types (name, color, icon)
 - Configure canonical task lists per service type
@@ -376,6 +386,7 @@ The board lanes are universal. What differs per service type is the **canonical 
 ## Phase 1 vs Phase 2
 
 ### Phase 1 (Building Now — Mock Data)
+
 - Production Board with universal lanes, two sections
 - Card design (closed + open detail view)
 - Canonical task lists per service type
@@ -389,6 +400,7 @@ The board lanes are universal. What differs per service type is the **canonical 
 - Review lane with QC checklist
 
 ### Phase 2 (Future)
+
 - Customer portal integration (real quote approval flow)
 - Real notifications (email + in-app)
 - What-if date picker with historical data

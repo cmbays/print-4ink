@@ -1,6 +1,6 @@
 ---
-title: "Jobs Polish — Phase 2 Backend Readiness"
-subtitle: "Extracted pure functions for testability, added 26 new tests, accessibility improvements, CodeRabbit review fixes, filter UX refinements, and CI fix"
+title: 'Jobs Polish — Phase 2 Backend Readiness'
+subtitle: 'Extracted pure functions for testability, added 26 new tests, accessibility improvements, CodeRabbit review fixes, filter UX refinements, and CI fix'
 date: 2026-02-13
 phase: 1
 pipelineName: jobs
@@ -9,20 +9,20 @@ products: [jobs]
 tools: []
 stage: review
 tags: [feature, build, learning]
-sessionId: "734e42c5-f952-429d-84d9-0c4e52a57ffc"
-branch: "session/0212-jobs-wave4"
+sessionId: '734e42c5-f952-429d-84d9-0c4e52a57ffc'
+branch: 'session/0212-jobs-wave4'
 status: complete
 ---
 
 ## At a Glance
 
-| Stat | Value |
-|------|-------|
-| Files Changed | 20 |
-| Lines Added | 659 |
-| Lines Removed | 255 |
-| New Files | 3 |
-| New Tests | 26 (414 total) |
+| Stat          | Value          |
+| ------------- | -------------- |
+| Files Changed | 20             |
+| Lines Added   | 659            |
+| Lines Removed | 255            |
+| New Files     | 3              |
+| New Tests     | 26 (414 total) |
 
 A comprehensive polish pass preparing the Jobs vertical for Phase 2 backend integration. Pure function extraction makes projection and DnD logic unit-testable and reusable when API responses replace mock data.
 
@@ -31,22 +31,26 @@ A comprehensive polish pass preparing the Jobs vertical for Phase 2 backend inte
 Extracted ~150 lines of inline logic from the 667-line `board/page.tsx` into standalone modules:
 
 **`lib/helpers/board-projections.ts`** (new)
+
 - `projectJobToCard(job)` -- maps Job domain entity to JobCard view model
 - `projectScratchNoteToCard(note)` -- maps ScratchNote to ScratchNoteCard view model
 - Phase 2 impact: These become the transform layer between API responses and board UI
 
 **`lib/helpers/board-dnd.ts`** (new)
+
 - `parseDragId(id)` -- extracts card type + ID from drag identifier
 - `parseDroppableId(id)` -- extracts lane + section from drop target
 - `cardTypeToSection(type)`, `getCardLabel(card)`, `getCardSortDate(card)`
 
 **`lib/helpers/format.ts`** (shared)
+
 - `formatRelativeTime(dateStr)` -- canonical compact formatter ("5m ago", "3h ago", "2d ago")
 - Replaced duplicate implementations in ScratchNoteCard and PricingTemplateCard
 
 ## Test Coverage (+26 tests)
 
 **`lib/helpers/__tests__/job-utils.test.ts`** -- 20 tests covering all 4 pure functions:
+
 - `computeCapacitySummary`: empty, rush quantity summing, mixed card types, lane tallying
 - `computeRiskLevel`: all 5 branches with `vi.useFakeTimers()`
 - `computeTaskProgress`: empty, partial, complete, percentage rounding
@@ -56,13 +60,13 @@ Extracted ~150 lines of inline logic from the 667-line `board/page.tsx` into sta
 
 ## Code Quality
 
-| Change | Before | After |
-|--------|--------|-------|
-| Drag overlay | 3 repeated divs | `DragOverlayWrapper` component |
-| Deep clone | `JSON.parse(JSON.stringify(job))` | `structuredClone(job)` |
-| Spring timing | Hardcoded cubic-bezier | `var(--transition-timing-spring)` |
-| Dead code | `SERVICE_TYPE_ICONS` (unused) | Removed |
-| Overlay width | `w-[200px]` (arbitrary) | `w-50` (Tailwind scale) |
+| Change        | Before                            | After                             |
+| ------------- | --------------------------------- | --------------------------------- |
+| Drag overlay  | 3 repeated divs                   | `DragOverlayWrapper` component    |
+| Deep clone    | `JSON.parse(JSON.stringify(job))` | `structuredClone(job)`            |
+| Spring timing | Hardcoded cubic-bezier            | `var(--transition-timing-spring)` |
+| Dead code     | `SERVICE_TYPE_ICONS` (unused)     | Removed                           |
+| Overlay width | `w-[200px]` (arbitrary)           | `w-50` (Tailwind scale)           |
 
 ## Accessibility
 
@@ -74,14 +78,14 @@ Extracted ~150 lines of inline logic from the 667-line `board/page.tsx` into sta
 
 ## CodeRabbit Review Fixes
 
-| Fix | File |
-|-----|------|
-| Stable React keys (`garmentId:colorId`, `loc.position`) | JobDetailsSection |
-| Wire risk filter to ColumnHeaderMenu | JobsDataTable |
-| Currency formatting (`maximumFractionDigits: 2`) | LinkedEntitiesSection |
-| `text-[10px]` to `text-xs` for invoice badge | LinkedEntitiesSection |
-| Button outside `<Link>` (invalid nesting) | QuoteBoardCard |
-| Restore previous lane on unblock (match detail page) | jobs/page.tsx |
+| Fix                                                     | File                  |
+| ------------------------------------------------------- | --------------------- |
+| Stable React keys (`garmentId:colorId`, `loc.position`) | JobDetailsSection     |
+| Wire risk filter to ColumnHeaderMenu                    | JobsDataTable         |
+| Currency formatting (`maximumFractionDigits: 2`)        | LinkedEntitiesSection |
+| `text-[10px]` to `text-xs` for invoice badge            | LinkedEntitiesSection |
+| Button outside `<Link>` (invalid nesting)               | QuoteBoardCard        |
+| Restore previous lane on unblock (match detail page)    | jobs/page.tsx         |
 
 ## Filter UX Refinements
 
@@ -103,6 +107,6 @@ Added `"knowledge-base"` to `tsconfig.json` `exclude` array. The root tsconfig's
 
 ## GitHub Issues Created
 
-| Issue | Title |
-|-------|-------|
+| Issue                                                 | Title                                               |
+| ----------------------------------------------------- | --------------------------------------------------- |
 | [#70](https://github.com/cmbays/print-4ink/issues/70) | Refactor: Derive JobBoardCard props from Zod schema |

@@ -1,6 +1,6 @@
 ---
-title: "Colors — Shaping: Entity-Owned Favorites with Live Inheritance"
-subtitle: "R x S analysis selecting Shape A for hierarchical color preferences — 3 shapes explored, 12 decisions logged"
+title: 'Colors — Shaping: Entity-Owned Favorites with Live Inheritance'
+subtitle: 'R x S analysis selecting Shape A for hierarchical color preferences — 3 shapes explored, 12 decisions logged'
 date: 2026-02-15
 phase: 1
 pipelineName: colors
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: shape
 tags: [decision, plan]
-sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
-branch: "session/0215-color-prefs"
+sessionId: '08cc4e02-a47a-42b3-b9c9-d47e392c498b'
+branch: 'session/0215-color-prefs'
 status: complete
 ---
 
@@ -21,17 +21,17 @@ Applied the R x S shaping methodology to design a hierarchical color preference 
 
 ## Requirements (9 top-level)
 
-| ID | Requirement | Status |
-|----|-------------|--------|
-| R0 | Visual color filtering — swatches not text | Core goal |
-| R1 | Honest garment card colors — favorites + count | Must-have |
-| R2 | Three-level favorites hierarchy (global, brand, customer) | Must-have |
-| R3 | Safe inheritance behavior (additive auto-propagation, removal confirmation) | Must-have |
-| R4 | Non-technical usability — single-layer thinking | Must-have |
-| R5 | Graceful degradation — each level optional | Must-have |
-| R6 | Entity-context editing — edit where the entity lives | Must-have |
-| R7 | Configurable swatch display — flat/grouped | Nice-to-have |
-| R8 | Full palette access via detail drawer | Must-have |
+| ID  | Requirement                                                                 | Status       |
+| --- | --------------------------------------------------------------------------- | ------------ |
+| R0  | Visual color filtering — swatches not text                                  | Core goal    |
+| R1  | Honest garment card colors — favorites + count                              | Must-have    |
+| R2  | Three-level favorites hierarchy (global, brand, customer)                   | Must-have    |
+| R3  | Safe inheritance behavior (additive auto-propagation, removal confirmation) | Must-have    |
+| R4  | Non-technical usability — single-layer thinking                             | Must-have    |
+| R5  | Graceful degradation — each level optional                                  | Must-have    |
+| R6  | Entity-context editing — edit where the entity lives                        | Must-have    |
+| R7  | Configurable swatch display — flat/grouped                                  | Nice-to-have |
+| R8  | Full palette access via detail drawer                                       | Must-have    |
 
 ## Three Shapes Explored
 
@@ -55,36 +55,36 @@ Each level has a preference profile with specificity rules. Most-specific profil
 
 ## Fit Check
 
-| Req | A | B | C |
-|-----|---|---|---|
-| R0 | Pass | Pass | Pass |
-| R1 | Pass | Pass | Pass |
-| R2 | Pass | Pass | Pass |
-| R3 | Pass | Pass | Fail |
-| R4 | Pass | Fail | Fail |
-| R5 | Pass | Pass | Pass |
-| R6 | Pass | Pass | Pass |
-| R7 | Pass | Pass | Pass |
-| R8 | Pass | Pass | Pass |
+| Req | A    | B    | C    |
+| --- | ---- | ---- | ---- |
+| R0  | Pass | Pass | Pass |
+| R1  | Pass | Pass | Pass |
+| R2  | Pass | Pass | Pass |
+| R3  | Pass | Pass | Fail |
+| R4  | Pass | Fail | Fail |
+| R5  | Pass | Pass | Pass |
+| R6  | Pass | Pass | Pass |
+| R7  | Pass | Pass | Pass |
+| R8  | Pass | Pass | Pass |
 
 Shape A is the only shape that passes all requirements.
 
 ## Key Decisions
 
-| # | Decision | Outcome |
-|---|----------|---------|
-| D1 | Data model approach | Entity-owned (A) over centralized (B) and cascading (C) |
-| D2 | Inheritance model | Live inheritance with override preservation (Figma model) |
-| D3 | Inheritance control UX | Beth Meyer toggle (binary: inherit/customize) |
-| D4 | Favorite indication | Section grouping, not star overlays |
-| D5 | Propagation asymmetry | Additive = auto, removal = confirm |
-| D6 | Removal UX | Three-option dialog + progressive disclosure |
-| D7 | Swatch display default | Flat grid (Sammar-style, Gary's preference) |
-| D8 | Where each level lives | Global→Settings, Brand→Garments drawer, Customer→Detail tab |
-| D9 | Brand detail view | Drawer in garments section (consistent with garment detail) |
-| D10 | Customer axes | Independent (colors, brands, garments — each optional) |
-| D11 | Level requirement | None — each level optional, graceful degradation |
-| D12 | Auto-propagation | Configurable setting, default yes |
+| #   | Decision               | Outcome                                                     |
+| --- | ---------------------- | ----------------------------------------------------------- |
+| D1  | Data model approach    | Entity-owned (A) over centralized (B) and cascading (C)     |
+| D2  | Inheritance model      | Live inheritance with override preservation (Figma model)   |
+| D3  | Inheritance control UX | Beth Meyer toggle (binary: inherit/customize)               |
+| D4  | Favorite indication    | Section grouping, not star overlays                         |
+| D5  | Propagation asymmetry  | Additive = auto, removal = confirm                          |
+| D6  | Removal UX             | Three-option dialog + progressive disclosure                |
+| D7  | Swatch display default | Flat grid (Sammar-style, Gary's preference)                 |
+| D8  | Where each level lives | Global→Settings, Brand→Garments drawer, Customer→Detail tab |
+| D9  | Brand detail view      | Drawer in garments section (consistent with garment detail) |
+| D10 | Customer axes          | Independent (colors, brands, garments — each optional)      |
+| D11 | Level requirement      | None — each level optional, graceful degradation            |
+| D12 | Auto-propagation       | Configurable setting, default yes                           |
 
 ## Spike: Brand Detail View (A4.1)
 

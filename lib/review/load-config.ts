@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 import {
   reviewRuleSchema,
   compositionPolicySchema,
@@ -8,12 +8,12 @@ import {
   type CompositionPolicy,
   type AgentRegistryEntry,
   type DomainMapping,
-} from "@domain/entities/review-config";
+} from '@domain/entities/review-config'
 
-import rulesJson from "@/config/review-rules.json";
-import compositionJson from "@/config/review-composition.json";
-import agentsJson from "@/config/review-agents.json";
-import domainsJson from "@/config/review-domains.json";
+import rulesJson from '@/config/review-rules.json'
+import compositionJson from '@/config/review-composition.json'
+import agentsJson from '@/config/review-agents.json'
+import domainsJson from '@/config/review-domains.json'
 
 // ---------------------------------------------------------------------------
 // Validated config loaders
@@ -28,17 +28,17 @@ import domainsJson from "@/config/review-domains.json";
 // ---------------------------------------------------------------------------
 
 export function loadReviewRules(): readonly ReviewRule[] {
-  return Object.freeze(z.array(reviewRuleSchema).parse(rulesJson));
+  return Object.freeze(z.array(reviewRuleSchema).parse(rulesJson))
 }
 
 export function loadCompositionPolicies(): readonly CompositionPolicy[] {
-  return Object.freeze(z.array(compositionPolicySchema).parse(compositionJson));
+  return Object.freeze(z.array(compositionPolicySchema).parse(compositionJson))
 }
 
 export function loadAgentRegistry(): readonly AgentRegistryEntry[] {
-  return Object.freeze(z.array(agentRegistryEntrySchema).parse(agentsJson));
+  return Object.freeze(z.array(agentRegistryEntrySchema).parse(agentsJson))
 }
 
 export function loadDomainMappings(): readonly DomainMapping[] {
-  return Object.freeze(z.array(domainMappingSchema).parse(domainsJson));
+  return Object.freeze(z.array(domainMappingSchema).parse(domainsJson))
 }

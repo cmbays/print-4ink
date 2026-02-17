@@ -1,6 +1,6 @@
 ---
-title: "Screen Print Pro — Improved Quoting Journey"
-description: "Redesigned quoting workflow addressing all 10 Print Life friction points with 60-70% time reduction targets"
+title: 'Screen Print Pro — Improved Quoting Journey'
+description: 'Redesigned quoting workflow addressing all 10 Print Life friction points with 60-70% time reduction targets'
 category: strategy
 status: complete
 phase: 1
@@ -22,10 +22,10 @@ depends-on:
 
 ## Terminology: Internal vs External Quoting
 
-| Term | Definition | Phase |
-|------|-----------|-------|
-| **Internal Quote** | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote. | **Phase 1** (building now) |
-| **External Quote** | Customer submits quote request via customer portal. Shop reviews, adjusts, approves. | **Phase 2** (UI mockups only in Phase 1) |
+| Term                | Definition                                                                                                                | Phase                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| **Internal Quote**  | Shop operator builds quote for customer using `/quotes/new`. Shop controls pricing and sends final quote.                 | **Phase 1** (building now)                         |
+| **External Quote**  | Customer submits quote request via customer portal. Shop reviews, adjusts, approves.                                      | **Phase 2** (UI mockups only in Phase 1)           |
 | **Hybrid Approval** | Customer self-service + shop approval gate. Customer submits → shop reviews/adjusts price → approves → customer notified. | **Phase 2** (shop-side status tracking in Phase 1) |
 
 **Phase 1 builds**: Internal quoting (shop-side form, quote list, quote detail, email preview mockup). All "Send to Customer" flows show UI mockups but don't actually send.
@@ -51,12 +51,14 @@ depends-on:
 ### Internal Quote (Shop builds for customer)
 
 **Target**:
+
 - Simple quote: **3-4 minutes**, **8-12 clicks** (vs Print Life 10 min, 20-30 clicks)
 - Complex quote: **6-8 minutes**, **20-30 clicks** (vs Print Life 15-20 min, 40-60 clicks)
 
 ### External Quote (Customer self-service with approval gate) — PHASE 2
 
 **Target** (aspirational, not building in Phase 1):
+
 - Customer submits request: **5-7 minutes** (streamlined form, no mandatory unused steps)
 - Shop reviews + approves: **1-2 minutes** (price override + approve button)
 - Customer receives final quote via email/portal link
@@ -134,19 +136,19 @@ POST-FLOW: Quote Tracking Dashboard (/quotes)
 
 ## Key Differences from Print Life
 
-| Aspect | Print Life (6 Steps) | Screen Print Pro (1 Page) |
-|--------|---------------------|--------------------------|
-| **Flow** | 6 mandatory sequential steps | Single scrollable form with sections |
-| **Steps** | Can't skip unused steps | Only show what's needed |
-| **Qty entry** | Blocks on recalculation | Instant client-side calculation |
-| **Color picker** | 103 tiny swatches, no search | S&S-style dense grid + search + favorites |
-| **Art upload** | Forced color swatches, resets on style change | Optional drag-drop, non-destructive |
-| **Navigation** | Mouse-only BACK/NEXT | Keyboard-first (Tab, Enter, shortcuts) |
-| **State** | Session-based, lost on navigate | Auto-save draft, URL state, persistent |
-| **Quote lifecycle** | None (immediately becomes invoice) | Draft → Sent → Accepted → Declined |
-| **Reuse** | Rebuild from scratch | Duplicate quote, customer history |
-| **Customer comm** | Phone call | Email/portal link with approval gate |
-| **Price control** | Auto-calculated only | Auto-calculated + manual override |
+| Aspect              | Print Life (6 Steps)                          | Screen Print Pro (1 Page)                 |
+| ------------------- | --------------------------------------------- | ----------------------------------------- |
+| **Flow**            | 6 mandatory sequential steps                  | Single scrollable form with sections      |
+| **Steps**           | Can't skip unused steps                       | Only show what's needed                   |
+| **Qty entry**       | Blocks on recalculation                       | Instant client-side calculation           |
+| **Color picker**    | 103 tiny swatches, no search                  | S&S-style dense grid + search + favorites |
+| **Art upload**      | Forced color swatches, resets on style change | Optional drag-drop, non-destructive       |
+| **Navigation**      | Mouse-only BACK/NEXT                          | Keyboard-first (Tab, Enter, shortcuts)    |
+| **State**           | Session-based, lost on navigate               | Auto-save draft, URL state, persistent    |
+| **Quote lifecycle** | None (immediately becomes invoice)            | Draft → Sent → Accepted → Declined        |
+| **Reuse**           | Rebuild from scratch                          | Duplicate quote, customer history         |
+| **Customer comm**   | Phone call                                    | Email/portal link with approval gate      |
+| **Price control**   | Auto-calculated only                          | Auto-calculated + manual override         |
 
 ---
 
@@ -155,6 +157,7 @@ POST-FLOW: Quote Tracking Dashboard (/quotes)
 ### Section 1: Customer Selection
 
 **UI Elements**:
+
 - Combobox with type-ahead search
 - Dropdown shows: Customer Name — Company Name
 - "Add New Customer" link at bottom of dropdown → opens simple modal (Name, Email, Company)
@@ -174,6 +177,7 @@ This is the heart of the form and where most time savings come from.
 #### Garment Selection
 
 **UI Elements**:
+
 - Searchable dropdown/combobox
 - Shows: Brand + SKU + Style Name (e.g., "Bella+Canvas 3001 — Unisex Short Sleeve")
 - Type to filter (searches brand, SKU, style name)
@@ -186,6 +190,7 @@ This is the heart of the form and where most time savings come from.
 #### Color Selection (S&S-Style Dense Swatch Grid)
 
 **UI Elements** (per 4Ink owner request):
+
 - Dense grid of color swatches packed tightly together (minimal gap between swatches)
 - Each swatch is a square (~32-40px) with the actual color as background
 - Color name displayed in **white text overlaid** on the swatch (small font, ~10-11px)
@@ -196,6 +201,7 @@ This is the heart of the form and where most time savings come from.
 - Swatch grid scrollable if many colors, but visible area shows ~40-60 colors at once
 
 **Example Layout**:
+
 ```
 [Search colors...]
 
@@ -219,6 +225,7 @@ This is the heart of the form and where most time savings come from.
 #### Quantity / Size Breakdown
 
 **UI Elements**:
+
 - Inline size grid: `XS | S | M | L | XL | 2XL | 3XL | 4XL | 5XL`
 - Number input per size
 - Total qty auto-calculated and displayed at end of row
@@ -234,6 +241,7 @@ This is the heart of the form and where most time savings come from.
 #### Print Locations
 
 **UI Elements**:
+
 - Checkbox group: ☐ Front ☐ Back ☐ Left Sleeve ☐ Right Sleeve ☐ Neck Label
 - Click to toggle, no sub-steps or forced selections
 - Optional: Color count per location (number input, defaults to 1)
@@ -247,6 +255,7 @@ This is the heart of the form and where most time savings come from.
 #### Artwork (Optional, Collapsed)
 
 **UI Elements**:
+
 - Collapsed by default: "Artwork (Optional)" accordion
 - Expand to show drag-and-drop zone per selected print location
 - Accept .jpg, .png, .pdf, .ai, .eps
@@ -259,6 +268,7 @@ This is the heart of the form and where most time savings come from.
 #### Line Item Pricing (Inline)
 
 **UI Elements**:
+
 - Right-aligned on the line item row:
   ```
   Unit: $8.50  ×  Qty: 50  =  Line Total: $425.00
@@ -272,6 +282,7 @@ This is the heart of the form and where most time savings come from.
 ### Section 3: Pricing Summary
 
 **UI Elements**:
+
 ```
 Subtotal:    $425.00   (sum of all line items, read-only)
 Setup Fees:  $50.00    (editable number field)
@@ -290,6 +301,7 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 ### Section 4: Notes (Optional, Collapsed)
 
 **UI Elements**:
+
 - Two text areas in a collapsed accordion:
   - "Internal Notes" — visible only to shop (e.g., "Rush order, customer is VIP")
   - "Customer Notes" — visible on sent quote (e.g., "Delivery in 2 weeks")
@@ -299,11 +311,13 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 ### Actions
 
 **UI Elements**:
+
 - **"Save as Draft"** — secondary button, saves quote with Draft status
 - **"Save & Send to Customer"** — primary CTA (action blue, neobrutalist shadow), saves + opens send confirmation
 - **"Cancel"** — text link, confirms before discarding
 
 **Send Flow**:
+
 1. Click "Save & Send" → modal with email preview
 2. Shows: recipient email, subject, quote summary, portal link
 3. Shop can edit before sending
@@ -319,6 +333,7 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 **Columns**: Quote # | Customer | Status | Items | Total | Date | Actions
 
 **Status Badges**:
+
 - Draft (gray) — editable, not sent
 - Sent (blue) — sent to customer, awaiting response
 - Accepted (green) — customer accepted
@@ -326,6 +341,7 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 - Revised (amber) — customer requested changes
 
 **Quick Actions** (per row):
+
 - Edit (Draft only)
 - Duplicate → creates new draft with same line items
 - Send (Draft → Sent)
@@ -344,6 +360,7 @@ Grand Total: $475.00   (auto-calculated, BUT editable for override)
 **Body**: Read-only version of the quote form (line items, pricing, notes)
 
 **Actions**:
+
 - "Edit Quote" (if Draft)
 - "Duplicate Quote" → `/quotes/new` pre-filled
 - "Send to Customer" (if Draft) → send flow
@@ -384,64 +401,64 @@ SHOP FLOW:
 
 ### Simple Quote (3-4 minutes)
 
-| Activity | Time | % | Print Life |
-|----------|------|---|-----------|
-| Customer selection | ~10 sec | 4% | Same |
-| Garment search + select | ~30 sec | 12% | 1-2 min |
-| Color selection (dense grid + search) | ~10 sec | 4% | 30 sec |
-| Qty/size entry (instant calc) | ~30 sec | 12% | 2-3 min |
-| Print locations (checkboxes) | ~10 sec | 4% | 1-2 min |
-| Skip unused steps | 0 sec | 0% | 1 min |
-| Review pricing | ~15 sec | 6% | N/A |
-| Save/Send | ~5 sec | 2% | 1-2 min |
-| Wait for recalculations | 0 sec | 0% | 1-2 min |
-| **Total** | **~3-4 min** | | **~10 min** |
+| Activity                              | Time         | %   | Print Life  |
+| ------------------------------------- | ------------ | --- | ----------- |
+| Customer selection                    | ~10 sec      | 4%  | Same        |
+| Garment search + select               | ~30 sec      | 12% | 1-2 min     |
+| Color selection (dense grid + search) | ~10 sec      | 4%  | 30 sec      |
+| Qty/size entry (instant calc)         | ~30 sec      | 12% | 2-3 min     |
+| Print locations (checkboxes)          | ~10 sec      | 4%  | 1-2 min     |
+| Skip unused steps                     | 0 sec        | 0%  | 1 min       |
+| Review pricing                        | ~15 sec      | 6%  | N/A         |
+| Save/Send                             | ~5 sec       | 2%  | 1-2 min     |
+| Wait for recalculations               | 0 sec        | 0%  | 1-2 min     |
+| **Total**                             | **~3-4 min** |     | **~10 min** |
 
 ### Complex Quote — 3 Garments (6-8 minutes)
 
-| Activity | Time | Notes |
-|----------|------|-------|
-| Customer selection | ~10 sec | Same as simple |
-| Line item 1 (garment + color + qty + locations) | ~2-3 min | Includes all fields |
-| Line item 2 | ~1.5-2 min | Faster (familiar with form) |
-| Line item 3 | ~1.5-2 min | Faster (familiar with form) |
-| Review pricing + adjust | ~30 sec | Review all items |
-| Save/Send | ~10 sec | |
-| **Total** | **~6-8 min** | vs Print Life 15-20 min |
+| Activity                                        | Time         | Notes                       |
+| ----------------------------------------------- | ------------ | --------------------------- |
+| Customer selection                              | ~10 sec      | Same as simple              |
+| Line item 1 (garment + color + qty + locations) | ~2-3 min     | Includes all fields         |
+| Line item 2                                     | ~1.5-2 min   | Faster (familiar with form) |
+| Line item 3                                     | ~1.5-2 min   | Faster (familiar with form) |
+| Review pricing + adjust                         | ~30 sec      | Review all items            |
+| Save/Send                                       | ~10 sec      |                             |
+| **Total**                                       | **~6-8 min** | vs Print Life 15-20 min     |
 
 ---
 
 ## Friction Point Resolution Summary
 
-| # | Print Life Friction | Our Solution | Status |
-|---|---|---|---|
-| 1 | Qty fields block on recalculation | Instant client-side calculation, never block input | CORE |
-| 2 | Mandatory steps can't be skipped | Single-page form, no steps to skip | CORE |
-| 3 | Art style change resets all selections | Non-destructive editing, artwork persists | CORE |
-| 4 | Color swatch grid overwhelming | S&S-style dense grid + search + favorites | CORE |
-| 5 | Forced art color swatch selection | Optional artwork section, no forced sub-steps | CORE |
-| 6 | No quote reuse/duplication | "Duplicate Quote" button on detail + list | CORE |
-| 7 | No quote tracking | Full status dashboard (Draft/Sent/Accepted/Declined) | CORE |
-| 8 | No approval workflow | Hybrid: customer submits → shop reviews → approves | PHASE 2 (UI in Phase 1) |
-| 9 | No keyboard navigation | Tab through all fields, keyboard shortcuts | CORE |
-| 10 | Session state lost on navigation | Auto-save draft, URL state, persistent form | CORE |
+| #   | Print Life Friction                    | Our Solution                                         | Status                  |
+| --- | -------------------------------------- | ---------------------------------------------------- | ----------------------- |
+| 1   | Qty fields block on recalculation      | Instant client-side calculation, never block input   | CORE                    |
+| 2   | Mandatory steps can't be skipped       | Single-page form, no steps to skip                   | CORE                    |
+| 3   | Art style change resets all selections | Non-destructive editing, artwork persists            | CORE                    |
+| 4   | Color swatch grid overwhelming         | S&S-style dense grid + search + favorites            | CORE                    |
+| 5   | Forced art color swatch selection      | Optional artwork section, no forced sub-steps        | CORE                    |
+| 6   | No quote reuse/duplication             | "Duplicate Quote" button on detail + list            | CORE                    |
+| 7   | No quote tracking                      | Full status dashboard (Draft/Sent/Accepted/Declined) | CORE                    |
+| 8   | No approval workflow                   | Hybrid: customer submits → shop reviews → approves   | PHASE 2 (UI in Phase 1) |
+| 9   | No keyboard navigation                 | Tab through all fields, keyboard shortcuts           | CORE                    |
+| 10  | Session state lost on navigation       | Auto-save draft, URL state, persistent form          | CORE                    |
 
 ---
 
 ## Success Metrics
 
-| Metric | Print Life (Actual) | Target | Improvement |
-|--------|---|---|---|
-| Simple quote time | 10 min | 3-4 min | 60-70% faster |
-| Complex quote time | 15-20 min | 6-8 min | 50-60% faster |
-| Simple quote clicks | 20-30 | 8-12 | 60% fewer |
-| Complex quote clicks | 40-60 | 20-30 | 50% fewer |
-| Mandatory unused steps | 2 | 0 | Eliminated |
-| Recalculation blocking | Every field | Never | 100% eliminated |
-| Quote reuse | Not possible | 1-click duplicate | New capability |
-| Quote tracking | None | Full dashboard | New capability |
-| Customer self-service | No approval gate | Hybrid with approval | Differentiator |
-| Color picker UX | Tiny swatches, no search | Dense S&S-style + search | Major upgrade |
+| Metric                 | Print Life (Actual)      | Target                   | Improvement     |
+| ---------------------- | ------------------------ | ------------------------ | --------------- |
+| Simple quote time      | 10 min                   | 3-4 min                  | 60-70% faster   |
+| Complex quote time     | 15-20 min                | 6-8 min                  | 50-60% faster   |
+| Simple quote clicks    | 20-30                    | 8-12                     | 60% fewer       |
+| Complex quote clicks   | 40-60                    | 20-30                    | 50% fewer       |
+| Mandatory unused steps | 2                        | 0                        | Eliminated      |
+| Recalculation blocking | Every field              | Never                    | 100% eliminated |
+| Quote reuse            | Not possible             | 1-click duplicate        | New capability  |
+| Quote tracking         | None                     | Full dashboard           | New capability  |
+| Customer self-service  | No approval gate         | Hybrid with approval     | Differentiator  |
+| Color picker UX        | Tiny swatches, no search | Dense S&S-style + search | Major upgrade   |
 
 ---
 

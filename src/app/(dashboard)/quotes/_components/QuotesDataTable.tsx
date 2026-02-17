@@ -1,25 +1,18 @@
-"use client";
+'use client'
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Archive,
-  Package,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  X,
-} from "lucide-react";
-import { ENTITY_STYLES } from "@domain/constants/entities";
-import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { z } from "zod";
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Archive, Package, Plus, Search, SlidersHorizontal, X } from 'lucide-react'
+import { ENTITY_STYLES } from '@domain/constants/entities'
+import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { z } from 'zod'
 
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Badge } from "@shared/ui/primitives/badge";
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Badge } from '@shared/ui/primitives/badge'
 import {
   Table,
   TableBody,
@@ -27,266 +20,270 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { StatusBadge } from "@/components/features/StatusBadge";
-import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
-import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import { formatDate } from "@shared/lib/format";
-import type { Quote, QuoteStatus } from "@domain/entities/quote";
-import type { Customer } from "@domain/entities/customer";
+} from '@shared/ui/primitives/table'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { StatusBadge } from '@/components/features/StatusBadge'
+import { ColumnHeaderMenu } from '@/components/features/ColumnHeaderMenu'
+import { MobileFilterSheet } from '@/components/features/MobileFilterSheet'
+import { formatDate } from '@shared/lib/format'
+import type { Quote, QuoteStatus } from '@domain/entities/quote'
+import type { Customer } from '@domain/entities/customer'
 
 // ---------------------------------------------------------------------------
 // Derived table rows
 // ---------------------------------------------------------------------------
 
 type TableQuote = {
-  id: string;
-  quoteNumber: string;
-  customerId: string;
-  customerName: string;
-  status: QuoteStatus;
-  lineItemCount: number;
-  total: number;
-  createdAt: string;
-  isArchived: boolean;
-};
+  id: string
+  quoteNumber: string
+  customerId: string
+  customerName: string
+  status: QuoteStatus
+  lineItemCount: number
+  total: number
+  createdAt: string
+  isArchived: boolean
+}
 
 type QuotesDataTableProps = {
-  quotes: Quote[];
-  customers: Customer[];
-};
+  quotes: Quote[]
+  customers: Customer[]
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [
-  { value: "draft", label: "Draft" },
-  { value: "sent", label: "Sent" },
-  { value: "accepted", label: "Accepted" },
-  { value: "declined", label: "Declined" },
-  { value: "revised", label: "Revised" },
-];
+  { value: 'draft', label: 'Draft' },
+  { value: 'sent', label: 'Sent' },
+  { value: 'accepted', label: 'Accepted' },
+  { value: 'declined', label: 'Declined' },
+  { value: 'revised', label: 'Revised' },
+]
 
-const sortKeySchema = z.enum(["quoteNumber", "customerName", "status", "lineItemCount", "createdAt", "total"]);
-type SortKey = z.infer<typeof sortKeySchema>;
+const sortKeySchema = z.enum([
+  'quoteNumber',
+  'customerName',
+  'status',
+  'lineItemCount',
+  'createdAt',
+  'total',
+])
+type SortKey = z.infer<typeof sortKeySchema>
 
-const sortDirSchema = z.enum(["asc", "desc"]);
-type SortDir = z.infer<typeof sortDirSchema>;
-
+const sortDirSchema = z.enum(['asc', 'desc'])
+type SortDir = z.infer<typeof sortDirSchema>
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   const tableQuotes = useMemo<TableQuote[]>(
     () =>
       quotes.map((q) => {
-        const customer = customers.find((c) => c.id === q.customerId);
+        const customer = customers.find((c) => c.id === q.customerId)
         return {
           id: q.id,
           quoteNumber: q.quoteNumber,
           customerId: q.customerId,
-          customerName: customer?.company ?? customer?.name ?? "Unknown",
+          customerName: customer?.company ?? customer?.name ?? 'Unknown',
           status: q.status,
           lineItemCount: q.lineItems.length,
           total: q.total,
           createdAt: q.createdAt,
           isArchived: q.isArchived,
-        };
+        }
       }),
     [quotes, customers]
-  );
+  )
 
   // ---- URL state reads ----------------------------------------------------
-  const searchQuery = searchParams.get("q") ?? "";
-  const showArchived = searchParams.get("archived") === "true";
-  const sortKeyParam = sortKeySchema.catch("createdAt").parse(searchParams.get("sort") ?? "createdAt");
-  const sortDirParam = sortDirSchema.catch("desc").parse(searchParams.get("dir") ?? "desc");
+  const searchQuery = searchParams.get('q') ?? ''
+  const showArchived = searchParams.get('archived') === 'true'
+  const sortKeyParam = sortKeySchema
+    .catch('createdAt')
+    .parse(searchParams.get('sort') ?? 'createdAt')
+  const sortDirParam = sortDirSchema.catch('desc').parse(searchParams.get('dir') ?? 'desc')
 
   // Status filter (comma-separated for multi-select via ColumnHeaderMenu)
-  const statusFilterRaw = searchParams.get("status");
+  const statusFilterRaw = searchParams.get('status')
   const activeStatuses = useMemo(
-    () => statusFilterRaw?.split(",").filter(Boolean) ?? [],
-    [statusFilterRaw],
-  );
+    () => statusFilterRaw?.split(',').filter(Boolean) ?? [],
+    [statusFilterRaw]
+  )
 
   // ---- Local state --------------------------------------------------------
-  const [localSearch, setLocalSearch] = useState(searchQuery);
-  const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam);
-  const [sortDir, setSortDir] = useState<SortDir>(sortDirParam);
-  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [localSearch, setLocalSearch] = useState(searchQuery)
+  const [sortKey, setSortKey] = useState<SortKey>(sortKeyParam)
+  const [sortDir, setSortDir] = useState<SortDir>(sortDirParam)
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false)
 
   // Sync from URL on back/forward navigation
   useEffect(() => {
-    setLocalSearch(searchQuery);
-  }, [searchQuery]);
+    setLocalSearch(searchQuery)
+  }, [searchQuery])
 
   useEffect(() => {
-    setSortKey(sortKeyParam);
-    setSortDir(sortDirParam);
-  }, [sortKeyParam, sortDirParam]);
+    setSortKey(sortKeyParam)
+    setSortDir(sortDirParam)
+  }, [sortKeyParam, sortDirParam])
 
   // ---- Debounced search -> URL --------------------------------------------
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (localSearch) {
-        params.set("q", localSearch);
+        params.set('q', localSearch)
       } else {
-        params.delete("q");
+        params.delete('q')
       }
-      router.replace(`?${params.toString()}`, { scroll: false });
-    }, 300);
-    return () => clearTimeout(timer);
+      router.replace(`?${params.toString()}`, { scroll: false })
+    }, 300)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally omitting searchParams to avoid re-render loop
-  }, [localSearch, router]);
+  }, [localSearch, router])
 
   // ---- URL update helpers -------------------------------------------------
 
   const updateParam = useCallback(
     (key: string, value: string | null) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (value !== null) {
-        params.set(key, value);
+        params.set(key, value)
       } else {
-        params.delete(key);
+        params.delete(key)
       }
-      router.replace(`?${params.toString()}`, { scroll: false });
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [searchParams, router],
-  );
+    [searchParams, router]
+  )
 
   const clearFilters = useCallback(() => {
-    router.replace("?", { scroll: false });
-    setLocalSearch("");
-  }, [router]);
+    router.replace('?', { scroll: false })
+    setLocalSearch('')
+  }, [router])
 
   // ---- Status filter toggle -----------------------------------------------
 
   const handleStatusToggle = useCallback(
     (value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      const current = params.get("status")?.split(",").filter(Boolean) ?? [];
+      const params = new URLSearchParams(searchParams.toString())
+      const current = params.get('status')?.split(',').filter(Boolean) ?? []
 
-      let next: string[];
+      let next: string[]
       if (current.includes(value)) {
-        next = current.filter((s) => s !== value);
+        next = current.filter((s) => s !== value)
       } else {
-        next = [...current, value];
+        next = [...current, value]
       }
 
       if (next.length > 0) {
-        params.set("status", next.join(","));
+        params.set('status', next.join(','))
       } else {
-        params.delete("status");
+        params.delete('status')
       }
-      router.replace(`?${params.toString()}`, { scroll: false });
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [searchParams, router],
-  );
+    [searchParams, router]
+  )
 
   const handleStatusFilterClear = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("status");
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [searchParams, router]);
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('status')
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }, [searchParams, router])
 
   // ---- Archived toggle ----------------------------------------------------
 
   const toggleArchived = useCallback(() => {
-    updateParam("archived", showArchived ? null : "true");
-  }, [showArchived, updateParam]);
+    updateParam('archived', showArchived ? null : 'true')
+  }, [showArchived, updateParam])
 
   // ---- Sort ---------------------------------------------------------------
 
   const handleSort = useCallback(
     (key: SortKey, explicitDir?: SortDir) => {
-      let nextDir: SortDir;
+      let nextDir: SortDir
       if (explicitDir) {
-        nextDir = explicitDir;
+        nextDir = explicitDir
       } else if (sortKey === key) {
-        nextDir = sortDir === "asc" ? "desc" : "asc";
+        nextDir = sortDir === 'asc' ? 'desc' : 'asc'
       } else {
-        nextDir = "asc";
+        nextDir = 'asc'
       }
-      setSortKey(key);
-      setSortDir(nextDir);
+      setSortKey(key)
+      setSortDir(nextDir)
 
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("sort", key);
-      params.set("dir", nextDir);
-      router.replace(`?${params.toString()}`, { scroll: false });
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('sort', key)
+      params.set('dir', nextDir)
+      router.replace(`?${params.toString()}`, { scroll: false })
     },
-    [sortKey, sortDir, searchParams, router],
-  );
+    [sortKey, sortDir, searchParams, router]
+  )
 
   // ---- Filter + sort pipeline ---------------------------------------------
 
   const filteredQuotes = useMemo(() => {
-    let result = tableQuotes;
+    let result = tableQuotes
 
     // 1. Archive toggle (hide archived by default)
     if (!showArchived) {
-      result = result.filter((q) => !q.isArchived);
+      result = result.filter((q) => !q.isArchived)
     }
 
     // 2. Status filter
     if (activeStatuses.length > 0) {
-      result = result.filter((q) => activeStatuses.includes(q.status));
+      result = result.filter((q) => activeStatuses.includes(q.status))
     }
 
     // 3. Search filter
     if (searchQuery) {
-      const lower = searchQuery.toLowerCase();
+      const lower = searchQuery.toLowerCase()
       result = result.filter(
         (q) =>
           q.quoteNumber.toLowerCase().includes(lower) ||
-          q.customerName.toLowerCase().includes(lower),
-      );
+          q.customerName.toLowerCase().includes(lower)
+      )
     }
 
     // 4. Sort
     result = [...result].sort((a, b) => {
-      let cmp = 0;
+      let cmp = 0
       switch (sortKey) {
-        case "quoteNumber":
-          cmp = a.quoteNumber.localeCompare(b.quoteNumber);
-          break;
-        case "customerName":
-          cmp = a.customerName.localeCompare(b.customerName);
-          break;
-        case "status":
-          cmp = a.status.localeCompare(b.status);
-          break;
-        case "lineItemCount":
-          cmp = a.lineItemCount - b.lineItemCount;
-          break;
-        case "total":
-          cmp = a.total - b.total;
-          break;
-        case "createdAt":
-          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-          break;
+        case 'quoteNumber':
+          cmp = a.quoteNumber.localeCompare(b.quoteNumber)
+          break
+        case 'customerName':
+          cmp = a.customerName.localeCompare(b.customerName)
+          break
+        case 'status':
+          cmp = a.status.localeCompare(b.status)
+          break
+        case 'lineItemCount':
+          cmp = a.lineItemCount - b.lineItemCount
+          break
+        case 'total':
+          cmp = a.total - b.total
+          break
+        case 'createdAt':
+          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          break
       }
-      return sortDir === "asc" ? cmp : -cmp;
-    });
+      return sortDir === 'asc' ? cmp : -cmp
+    })
 
-    return result;
-  }, [tableQuotes, showArchived, activeStatuses, searchQuery, sortKey, sortDir]);
+    return result
+  }, [tableQuotes, showArchived, activeStatuses, searchQuery, sortKey, sortDir])
 
   // ---- Check if any filters are active ------------------------------------
 
-  const hasFilters = searchQuery.length > 0 || activeStatuses.length > 0 || showArchived;
+  const hasFilters = searchQuery.length > 0 || activeStatuses.length > 0 || showArchived
 
   return (
     <div className="flex flex-col gap-4">
@@ -300,7 +297,10 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
 
           {/* Search bar — full width on mobile, constrained on desktop */}
           <div className="relative flex-1 md:flex-none md:w-full md:max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Search
+              className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               placeholder="Search quotes or customers..."
               value={localSearch}
@@ -311,7 +311,7 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
             {localSearch && (
               <button
                 type="button"
-                onClick={() => setLocalSearch("")}
+                onClick={() => setLocalSearch('')}
                 className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 aria-label="Clear search"
               >
@@ -325,11 +325,11 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
             type="button"
             onClick={() => setFilterSheetOpen(true)}
             className={cn(
-              "inline-flex items-center justify-center rounded-md p-2 md:hidden",
-              "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)",
-              "text-muted-foreground hover:text-foreground transition-colors",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              (activeStatuses.length > 0) && "text-action",
+              'inline-flex items-center justify-center rounded-md p-2 md:hidden',
+              'min-h-(--mobile-touch-target) min-w-(--mobile-touch-target)',
+              'text-muted-foreground hover:text-foreground transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              activeStatuses.length > 0 && 'text-action'
             )}
             aria-label="Sort & Filter"
           >
@@ -343,25 +343,26 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
                 type="button"
                 onClick={toggleArchived}
                 className={cn(
-                  "inline-flex items-center justify-center rounded-md p-2 transition-colors",
-                  "min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  "active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                  'inline-flex items-center justify-center rounded-md p-2 transition-colors',
+                  'min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) md:min-h-0 md:min-w-0',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'active:scale-95 disabled:opacity-50 disabled:pointer-events-none',
                   showArchived
-                    ? "bg-error/10 text-error border border-error"
-                    : "bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5",
+                    ? 'bg-error/10 text-error border border-error'
+                    : 'bg-transparent text-error/60 border border-transparent hover:text-error hover:bg-error/5'
                 )}
-                aria-label={showArchived ? "Hide Archived" : "Show Archived"}
+                aria-label={showArchived ? 'Hide Archived' : 'Show Archived'}
               >
                 <Archive className="size-4" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>
-              {showArchived ? "Hide Archived" : "Show Archived"}
-            </TooltipContent>
+            <TooltipContent>{showArchived ? 'Hide Archived' : 'Show Archived'}</TooltipContent>
           </Tooltip>
 
-          <Button asChild className="bg-action text-primary-foreground font-medium shadow-brutal shadow-action/30 hover:shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+          <Button
+            asChild
+            className="bg-action text-primary-foreground font-medium shadow-brutal shadow-action/30 hover:shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+          >
             <Link href="/quotes/new">
               <Plus className="size-4" />
               New Quote
@@ -386,157 +387,155 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
       {/* ---- Table + Cards ---- */}
       {filteredQuotes.length > 0 ? (
         <>
-        {/* Desktop table */}
-        <div className="hidden rounded-md border border-border md:block">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>
-                  <ColumnHeaderMenu
-                    label="Quote #"
-                    sortKey="quoteNumber"
-                    currentSortKey={sortKey}
-                    currentSortDir={sortDir}
-                    onSort={(_k, dir) => handleSort("quoteNumber", dir)}
-                  />
-                </TableHead>
-                <TableHead>
-                  <ColumnHeaderMenu
-                    label="Customer"
-                    sortKey="customerName"
-                    currentSortKey={sortKey}
-                    currentSortDir={sortDir}
-                    onSort={(_k, dir) => handleSort("customerName", dir)}
-                  />
-                </TableHead>
-                <TableHead>
-                  <ColumnHeaderMenu
-                    label="Status"
-                    sortKey="status"
-                    currentSortKey={sortKey}
-                    currentSortDir={sortDir}
-                    onSort={(_k, dir) => handleSort("status", dir)}
-                    filterOptions={STATUS_OPTIONS}
-                    activeFilters={activeStatuses}
-                    onFilterToggle={handleStatusToggle}
-                    onFilterClear={handleStatusFilterClear}
-                  />
-                </TableHead>
-                <TableHead>
-                  <ColumnHeaderMenu
-                    label="Items"
-                    sortKey="lineItemCount"
-                    currentSortKey={sortKey}
-                    currentSortDir={sortDir}
-                    onSort={(_k, dir) => handleSort("lineItemCount", dir)}
-                  />
-                </TableHead>
-                <TableHead>
-                  <ColumnHeaderMenu
-                    label="Date"
-                    sortKey="createdAt"
-                    currentSortKey={sortKey}
-                    currentSortDir={sortDir}
-                    onSort={(_k, dir) => handleSort("createdAt", dir)}
-                  />
-                </TableHead>
-                <TableHead>
-                  <ColumnHeaderMenu
-                    label="Total"
-                    sortKey="total"
-                    currentSortKey={sortKey}
-                    currentSortDir={sortDir}
-                    onSort={(_k, dir) => handleSort("total", dir)}
-                  />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredQuotes.map((quote) => (
-                <TableRow
-                  key={quote.id}
-                  className="cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-                  onClick={() => router.push(`/quotes/${quote.id}`)}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      router.push(`/quotes/${quote.id}`);
-                    }
-                  }}
-                  aria-label={`View ${quote.quoteNumber}`}
-                >
-                  <TableCell className="font-medium">
-                    <span className="text-action hover:underline">
-                      {quote.quoteNumber}
-                    </span>
-                    {quote.isArchived && (
-                      <Badge
-                        variant="ghost"
-                        className="ml-2 bg-muted text-muted-foreground text-xs"
-                      >
-                        Archived
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>{quote.customerName}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={quote.status} />
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {quote.lineItemCount} {quote.lineItemCount === 1 ? "item" : "items"}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatDate(quote.createdAt)}
-                  </TableCell>
-                  <TableCell className="text-sm font-medium tabular-nums">
-                    <MoneyAmount value={quote.total} />
-                  </TableCell>
+          {/* Desktop table */}
+          <div className="hidden rounded-md border border-border md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Quote #"
+                      sortKey="quoteNumber"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort('quoteNumber', dir)}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Customer"
+                      sortKey="customerName"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort('customerName', dir)}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Status"
+                      sortKey="status"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort('status', dir)}
+                      filterOptions={STATUS_OPTIONS}
+                      activeFilters={activeStatuses}
+                      onFilterToggle={handleStatusToggle}
+                      onFilterClear={handleStatusFilterClear}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Items"
+                      sortKey="lineItemCount"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort('lineItemCount', dir)}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Date"
+                      sortKey="createdAt"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort('createdAt', dir)}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <ColumnHeaderMenu
+                      label="Total"
+                      sortKey="total"
+                      currentSortKey={sortKey}
+                      currentSortDir={sortDir}
+                      onSort={(_k, dir) => handleSort('total', dir)}
+                    />
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredQuotes.map((quote) => (
+                  <TableRow
+                    key={quote.id}
+                    className="cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+                    onClick={() => router.push(`/quotes/${quote.id}`)}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        router.push(`/quotes/${quote.id}`)
+                      }
+                    }}
+                    aria-label={`View ${quote.quoteNumber}`}
+                  >
+                    <TableCell className="font-medium">
+                      <span className="text-action hover:underline">{quote.quoteNumber}</span>
+                      {quote.isArchived && (
+                        <Badge
+                          variant="ghost"
+                          className="ml-2 bg-muted text-muted-foreground text-xs"
+                        >
+                          Archived
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>{quote.customerName}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={quote.status} />
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {quote.lineItemCount} {quote.lineItemCount === 1 ? 'item' : 'items'}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {formatDate(quote.createdAt)}
+                    </TableCell>
+                    <TableCell className="text-sm font-medium tabular-nums">
+                      <MoneyAmount value={quote.total} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-        {/* Mobile card list */}
-        <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
-          {filteredQuotes.map((quote) => (
-            <button
-              key={quote.id}
-              type="button"
-              onClick={() => router.push(`/quotes/${quote.id}`)}
-              className={cn(
-                "flex flex-col gap-2 rounded-lg border border-border bg-elevated p-4",
-                "text-left transition-colors hover:bg-muted/50",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50",
-              )}
-            >
-              {/* Top row: quote # + customer left, price + qty right */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-medium text-action">
-                    {quote.quoteNumber}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {quote.customerName}
-                  </span>
+          {/* Mobile card list */}
+          <div className="flex flex-col gap-(--mobile-card-gap) md:hidden">
+            {filteredQuotes.map((quote) => (
+              <button
+                key={quote.id}
+                type="button"
+                onClick={() => router.push(`/quotes/${quote.id}`)}
+                className={cn(
+                  'flex flex-col gap-2 rounded-lg border border-border bg-elevated p-4',
+                  'text-left transition-colors hover:bg-muted/50',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50'
+                )}
+              >
+                {/* Top row: quote # + customer left, price + qty right */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-medium text-action">{quote.quoteNumber}</span>
+                    <span className="text-sm text-muted-foreground">{quote.customerName}</span>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-0.5">
+                    <MoneyAmount
+                      value={quote.total}
+                      format="compact"
+                      className="text-sm font-medium"
+                    />
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <Package className="size-3" />
+                      {quote.lineItemCount}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-0.5">
-                  <MoneyAmount value={quote.total} format="compact" className="text-sm font-medium" />
-                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                    <Package className="size-3" />
-                    {quote.lineItemCount}
-                  </span>
-                </div>
-              </div>
 
-              {/* Status badge */}
-              <div className="flex items-center">
-                <StatusBadge status={quote.status} />
-              </div>
-            </button>
-          ))}
-        </div>
+                {/* Status badge */}
+                <div className="flex items-center">
+                  <StatusBadge status={quote.status} />
+                </div>
+              </button>
+            ))}
+          </div>
         </>
       ) : (
         /* Empty state */
@@ -545,15 +544,11 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters
-              ? "Try adjusting your filters or search term"
-              : "Create your first quote to get started"}
+              ? 'Try adjusting your filters or search term'
+              : 'Create your first quote to get started'}
           </p>
           {hasFilters ? (
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={clearFilters}
-            >
+            <Button variant="outline" className="mt-4" onClick={clearFilters}>
               Clear Filters
             </Button>
           ) : (
@@ -567,9 +562,8 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
       {/* ---- Result count ---- */}
       {filteredQuotes.length > 0 && (
         <p className="text-xs text-muted-foreground">
-          {filteredQuotes.length}{" "}
-          {filteredQuotes.length === 1 ? "quote" : "quotes"}
-          {hasFilters && " (filtered)"}
+          {filteredQuotes.length} {filteredQuotes.length === 1 ? 'quote' : 'quotes'}
+          {hasFilters && ' (filtered)'}
         </p>
       )}
 
@@ -579,17 +573,17 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
           open={filterSheetOpen}
           onOpenChange={setFilterSheetOpen}
           sortOptions={[
-            { value: "createdAt", label: "Date" },
-            { value: "quoteNumber", label: "Quote #" },
-            { value: "customerName", label: "Customer" },
-            { value: "total", label: "Total" },
-            { value: "status", label: "Status" },
+            { value: 'createdAt', label: 'Date' },
+            { value: 'quoteNumber', label: 'Quote #' },
+            { value: 'customerName', label: 'Customer' },
+            { value: 'total', label: 'Total' },
+            { value: 'status', label: 'Status' },
           ]}
           currentSort={sortKey}
           onSortChange={(value) => handleSort(value as SortKey)}
           filterGroups={[
             {
-              label: "Status",
+              label: 'Status',
               options: STATUS_OPTIONS,
               selected: activeStatuses,
               onToggle: handleStatusToggle,
@@ -600,5 +594,5 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
         />
       )}
     </div>
-  );
+  )
 }

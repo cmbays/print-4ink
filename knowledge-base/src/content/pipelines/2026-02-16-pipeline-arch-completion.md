@@ -1,6 +1,6 @@
 ---
-title: "Pipeline Architecture — Completion"
-subtitle: "Streams A/B/C finish: frontmatter migration, backward-compat removal, stale-reference audit"
+title: 'Pipeline Architecture — Completion'
+subtitle: 'Streams A/B/C finish: frontmatter migration, backward-compat removal, stale-reference audit'
 date: 2026-02-16
 phase: 1
 pipelineName: devx
@@ -9,9 +9,9 @@ products: []
 tools: [work-orchestrator, knowledge-base]
 stage: wrap-up
 tags: [build, decision]
-sessionId: "8b128c24-0ec7-43a3-954d-5825e1cd1aa3"
-branch: "session/0216-work-execution-pipeline"
-pr: "https://github.com/cmbays/print-4ink/pull/295"
+sessionId: '8b128c24-0ec7-43a3-954d-5825e1cd1aa3'
+branch: 'session/0216-work-execution-pipeline'
+pr: 'https://github.com/cmbays/print-4ink/pull/295'
 status: complete
 ---
 
@@ -48,21 +48,22 @@ PR #295 had conflicts with main where 5 files had been renamed `pipeline: meta` 
 
 ## Verification
 
-| Check | Result |
-|-------|--------|
-| KB build (`npm run build`) | 153 pages, zero errors |
-| TypeScript (`npx tsc --noEmit`) | Clean |
-| Stale `pipeline:` field | 0 files |
-| Old stage slugs in frontmatter | 0 files |
-| `normalizeStage` references | 0 files |
-| `stageSlugMap` references | 0 files |
-| `verticals.json` references in code | 0 files |
-| `workflows.json` references in code | 0 files |
-| Shell (`work help`) | Works |
+| Check                               | Result                 |
+| ----------------------------------- | ---------------------- |
+| KB build (`npm run build`)          | 153 pages, zero errors |
+| TypeScript (`npx tsc --noEmit`)     | Clean                  |
+| Stale `pipeline:` field             | 0 files                |
+| Old stage slugs in frontmatter      | 0 files                |
+| `normalizeStage` references         | 0 files                |
+| `stageSlugMap` references           | 0 files                |
+| `verticals.json` references in code | 0 files                |
+| `workflows.json` references in code | 0 files                |
+| Shell (`work help`)                 | Works                  |
 
 ## Review
 
 Two-agent parallel review:
+
 1. **Code quality**: APPROVE — no broken imports, no missed backward-compat code, CSS classes validated as KB-specific tokens
 2. **Frontmatter completeness**: APPROVE — all 65 files have all 11 required fields, all values valid against canonical configs
 
@@ -70,14 +71,14 @@ Two-agent parallel review:
 
 All 6 implementation streams from #192 are now complete:
 
-| Stream | Status | PRs |
-|--------|--------|-----|
-| A: Config | Complete | #230 |
-| B: KB Schema | Complete | #295 |
-| C: KB Pages | Complete | #295 |
-| D: Work Orchestrator | Complete | #230, #286 |
-| E: Skills Update | Complete | Verified via grep |
-| F: Research Skills | Deferred to #201 | — |
+| Stream               | Status           | PRs               |
+| -------------------- | ---------------- | ----------------- |
+| A: Config            | Complete         | #230              |
+| B: KB Schema         | Complete         | #295              |
+| C: KB Pages          | Complete         | #295              |
+| D: Work Orchestrator | Complete         | #230, #286        |
+| E: Skills Update     | Complete         | Verified via grep |
+| F: Research Skills   | Deferred to #201 | —                 |
 
 ## Artifacts
 

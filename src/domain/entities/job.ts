@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { serviceTypeEnum } from "./quote";
+import { z } from 'zod'
+import { serviceTypeEnum } from './quote'
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -7,32 +7,22 @@ import { serviceTypeEnum } from "./quote";
 
 // KEEP these for backward compatibility (dashboard still references them)
 export const productionStateEnum = z.enum([
-  "design",
-  "approval",
-  "burning",
-  "press",
-  "finishing",
-  "shipped",
-]);
+  'design',
+  'approval',
+  'burning',
+  'press',
+  'finishing',
+  'shipped',
+])
 
-export const priorityEnum = z.enum(["low", "medium", "high", "rush"]);
+export const priorityEnum = z.enum(['low', 'medium', 'high', 'rush'])
 
 // NEW lane-based enums
-export const laneEnum = z.enum([
-  "ready",
-  "in_progress",
-  "review",
-  "blocked",
-  "done",
-]);
+export const laneEnum = z.enum(['ready', 'in_progress', 'review', 'blocked', 'done'])
 
-export const riskLevelEnum = z.enum([
-  "on_track",
-  "getting_tight",
-  "at_risk",
-]);
+export const riskLevelEnum = z.enum(['on_track', 'getting_tight', 'at_risk'])
 
-export const jobNoteTypeEnum = z.enum(["internal", "customer", "system"]);
+export const jobNoteTypeEnum = z.enum(['internal', 'customer', 'system'])
 
 // ---------------------------------------------------------------------------
 // Sub-schemas
@@ -46,7 +36,7 @@ export const jobTaskSchema = z.object({
   completedAt: z.string().datetime().optional(),
   isCanonical: z.boolean(),
   sortOrder: z.number().int().nonnegative(),
-});
+})
 
 export const jobNoteSchema = z.object({
   id: z.string().uuid(),
@@ -54,32 +44,32 @@ export const jobNoteSchema = z.object({
   content: z.string().min(1),
   author: z.string().min(1),
   createdAt: z.string().datetime(),
-});
+})
 
 export const jobHistoryEntrySchema = z.object({
   fromLane: laneEnum,
   toLane: laneEnum,
   timestamp: z.string().datetime(),
   note: z.string().optional(),
-});
+})
 
 export const garmentDetailSchema = z.object({
   garmentId: z.string().min(1),
   colorId: z.string().min(1),
   sizes: z.record(z.string(), z.number().int().nonnegative()),
-});
+})
 
 export const jobPrintLocationSchema = z.object({
   position: z.string().min(1),
   colorCount: z.number().int().positive(),
   artworkApproved: z.boolean(),
-});
+})
 
 export const jobComplexitySchema = z.object({
   locationCount: z.number().int().nonnegative(),
   screenCount: z.number().int().nonnegative().optional(),
   garmentVariety: z.number().int().positive(),
-});
+})
 
 // ---------------------------------------------------------------------------
 // Main schema
@@ -87,7 +77,7 @@ export const jobComplexitySchema = z.object({
 
 export const jobSchema = z.object({
   id: z.string().uuid(),
-  jobNumber: z.string().regex(/^J-\d{4,}$/, "Must match J-XXXX format"),
+  jobNumber: z.string().regex(/^J-\d{4,}$/, 'Must match J-XXXX format'),
   title: z.string().min(1),
   customerId: z.string().uuid(),
 
@@ -142,21 +132,21 @@ export const jobSchema = z.object({
 
   // Flags
   isArchived: z.boolean().default(false),
-});
+})
 
 // ---------------------------------------------------------------------------
 // Type exports
 // ---------------------------------------------------------------------------
 
-export type ProductionState = z.infer<typeof productionStateEnum>;
-export type Priority = z.infer<typeof priorityEnum>;
-export type Lane = z.infer<typeof laneEnum>;
-export type RiskLevel = z.infer<typeof riskLevelEnum>;
-export type JobNoteType = z.infer<typeof jobNoteTypeEnum>;
-export type JobTask = z.infer<typeof jobTaskSchema>;
-export type JobNote = z.infer<typeof jobNoteSchema>;
-export type JobHistoryEntry = z.infer<typeof jobHistoryEntrySchema>;
-export type GarmentDetail = z.infer<typeof garmentDetailSchema>;
-export type JobPrintLocation = z.infer<typeof jobPrintLocationSchema>;
-export type JobComplexity = z.infer<typeof jobComplexitySchema>;
-export type Job = z.infer<typeof jobSchema>;
+export type ProductionState = z.infer<typeof productionStateEnum>
+export type Priority = z.infer<typeof priorityEnum>
+export type Lane = z.infer<typeof laneEnum>
+export type RiskLevel = z.infer<typeof riskLevelEnum>
+export type JobNoteType = z.infer<typeof jobNoteTypeEnum>
+export type JobTask = z.infer<typeof jobTaskSchema>
+export type JobNote = z.infer<typeof jobNoteSchema>
+export type JobHistoryEntry = z.infer<typeof jobHistoryEntrySchema>
+export type GarmentDetail = z.infer<typeof garmentDetailSchema>
+export type JobPrintLocation = z.infer<typeof jobPrintLocationSchema>
+export type JobComplexity = z.infer<typeof jobComplexitySchema>
+export type Job = z.infer<typeof jobSchema>

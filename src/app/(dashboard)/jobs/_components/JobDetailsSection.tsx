@@ -1,24 +1,24 @@
-import { Package, MapPin, Shirt, CheckCircle2, XCircle, Printer } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Badge } from "@shared/ui/primitives/badge";
-import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@domain/constants";
-import { getGarmentById, getColorById } from "@domain/rules/garment.rules";
-import { getScreensByJobId } from "@domain/rules/screen.rules";
-import { getGarmentCatalogMutable } from "@infra/repositories/garments";
-import { getColorsMutable } from "@infra/repositories/colors";
-import { getScreensMutable } from "@infra/repositories/screens";
-import { GarmentImage } from "@/components/features/GarmentImage";
-import type { Job } from "@domain/entities/job";
+import { Package, MapPin, Shirt, CheckCircle2, XCircle, Printer } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Badge } from '@shared/ui/primitives/badge'
+import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from '@domain/constants'
+import { getGarmentById, getColorById } from '@domain/rules/garment.rules'
+import { getScreensByJobId } from '@domain/rules/screen.rules'
+import { getGarmentCatalogMutable } from '@infra/repositories/garments'
+import { getColorsMutable } from '@infra/repositories/colors'
+import { getScreensMutable } from '@infra/repositories/screens'
+import { GarmentImage } from '@/components/features/GarmentImage'
+import type { Job } from '@domain/entities/job'
 
-interface JobDetailsSectionProps {
-  job: Job;
+type JobDetailsSectionProps = {
+  job: Job
 }
 
 export function JobDetailsSection({ job }: JobDetailsSectionProps) {
-  const allScreens = getScreensMutable();
-  const allGarments = getGarmentCatalogMutable();
-  const allColors = getColorsMutable();
-  const jobScreens = getScreensByJobId(job.id, allScreens);
+  const allScreens = getScreensMutable()
+  const allGarments = getGarmentCatalogMutable()
+  const allColors = getColorsMutable()
+  const jobScreens = getScreensByJobId(job.id, allScreens)
 
   return (
     <section className="rounded-lg border border-border bg-card">
@@ -48,12 +48,17 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
             <Shirt className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="space-y-2">
               {job.garmentDetails.map((gd) => {
-                const garment = getGarmentById(gd.garmentId, allGarments);
-                const color = getColorById(gd.colorId, allColors);
+                const garment = getGarmentById(gd.garmentId, allGarments)
+                const color = getColorById(gd.colorId, allColors)
                 return (
                   <div key={`${gd.garmentId}:${gd.colorId}`} className="flex items-start gap-3">
                     {garment && (
-                      <GarmentImage brand={garment.brand} sku={garment.sku} name={garment.name} size="sm" />
+                      <GarmentImage
+                        brand={garment.brand}
+                        sku={garment.sku}
+                        name={garment.name}
+                        size="sm"
+                      />
                     )}
                     <div>
                       <p className="text-sm text-foreground">
@@ -81,7 +86,7 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
                       </div>
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           </div>
@@ -93,13 +98,10 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
             <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="space-y-1.5">
               {job.printLocations.map((loc) => (
-                <div
-                  key={loc.position}
-                  className="flex items-center gap-2 text-sm"
-                >
+                <div key={loc.position} className="flex items-center gap-2 text-sm">
                   <span className="text-foreground">{loc.position}</span>
                   <span className="text-xs text-muted-foreground">
-                    {loc.colorCount} {loc.colorCount === 1 ? "color" : "colors"}
+                    {loc.colorCount} {loc.colorCount === 1 ? 'color' : 'colors'}
                   </span>
                   {loc.artworkApproved ? (
                     <span className="inline-flex items-center gap-1 text-xs text-success">
@@ -130,10 +132,12 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
                   <Badge
                     variant="ghost"
                     className={cn(
-                      "text-xs",
-                      screen.burnStatus === "burned" && "bg-success/10 text-success border border-success/20",
-                      screen.burnStatus === "pending" && "bg-warning/10 text-warning border border-warning/20",
-                      screen.burnStatus === "reclaimed" && "bg-muted text-muted-foreground"
+                      'text-xs',
+                      screen.burnStatus === 'burned' &&
+                        'bg-success/10 text-success border border-success/20',
+                      screen.burnStatus === 'pending' &&
+                        'bg-warning/10 text-warning border border-warning/20',
+                      screen.burnStatus === 'reclaimed' && 'bg-muted text-muted-foreground'
                     )}
                   >
                     {BURN_STATUS_LABELS[screen.burnStatus]}
@@ -146,33 +150,24 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
 
         {/* Complexity */}
         <div className="flex flex-wrap gap-3 border-t border-border/30 pt-3">
-          <DetailChip
-            label="Locations"
-            value={String(job.complexity.locationCount)}
-          />
+          <DetailChip label="Locations" value={String(job.complexity.locationCount)} />
           {job.complexity.screenCount != null && (
-            <DetailChip
-              label="Screens"
-              value={String(job.complexity.screenCount)}
-            />
+            <DetailChip label="Screens" value={String(job.complexity.screenCount)} />
           )}
-          <DetailChip
-            label="Garment Varieties"
-            value={String(job.complexity.garmentVariety)}
-          />
+          <DetailChip label="Garment Varieties" value={String(job.complexity.garmentVariety)} />
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function DetailChip({ label, value }: { label: string; value: string }) {
   return (
-    <span className={cn(
-      "inline-flex items-center gap-1.5 rounded-md bg-surface px-2.5 py-1 text-xs"
-    )}>
+    <span
+      className={cn('inline-flex items-center gap-1.5 rounded-md bg-surface px-2.5 py-1 text-xs')}
+    >
       <span className="text-muted-foreground">{label}</span>
       <span className="font-medium text-foreground">{value}</span>
     </span>
-  );
+  )
 }

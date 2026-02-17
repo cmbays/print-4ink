@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { Switch } from "@shared/ui/primitives/switch";
-import { DEPOSIT_DEFAULTS_BY_TIER } from "@domain/constants";
-import { calculateSmartDeposit } from "@domain/rules/invoice.rules";
-import { money, toNumber } from "@domain/lib/money";
-import type { PricingTier } from "@domain/entities/customer";
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { Switch } from '@shared/ui/primitives/switch'
+import { DEPOSIT_DEFAULTS_BY_TIER } from '@domain/constants'
+import { calculateSmartDeposit } from '@domain/rules/invoice.rules'
+import { money, toNumber } from '@domain/lib/money'
+import type { PricingTier } from '@domain/entities/customer'
 
-interface DepositSectionProps {
-  depositAmount: number;
-  onDepositChange: (amount: number) => void;
-  total: number;
-  customerTier: PricingTier;
+type DepositSectionProps = {
+  depositAmount: number
+  onDepositChange: (amount: number) => void
+  total: number
+  customerTier: PricingTier
 }
 
 export function DepositSection({
@@ -21,18 +21,17 @@ export function DepositSection({
   total,
   customerTier,
 }: DepositSectionProps) {
-  const isEnabled = depositAmount > 0;
-  const percentage = total > 0
-    ? toNumber(money(depositAmount).div(money(total)).times(100).round(0))
-    : 0;
-  const defaultPercent = DEPOSIT_DEFAULTS_BY_TIER[customerTier];
+  const isEnabled = depositAmount > 0
+  const percentage =
+    total > 0 ? toNumber(money(depositAmount).div(money(total)).times(100).round(0)) : 0
+  const defaultPercent = DEPOSIT_DEFAULTS_BY_TIER[customerTier]
 
   function handleToggle(checked: boolean) {
     if (checked) {
-      const smartAmount = calculateSmartDeposit(customerTier, total);
-      onDepositChange(smartAmount);
+      const smartAmount = calculateSmartDeposit(customerTier, total)
+      onDepositChange(smartAmount)
     } else {
-      onDepositChange(0);
+      onDepositChange(0)
     }
   }
 
@@ -47,20 +46,13 @@ export function DepositSection({
             Default: {defaultPercent}% for {customerTier} tier
           </p>
         </div>
-        <Switch
-          id="deposit-toggle"
-          checked={isEnabled}
-          onCheckedChange={handleToggle}
-        />
+        <Switch id="deposit-toggle" checked={isEnabled} onCheckedChange={handleToggle} />
       </div>
 
       {isEnabled && (
         <div className="flex items-center gap-3 rounded-md bg-surface px-3 py-2">
           <div className="flex-1 space-y-1">
-            <Label
-              htmlFor="deposit-amount"
-              className="text-xs text-muted-foreground"
-            >
+            <Label htmlFor="deposit-amount" className="text-xs text-muted-foreground">
               Deposit Amount
             </Label>
             <Input
@@ -68,10 +60,10 @@ export function DepositSection({
               type="number"
               min={0}
               step={0.01}
-              value={depositAmount || ""}
+              value={depositAmount || ''}
               onChange={(e) => {
-                const val = parseFloat(e.target.value);
-                onDepositChange(isNaN(val) ? 0 : Math.max(0, val));
+                const val = parseFloat(e.target.value)
+                onDepositChange(isNaN(val) ? 0 : Math.max(0, val))
               }}
               className="h-8 text-right text-sm font-mono"
               aria-label="Deposit amount"
@@ -79,12 +71,10 @@ export function DepositSection({
           </div>
           <div className="shrink-0 text-right">
             <p className="text-xs text-muted-foreground">of total</p>
-            <p className="text-sm font-medium font-mono text-foreground">
-              {percentage}%
-            </p>
+            <p className="text-sm font-medium font-mono text-foreground">{percentage}%</p>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }

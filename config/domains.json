@@ -1,9 +1,37 @@
 [
-  { "slug": "garments", "label": "Garments", "description": "Garment sourcing, SKU selection, and size-run management" },
-  { "slug": "screens", "label": "Screens", "description": "Screen room inventory — mesh count, emulsion, burn status" },
-  { "slug": "pricing", "label": "Pricing", "description": "Pricing rules, markup tables, and setup fee configuration" },
-  { "slug": "colors", "label": "Colors", "description": "Ink color management, PMS matching, and color separation" },
-  { "slug": "dtf", "label": "Direct-to-Film", "description": "Direct-to-film transfer production workflow" },
-  { "slug": "screen-printing", "label": "Screen Printing", "description": "Traditional screen printing production workflow" },
-  { "slug": "mobile", "label": "Mobile", "description": "Mobile-responsive UI adaptations and touch interactions" }
+  {
+    "slug": "garments",
+    "label": "Garments",
+    "description": "Garment sourcing, SKU selection, and size-run management"
+  },
+  {
+    "slug": "screens",
+    "label": "Screens",
+    "description": "Screen room inventory — mesh count, emulsion, burn status"
+  },
+  {
+    "slug": "pricing",
+    "label": "Pricing",
+    "description": "Pricing rules, markup tables, and setup fee configuration"
+  },
+  {
+    "slug": "colors",
+    "label": "Colors",
+    "description": "Ink color management, PMS matching, and color separation"
+  },
+  {
+    "slug": "dtf",
+    "label": "Direct-to-Film",
+    "description": "Direct-to-film transfer production workflow"
+  },
+  {
+    "slug": "screen-printing",
+    "label": "Screen Printing",
+    "description": "Traditional screen printing production workflow"
+  },
+  {
+    "slug": "mobile",
+    "label": "Mobile",
+    "description": "Mobile-responsive UI adaptations and touch interactions"
+  }
 ]

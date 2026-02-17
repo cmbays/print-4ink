@@ -1,14 +1,14 @@
 ---
-title: "Config Schema Gateway — Validated Config Architecture"
-subtitle: "Strategy for schema-driven config validation, typed exports, and the lib/config gateway pattern"
+title: 'Config Schema Gateway — Validated Config Architecture'
+subtitle: 'Strategy for schema-driven config validation, typed exports, and the lib/config gateway pattern'
 date: 2026-02-16
 docType: planning
 phase: 2
 pipelinesCompleted: []
 pipelinesLaunched: []
 tags: [decision, plan]
-sessionId: "22f17289-2a33-40f1-94b0-f6039c0eb1b7"
-branch: "session/0216-ddd-domains-labels"
+sessionId: '22f17289-2a33-40f1-94b0-f6039c0eb1b7'
+branch: 'session/0216-ddd-domains-labels'
 status: complete
 ---
 
@@ -76,21 +76,24 @@ Most config files share a common shape: `{ slug, label }`. Rather than defining 
 
 ```typescript
 const configEntryBase = z.object({
-  slug: z.string().min(1).regex(/^[a-z][a-z0-9-]*$/),
+  slug: z
+    .string()
+    .min(1)
+    .regex(/^[a-z][a-z0-9-]*$/),
   label: z.string().min(1),
-});
+})
 ```
 
 Extensions compose from base:
 
-| Config File | Extension | Extra Fields |
-|---|---|---|
-| `domains.json` | none | — |
-| `tools.json` | none | — |
-| `products.json` | `.extend()` | `route: string` |
-| `stages.json` | `.extend()` | `core?: boolean`, `pipeline?: boolean` |
-| `tags.json` | `.extend()` | `color: string` |
-| `pipeline-types.json` | `.extend()` | `description: string`, `stages: string[]` |
+| Config File           | Extension    | Extra Fields                              |
+| --------------------- | ------------ | ----------------------------------------- |
+| `domains.json`        | none         | —                                         |
+| `tools.json`          | none         | —                                         |
+| `products.json`       | `.extend()`  | `route: string`                           |
+| `stages.json`         | `.extend()`  | `core?: boolean`, `pipeline?: boolean`    |
+| `tags.json`           | `.extend()`  | `color: string`                           |
+| `pipeline-types.json` | `.extend()`  | `description: string`, `stages: string[]` |
 | `pipeline-gates.json` | unique shape | Object with `stages` and `auto-overrides` |
 
 The slug format constraint (kebab-case, starts with lowercase letter) is defined once and enforced everywhere. Adding a new simple config file is one line of schema code.
@@ -101,11 +104,11 @@ Every array config uses a non-empty wrapper — `z.array(entry).nonempty()` — 
 
 The loader provides three forms of each config for different consumer needs:
 
-| Export Form | Example | Consumer |
-|---|---|---|
-| **Typed array** | `domains: Domain[]` | UI components rendering `<select>` options |
-| **Slug tuple** | `domainSlugs: [string, ...string[]]` | KB content schemas (`z.enum(domainSlugs)`) |
-| **Label lookup** | `domainLabel(slug): string` | Display helpers rendering slugs as human labels |
+| Export Form      | Example                              | Consumer                                        |
+| ---------------- | ------------------------------------ | ----------------------------------------------- |
+| **Typed array**  | `domains: Domain[]`                  | UI components rendering `<select>` options      |
+| **Slug tuple**   | `domainSlugs: [string, ...string[]]` | KB content schemas (`z.enum(domainSlugs)`)      |
+| **Label lookup** | `domainLabel(slug): string`          | Display helpers rendering slugs as human labels |
 
 One canonical derivation, many consumers. No consumer re-derives these.
 
@@ -144,15 +147,15 @@ lib/config/
 
 ### All Config Files Covered
 
-| Config File | Schema | Typed Export | Slug Tuple | Label Lookup |
-|---|---|---|---|---|
-| `domains.json` | `domainsConfigSchema` | `domains` | `domainSlugs` | `domainLabel()` |
-| `products.json` | `productsConfigSchema` | `products` | `productSlugs` | `productLabel()` |
-| `tools.json` | `toolsConfigSchema` | `tools` | `toolSlugs` | `toolLabel()` |
-| `stages.json` | `stagesConfigSchema` | `stages` | `stageSlugs` | `stageLabel()` |
-| `tags.json` | `tagsConfigSchema` | `tags` | `tagSlugs` | `tagLabel()` |
+| Config File           | Schema                      | Typed Export    | Slug Tuple          | Label Lookup          |
+| --------------------- | --------------------------- | --------------- | ------------------- | --------------------- |
+| `domains.json`        | `domainsConfigSchema`       | `domains`       | `domainSlugs`       | `domainLabel()`       |
+| `products.json`       | `productsConfigSchema`      | `products`      | `productSlugs`      | `productLabel()`      |
+| `tools.json`          | `toolsConfigSchema`         | `tools`         | `toolSlugs`         | `toolLabel()`         |
+| `stages.json`         | `stagesConfigSchema`        | `stages`        | `stageSlugs`        | `stageLabel()`        |
+| `tags.json`           | `tagsConfigSchema`          | `tags`          | `tagSlugs`          | `tagLabel()`          |
 | `pipeline-types.json` | `pipelineTypesConfigSchema` | `pipelineTypes` | `pipelineTypeSlugs` | `pipelineTypeLabel()` |
-| `pipeline-gates.json` | `pipelineGatesConfigSchema` | `pipelineGates` | — | — |
+| `pipeline-gates.json` | `pipelineGatesConfigSchema` | `pipelineGates` | —                   | —                     |
 
 ### KB Consumer Integration
 
@@ -176,6 +179,7 @@ Each layer trusts the layer below it. Domain schemas don't re-validate that "bui
 ### What Changes Now vs. Later
 
 **Now (this PR):**
+
 - `lib/config/schemas.ts` — Zod schemas for all 7 config files
 - `lib/config/index.ts` — validated typed exports + utility functions
 - `lib/config/__tests__/config.test.ts` — schema validation + cross-file consistency
@@ -183,6 +187,7 @@ Each layer trusts the layer below it. Domain schemas don't re-validate that "bui
 - All tests pass via `npm test`
 
 **Later (separate PRs):**
+
 - Migrate KB consumers from raw JSON imports to config gateway
 - Migrate app-side consumers to import from `@/lib/config`
 - Add config-driven automation (label sync, plugin registration)

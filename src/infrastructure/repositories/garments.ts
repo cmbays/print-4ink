@@ -5,4 +5,4 @@ export {
   getGarmentById,
   getAvailableBrands,
   getGarmentCatalogMutable,
-} from '@infra/repositories/_providers/mock/garments';
+} from '@infra/repositories/_providers/mock/garments'

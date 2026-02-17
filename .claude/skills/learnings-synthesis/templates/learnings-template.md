@@ -1,14 +1,14 @@
 ---
-title: "{VERTICAL} Vertical — Learnings Synthesis"
-subtitle: "Cross-cutting patterns from the {VERTICAL} build cycle"
-date: {DATE}
+title: '{VERTICAL} Vertical — Learnings Synthesis'
+subtitle: 'Cross-cutting patterns from the {VERTICAL} build cycle'
+date: { DATE }
 phase: 1
-vertical: {VERTICAL}
+vertical: { VERTICAL }
 verticalSecondary: []
 stage: learnings
 tags: [learning]
-sessionId: "{SESSION_ID}"
-branch: "{BRANCH}"
+sessionId: '{SESSION_ID}'
+branch: '{BRANCH}'
 status: complete
 ---
 
@@ -22,9 +22,9 @@ status: complete
 
 {Patterns that worked and should be replicated. Each needs 2+ supporting instances.}
 
-| Pattern | First Seen | Reused In | Recommendation |
-|---------|-----------|-----------|----------------|
-| {name} | {PR/session ref} | {PR/session ref} | {keep/extract/document} |
+| Pattern | First Seen       | Reused In        | Recommendation          |
+| ------- | ---------------- | ---------------- | ----------------------- |
+| {name}  | {PR/session ref} | {PR/session ref} | {keep/extract/document} |
 
 ### Component Patterns
 
@@ -45,9 +45,9 @@ status: complete
 
 {Each pain point includes symptom, root cause, and frequency}
 
-| Pain Point | Root Cause | Frequency | Impact |
-|-----------|-----------|-----------|--------|
-| {symptom} | {cause} | {one-off/recurring} | {high/medium/low} |
+| Pain Point | Root Cause | Frequency           | Impact            |
+| ---------- | ---------- | ------------------- | ----------------- |
+| {symptom}  | {cause}    | {one-off/recurring} | {high/medium/low} |
 
 ## Recommendations
 
@@ -79,14 +79,14 @@ status: complete
 
 ## Metrics
 
-| Metric | Value |
-|--------|-------|
-| Total sessions | {N} |
-| Total PRs merged | {N} |
-| Review rounds (avg) | {N} |
+| Metric                          | Value   |
+| ------------------------------- | ------- |
+| Total sessions                  | {N}     |
+| Total PRs merged                | {N}     |
+| Review rounds (avg)             | {N}     |
 | Gary questions (total/resolved) | {N}/{N} |
-| GitHub issues created | {N} |
-| CLAUDE.md updates | {N} |
+| GitHub issues created           | {N}     |
+| CLAUDE.md updates               | {N}     |
 
 ## References
 

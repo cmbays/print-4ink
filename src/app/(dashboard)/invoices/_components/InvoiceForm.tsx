@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useState, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState, useMemo, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   Plus,
   Save,
@@ -13,58 +13,61 @@ import {
   FileText,
   CreditCard,
   ShoppingBag,
-} from "lucide-react";
-import { toast } from "sonner";
+} from 'lucide-react'
+import { toast } from 'sonner'
 
-import { Button } from "@shared/ui/primitives/button";
-import { Label } from "@shared/ui/primitives/label";
-import { Input } from "@shared/ui/primitives/input";
-import { Textarea } from "@shared/ui/primitives/textarea";
-import {
-  CustomerCombobox,
-  type CustomerOption,
-} from "@/components/features/CustomerCombobox";
-import { CollapsibleSection } from "@/src/app/(dashboard)/quotes/_components/CollapsibleSection";
-import { InvoiceLineItemRow, type InvoiceLineItemData } from "./InvoiceLineItemRow";
-import { InvoicePricingSummary } from "./InvoicePricingSummary";
-import { DepositSection } from "./DepositSection";
-import { PaymentTermsSection } from "./PaymentTermsSection";
-import { ReviewSendSheet } from "./ReviewSendSheet";
-import { PAYMENT_TERMS_LABELS } from "@domain/constants";
+import { Button } from '@shared/ui/primitives/button'
+import { Label } from '@shared/ui/primitives/label'
+import { Input } from '@shared/ui/primitives/input'
+import { Textarea } from '@shared/ui/primitives/textarea'
+import { CustomerCombobox, type CustomerOption } from '@/components/features/CustomerCombobox'
+import { CollapsibleSection } from '@/src/app/(dashboard)/quotes/_components/CollapsibleSection'
+import { InvoiceLineItemRow, type InvoiceLineItemData } from './InvoiceLineItemRow'
+import { InvoicePricingSummary } from './InvoicePricingSummary'
+import { DepositSection } from './DepositSection'
+import { PaymentTermsSection } from './PaymentTermsSection'
+import { ReviewSendSheet } from './ReviewSendSheet'
+import { PAYMENT_TERMS_LABELS } from '@domain/constants'
 import {
   calculateInvoiceTotal,
   calculateDueDate,
   convertQuoteToInvoiceLineItems,
-} from "@domain/rules/invoice.rules";
-import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
-import { scrollToFirstError } from "@shared/lib/scroll-to-error";
-import type { Customer, PaymentTerms, PricingTier } from "@domain/entities/customer";
-import type { Invoice } from "@domain/entities/invoice";
-import type { Quote } from "@domain/entities/quote";
+} from '@domain/rules/invoice.rules'
+import { money, round2, toNumber, formatCurrency } from '@domain/lib/money'
+import { scrollToFirstError } from '@shared/lib/scroll-to-error'
+import type { Customer, PaymentTerms, PricingTier } from '@domain/entities/customer'
+import type { Invoice } from '@domain/entities/invoice'
+import type { Quote } from '@domain/entities/quote'
 
-const DEFAULT_TAX_RATE = 7; // Indiana state tax
+const DEFAULT_TAX_RATE = 7 // Indiana state tax
 
-interface InvoiceFormProps {
-  mode: "create" | "edit";
-  initialData?: Invoice;
-  customers: Customer[];
-  sourceQuote?: Quote | null;
-  initialInvoiceNumber?: string;
+type InvoiceFormProps = {
+  mode: 'create' | 'edit'
+  initialData?: Invoice
+  customers: Customer[]
+  sourceQuote?: Quote | null
+  initialInvoiceNumber?: string
 }
 
 function createEmptyLineItem(): InvoiceLineItemData {
   return {
     id: crypto.randomUUID(),
-    type: "garment",
-    description: "",
+    type: 'garment',
+    description: '',
     quantity: 1,
     unitPrice: 0,
-  };
+  }
 }
 
-export function InvoiceForm({ mode, initialData, customers, sourceQuote, initialInvoiceNumber }: InvoiceFormProps) {
-  const router = useRouter();
-  const isEdit = mode === "edit";
+export function InvoiceForm({
+  mode,
+  initialData,
+  customers,
+  sourceQuote,
+  initialInvoiceNumber,
+}: InvoiceFormProps) {
+  const router = useRouter()
+  const isEdit = mode === 'edit'
 
   // Pre-populate line items from quote
   const initialLineItems = useMemo((): InvoiceLineItemData[] => {
@@ -75,22 +78,22 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
         description: li.description,
         quantity: li.quantity,
         unitPrice: li.unitPrice,
-      }));
+      }))
     }
     if (sourceQuote) {
       return convertQuoteToInvoiceLineItems(sourceQuote).map((li) => ({
         id: crypto.randomUUID(),
         ...li,
-      }));
+      }))
     }
-    return [createEmptyLineItem()];
-  }, [initialData, sourceQuote]);
+    return [createEmptyLineItem()]
+  }, [initialData, sourceQuote])
 
   // Customer state
   const customerOptions: CustomerOption[] = useMemo(
     () =>
       customers.map((c) => {
-        const primaryContact = c.contacts.find((ct) => ct.isPrimary);
+        const primaryContact = c.contacts.find((ct) => ct.isPrimary)
         return {
           id: c.id,
           name: c.name,
@@ -101,187 +104,172 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
           lifecycleStage: c.lifecycleStage,
           typeTags: c.typeTags,
           contactRole: primaryContact?.role,
-        };
+        }
       }),
     [customers]
-  );
+  )
 
-  const initialCustomerId =
-    initialData?.customerId || sourceQuote?.customerId || "";
+  const initialCustomerId = initialData?.customerId || sourceQuote?.customerId || ''
 
-  const [customerId, setCustomerId] = useState(initialCustomerId);
-  const selectedCustomer = customers.find((c) => c.id === customerId);
+  const [customerId, setCustomerId] = useState(initialCustomerId)
+  const selectedCustomer = customers.find((c) => c.id === customerId)
 
   // Line items
-  const [lineItems, setLineItems] =
-    useState<InvoiceLineItemData[]>(initialLineItems);
+  const [lineItems, setLineItems] = useState<InvoiceLineItemData[]>(initialLineItems)
 
   // Pricing inputs
-  const [shipping, setShipping] = useState(initialData?.shipping ?? 0);
+  const [shipping, setShipping] = useState(initialData?.shipping ?? 0)
   const [taxRate, setTaxRate] = useState(
     initialData?.taxRate ?? (selectedCustomer?.taxExempt ? 0 : DEFAULT_TAX_RATE)
-  );
+  )
 
   // Payment terms
-  const createdAt = initialData?.createdAt ?? new Date().toISOString();
+  const createdAt = initialData?.createdAt ?? new Date().toISOString()
   const [paymentTerms, setPaymentTerms] = useState<PaymentTerms>(
-    (initialData?.paymentTerms as PaymentTerms) ??
-      selectedCustomer?.paymentTerms ??
-      "upfront"
-  );
+    (initialData?.paymentTerms as PaymentTerms) ?? selectedCustomer?.paymentTerms ?? 'upfront'
+  )
   const [dueDate, setDueDate] = useState(
     initialData?.dueDate ?? calculateDueDate(createdAt, paymentTerms)
-  );
+  )
 
   // Deposit
-  const customerTier: PricingTier = selectedCustomer?.pricingTier ?? "standard";
-  const [depositAmount, setDepositAmount] = useState(
-    initialData?.depositRequested ?? 0
-  );
+  const customerTier: PricingTier = selectedCustomer?.pricingTier ?? 'standard'
+  const [depositAmount, setDepositAmount] = useState(initialData?.depositRequested ?? 0)
 
   // Notes
-  const [internalNotes, setInternalNotes] = useState(
-    initialData?.internalNotes ?? ""
-  );
-  const [customerNotes, setCustomerNotes] = useState(
-    initialData?.customerNotes ?? ""
-  );
+  const [internalNotes, setInternalNotes] = useState(initialData?.internalNotes ?? '')
+  const [customerNotes, setCustomerNotes] = useState(initialData?.customerNotes ?? '')
 
   // Review sheet
-  const [showReview, setShowReview] = useState(false);
+  const [showReview, setShowReview] = useState(false)
 
   // Validation
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   // Invoice number
-  const invoiceNumber = initialData?.invoiceNumber ?? initialInvoiceNumber ?? "";
+  const invoiceNumber = initialData?.invoiceNumber ?? initialInvoiceNumber ?? ''
 
   // Computed pricing
   const pricing = useMemo(() => {
     const items = lineItems.map((li) => ({
       lineTotal: toNumber(round2(money(li.quantity).times(li.unitPrice))),
-    }));
-    return calculateInvoiceTotal(items, [], shipping, taxRate);
-  }, [lineItems, shipping, taxRate]);
+    }))
+    return calculateInvoiceTotal(items, [], shipping, taxRate)
+  }, [lineItems, shipping, taxRate])
 
   // Handlers
-  const handleLineItemChange = useCallback(
-    (index: number, item: InvoiceLineItemData) => {
-      setLineItems((prev) => {
-        const next = [...prev];
-        next[index] = item;
-        return next;
-      });
-    },
-    []
-  );
+  const handleLineItemChange = useCallback((index: number, item: InvoiceLineItemData) => {
+    setLineItems((prev) => {
+      const next = [...prev]
+      next[index] = item
+      return next
+    })
+  }, [])
 
   const handleLineItemRemove = useCallback((index: number) => {
-    setLineItems((prev) => prev.filter((_, i) => i !== index));
-  }, []);
+    setLineItems((prev) => prev.filter((_, i) => i !== index))
+  }, [])
 
   const handleAddLineItem = useCallback(() => {
-    setLineItems((prev) => [...prev, createEmptyLineItem()]);
-  }, []);
+    setLineItems((prev) => [...prev, createEmptyLineItem()])
+  }, [])
 
   const handleCustomerSelect = useCallback(
     (id: string) => {
-      setCustomerId(id);
-      const customer = customers.find((c) => c.id === id);
+      setCustomerId(id)
+      const customer = customers.find((c) => c.id === id)
       if (customer) {
         // Auto-set payment terms from customer
-        setPaymentTerms(customer.paymentTerms);
-        setDueDate(calculateDueDate(createdAt, customer.paymentTerms));
+        setPaymentTerms(customer.paymentTerms)
+        setDueDate(calculateDueDate(createdAt, customer.paymentTerms))
         // Tax-exempt guard
         if (customer.taxExempt) {
-          setTaxRate(0);
+          setTaxRate(0)
         } else {
-          setTaxRate(DEFAULT_TAX_RATE);
+          setTaxRate(DEFAULT_TAX_RATE)
         }
       }
       if (errors.customerId) {
         setErrors((prev) => {
-          const next = { ...prev };
-          delete next.customerId;
-          return next;
-        });
+          const next = { ...prev }
+          delete next.customerId
+          return next
+        })
       }
     },
     [customers, createdAt, errors.customerId]
-  );
+  )
 
   function validate(): boolean {
-    const nextErrors: Record<string, string> = {};
+    const nextErrors: Record<string, string> = {}
 
     if (!customerId) {
-      nextErrors.customerId = "Customer is required";
+      nextErrors.customerId = 'Customer is required'
     }
     if (lineItems.length === 0) {
-      nextErrors.lineItems = "At least one line item is required";
+      nextErrors.lineItems = 'At least one line item is required'
     }
-    const hasEmptyDescription = lineItems.some(
-      (li) => !li.description.trim()
-    );
+    const hasEmptyDescription = lineItems.some((li) => !li.description.trim())
     if (hasEmptyDescription) {
-      nextErrors.lineItems = "All line items need a description";
+      nextErrors.lineItems = 'All line items need a description'
     }
 
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+    setErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
   }
 
   function handleSaveDraft() {
     if (!validate()) {
-      scrollToFirstError();
-      toast.error("Please fix the errors above", {
-        description: "Some required fields are missing or invalid.",
-      });
-      return;
+      scrollToFirstError()
+      toast.error('Please fix the errors above', {
+        description: 'Some required fields are missing or invalid.',
+      })
+      return
     }
-    toast.success(isEdit ? "Invoice updated" : "Invoice saved as draft", {
+    toast.success(isEdit ? 'Invoice updated' : 'Invoice saved as draft', {
       description: isEdit
         ? `${invoiceNumber} has been updated.`
-        : "You can continue editing this invoice later.",
-    });
-    router.push("/invoices");
+        : 'You can continue editing this invoice later.',
+    })
+    router.push('/invoices')
   }
 
   function handleReviewAndSend() {
     if (!validate()) {
-      scrollToFirstError();
-      toast.error("Please fix the errors above", {
-        description: "Some required fields are missing or invalid.",
-      });
-      return;
+      scrollToFirstError()
+      toast.error('Please fix the errors above', {
+        description: 'Some required fields are missing or invalid.',
+      })
+      return
     }
-    setShowReview(true);
+    setShowReview(true)
   }
 
   function handleSendFromReview() {
     // Mock: set status to sent
-    toast.success("Invoice sent", {
-      description: `${invoiceNumber} has been sent to ${selectedCustomer?.email ?? "the customer"}.`,
-    });
-    router.push("/invoices");
+    toast.success('Invoice sent', {
+      description: `${invoiceNumber} has been sent to ${selectedCustomer?.email ?? 'the customer'}.`,
+    })
+    router.push('/invoices')
   }
 
   // Summaries for collapsed sections
   const customerSummary = selectedCustomer
     ? `${selectedCustomer.name} — ${selectedCustomer.company}`
-    : undefined;
+    : undefined
 
   const lineItemSummary =
     lineItems.length > 0 && lineItems[0].description
-      ? `${lineItems.length} item${lineItems.length !== 1 ? "s" : ""} — ${formatCurrency(pricing.subtotal)}`
-      : undefined;
+      ? `${lineItems.length} item${lineItems.length !== 1 ? 's' : ''} — ${formatCurrency(pricing.subtotal)}`
+      : undefined
 
-  const hasNotes = !!(internalNotes || customerNotes);
+  const hasNotes = !!(internalNotes || customerNotes)
   const notesSummary = useMemo(() => {
-    const parts: string[] = [];
-    if (internalNotes) parts.push("Internal");
-    if (customerNotes) parts.push("Customer");
-    return parts.length > 0 ? parts.join(" + ") : undefined;
-  }, [internalNotes, customerNotes]);
+    const parts: string[] = []
+    if (internalNotes) parts.push('Internal')
+    if (customerNotes) parts.push('Customer')
+    return parts.length > 0 ? parts.join(' + ') : undefined
+  }, [internalNotes, customerNotes])
 
   return (
     <>
@@ -291,9 +279,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-1.5 min-w-0">
               <FileText size={16} className="shrink-0 text-muted-foreground" aria-hidden="true" />
-              <span className="text-sm font-medium text-foreground">
-                {invoiceNumber}
-              </span>
+              <span className="text-sm font-medium text-foreground">{invoiceNumber}</span>
               {selectedCustomer && (
                 <>
                   <span className="text-muted-foreground">|</span>
@@ -305,9 +291,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <div className="text-right">
-                <p className="text-xs text-muted-foreground leading-none">
-                  Total
-                </p>
+                <p className="text-xs text-muted-foreground leading-none">Total</p>
                 <p className="text-sm font-semibold font-mono text-foreground leading-tight">
                   {formatCurrency(pricing.total)}
                 </p>
@@ -365,9 +349,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Status</span>
-                <span className="text-foreground capitalize">
-                  {sourceQuote.status}
-                </span>
+                <span className="text-foreground capitalize">{sourceQuote.status}</span>
               </div>
             </div>
           </CollapsibleSection>
@@ -378,7 +360,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
           title="Line Items"
           icon={<ShoppingBag size={16} className="text-muted-foreground" />}
           summary={lineItemSummary}
-          isComplete={lineItems.length > 0 && lineItems[0].description !== ""}
+          isComplete={lineItems.length > 0 && lineItems[0].description !== ''}
           defaultOpen
         >
           <div className="space-y-3 pt-2">
@@ -397,12 +379,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
                 canRemove={lineItems.length > 1}
               />
             ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleAddLineItem}
-              className="w-full"
-            >
+            <Button type="button" variant="outline" onClick={handleAddLineItem} className="w-full">
               <Plus size={16} className="mr-2" />
               Add Line Item
             </Button>
@@ -419,10 +396,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
             {/* Editable inputs for shipping and tax rate */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label
-                  htmlFor="shipping"
-                  className="text-xs text-muted-foreground"
-                >
+                <Label htmlFor="shipping" className="text-xs text-muted-foreground">
                   Shipping
                 </Label>
                 <Input
@@ -430,10 +404,10 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
                   type="number"
                   min={0}
                   step={0.01}
-                  value={shipping || ""}
+                  value={shipping || ''}
                   onChange={(e) => {
-                    const val = parseFloat(e.target.value);
-                    setShipping(isNaN(val) ? 0 : Math.max(0, val));
+                    const val = parseFloat(e.target.value)
+                    setShipping(isNaN(val) ? 0 : Math.max(0, val))
                   }}
                   className="h-9 text-right text-sm font-mono"
                   placeholder="$0.00"
@@ -441,10 +415,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
                 />
               </div>
               <div className="space-y-1.5">
-                <Label
-                  htmlFor="tax-rate"
-                  className="text-xs text-muted-foreground"
-                >
+                <Label htmlFor="tax-rate" className="text-xs text-muted-foreground">
                   Tax Rate (%)
                 </Label>
                 <Input
@@ -455,8 +426,8 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
                   step={0.1}
                   value={taxRate}
                   onChange={(e) => {
-                    const val = parseFloat(e.target.value);
-                    setTaxRate(isNaN(val) ? 0 : Math.min(100, Math.max(0, val)));
+                    const val = parseFloat(e.target.value)
+                    setTaxRate(isNaN(val) ? 0 : Math.min(100, Math.max(0, val)))
                   }}
                   className="h-9 text-right text-sm font-mono"
                   aria-label="Tax rate"
@@ -514,10 +485,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
         >
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
-              <Label
-                htmlFor="internal-notes"
-                className="text-xs text-muted-foreground"
-              >
+              <Label htmlFor="internal-notes" className="text-xs text-muted-foreground">
                 Internal Notes (not visible to customer)
               </Label>
               <Textarea
@@ -530,10 +498,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
               />
             </div>
             <div className="space-y-1.5">
-              <Label
-                htmlFor="customer-notes"
-                className="text-xs text-muted-foreground"
-              >
+              <Label htmlFor="customer-notes" className="text-xs text-muted-foreground">
                 Customer Notes (visible on invoice)
               </Label>
               <Textarea
@@ -553,7 +518,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
           <div className="flex items-center justify-between md:pt-6 md:border-t md:border-border">
             <Button
               variant="link"
-              onClick={() => router.push("/invoices")}
+              onClick={() => router.push('/invoices')}
               className="text-muted-foreground hover:text-foreground min-h-(--mobile-touch-target) md:min-h-0"
             >
               Cancel
@@ -565,7 +530,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
                 className="min-h-(--mobile-touch-target) md:min-h-0"
               >
                 <Save size={16} className="mr-2" />
-                {isEdit ? "Update Invoice" : "Save as Draft"}
+                {isEdit ? 'Update Invoice' : 'Save as Draft'}
               </Button>
               <Button
                 onClick={handleReviewAndSend}
@@ -602,5 +567,5 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
         />
       )}
     </>
-  );
+  )
 }

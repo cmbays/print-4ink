@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Dialog,
@@ -7,15 +7,15 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import type { CustomerScreen } from "@domain/entities/customer-screen";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import type { CustomerScreen } from '@domain/entities/customer-screen'
 
-interface ReclaimScreenDialogProps {
-  screen: CustomerScreen;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: () => void;
+type ReclaimScreenDialogProps = {
+  screen: CustomerScreen
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onConfirm: () => void
 }
 
 export function ReclaimScreenDialog({
@@ -30,14 +30,20 @@ export function ReclaimScreenDialog({
         <DialogHeader>
           <DialogTitle>Reclaim Screen</DialogTitle>
           <DialogDescription>
-            This will mark the screen for &ldquo;{screen.artworkName}&rdquo; as
-            reclaimed. The screen frame will be available for reuse.
+            This will mark the screen for &ldquo;{screen.artworkName}&rdquo; as reclaimed. The
+            screen frame will be available for reuse.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2 rounded-md bg-surface p-3 text-sm">
-          <p><span className="text-muted-foreground">Artwork:</span> {screen.artworkName}</p>
-          <p><span className="text-muted-foreground">Mesh:</span> {screen.meshCount}</p>
-          <p><span className="text-muted-foreground">Colors:</span> {screen.colorIds.length}</p>
+          <p>
+            <span className="text-muted-foreground">Artwork:</span> {screen.artworkName}
+          </p>
+          <p>
+            <span className="text-muted-foreground">Mesh:</span> {screen.meshCount}
+          </p>
+          <p>
+            <span className="text-muted-foreground">Colors:</span> {screen.colorIds.length}
+          </p>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -49,5 +55,5 @@ export function ReclaimScreenDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

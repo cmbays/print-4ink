@@ -1,6 +1,6 @@
 ---
-title: "Dashboard"
-subtitle: "At-a-glance view of shop status, blocked items, and recent activity"
+title: 'Dashboard'
+subtitle: 'At-a-glance view of shop status, blocked items, and recent activity'
 product: dashboard
 docType: overview
 lastUpdated: 2026-02-15
@@ -9,7 +9,7 @@ status: draft
 
 ## Overview
 
-*To be written. This is a placeholder created during the KB taxonomy restructure.*
+_To be written. This is a placeholder created during the KB taxonomy restructure._
 
 ## Current State
 

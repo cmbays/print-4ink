@@ -17,15 +17,20 @@
 ### Task 0.1: Zod Schemas
 
 **Files:**
+
 - `lib/config/schemas.ts` — NEW
 
 **Steps:**
+
 1. Define `configEntryBase` — shared base for most config files:
    ```typescript
    const configEntryBase = z.object({
-     slug: z.string().min(1).regex(/^[a-z][a-z0-9-]*$/),
+     slug: z
+       .string()
+       .min(1)
+       .regex(/^[a-z][a-z0-9-]*$/),
      label: z.string().min(1),
-   });
+   })
    ```
 2. Define array schemas for simple configs (domains, tools):
    - `domainsConfigSchema` = `z.array(configEntryBase).nonempty()`
@@ -38,12 +43,15 @@
 4. Define `pipelineGatesConfigSchema` — unique object shape:
    ```typescript
    z.object({
-     stages: z.record(z.string(), z.object({
-       artifacts: z.array(z.string()),
-       gate: z.string().min(1),
-       next: z.string().nullable(),
-     })),
-     "auto-overrides": z.record(z.string(), z.string()),
+     stages: z.record(
+       z.string(),
+       z.object({
+         artifacts: z.array(z.string()),
+         gate: z.string().min(1),
+         next: z.string().nullable(),
+       })
+     ),
+     'auto-overrides': z.record(z.string(), z.string()),
    })
    ```
 5. Export all schemas and inferred types.
@@ -51,13 +59,15 @@
 ### Task 0.2: Gateway Loader
 
 **Files:**
+
 - `lib/config/index.ts` — NEW
 
 **Steps:**
+
 1. Import all 7 raw JSON files from `../../config/`.
 2. Parse each through its schema — validation runs at import time:
    ```typescript
-   export const domains = domainsConfigSchema.parse(rawDomains);
+   export const domains = domainsConfigSchema.parse(rawDomains)
    ```
 3. Export **typed arrays** (7 exports):
    - `domains`, `products`, `tools`, `stages`, `tags`, `pipelineTypes`, `pipelineGates`
@@ -72,9 +82,11 @@
 ### Task 0.3: Tests
 
 **Files:**
+
 - `lib/config/__tests__/config.test.ts` — NEW
 
 **Steps:**
+
 1. **Schema validation tests** — one `describe` block per config file:
    - Validates the actual JSON file parses successfully against its schema
    - Tests that the parsed result has expected shape (non-empty array, correct fields)
@@ -97,10 +109,12 @@
 ### Task 0.4: Wire Domains into KB
 
 **Files:**
+
 - `knowledge-base/src/content.config.ts` — MODIFY
 - `knowledge-base/src/lib/utils.ts` — MODIFY
 
 **Steps:**
+
 1. In `content.config.ts`:
    - Add `import domainsConfig from '../../config/domains.json';`
    - Derive `const domains = domainsConfig.map((d) => d.slug) as [string, ...string[]];`
@@ -114,6 +128,7 @@
 ### Task 0.5: Verify All Green
 
 **Steps:**
+
 1. `npm test` — all Vitest tests pass (existing + new config tests)
 2. `npx tsc --noEmit` — type check passes
 3. `cd knowledge-base && npm run build` — KB builds cleanly with new domain field

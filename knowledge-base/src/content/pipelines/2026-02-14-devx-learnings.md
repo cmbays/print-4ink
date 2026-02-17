@@ -1,6 +1,6 @@
 ---
-title: "DevX Vertical — Learnings"
-subtitle: "Cross-cutting patterns and insights from building the developer experience workflow tooling"
+title: 'DevX Vertical — Learnings'
+subtitle: 'Cross-cutting patterns and insights from building the developer experience workflow tooling'
 date: 2026-02-14
 phase: 1
 pipelineName: devx
@@ -9,8 +9,8 @@ products: []
 tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]
 stage: wrap-up
 tags: [learning, decision]
-sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"
-branch: "session/0214-devx-build-w5"
+sessionId: '3c426af7-3332-4681-bc90-9c5c4d58d74e'
+branch: 'session/0214-devx-build-w5'
 status: complete
 ---
 
@@ -23,6 +23,7 @@ The DevX vertical was a meta-vertical: building the tools and workflow used to b
 The 6-wave structure (foundation, core, commands, automation, review, test) mapped cleanly to the actual build sequence. Each wave had clear inputs/outputs and could be completed in a single Claude session without context overflow.
 
 **What worked:**
+
 - Waves 0-1 (foundation + core) were serial — necessary for bootstrapping
 - Waves 2-4 were defined as parallel but executed serially due to solo-dev reality — the plan flexibility was still useful for scoping
 - Wave 5 (test + review) as a serial capstone caught 3 real bugs
@@ -52,6 +53,7 @@ The `work` CLI is 798 lines of Zsh. It has no automated tests — shell function
 Bug #106 (missing verticals in the whitelist) is a classic hardcoded-list-goes-stale issue. The `_work_phase()` function has its own vertical list while the KB schema (`content.config.ts`) has another. They drifted.
 
 **Solutions considered:**
+
 1. Read from `content.config.ts` at runtime — too fragile (TypeScript parsing from shell)
 2. Shared constants file — adds complexity
 3. Single source of truth in a simple text file — possible but over-engineered for now
@@ -67,6 +69,7 @@ Bug #105 is a subtle Bash/Zsh gotcha: the exit code of a for loop is the exit co
 ## Pattern 6: The Interview Doc Is the Most Valuable Artifact
 
 The DevX interview doc (`2026-02-14-devx-interview.md`) was the most referenced artifact throughout the build. It captured:
+
 - All 15 architectural decisions with rationale
 - The 8-stage pipeline specification
 - Skills/agents gap analysis
@@ -84,22 +87,27 @@ After building 3 new agents (secretary, finance-sme, build-reviewer), a stable p
 name: agent-name
 description: One-line purpose
 skills: [preloaded-skills]
-tools: Read, Grep, Glob  # Read-only for reviewers
+tools: Read, Grep, Glob # Read-only for reviewers
 ---
 
 ## Role
+
 [1-2 paragraphs: obsession + philosophy]
 
 ## Startup Sequence
+
 [What to read on init]
 
 ## Workflow
+
 [Step-by-step process]
 
 ## Rules
+
 [Hard constraints]
 
 ## Output Format
+
 [Structured template]
 ```
 
@@ -116,12 +124,14 @@ PR #103 (Wave 4) hit CodeRabbit's hourly commit review limit with 11+ minutes wa
 The design decision to make `work` a shell function (not a standalone CLI tool) was validated by the build:
 
 **Advantages:**
+
 - Shell functions share environment with the user's terminal (ZELLIJ var, PWD, etc.)
 - No build step, no installation, just `source scripts/work.sh`
 - Direct access to git, jq, zellij, claude CLIs
 - Easy to iterate — edit file, re-source, test
 
 **Disadvantages:**
+
 - No automated testing framework (addressed in Pattern 3)
 - Shell quoting is error-prone for multi-line prompts (mitigated by KDL sanitization)
 - Library splitting (registry.sh, kdl-generator.sh) requires careful sourcing
@@ -138,16 +148,16 @@ This ensured the post-compaction session had all necessary context without re-re
 
 ## Metrics
 
-| Metric | Value |
-|--------|-------|
-| Total PRs | 5 (design + 4 build waves) |
-| Total lines of shell code | ~1,200 |
-| New agents created | 3 (secretary, finance-sme, build-reviewer) |
-| New skills created | 6 (build-session-protocol, cool-down, implementation-planning, learnings-synthesis, one-on-one, doc-sync) |
-| Prompt templates | 8 (research, interview, breadboard, plan, polish, review, learnings, cooldown) + next.md |
-| Bugs found in E2E test | 3 (#105, #106, #107) |
-| KB docs produced | 3 (interview, review, learnings) |
-| Design decisions documented | 15 (in interview doc) |
+| Metric                      | Value                                                                                                     |
+| --------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Total PRs                   | 5 (design + 4 build waves)                                                                                |
+| Total lines of shell code   | ~1,200                                                                                                    |
+| New agents created          | 3 (secretary, finance-sme, build-reviewer)                                                                |
+| New skills created          | 6 (build-session-protocol, cool-down, implementation-planning, learnings-synthesis, one-on-one, doc-sync) |
+| Prompt templates            | 8 (research, interview, breadboard, plan, polish, review, learnings, cooldown) + next.md                  |
+| Bugs found in E2E test      | 3 (#105, #106, #107)                                                                                      |
+| KB docs produced            | 3 (interview, review, learnings)                                                                          |
+| Design decisions documented | 15 (in interview doc)                                                                                     |
 
 ## What Would We Do Differently?
 

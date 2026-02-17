@@ -1,6 +1,6 @@
 ---
-title: "{Vertical} — Breadboard"
-description: "UI affordances, code affordances, wiring, and component boundaries for the {Vertical} vertical"
+title: '{Vertical} — Breadboard'
+description: 'UI affordances, code affordances, wiring, and component boundaries for the {Vertical} vertical'
 category: breadboard
 status: draft
 phase: 1
@@ -23,13 +23,13 @@ depends-on:
 
 ## Places
 
-| ID | Place | Type | Entry Point | Description |
-|----|-------|------|-------------|-------------|
-| P1 | | Page | | |
-| P2 | | Page | | |
-| P2.1 | | Subplace | | |
-| P3 | | Modal | | |
-| P4 | Backend | API/DB | | Database and resolvers |
+| ID   | Place   | Type     | Entry Point | Description            |
+| ---- | ------- | -------- | ----------- | ---------------------- |
+| P1   |         | Page     |             |                        |
+| P2   |         | Page     |             |                        |
+| P2.1 |         | Subplace |             |                        |
+| P3   |         | Modal    |             |                        |
+| P4   | Backend | API/DB   |             | Database and resolvers |
 
 ---
 
@@ -37,48 +37,48 @@ depends-on:
 
 ### P1 — {Place Name}
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U1 | P1 | | | click | | |
-| U2 | P1 | | | type | | |
+| #   | Place | Component | Affordance | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ------- | --------- | ---------- |
+| U1  | P1    |           |            | click   |           |            |
+| U2  | P1    |           |            | type    |           |            |
 
 ### P2 — {Place Name}
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U10 | P2 | | | click | | |
-| U11 | P2 | | | type | | |
+| #   | Place | Component | Affordance | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ------- | --------- | ---------- |
+| U10 | P2    |           |            | click   |           |            |
+| U11 | P2    |           |            | type    |           |            |
 
 ### P2.1 — {Subplace Name}
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U20 | P2.1 | | | click | | |
+| #   | Place | Component | Affordance | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ------- | --------- | ---------- |
+| U20 | P2.1  |           |            | click   |           |            |
 
 ### P3 — {Modal Name}
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U30 | P3 | | | click | | |
+| #   | Place | Component | Affordance | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ------- | --------- | ---------- |
+| U30 | P3    |           |            | click   |           |            |
 
 ---
 
 ## Code Affordances
 
-| # | Place | Component | Affordance | Phase | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|-------|---------|-----------|------------|
-| N1 | P1 | | | 1 | call | | |
-| N2 | P1 | | | 1 | call | | |
+| #   | Place | Component | Affordance | Phase | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ----- | ------- | --------- | ---------- |
+| N1  | P1    |           |            | 1     | call    |           |            |
+| N2  | P1    |           |            | 1     | call    |           |            |
 
 ---
 
 ## Data Stores
 
-| # | Place | Store | Type | Read By | Written By |
-|----|-------|-------|------|---------|------------|
-| S1 | P1 | | URL state | | |
-| S2 | P1 | | React state | | |
-| S3 | P1 | | Mock data | | |
+| #   | Place | Store | Type        | Read By | Written By |
+| --- | ----- | ----- | ----------- | ------- | ---------- |
+| S1  | P1    |       | URL state   |         |            |
+| S2  | P1    |       | React state |         |            |
+| S3  | P1    |       | Mock data   |         |            |
 
 ---
 
@@ -111,14 +111,14 @@ flowchart TB
 
 ### Mermaid Color Conventions
 
-| Type | Color | Hex | Style |
-|------|-------|-----|-------|
-| UI affordances | Pink | `#FFB3BA` | Solid border |
-| Code affordances | Grey | `#C0C0C0` | Solid border |
-| Data stores | Lavender | `#D8BFD8` | Solid border |
-| Chunks | Blue | `#87CEEB` | Thick border |
-| Place references | Pink | `#FFB3BA` | Dashed border |
-| Places (subgraphs) | White/transparent | -- | Subgraph boundary |
+| Type               | Color             | Hex       | Style             |
+| ------------------ | ----------------- | --------- | ----------------- |
+| UI affordances     | Pink              | `#FFB3BA` | Solid border      |
+| Code affordances   | Grey              | `#C0C0C0` | Solid border      |
+| Data stores        | Lavender          | `#D8BFD8` | Solid border      |
+| Chunks             | Blue              | `#87CEEB` | Thick border      |
+| Place references   | Pink              | `#FFB3BA` | Dashed border     |
+| Places (subgraphs) | White/transparent | --        | Subgraph boundary |
 
 ---
 
@@ -135,10 +135,10 @@ flowchart TB
 
 ## Component Boundaries
 
-| Component | Place(s) | Contains Affordances | Location | Shared? |
-|-----------|----------|---------------------|----------|---------|
-| | | | `components/features/` | Yes |
-| | | | `app/(dashboard)/{route}/` | No |
+| Component | Place(s) | Contains Affordances | Location                   | Shared? |
+| --------- | -------- | -------------------- | -------------------------- | ------- |
+|           |          |                      | `components/features/`     | Yes     |
+|           |          |                      | `app/(dashboard)/{route}/` | No      |
 
 ---
 
@@ -146,22 +146,22 @@ flowchart TB
 
 ### Slice Summary
 
-| # | Slice | Mechanism | Affordances | Demo |
-|---|-------|-----------|-------------|------|
-| V1 | | | U-, N- | "{demo statement}" |
-| V2 | | | U-, N- | "{demo statement}" |
+| #   | Slice | Mechanism | Affordances | Demo               |
+| --- | ----- | --------- | ----------- | ------------------ |
+| V1  |       |           | U-, N-      | "{demo statement}" |
+| V2  |       |           | U-, N-      | "{demo statement}" |
 
 ### V1 — {Slice Name}
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| | | | | | | |
+| #   | Place | Component | Affordance | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ------- | --------- | ---------- |
+|     |       |           |            |         |           |            |
 
 ### V2 — {Slice Name}
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| | | | | | | |
+| #   | Place | Component | Affordance | Control | Wires Out | Returns To |
+| --- | ----- | --------- | ---------- | ------- | --------- | ---------- |
+|     |       |           |            |         |           |            |
 
 ---
 
@@ -169,10 +169,10 @@ flowchart TB
 
 Verify every requirement from the shaping doc has corresponding affordances:
 
-| Req | Requirement | Affordances | Covered? |
-|-----|-------------|-------------|----------|
-| R0 | {from shaping} | U-, N-, S- | Yes/No |
-| R1 | | | |
+| Req | Requirement    | Affordances | Covered? |
+| --- | -------------- | ----------- | -------- |
+| R0  | {from shaping} | U-, N-, S-  | Yes/No   |
+| R1  |                |             |          |
 
 ---
 
@@ -180,9 +180,9 @@ Verify every requirement from the shaping doc has corresponding affordances:
 
 Code affordances that will be added in Phase 2:
 
-| ID | Place | Affordance | Replaces | Description |
-|----|-------|------------|----------|-------------|
-| N- | | | N- (Phase 1) | |
+| ID  | Place | Affordance | Replaces     | Description |
+| --- | ----- | ---------- | ------------ | ----------- |
+| N-  |       |            | N- (Phase 1) |             |
 
 ---
 

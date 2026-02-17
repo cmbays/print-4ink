@@ -1,6 +1,6 @@
 ---
-title: "Mobile Optimization — User Interview"
-subtitle: "10-question interview validating mobile assumptions and uncovering new priorities"
+title: 'Mobile Optimization — User Interview'
+subtitle: '10-question interview validating mobile assumptions and uncovering new priorities'
 date: 2026-02-14
 phase: 1
 pipelineName: mobile-optimization
@@ -10,8 +10,8 @@ domains: [garments, pricing]
 tools: []
 stage: interview
 tags: [research, decision]
-sessionId: "dabb8a6a-42cc-4db3-a770-a184cd629875"
-branch: "session/0214-mobile-interview"
+sessionId: 'dabb8a6a-42cc-4db3-a770-a184cd629875'
+branch: 'session/0214-mobile-interview'
 status: complete
 ---
 
@@ -140,15 +140,15 @@ Gary uses iPhone, at least one employee uses Android. Reinforces PWA-first appro
 
 ### Scope Adjustments from Interview
 
-| Item | Original Scope | New Priority |
-|------|---------------|--------------|
-| Kanban Board Mobile (C6) | Step 14/18 (Sprint 4) | Sprint 2 (high-value) |
-| Mobile Quoting (P4) | Peripheral / Phase 2 | Promote toward Core |
-| Push Notifications (P2) | Peripheral / Phase 2 | Early Phase 2, not late |
-| Notes with side effects | Not scoped | New Core interaction pattern |
-| Capacity summary view | Not scoped | Explore during breadboarding |
-| Shop floor display mode | Not scoped | Design now, implement Phase 2 |
-| Smart daily briefing | Not scoped | Phase 3+ (needs AI backend) |
+| Item                     | Original Scope        | New Priority                  |
+| ------------------------ | --------------------- | ----------------------------- |
+| Kanban Board Mobile (C6) | Step 14/18 (Sprint 4) | Sprint 2 (high-value)         |
+| Mobile Quoting (P4)      | Peripheral / Phase 2  | Promote toward Core           |
+| Push Notifications (P2)  | Peripheral / Phase 2  | Early Phase 2, not late       |
+| Notes with side effects  | Not scoped            | New Core interaction pattern  |
+| Capacity summary view    | Not scoped            | Explore during breadboarding  |
+| Shop floor display mode  | Not scoped            | Design now, implement Phase 2 |
+| Smart daily briefing     | Not scoped            | Phase 3+ (needs AI backend)   |
 
 ## What's Next
 

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Sheet,
@@ -6,16 +6,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@shared/ui/primitives/sheet";
-import { cn } from "@shared/lib/cn";
+} from '@shared/ui/primitives/sheet'
+import { cn } from '@shared/lib/cn'
 
-interface BottomSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  className?: string;
+type BottomSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  description?: string
+  children: React.ReactNode
+  className?: string
 }
 
 export function BottomSheet({
@@ -30,20 +30,15 @@ export function BottomSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className={cn(
-          "max-h-(--mobile-sheet-max-height) rounded-t-xl",
-          className
-        )}
+        className={cn('max-h-(--mobile-sheet-max-height) rounded-t-xl', className)}
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
-          {description && (
-            <SheetDescription>{description}</SheetDescription>
-          )}
+          {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
         <div className="overflow-y-auto pb-safe">{children}</div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

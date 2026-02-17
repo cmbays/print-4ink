@@ -1,49 +1,52 @@
-"use client";
+'use client'
 
-import { Separator } from "@shared/ui/primitives/separator";
-import { Badge } from "@shared/ui/primitives/badge";
-import { StatusBadge } from "@/components/features/StatusBadge";
-import { DiscountRow } from "./DiscountRow";
-import { QuoteActions } from "./QuoteActions";
-import { EmailPreviewModal } from "./EmailPreviewModal";
-import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
-import { normalizePosition } from "@domain/constants/print-zones";
-import { Button } from "@shared/ui/primitives/button";
-import Link from "next/link";
-import { useState, useMemo } from "react";
-import { Copy, DollarSign, Hammer, Info, Pencil, Receipt, Send } from "lucide-react";
-import { toast } from "sonner";
-import { MatrixPeekSheet } from "./MatrixPeekSheet";
-import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
+import { Separator } from '@shared/ui/primitives/separator'
+import { Badge } from '@shared/ui/primitives/badge'
+import { StatusBadge } from '@/components/features/StatusBadge'
+import { DiscountRow } from './DiscountRow'
+import { QuoteActions } from './QuoteActions'
+import { EmailPreviewModal } from './EmailPreviewModal'
+import { MockupFilterProvider, GarmentMockupThumbnail } from '@/components/features/mockup'
+import { normalizePosition } from '@domain/constants/print-zones'
+import { Button } from '@shared/ui/primitives/button'
+import Link from 'next/link'
+import { useState, useMemo } from 'react'
+import { Copy, DollarSign, Hammer, Info, Pencil, Receipt, Send } from 'lucide-react'
+import { toast } from 'sonner'
+import { MatrixPeekSheet } from './MatrixPeekSheet'
+import { BottomActionBar } from '@shared/ui/layouts/bottom-action-bar'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import type { Quote, QuoteLineItem } from '@domain/entities/quote'
+import type { Customer } from '@domain/entities/customer'
+import type { Artwork } from '@domain/entities/artwork'
+import type { Color } from '@domain/entities/color'
+import type { GarmentCatalog } from '@domain/entities/garment'
+import { formatDate } from '@shared/lib/format'
+import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from '@domain/constants'
+import { LifecycleBadge } from '@/components/features/LifecycleBadge'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import type { Quote, QuoteLineItem } from "@domain/entities/quote";
-import type { Customer } from "@domain/entities/customer";
-import type { Artwork } from "@domain/entities/artwork";
-import type { Color } from "@domain/entities/color";
-import type { GarmentCatalog } from "@domain/entities/garment";
-import { formatDate } from "@shared/lib/format";
-import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@domain/constants";
-import { LifecycleBadge } from "@/components/features/LifecycleBadge";
-import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
-import { cn } from "@shared/lib/cn";
-import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
+  DECORATION_COST_PER_COLOR,
+  LOCATION_FEE_PER_UNIT,
+  calculateGarmentCost,
+  calculateDecorationCost,
+  calculateLineItemSetupFee,
+  calculateQuoteSetupFee,
+} from './LineItemRow'
+import { cn } from '@shared/lib/cn'
+import { money, round2, toNumber, formatCurrency } from '@domain/lib/money'
 
 type QuoteDetailViewProps = {
-  quote: Quote;
-  customer: Customer | null;
-  artworks: Artwork[];
-  garmentCatalog: GarmentCatalog[];
-  colors: Color[];
-  mode: "detail" | "review";
-  onSend?: () => void;
-};
+  quote: Quote
+  customer: Customer | null
+  artworks: Artwork[]
+  garmentCatalog: GarmentCatalog[]
+  colors: Color[]
+  mode: 'detail' | 'review'
+  onSend?: () => void
+}
 
 function getTotalQty(sizes: Record<string, number>): number {
-  return Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
+  return Object.values(sizes).reduce((sum, qty) => sum + qty, 0)
 }
 
 export function QuoteDetailView({
@@ -55,60 +58,63 @@ export function QuoteDetailView({
   mode,
   onSend,
 }: QuoteDetailViewProps) {
-  const [peekOpen, setPeekOpen] = useState(false);
-  const [peekLineItem, setPeekLineItem] = useState<QuoteLineItem | null>(null);
-  const [mobileEmailOpen, setMobileEmailOpen] = useState(false);
+  const [peekOpen, setPeekOpen] = useState(false)
+  const [peekLineItem, setPeekLineItem] = useState<QuoteLineItem | null>(null)
+  const [mobileEmailOpen, setMobileEmailOpen] = useState(false)
 
-  const isDraft = quote.status === "draft";
-  const isAccepted = quote.status === "accepted";
+  const isDraft = quote.status === 'draft'
+  const isAccepted = quote.status === 'accepted'
 
-  const totalDiscounts = toNumber(quote.discounts.reduce((sum, d) => sum.plus(d.amount), money(0)));
-  const artworkMap = new Map(artworks.map((a) => [a.id, a]));
+  const totalDiscounts = toNumber(quote.discounts.reduce((sum, d) => sum.plus(d.amount), money(0)))
+  const artworkMap = new Map(artworks.map((a) => [a.id, a]))
 
   // Compute garment / decoration / setup split from line items
-  let garmentTotalBig = money(0);
-  let decorationTotalBig = money(0);
-  let lineItemSetupFeesBig = money(0);
+  let garmentTotalBig = money(0)
+  let decorationTotalBig = money(0)
+  let lineItemSetupFeesBig = money(0)
   quote.lineItems.forEach((item) => {
-    const garment = garmentCatalog.find((g) => g.id === item.garmentId);
-    const totalQty = getTotalQty(item.sizes);
-    garmentTotalBig = garmentTotalBig.plus(calculateGarmentCost(garment, totalQty));
-    decorationTotalBig = decorationTotalBig.plus(calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty));
-    lineItemSetupFeesBig = lineItemSetupFeesBig.plus(calculateLineItemSetupFee(item.serviceType));
-  });
-  const garmentTotal = toNumber(round2(garmentTotalBig));
-  const decorationTotal = toNumber(round2(decorationTotalBig));
-  const quoteSetupFee = calculateQuoteSetupFee(quote.lineItems);
-  const setupFeesTotal = toNumber(money(lineItemSetupFeesBig).plus(quoteSetupFee));
-  const subtotal = toNumber(money(garmentTotal).plus(decorationTotal).plus(setupFeesTotal));
-  const effectiveTotal = quote.total;
+    const garment = garmentCatalog.find((g) => g.id === item.garmentId)
+    const totalQty = getTotalQty(item.sizes)
+    garmentTotalBig = garmentTotalBig.plus(calculateGarmentCost(garment, totalQty))
+    decorationTotalBig = decorationTotalBig.plus(
+      calculateDecorationCost(item.serviceType, item.printLocationDetails, totalQty)
+    )
+    lineItemSetupFeesBig = lineItemSetupFeesBig.plus(calculateLineItemSetupFee(item.serviceType))
+  })
+  const garmentTotal = toNumber(round2(garmentTotalBig))
+  const decorationTotal = toNumber(round2(decorationTotalBig))
+  const quoteSetupFee = calculateQuoteSetupFee(quote.lineItems)
+  const setupFeesTotal = toNumber(money(lineItemSetupFeesBig).plus(quoteSetupFee))
+  const subtotal = toNumber(money(garmentTotal).plus(decorationTotal).plus(setupFeesTotal))
+  const effectiveTotal = quote.total
 
   const garmentColors = useMemo(
-    () => quote.lineItems
-      .map((item) => allColors.find((c) => c.id === item.colorId)?.hex)
-      .filter(Boolean) as string[],
+    () =>
+      quote.lineItems
+        .map((item) => allColors.find((c) => c.id === item.colorId)?.hex)
+        .filter(Boolean) as string[],
     [quote.lineItems, allColors]
-  );
+  )
 
   return (
-    <div className={cn("space-y-6", mode === "detail" && "pb-20 md:pb-0")}>
+    <div className={cn('space-y-6', mode === 'detail' && 'pb-20 md:pb-0')}>
       {garmentColors.length > 0 && <MockupFilterProvider colors={garmentColors} />}
       {/* Header — sticky at top */}
       <div className="sticky top-0 z-10 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold text-foreground">
-              {quote.quoteNumber}
-            </h1>
+            <h1 className="text-xl font-semibold text-foreground">{quote.quoteNumber}</h1>
             <StatusBadge status={quote.status} />
           </div>
-          {mode === "detail" ? (
+          {mode === 'detail' ? (
             <QuoteActions quote={quote} customer={customer} />
           ) : (
             <div className="flex items-center gap-3">
               <div className="text-right">
                 <p className="text-xs text-muted-foreground leading-none">Total</p>
-                <p className="text-base font-semibold text-foreground leading-tight">{formatCurrency(effectiveTotal)}</p>
+                <p className="text-base font-semibold text-foreground leading-tight">
+                  {formatCurrency(effectiveTotal)}
+                </p>
               </div>
               <Button size="sm" onClick={onSend} className="bg-action text-primary-foreground">
                 <Send size={14} />
@@ -135,7 +141,9 @@ export function QuoteDetailView({
               </Link>
               <LifecycleBadge stage={customer.lifecycleStage} className="text-xs" />
             </div>
-            <p className="text-sm text-muted-foreground">{customer.email} · {customer.phone}</p>
+            <p className="text-sm text-muted-foreground">
+              {customer.email} · {customer.phone}
+            </p>
           </>
         )}
       </div>
@@ -144,17 +152,22 @@ export function QuoteDetailView({
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-foreground">Line Items</h3>
         {quote.lineItems.map((item, index) => {
-          const garment = garmentCatalog.find((g) => g.id === item.garmentId);
-          const color = allColors.find((c) => c.id === item.colorId);
-          const totalQty = getTotalQty(item.sizes);
-          const serviceType = item.serviceType as keyof typeof DECORATION_COST_PER_COLOR;
-          const garmentUnitCost = garment?.basePrice ?? 0;
-          const decorationPerUnit = toNumber(item.printLocationDetails.reduce(
-            (sum, d) => sum.plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType])).plus(LOCATION_FEE_PER_UNIT[serviceType]),
-            money(0)
-          ));
-          const unitCostCombined = toNumber(money(garmentUnitCost).plus(decorationPerUnit));
-          const itemSetupFee = calculateLineItemSetupFee(serviceType);
+          const garment = garmentCatalog.find((g) => g.id === item.garmentId)
+          const color = allColors.find((c) => c.id === item.colorId)
+          const totalQty = getTotalQty(item.sizes)
+          const serviceType = item.serviceType as keyof typeof DECORATION_COST_PER_COLOR
+          const garmentUnitCost = garment?.basePrice ?? 0
+          const decorationPerUnit = toNumber(
+            item.printLocationDetails.reduce(
+              (sum, d) =>
+                sum
+                  .plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType]))
+                  .plus(LOCATION_FEE_PER_UNIT[serviceType]),
+              money(0)
+            )
+          )
+          const unitCostCombined = toNumber(money(garmentUnitCost).plus(decorationPerUnit))
+          const itemSetupFee = calculateLineItemSetupFee(serviceType)
 
           return (
             <div key={index} className="rounded-lg border border-border bg-surface p-4 space-y-3">
@@ -162,28 +175,36 @@ export function QuoteDetailView({
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-foreground">
-                      {garment ? `${garment.brand} ${garment.sku} — ${garment.name}` : "Unknown Garment"}
+                      {garment
+                        ? `${garment.brand} ${garment.sku} — ${garment.name}`
+                        : 'Unknown Garment'}
                     </p>
-                    <Badge variant="ghost" className={cn("text-xs", SERVICE_TYPE_COLORS[item.serviceType])}>
+                    <Badge
+                      variant="ghost"
+                      className={cn('text-xs', SERVICE_TYPE_COLORS[item.serviceType])}
+                    >
                       {SERVICE_TYPE_LABELS[item.serviceType]}
                     </Badge>
                   </div>
                   {color && (
                     <div className="mt-1 flex items-center gap-1.5">
-                      <span className="inline-block size-3.5 rounded-sm border border-border" style={{ backgroundColor: color.hex }} />
+                      <span
+                        className="inline-block size-3.5 rounded-sm border border-border"
+                        style={{ backgroundColor: color.hex }}
+                      />
                       <span className="text-sm text-foreground">{color.name}</span>
                     </div>
                   )}
                 </div>
                 <div className="flex items-center gap-1.5">
-                  {item.serviceType === "screen-print" && customer && (
+                  {item.serviceType === 'screen-print' && customer && (
                     <Button
                       variant="ghost"
                       size="icon"
                       className="size-7 text-muted-foreground hover:text-action"
                       onClick={() => {
-                        setPeekLineItem(item);
-                        setPeekOpen(true);
+                        setPeekLineItem(item)
+                        setPeekOpen(true)
                       }}
                       aria-label="View pricing matrix"
                     >
@@ -200,7 +221,9 @@ export function QuoteDetailView({
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                 <span className="text-muted-foreground">Sizes:</span>
                 {Object.entries(item.sizes).map(([size, qty]) => (
-                  <span key={size} className="text-foreground">{size}({qty})</span>
+                  <span key={size} className="text-foreground">
+                    {size}({qty})
+                  </span>
                 ))}
                 <span className="text-muted-foreground">= {totalQty} total</span>
               </div>
@@ -208,36 +231,57 @@ export function QuoteDetailView({
               {/* Print Locations with per-location decoration fee */}
               <div className="space-y-1">
                 {item.printLocationDetails.map((detail, di) => {
-                  const artwork = detail.artworkId ? artworkMap.get(detail.artworkId) : undefined;
-                  const locDecorationPerUnit = toNumber(money(detail.colorCount).times(DECORATION_COST_PER_COLOR[serviceType]).plus(LOCATION_FEE_PER_UNIT[serviceType]));
+                  const artwork = detail.artworkId ? artworkMap.get(detail.artworkId) : undefined
+                  const locDecorationPerUnit = toNumber(
+                    money(detail.colorCount)
+                      .times(DECORATION_COST_PER_COLOR[serviceType])
+                      .plus(LOCATION_FEE_PER_UNIT[serviceType])
+                  )
                   return (
                     <div key={di} className="flex items-center gap-3 text-sm">
                       {color && (
                         <GarmentMockupThumbnail
-                          garmentCategory={garment?.baseCategory ?? "t-shirts"}
+                          garmentCategory={garment?.baseCategory ?? 't-shirts'}
                           colorHex={color.hex}
-                          artworkPlacements={artwork ? [{
-                            artworkUrl: artwork.thumbnailUrl,
-                            position: normalizePosition(detail.location),
-                          }] : []}
+                          artworkPlacements={
+                            artwork
+                              ? [
+                                  {
+                                    artworkUrl: artwork.thumbnailUrl,
+                                    position: normalizePosition(detail.location),
+                                  },
+                                ]
+                              : []
+                          }
                           className="shrink-0"
                         />
                       )}
                       <div className="flex-1">
                         <span className="text-foreground">{detail.location}</span>
-                        <span className="text-muted-foreground"> · {detail.colorCount} color{detail.colorCount !== 1 ? "s" : ""}</span>
-                        {artwork && <span className="text-muted-foreground"> · {artwork.name}</span>}
+                        <span className="text-muted-foreground">
+                          {' '}
+                          · {detail.colorCount} color{detail.colorCount !== 1 ? 's' : ''}
+                        </span>
+                        {artwork && (
+                          <span className="text-muted-foreground"> · {artwork.name}</span>
+                        )}
                       </div>
-                      <span className="text-xs text-muted-foreground">+{formatCurrency(locDecorationPerUnit)}/unit</span>
+                      <span className="text-xs text-muted-foreground">
+                        +{formatCurrency(locDecorationPerUnit)}/unit
+                      </span>
                     </div>
-                  );
+                  )
                 })}
               </div>
 
               {/* Formula with setup fee and info tooltip */}
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <span>
-                  ({formatCurrency(unitCostCombined)} x {totalQty} qty){itemSetupFee > 0 && <> + {formatCurrency(itemSetupFee)} setup</>} = <span className="font-medium text-foreground">{formatCurrency(item.lineTotal)}</span>
+                  ({formatCurrency(unitCostCombined)} x {totalQty} qty)
+                  {itemSetupFee > 0 && <> + {formatCurrency(itemSetupFee)} setup</>} ={' '}
+                  <span className="font-medium text-foreground">
+                    {formatCurrency(item.lineTotal)}
+                  </span>
                 </span>
                 <Tooltip delayDuration={200}>
                   <TooltipTrigger asChild>
@@ -249,7 +293,9 @@ export function QuoteDetailView({
                     <div className="space-y-1.5 text-xs">
                       <p className="font-medium text-foreground">Price Breakdown</p>
                       <p className="text-muted-foreground">
-                        {formatCurrency(garmentUnitCost)} garment + {formatCurrency(decorationPerUnit)} decoration = {formatCurrency(unitCostCombined)}/unit
+                        {formatCurrency(garmentUnitCost)} garment +{' '}
+                        {formatCurrency(decorationPerUnit)} decoration ={' '}
+                        {formatCurrency(unitCostCombined)}/unit
                       </p>
                       <div className="border-t border-border pt-1.5 space-y-0.5">
                         <p className="font-medium text-foreground">Setup Fees</p>
@@ -262,7 +308,7 @@ export function QuoteDetailView({
                 </Tooltip>
               </div>
             </div>
-          );
+          )
         })}
       </div>
 
@@ -294,14 +340,21 @@ export function QuoteDetailView({
 
           {/* Discounts */}
           {quote.discounts.map((discount, i) => (
-            <DiscountRow key={i} label={discount.label} amount={discount.amount} type={discount.type} />
+            <DiscountRow
+              key={i}
+              label={discount.label}
+              amount={discount.amount}
+              type={discount.type}
+            />
           ))}
 
           {/* Shipping */}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Shipping</span>
             {quote.shipping === 0 ? (
-              <Badge variant="ghost" className="bg-success/10 text-success text-xs">FREE</Badge>
+              <Badge variant="ghost" className="bg-success/10 text-success text-xs">
+                FREE
+              </Badge>
             ) : (
               <span className="text-foreground">{formatCurrency(quote.shipping)}</span>
             )}
@@ -324,7 +377,9 @@ export function QuoteDetailView({
           {/* Savings banner */}
           {totalDiscounts > 0 && (
             <div className="mt-2 rounded-md bg-success/10 px-3 py-2 text-center">
-              <span className="text-sm font-medium text-success">You save {formatCurrency(totalDiscounts)}!</span>
+              <span className="text-sm font-medium text-success">
+                You save {formatCurrency(totalDiscounts)}!
+              </span>
             </div>
           )}
         </div>
@@ -336,13 +391,17 @@ export function QuoteDetailView({
           <h3 className="text-base font-semibold text-foreground">Notes</h3>
           {quote.internalNotes && (
             <div className="space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Internal</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Internal
+              </p>
               <p className="text-sm text-foreground">{quote.internalNotes}</p>
             </div>
           )}
           {quote.customerNotes && (
             <div className="space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Customer</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Customer
+              </p>
               <p className="text-sm text-foreground">{quote.customerNotes}</p>
             </div>
           )}
@@ -357,13 +416,13 @@ export function QuoteDetailView({
           customer={customer}
           lineItem={peekLineItem}
           onOverride={() => {
-            toast.success("Override mode enabled for this quote");
+            toast.success('Override mode enabled for this quote')
           }}
         />
       )}
 
       {/* Mobile Bottom Action Bar */}
-      {mode === "detail" && (
+      {mode === 'detail' && (
         <BottomActionBar>
           {isAccepted ? (
             <>
@@ -436,5 +495,5 @@ export function QuoteDetailView({
         />
       )}
     </div>
-  );
+  )
 }

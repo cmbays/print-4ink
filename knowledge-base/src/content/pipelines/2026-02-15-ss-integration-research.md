@@ -1,6 +1,6 @@
 ---
-title: "S&S Activewear Integration Research Phase"
-subtitle: "4-agent parallel research: security, standards, architecture, infrastructure"
+title: 'S&S Activewear Integration Research Phase'
+subtitle: '4-agent parallel research: security, standards, architecture, infrastructure'
 date: 2026-02-15
 phase: 2
 pipelineName: meta
@@ -10,8 +10,8 @@ domains: [garments]
 tools: [knowledge-base]
 stage: research
 tags: [research, plan, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "main"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'main'
 status: complete
 ---
 
@@ -22,9 +22,11 @@ Launched 4 parallel research agents to investigate all dimensions of integrating
 ## Research Agents
 
 ### 1. Security Researcher
+
 **Focus**: API proxy hardening for S&S integration
 
 **Key findings**:
+
 - 4 must-fix blockers before go-live:
   1. Endpoint whitelisting (no generic proxy — SSRF risk)
   2. Pricing data stripping (`customerPrice` is commercially sensitive)
@@ -33,9 +35,11 @@ Launched 4 parallel research agents to investigate all dimensions of integrating
 - Additional: credential isolation, response caching, error sanitization, Zod request validation
 
 ### 2. Standards Researcher
+
 **Focus**: Industry standard formats across distributors
 
 **Key findings**:
+
 - **PromoStandards** is the universal industry standard (200+ members, 11 SOAP/XML services)
 - All 3 major distributors (S&S, SanMar, alphabroder) implement PromoStandards Product 2.0, Media 1.1, Inventory 2.0
 - S&S is unique: offers both proprietary REST API AND PromoStandards SOAP endpoints
@@ -46,9 +50,11 @@ Launched 4 parallel research agents to investigate all dimensions of integrating
 - **PSRESTful** provides REST/JSON proxy over PromoStandards for 430+ suppliers ($99-299/mo)
 
 ### 3. Architecture Researcher
+
 **Focus**: Multi-supplier adapter pattern design
 
 **Key findings**:
+
 - `SupplierAdapter` interface with 7 methods (getStyle, searchCatalog, getInventory, etc.)
 - `CanonicalStyle` schema for normalized product representation
 - `CacheStore` abstraction (InMemory → Upstash Redis)
@@ -57,9 +63,11 @@ Launched 4 parallel research agents to investigate all dimensions of integrating
 - Migration path: MockAdapter → SSActivewearAdapter → PromoStandardsAdapter
 
 ### 4. Infrastructure Architect
+
 **Focus**: Demo-to-production maturity path
 
 **Key findings**:
+
 - **DAL (Data Access Layer)** is the highest-leverage action — create `lib/dal/` with async mock passthrough, then swap internals for Supabase queries later
 - Recommended stack: **Supabase** (DB + Auth + Storage + Realtime) + **Drizzle ORM** (TypeScript-native, Zod integration)
 - Cost: $0 during development, ~$45/mo in production (Supabase Pro + Vercel Pro)
@@ -82,18 +90,14 @@ Launched 4 parallel research agents to investigate all dimensions of integrating
 ## Next Steps
 
 Pre-API-key work (can start immediately):
+
 1. Create `lib/dal/` with mock passthrough for all entities
 2. Update 35+ files to import from DAL
 3. Design SupplierAdapter interface + MockAdapter
 4. Define Route Handler structure for S&S proxy
 5. Set up Upstash Redis for distributed rate limiting
 
-Post-API-key work:
-6. Build SSActivewearAdapter with endpoint whitelisting
-7. Wire catalog browsing to real S&S data
-8. Replace mockup engine tinting with real product photos
-9. Add inventory availability to garment selection
-10. Build cache layer (Upstash Redis)
+Post-API-key work: 6. Build SSActivewearAdapter with endpoint whitelisting 7. Wire catalog browsing to real S&S data 8. Replace mockup engine tinting with real product photos 9. Add inventory availability to garment selection 10. Build cache layer (Upstash Redis)
 
 <div class="gary-question" data-question-id="devx-ss-q1" data-pipeline="devx" data-status="unanswered">
   <p class="gary-question-text">Do you want to use SanMar or alphabroder in addition to S&S Activewear, or is S&S sufficient for now?</p>

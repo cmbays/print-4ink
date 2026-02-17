@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Select,
@@ -6,24 +6,24 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { Button } from "@shared/ui/primitives/button";
-import { cn } from "@shared/lib/cn";
-import type { GarmentCategory } from "@domain/entities/garment";
-import type { LocationUpcharge, GarmentTypePricing } from "@domain/entities/price-matrix";
-import { Shirt, MapPin } from "lucide-react";
+} from '@shared/ui/primitives/select'
+import { Button } from '@shared/ui/primitives/button'
+import { cn } from '@shared/lib/cn'
+import type { GarmentCategory } from '@domain/entities/garment'
+import type { LocationUpcharge, GarmentTypePricing } from '@domain/entities/price-matrix'
+import { Shirt, MapPin } from 'lucide-react'
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-interface MatrixPreviewSelectorProps {
-  garmentTypes: GarmentTypePricing[];
-  locations: LocationUpcharge[];
-  selectedGarment: GarmentCategory | undefined;
-  selectedLocations: string[];
-  onGarmentChange: (category: GarmentCategory | undefined) => void;
-  onLocationsChange: (locations: string[]) => void;
+type MatrixPreviewSelectorProps = {
+  garmentTypes: GarmentTypePricing[]
+  locations: LocationUpcharge[]
+  selectedGarment: GarmentCategory | undefined
+  selectedLocations: string[]
+  onGarmentChange: (category: GarmentCategory | undefined) => void
+  onLocationsChange: (locations: string[]) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -31,20 +31,20 @@ interface MatrixPreviewSelectorProps {
 // ---------------------------------------------------------------------------
 
 const garmentLabels: Record<GarmentCategory, string> = {
-  "t-shirts": "T-Shirts",
-  "fleece": "Fleece",
-  "outerwear": "Outerwear",
-  "pants": "Pants",
-  "headwear": "Headwear",
-};
+  't-shirts': 'T-Shirts',
+  fleece: 'Fleece',
+  outerwear: 'Outerwear',
+  pants: 'Pants',
+  headwear: 'Headwear',
+}
 
 const locationLabels: Record<string, string> = {
-  "front": "Front",
-  "back": "Back",
-  "left-sleeve": "L. Sleeve",
-  "right-sleeve": "R. Sleeve",
-  "pocket": "Pocket",
-};
+  front: 'Front',
+  back: 'Back',
+  'left-sleeve': 'L. Sleeve',
+  'right-sleeve': 'R. Sleeve',
+  pocket: 'Pocket',
+}
 
 // ---------------------------------------------------------------------------
 // Component — inline variant, no container border/bg
@@ -60,11 +60,11 @@ export function MatrixPreviewSelector({
 }: MatrixPreviewSelectorProps) {
   const toggleLocation = (loc: string) => {
     if (selectedLocations.includes(loc)) {
-      onLocationsChange(selectedLocations.filter((l) => l !== loc));
+      onLocationsChange(selectedLocations.filter((l) => l !== loc))
     } else {
-      onLocationsChange([...selectedLocations, loc]);
+      onLocationsChange([...selectedLocations, loc])
     }
-  };
+  }
 
   return (
     <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center">
@@ -72,8 +72,10 @@ export function MatrixPreviewSelector({
       <div className="flex items-center gap-1.5 w-full md:w-auto">
         <Shirt className="size-3.5 text-muted-foreground shrink-0" />
         <Select
-          value={selectedGarment ?? "__none__"}
-          onValueChange={(v) => onGarmentChange(v === "__none__" ? undefined : v as GarmentCategory)}
+          value={selectedGarment ?? '__none__'}
+          onValueChange={(v) =>
+            onGarmentChange(v === '__none__' ? undefined : (v as GarmentCategory))
+          }
         >
           <SelectTrigger className="h-7 w-full md:w-[160px] text-xs">
             <SelectValue placeholder="Base (none)" />
@@ -101,31 +103,30 @@ export function MatrixPreviewSelector({
       <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-0.5 md:pb-0">
         <MapPin className="size-3.5 text-muted-foreground shrink-0 mr-0.5" />
         {locations.map((loc) => {
-          const isActive = selectedLocations.includes(loc.location);
+          const isActive = selectedLocations.includes(loc.location)
           return (
             <Button
               key={loc.location}
-              variant={isActive ? "default" : "outline"}
+              variant={isActive ? 'default' : 'outline'}
               size="sm"
-              className={cn(
-                "h-8 px-3 text-xs shrink-0",
-                isActive && "shadow-sm"
-              )}
+              className={cn('h-8 px-3 text-xs shrink-0', isActive && 'shadow-sm')}
               onClick={() => toggleLocation(loc.location)}
             >
               {locationLabels[loc.location] ?? loc.location}
               {loc.upcharge > 0 && (
-                <span className={cn(
-                  "ml-1 text-[11px]",
-                  isActive ? "opacity-70" : "text-muted-foreground"
-                )}>
+                <span
+                  className={cn(
+                    'ml-1 text-[11px]',
+                    isActive ? 'opacity-70' : 'text-muted-foreground'
+                  )}
+                >
                   +${loc.upcharge}
                 </span>
               )}
             </Button>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }

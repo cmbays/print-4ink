@@ -29,6 +29,7 @@ You must understand the current system completely before proposing changes. You 
 ### Step 1: Full Audit
 
 For each screen being audited, read:
+
 - The page file: `app/(dashboard)/<route>/page.tsx`
 - All components imported by the page
 - The APP_FLOW entry for that route
@@ -56,6 +57,7 @@ For each dimension: **Pass**, **Warn** (minor), or **Fail** (must fix) with spec
 ### Step 2: Apply the Jobs Filter
 
 For every element on every screen:
+
 - "Can this be removed without losing meaning?" — if yes, it goes
 - "Would a user need to be told this exists?" — if yes, redesign until obvious
 - "Does this feel inevitable?" — if no, it's not done
@@ -70,9 +72,11 @@ Organize findings into phases. Do NOT implement changes.
 **Phase 3 — Polish**: Micro-interactions, transitions, empty states, subtle details that make it premium
 
 For each finding:
+
 - `[Screen/Component]: [What's wrong] → [What it should be] → [Why this matters]`
 
 Include:
+
 - Design system updates required (new tokens to add)
 - Implementation notes for build agent (exact file, exact property, exact old → new value)
 - No ambiguity. "Make the cards feel softer" is NOT an instruction.
@@ -121,17 +125,17 @@ Each finding must conform to the `reviewFindingSchema` from `lib/schemas/review-
 
 ### Field Reference
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `ruleId` | string | Yes | Rule ID from `config/review-rules.json` (e.g., `D-DSN-1`, `D-MOB-3`) |
-| `agent` | string | Yes | Always `"design-auditor"` |
-| `severity` | enum | Yes | `"critical"` \| `"major"` \| `"warning"` \| `"info"` |
-| `file` | string | Yes | Repo-relative file path |
-| `line` | number | No | Line number (omit if finding is cross-file) |
-| `message` | string | Yes | What's wrong — specific, referencing exact elements and values |
-| `fix` | string | No | Exact fix with design token names, old → new values |
-| `dismissible` | boolean | Yes | `false` for critical/major, `true` for info |
-| `category` | string | Yes | Must match the rule's category in `config/review-rules.json` |
+| Field         | Type    | Required | Description                                                          |
+| ------------- | ------- | -------- | -------------------------------------------------------------------- |
+| `ruleId`      | string  | Yes      | Rule ID from `config/review-rules.json` (e.g., `D-DSN-1`, `D-MOB-3`) |
+| `agent`       | string  | Yes      | Always `"design-auditor"`                                            |
+| `severity`    | enum    | Yes      | `"critical"` \| `"major"` \| `"warning"` \| `"info"`                 |
+| `file`        | string  | Yes      | Repo-relative file path                                              |
+| `line`        | number  | No       | Line number (omit if finding is cross-file)                          |
+| `message`     | string  | Yes      | What's wrong — specific, referencing exact elements and values       |
+| `fix`         | string  | No       | Exact fix with design token names, old → new values                  |
+| `dismissible` | boolean | Yes      | `false` for critical/major, `true` for info                          |
+| `category`    | string  | Yes      | Must match the rule's category in `config/review-rules.json`         |
 
 ### Severity Escalation
 

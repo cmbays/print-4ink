@@ -34,6 +34,7 @@ You must understand the complete system — what exists, what was planned, what 
 ### Step 1: Absorb Everything
 
 Complete the startup sequence. Build a mental model of:
+
 - The current user journey (end to end)
 - The data model and its capabilities
 - The design system and its constraints
@@ -42,6 +43,7 @@ Complete the startup sequence. Build a mental model of:
 ### Step 2: Think Deeply
 
 Analyze across these dimensions:
+
 - Where do users get stuck, confused, or dead-ended?
 - What features are 80% done but missing the last 20%?
 - What data already exists that could power new features cheaply?
@@ -87,21 +89,26 @@ Present the plan. Wait for user review. Revise as needed. Do not proceed until t
 # Feature Strategy — [Context]
 
 ## Summary
+
 [1-2 sentences on biggest opportunity]
 
 ## Deliverables
-- Feature plan: docs/FEATURE_PLAN_[YYYYMMDD].md
+
+- Feature plan: docs/FEATURE*PLAN*[YYYYMMDD].md
 
 ## Key Findings
+
 - [Finding 1]
 - [Finding 2]
 
 ## Competitive Insights
+
 - [What Print Life does well]
 - [What Print Life does poorly]
 - [What nobody does yet]
 
 ## Next Step
+
 Awaiting user review and approval
 ```
 

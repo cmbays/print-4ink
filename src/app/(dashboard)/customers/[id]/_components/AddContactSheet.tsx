@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,69 +8,65 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@shared/ui/primitives/sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { Checkbox } from "@shared/ui/primitives/checkbox";
+} from '@shared/ui/primitives/sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { Checkbox } from '@shared/ui/primitives/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { CONTACT_ROLE_LABELS } from "@domain/constants";
-import { contactRoleEnum } from "@domain/entities/contact";
-import type { Group } from "@domain/entities/group";
+} from '@shared/ui/primitives/select'
+import { CONTACT_ROLE_LABELS } from '@domain/constants'
+import { contactRoleEnum } from '@domain/entities/contact'
+import type { Group } from '@domain/entities/group'
 
-interface AddContactSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  groups: Group[];
+type AddContactSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  groups: Group[]
 }
 
-export function AddContactSheet({
-  open,
-  onOpenChange,
-  groups,
-}: AddContactSheetProps) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [role, setRole] = useState<string>("ordering");
-  const [roleDescription, setRoleDescription] = useState("");
-  const [groupId, setGroupId] = useState<string>("none");
-  const [isPrimary, setIsPrimary] = useState(false);
+export function AddContactSheet({ open, onOpenChange, groups }: AddContactSheetProps) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [role, setRole] = useState<string>('ordering')
+  const [roleDescription, setRoleDescription] = useState('')
+  const [groupId, setGroupId] = useState<string>('none')
+  const [isPrimary, setIsPrimary] = useState(false)
 
   function handleAdd() {
     // Phase 1: No actual save
-    console.log("Contact added", {
+    console.log('Contact added', {
       name,
       email: email || undefined,
       phone: phone || undefined,
       role,
-      roleDescription: role === "other" ? roleDescription || undefined : undefined,
-      groupId: groupId === "none" ? undefined : groupId,
+      roleDescription: role === 'other' ? roleDescription || undefined : undefined,
+      groupId: groupId === 'none' ? undefined : groupId,
       isPrimary,
-    });
-    resetForm();
-    onOpenChange(false);
+    })
+    resetForm()
+    onOpenChange(false)
   }
 
   function resetForm() {
-    setName("");
-    setEmail("");
-    setPhone("");
-    setRole("ordering");
-    setRoleDescription("");
-    setGroupId("none");
-    setIsPrimary(false);
+    setName('')
+    setEmail('')
+    setPhone('')
+    setRole('ordering')
+    setRoleDescription('')
+    setGroupId('none')
+    setIsPrimary(false)
   }
 
   function handleOpenChange(nextOpen: boolean) {
-    if (!nextOpen) resetForm();
-    onOpenChange(nextOpen);
+    if (!nextOpen) resetForm()
+    onOpenChange(nextOpen)
   }
 
   return (
@@ -78,9 +74,7 @@ export function AddContactSheet({
       <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>Add Contact</SheetTitle>
-          <SheetDescription>
-            Add a new contact person to this customer.
-          </SheetDescription>
+          <SheetDescription>Add a new contact person to this customer.</SheetDescription>
         </SheetHeader>
 
         <div className="px-4 space-y-4">
@@ -123,8 +117,8 @@ export function AddContactSheet({
             <Select
               value={role}
               onValueChange={(value) => {
-                setRole(value);
-                if (value !== "other") setRoleDescription("");
+                setRole(value)
+                if (value !== 'other') setRoleDescription('')
               }}
             >
               <SelectTrigger className="w-full" aria-label="Contact role">
@@ -138,7 +132,7 @@ export function AddContactSheet({
                 ))}
               </SelectContent>
             </Select>
-            {role === "other" && (
+            {role === 'other' && (
               <Input
                 id="contact-role-description"
                 value={roleDescription}
@@ -188,5 +182,5 @@ export function AddContactSheet({
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

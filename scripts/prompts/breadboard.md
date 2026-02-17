@@ -19,6 +19,7 @@ Create a comprehensive breadboard document that maps all UI affordances, code af
 ## Breadboard Structure
 
 For each Place (page, modal, drawer):
+
 1. **Affordances**: Every button, link, input, toggle, dropdown
 2. **Wiring**: What each affordance does (navigation, data mutation, state change)
 3. **Data flow**: What data enters and leaves each place
@@ -28,6 +29,7 @@ For each Place (page, modal, drawer):
 ## Output
 
 Produce breadboard doc at `docs/breadboards/{VERTICAL}-breadboard.md` with:
+
 - Place inventory with affordance maps
 - Wiring diagrams (Mermaid if helpful)
 - Component boundary definitions
@@ -35,6 +37,7 @@ Produce breadboard doc at `docs/breadboards/{VERTICAL}-breadboard.md` with:
 - Estimated complexity per place
 
 Also produce a KB session doc at `{KB_DIR}/YYYY-MM-DD-{VERTICAL}-breadboard.md` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=breadboarding, tags=[plan]
 - Summary of breadboard decisions
 - Any open questions or Gary items

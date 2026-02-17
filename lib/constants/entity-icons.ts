@@ -6,17 +6,11 @@
  * @domain/constants/entities.
  */
 
-import {
-  Hammer,
-  FileSignature,
-  Receipt,
-  StickyNote,
-  type LucideIcon,
-} from "lucide-react";
+import { Hammer, FileSignature, Receipt, StickyNote, type LucideIcon } from 'lucide-react'
 
 export const ENTITY_ICONS: Record<string, LucideIcon> = {
   job: Hammer,
   quote: FileSignature,
   invoice: Receipt,
   scratch_note: StickyNote,
-} as const;
+} as const

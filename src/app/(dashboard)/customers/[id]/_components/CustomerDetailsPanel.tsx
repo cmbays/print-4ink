@@ -1,53 +1,42 @@
-"use client";
+'use client'
 
-import { MapPin, Building2, CreditCard, Calendar, UserPlus } from "lucide-react";
-import { Badge } from "@shared/ui/primitives/badge";
-import { LifecycleBadge } from "@/components/features/LifecycleBadge";
-import { HealthBadge } from "@/components/features/HealthBadge";
-import { TypeTagBadges } from "@/components/features/TypeTagBadges";
+import { MapPin, Building2, CreditCard, Calendar, UserPlus } from 'lucide-react'
+import { Badge } from '@shared/ui/primitives/badge'
+import { LifecycleBadge } from '@/components/features/LifecycleBadge'
+import { HealthBadge } from '@/components/features/HealthBadge'
+import { TypeTagBadges } from '@/components/features/TypeTagBadges'
 
-import {
-  PAYMENT_TERMS_LABELS,
-  PRICING_TIER_LABELS,
-} from "@domain/constants";
-import type { Customer } from "@domain/entities/customer";
-import type { Address } from "@domain/entities/address";
+import { PAYMENT_TERMS_LABELS, PRICING_TIER_LABELS } from '@domain/constants'
+import type { Customer } from '@domain/entities/customer'
+import type { Address } from '@domain/entities/address'
 
-interface CustomerDetailsPanelProps {
-  customer: Customer;
-  customers?: Customer[];
+type CustomerDetailsPanelProps = {
+  customer: Customer
+  customers?: Customer[]
 }
 
-function FieldRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5 sm:flex-row sm:items-start sm:gap-4">
-      <dt className="text-xs text-muted-foreground shrink-0 sm:w-32">
-        {label}
-      </dt>
+      <dt className="text-xs text-muted-foreground shrink-0 sm:w-32">{label}</dt>
       <dd className="text-sm text-foreground">{children}</dd>
     </div>
-  );
+  )
 }
 
 function SectionHeader({
   icon: Icon,
   title,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
+  icon: React.ComponentType<{ className?: string }>
+  title: string
 }) {
   return (
     <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider pb-2 border-b border-border">
       <Icon className="size-3.5" />
       {title}
     </div>
-  );
+  )
 }
 
 function AddressBlock({ address }: { address: Address }) {
@@ -69,16 +58,11 @@ function AddressBlock({ address }: { address: Address }) {
         </p>
       </div>
     </div>
-  );
+  )
 }
 
-export function CustomerDetailsPanel({
-  customer,
-  customers,
-}: CustomerDetailsPanelProps) {
-  const referrer = customers?.find(
-    (c) => c.id === customer.referredByCustomerId
-  );
+export function CustomerDetailsPanel({ customer, customers }: CustomerDetailsPanelProps) {
+  const referrer = customers?.find((c) => c.id === customer.referredByCustomerId)
 
   return (
     <div className="space-y-6">
@@ -93,7 +77,7 @@ export function CustomerDetailsPanel({
             <LifecycleBadge stage={customer.lifecycleStage} />
           </FieldRow>
           <FieldRow label="Health">
-            {customer.healthStatus === "active" ? (
+            {customer.healthStatus === 'active' ? (
               <span className="text-success text-sm">Active</span>
             ) : (
               <HealthBadge status={customer.healthStatus} />
@@ -111,16 +95,10 @@ export function CustomerDetailsPanel({
       <section className="space-y-3">
         <SectionHeader icon={CreditCard} title="Financial" />
         <dl className="space-y-3">
-          <FieldRow label="Payment Terms">
-            {PAYMENT_TERMS_LABELS[customer.paymentTerms]}
-          </FieldRow>
-          <FieldRow label="Pricing Tier">
-            {PRICING_TIER_LABELS[customer.pricingTier]}
-          </FieldRow>
+          <FieldRow label="Payment Terms">{PAYMENT_TERMS_LABELS[customer.paymentTerms]}</FieldRow>
+          <FieldRow label="Pricing Tier">{PRICING_TIER_LABELS[customer.pricingTier]}</FieldRow>
           {customer.discountPercentage !== undefined && (
-            <FieldRow label="Discount">
-              {customer.discountPercentage}%
-            </FieldRow>
+            <FieldRow label="Discount">{customer.discountPercentage}%</FieldRow>
           )}
           <FieldRow label="Tax Exempt">
             {customer.taxExempt ? (
@@ -128,16 +106,12 @@ export function CustomerDetailsPanel({
                 Yes
                 {customer.taxExemptCertExpiry && (
                   <span className="text-muted-foreground ml-1">
-                    (expires{" "}
-                    {new Date(
-                      customer.taxExemptCertExpiry
-                    ).toLocaleDateString()}
-                    )
+                    (expires {new Date(customer.taxExemptCertExpiry).toLocaleDateString()})
                   </span>
                 )}
               </span>
             ) : (
-              "No"
+              'No'
             )}
           </FieldRow>
         </dl>
@@ -170,9 +144,7 @@ export function CustomerDetailsPanel({
       <section className="space-y-3">
         <SectionHeader icon={Calendar} title="Metadata" />
         <dl className="space-y-3">
-          <FieldRow label="Created">
-            {new Date(customer.createdAt).toLocaleDateString()}
-          </FieldRow>
+          <FieldRow label="Created">{new Date(customer.createdAt).toLocaleDateString()}</FieldRow>
           <FieldRow label="Last Updated">
             {new Date(customer.updatedAt).toLocaleDateString()}
           </FieldRow>
@@ -187,5 +159,5 @@ export function CustomerDetailsPanel({
         </dl>
       </section>
     </div>
-  );
+  )
 }

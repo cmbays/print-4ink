@@ -7,6 +7,7 @@
 ## Problem
 
 Screen Print Pro has 5 verticals built but weak project management scaffolding. Specific gaps:
+
 1. **Task tracking**: No structured view of what's done, in progress, or next across verticals
 2. **Forward planning**: No roadmap artifact; strategic decisions live in the user's head
 3. **Feedback capture**: No structured way to log user/tester feedback and route it to the right vertical
@@ -19,12 +20,14 @@ Screen Print Pro has 5 verticals built but weak project management scaffolding. 
 ### PM Philosophy: Shape Up (Adapted)
 
 Adopted Basecamp's Shape Up methodology adapted for solo-dev-with-AI:
+
 - **Shaping** = discovery + scope + breadboarding (already established in vertical pipeline)
 - **Betting** = deciding what to build next (gap being filled by ROADMAP.md)
 - **Building** = implementation pipeline (already working)
 - **Cool-down** = new phase for retrospective and forward planning (new skill)
 
 Rejected alternatives:
+
 - **Linear** — designed for multi-human teams; sync burden outweighs benefits for solo dev
 - **Scrum** — too much ceremony for one developer
 - **Pure Kanban** — lacks the planning/shaping phase needed for strategic work
@@ -32,6 +35,7 @@ Rejected alternatives:
 ### PM Tool: GitHub Issues + Projects
 
 Chose GitHub Issues over Linear because:
+
 - Already in the workflow (gh CLI, GitHub plugin, PRs)
 - PR-to-issue linking is automatic
 - Claude can manage issues via existing GitHub MCP
@@ -52,6 +56,7 @@ KB Sessions              — Historical: what happened and what did we learn?
 ### Label Taxonomy
 
 Multi-dimensional issue labeling:
+
 - **vertical/** (9 values) — which domain area
 - **type/** (7 values) — what kind of work
 - **priority/** (4 values) — when to address
@@ -61,6 +66,7 @@ Multi-dimensional issue labeling:
 ### Cool-Down Skill
 
 5-step structured process:
+
 1. HARVEST (deterministic) — read all project state
 2. SYNTHESIZE (nondeterministic) — find patterns and themes
 3. SHAPE CANDIDATES (nondeterministic) — propose 2-3 pitches
@@ -75,16 +81,16 @@ Horizontal foundation work needed before Phase 2 vertical backends. Shaped as re
 
 ### Plugin Decisions
 
-| Plugin | Action | Reasoning |
-|--------|--------|-----------|
-| supabase (official) | Keep | Official plugin, MCP integration |
-| supabase-toolkit | Remove | Overlapping functionality |
-| nextjs-vercel-pro | Keep for Vercel | Ignore Linear/Neon MCPs for now |
-| project-management-suite | Skip | Value is Linear/Neon — not using Linear |
-| sentry | Keep, activate Phase 2 | No value during mockup phase |
-| firecrawl | Keep | Valuable for research/discovery |
-| hookify | Keep and configure | Solves permission fatigue |
-| coderabbit | Keep | Code review quality |
+| Plugin                   | Action                 | Reasoning                               |
+| ------------------------ | ---------------------- | --------------------------------------- |
+| supabase (official)      | Keep                   | Official plugin, MCP integration        |
+| supabase-toolkit         | Remove                 | Overlapping functionality               |
+| nextjs-vercel-pro        | Keep for Vercel        | Ignore Linear/Neon MCPs for now         |
+| project-management-suite | Skip                   | Value is Linear/Neon — not using Linear |
+| sentry                   | Keep, activate Phase 2 | No value during mockup phase            |
+| firecrawl                | Keep                   | Valuable for research/discovery         |
+| hookify                  | Keep and configure     | Solves permission fatigue               |
+| coderabbit               | Keep                   | Code review quality                     |
 
 ## Artifacts Produced
 

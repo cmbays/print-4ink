@@ -1,6 +1,6 @@
 ---
-title: "DTF Gang Sheet Builder — Breadboard Reflection"
-subtitle: "5 wiring smells found and fixed, 17 affordances pass naming test, 7 user stories traced"
+title: 'DTF Gang Sheet Builder — Breadboard Reflection'
+subtitle: '5 wiring smells found and fixed, 17 affordances pass naming test, 7 user stories traced'
 date: 2026-02-15
 phase: 1
 pipelineName: dtf-gang-sheet
@@ -9,8 +9,8 @@ products: [quotes]
 tools: []
 stage: breadboard
 tags: [plan, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0215-dtf-gang-sheet-research"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0215-dtf-gang-sheet-research'
 status: complete
 ---
 
@@ -26,13 +26,13 @@ claude --resume 0ba68ef8-1b02-40be-a039-2c63d6d15cd1
 
 ## Audit Summary
 
-| Check | Result |
-|-------|--------|
+| Check               | Result                                        |
+| ------------------- | --------------------------------------------- |
 | User stories traced | 7 (R0, R1.1, R1.2, R1.3, R2.1, R2.3+R3, R4.1) |
-| Naming test | 17/17 pass |
-| Diagram-only nodes | 0 |
-| Smells found | 5 |
-| Smells fixed | 5 |
+| Naming test         | 17/17 pass                                    |
+| Diagram-only nodes  | 0                                             |
+| Smells found        | 5                                             |
+| Smells fixed        | 5                                             |
 
 ## Smells Found & Fixed
 

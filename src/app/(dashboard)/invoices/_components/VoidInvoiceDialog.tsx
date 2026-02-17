@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from 'react'
+import { AlertTriangle } from 'lucide-react'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,28 +12,24 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@shared/ui/primitives/alert-dialog";
-import { Textarea } from "@shared/ui/primitives/textarea";
-import { Label } from "@shared/ui/primitives/label";
+} from '@shared/ui/primitives/alert-dialog'
+import { Textarea } from '@shared/ui/primitives/textarea'
+import { Label } from '@shared/ui/primitives/label'
 
-interface VoidInvoiceDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  invoiceNumber: string;
+type VoidInvoiceDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  invoiceNumber: string
 }
 
-export function VoidInvoiceDialog({
-  open,
-  onOpenChange,
-  invoiceNumber,
-}: VoidInvoiceDialogProps) {
-  const [reason, setReason] = useState("");
-  const isValid = reason.trim().length > 0;
+export function VoidInvoiceDialog({ open, onOpenChange, invoiceNumber }: VoidInvoiceDialogProps) {
+  const [reason, setReason] = useState('')
+  const isValid = reason.trim().length > 0
 
   function handleVoid() {
-    toast.success(`${invoiceNumber} has been voided`);
-    setReason("");
-    onOpenChange(false);
+    toast.success(`${invoiceNumber} has been voided`)
+    setReason('')
+    onOpenChange(false)
   }
 
   return (
@@ -45,8 +41,8 @@ export function VoidInvoiceDialog({
             Void {invoiceNumber}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. The invoice will be permanently voided
-            and no further payments can be recorded against it.
+            This action cannot be undone. The invoice will be permanently voided and no further
+            payments can be recorded against it.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -62,9 +58,7 @@ export function VoidInvoiceDialog({
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setReason("")}>
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel onClick={() => setReason('')}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleVoid}
             disabled={!isValid}
@@ -75,5 +69,5 @@ export function VoidInvoiceDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

@@ -1,6 +1,6 @@
 ---
-title: "Mobile Optimization — Competitive Analysis"
-description: "Competitor mobile landscape, industry best practices, and gap analysis for screen print shop management on mobile devices"
+title: 'Mobile Optimization — Competitive Analysis'
+description: 'Competitor mobile landscape, industry best practices, and gap analysis for screen print shop management on mobile devices'
 category: competitive-analysis
 status: complete
 phase: 1
@@ -18,12 +18,12 @@ last-verified: 2026-02-14
 
 ## Terminology: Responsive vs Mobile-Optimized vs Native
 
-| Term | Definition | Our Phase |
-|------|-----------|-----------|
-| **Responsive Web** | Desktop site adapts to mobile viewport via CSS breakpoints. Functional but not optimized for touch/mobile workflows. | **Phase 1** (current task) |
-| **Mobile-Optimized Web** | Responsive + touch-first interactions, mobile navigation patterns, optimized performance. Feels native-like in browser. | **Phase 1** (target) |
-| **PWA** | Mobile-optimized web + offline support, push notifications, home screen install, app-like shell. | **Phase 2** |
-| **Native App** | iOS/Android app via React Native, Expo, or Swift/Kotlin. Full device API access. | **Phase 3** (future) |
+| Term                     | Definition                                                                                                              | Our Phase                  |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| **Responsive Web**       | Desktop site adapts to mobile viewport via CSS breakpoints. Functional but not optimized for touch/mobile workflows.    | **Phase 1** (current task) |
+| **Mobile-Optimized Web** | Responsive + touch-first interactions, mobile navigation patterns, optimized performance. Feels native-like in browser. | **Phase 1** (target)       |
+| **PWA**                  | Mobile-optimized web + offline support, push notifications, home screen install, app-like shell.                        | **Phase 2**                |
+| **Native App**           | iOS/Android app via React Native, Expo, or Swift/Kotlin. Full device API access.                                        | **Phase 3** (future)       |
 
 ---
 
@@ -37,6 +37,7 @@ last-verified: 2026-02-14
 - **Pricing**: From $99/month (mobile included)
 
 **Critical Finding — Mobile App is Broken**:
+
 - Multiple App Store reviews report the app "doesn't load" on fully updated iPhones
 - Users describe it as going "through phases where it mostly works and then won't open for months"
 - As of March 2025, users still report the app will not load
@@ -130,18 +131,18 @@ last-verified: 2026-02-14
 
 ## Mobile Feature Parity Table
 
-| Feature | Printavo | InkSoft | DecoNetwork | ShopVOX | Teesom | YoPrint | Jobber |
-|---------|----------|---------|-------------|---------|--------|---------|--------|
-| Native iOS App | ✅ (broken) | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Native Android App | ✅ (broken) | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Responsive Web | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Mobile-Optimized UX | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ |
-| Push Notifications | ⚠️ (app broken) | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Offline Access | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ |
-| Photo Capture | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| On-Site Invoicing | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Mobile Job Status | ⚠️ (unreliable) | ❌ | ❌ | ⚠️ (web) | ⚠️ (web) | ⚠️ (web) | ✅ |
-| Mobile Quoting | ⚠️ (unreliable) | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Feature             | Printavo        | InkSoft | DecoNetwork | ShopVOX  | Teesom   | YoPrint  | Jobber |
+| ------------------- | --------------- | ------- | ----------- | -------- | -------- | -------- | ------ |
+| Native iOS App      | ✅ (broken)     | ❌      | ❌          | ❌       | ❌       | ❌       | ✅     |
+| Native Android App  | ✅ (broken)     | ❌      | ❌          | ❌       | ❌       | ❌       | ✅     |
+| Responsive Web      | ✅              | ✅      | ✅          | ✅       | ✅       | ✅       | ✅     |
+| Mobile-Optimized UX | ❌              | ❌      | ❌          | ❌       | ❌       | ⚠️       | ✅     |
+| Push Notifications  | ⚠️ (app broken) | ❌      | ❌          | ❌       | ❌       | ❌       | ✅     |
+| Offline Access      | ❌              | ❌      | ❌          | ❌       | ❌       | ❌       | ⚠️     |
+| Photo Capture       | ❌              | ❌      | ❌          | ❌       | ❌       | ❌       | ✅     |
+| On-Site Invoicing   | ❌              | ❌      | ❌          | ❌       | ❌       | ❌       | ✅     |
+| Mobile Job Status   | ⚠️ (unreliable) | ❌      | ❌          | ⚠️ (web) | ⚠️ (web) | ⚠️ (web) | ✅     |
+| Mobile Quoting      | ⚠️ (unreliable) | ❌      | ❌          | ❌       | ❌       | ❌       | ✅     |
 
 **Legend**: ✅ = Available & Good | ⚠️ = Partial/Unreliable | ❌ = Not Available
 
@@ -172,30 +173,35 @@ last-verified: 2026-02-14
 ## Mobile UX Best Practices (Industry Standards)
 
 ### Touch-First Design
+
 - **Minimum touch target**: 48x48dp (Material Design) / 44x44px (WCAG 2.5.8)
 - **Thumb zone**: Place primary actions in bottom 40% of screen (reachable with one thumb)
 - **Gesture patterns**: Swipe to reveal actions, pull-to-refresh for data, long-press for context menus
 - **No hover dependencies**: Every hover interaction must have a tap equivalent
 
 ### Navigation Patterns for Management Apps
+
 - **Bottom tab bar** (recommended for primary navigation): Max 5 items — Dashboard, Jobs, Quotes, Customers, More
 - **Hamburger menu**: Acceptable for secondary navigation but hides discoverability
 - **Contextual back navigation**: Deep views use breadcrumbs on desktop, back arrow on mobile
 - **Best practice**: Combine bottom tabs (primary) + hamburger/drawer (secondary/settings)
 
 ### Data-Heavy Screens on Mobile
+
 - **Tables → Card layouts**: Convert tabular data to stacked cards on mobile
 - **Priority column**: Show only the most important 2-3 columns, hide rest behind "expand"
 - **Horizontal scroll**: Acceptable for truly tabular data, but cards are preferred
 - **Search/filter first**: On mobile, search is more important than browsing
 
 ### Forms on Mobile
+
 - **Single column only**: Never side-by-side fields on mobile
 - **Progressive disclosure**: Multi-step wizards instead of long scrolling forms
 - **Large input fields**: Minimum 44px height, generous padding
 - **Native inputs**: Use date pickers, dropdowns, etc. that trigger native mobile controls
 
 ### Performance
+
 - **Skeleton screens** over spinners (perceived performance)
 - **Lazy loading** for off-screen content
 - **Optimistic updates** for actions (show success immediately, sync in background)
@@ -208,6 +214,7 @@ last-verified: 2026-02-14
 Based on DHH's argument (37signals) and industry research:
 
 ### Phase 1: Mobile-Optimized Responsive Web (NOW)
+
 - Fix all mobile layout issues
 - Implement touch-first interactions
 - Mobile navigation (bottom tabs)
@@ -216,6 +223,7 @@ Based on DHH's argument (37signals) and industry research:
 - **Timeline**: 2-4 weeks
 
 ### Phase 2: PWA Enhancement (NEXT)
+
 - Service worker for offline shell + cached data
 - Push notifications (supported on iOS since 2023)
 - Home screen install prompt
@@ -224,6 +232,7 @@ Based on DHH's argument (37signals) and industry research:
 - **Timeline**: 2-3 weeks after Phase 1
 
 ### Phase 3: Native App (FUTURE — when profitable/scaled)
+
 - React Native or Expo (shared codebase with web)
 - Full device API access (camera, barcode, NFC)
 - App Store presence for discoverability
@@ -232,6 +241,7 @@ Based on DHH's argument (37signals) and industry research:
 - **Trigger**: When user base justifies App Store investment
 
 ### Why PWA First (DHH's Argument)
+
 > "The barrier to becoming competitive requires ropes of external funding to scale. A single developer cannot realistically handle web, iOS, and Android simultaneously."
 
 - PWAs offer 40-60% lower development costs

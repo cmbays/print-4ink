@@ -1,22 +1,18 @@
-"use client";
+'use client'
 
-import { Heart, Check } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { cn } from "@shared/lib/cn";
-import { swatchTextStyle } from "@/lib/helpers/swatch";
-import type { Color } from "@domain/entities/color";
+import { Heart, Check } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { cn } from '@shared/lib/cn'
+import { swatchTextStyle } from '@/lib/helpers/swatch'
+import type { Color } from '@domain/entities/color'
 
-interface FavoritesColorSectionProps {
-  favorites: Color[];
-  allColors: Color[];
-  onToggle: (colorId: string) => void;
-  readOnly?: boolean;
-  showBadges?: boolean;
-  badgeData?: Map<string, "inherited" | "added">;
+type FavoritesColorSectionProps = {
+  favorites: Color[]
+  allColors: Color[]
+  onToggle: (colorId: string) => void
+  readOnly?: boolean
+  showBadges?: boolean
+  badgeData?: Map<string, 'inherited' | 'added'>
 }
 
 export function ColorSwatch({
@@ -26,11 +22,11 @@ export function ColorSwatch({
   readOnly,
   badge,
 }: {
-  color: Color;
-  isFavorite: boolean;
-  onClick: () => void;
-  readOnly?: boolean;
-  badge?: "inherited" | "added";
+  color: Color
+  isFavorite: boolean
+  onClick: () => void
+  readOnly?: boolean
+  badge?: 'inherited' | 'added'
 }) {
   return (
     <Tooltip>
@@ -49,13 +45,13 @@ export function ColorSwatch({
           onClick={readOnly ? undefined : onClick}
           disabled={readOnly}
           className={cn(
-            "relative flex h-10 w-10 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) flex-shrink-0 items-center justify-center rounded-sm transition-transform",
-            "md:h-10 md:w-10 md:min-h-0 md:min-w-0",
-            !readOnly && "cursor-pointer hover:scale-105 hover:ring-1 hover:ring-foreground/30",
-            readOnly && "cursor-default opacity-80",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            "motion-reduce:transition-none",
-            isFavorite && "ring-2 ring-action"
+            'relative flex h-10 w-10 min-h-(--mobile-touch-target) min-w-(--mobile-touch-target) flex-shrink-0 items-center justify-center rounded-sm transition-transform',
+            'md:h-10 md:w-10 md:min-h-0 md:min-w-0',
+            !readOnly && 'cursor-pointer hover:scale-105 hover:ring-1 hover:ring-foreground/30',
+            readOnly && 'cursor-default opacity-80',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            'motion-reduce:transition-none',
+            isFavorite && 'ring-2 ring-action'
           )}
           style={{ backgroundColor: color.hex }}
         >
@@ -78,8 +74,8 @@ export function ColorSwatch({
           {badge && (
             <span
               className={cn(
-                "absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full",
-                badge === "inherited" ? "bg-action" : "bg-success"
+                'absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full',
+                badge === 'inherited' ? 'bg-action' : 'bg-success'
               )}
               aria-hidden="true"
             />
@@ -88,14 +84,10 @@ export function ColorSwatch({
       </TooltipTrigger>
       <TooltipContent side="bottom" sideOffset={6}>
         <span>{color.name}</span>
-        {badge && (
-          <span className="ml-1 text-muted-foreground">
-            ({badge})
-          </span>
-        )}
+        {badge && <span className="ml-1 text-muted-foreground">({badge})</span>}
       </TooltipContent>
     </Tooltip>
-  );
+  )
 }
 
 export function FavoritesColorSection({
@@ -106,8 +98,8 @@ export function FavoritesColorSection({
   showBadges,
   badgeData,
 }: FavoritesColorSectionProps) {
-  const favoriteIds = new Set(favorites.map((c) => c.id));
-  const nonFavorites = allColors.filter((c) => !favoriteIds.has(c.id));
+  const favoriteIds = new Set(favorites.map((c) => c.id))
+  const nonFavorites = allColors.filter((c) => !favoriteIds.has(c.id))
 
   return (
     <div className="flex flex-col gap-4">
@@ -118,15 +110,9 @@ export function FavoritesColorSection({
           Favorites ({favorites.length})
         </p>
         {favorites.length === 0 ? (
-          <p className="py-3 text-sm text-muted-foreground">
-            No favorites set
-          </p>
+          <p className="py-3 text-sm text-muted-foreground">No favorites set</p>
         ) : (
-          <div
-            className="flex flex-wrap gap-1"
-            role="group"
-            aria-label="Favorite colors"
-          >
+          <div className="flex flex-wrap gap-1" role="group" aria-label="Favorite colors">
             {favorites.map((color) => (
               <ColorSwatch
                 key={`fav-${color.id}`}
@@ -147,11 +133,7 @@ export function FavoritesColorSection({
           <p className="mb-2 text-xs font-medium text-muted-foreground">
             All Colors ({nonFavorites.length})
           </p>
-          <div
-            className="flex flex-wrap gap-1"
-            role="group"
-            aria-label="All colors"
-          >
+          <div className="flex flex-wrap gap-1" role="group" aria-label="All colors">
             {nonFavorites.map((color) => (
               <ColorSwatch
                 key={color.id}
@@ -164,5 +146,5 @@ export function FavoritesColorSection({
         </div>
       )}
     </div>
-  );
+  )
 }

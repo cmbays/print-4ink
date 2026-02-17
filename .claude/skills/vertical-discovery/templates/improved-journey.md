@@ -1,6 +1,6 @@
 ---
-title: "Screen Print Pro — Improved [VERTICAL] Journey"
-description: "Redesigned [VERTICAL] workflow addressing all friction points from competitor analysis"
+title: 'Screen Print Pro — Improved [VERTICAL] Journey'
+description: 'Redesigned [VERTICAL] workflow addressing all friction points from competitor analysis'
 category: strategy
 status: draft
 phase: 1
@@ -22,11 +22,11 @@ depends-on:
 
 ## Terminology: Internal vs External [VERTICAL]
 
-| Term | Definition | Phase |
-|------|-----------|-------|
-| **Internal [VERTICAL]** | Shop operator performs [TASK] using internal tools. | **Phase 1** (building now) |
-| **External [VERTICAL]** | Customer self-service for [TASK]. | **Phase 2** |
-| **Hybrid Approval** | Customer self-service + shop approval gate. | **Phase 2** (shop-side status tracking in Phase 1) |
+| Term                    | Definition                                          | Phase                                              |
+| ----------------------- | --------------------------------------------------- | -------------------------------------------------- |
+| **Internal [VERTICAL]** | Shop operator performs [TASK] using internal tools. | **Phase 1** (building now)                         |
+| **External [VERTICAL]** | Customer self-service for [TASK].                   | **Phase 2**                                        |
+| **Hybrid Approval**     | Customer self-service + shop approval gate.         | **Phase 2** (shop-side status tracking in Phase 1) |
 
 **Phase 1 builds**: [INTERNAL DESCRIPTION]. All customer-facing flows show UI mockups but don't actually [SEND/PROCESS].
 **Phase 2 builds**: [EXTERNAL DESCRIPTION].
@@ -46,12 +46,14 @@ depends-on:
 ### Internal [TASK] (Shop builds for customer)
 
 **Target**:
+
 - Simple [TASK]: **[X] minutes**, **[X] clicks** (vs [COMPETITOR] [X] min, [X] clicks)
 - Complex [TASK]: **[X] minutes**, **[X] clicks** (vs [COMPETITOR] [X] min, [X] clicks)
 
 ### External [TASK] (Customer self-service) — PHASE 2
 
 **Target** (aspirational, not building in Phase 1):
+
 - [DESCRIPTION]
 
 ---
@@ -72,12 +74,12 @@ END: [RESULT]
 
 ## Key Differences from [COMPETITOR]
 
-| Aspect | [COMPETITOR] | Screen Print Pro |
-|--------|-------------|-----------------|
-| **Flow** | | |
-| **Steps** | | |
-| **Speed** | | |
-| **State** | | |
+| Aspect    | [COMPETITOR] | Screen Print Pro |
+| --------- | ------------ | ---------------- |
+| **Flow**  |              |                  |
+| **Steps** |              |                  |
+| **Speed** |              |                  |
+| **State** |              |                  |
 
 ---
 
@@ -97,20 +99,20 @@ END: [RESULT]
 
 ## Friction Point Resolution Summary
 
-| # | [COMPETITOR] Friction | Our Solution | Status |
-|---|---|---|---|
-| 1 | | | CORE / PHASE 2 |
-| 2 | | | |
+| #   | [COMPETITOR] Friction | Our Solution | Status         |
+| --- | --------------------- | ------------ | -------------- |
+| 1   |                       |              | CORE / PHASE 2 |
+| 2   |                       |              |                |
 
 ---
 
 ## Success Metrics
 
-| Metric | [COMPETITOR] (Actual) | Target | Improvement |
-|--------|---|---|---|
-| Simple [TASK] time | | | |
-| Complex [TASK] time | | | |
-| Simple [TASK] clicks | | | |
+| Metric               | [COMPETITOR] (Actual) | Target | Improvement |
+| -------------------- | --------------------- | ------ | ----------- |
+| Simple [TASK] time   |                       |        |             |
+| Complex [TASK] time  |                       |        |             |
+| Simple [TASK] clicks |                       |        |             |
 
 ---
 

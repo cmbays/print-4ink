@@ -1,16 +1,16 @@
 ---
-title: "Work DevX — Session Persistence + Per-Worktree Environment"
-subtitle: "direnv integration, persistent Claude session store, and work resume --new-worktree"
+title: 'Work DevX — Session Persistence + Per-Worktree Environment'
+subtitle: 'direnv integration, persistent Claude session store, and work resume --new-worktree'
 date: 2026-02-17
 phase: 1
-pipelineName: "work-devx-session-persistence"
+pipelineName: 'work-devx-session-persistence'
 pipelineType: horizontal
 products: []
 tools: [work-orchestrator]
 stage: build
 tags: [build, decision]
-sessionId: "0a1b62cb-84e6-46ff-b178-9021bb5a09ae"
-branch: "session/0217-work-devx-session-persistence"
+sessionId: '0a1b62cb-84e6-46ff-b178-9021bb5a09ae'
+branch: 'session/0217-work-devx-session-persistence'
 status: complete
 ---
 
@@ -26,14 +26,14 @@ Make worktree sessions fully resumable after cleanup, with rich per-worktree env
 
 **PR [#458](https://github.com/cmbays/print-4ink/pull/458)** — 7 commits, 3 files changed (`scripts/work.sh`, `scripts/lib/registry.sh`, `.gitignore`)
 
-| Task | Change | Key Design |
-|------|--------|------------|
-| 1 | `.gitignore` — `.envrc` + `.claude-sessions.json` | Global ignore (all `.envrc` are generated artifacts) |
-| 2 | `_work_new` writes per-worktree `.envrc` | Unquoted `<<ENVRC` so variables expand at write-time |
-| 3 | Two-phase polling in `_poll_claude_session_id` | 1s for first 15s (fast window) → 5s after; all `local` before loop |
-| 4 | Persistent store (`_sessions_persistent_*`) | `mktemp+mv` atomic writes; `\|=` merge preserves existing sessionId on topic reuse |
-| 5 | `work resume` rewrite + `--new-worktree` flag | Persistent store lookup first; collision check on resume branch |
-| 6 | Context-aware `work status`/`work end` | `$WORK_PIPELINE_ID` auto-injected; `${arg:0:2} != "--"` rejects flag-shaped args |
+| Task | Change                                            | Key Design                                                                         |
+| ---- | ------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| 1    | `.gitignore` — `.envrc` + `.claude-sessions.json` | Global ignore (all `.envrc` are generated artifacts)                               |
+| 2    | `_work_new` writes per-worktree `.envrc`          | Unquoted `<<ENVRC` so variables expand at write-time                               |
+| 3    | Two-phase polling in `_poll_claude_session_id`    | 1s for first 15s (fast window) → 5s after; all `local` before loop                 |
+| 4    | Persistent store (`_sessions_persistent_*`)       | `mktemp+mv` atomic writes; `\|=` merge preserves existing sessionId on topic reuse |
+| 5    | `work resume` rewrite + `--new-worktree` flag     | Persistent store lookup first; collision check on resume branch                    |
+| 6    | Context-aware `work status`/`work end`            | `$WORK_PIPELINE_ID` auto-injected; `${arg:0:2} != "--"` rejects flag-shaped args   |
 
 ## Key Design Decisions
 

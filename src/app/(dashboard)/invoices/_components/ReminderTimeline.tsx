@@ -1,9 +1,9 @@
-import type { Reminder } from "@domain/entities/invoice";
-import { Bell } from "lucide-react";
-import { formatDate } from "@shared/lib/format";
+import type { Reminder } from '@domain/entities/invoice'
+import { Bell } from 'lucide-react'
+import { formatDate } from '@shared/lib/format'
 
-interface ReminderTimelineProps {
-  reminders: Reminder[];
+type ReminderTimelineProps = {
+  reminders: Reminder[]
 }
 
 export function ReminderTimeline({ reminders }: ReminderTimelineProps) {
@@ -16,13 +16,13 @@ export function ReminderTimeline({ reminders }: ReminderTimelineProps) {
           <p className="text-sm text-muted-foreground">No reminders sent</p>
         </div>
       </div>
-    );
+    )
   }
 
   // Sort newest first
   const sorted = [...reminders].sort(
-    (a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime(),
-  );
+    (a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime()
+  )
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
@@ -40,21 +40,15 @@ export function ReminderTimeline({ reminders }: ReminderTimelineProps) {
             </div>
             {/* Content */}
             <div className="space-y-1">
-              <p className="text-sm font-medium text-foreground">
-                {formatDate(reminder.sentAt)}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Sent to {reminder.sentTo}
-              </p>
+              <p className="text-sm font-medium text-foreground">{formatDate(reminder.sentAt)}</p>
+              <p className="text-xs text-muted-foreground">Sent to {reminder.sentTo}</p>
               {reminder.message && (
-                <p className="text-sm text-muted-foreground">
-                  {reminder.message}
-                </p>
+                <p className="text-sm text-muted-foreground">{reminder.message}</p>
               )}
             </div>
           </div>
         ))}
       </div>
     </div>
-  );
+  )
 }
