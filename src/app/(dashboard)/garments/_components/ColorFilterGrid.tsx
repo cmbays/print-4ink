@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
-import { getColorsMutable } from "@/lib/dal/colors";
+import { getColorsMutable } from "@infra/repositories/colors";
 import type { Color } from "@/lib/schemas/color";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 

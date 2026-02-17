@@ -8,9 +8,9 @@ import {
   getCustomerInvoices,
   getCustomerArtworks,
   getCustomerNotes,
-} from "@/lib/dal/customers";
-import { getColors } from "@/lib/dal/colors";
-import { getGarmentCatalog } from "@/lib/dal/garments";
+} from "@infra/repositories/customers";
+import { getColors } from "@infra/repositories/colors";
+import { getGarmentCatalog } from "@infra/repositories/garments";
 import { money, round2, toNumber } from "@/lib/helpers/money";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";

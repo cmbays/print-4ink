@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
-import { getDtfSheetTiersSync } from "@/lib/dal/settings";
+import { getDtfSheetTiersSync } from "@infra/repositories/settings";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import { GangSheetCanvas } from "./GangSheetCanvas";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";

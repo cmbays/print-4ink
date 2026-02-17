@@ -1,8 +1,8 @@
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
-import { getInvoices } from "@/lib/dal/invoices";
-import { getCustomers } from "@/lib/dal/customers";
-import { getQuoteById } from "@/lib/dal/quotes";
+import { getInvoices } from "@infra/repositories/invoices";
+import { getCustomers } from "@infra/repositories/customers";
+import { getQuoteById } from "@infra/repositories/quotes";
 import { InvoiceForm } from "../_components/InvoiceForm";
 
 export default async function NewInvoicePage({

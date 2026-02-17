@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
-import { getCustomers } from "@/lib/dal/customers";
-import { getQuotes } from "@/lib/dal/quotes";
+import { getCustomers } from "@infra/repositories/customers";
+import { getQuotes } from "@infra/repositories/quotes";
 import { CustomerListStatsBar } from "./_components/CustomerListStatsBar";
 import { SmartViewTabs } from "./_components/SmartViewTabs";
 import { CustomersDataTable } from "./_components/CustomersDataTable";

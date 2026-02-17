@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
-import { getGarmentCatalog } from "@/lib/dal/garments";
-import { getJobs } from "@/lib/dal/jobs";
-import { getCustomers } from "@/lib/dal/customers";
+import { getGarmentCatalog } from "@infra/repositories/garments";
+import { getJobs } from "@infra/repositories/jobs";
+import { getCustomers } from "@infra/repositories/customers";
 import { GarmentCatalogClient } from "./_components/GarmentCatalogClient";
 
 export default async function GarmentCatalogPage() {

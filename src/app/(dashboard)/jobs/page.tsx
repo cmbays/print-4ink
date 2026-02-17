@@ -1,7 +1,7 @@
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
-import { getJobs } from "@/lib/dal/jobs";
-import { getCustomers } from "@/lib/dal/customers";
+import { getJobs } from "@infra/repositories/jobs";
+import { getCustomers } from "@infra/repositories/customers";
 import { JobsList } from "./_components/JobsList";
 
 export default async function JobsListPage() {

@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteDetailView } from "@/src/app/(dashboard)/quotes/_components/QuoteDetailView";
-import { getQuoteById } from "@/lib/dal/quotes";
-import { getCustomerById } from "@/lib/dal/customers";
-import { getArtworks } from "@/lib/dal/artworks";
-import { getGarmentCatalog } from "@/lib/dal/garments";
-import { getColors } from "@/lib/dal/colors";
+import { getQuoteById } from "@infra/repositories/quotes";
+import { getCustomerById } from "@infra/repositories/customers";
+import { getArtworks } from "@infra/repositories/artworks";
+import { getGarmentCatalog } from "@infra/repositories/garments";
+import { getColors } from "@infra/repositories/colors";
 
 export default async function QuoteDetailPage({
   params,

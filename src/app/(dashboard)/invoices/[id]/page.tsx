@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getInvoiceById, getInvoicePayments, getInvoiceCreditMemos } from "@/lib/dal/invoices";
-import { getCustomerById } from "@/lib/dal/customers";
+import { getInvoiceById, getInvoicePayments, getInvoiceCreditMemos } from "@infra/repositories/invoices";
+import { getCustomerById } from "@infra/repositories/customers";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";

@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
-import { getInvoices } from "@/lib/dal/invoices";
-import { getCustomers } from "@/lib/dal/customers";
+import { getInvoices } from "@infra/repositories/invoices";
+import { getCustomers } from "@infra/repositories/customers";
 import { InvoiceStatsBar } from "./_components/InvoiceStatsBar";
 import { InvoicesDataTable } from "./_components/InvoicesDataTable";
 

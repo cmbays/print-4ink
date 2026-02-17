@@ -27,9 +27,9 @@ import {
   removeFromSelected,
 } from "@/lib/helpers/color-preferences";
 import type { ImpactPreview } from "@/lib/helpers/color-preferences";
-import { getColorsMutable } from "@/lib/dal/colors";
-import { getGarmentCatalogMutable } from "@/lib/dal/garments";
-import { getBrandPreferencesMutable } from "@/lib/dal/settings";
+import { getColorsMutable } from "@infra/repositories/colors";
+import { getGarmentCatalogMutable } from "@infra/repositories/garments";
+import { getBrandPreferencesMutable } from "@infra/repositories/settings";
 import type { Color } from "@/lib/schemas/color";
 import { brandPreferenceSchema } from "@/lib/schemas/color-preferences";
 import type { InheritanceMode } from "@/lib/schemas/color-preferences";

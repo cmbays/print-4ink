@@ -2,11 +2,11 @@ import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../_components/QuoteForm";
 import type { QuoteFormInitialData } from "../_components/QuoteForm";
-import { getQuoteById } from "@/lib/dal/quotes";
-import { getCustomers } from "@/lib/dal/customers";
-import { getColors } from "@/lib/dal/colors";
-import { getGarmentCatalog } from "@/lib/dal/garments";
-import { getArtworks } from "@/lib/dal/artworks";
+import { getQuoteById } from "@infra/repositories/quotes";
+import { getCustomers } from "@infra/repositories/customers";
+import { getColors } from "@infra/repositories/colors";
+import { getGarmentCatalog } from "@infra/repositories/garments";
+import { getArtworks } from "@infra/repositories/artworks";
 
 
 export default async function NewQuotePage({

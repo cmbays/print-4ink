@@ -8,8 +8,8 @@ import {
   LANE_LABELS,
   PRIORITY_LABELS,
 } from "@/lib/constants";
-import { getJobs } from "@/lib/dal/jobs";
-import { getCustomers } from "@/lib/dal/customers";
+import { getJobs } from "@infra/repositories/jobs";
+import { getCustomers } from "@infra/repositories/customers";
 import { money, toNumber } from "@/lib/helpers/money";
 import {
   AlertTriangle,

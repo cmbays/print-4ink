@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { QuotesDataTable } from "./_components/QuotesDataTable";
-import { getQuotes } from "@/lib/dal/quotes";
-import { getCustomers } from "@/lib/dal/customers";
+import { getQuotes } from "@infra/repositories/quotes";
+import { getCustomers } from "@infra/repositories/customers";
 
 export default async function QuotesPage() {
   const [quotes, customers] = await Promise.all([getQuotes(), getCustomers()]);

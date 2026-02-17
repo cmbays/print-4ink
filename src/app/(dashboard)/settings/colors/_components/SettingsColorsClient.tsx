@@ -14,8 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
-import { getColorsMutable } from "@/lib/dal/colors";
-import { getAutoPropagationConfigMutable } from "@/lib/dal/settings";
+import { getColorsMutable } from "@infra/repositories/colors";
+import { getAutoPropagationConfigMutable } from "@infra/repositories/settings";
 import {
   propagateAddition,
   getImpactPreview,

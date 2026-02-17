@@ -11,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getScreens } from "@/lib/dal/screens";
-import { getJobs } from "@/lib/dal/jobs";
+import { getScreens } from "@infra/repositories/screens";
+import { getJobs } from "@infra/repositories/jobs";
 import { BURN_STATUS_LABELS } from "@/lib/constants";
 import { Printer } from "lucide-react";
 import type { BurnStatus } from "@/lib/schemas/screen";

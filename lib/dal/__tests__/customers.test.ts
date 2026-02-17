@@ -8,7 +8,7 @@ import {
   getCustomerNotes,
   getCustomerArtworks,
   getCustomerInvoices,
-} from '../customers';
+} from '@infra/repositories/customers';
 
 // Known IDs from mock data
 const RIVER_CITY_ID = 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c';

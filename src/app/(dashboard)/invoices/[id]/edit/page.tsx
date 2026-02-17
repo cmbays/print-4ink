@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getInvoiceById } from "@/lib/dal/invoices";
-import { getCustomers } from "@/lib/dal/customers";
-import { getQuoteById } from "@/lib/dal/quotes";
+import { getInvoiceById } from "@infra/repositories/invoices";
+import { getCustomers } from "@infra/repositories/customers";
+import { getQuoteById } from "@infra/repositories/quotes";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
