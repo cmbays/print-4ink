@@ -4,6 +4,7 @@
 **Parent**: [#333](https://github.com/cmbays/print-4ink/issues/333) — Work CLI Robustness
 **Date**: 2026-02-17
 **Status**: Complete
+**Reviewed by**: Architect agent (2026-02-17) — 8 findings addressed
 
 ---
 
@@ -39,7 +40,7 @@ The `work` CLI (`scripts/work.sh` + `scripts/lib/*.sh`) manages the full pipelin
 
 Every value passes through bash as a string. Type dispatch requires manual case branches or jq conversions. This creates subtle bugs that only surface at runtime.
 
-**Example** — `pipeline-entity.sh:35-36` (state machine validation):
+**Example** — `pipeline-entity.sh:24-35` (state machine validation):
 ```bash
 _pipeline_valid_transitions() {
     local from="$1"
@@ -86,13 +87,15 @@ This pattern appears throughout the codebase. A typed language would have try/ca
 
 With 139 jq invocations, the CLI is essentially a jq orchestrator. Every registry read, pipeline update, and config lookup shells out to `jq` as a subprocess.
 
-**Example** — `pipeline-status.sh:55-58` (a single status row requires multiple jq calls):
+**Example** — `pipeline-status.sh:65-66` (a single status row requires multiple jq calls):
 ```bash
 p_type=$(jq -r --arg id "$id" '.pipelines[] | select(.id == $id) | .type' "$PIPELINE_REGISTRY_FILE")
 p_stage=$(jq -r --arg id "$id" '.pipelines[] | select(.id == $id) | .stage' "$PIPELINE_REGISTRY_FILE")
 ```
 
 Each line spawns a subprocess, re-reads the file, and re-parses it. A typed language would deserialize once and access fields directly.
+
+Note: Even within bash, these could be consolidated into a single jq call using `@tsv` extraction (e.g., `read -r p_type p_stage <<< $(jq -r '... | "\(.type)\t\(.stage)"' ...)`). This optimization would reduce subprocess overhead without a language change — see Option E in Section 5.
 
 **Example** — `pipeline-entity.sh:162-188` (building a JSON entity):
 ```bash
@@ -173,6 +176,22 @@ All measurements on Apple Silicon (M-series), macOS Darwin 25.2.0, warm cache.
 - `npx tsx` is 1.6 seconds — a TypeScript JIT approach without pre-compilation is not viable.
 - The **hybrid penalty** (bash → node subprocess) is ~90-150ms overhead per delegation. This means hybrid commands would need to batch operations in a single node call, not make multiple small calls.
 
+### Latency Budget by Command Class
+
+Not all commands have equal latency sensitivity. The budget defines what's "acceptable" per class:
+
+| Command Class | Examples | Current | Hybrid Estimate | Budget | Rationale |
+|---------------|----------|---------|-----------------|--------|-----------|
+| **Instant** (read-only, frequent) | `work status`, `work sessions` | 70ms | ~150ms | **< 200ms** | Frequent checks during active work. Must feel snappy. |
+| **Fast** (read-only, infrequent) | `work list` | 537ms | ~537ms (stays bash) | **< 600ms** | Informational overview. Dominated by git/zellij subprocesses. |
+| **Interactive** (write, infrequent) | `work define`, `work update` | ~100ms | ~250ms | **< 500ms** | One-off commands. User is about to do multi-minute work. |
+| **Orchestration** (long-running) | `work start`, `work build`, `work end` | 2s+ | ~2s+ | **< 5s** | Already slow (git pull, npm install, Zellij launch). Node overhead is noise. |
+| **Background** (batch) | `work cooldown`, `work progress` | 5-30s | 5-30s | **N/A** | GitHub API calls dominate. Latency budget irrelevant. |
+
+**Key constraint**: `work status` is the most latency-sensitive command that would delegate to node. At ~150ms (single node call replacing 30+ jq calls), it stays within the 200ms budget. If the hybrid implementation exceeds 200ms for `work status`, that is a signal to optimize (e.g., caching, pre-warming).
+
+**Commands that delegate to node**: Of the ~20 subcommands in the dispatcher, approximately 8-10 would trigger a node call: `define`, `update`, `status`, `start` (prompt building only), `build` (manifest parsing only), `end` (PR body generation), `cooldown`, `progress`. The rest (`list`, `clean`, `sessions`, `resume`, `fork`, phase commands) are shell-integration heavy and stay in bash.
+
 ---
 
 ## 3. Shell Integration Analysis — What MUST Stay in Bash
@@ -189,7 +208,6 @@ Regardless of language choice, these capabilities require bash/zsh:
 | `cd "$WORKTREE_DIR"` | Changes the calling shell's working directory. A subprocess can't do this. |
 | `zellij action new-tab` | Must run in the Zellij context of the calling shell. |
 | `tmux` session/window management | Must detect and modify the calling tmux session. |
-| Port scanning (`lsof`) | Interactive feedback during worktree creation. |
 | `read -r` for confirmations | Gate prompts (human-confirms) must block the calling shell. |
 
 ### 3.2 Can Be Delegated to an External Binary
@@ -202,15 +220,28 @@ Regardless of language choice, these capabilities require bash/zsh:
 | Registry read/update/lock | File I/O with atomic write semantics. |
 | Status dashboard formatting | Read JSON, format output. |
 | PR body generation | Template interpolation from entity data. |
-| Progress report generation | GitHub API queries + markdown assembly. |
-| Prompt construction | String interpolation from pipeline context. |
+| Prompt construction | String interpolation from pipeline context. (Depends on entity read + config loading.) |
 | Manifest parsing (YAML) | `yq` equivalent in native code. |
+| Port scanning | Subprocess call (`lsof`) with no shell-context dependency. Works identically from node via `child_process`. |
 
-### 3.3 The 60/40 Split
+### 3.3 The Code Split: 40 / 20 / 40
 
-Approximately **60% of the code** (entity CRUD, state machine, registry, status formatting, config validation, prompt building) is pure logic that could live in any language.
+The original estimate of "60% delegatable / 40% stays in bash" was imprecise. A file-level analysis gives a more accurate picture:
 
-Approximately **40% of the code** (worktree creation, Zellij/tmux integration, `work()` dispatcher, phase commands, build wave orchestration, cleanup) requires shell integration and would either stay in bash or need a very thin bash shim.
+**~40% Pure logic** (1,568 lines) — migrates entirely to TypeScript:
+- `pipeline-entity.sh` (375), `pipeline-registry.sh` (191), `registry.sh` (246), `pipeline-status.sh` (222), `pipeline-update.sh` (80), `pipeline-gates.sh` (311), `pipeline-cooldown.sh` (143)
+- These files are self-contained data logic: JSON CRUD, state machine validation, config lookups, status formatting. They have no intrinsic shell-integration dependency.
+
+**~20% Mixed logic** (850 lines) — jq calls inside shell-integration functions get replaced with single `node` calls, but the surrounding bash stays:
+- Parts of `pipeline-start.sh` (prompt building delegates to node, but Zellij launch stays in bash)
+- Parts of `pipeline-build.sh` (manifest parsing delegates to node, but worktree creation stays in bash)
+- Parts of `pipeline-end.sh` (PR body generation delegates to node, but `gh pr create` and merge polling stay in bash)
+- Parts of `pipeline-define.sh` (validation delegates to node, but `gh issue create` stays in bash)
+
+**~40% Shell integration** (1,797 lines) — stays in bash permanently:
+- `work.sh` dispatcher (1,296 lines: `_work_new`, `_work_clean`, `_work_phase`, `_work_build`, `_work_resume`, `_work_fork`, `_work_list`, `_work_sessions`, `_work_help`, `_work_progress`)
+- `kdl-generator.sh` (173 lines: Zellij KDL layout rendering)
+- Shell integration portions of the mixed files above
 
 ---
 
@@ -220,7 +251,7 @@ Approximately **40% of the code** (worktree creation, Zellij/tmux integration, `
 
 | # | Criterion | Weight | What "5" looks like |
 |---|-----------|--------|---------------------|
-| 1 | Startup latency | HIGH | `work list` < 100ms |
+| 1 | Startup latency | HIGH | `work status` < 200ms (see latency budget) |
 | 2 | Shell integration | HIGH | Seamless zsh sourcing, env vars, Zellij/tmux |
 | 3 | Schema consumption | MEDIUM | Native JSON/YAML parsing with typed validation |
 | 4 | Testing story | HIGH | Unit tests with mocking, coverage, IDE integration |
@@ -230,16 +261,16 @@ Approximately **40% of the code** (worktree creation, Zellij/tmux integration, `
 
 ### Scoring (1-5, higher is better)
 
-| Criterion | A: Enhanced Bash | B: TypeScript (Node) | C: Go | D: Hybrid (TS core + bash shell) |
-|-----------|:---:|:---:|:---:|:---:|
-| **1. Startup latency** | 5 | 3 | 5 | 4 |
-| **2. Shell integration** | 5 | 1 | 2 | 5 |
-| **3. Schema consumption** | 2 | 5 | 4 | 5 |
-| **4. Testing story** | 2 | 5 | 5 | 4 |
-| **5. Maintenance burden** | 2 | 4 | 4 | 4 |
-| **6. Dependency footprint** | 4 | 3 | 4 | 3 |
-| **7. Migration path** | 5 | 1 | 1 | 5 |
-| **Weighted total** | 25/35 | 22/35 | 25/35 | **30/35** |
+| Criterion | A: Enhanced Bash | B: TypeScript (Node) | C: Go | D: Hybrid (TS core + bash shell) | E: Bash jq Optimization |
+|-----------|:---:|:---:|:---:|:---:|:---:|
+| **1. Startup latency** | 5 | 3 | 5 | 4 | 5 |
+| **2. Shell integration** | 5 | 1 | 2 | 5 | 5 |
+| **3. Schema consumption** | 2 | 5 | 4 | 5 | 2 |
+| **4. Testing story** | 2 | 5 | 5 | 4 | 2 |
+| **5. Maintenance burden** | 2 | 4 | 4 | 4 | 3 |
+| **6. Dependency footprint** | 4 | 3 | 4 | 3 | 4 |
+| **7. Migration path** | 5 | 1 | 1 | 5 | 5 |
+| **Weighted total** | 25/35 | 22/35 | 25/35 | **30/35** | 26/35 |
 
 ### Detailed Scoring Rationale
 
@@ -274,10 +305,21 @@ Approximately **40% of the code** (worktree creation, Zellij/tmux integration, `
 - Startup: 4 — Bash sourcing is still 8ms. TypeScript core is called as a subprocess (~50-200ms per delegation). Fast for shell-only commands, acceptable for data-heavy commands. The key insight: batch operations in a single Node call instead of many small calls.
 - Shell: 5 — The bash shell layer is unchanged. Users still `source work.sh`, still get tab completion, still have `$ZELLIJ` detection. Shell integration stays in bash.
 - Schema: 5 — TypeScript core uses Zod for config validation, shares types with the Next.js app. Pipeline entity types are defined once and used everywhere.
-- Testing: 4 — TypeScript core is fully testable with Vitest. Bash shell layer has limited testing (integration tests via bats-core or manual). Not 5 because the bash glue code remains untestable by conventional means.
+- Testing: 4 — TypeScript core is fully testable with Vitest. Bash shell layer has limited testing — critical paths (`_work_clean`, `_work_new`, dispatcher routing) should get bats-core integration tests. Not 5 because the bash glue code that connects everything together remains harder to test than pure TypeScript.
 - Maintenance: 4 — TypeScript core benefits from compiler, autocomplete, and type safety. Bash shell layer is thin and stable (routing + shell integration). New flags can be schema-driven in the TS core.
-- Dependencies: 3 — Node.js (already installed) + a project-local package. The TS core compiles to a single JS bundle or uses `node` directly.
+- Dependencies: 3 — Node.js (already installed) + a project-local package. The TS core compiles to a single JS bundle.
 - Migration: 5 — **Incremental by design.** Each command's logic can migrate independently: bash dispatcher stays, calls `node scripts/work-core.js <subcommand> <args>` for the data-heavy parts. Shell integration stays in bash. No big-bang rewrite.
+
+**E: Bash jq Optimization (26/35) — Considered and Rejected**
+- Startup: 5 — Same as Option A. No subprocess overhead for non-jq operations.
+- Shell: 5 — Unchanged.
+- Schema: 2 — jq patterns can be optimized but remain untyped. No compile-time validation.
+- Testing: 2 — Same bats-core limitations as Option A.
+- Maintenance: 3 — Better than raw Option A because consolidated jq calls are simpler to maintain. But still no types, no compiler, no autocomplete.
+- Dependencies: 4 — Same as Option A.
+- Migration: 5 — No migration. Refactor in place.
+
+**Why E is rejected**: The jq optimization addresses the *performance* pain point (reducing 134 subprocess calls to ~30 by batching reads) but does nothing for the *structural* problems: no types, no compiler, no tests, zsh/bash array bugs, fragile error handling. The friction tax on adding new commands and flags remains. Option E is worth doing as a **parallel optimization** for the bash code that will NOT be migrated (the shell integration layer), but it is not a substitute for typed logic in the core.
 
 ---
 
@@ -309,7 +351,7 @@ Replace with a Go binary. Same UX change as TypeScript but faster startup.
 **Migration**: All-or-nothing. Same problem as TypeScript.
 **Advantage over B**: ~5ms startup, single binary distribution.
 
-### Option D: Hybrid — Incremental TypeScript Core
+### Option D: Hybrid — Incremental TypeScript Core (Recommended)
 
 Keep `work.sh` as the bash dispatcher and shell integration layer. Extract pure logic into a TypeScript module that bash calls as a subprocess.
 
@@ -333,31 +375,279 @@ Keep `work.sh` as the bash dispatcher and shell integration layer. Extract pure 
                                   └──────────────────────────┘
 ```
 
+**Package structure**: `scripts/work-core/` is a standalone package (NOT a workspace member of the main Next.js app). It has its own `package.json`, `tsconfig.json`, and `vitest.config.ts`. Minimal dependencies: `zod` (schema validation) + `yaml` (manifest parsing). No CLI framework (commander, oclif) — the bash layer handles all argument parsing and routing.
+
 **Migration sequence** (incremental, one module at a time):
 
-1. **Phase 0: Setup** — Create `scripts/work-core/` with package.json, tsconfig, Vitest config. Add `npm run build:cli` to compile.
+1. **Phase 0: Setup** — Create `scripts/work-core/` with package.json, tsconfig, Vitest config. Configure `esbuild` (via `tsup`) to compile `src/index.ts` → `dist/work-core.js` as a single bundled file. Add `postinstall` hook to root `package.json` that runs `npm run build:cli`.
 
-2. **Phase 1: Pipeline entity & state machine** — Migrate `pipeline-entity.sh` logic to TypeScript. Bash calls `node dist/work-core.js entity read <id>` instead of raw jq. Tests validate state transitions exhaustively.
+2. **Phase 1: Pipeline entity & state machine** — Migrate `pipeline-entity.sh` logic to TypeScript. Bash calls `node dist/work-core.js entity read <id>` instead of raw jq. Tests validate state transitions exhaustively. The state machine transition graph should come from config (`pipeline-types.json`), not hardcoded — enabling new pipeline types without code changes.
 
-3. **Phase 2: Registry operations** — Migrate `pipeline-registry.sh` and `registry.sh`. Proper file locking, atomic writes, typed CRUD.
+3. **Phase 2: Registry operations** — Migrate `pipeline-registry.sh` and `registry.sh`. Proper file locking (via `proper-lockfile` or Node.js `fs.flock`), atomic writes, typed CRUD.
 
 4. **Phase 3: Config loading & validation** — Migrate config schema loading. Zod schemas shared with Next.js app. `work define` validates against typed schemas instead of jq queries.
 
-5. **Phase 4: Status & formatting** — Migrate `pipeline-status.sh` display logic. Single `node` call replaces 30+ jq invocations.
+5. **Phase 4: Status & formatting** — Migrate `pipeline-status.sh` display logic. Single `node` call replaces 30+ jq invocations. Projected improvement: current `work status` with 1 pipeline takes 70ms; hybrid with single node call should take ~60ms (one file read + one config read, no subprocess-per-field overhead).
 
-6. **Phase 5: Prompt building** — Migrate `pipeline-start.sh` prompt construction. Template interpolation in TypeScript.
+6. **Phase 5: Prompt building** — Migrate `pipeline-start.sh` prompt construction. Template interpolation in TypeScript. Note: this depends on Phase 1 (entity read) and Phase 3 (config loading) because the prompt builder calls `_pipeline_read`, `_pipeline_type_description`, `_pipeline_stage_skill_hint`, and `_pipeline_gate_artifacts`.
 
-7. **Phase 6: Progress report** — Migrate `_work_progress`. GitHub API calls via `@octokit/rest` instead of `gh` CLI.
+7. **Phase 6: Progress report** (optional — lowest priority) — The `_work_progress` function (lines 1012-1296 of `work.sh`) works well as bash. It runs infrequently, latency is irrelevant (6 GitHub API calls dominate), and `gh` CLI handles auth + pagination for free. Migrating to `@octokit/rest` would add a significant dependency and require separate auth management for negligible benefit. **Recommendation**: Keep in bash permanently unless a concrete need arises.
 
 Each phase is independently shippable. The bash dispatcher stays unchanged. Users notice nothing except (potentially) slightly different output formatting.
 
 **Effort**: Medium (spread over weeks). Each phase is a focused PR.
 **Risk**: Low. Bash shell layer is untouched. Rollback = revert to jq calls.
-**Key constraint**: The compiled `dist/work-core.js` must be checked into git (or built on install) so that `source work.sh` works without a build step.
+
+### Option E: Bash jq Optimization — Considered and Rejected
+
+Restructure the existing bash to reduce jq invocations without changing languages. For example, `pipeline-status.sh` lines 65-66 make separate jq calls per pipeline per field:
+
+```bash
+# Current: 2 subprocess calls per pipeline
+p_type=$(jq -r --arg id "$id" '.pipelines[] | select(.id == $id) | .type' "$PIPELINE_REGISTRY_FILE")
+p_stage=$(jq -r --arg id "$id" '.pipelines[] | select(.id == $id) | .stage' "$PIPELINE_REGISTRY_FILE")
+```
+
+This could be consolidated:
+```bash
+# Optimized: 1 subprocess call per pipeline
+read -r p_type p_stage <<< $(jq -r --arg id "$id" \
+    '.pipelines[] | select(.id == $id) | "\(.type)\t\(.stage)"' \
+    "$PIPELINE_REGISTRY_FILE")
+```
+
+Across the full codebase, this optimization could reduce 134 jq calls to ~30-40 by batching reads with `@tsv` extraction. This would meaningfully improve `work status` performance (from 70ms to perhaps 40-50ms).
+
+**Why rejected as the primary strategy**: This addresses performance but not the structural problems (no types, no tests, no compiler, zsh/bash array bugs). The ceiling is still medium.
+
+**Why preserved as a parallel track**: The ~40% of code that stays permanently in bash (shell integration layer) should still use optimized jq patterns. Batch reads with `@tsv` wherever the bash layer reads pipeline data. This reduces latency in the transition period while modules migrate, and permanently improves the bash code that remains.
 
 ---
 
-## 6. Recommendation
+## 6. Serialization Contract
+
+The boundary between bash and the TypeScript core is the most critical design decision in the hybrid architecture. This section defines the contract.
+
+### 6.1 Invocation Pattern
+
+Bash calls the TypeScript core as a single node subprocess:
+
+```bash
+# General form
+result=$(node "${WORK_SCRIPT_DIR}/work-core/dist/work-core.js" <command> <subcommand> [--flags] 2>/dev/null)
+
+# Examples
+result=$(node "$WORK_CORE" entity read "$pipeline_id")
+result=$(node "$WORK_CORE" entity create --name "$name" --type "$type" --products "$products")
+result=$(node "$WORK_CORE" status dashboard)
+result=$(node "$WORK_CORE" config validate --type "$type")
+```
+
+The `WORK_CORE` variable is resolved once at source-time in `work.sh`:
+```bash
+WORK_CORE="${WORK_SCRIPT_DIR}/work-core/dist/work-core.js"
+```
+
+**Path resolution**: Because `WORK_SCRIPT_DIR` is resolved when `work.sh` is sourced (from `.zshrc`), it always points to the main repo's copy (`~/Github/print-4ink/scripts/`). Worktree-local changes to the TypeScript core do NOT take effect until merged to main and the shell is re-sourced. This is intentional — the running `work` CLI uses the stable main-branch binary.
+
+### 6.2 Environment Contract
+
+The node process inherits the calling shell's environment. The TypeScript core reads these variables:
+
+| Variable | Required | Source | Purpose |
+|----------|----------|--------|---------|
+| `PRINT4INK_ROOT` | Yes | `work.sh` config block | Resolve config file paths (`config/*.json`) |
+| `PRINT4INK_WORKTREES` | Yes | `work.sh` config block | Locate pipeline and session registries |
+| `PRINT4INK_GH_REPO` | No | `work.sh` config block | GitHub owner/repo for API calls (future) |
+
+The node process does NOT need or use: `ZELLIJ`, `TMUX`, `ZSH_VERSION`, `WORK_SCRIPT_DIR`. These are shell-context variables consumed only by the bash layer.
+
+### 6.3 Output Protocol
+
+The TypeScript core uses two output modes, determined by the command:
+
+**Data mode** (for commands where bash consumes the output):
+```json
+{"ok": true, "data": { ... }}
+{"ok": false, "error": "Pipeline 'xyz' not found", "code": "ENTITY_NOT_FOUND"}
+```
+
+Bash checks the `ok` field:
+```bash
+result=$(node "$WORK_CORE" entity read "$id" 2>/dev/null)
+if ! echo "$result" | jq -e '.ok' >/dev/null 2>&1; then
+    echo "Error: $(echo "$result" | jq -r '.error')" >&2
+    return 1
+fi
+# Extract data
+p_name=$(echo "$result" | jq -r '.data.name')
+```
+
+**Display mode** (for commands where output goes directly to the user):
+```
+=== Pipeline Status (1 pipeline) ===
+
+--- Active (pre-build) (1) ---
+  20260216-review-orchestration  horizontal  stage=research  issue=#302
+    progress: stage 1/5 (research)
+```
+
+Display mode writes plain text to stdout. Bash passes it through unchanged:
+```bash
+node "$WORK_CORE" status dashboard
+# Output goes directly to terminal, no parsing needed
+```
+
+### 6.4 Error Protocol
+
+| Scenario | Stdout | Stderr | Exit Code |
+|----------|--------|--------|-----------|
+| Success (data mode) | `{"ok": true, "data": ...}` | (empty) | 0 |
+| Application error (data mode) | `{"ok": false, "error": "...", "code": "..."}` | (empty) | 1 |
+| Success (display mode) | Formatted text | (empty) | 0 |
+| Application error (display mode) | (empty) | Error message text | 1 |
+| Node crash / unhandled exception | (empty) | Stack trace | 1 |
+| `dist/work-core.js` missing | (empty) | "Cannot find module" | 1 |
+
+Bash handles the "missing binary" case gracefully:
+```bash
+if [[ ! -f "$WORK_CORE" ]]; then
+    echo "Error: work-core not built. Run: cd scripts/work-core && npm run build" >&2
+    return 1
+fi
+```
+
+### 6.5 Debug Mode
+
+Pass `--debug` to enable verbose logging on stderr:
+```bash
+node "$WORK_CORE" entity read "$id" --debug
+# stderr: [work-core] Reading pipeline registry: /path/to/.pipeline-registry.json
+# stderr: [work-core] Found pipeline: 20260216-review-orchestration
+# stdout: {"ok": true, "data": { ... }}
+```
+
+Debug output goes to stderr so it doesn't interfere with data mode parsing. The bash layer can optionally propagate a `WORK_DEBUG` environment variable.
+
+---
+
+## 7. Compilation Strategy
+
+### 7.1 Toolchain: tsup (esbuild wrapper)
+
+**Decision**: Use `tsup` to compile TypeScript to a single JavaScript file.
+
+| Alternative | Why not |
+|-------------|---------|
+| `tsc` | Outputs multiple files, requires `node_modules` at runtime for imports. |
+| Raw `esbuild` | Works but requires manual config. `tsup` wraps it with sensible defaults. |
+| `npx tsx` (JIT) | 1.6 second startup — unusable. |
+| `pkg` / `bun compile` | Native binary compilation adds build complexity for negligible benefit on a single-developer tool. |
+
+`tsup` produces a single `dist/work-core.js` with all dependencies bundled. No `node_modules` needed at runtime.
+
+### 7.2 Build Strategy: Built on Install
+
+**Decision**: Build via `postinstall` hook, NOT checked into git.
+
+| Strategy | Pros | Cons |
+|----------|------|------|
+| **Built on install** (chosen) | No generated code in git. No merge conflicts from concurrent worktrees. | Requires `npm install` before `work` commands use TS core. |
+| Checked into git | Works without build step. | Merge conflicts when two worktrees modify TS core. Pollutes diff. |
+
+Implementation:
+```json
+// Root package.json
+{
+  "scripts": {
+    "postinstall": "cd scripts/work-core && npm install && npm run build",
+    "build:cli": "cd scripts/work-core && npm run build"
+  }
+}
+```
+
+```json
+// scripts/work-core/package.json
+{
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs --out-dir dist --clean",
+    "dev": "tsup src/index.ts --format cjs --out-dir dist --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
+}
+```
+
+The `dist/` directory is gitignored. Every `npm install` (which already runs in every new worktree) builds the CLI core automatically.
+
+### 7.3 Graceful Degradation
+
+If `dist/work-core.js` doesn't exist (e.g., first clone before `npm install`), the bash layer falls back to the existing jq-based implementation. This is critical during the migration period when both code paths exist:
+
+```bash
+_work_core_available() {
+    [[ -f "${WORK_CORE:-}" ]]
+}
+
+# Example: pipeline read with fallback
+_pipeline_read() {
+    local id="$1"
+    if _work_core_available; then
+        node "$WORK_CORE" entity read "$id"
+    else
+        # Legacy jq fallback
+        _registry_pipeline_get "$id"
+    fi
+}
+```
+
+This fallback pattern enables the migration to proceed module by module without breaking anyone's workflow.
+
+---
+
+## 8. Testing Strategy
+
+### 8.1 TypeScript Core (Vitest)
+
+The TypeScript core is fully testable with Vitest. Target: 90%+ coverage on core logic.
+
+**Unit tests** for:
+- State machine transitions (exhaustive: every state × every possible input)
+- Entity CRUD (create, read, update, delete, field validation)
+- Config schema validation (valid and invalid inputs for each config file)
+- Registry locking (concurrent access, stale lock recovery)
+- Status formatting (snapshot tests for display output)
+
+**Integration tests** for:
+- Full command roundtrips: `entity create` → `entity read` → verify fields
+- Config loading from real `config/*.json` files
+
+### 8.2 Bash Shell Layer (bats-core)
+
+The hybrid model does NOT solve the testing problem for the shell integration layer. The bash code that connects everything together — the dispatcher, worktree creation, cleanup, Zellij integration — remains harder to test. But it is not untestable.
+
+**Critical paths that need bats-core tests**:
+- `_work_clean` — The most complex cleanup logic (CWD safety, 5-phase resource cleanup). Bugs here lose work.
+- `_work_new` — Worktree creation, port scanning, Zellij layout generation. Bugs here block developers.
+- Dispatcher routing — Ensure all subcommands route correctly (regression guard for typos).
+- The zsh/bash array index adjustment — A dedicated test that runs in both shells to catch off-by-one bugs.
+
+**What NOT to test in bats-core**: Data logic that is migrating to TypeScript. Writing bash tests for `_pipeline_create` or `_pipeline_transition` is wasted effort if those functions will be replaced by `node "$WORK_CORE" entity create`.
+
+**Sequencing**: Add bats-core tests AFTER the TypeScript core migration stabilizes (Phase 3+), when the bash layer's responsibilities are clear and stable. Don't invest in bash tests for code that will be rewritten.
+
+### 8.3 End-to-End Tests
+
+After both layers are tested independently, add integration tests that exercise the full bash → node → bash flow:
+- `work define <name>` → verify pipeline appears in registry JSON
+- `work update <id> --auto` → verify field change persists
+- `work status` → verify output matches expected format
+
+These can be bats-core tests that call `work` commands and assert on output/side effects.
+
+---
+
+## 9. Recommendation
 
 ### Recommended: Option D — Hybrid (TypeScript Core + Bash Shell)
 
@@ -371,37 +661,43 @@ Each phase is independently shippable. The bash dispatcher stays unchanged. User
 
 4. **Shared type system**: Pipeline entity schemas defined in Zod can be shared between the work CLI and the Next.js app. When Phase 2 adds a Drizzle database, the same types flow from CLI → app → database.
 
-5. **Acceptable startup penalty**: The hybrid adds ~50-200ms for commands that delegate to Node.js. But the most latency-sensitive commands (`work list`, `work status`) can batch all their data operations in a single `node` call, keeping total time under 150ms.
+5. **Acceptable startup penalty**: The hybrid adds ~50-200ms for commands that delegate to Node.js. The most latency-sensitive delegated command (`work status`) stays within the 200ms budget by batching all data operations in a single `node` call.
 
-6. **Testing story is strong**: The TypeScript core is fully testable with Vitest. The bash shell layer is thin and stable — it's just routing and shell integration, which changes infrequently.
+6. **Testing story covers both layers**: TypeScript core is fully testable with Vitest (90%+ coverage). Bash shell layer gets bats-core tests for critical paths (`_work_clean`, `_work_new`, dispatcher). E2E tests validate the full flow.
 
 ### What NOT to do
 
 - **Don't compile to a native binary** (pkg, bun compile, Deno compile). The build complexity isn't worth it for a developer tool used by one person.
-- **Don't use `npx tsx`** for runtime execution. It's 1.6 seconds. Pre-compile with `tsc` or `esbuild` instead.
+- **Don't use `npx tsx`** for runtime execution. It's 1.6 seconds. Pre-compile with `tsup` instead.
 - **Don't try to eliminate bash entirely**. Shell integration is bash's superpower. Trying to replicate `source`, `$ZELLIJ`, and `cd` from TypeScript adds more complexity than it removes.
-- **Don't start with bats-core tests for bash** as a "first step." If we're going hybrid anyway, writing bash tests for code that will be rewritten in TypeScript is wasted effort.
+- **Don't write bats-core tests for data logic** that will be rewritten in TypeScript. Wait until the TypeScript core migration stabilizes, then write bats-core tests for the shell integration layer that remains.
+- **Don't migrate the progress report** (`_work_progress`). It works well in bash, runs infrequently, and `gh` CLI handles auth/pagination for free. Adding `@octokit/rest` is not worth the dependency.
 
 ### Implementation Sequencing
 
 Given the dependencies mapped in the previous session:
 
 1. **This spike** → decision made (Option D: Hybrid)
-2. **#327 (config-driven `work define`)** — implement in TypeScript core as the pilot migration. This is the cleanest module to extract because `pipeline-define.sh` is only 118 lines and mostly delegates to `_pipeline_create` in entity.sh.
-3. **#330 (pipeline state machine as config)** — extract to TypeScript. Define the state machine as a typed graph with exhaustive transition checking.
-4. **#332 (config-driven help text)** — generate help from TypeScript-defined schemas.
-5. **#335 (Zellij auto-launch)** — this stays in bash (shell integration). Independent of the hybrid migration.
-6. **#298 (E2E validation)** — now testable: write Vitest tests for the TypeScript core, integration tests for the bash shell layer.
+2. **Phase 0** — Set up `scripts/work-core/` with tsup, Vitest, and the serialization contract.
+3. **#327 (config-driven `work define`)** — implement in TypeScript core as the pilot migration. This is the cleanest module to extract because `pipeline-define.sh` is only 118 lines and mostly delegates to `_pipeline_create` in entity.sh.
+4. **#330 (pipeline state machine as config)** — extract to TypeScript. Define the state machine as a typed graph with exhaustive transition checking. The transition graph should come from config (`pipeline-types.json`), enabling new pipeline types without code changes.
+5. **#332 (config-driven help text)** — generate help from TypeScript-defined schemas.
+6. **#335 (Zellij auto-launch)** — this stays in bash (shell integration). Independent of the hybrid migration.
+7. **#298 (E2E validation)** — now testable: write Vitest tests for the TypeScript core, bats-core integration tests for the bash shell layer.
+8. **Parallel track**: Apply Option E jq optimizations to the bash code that remains permanently.
 
 ### Risks and Mitigations
 
 | Risk | Mitigation |
 |------|-----------|
-| Node.js startup adds latency | Batch operations in single `node` calls. Use `esbuild` for fast compilation to a single file. |
-| Two languages to maintain | The bash layer is thin (~600 lines of routing + shell integration). It changes rarely. |
-| Built JS must be checked in or built on install | Add `npm run build:cli` to `npm install` postinstall hook. |
-| TypeScript core grows its own dependency tree | Keep deps minimal: Zod + YAML parser. No framework (commander, oclif). |
-| Debugging across bash → node boundary | Structured JSON output from node. `--debug` flag for verbose logging. |
+| Node.js startup adds latency | Batch operations in single `node` calls. Use `tsup`/`esbuild` for single-file output. Latency budget per command class (Section 2). |
+| Two languages to maintain | Bash layer is ~40% of code but thin and stable (routing + shell integration). It changes rarely after initial build. |
+| `dist/work-core.js` not built yet | Graceful degradation: bash falls back to jq-based implementation when binary missing (Section 7.3). |
+| TypeScript core grows its own dependency tree | Keep deps minimal: `zod` + `yaml`. No framework (commander, oclif). |
+| Debugging across bash → node boundary | Structured JSON output protocol (Section 6.3). `--debug` flag for verbose stderr logging (Section 6.5). |
+| Serialization contract drift | Define contract once in this spike (Section 6). TypeScript types enforce output shape. |
+| Concurrent worktree build conflicts | `dist/` is gitignored, built via `postinstall`. Each worktree builds independently. Running shell uses main-branch binary (Section 6.1). |
+| Shell layer remains under-tested | bats-core tests for critical paths post-Phase 3. E2E tests validate full flow (Section 8). |
 
 ---
 
@@ -433,3 +729,4 @@ Deno: not installed
 ---
 
 *Generated by Claude Code session `session/0217-language-spike` for issue #346.*
+*Architect review: 8 findings addressed (2026-02-17).*
