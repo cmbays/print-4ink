@@ -220,10 +220,18 @@ _poll_claude_session_id() {
     local marker
     marker=$(mktemp "${TMPDIR:-/tmp}/poll-marker-XXXXXX")
 
+    # Declare all locals before the loop (function-scoped, not loop-scoped)
     local elapsed=0 newest session_id
+    local fast_limit=15 fast_interval=1 slow_interval=5 interval
+
+    # Phase 1: fast polling (1s) for first 15s — Claude starts within ~1-2s.
+    # Phase 2: slow polling (5s) for remainder of max_wait.
     while (( elapsed < max_wait )); do
-        sleep 5
-        elapsed=$((elapsed + 5))
+        interval=$slow_interval
+        (( elapsed < fast_limit )) && interval=$fast_interval
+
+        sleep $interval
+        elapsed=$((elapsed + interval))
 
         # Exit early if worktree was removed (session aborted)
         [[ ! -d "$worktree_dir" ]] && break
