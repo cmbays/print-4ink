@@ -43,7 +43,7 @@ import type { Customer } from "@/lib/schemas/customer";
 // Derived table rows
 // ---------------------------------------------------------------------------
 
-interface TableQuote {
+type TableQuote = {
   id: string;
   quoteNumber: string;
   customerId: string;
@@ -53,12 +53,12 @@ interface TableQuote {
   total: number;
   createdAt: string;
   isArchived: boolean;
-}
+};
 
-interface QuotesDataTableProps {
+type QuotesDataTableProps = {
   quotes: Quote[];
   customers: Customer[];
-}
+};
 
 // ---------------------------------------------------------------------------
 // Helpers

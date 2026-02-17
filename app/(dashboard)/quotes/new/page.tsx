@@ -1,13 +1,13 @@
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../_components/QuoteForm";
+import type { QuoteFormInitialData } from "../_components/QuoteForm";
 import { getQuoteById } from "@/lib/dal/quotes";
 import { getCustomers } from "@/lib/dal/customers";
 import { getColors } from "@/lib/dal/colors";
 import { getGarmentCatalog } from "@/lib/dal/garments";
 import { getArtworks } from "@/lib/dal/artworks";
 import { getDtfSheetTiers } from "@/lib/dal/settings";
-import type { LineItemData } from "../_components/LineItemRow";
 
 export default async function NewQuotePage({
   searchParams,
@@ -24,15 +24,7 @@ export default async function NewQuotePage({
     getDtfSheetTiers(),
   ]);
 
-  let initialData: {
-    customerId?: string;
-    lineItems?: LineItemData[];
-    discounts?: { label: string; amount: number; type: "manual" | "contract" | "volume" }[];
-    shipping?: number;
-    artworkIds?: string[];
-    internalNotes?: string;
-    customerNotes?: string;
-  } | undefined;
+  let initialData: QuoteFormInitialData | undefined;
 
   let isDuplicate = false;
 

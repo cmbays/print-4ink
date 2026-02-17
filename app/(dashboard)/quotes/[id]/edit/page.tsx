@@ -1,7 +1,7 @@
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../../_components/QuoteForm";
-import type { LineItemData } from "../../_components/LineItemRow";
+import type { QuoteFormInitialData } from "../../_components/QuoteForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,15 +49,7 @@ export default async function EditQuotePage({
     getDtfSheetTiers(),
   ]);
 
-  const initialData: {
-    customerId?: string;
-    lineItems?: LineItemData[];
-    discounts?: { label: string; amount: number; type: "manual" | "contract" | "volume" }[];
-    shipping?: number;
-    artworkIds?: string[];
-    internalNotes?: string;
-    customerNotes?: string;
-  } = {
+  const initialData: QuoteFormInitialData = {
     customerId: quote.customerId,
     lineItems: quote.lineItems.map((item, i) => ({
       id: `edit-${i}`,

@@ -32,7 +32,7 @@ import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost,
 import { cn } from "@/lib/utils";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 
-interface QuoteDetailViewProps {
+type QuoteDetailViewProps = {
   quote: Quote;
   customer: Customer | null;
   artworks: Artwork[];
@@ -40,7 +40,7 @@ interface QuoteDetailViewProps {
   colors: Color[];
   mode: "detail" | "review";
   onSend?: () => void;
-}
+};
 
 function getTotalQty(sizes: Record<string, number>): number {
   return Object.values(sizes).reduce((sum, qty) => sum + qty, 0);

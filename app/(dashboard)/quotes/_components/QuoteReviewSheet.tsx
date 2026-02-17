@@ -16,7 +16,7 @@ import type { Artwork } from "@/lib/schemas/artwork";
 import type { Color } from "@/lib/schemas/color";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 
-interface QuoteReviewSheetProps {
+type QuoteReviewSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   quote: Quote;
@@ -24,7 +24,7 @@ interface QuoteReviewSheetProps {
   artworks: Artwork[];
   garmentCatalog: GarmentCatalog[];
   colors: Color[];
-}
+};
 
 export function QuoteReviewSheet({
   open,

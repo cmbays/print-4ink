@@ -11,7 +11,7 @@ import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
 
-interface DtfTabContentProps {
+type DtfTabContentProps = {
   lineItems: DtfLineItem[];
   setLineItems: React.Dispatch<React.SetStateAction<DtfLineItem[]>>;
   sheetCalculation: SheetCalculation | null;
@@ -23,7 +23,7 @@ interface DtfTabContentProps {
   setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>;
   setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>;
   dtfSheetTiers: DTFSheetTier[];
-}
+};
 
 // Default to Small preset resolved dimensions
 const DEFAULT_PRESET = DTF_SIZE_PRESETS[0]; // Small: 4x4

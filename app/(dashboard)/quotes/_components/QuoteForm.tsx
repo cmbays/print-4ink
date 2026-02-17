@@ -40,24 +40,26 @@ import type { Customer, CustomerTag, CustomerTypeTag } from "@/lib/schemas/custo
 import { cn } from "@/lib/utils";
 import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
 
-interface QuoteFormProps {
+export type QuoteFormInitialData = {
+  customerId?: string;
+  lineItems?: LineItemData[];
+  discounts?: Discount[];
+  shipping?: number;
+  artworkIds?: string[];
+  internalNotes?: string;
+  customerNotes?: string;
+};
+
+type QuoteFormProps = {
   mode: "create" | "edit";
   customers: Customer[];
   colors: Color[];
   garmentCatalog: GarmentCatalog[];
   artworks: Artwork[];
   dtfSheetTiers: DTFSheetTier[];
-  initialData?: {
-    customerId?: string;
-    lineItems?: LineItemData[];
-    discounts?: Discount[];
-    shipping?: number;
-    artworkIds?: string[];
-    internalNotes?: string;
-    customerNotes?: string;
-  };
+  initialData?: QuoteFormInitialData;
   quoteId?: string;
-}
+};
 
 function createEmptyLineItem(): LineItemData {
   return {
