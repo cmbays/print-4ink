@@ -197,11 +197,12 @@ _work_pipeline_build() {
         return 1
     fi
 
-    # Generate KDL layout (reuse the pattern from _work_build)
+    # Generate KDL layout and launch via shared helper
     local _arr_start=0
     [[ -n "${ZSH_VERSION:-}" ]] && _arr_start=1
 
     if [[ -n "${ZELLIJ:-}" ]]; then
+        # Inside Zellij: open each session as a separate tab
         echo "Opening ${#created_topics[@]} tabs in current Zellij session..."
         local _j=$_arr_start
         local _t cwd tab_prompt tab_kdl
@@ -217,13 +218,11 @@ _work_pipeline_build() {
                 echo "}"
             } > "$tab_kdl"
 
-            zellij action new-tab --layout "$tab_kdl" --name "$_t"
-            (sleep 5 && rm -f "$tab_kdl" 2>/dev/null) &
-            disown
-            echo "  Opened tab: $_t"
+            _kdl_launch_layout "$tab_kdl" "$_t"
             _j=$((_j + 1))
         done
     else
+        # Outside Zellij: build multi-tab layout, auto-launch session
         local KDL_FILE
         KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX")
         chmod 600 "$KDL_FILE"
@@ -239,8 +238,7 @@ _work_pipeline_build() {
         } > "$KDL_FILE"
 
         local session_name="${p_name}-w${wave_idx}"
-        echo "Launch the build session:"
-        echo "  zellij --new-session-with-layout $KDL_FILE --session $session_name"
+        _kdl_launch_layout "$KDL_FILE" "$session_name"
     fi
 
     # ── Session ID Capture (background) ──────────────────────────────

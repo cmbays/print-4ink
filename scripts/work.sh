@@ -347,30 +347,10 @@ CONTEXT
         echo "}"
     } > "$LAYOUT_FILE"
 
-    if [[ -n "${ZELLIJ:-}" ]]; then
-        # ── Inside Zellij: add tab to current session ────────────────────
-        zellij action new-tab --layout "$LAYOUT_FILE" --name "$TOPIC"
-        echo "  Zellij:    tab '$TOPIC' opened"
-
-        # Clean up temp file after Zellij reads it
-        (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
-        disown
-    elif [[ -n "${NO_LAUNCH:-}" ]]; then
-        # ── No-launch mode: print attach command ─────────────────────────
-        echo ""
-        echo "  Zellij session ready. Attach with:"
-        echo "    zellij --new-session-with-layout \"$LAYOUT_FILE\" --session \"$TOPIC\""
-        echo ""
-        echo "  (layout file is temporary — attach before next reboot)"
+    if [[ -n "${NO_LAUNCH:-}" ]]; then
+        _kdl_launch_layout "$LAYOUT_FILE" "$TOPIC" --no-launch
     else
-        # ── Outside Zellij: auto-launch session (blocking) ───────────────
-        echo "  Launching Zellij session '$TOPIC'..."
-        echo ""
-
-        zellij --new-session-with-layout "$LAYOUT_FILE" --session "$TOPIC"
-
-        # Cleanup after Zellij session ends
-        rm -f "$LAYOUT_FILE" 2>/dev/null
+        _kdl_launch_layout "$LAYOUT_FILE" "$TOPIC"
     fi
 }
 
@@ -615,6 +595,7 @@ _work_build() {
     [[ -n "${ZSH_VERSION:-}" ]] && _arr_start=1
     local KDL_FILE
     KDL_FILE=$(mktemp "${TMPDIR:-/tmp}/work-build-XXXXXX")
+    chmod 600 "$KDL_FILE"
     {
         echo "layout {"
         local _k=$_arr_start
@@ -632,7 +613,7 @@ _work_build() {
     echo ""
 
     if [[ -n "${ZELLIJ:-}" ]]; then
-        # Inside Zellij: open each session as a new tab
+        # Inside Zellij: open each session as a separate tab
         echo "Opening ${#created_topics[@]} tabs in current Zellij session..."
         local _j=$_arr_start
         local _t
@@ -642,25 +623,21 @@ _work_build() {
 
             local tab_kdl
             tab_kdl=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX")
+            chmod 600 "$tab_kdl"
 
-            # Use the shared render helper for the tab layout
             {
                 echo "layout {"
                 _kdl_render_tab "$_t" "$cwd" "$tab_prompt" "$CLAUDE_ARGS"
                 echo "}"
             } > "$tab_kdl"
 
-            zellij action new-tab --layout "$tab_kdl" --name "$_t"
-            (sleep 5 && rm -f "$tab_kdl" 2>/dev/null) &
-            disown
-            echo "  Opened tab: $_t"
+            _kdl_launch_layout "$tab_kdl" "$_t"
             _j=$((_j + 1))
         done
     else
-        # Outside Zellij: tell user to launch
+        # Outside Zellij: auto-launch multi-tab session
         local session_name="${VERTICAL}-w${WAVE_IDX}"
-        echo "Launch the build session:"
-        echo "  zellij --new-session-with-layout $KDL_FILE --session $session_name"
+        _kdl_launch_layout "$KDL_FILE" "$session_name"
     fi
 
     echo ""
