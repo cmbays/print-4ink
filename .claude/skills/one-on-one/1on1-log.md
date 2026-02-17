@@ -1,5 +1,30 @@
 # 1:1 Log
 
+## 2026-02-17
+
+**Pulse**: Infrastructure transformation day — 14 PRs, DAL complete across all verticals, lint guardrails live, config-driven schemas. Demo in 4 days. Wizards (#145) is the critical path — not started.
+**Focus decided**: Start wizards tomorrow. Nothing displaces it.
+**Key decisions**:
+- Gang sheet builder: shipped, "unrefined but good enough" for demo
+- Mobile: largely done, some kinks remaining (pricing editor)
+- Wizards: last remaining demo must-have — 3 journeys scoped tight
+- 2 Gary questions still open (garments-q3, mobile-q5)
+**Open items**:
+- PR #425 (review orchestration v2) — merge status unclear
+- work-core phases #377–#381 — priority/now but no demo milestone — clarify Phase 2 vs demo prep
+- #405 (motion tokens) + #423 (pricing mobile) — demo-blocking or polish?
+- Gary pre-briefing before Feb 21?
+**Story beat**: Tightening bolts before inspection. DAL + lint guardrails = structure that won't crack under Gary's scrutiny. Four days to the door.
+
+**Follow-up decisions (same session)**:
+- PR #425 (review orchestration) merged — review engine live
+- work-core #373–#381 moved to `priority/later` — infrastructure "done what it needed to do"
+- #423 (pricing editor mobile) confirmed demo-blocking
+- #405 (motion tokens) confirmed as quick parallel session fix
+- Gary pre-demo touchbase: TBD
+- Wizard scope revised: end-to-end journey (customer → quote → job board → invoice), both SP and DTF. Comment added to #145.
+- Post-wizards plan: testing/walkthrough of full user journey → polish whatever surfaces (especially mobile)
+
 ## 2026-02-14
 
 **Pulse**: Phase 1 effectively complete. 6 verticals demo-ready, 15 PRs merged today. Gary gap is the top strategic risk.
