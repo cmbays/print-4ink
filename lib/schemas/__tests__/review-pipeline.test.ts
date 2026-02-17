@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   prTypeEnum,
-  riskLevelEnum,
+  prScopeEnum,
   gateDecisionEnum,
   fileChangeSchema,
   commitInfoSchema,
@@ -14,6 +14,7 @@ import {
   reviewReportSchema,
   gateDecisionSchema,
 } from "../review-pipeline";
+import { reviewRiskLevelEnum } from "../review-config";
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -32,13 +33,24 @@ describe("prTypeEnum", () => {
   });
 });
 
-describe("riskLevelEnum", () => {
+describe("prScopeEnum", () => {
+  it.each(["small", "medium", "large"])("accepts '%s'", (val) => {
+    expect(prScopeEnum.parse(val)).toBe(val);
+  });
+
+  it("rejects invalid scope", () => {
+    expect(() => prScopeEnum.parse("tiny")).toThrow();
+    expect(() => prScopeEnum.parse("huge")).toThrow();
+  });
+});
+
+describe("reviewRiskLevelEnum (imported from config)", () => {
   it.each(["low", "medium", "high", "critical"])("accepts '%s'", (val) => {
-    expect(riskLevelEnum.parse(val)).toBe(val);
+    expect(reviewRiskLevelEnum.parse(val)).toBe(val);
   });
 
   it("rejects invalid risk level", () => {
-    expect(() => riskLevelEnum.parse("extreme")).toThrow();
+    expect(() => reviewRiskLevelEnum.parse("extreme")).toThrow();
   });
 });
 
@@ -220,11 +232,30 @@ describe("prClassificationSchema", () => {
     },
   );
 
+  it.each(["low", "medium", "high", "critical"] as const)(
+    "accepts riskLevel '%s'",
+    (riskLevel) => {
+      expect(
+        prClassificationSchema.parse({ ...validClassification, riskLevel })
+          .riskLevel,
+      ).toBe(riskLevel);
+    },
+  );
+
   it("rejects invalid scope", () => {
     expect(() =>
       prClassificationSchema.parse({
         ...validClassification,
         scope: "tiny",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects invalid riskLevel", () => {
+    expect(() =>
+      prClassificationSchema.parse({
+        ...validClassification,
+        riskLevel: "extreme",
       }),
     ).toThrow();
   });

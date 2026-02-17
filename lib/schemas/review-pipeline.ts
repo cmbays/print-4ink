@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { severityEnum } from "./review-config";
+import { severityEnum, reviewRiskLevelEnum } from "./review-config";
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -15,7 +15,7 @@ export const prTypeEnum = z.enum([
   "mixed",
 ]);
 
-export const riskLevelEnum = z.enum(["low", "medium", "high", "critical"]);
+export const prScopeEnum = z.enum(["small", "medium", "large"]);
 
 export const gateDecisionEnum = z.enum([
   "pass",
@@ -58,9 +58,9 @@ export const prFactsSchema = z.object({
 
 export const prClassificationSchema = z.object({
   type: prTypeEnum,
-  riskLevel: riskLevelEnum,
+  riskLevel: reviewRiskLevelEnum,
   domains: z.array(z.string().min(1)),
-  scope: z.enum(["small", "medium", "large"]),
+  scope: prScopeEnum,
   filesChanged: z.number().int().nonnegative(),
   linesChanged: z.number().int().nonnegative(),
 });
@@ -136,7 +136,7 @@ export const gateDecisionSchema = z.object({
 // ---------------------------------------------------------------------------
 
 export type PRType = z.infer<typeof prTypeEnum>;
-export type RiskLevel = z.infer<typeof riskLevelEnum>;
+export type PRScope = z.infer<typeof prScopeEnum>;
 export type GateDecisionValue = z.infer<typeof gateDecisionEnum>;
 export type FileChange = z.infer<typeof fileChangeSchema>;
 export type CommitInfo = z.infer<typeof commitInfoSchema>;

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   severityEnum,
   ruleScopeEnum,
-  triggerTypeEnum,
+  reviewRiskLevelEnum,
   reviewRuleSchema,
   triggerConditionSchema,
   compositionPolicySchema,
@@ -41,16 +41,17 @@ describe("ruleScopeEnum", () => {
   });
 });
 
-describe("triggerTypeEnum", () => {
-  it.each(["always", "domain", "risk", "content"])(
+describe("reviewRiskLevelEnum", () => {
+  it.each(["low", "medium", "high", "critical"])(
     "accepts '%s'",
     (val) => {
-      expect(triggerTypeEnum.parse(val)).toBe(val);
+      expect(reviewRiskLevelEnum.parse(val)).toBe(val);
     },
   );
 
-  it("rejects invalid trigger type", () => {
-    expect(() => triggerTypeEnum.parse("manual")).toThrow();
+  it("rejects invalid risk level", () => {
+    expect(() => reviewRiskLevelEnum.parse("extreme")).toThrow();
+    expect(() => reviewRiskLevelEnum.parse("major")).toThrow();
   });
 });
 
@@ -136,7 +137,7 @@ describe("reviewRuleSchema", () => {
 });
 
 // ---------------------------------------------------------------------------
-// triggerConditionSchema
+// triggerConditionSchema (discriminated union)
 // ---------------------------------------------------------------------------
 
 describe("triggerConditionSchema", () => {
@@ -150,15 +151,21 @@ describe("triggerConditionSchema", () => {
       type: "domain",
       domains: ["financial", "pricing"],
     });
-    expect(result.domains).toEqual(["financial", "pricing"]);
+    expect(result.type).toBe("domain");
+    if (result.type === "domain") {
+      expect(result.domains).toEqual(["financial", "pricing"]);
+    }
   });
 
   it("accepts risk trigger with riskLevel", () => {
     const result = triggerConditionSchema.parse({
       type: "risk",
-      riskLevel: "critical",
+      riskLevel: "high",
     });
-    expect(result.riskLevel).toBe("critical");
+    expect(result.type).toBe("risk");
+    if (result.type === "risk") {
+      expect(result.riskLevel).toBe("high");
+    }
   });
 
   it("accepts content trigger with pattern", () => {
@@ -166,7 +173,59 @@ describe("triggerConditionSchema", () => {
       type: "content",
       pattern: "TODO|FIXME|HACK",
     });
-    expect(result.pattern).toBe("TODO|FIXME|HACK");
+    expect(result.type).toBe("content");
+    if (result.type === "content") {
+      expect(result.pattern).toBe("TODO|FIXME|HACK");
+    }
+  });
+
+  it("rejects domain trigger without domains", () => {
+    expect(() =>
+      triggerConditionSchema.parse({ type: "domain" }),
+    ).toThrow();
+  });
+
+  it("rejects domain trigger with empty domains", () => {
+    expect(() =>
+      triggerConditionSchema.parse({ type: "domain", domains: [] }),
+    ).toThrow();
+  });
+
+  it("rejects risk trigger without riskLevel", () => {
+    expect(() =>
+      triggerConditionSchema.parse({ type: "risk" }),
+    ).toThrow();
+  });
+
+  it("rejects content trigger without pattern", () => {
+    expect(() =>
+      triggerConditionSchema.parse({ type: "content" }),
+    ).toThrow();
+  });
+
+  it("rejects invalid trigger type", () => {
+    expect(() =>
+      triggerConditionSchema.parse({ type: "manual" }),
+    ).toThrow();
+  });
+
+  it("risk trigger uses reviewRiskLevelEnum values", () => {
+    for (const level of ["low", "medium", "high", "critical"]) {
+      const result = triggerConditionSchema.parse({
+        type: "risk",
+        riskLevel: level,
+      });
+      expect(result.type).toBe("risk");
+    }
+  });
+
+  it("rejects risk trigger with severity values", () => {
+    expect(() =>
+      triggerConditionSchema.parse({ type: "risk", riskLevel: "major" }),
+    ).toThrow();
+    expect(() =>
+      triggerConditionSchema.parse({ type: "risk", riskLevel: "warning" }),
+    ).toThrow();
   });
 });
 
