@@ -54,6 +54,22 @@ fi
 # shellcheck source=lib/pipeline-cooldown.sh
 [[ -f "${WORK_SCRIPT_DIR}/lib/pipeline-cooldown.sh" ]] && source "${WORK_SCRIPT_DIR}/lib/pipeline-cooldown.sh"
 
+# Return the pipeline ID from argument or $WORK_PIPELINE_ID env var.
+# Usage: id=$(_work_pipeline_id_arg "${1:-}")
+# Prints the ID to stdout. Prints nothing if neither is set.
+#
+# Flag-shaped arguments (--something) are ignored and do NOT satisfy the
+# explicit_arg path — they fall through to the env var fallback. This prevents
+# `work status --verbose` from treating `--verbose` as a pipeline ID.
+_work_pipeline_id_arg() {
+    local explicit_arg="${1:-}"
+    if [[ -n "$explicit_arg" && "${explicit_arg:0:2}" != "--" ]]; then
+        echo "$explicit_arg"
+    elif [[ -n "${WORK_PIPELINE_ID:-}" ]]; then
+        echo "$WORK_PIPELINE_ID"
+    fi
+}
+
 # ── Dispatcher ──────────────────────────────────────────────────────────────
 work() {
     case "${1:-}" in
@@ -62,9 +78,27 @@ work() {
         update)     shift; _work_update "$@" ;;
         start)      shift; _work_start "$@" ;;
         build)      shift; _work_build_dispatch "$@" ;;
-        end)        shift; _work_end "$@" ;;
+        end)
+            shift
+            if [[ -z "${1:-}" || "${1:0:2}" == "--" ]] && [[ -n "${WORK_PIPELINE_ID:-}" ]]; then
+                echo "  (using \$WORK_PIPELINE_ID: $WORK_PIPELINE_ID)"
+                _work_end "$WORK_PIPELINE_ID" "$@"
+            else
+                _work_end "$@"
+            fi
+            ;;
         cooldown)   shift; _work_cooldown "$@" ;;
-        status)     shift; _work_pipeline_status "$@" ;;
+        status)
+            shift
+            # If $1 is missing or a flag, inject $WORK_PIPELINE_ID as the first
+            # positional arg so the subcommand still receives remaining flags ($@).
+            if [[ -z "${1:-}" || "${1:0:2}" == "--" ]] && [[ -n "${WORK_PIPELINE_ID:-}" ]]; then
+                echo "  (using \$WORK_PIPELINE_ID: $WORK_PIPELINE_ID)"
+                _work_pipeline_status "$WORK_PIPELINE_ID" "$@"
+            else
+                _work_pipeline_status "$@"
+            fi
+            ;;
 
         # Legacy phase commands (still functional for non-pipeline usage)
         research)   shift; _work_phase "research" "$@" ;;
