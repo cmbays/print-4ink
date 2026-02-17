@@ -20,11 +20,11 @@ import type { Customer } from "@/lib/schemas/customer";
 // Props
 // ---------------------------------------------------------------------------
 
-interface GarmentCatalogClientProps {
+type GarmentCatalogClientProps = {
   initialCatalog: GarmentCatalog[];
   initialJobs: Job[];
   initialCustomers: Customer[];
-}
+};
 
 // ---------------------------------------------------------------------------
 // Component

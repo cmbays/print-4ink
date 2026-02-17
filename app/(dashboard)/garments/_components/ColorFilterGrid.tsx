@@ -15,11 +15,11 @@ import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 
 const catalogColors = getColorsMutable();
 
-interface ColorFilterGridProps {
+type ColorFilterGridProps = {
   selectedColorIds: string[];
   onToggleColor: (colorId: string) => void;
   favoriteColorIds: string[];
-}
+};
 
 function FilterSwatch({
   color,

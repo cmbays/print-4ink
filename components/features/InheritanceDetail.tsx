@@ -11,17 +11,19 @@ import { cn } from "@/lib/utils";
 import { getColorsMutable } from "@/lib/dal/colors";
 import type { InheritanceChain } from "@/lib/helpers/color-preferences";
 
-interface InheritanceDetailProps {
+const catalogColors = getColorsMutable();
+
+type InheritanceDetailProps = {
   chain: InheritanceChain;
   onRestore?: (colorId: string) => void;
-}
+};
 
 function getColorName(colorId: string): string {
-  return getColorsMutable().find((c) => c.id === colorId)?.name ?? colorId;
+  return catalogColors.find((c) => c.id === colorId)?.name ?? colorId;
 }
 
 function ColorChip({ colorId }: { colorId: string }) {
-  const color = getColorsMutable().find((c) => c.id === colorId);
+  const color = catalogColors.find((c) => c.id === colorId);
   if (!color) return <span className="text-xs text-muted-foreground">{colorId}</span>;
 
   return (

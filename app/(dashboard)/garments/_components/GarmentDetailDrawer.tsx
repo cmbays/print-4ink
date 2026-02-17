@@ -24,7 +24,7 @@ import { getColorsMutable } from "@/lib/dal/colors";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
 
-interface GarmentDetailDrawerProps {
+type GarmentDetailDrawerProps = {
   garment: GarmentCatalog;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,7 +36,7 @@ interface GarmentDetailDrawerProps {
   onBrandClick?: (brandName: string) => void;
   /** Phase 1: always 'global'. V4 adds 'brand'/'customer' for context-aware writes */
   favoriteContext?: { context: "global" | "brand" | "customer"; contextId?: string };
-}
+};
 
 export function GarmentDetailDrawer({
   garment,

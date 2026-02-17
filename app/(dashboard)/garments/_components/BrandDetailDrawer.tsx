@@ -30,25 +30,24 @@ import type { ImpactPreview } from "@/lib/helpers/color-preferences";
 import { getColorsMutable } from "@/lib/dal/colors";
 import { getGarmentCatalogMutable } from "@/lib/dal/garments";
 import { getBrandPreferencesMutable } from "@/lib/dal/settings";
-
-const catalogColors = getColorsMutable();
-const garmentCatalog = getGarmentCatalogMutable();
-const brandPreferences = getBrandPreferencesMutable();
 import type { Color } from "@/lib/schemas/color";
 import { brandPreferenceSchema } from "@/lib/schemas/color-preferences";
 import type { InheritanceMode } from "@/lib/schemas/color-preferences";
 
+const catalogColors = getColorsMutable();
+const garmentCatalog = getGarmentCatalogMutable();
+const brandPreferences = getBrandPreferencesMutable();
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface BrandDetailDrawerProps {
+type BrandDetailDrawerProps = {
   brandName: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onGarmentClick?: (garmentId: string) => void;
-}
+};
 
 // ---------------------------------------------------------------------------
 // Component

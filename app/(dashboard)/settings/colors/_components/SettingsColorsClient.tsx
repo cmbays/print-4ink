@@ -40,10 +40,10 @@ const SEARCH_MIN_CHARS = 2;
 // Props
 // ---------------------------------------------------------------------------
 
-interface SettingsColorsClientProps {
+type SettingsColorsClientProps = {
   initialColors: Color[];
   initialAutoPropagate: boolean;
-}
+};
 
 // ---------------------------------------------------------------------------
 // Helpers

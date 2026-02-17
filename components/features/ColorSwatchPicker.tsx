@@ -15,7 +15,7 @@ import type { Color } from "@/lib/schemas/color";
 import { getColorsMutable } from "@/lib/dal/colors";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 
-interface ColorSwatchPickerProps {
+type ColorSwatchPickerProps = {
   colors: Color[];
   selectedColorId?: string;
   onSelect: (colorId: string) => void;
@@ -26,10 +26,10 @@ interface ColorSwatchPickerProps {
   multiSelect?: boolean;
   selectedColorIds?: string[];
   onToggleColor?: (colorId: string) => void;
-}
+};
 
 const DEFAULT_COLORS = getColorsMutable();
-const DEFAULT_FAVORITES = getColorsMutable()
+const DEFAULT_FAVORITES = DEFAULT_COLORS
   .filter((c) => c.isFavorite === true)
   .map((c) => c.id);
 

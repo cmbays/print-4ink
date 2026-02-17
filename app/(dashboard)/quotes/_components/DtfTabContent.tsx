@@ -11,7 +11,9 @@ import { GangSheetCanvas } from "./GangSheetCanvas";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
 
-interface DtfTabContentProps {
+const DTF_SHEET_TIERS = getDtfSheetTiersSync();
+
+type DtfTabContentProps = {
   lineItems: DtfLineItem[];
   setLineItems: React.Dispatch<React.SetStateAction<DtfLineItem[]>>;
   sheetCalculation: SheetCalculation | null;
@@ -22,7 +24,7 @@ interface DtfTabContentProps {
   setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
   setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>;
   setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>;
-}
+};
 
 // Default to Small preset resolved dimensions
 const DEFAULT_PRESET = DTF_SIZE_PRESETS[0]; // Small: 4x4
@@ -109,7 +111,7 @@ export function DtfTabContent({
         setSplitMode={setSplitMode}
         setCanvasLayout={setCanvasLayout}
         setActiveSheetIndex={setActiveSheetIndex}
-        tiers={getDtfSheetTiersSync()}
+        tiers={DTF_SHEET_TIERS}
       />
 
       {/* U88-U92 — Gang Sheet Canvas (Wave 4) */}
