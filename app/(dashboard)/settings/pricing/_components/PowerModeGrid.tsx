@@ -79,7 +79,7 @@ function PriceCell({
     editingCell, focusedCell, selectedCells, isManualEditOn,
     editValue, setEditValue, editInputRef, editInputKeyDown,
     handleEditBlur, handleCellMouseDown, handleCellMouseEnter,
-    handleCellMouseUp, handleCellDoubleClick,
+    handleCellMouseUp, handleCellDoubleClick, startReplaceEdit,
   } = useContext(SpreadsheetCtx)!;
 
   const key = `${rowIdx}-${colIdx}`;
@@ -109,7 +109,7 @@ function PriceCell({
       <div
         className={cn(
           "flex items-center justify-center gap-1.5 rounded px-2 py-1 transition-colors select-none",
-          isManualEditOn && "cursor-pointer",
+          isManualEditOn && "cursor-pointer touch-manipulation",
           isFocused && !isSelected && "ring-2 ring-action",
           isSelected && "bg-action/10",
           isFocused && isSelected && "ring-2 ring-action bg-action/10",
@@ -119,6 +119,11 @@ function PriceCell({
         onMouseEnter={() => handleCellMouseEnter(rowIdx, colIdx)}
         onMouseUp={() => handleCellMouseUp(rowIdx, colIdx)}
         onDoubleClick={() => handleCellDoubleClick(rowIdx, colIdx)}
+        onTouchEnd={(e) => {
+          if (!isManualEditOn) return;
+          e.preventDefault();
+          startReplaceEdit(rowIdx, colIdx);
+        }}
       >
         <span
           className={cn(
@@ -285,7 +290,7 @@ export function PowerModeGrid({
           tabIndex={ss.isManualEditOn ? 0 : undefined}
           onKeyDown={ss.handleTableKeyDown}
         >
-          <table className="w-full border-collapse text-xs">
+          <table className="w-full min-w-[540px] border-collapse text-xs">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>

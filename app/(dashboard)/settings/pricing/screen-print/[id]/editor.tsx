@@ -634,8 +634,10 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
               <div className="flex-1" />
 
+              {/* Controls group — wraps cleanly on narrow mobile viewports */}
+              <div className="flex flex-wrap items-center gap-2">
               {/* Simple / Custom toggle */}
-              <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5">
+              <div className="flex items-center gap-1 rounded-lg border border-border bg-surface p-0.5 shrink-0">
                 <WithTooltip tooltip="Formula-computed prices only">
                   <Button
                     variant={editorMode === "simple" ? "default" : "ghost"}
@@ -662,11 +664,11 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
 
               {/* Manual Edit toggle — only shown in Custom mode */}
               {editorMode === "power" && (
-                <WithTooltip tooltip={isManualEditOn ? "Exit manual editing mode" : "Click cells to set custom prices"}>
+                <WithTooltip tooltip={isManualEditOn ? "Exit manual editing mode" : "Tap cells to set custom prices"}>
                   <Button
                     variant={isManualEditOn ? "default" : "outline"}
                     size="sm"
-                    className="h-7 gap-1.5 text-xs"
+                    className="h-7 gap-1.5 text-xs shrink-0"
                     onClick={toggleManualEdit}
                   >
                     {isManualEditOn ? (
@@ -683,7 +685,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
               <Popover>
                 <WithTooltip tooltip="Adjust max colors and color hit rate">
                   <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs">
+                    <Button variant="outline" size="sm" className="h-7 gap-1.5 text-xs shrink-0">
                       <Settings2 className="size-3.5" />
                       Settings
                     </Button>
@@ -740,6 +742,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
                   </div>
                 </PopoverContent>
               </Popover>
+              </div>{/* end controls group */}
             </div>
 
             {/* Row 2: preview selectors (garment + location) */}
@@ -824,6 +827,10 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
       <BottomActionBar>
         {isSandboxMode ? (
           <>
+            <Button variant="outline" size="sm" onClick={() => setShowToolsSheet(true)}>
+              <Settings2 className="size-4" />
+              Tools
+            </Button>
             <Button variant="outline" size="sm" onClick={discardSandboxChanges}>
               <Undo2 className="size-4" />
               Discard

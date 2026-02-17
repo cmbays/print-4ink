@@ -98,7 +98,7 @@ export function MatrixPreviewSelector({
       <div className="hidden md:block h-4 w-px bg-border" />
 
       {/* Location toggles — horizontal scroll on mobile */}
-      <div className="flex items-center gap-1 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="flex items-center gap-1 overflow-x-auto scrollbar-none -mx-4 px-4 pb-0.5 md:mx-0 md:px-0 md:pb-0">
         <MapPin className="size-3.5 text-muted-foreground shrink-0 mr-0.5" />
         {locations.map((loc) => {
           const isActive = selectedLocations.includes(loc.location);

@@ -44,7 +44,7 @@ export function ColorPricingGrid({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-xs">
+      <table className="w-full min-w-[540px] border-collapse text-xs">
         <thead>
           <tr>
             <th className="border border-border bg-surface px-3 py-2 text-left font-medium text-muted-foreground sticky left-0 z-[1] shadow-[2px_0_4px_-2px_rgba(0,0,0,0.3)]">
