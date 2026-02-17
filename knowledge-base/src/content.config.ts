@@ -28,6 +28,7 @@ const pipelines = defineCollection({
     pipelineId: z.string().optional(),
     pipelineType: z.enum(pipelineTypes),
     domain: z.enum(domains).optional(),
+    domains: z.array(z.enum(domains)).optional().default([]),
     products: z.array(z.enum(products)).optional().default([]),
     tools: z.array(z.enum(tools)).optional().default([]),
     stage: z.enum(stageSlugs),
@@ -65,6 +66,19 @@ const toolDocs = defineCollection({
   }),
 });
 
+// ── Domains ───────────────────────────────────────────────────────
+const domainDocs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/domains' }),
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string(),
+    domain: z.enum(domains),
+    docType: z.enum(['overview', 'history', 'decisions', 'reference']),
+    lastUpdated: z.coerce.date(),
+    status: z.enum(['current', 'draft', 'deprecated']).default('current'),
+  }),
+});
+
 // ── Strategy ──────────────────────────────────────────────────────
 // Pipeline names are free text (not config-backed enums).
 const strategy = defineCollection({
@@ -85,4 +99,4 @@ const strategy = defineCollection({
   }),
 });
 
-export const collections = { pipelines, productDocs, toolDocs, strategy };
+export const collections = { pipelines, productDocs, domainDocs, toolDocs, strategy };

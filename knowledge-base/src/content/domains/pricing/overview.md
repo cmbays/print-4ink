@@ -1,7 +1,7 @@
 ---
-title: "Garments"
-subtitle: "Garment catalog, SKU selection, size breakdown, and mockup engine"
-product: garments
+title: "Pricing"
+subtitle: "Price matrix configuration, markup rules, and quantity break calculations"
+domain: pricing
 docType: overview
 lastUpdated: 2026-02-15
 status: draft
@@ -17,5 +17,4 @@ Phase 1 mockup complete with mock data.
 
 ## Key Routes
 
-- `/garments`
-- `/garments/[id]`
+- `/settings/pricing`

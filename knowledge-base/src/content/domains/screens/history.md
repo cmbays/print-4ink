@@ -1,7 +1,7 @@
 ---
-title: "Garments — History"
-subtitle: "Build history and changelog for the Garments product"
-product: garments
+title: "Screens — History"
+subtitle: "Build history and changelog for the Screens product"
+domain: screens
 docType: history
 lastUpdated: 2026-02-15
 status: draft

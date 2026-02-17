@@ -5,7 +5,8 @@ date: 2026-02-15
 phase: 1
 pipelineName: garments
 pipelineType: vertical
-products: [garments, customers, screens]
+products: [customers]
+domains: [garments, screens]
 tools: []
 stage: interview
 tags: [decision, research]

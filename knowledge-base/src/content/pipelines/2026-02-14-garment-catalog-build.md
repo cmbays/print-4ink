@@ -5,7 +5,8 @@ date: 2026-02-14
 phase: 1
 pipelineName: garments
 pipelineType: vertical
-products: [garments, customers, jobs]
+products: [customers, jobs]
+domains: [garments]
 tools: []
 stage: build
 tags: [feature, build]
