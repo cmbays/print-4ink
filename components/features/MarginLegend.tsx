@@ -2,7 +2,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import { cn } from "@/lib/utils";
 
 const items = [

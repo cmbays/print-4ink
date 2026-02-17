@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { ChevronDown, FileText, Hammer, ScrollText, CreditCard, Bell, Send, Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
+import { Separator } from "@shared/ui/primitives/separator";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@shared/ui/primitives/collapsible";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { BottomActionBar } from "@/components/layout/bottom-action-bar";

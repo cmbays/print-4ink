@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { cn } from "@/lib/utils";
 import { LANE_BADGE_COLORS, LANE_LABELS } from "@domain/constants";
 import type { Lane } from "@domain/entities/job";

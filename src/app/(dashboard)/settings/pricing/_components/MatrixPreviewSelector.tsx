@@ -6,8 +6,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+} from "@shared/ui/primitives/select";
+import { Button } from "@shared/ui/primitives/button";
 import { cn } from "@/lib/utils";
 import type { GarmentCategory } from "@domain/entities/garment";
 import type { LocationUpcharge, GarmentTypePricing } from "@domain/entities/price-matrix";

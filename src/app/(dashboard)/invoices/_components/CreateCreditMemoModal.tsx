@@ -10,18 +10,18 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@shared/ui/primitives/dialog";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { CREDIT_MEMO_REASON_LABELS } from "@domain/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { creditMemoReasonEnum } from "@domain/entities/credit-memo";

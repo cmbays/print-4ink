@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { formatDate } from "@/lib/helpers/format";
 
 interface BlockReasonBannerProps {

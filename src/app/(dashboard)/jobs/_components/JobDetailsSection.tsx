@@ -1,6 +1,6 @@
 import { Package, MapPin, Shirt, CheckCircle2, XCircle, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@domain/constants";
 import { getGarmentById, getColorById } from "@domain/rules/garment.rules";
 import { getScreensByJobId } from "@domain/rules/screen.rules";

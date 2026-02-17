@@ -3,7 +3,7 @@
 import { useState, useMemo, useSyncExternalStore, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Package } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { GarmentCatalogToolbar } from "./GarmentCatalogToolbar";
 import { GarmentCard } from "./GarmentCard";
 import { GarmentTableRow } from "./GarmentTableRow";

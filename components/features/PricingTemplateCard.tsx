@@ -10,15 +10,15 @@ import {
   CardHeader,
   CardTitle,
   CardAction,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from "@shared/ui/primitives/card";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@shared/ui/primitives/dropdown-menu";
 import {
   Copy,
   Trash2,

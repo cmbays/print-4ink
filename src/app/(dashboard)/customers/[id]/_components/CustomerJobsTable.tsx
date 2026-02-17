@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   LANE_LABELS,
   LANE_COLORS,

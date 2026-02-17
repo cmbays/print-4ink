@@ -8,18 +8,18 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@shared/ui/primitives/sheet";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { CONTACT_ROLE_LABELS } from "@domain/constants";
 import { contactRoleEnum } from "@domain/entities/contact";
 import type { Group } from "@domain/entities/group";

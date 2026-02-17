@@ -10,17 +10,17 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@shared/ui/primitives/sheet";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { PAYMENT_METHOD_LABELS } from "@domain/constants";
 import { money, formatCurrency } from "@/lib/helpers/money";
 import { paymentMethodEnum } from "@domain/entities/invoice";

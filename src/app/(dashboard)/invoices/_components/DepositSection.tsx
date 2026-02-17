@@ -1,8 +1,8 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Switch } from "@shared/ui/primitives/switch";
 import { DEPOSIT_DEFAULTS_BY_TIER } from "@domain/constants";
 import { calculateSmartDeposit } from "@domain/rules/invoice.rules";
 import { money, toNumber } from "@/lib/helpers/money";

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { Monitor } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { getColorById } from "@domain/rules/garment.rules";
 import { getColorsMutable } from "@infra/repositories/colors";

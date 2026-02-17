@@ -19,7 +19,7 @@ const eslintConfig = defineConfig([
       "no-restricted-imports": ["error", {
         paths: [
           {
-            name: "@/components/ui/breadcrumb",
+            name: "@shared/ui/primitives/breadcrumb",
             message: "Use <Topbar breadcrumbs={buildBreadcrumbs(...)}> instead of raw <Breadcrumb>. See lib/helpers/breadcrumbs.ts",
           },
         ],
@@ -43,7 +43,7 @@ const eslintConfig = defineConfig([
   },
   // Topbar is the only file allowed to import from @/components/ui/breadcrumb
   {
-    files: ["components/layout/topbar.tsx"],
+    files: ["src/shared/ui/layouts/topbar.tsx"],
     rules: {
       "no-restricted-imports": "off",
     },

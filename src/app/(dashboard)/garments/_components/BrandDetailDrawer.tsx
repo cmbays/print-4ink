@@ -8,8 +8,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@shared/ui/primitives/sheet";
+import { ScrollArea } from "@shared/ui/primitives/scroll-area";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
 import { InheritanceToggle } from "@/components/features/InheritanceToggle";
 import { InheritanceDetail } from "@/components/features/InheritanceDetail";

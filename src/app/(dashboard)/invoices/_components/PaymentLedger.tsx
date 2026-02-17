@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import { PAYMENT_METHOD_LABELS } from "@domain/constants";
 import type { Payment } from "@domain/entities/invoice";
 import { CreditCard } from "lucide-react";

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { BottomSheet } from "@shared/ui/primitives/bottom-sheet";
+import { Button } from "@shared/ui/primitives/button";
+import { Textarea } from "@shared/ui/primitives/textarea";
 import { ShieldAlert } from "lucide-react";
 
 interface BlockReasonSheetProps {

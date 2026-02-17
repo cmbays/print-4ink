@@ -1,7 +1,7 @@
 import { Package, Palette, MapPin, Calendar } from "lucide-react";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { formatShortDate } from "@/lib/helpers/format";

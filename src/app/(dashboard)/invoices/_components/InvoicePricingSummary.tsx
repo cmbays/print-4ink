@@ -1,6 +1,6 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@shared/ui/primitives/separator";
 import { formatCurrency } from "@/lib/helpers/money";
 
 interface InvoicePricingSummaryProps {

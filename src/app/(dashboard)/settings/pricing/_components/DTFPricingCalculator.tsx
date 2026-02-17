@@ -8,16 +8,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+} from "@shared/ui/primitives/card";
+import { Label } from "@shared/ui/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from "@shared/ui/primitives/select";
+import { Separator } from "@shared/ui/primitives/separator";
 import { MarginIndicator } from "@/components/features/MarginIndicator";
 import { calculateDTFPrice, formatCurrency, formatPercent } from "@domain/services/pricing.service";
 import type { DTFPricingTemplate, DTFRushTurnaround, DTFFilmType } from "@domain/entities/dtf-pricing";

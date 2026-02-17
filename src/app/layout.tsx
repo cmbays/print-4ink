@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@shared/ui/primitives/sonner";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 

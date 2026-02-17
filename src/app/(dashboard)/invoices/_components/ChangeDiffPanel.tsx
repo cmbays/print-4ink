@@ -5,7 +5,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@shared/ui/primitives/collapsible";
 import { cn } from "@/lib/utils";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { PricingSnapshot } from "@domain/entities/invoice";

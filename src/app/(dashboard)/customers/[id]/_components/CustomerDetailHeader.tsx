@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Copy, Check, Plus, Pencil, Archive, Mail, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { HealthBadge } from "@/components/features/HealthBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";

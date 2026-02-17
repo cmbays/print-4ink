@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Upload, ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@shared/ui/primitives/dialog";
 import { cn } from "@/lib/utils";
 import { ARTWORK_TAG_LABELS } from "@domain/constants";
 import type { ArtworkTag } from "@domain/entities/artwork";

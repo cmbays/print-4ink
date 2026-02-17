@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { Input } from "@shared/ui/primitives/input";
 import type { GarmentTypePricing } from "@domain/entities/price-matrix";
 
 const CATEGORY_LABELS: Record<string, string> = {

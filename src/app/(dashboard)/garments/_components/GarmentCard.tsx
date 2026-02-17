@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { formatCurrency } from "@/lib/helpers/money";
 import { getColorById } from "@domain/rules/garment.rules";
 import { getColorsMutable } from "@infra/repositories/colors";

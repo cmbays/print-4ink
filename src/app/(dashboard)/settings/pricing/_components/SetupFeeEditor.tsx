@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Separator } from "@shared/ui/primitives/separator";
 import type { SetupFeeConfig } from "@domain/entities/price-matrix";
 import { Settings } from "lucide-react";
 

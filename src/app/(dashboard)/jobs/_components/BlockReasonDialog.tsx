@@ -9,9 +9,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+} from "@shared/ui/primitives/dialog";
+import { Button } from "@shared/ui/primitives/button";
+import { Textarea } from "@shared/ui/primitives/textarea";
 
 interface BlockReasonDialogProps {
   open: boolean;

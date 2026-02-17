@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { getJobById } from "@infra/repositories/jobs";
 import { getCustomerById } from "@infra/repositories/customers";
 import { getQuoteById } from "@infra/repositories/quotes";

@@ -8,16 +8,16 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@/components/ui/sheet";
+} from "@shared/ui/primitives/sheet";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "@shared/ui/primitives/select";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
 import { AlertTriangle, Save, X } from "lucide-react";
 import { toast } from "sonner";
 import { customerTypeTagEnum } from "@domain/entities/customer";

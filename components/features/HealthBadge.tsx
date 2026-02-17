@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { cn } from "@/lib/utils";
 import { HEALTH_STATUS_LABELS, HEALTH_STATUS_COLORS } from "@domain/constants";
 import type { HealthStatus } from "@domain/entities/customer";

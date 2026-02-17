@@ -2,15 +2,15 @@
 
 import { ImageIcon, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { DTF_SIZE_PRESETS } from "@domain/rules/dtf.rules";
 import { dtfSizePresetEnum, type DtfLineItem, type DtfSizePreset } from "@domain/entities/dtf-line-item";
 

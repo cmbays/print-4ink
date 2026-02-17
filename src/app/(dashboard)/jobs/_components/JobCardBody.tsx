@@ -1,6 +1,6 @@
 import { Package, Palette, MapPin, Calendar, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { GarmentMockupThumbnail } from "@/components/features/mockup";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";

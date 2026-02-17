@@ -4,7 +4,7 @@ import { useState, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { Plus, LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { JobsDataTable } from "./JobsDataTable";
 import { MoveLaneDialog } from "./MoveLaneDialog";
 import { BlockReasonDialog } from "./BlockReasonDialog";

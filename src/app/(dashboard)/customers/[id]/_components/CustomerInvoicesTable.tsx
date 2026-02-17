@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Receipt } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 
 import {
   INVOICE_STATUS_BADGE_COLORS,

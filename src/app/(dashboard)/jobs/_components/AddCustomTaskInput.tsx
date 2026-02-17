@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
 
 interface AddCustomTaskInputProps {
   onAdd: (label: string, detail?: string) => void;

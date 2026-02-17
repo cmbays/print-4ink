@@ -6,15 +6,15 @@ import Image from "next/image";
 import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@shared/ui/primitives/button";
+import { Label } from "@shared/ui/primitives/label";
+import { Textarea } from "@shared/ui/primitives/textarea";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Switch } from "@/components/ui/switch";
+} from "@shared/ui/primitives/tooltip";
+import { Switch } from "@shared/ui/primitives/switch";
 import { CustomerCombobox, type CustomerOption } from "@/components/features/CustomerCombobox";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { LineItemRow } from "./LineItemRow";

@@ -1,14 +1,14 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { PAYMENT_TERMS_LABELS } from "@domain/constants";
 import { calculateDueDate } from "@domain/rules/invoice.rules";
 import type { PaymentTerms } from "@domain/entities/customer";

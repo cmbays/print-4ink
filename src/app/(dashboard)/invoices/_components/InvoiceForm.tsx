@@ -16,10 +16,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@shared/ui/primitives/button";
+import { Label } from "@shared/ui/primitives/label";
+import { Input } from "@shared/ui/primitives/input";
+import { Textarea } from "@shared/ui/primitives/textarea";
 import {
   CustomerCombobox,
   type CustomerOption,

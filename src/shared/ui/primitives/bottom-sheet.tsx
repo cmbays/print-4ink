@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
+} from "@shared/ui/primitives/sheet";
 import { cn } from "@/lib/utils";
 
 interface BottomSheetProps {

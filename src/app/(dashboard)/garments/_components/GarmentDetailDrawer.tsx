@@ -9,10 +9,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@shared/ui/primitives/sheet";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Badge } from "@shared/ui/primitives/badge";
+import { ScrollArea } from "@shared/ui/primitives/scroll-area";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";

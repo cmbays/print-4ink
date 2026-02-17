@@ -5,7 +5,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 
 // ---------------------------------------------------------------------------
 // WithTooltip — DRY wrapper that eliminates 5-line tooltip boilerplate.

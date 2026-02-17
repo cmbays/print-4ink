@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
 import { Topbar } from "@/components/layout/topbar";
 import { CapacitySummary } from "@/components/features/CapacitySummary";
 import {

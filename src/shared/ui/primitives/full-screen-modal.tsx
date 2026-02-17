@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@shared/ui/primitives/dialog";
+import { Button } from "@shared/ui/primitives/button";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 

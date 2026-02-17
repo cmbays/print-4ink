@@ -8,10 +8,10 @@ import {
   FavoritesColorSection,
   ColorSwatch,
 } from "@/components/features/FavoritesColorSection";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Label } from "@shared/ui/primitives/label";
+import { Button } from "@shared/ui/primitives/button";
 import { cn } from "@/lib/utils";
 import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
 import { getColorsMutable } from "@infra/repositories/colors";

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getInvoiceById, getInvoicePayments, getInvoiceCreditMemos } from "@infra/repositories/invoices";
 import { getCustomerById } from "@infra/repositories/customers";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { InvoiceDetailView } from "@/src/app/(dashboard)/invoices/_components/InvoiceDetailView";

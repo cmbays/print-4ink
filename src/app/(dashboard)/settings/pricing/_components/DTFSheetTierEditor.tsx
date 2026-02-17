@@ -1,15 +1,15 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@shared/ui/primitives/card";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import { MarginIndicator } from "@/components/features/MarginIndicator";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
 import { calculateDTFTierMargin, formatCurrency } from "@domain/services/pricing.service";

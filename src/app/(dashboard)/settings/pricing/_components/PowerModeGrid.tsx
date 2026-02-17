@@ -7,8 +7,8 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Button } from "@shared/ui/primitives/button";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
 import { cn } from "@/lib/utils";
 import {

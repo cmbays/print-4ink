@@ -1,14 +1,14 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+import { Separator } from "@shared/ui/primitives/separator";
+import { Badge } from "@shared/ui/primitives/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { DiscountRow } from "./DiscountRow";
 import { QuoteActions } from "./QuoteActions";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
 import { normalizePosition } from "@domain/constants/print-zones";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { Copy, DollarSign, Hammer, Info, Pencil, Receipt, Send } from "lucide-react";
@@ -19,7 +19,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import type { Quote, QuoteLineItem } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";
 import type { Artwork } from "@domain/entities/artwork";

@@ -1,7 +1,7 @@
 "use client";
 
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
+import { BottomSheet } from "@shared/ui/primitives/bottom-sheet";
+import { Button } from "@shared/ui/primitives/button";
 import { cn } from "@/lib/utils";
 
 interface FilterOption {

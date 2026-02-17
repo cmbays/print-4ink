@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { Plus, MessageSquare, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import { QuoteCardBody, quoteCardContainerClass } from "./QuoteCardBody";
 import type { QuoteCard } from "@domain/entities/board-card";
 

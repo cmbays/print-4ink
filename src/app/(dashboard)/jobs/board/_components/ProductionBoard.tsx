@@ -16,7 +16,7 @@ import {
   type DropAnimation,
 } from "@dnd-kit/core";
 import { MockupFilterProvider } from "@/components/features/mockup";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { CapacitySummaryBar } from "../../_components/CapacitySummaryBar";
 import {
   BoardFilterBar,

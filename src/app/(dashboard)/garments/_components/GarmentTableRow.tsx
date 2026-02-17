@@ -2,8 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Badge } from "@shared/ui/primitives/badge";
 import { formatCurrency } from "@/lib/helpers/money";
 import type { GarmentCatalog } from "@domain/entities/garment";
 

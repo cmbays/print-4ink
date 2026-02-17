@@ -3,19 +3,19 @@
 import Image from "next/image";
 import { Check, ChevronsUpDown, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@shared/ui/primitives/popover";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@shared/ui/primitives/command";
 import { useState } from "react";
 import type { Artwork } from "@domain/entities/artwork";
 

@@ -1,16 +1,16 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { InvoiceLineItemType } from "@domain/entities/invoice";

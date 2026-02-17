@@ -7,8 +7,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@shared/ui/primitives/dialog";
+import { Button } from "@shared/ui/primitives/button";
 import type { CustomerScreen } from "@domain/entities/customer-screen";
 
 interface ReclaimScreenDialogProps {

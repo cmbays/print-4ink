@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Input } from "@shared/ui/primitives/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Label } from "@shared/ui/primitives/label";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@domain/services/pricing.service";
 import { money, round2, toNumber } from "@/lib/helpers/money";

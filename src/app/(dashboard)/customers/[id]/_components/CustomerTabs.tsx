@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@shared/ui/primitives/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@shared/ui/primitives/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { ActivityTimeline } from "./ActivityTimeline";
 import { CustomerQuotesTable } from "./CustomerQuotesTable";

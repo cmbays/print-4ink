@@ -2,16 +2,16 @@
 
 import { useState, useMemo } from "react";
 import { Plus, MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@shared/ui/primitives/select";
+import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
 import { NoteItem } from "./NoteItem";
 import type { JobNote, JobNoteType } from "@domain/entities/job";
 

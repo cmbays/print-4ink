@@ -8,10 +8,10 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+} from "@shared/ui/primitives/sheet";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
+import { Separator } from "@shared/ui/primitives/separator";
 import { ExternalLink, Package, Palette, Pencil } from "lucide-react";
 import Link from "next/link";
 import { MarginLegend } from "@/components/features/MarginLegend";

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
 import { formatDate } from "@/lib/helpers/format";
 import type { JobTask } from "@domain/entities/job";
 

@@ -13,13 +13,13 @@ import {
   Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from "@/components/ui/collapsible";
+} from "@shared/ui/primitives/collapsible";
 import { AddContactSheet } from "./AddContactSheet";
 import { AddGroupSheet } from "./AddGroupSheet";
 import type { Customer } from "@domain/entities/customer";

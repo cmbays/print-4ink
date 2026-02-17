@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { cn } from "@/lib/utils";
 import type { QuoteStatus } from "@domain/entities/quote";
 import type { InvoiceStatus } from "@domain/entities/invoice";

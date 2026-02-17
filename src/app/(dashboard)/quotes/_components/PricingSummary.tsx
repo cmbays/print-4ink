@@ -2,10 +2,10 @@
 
 import { useMemo } from "react";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Separator } from "@shared/ui/primitives/separator";
 import { DiscountRow } from "./DiscountRow";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@domain/constants";

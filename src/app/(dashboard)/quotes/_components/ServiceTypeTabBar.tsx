@@ -6,13 +6,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@shared/ui/primitives/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
+} from "@shared/ui/primitives/tooltip";
+import { Button } from "@shared/ui/primitives/button";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
 import { SERVICE_TYPE_LABELS } from "@domain/constants";
 import type { ServiceType } from "@domain/entities/quote";

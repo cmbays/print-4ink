@@ -6,7 +6,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from "@shared/ui/primitives/sheet";
 import { Layers } from "lucide-react";
 import { SECONDARY_NAV } from "@/lib/constants/navigation";
 
