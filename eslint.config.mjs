@@ -62,7 +62,7 @@ const eslintConfig = defineConfig([
       "no-restricted-syntax": "off",
     },
   },
-    // Override default ignores of eslint-config-next.
+  // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
