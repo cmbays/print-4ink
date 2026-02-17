@@ -6,3 +6,8 @@ export { tagsConfigSchema, type TagEntry } from "./tags";
 export { pipelineTypesConfigSchema, type PipelineTypeEntry } from "./pipeline-types";
 export { pipelineGatesConfigSchema, type PipelineGatesConfig } from "./pipeline-gates";
 export { domainsConfigSchema } from "./domains";
+export {
+  pipelineFieldsConfigSchema,
+  type PipelineFieldEntry,
+  type PipelineFieldsConfig,
+} from "./pipeline-fields";

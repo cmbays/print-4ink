@@ -150,18 +150,9 @@ USAGE
 
 PIPELINE LIFECYCLE
   work define <name> [flags]              Create a pipeline entity (→ ready state)
-    --type <type>                           Pipeline type: vertical|polish|horizontal|bug-fix (default: vertical)
-    --issue <number>                        Link to existing GitHub issue
-    --prompt "<text>"                       Create GitHub issue from prompt
-    --auto                                  Skip human approvals (plan + merge)
-    --products p1,p2                        Link to products (garments, quotes, etc.)
-    --tools t1,t2                           Link to tools (work-orchestrator, etc.)
+    (flags are config-driven — run 'work define --help' for details)
   work update <pipeline-id> [flags]       Modify pipeline fields after define
-    --auto / --no-auto                      Toggle auto flag
-    --issue <number>                        Link/change GitHub issue
-    --type <type>                           Change pipeline type
-    --products p1,p2                        Update products list
-    --tools t1,t2                           Update tools list
+    (flags are config-driven — run 'work update --help' for details)
   work start <pipeline-id>                Run pre-build stages (→ active state)
     --yolo                                  Skip Claude permissions
     --claude-args "..."                     Pass flags to Claude

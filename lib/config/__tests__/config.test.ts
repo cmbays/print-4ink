@@ -11,6 +11,7 @@ import {
   tags,
   pipelineTypes,
   pipelineGates,
+  pipelineFields,
   domainSlugs,
   productSlugs,
   toolSlugs,
@@ -32,6 +33,7 @@ import {
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
+  pipelineFieldsConfigSchema,
   configEntryBase,
 } from "@/config/schemas";
 
@@ -81,6 +83,11 @@ describe("config schema validation", () => {
   it("pipeline-gates.json validates against pipelineGatesConfigSchema", () => {
     expect(Object.keys(pipelineGates.stages).length).toBeGreaterThan(0);
     expect(() => pipelineGatesConfigSchema.parse(pipelineGates)).not.toThrow();
+  });
+
+  it("pipeline-fields.json validates against pipelineFieldsConfigSchema", () => {
+    expect(Object.keys(pipelineFields).length).toBeGreaterThan(0);
+    expect(() => pipelineFieldsConfigSchema.parse(pipelineFields)).not.toThrow();
   });
 });
 
@@ -206,6 +213,138 @@ describe("cross-file consistency", () => {
         ).toBe(true);
       }
     }
+  });
+});
+
+// ── Pipeline Fields Structural Invariants ────────────────────────────
+
+describe("pipeline-fields structural invariants", () => {
+  it("all updatable fields have a flag", () => {
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.updatable) {
+        expect(
+          field.flag,
+          `updatable field "${name}" is missing a flag`,
+        ).toBeDefined();
+      }
+    }
+  });
+
+  it("non-updatable fields do NOT have a flag", () => {
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (!field.updatable) {
+        expect(
+          field.flag,
+          `non-updatable field "${name}" should not have a flag`,
+        ).toBeUndefined();
+      }
+    }
+  });
+
+  it("boolean fields with flag have a negateFlag", () => {
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.jsonType === "boolean" && field.flag) {
+        expect(
+          field.negateFlag,
+          `boolean field "${name}" with flag "${field.flag}" is missing negateFlag`,
+        ).toBeDefined();
+      }
+    }
+  });
+
+  it("non-boolean fields do NOT have a negateFlag", () => {
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.jsonType !== "boolean") {
+        expect(
+          field.negateFlag,
+          `non-boolean field "${name}" should not have negateFlag`,
+        ).toBeUndefined();
+      }
+    }
+  });
+
+  it("all validate.source paths reference known config files", () => {
+    const knownConfigs = new Set([
+      "config/pipeline-types.json",
+      "config/products.json",
+      "config/tools.json",
+      "config/stages.json",
+      "config/tags.json",
+      "config/domains.json",
+      "config/pipeline-gates.json",
+      "config/pipeline-fields.json",
+    ]);
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.validate && "source" in field.validate && field.validate.source) {
+        expect(
+          knownConfigs.has(field.validate.source),
+          `field "${name}" validate.source "${field.validate.source}" is not a known config file`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("all validate.type values are recognized dispatch targets", () => {
+    const recognizedTypes = new Set(["github-issue"]);
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.validate && "type" in field.validate && field.validate.type) {
+        expect(
+          recognizedTypes.has(field.validate.type),
+          `field "${name}" has unrecognized validate.type "${field.validate.type}"`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("all validate.match values are recognized dispatch targets", () => {
+    const recognizedMatches = new Set(["slug"]);
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.validate && "match" in field.validate && field.validate.match) {
+        expect(
+          recognizedMatches.has(field.validate.match),
+          `field "${name}" has unrecognized validate.match "${field.validate.match}"`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("default values are type-consistent with jsonType", () => {
+    const typeChecks: Record<string, (v: unknown) => boolean> = {
+      string: (v) => v === null || typeof v === "string",
+      number: (v) => v === null || typeof v === "number",
+      boolean: (v) => v === null || typeof v === "boolean",
+      array: (v) => v === null || Array.isArray(v),
+      object: (v) => v === null || (typeof v === "object" && !Array.isArray(v)),
+    };
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if ("default" in field && field.default !== undefined) {
+        const check = typeChecks[field.jsonType];
+        expect(
+          check?.(field.default),
+          `field "${name}" default ${JSON.stringify(field.default)} incompatible with jsonType "${field.jsonType}"`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("updatable fields are exactly: auto, issue, products, tools, type", () => {
+    const updatable = Object.entries(pipelineFields)
+      .filter(([, f]) => f.updatable)
+      .map(([name]) => name)
+      .sort();
+    expect(updatable).toEqual(["auto", "issue", "products", "tools", "type"]);
+  });
+
+  it("non-updatable fields are exactly the expected set", () => {
+    const nonUpdatable = Object.entries(pipelineFields)
+      .filter(([, f]) => !f.updatable)
+      .map(([name]) => name)
+      .sort();
+    expect(nonUpdatable).toEqual([
+      "artifacts", "baseBranch", "completedAt", "createdAt",
+      "id", "kbDocs", "name", "prs", "stage", "startedAt",
+      "state", "worktrees",
+    ]);
   });
 });
 

@@ -13,6 +13,8 @@
 _pipeline_types_config() { echo "${PRINT4INK_ROOT}/config/pipeline-types.json"; }
 # Used by Wave 2 (pipeline-gates.sh) — stage gate validation
 _pipeline_gates_config() { echo "${PRINT4INK_ROOT}/config/pipeline-gates.json"; }
+# Field schema — drives both define and update commands
+_pipeline_fields_config() { echo "${PRINT4INK_ROOT}/config/pipeline-fields.json"; }
 
 # ── Valid States & Transitions ────────────────────────────────────────────────
 
@@ -372,4 +374,139 @@ _pipeline_init_dirs() {
         local noun="directory"; [[ "$created" -gt 1 ]] && noun="directories"
         echo "Created $created artifact $noun for pipeline '$id'."
     fi
+}
+
+# ── Config-Driven Helpers ────────────────────────────────────────────────────
+
+# Convert CSV string to JSON array, trimming whitespace
+# Usage: _pipeline_csv_to_json_array "a, b, c" → '["a","b","c"]'
+# Empty input returns '[]' (not '[""]')
+_pipeline_csv_to_json_array() {
+    local csv="$1"
+    if [[ -z "$csv" ]]; then
+        echo '[]'
+        return 0
+    fi
+    echo "$csv" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed '/^$/d' | jq -R . | jq -s .
+}
+
+# Validate a GitHub issue number (numeric + best-effort gh check)
+# Usage: _pipeline_validate_issue <number>
+_pipeline_validate_issue() {
+    local num="$1"
+    if [[ -z "$num" ]]; then
+        echo "Error: --issue requires a value." >&2
+        return 1
+    fi
+    # Must be numeric
+    if [[ ! "$num" =~ ^[0-9]+$ ]]; then
+        echo "Error: Issue number must be numeric, got '$num'." >&2
+        return 1
+    fi
+    # Best-effort GitHub validation (numeric regex above prevents option injection)
+    if ! gh issue view "$num" --repo "$PRINT4INK_GH_REPO" --json number >/dev/null 2>&1; then
+        echo "Warning: Could not verify GitHub issue #${num}. Linking anyway." >&2
+    fi
+    return 0
+}
+
+# Validate CSV slugs against a config file's slug field
+# Usage: _pipeline_validate_csv_slugs <csv> <config_path> <field_label>
+_pipeline_validate_csv_slugs() {
+    local csv="$1" config_path="$2" field_label="$3"
+    if [[ ! -f "$config_path" ]]; then
+        echo "Error: Config file not found: $config_path" >&2
+        return 1
+    fi
+    local valid_slugs slug
+    valid_slugs=$(jq -r '.[].slug' "$config_path")
+    local items
+    items=$(echo "$csv" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    while IFS= read -r slug; do
+        [[ -z "$slug" ]] && continue
+        if ! echo "$valid_slugs" | grep -Fqx "$slug"; then
+            local valid_list
+            valid_list=$(echo "$valid_slugs" | tr '\n' ', ' | sed 's/,$//')
+            echo "Error: Invalid $field_label '$slug'. Valid: $valid_list" >&2
+            return 1
+        fi
+    done <<< "$items"
+    return 0
+}
+
+# Generic field applier — reads field def from schema, validates, applies update
+# Usage: _pipeline_apply_field <pipeline_id> <field_name> <value>
+# The value should be the raw CLI value (CSV string for arrays, "true"/"false" for booleans, etc.)
+_pipeline_apply_field() {
+    local pipeline_id="$1" field_name="$2" value="$3"
+    local config
+    config="$(_pipeline_fields_config)"
+
+    # Read field definition
+    local field_def
+    field_def=$(jq -r --arg f "$field_name" '.[$f] // empty' "$config")
+    if [[ -z "$field_def" ]]; then
+        echo "Error: Unknown field '$field_name' in pipeline-fields.json." >&2
+        return 1
+    fi
+
+    local json_type updatable
+    json_type=$(echo "$field_def" | jq -r '.jsonType')
+    updatable=$(echo "$field_def" | jq -r '.updatable')
+
+    if [[ "$updatable" != "true" ]]; then
+        echo "Error: Field '$field_name' is not updatable." >&2
+        return 1
+    fi
+
+    # Validate if validation rules exist
+    local validate_source validate_match validate_type
+    validate_source=$(echo "$field_def" | jq -r '.validate.source // empty')
+    validate_match=$(echo "$field_def" | jq -r '.validate.match // empty')
+    validate_type=$(echo "$field_def" | jq -r '.validate.type // empty')
+
+    if [[ -n "$validate_type" && "$validate_type" == "github-issue" ]]; then
+        _pipeline_validate_issue "$value" || return 1
+    fi
+
+    if [[ -n "$validate_source" && -n "$validate_match" && "$validate_match" == "slug" ]]; then
+        local source_path="${PRINT4INK_ROOT}/$validate_source"
+        # For string fields, validate single slug; for arrays, validate CSV
+        if [[ "$json_type" == "array" ]]; then
+            _pipeline_validate_csv_slugs "$value" "$source_path" "$field_name" || return 1
+        else
+            # Single value — check against slug list
+            local count
+            count=$(jq --arg v "$value" '[.[] | select(.slug == $v)] | length' "$source_path")
+            if [[ "$count" -eq 0 ]]; then
+                local valid
+                valid=$(jq -r '.[].slug' "$source_path" | tr '\n' ', ' | sed 's/,$//')
+                echo "Error: Invalid $field_name '$value'. Valid: $valid" >&2
+                return 1
+            fi
+        fi
+    fi
+
+    # Apply the update based on jsonType
+    case "$json_type" in
+        string)
+            _pipeline_update "$pipeline_id" "$field_name" "$value" || return 1
+            ;;
+        number|boolean)
+            _pipeline_update_json "$pipeline_id" "$field_name" "$value" || return 1
+            ;;
+        array)
+            local json_array
+            json_array=$(_pipeline_csv_to_json_array "$value")
+            _pipeline_update_json "$pipeline_id" "$field_name" "$json_array" || return 1
+            ;;
+        object)
+            _pipeline_update_json "$pipeline_id" "$field_name" "$value" || return 1
+            ;;
+        *)
+            echo "Error: Unsupported jsonType '$json_type' for field '$field_name'." >&2
+            return 1
+            ;;
+    esac
+    return 0
 }
