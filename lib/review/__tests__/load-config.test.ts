@@ -1,10 +1,12 @@
 import { describe, it, expect } from "vitest";
+import { z } from "zod";
 import {
   loadReviewRules,
   loadCompositionPolicies,
   loadAgentRegistry,
   loadDomainMappings,
 } from "../load-config";
+import { reviewRuleSchema } from "@/lib/schemas/review-config";
 
 // ---------------------------------------------------------------------------
 // Loader return types and basic correctness
@@ -87,7 +89,34 @@ describe("loadDomainMappings", () => {
 });
 
 // ---------------------------------------------------------------------------
+// Error behavior — loaders surface descriptive Zod errors on malformed data
+// ---------------------------------------------------------------------------
+
+describe("error behavior", () => {
+  it("z.array(schema).parse() throws ZodError for malformed input", () => {
+    const malformed = [{ id: 123, name: true }];
+    expect(() => z.array(reviewRuleSchema).parse(malformed)).toThrow();
+  });
+
+  it("ZodError includes field-level details", () => {
+    const malformed = [{ id: 123 }];
+    try {
+      z.array(reviewRuleSchema).parse(malformed);
+      expect.unreachable("should have thrown");
+    } catch (err) {
+      expect(err).toBeInstanceOf(z.ZodError);
+      const zodErr = err as z.ZodError;
+      expect(zodErr.issues.length).toBeGreaterThan(0);
+      expect(zodErr.issues[0].path).toBeDefined();
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Cross-reference tests not covered by review-config-data.test.ts
+//
+// NOTE: The reverse check (every rule.agent exists in the registry) is
+// covered by lib/schemas/__tests__/review-config-data.test.ts
 // ---------------------------------------------------------------------------
 
 describe("cross-reference: every agent has at least one rule", () => {

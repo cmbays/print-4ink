@@ -19,8 +19,12 @@ import domainsJson from "@/config/review-domains.json";
 // Validated config loaders
 //
 // Each loader validates the raw JSON through z.array(schema).parse() and
-// returns typed, immutable data. Pipeline stages (#340) import from here —
-// never from raw JSON directly.
+// returns typed data. Pipeline stages (#340) import from here — never from
+// raw JSON directly.
+//
+// Object.freeze() provides shallow runtime immutability (array-level). The
+// `readonly T[]` return type is the primary guard — TypeScript prevents
+// nested field mutation at compile time.
 // ---------------------------------------------------------------------------
 
 export function loadReviewRules(): readonly ReviewRule[] {
