@@ -170,6 +170,32 @@ _registry_pipeline_exists() {
     [[ "$count" -gt 0 ]]
 }
 
+# Archive a pipeline (set state to "archived" + completedAt timestamp)
+# Preserves the record for audit trail. Preferred over delete for work clean.
+# Usage: _registry_pipeline_archive <pipeline_id>
+_registry_pipeline_archive() {
+    _registry_pipeline_init
+    local id="$1"
+
+    if ! _registry_pipeline_exists "$id"; then
+        echo "Error: Pipeline '$id' not found." >&2
+        return 1
+    fi
+
+    local now
+    now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+    _pipeline_registry_lock || return 1
+    local result
+    result=$(jq --arg id "$id" --arg now "$now" \
+        '(.pipelines[] | select(.id == $id)) |= (.state = "archived" | .completedAt = $now)' \
+        "$PIPELINE_REGISTRY_FILE") \
+        || { _pipeline_registry_unlock; return 1; }
+    _pipeline_registry_write "$result" \
+        || { _pipeline_registry_unlock; return 1; }
+    _pipeline_registry_unlock
+}
+
 # Delete a pipeline from the registry
 # Usage: _registry_pipeline_delete <pipeline_id>
 _registry_pipeline_delete() {
