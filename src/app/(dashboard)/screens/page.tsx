@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Topbar } from "@/components/layout/topbar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { Badge } from "@shared/ui/primitives/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";

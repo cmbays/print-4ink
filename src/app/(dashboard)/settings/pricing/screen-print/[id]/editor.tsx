@@ -52,7 +52,7 @@ import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
 import { calculateTemplateHealth } from "@domain/services/pricing.service";
 import { cn } from "@/lib/utils";
 import { MarginLegend } from "@/components/features/MarginLegend";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import type {
   PricingTemplate,
   CostConfig,

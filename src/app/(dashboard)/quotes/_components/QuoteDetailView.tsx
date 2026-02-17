@@ -14,7 +14,7 @@ import { useState, useMemo } from "react";
 import { Copy, DollarSign, Hammer, Info, Pencil, Receipt, Send } from "lucide-react";
 import { toast } from "sonner";
 import { MatrixPeekSheet } from "./MatrixPeekSheet";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import {
   Tooltip,
   TooltipContent,

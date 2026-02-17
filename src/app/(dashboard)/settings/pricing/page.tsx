@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Topbar } from "@/components/layout/topbar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
 import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";

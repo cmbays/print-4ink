@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { BottomTabBar } from "@/components/layout/bottom-tab-bar";
-import { MobileDrawer } from "@/components/layout/mobile-drawer";
-import { MobileHeader } from "@/components/layout/mobile-header";
+import { BottomTabBar } from "@shared/ui/layouts/bottom-tab-bar";
+import { MobileDrawer } from "@shared/ui/layouts/mobile-drawer";
+import { MobileHeader } from "@shared/ui/layouts/mobile-header";
 
 interface MobileShellProps {
   children: React.ReactNode;

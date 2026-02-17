@@ -7,8 +7,8 @@ import { ArrowLeft, ArrowRightLeft, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@shared/ui/primitives/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@shared/ui/primitives/tabs";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
-import { Topbar } from "@/components/layout/topbar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 
 import { GarmentMockupCard, MockupFilterProvider } from "@/components/features/mockup";

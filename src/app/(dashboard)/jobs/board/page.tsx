@@ -1,4 +1,4 @@
-import { Topbar } from "@/components/layout/topbar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { getJobs, getQuoteCards, getScratchNotes } from "@infra/repositories/jobs";
 import { ProductionBoard } from "./_components/ProductionBoard";

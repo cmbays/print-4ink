@@ -20,7 +20,7 @@ import {
 } from "@shared/ui/primitives/table";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import { InvoiceActions } from "./InvoiceActions";
 import { PaymentLedger } from "./PaymentLedger";
 import { ReminderTimeline } from "./ReminderTimeline";

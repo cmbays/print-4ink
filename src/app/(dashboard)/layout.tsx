@@ -1,6 +1,6 @@
-import { Sidebar } from "@/components/layout/sidebar";
-import { MobileShell } from "@/components/layout/mobile-shell";
-import { TooltipProviderWrapper } from "@/components/layout/tooltip-provider-wrapper";
+import { Sidebar } from "@shared/ui/layouts/sidebar";
+import { MobileShell } from "@shared/ui/layouts/mobile-shell";
+import { TooltipProviderWrapper } from "@shared/ui/layouts/tooltip-provider-wrapper";
 
 export default function DashboardLayout({
   children,

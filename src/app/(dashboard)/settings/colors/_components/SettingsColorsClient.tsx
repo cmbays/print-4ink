@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { Palette, Search, LayoutGrid, List } from "lucide-react";
-import { Topbar } from "@/components/layout/topbar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import {
   FavoritesColorSection,

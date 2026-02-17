@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Topbar } from "@/components/layout/topbar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { QuotesDataTable } from "./_components/QuotesDataTable";
 import { getQuotes } from "@infra/repositories/quotes";

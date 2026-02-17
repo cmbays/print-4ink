@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Topbar } from "@/components/layout/topbar";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
 import { getGarmentCatalog } from "@infra/repositories/garments";
 import { getJobs } from "@infra/repositories/jobs";
