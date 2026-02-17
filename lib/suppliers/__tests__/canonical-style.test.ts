@@ -16,7 +16,7 @@ const validStyle = {
   sizes:       [{ name: 'M', sortOrder: 2, priceAdjustment: 0 }],
   pricing:     { piecePrice: 3.5, dozenPrice: null, casePrice: null },
   gtin:        null,
-  supplier:    'mock' as const,
+  supplier:    'mock' as const, // narrow string literal so validStyle satisfies Partial<CanonicalStyle>
 };
 
 describe('canonicalStyleSchema', () => {
