@@ -1231,6 +1231,24 @@ EOF
 
 **Pre-flight:** Merge Phase 3 PR first. Start a new worktree from `main`.
 
+### Constants Strategy: Two-Tier Rule
+
+> **Established during Phase 2 execution. Apply throughout Phase 4.**
+
+All constants follow a two-tier placement rule:
+
+| Tier | Rule | Location |
+|------|------|----------|
+| **Domain-wide** | Used across 2+ features, describes shared domain state (status labels, entity styles, risk levels, lifecycle stages) | `src/domain/constants/` |
+| **Feature-scoped** | Used only within one vertical, describes that feature's specific concepts | `src/features/{domain}/constants/` |
+
+**Phase 2 decisions to revisit in Phase 4 (flagged for audit):**
+
+- `src/domain/constants/print-zones.ts` — print zone geometry. Used only by garments + quotes mockup renderer. Strong candidate for `src/features/garments/constants/print-zones.ts`.
+- `src/domain/constants/swatch.ts` — swatch text style helper. Used only by garment/color pickers. Strong candidate for `src/features/garments/constants/swatch.ts`.
+
+**How to audit:** `grep -r "domain/constants/print-zones\|domain/constants/swatch" --include="*.ts" --include="*.tsx" src/` — if consumers are all within one feature, move it down.
+
 ### Task 4.1: Move feature components from `components/features/` to `src/features/`
 
 **Files:**
