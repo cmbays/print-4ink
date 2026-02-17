@@ -8,6 +8,7 @@ export { pipelineGatesConfigSchema, type PipelineGatesConfig } from "./pipeline-
 export { domainsConfigSchema } from "./domains";
 export {
   pipelineFieldsConfigSchema,
+  type FieldDisplay,
   type PipelineFieldEntry,
   type PipelineFieldsConfig,
 } from "./pipeline-fields";

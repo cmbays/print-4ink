@@ -3,13 +3,25 @@
     "jsonType": "string",
     "description": "Unique pipeline identifier (YYYYMMDD-name)",
     "updatable": false,
-    "required": true
+    "required": true,
+    "display": {
+      "section": "title",
+      "label": "Pipeline",
+      "order": 1,
+      "format": "raw"
+    }
   },
   "name": {
     "jsonType": "string",
     "description": "Kebab-case pipeline name",
     "updatable": false,
-    "required": true
+    "required": true,
+    "display": {
+      "section": "header",
+      "label": "Name",
+      "order": 1,
+      "format": "raw"
+    }
   },
   "type": {
     "jsonType": "string",
@@ -21,6 +33,12 @@
     "validate": {
       "source": "config/pipeline-types.json",
       "match": "slug"
+    },
+    "display": {
+      "section": "header",
+      "label": "Type",
+      "order": 2,
+      "format": "raw"
     }
   },
   "auto": {
@@ -30,7 +48,13 @@
     "required": false,
     "default": false,
     "flag": "--auto",
-    "negateFlag": "--no-auto"
+    "negateFlag": "--no-auto",
+    "display": {
+      "section": "config",
+      "label": "Auto",
+      "order": 1,
+      "format": "yes-no"
+    }
   },
   "issue": {
     "jsonType": "number",
@@ -41,6 +65,13 @@
     "flag": "--issue",
     "validate": {
       "type": "github-issue"
+    },
+    "display": {
+      "section": "config",
+      "label": "Issue",
+      "order": 2,
+      "format": "issue",
+      "emptyText": "none"
     }
   },
   "products": {
@@ -54,6 +85,13 @@
     "validate": {
       "source": "config/products.json",
       "match": "slug"
+    },
+    "display": {
+      "section": "config",
+      "label": "Products",
+      "order": 3,
+      "format": "csv",
+      "emptyText": "none"
     }
   },
   "tools": {
@@ -67,73 +105,145 @@
     "validate": {
       "source": "config/tools.json",
       "match": "slug"
+    },
+    "display": {
+      "section": "config",
+      "label": "Tools",
+      "order": 4,
+      "format": "csv",
+      "emptyText": "none"
     }
   },
   "stage": {
     "jsonType": "string",
     "description": "Current pipeline stage (set by lifecycle commands)",
     "updatable": false,
-    "required": true
+    "required": true,
+    "display": {
+      "section": "header",
+      "label": "Stage",
+      "order": 4,
+      "format": "raw",
+      "emptyText": "none"
+    }
   },
   "state": {
     "jsonType": "string",
     "description": "Current lifecycle state (ready, active, building, reviewing, wrapped, cooled)",
     "updatable": false,
-    "required": true
+    "required": true,
+    "display": {
+      "section": "header",
+      "label": "State",
+      "order": 3,
+      "format": "raw"
+    }
   },
   "baseBranch": {
     "jsonType": "string",
     "description": "Base git branch for the pipeline",
     "updatable": false,
     "required": false,
-    "default": null
+    "default": null,
+    "display": {
+      "section": "config",
+      "label": "Base Branch",
+      "order": 5,
+      "format": "raw",
+      "emptyText": "none"
+    }
   },
   "worktrees": {
     "jsonType": "array",
     "description": "Active git worktree paths",
     "updatable": false,
     "required": false,
-    "default": []
+    "default": [],
+    "display": {
+      "section": "assets",
+      "label": "Worktrees",
+      "order": 1,
+      "format": "count-list"
+    }
   },
   "prs": {
     "jsonType": "object",
     "description": "Associated pull request metadata",
     "updatable": false,
     "required": false,
-    "default": {}
+    "default": {},
+    "display": {
+      "section": "assets",
+      "label": "Pull Requests",
+      "order": 2,
+      "format": "kv-list-issue"
+    }
   },
   "kbDocs": {
     "jsonType": "array",
     "description": "Knowledge base document references",
     "updatable": false,
     "required": false,
-    "default": []
+    "default": [],
+    "display": {
+      "section": "assets",
+      "label": "KB Docs",
+      "order": 3,
+      "format": "count-list"
+    }
   },
   "artifacts": {
     "jsonType": "object",
     "description": "Stage-keyed artifact metadata",
     "updatable": false,
     "required": false,
-    "default": {}
+    "default": {},
+    "display": {
+      "section": "assets",
+      "label": "Artifacts",
+      "order": 4,
+      "format": "kv-list"
+    }
   },
   "createdAt": {
     "jsonType": "string",
     "description": "ISO-8601 creation timestamp",
     "updatable": false,
-    "required": true
+    "required": true,
+    "display": {
+      "section": "timeline",
+      "label": "Created",
+      "order": 1,
+      "format": "iso-date",
+      "emptyText": "unknown"
+    }
   },
   "startedAt": {
     "jsonType": "string",
     "description": "ISO-8601 start timestamp",
     "updatable": false,
     "required": false,
-    "default": null
+    "default": null,
+    "display": {
+      "section": "timeline",
+      "label": "Started",
+      "order": 2,
+      "format": "iso-date",
+      "emptyText": "not started"
+    }
   },
   "completedAt": {
     "jsonType": "string",
     "description": "ISO-8601 completion timestamp",
     "updatable": false,
     "required": false,
-    "default": null
+    "default": null,
+    "display": {
+      "section": "timeline",
+      "label": "Completed",
+      "order": 3,
+      "format": "iso-date",
+      "emptyText": "not completed"
+    }
   }
 }

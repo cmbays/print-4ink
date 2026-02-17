@@ -8,6 +8,14 @@ const fieldValidation = z
   })
   .optional();
 
+const fieldDisplay = z.object({
+  section: z.enum(["title", "header", "config", "timeline", "assets"]),
+  label: z.string().min(1),
+  order: z.number().int().positive(),
+  format: z.enum(["raw", "yes-no", "csv", "iso-date", "issue", "count-list", "kv-list", "kv-list-issue"]).default("raw"),
+  emptyText: z.string().optional(),
+});
+
 const pipelineFieldEntry = z
   .object({
     jsonType: z.enum(["string", "number", "boolean", "array", "object"]),
@@ -25,6 +33,7 @@ const pipelineFieldEntry = z
       .optional(),
     inputFormat: z.enum(["csv"]).optional(),
     validate: fieldValidation,
+    display: fieldDisplay,
   })
   .refine((f) => !f.updatable || f.flag !== undefined, {
     message: "Updatable fields must have a flag",
@@ -41,5 +50,6 @@ const pipelineFieldEntry = z
 
 export const pipelineFieldsConfigSchema = z.record(z.string(), pipelineFieldEntry);
 
+export type FieldDisplay = z.infer<typeof fieldDisplay>;
 export type PipelineFieldEntry = z.infer<typeof pipelineFieldEntry>;
 export type PipelineFieldsConfig = z.infer<typeof pipelineFieldsConfigSchema>;

@@ -109,6 +109,7 @@ export function pipelineTypeLabel(slug: string): string {
 
 export type {
   ConfigEntry,
+  FieldDisplay,
   ProductEntry,
   StageEntry,
   ToolEntry,

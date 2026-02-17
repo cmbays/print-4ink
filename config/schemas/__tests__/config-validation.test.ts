@@ -176,6 +176,9 @@ describe("pipelineGatesConfigSchema rejects", () => {
 });
 
 describe("pipelineFieldsConfigSchema rejects", () => {
+  // Shared valid display object — added to all negative tests so each tests exactly one invalid condition
+  const validDisplay = { section: "header" as const, label: "X", order: 1 };
+
   it("invalid jsonType", () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
@@ -184,6 +187,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           description: "D",
           updatable: false,
           required: false,
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -196,6 +200,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           jsonType: "string",
           updatable: false,
           required: false,
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -207,6 +212,20 @@ describe("pipelineFieldsConfigSchema rejects", () => {
         bad: {
           jsonType: "string",
           description: "",
+          updatable: false,
+          required: false,
+          display: validDisplay,
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("missing display metadata", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
           updatable: false,
           required: false,
         },
@@ -223,6 +242,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           updatable: true,
           required: false,
           flag: "type",
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -238,6 +258,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           required: false,
           flag: "--auto",
           negateFlag: "--disable-auto",
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -253,6 +274,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           required: false,
           flag: "--items",
           inputFormat: "tsv",
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -268,6 +290,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           required: false,
           flag: "--thing",
           validate: { source: "config/products.json", match: "regex" },
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -283,6 +306,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           required: false,
           flag: "--ticket",
           validate: { type: "jira-ticket" },
+          display: validDisplay,
         },
       }),
     ).toThrow();
@@ -296,6 +320,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           description: "D",
           updatable: true,
           required: false,
+          display: { section: "header", label: "Bad", order: 1 },
         },
       }),
     ).toThrow();
@@ -310,6 +335,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           updatable: false,
           required: false,
           flag: "--bad",
+          display: { section: "header", label: "Bad", order: 1 },
         },
       }),
     ).toThrow();
@@ -324,6 +350,7 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           updatable: true,
           required: false,
           flag: "--toggle",
+          display: { section: "header", label: "Toggle", order: 1 },
         },
       }),
     ).toThrow();
@@ -339,6 +366,105 @@ describe("pipelineFieldsConfigSchema rejects", () => {
           required: false,
           flag: "--name",
           negateFlag: "--no-name",
+          display: { section: "header", label: "Name", order: 1 },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid display section value", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "footer", label: "X", order: 1 },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("missing display label", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "header", order: 1 },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("empty display label", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "header", label: "", order: 1 },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid display format value", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "header", label: "X", order: 1, format: "markdown" },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid display order (zero)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "header", label: "X", order: 0 },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid display order (negative)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "header", label: "X", order: -1 },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid display order (non-integer)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          display: { section: "header", label: "X", order: 1.5 },
         },
       }),
     ).toThrow();
