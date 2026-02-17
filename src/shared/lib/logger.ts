@@ -1,0 +1,120 @@
+/**
+ * Isomorphic structured logger.
+ *
+ * Server-side  → JSON lines (suitable for log aggregators)
+ * Client-side  → formatted console output (never raw JSON in DevTools)
+ *
+ * No third-party deps — pure TypeScript over console.*.
+ * Pino / Winston will replace this in Phase 2 once a real server exists.
+ */
+
+type LogLevel = 'debug' | 'info' | 'warn' | 'error'
+
+type LogContext = Record<string, unknown>
+
+const LEVELS: Record<LogLevel, number> = {
+  debug: 10,
+  info: 20,
+  warn: 30,
+  error: 40,
+}
+
+const isServer = typeof window === 'undefined'
+const isDev = process.env.NODE_ENV !== 'production'
+
+/** Minimum numeric level to emit. Suppresses debug in production. */
+const MIN_LEVEL = isDev ? LEVELS.debug : LEVELS.info
+
+function shouldLog(level: LogLevel): boolean {
+  return LEVELS[level] >= MIN_LEVEL
+}
+
+// --- Server-side: structured JSON ---
+
+function logJson(level: LogLevel, message: string, context: LogContext): void {
+  const entry = JSON.stringify({
+    level,
+    message,
+    timestamp: new Date().toISOString(),
+    ...context,
+  })
+
+  if (level === 'error') {
+    console.error(entry)
+  } else if (level === 'warn') {
+    console.warn(entry)
+  } else {
+    console.log(entry)
+  }
+}
+
+// --- Client-side: formatted console output ---
+
+const CLIENT_STYLES: Record<LogLevel, string> = {
+  debug: 'color: #6b7280; font-weight: normal',
+  info: 'color: #2ab9ff; font-weight: bold',
+  warn: 'color: #ffc663; font-weight: bold',
+  error: 'color: #d23e08; font-weight: bold',
+}
+
+function logFormatted(level: LogLevel, message: string, context: LogContext): void {
+  const prefix = `[${level.toUpperCase()}]`
+  const args: unknown[] = [`%c${prefix}%c ${message}`, CLIENT_STYLES[level], '']
+
+  if (Object.keys(context).length > 0) {
+    args.push(context)
+  }
+
+  if (level === 'error') {
+    console.error(...args)
+  } else if (level === 'warn') {
+    console.warn(...args)
+  } else if (level === 'debug') {
+    console.debug(...args)
+  } else {
+    console.info(...args)
+  }
+}
+
+function emit(level: LogLevel, message: string, context: LogContext): void {
+  if (!shouldLog(level)) return
+
+  if (isServer) {
+    logJson(level, message, context)
+  } else {
+    logFormatted(level, message, context)
+  }
+}
+
+// --- Logger type ---
+
+type Logger = {
+  debug(message: string, context?: LogContext): void
+  info(message: string, context?: LogContext): void
+  warn(message: string, context?: LogContext): void
+  error(message: string, context?: LogContext): void
+  /** Returns a new logger with bound context merged into every log entry. */
+  child(bindings: LogContext): Logger
+}
+
+function createLogger(boundContext: LogContext = {}): Logger {
+  return {
+    debug(message, context = {}) {
+      emit('debug', message, { ...boundContext, ...context })
+    },
+    info(message, context = {}) {
+      emit('info', message, { ...boundContext, ...context })
+    },
+    warn(message, context = {}) {
+      emit('warn', message, { ...boundContext, ...context })
+    },
+    error(message, context = {}) {
+      emit('error', message, { ...boundContext, ...context })
+    },
+    child(bindings) {
+      return createLogger({ ...boundContext, ...bindings })
+    },
+  }
+}
+
+export const logger = createLogger()

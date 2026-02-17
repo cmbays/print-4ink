@@ -1,6 +1,7 @@
 import { Sidebar } from '@shared/ui/layouts/sidebar'
 import { MobileShell } from '@shared/ui/layouts/mobile-shell'
 import { TooltipProviderWrapper } from '@shared/ui/layouts/tooltip-provider-wrapper'
+import { ErrorBoundary } from '@shared/ui/error-boundary'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +14,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Mobile shell manages all client state (drawer, header, tab bar) */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <MobileShell>{children}</MobileShell>
+          <MobileShell>
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </MobileShell>
         </div>
       </div>
     </TooltipProviderWrapper>
