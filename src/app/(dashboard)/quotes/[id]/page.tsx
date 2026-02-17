@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
-import { QuoteDetailView } from "@/app/(dashboard)/quotes/_components/QuoteDetailView";
+import { QuoteDetailView } from "@/src/app/(dashboard)/quotes/_components/QuoteDetailView";
 import { getQuoteById } from "@/lib/dal/quotes";
 import { getCustomerById } from "@/lib/dal/customers";
 import { getArtworks } from "@/lib/dal/artworks";

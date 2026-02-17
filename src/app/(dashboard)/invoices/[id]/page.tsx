@@ -1,15 +1,13 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getInvoiceById } from "@/lib/dal/invoices";
-import { getCustomers } from "@/lib/dal/customers";
-import { getQuoteById } from "@/lib/dal/quotes";
+import { getInvoiceById, getInvoicePayments, getInvoiceCreditMemos } from "@/lib/dal/invoices";
+import { getCustomerById } from "@/lib/dal/customers";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
-import { InvoiceForm } from "@/app/(dashboard)/invoices/_components/InvoiceForm";
+import { InvoiceDetailView } from "@/src/app/(dashboard)/invoices/_components/InvoiceDetailView";
 
-export default async function EditInvoicePage({
+export default async function InvoiceDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -49,14 +47,10 @@ export default async function EditInvoicePage({
     );
   }
 
-  // Only draft invoices can be edited
-  if (invoice.status !== "draft") {
-    redirect(`/invoices/${id}`);
-  }
-
-  const [customers, sourceQuote] = await Promise.all([
-    getCustomers(),
-    invoice.quoteId ? getQuoteById(invoice.quoteId) : Promise.resolve(null),
+  const [customer, invoicePayments, invoiceCreditMemos] = await Promise.all([
+    getCustomerById(invoice.customerId),
+    getInvoicePayments(invoice.id),
+    getInvoiceCreditMemos(invoice.id),
   ]);
 
   return (
@@ -64,16 +58,15 @@ export default async function EditInvoicePage({
       <Topbar
         breadcrumbs={buildBreadcrumbs(
           CRUMBS.invoices,
-          { label: invoice.invoiceNumber, href: `/invoices/${id}` },
-          { label: "Edit" },
+          { label: invoice.invoiceNumber },
         )}
       />
       <div className="mx-auto max-w-4xl space-y-6 py-6">
-        <InvoiceForm
-          mode="edit"
-          initialData={invoice}
-          customers={customers}
-          sourceQuote={sourceQuote}
+        <InvoiceDetailView
+          invoice={invoice}
+          customer={customer}
+          payments={invoicePayments}
+          creditMemos={invoiceCreditMemos}
         />
       </div>
     </>

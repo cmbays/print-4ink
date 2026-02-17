@@ -24,7 +24,7 @@ import {
   CustomerCombobox,
   type CustomerOption,
 } from "@/components/features/CustomerCombobox";
-import { CollapsibleSection } from "@/app/(dashboard)/quotes/_components/CollapsibleSection";
+import { CollapsibleSection } from "@/src/app/(dashboard)/quotes/_components/CollapsibleSection";
 import { InvoiceLineItemRow, type InvoiceLineItemData } from "./InvoiceLineItemRow";
 import { InvoicePricingSummary } from "./InvoicePricingSummary";
 import { DepositSection } from "./DepositSection";
