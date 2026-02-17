@@ -17,7 +17,7 @@ const toolCards = toolsConfig.map((t) => {
   return {
     slug: t.slug,
     label: t.label,
-    subtitle: overview?.data.subtitle || '',
+    subtitle: overview?.data.subtitle || t.description,
     status: overview?.data.status || 'draft',
     pipelineCount: linkedPipelines.length,
   };

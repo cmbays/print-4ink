@@ -14,7 +14,16 @@ Every entry **must** have:
 | `label` | string | Title Case human-readable display name |
 | `description` | string | What this value represents and when to use it |
 
-Domain-specific fields (`route`, `color`, `stages`, `core`, `pipeline`) follow after the three required fields.
+Domain-specific fields follow after the three required fields:
+
+| Field | Used by | Convention |
+|-------|---------|------------|
+| `route` | products | App route path (e.g., `/quotes`) |
+| `icon` | products, tools | Lucide React icon name in PascalCase (e.g., `Calculator`) |
+| `color` | tags | Named color string mapped to design system tokens (see below) |
+| `stages` | pipeline-types | Ordered array of stage slugs |
+| `core` | stages | Boolean — stage counts toward "Active" health status |
+| `pipeline` | stages | Boolean — `false` excludes from pipeline stepper (e.g., cooldown) |
 
 **Array order is significant** — it defines display order in UI, pipeline stage sequences, and Zod enum defaults. Do not reorder without checking consumers.
 
@@ -29,8 +38,8 @@ Keyed by stage slug. Each entry **must** have a `description` field. Labels are 
 | Consumer | Reads | Location |
 |----------|-------|----------|
 | KB Zod schema | `slug` (enum derivation) | `knowledge-base/src/content.config.ts` |
-| KB utils | `slug`, `label`, `color`, `core`, `pipeline` | `knowledge-base/src/lib/utils.ts` |
-| KB pages | `slug`, `label`, `route` | `knowledge-base/src/pages/` |
+| KB utils | `slug`, `label`, `description`, `color`, `core`, `pipeline` | `knowledge-base/src/lib/utils.ts` |
+| KB pages | `slug`, `label`, `description`, `route` | `knowledge-base/src/pages/` |
 | Pipeline entity | `slug`, `stages` | `scripts/lib/pipeline-entity.sh` |
 | Pipeline gates | `artifacts`, `gate`, `next` | `scripts/lib/pipeline-gates.sh` |
 | CLI help (planned) | `slug`, `label`, `description`, `flag` | `scripts/lib/pipeline-update.sh` |
@@ -41,6 +50,14 @@ Keyed by stage slug. Each entry **must** have a `description` field. Labels are 
 2. Add domain-specific fields after the required three
 3. Update this README's consumer table if the file has new consumers
 4. Ensure KB `content.config.ts` imports the new file if it backs a Zod enum
+
+## Design decisions
+
+### Tag colors use named strings, not hex values
+
+`tags.json` uses named color strings (`"green"`, `"amber"`, `"purple"`) rather than hex values. These names are mapped to Tailwind design-system token classes in `knowledge-base/src/lib/utils.ts` via `TAG_COLOR_CLASSES`. This keeps config values stable across theme changes — if the hex value for "success green" changes, only the CSS token updates, not the config file.
+
+Valid color names: `green`, `blue`, `amber`, `purple`. Unmapped colors fall back to `bg-surface text-muted-foreground`.
 
 ## Related
 

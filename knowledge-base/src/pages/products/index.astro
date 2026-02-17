@@ -18,7 +18,7 @@ const productCards = productsConfig.map((p) => {
     slug: p.slug,
     label: p.label,
     route: p.route,
-    subtitle: overview?.data.subtitle || '',
+    subtitle: overview?.data.subtitle || p.description,
     status: overview?.data.status || 'draft',
     pipelineCount: linkedPipelines.length,
   };

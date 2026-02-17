@@ -8,11 +8,16 @@ import toolsConfig from '../../../config/tools.json';
 /** Ordered pipeline stages (excludes non-pipeline stages like cooldown) */
 export const pipelineStages = stagesConfig
   .filter((s: { slug: string; pipeline?: boolean }) => s.pipeline !== false)
-  .map((s: { slug: string; label: string }) => ({ slug: s.slug, label: s.label }));
+  .map((s: { slug: string; label: string; description: string }) => ({ slug: s.slug, label: s.label, description: s.description }));
 
 /** Pipeline stage slug → label map */
 export const pipelineStageLabelMap: Record<string, string> = Object.fromEntries(
   pipelineStages.map((s) => [s.slug, s.label]),
+);
+
+/** Pipeline stage slug → description map */
+export const pipelineStageDescriptionMap: Record<string, string> = Object.fromEntries(
+  pipelineStages.map((s) => [s.slug, s.description]),
 );
 
 /** Ordered pipeline stage slugs */
