@@ -194,7 +194,7 @@ PROGRESS
 
 UTILITIES
   work list                               Show worktrees, Zellij sessions, ports
-  work clean <topic>                      Remove worktree + Zellij + branch + registry
+  work clean <topic>                      Remove worktree + Zellij + branch + registry + pipeline
   work help                               This help text
 
 PIPELINE LIFECYCLE FLOW
@@ -808,6 +808,7 @@ _work_clean() {
 
     # ── Discovery phase: find what exists ──
     local BRANCH="" WORKTREE_DIR="" HAS_ZELLIJ=false HAS_TMUX=false HAS_REGISTRY=false
+    local HAS_PIPELINE=false PIPELINE_ID="" PIPELINE_WORKTREES=""
     local FOUND_ANYTHING=false
 
     # Try to find the branch matching this topic
@@ -863,16 +864,51 @@ _work_clean() {
         done
     fi
 
-    # Check registry
+    # Check session registry
     if type _registry_exists &>/dev/null && _registry_exists "$TOPIC"; then
         HAS_REGISTRY=true
         FOUND_ANYTHING=true
     fi
 
+    # Check pipeline registry (match by exact ID, then fallback to name)
+    if type _registry_pipeline_exists &>/dev/null; then
+        if _registry_pipeline_exists "$TOPIC"; then
+            # Exact ID match (e.g., "20260216-review-orchestration")
+            HAS_PIPELINE=true
+            PIPELINE_ID="$TOPIC"
+            FOUND_ANYTHING=true
+        else
+            # Try matching by name (e.g., "review-orchestration")
+            local _pip_matches _pip_match_count=0
+            _pip_matches=$(jq -r --arg name "$TOPIC" \
+                '.pipelines[] | select(.name == $name) | .id' \
+                "$PIPELINE_REGISTRY_FILE" 2>/dev/null)
+            if [[ -n "$_pip_matches" ]]; then
+                _pip_match_count=$(echo "$_pip_matches" | grep -c .)
+            fi
+            if [[ "$_pip_match_count" -gt 1 ]]; then
+                echo "Error: Multiple pipelines match name '${TOPIC}':"
+                echo "$_pip_matches" | sed 's/^/  /'
+                echo "  Use the full pipeline ID instead."
+                return 1
+            elif [[ "$_pip_match_count" -eq 1 ]]; then
+                HAS_PIPELINE=true
+                PIPELINE_ID="$_pip_matches"
+                FOUND_ANYTHING=true
+            fi
+        fi
+        # Capture associated worktrees from the pipeline entity (for warnings)
+        if [[ "$HAS_PIPELINE" == true ]]; then
+            PIPELINE_WORKTREES=$(jq -r --arg id "$PIPELINE_ID" \
+                '.pipelines[] | select(.id == $id) | .worktrees[]?' \
+                "$PIPELINE_REGISTRY_FILE" 2>/dev/null)
+        fi
+    fi
+
     # Nothing to clean?
     if [[ "$FOUND_ANYTHING" == false ]]; then
         echo "Nothing found for topic '$TOPIC'."
-        echo "  No matching branch, worktree, Zellij session, tmux session, or registry entry."
+        echo "  No matching branch, worktree, Zellij session, tmux session, pipeline, or registry entry."
         echo "  Run 'work list' to see active sessions."
         return 1
     fi
@@ -884,6 +920,11 @@ _work_clean() {
     [[ "$HAS_ZELLIJ" == true ]]   && echo "  Zellij:    session '$TOPIC'"
     [[ "$HAS_TMUX" == true ]]     && echo "  Tmux:      session/window '$TOPIC'"
     [[ "$HAS_REGISTRY" == true ]] && echo "  Registry:  session '$TOPIC'"
+    [[ "$HAS_PIPELINE" == true ]] && echo "  Pipeline:  $PIPELINE_ID (archive in pipeline registry)"
+    if [[ -n "$PIPELINE_WORKTREES" ]]; then
+        echo "  Note: pipeline has associated worktrees (clean separately if needed):"
+        echo "$PIPELINE_WORKTREES" | sed 's/^/    /'
+    fi
     echo ""
     echo -n "Proceed? [y/N] "
     read -r CONFIRM
@@ -949,6 +990,15 @@ _work_clean() {
             echo "  Archived session '$TOPIC' in registry"
         else
             echo "  Warning: failed to archive session '$TOPIC' in registry"
+        fi
+    fi
+
+    # 3b. Pipeline registry (archive, not delete — preserves audit trail)
+    if [[ "$HAS_PIPELINE" == true ]]; then
+        if _registry_pipeline_archive "$PIPELINE_ID"; then
+            echo "  Archived pipeline '$PIPELINE_ID' in pipeline registry"
+        else
+            echo "  Warning: failed to archive pipeline '$PIPELINE_ID' in pipeline registry"
         fi
     fi
 
