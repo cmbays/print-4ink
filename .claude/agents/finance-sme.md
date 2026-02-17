@@ -92,31 +92,60 @@ These directories are highest risk:
 
 ## Output Format
 
-```markdown
-# Finance SME Review — [Scope]
+Output a **JSON array** of `ReviewFinding` objects. No markdown, no prose — only valid JSON.
 
-## Summary
-- Files scanned: N
-- Critical findings: N
-- Warnings: N
-- Info notes: N
+Each finding must conform to the `reviewFindingSchema` from `lib/schemas/review-pipeline.ts`:
 
-## Critical Findings
-| # | File:Line | Issue | Current Code | Fix |
-|---|-----------|-------|-------------|-----|
-| 1 | `lib/foo.ts:42` | Raw multiplication on price | `price * qty` | `money(price).times(qty)` |
-
-## Warnings
-| # | File:Line | Issue | Recommendation |
-|---|-----------|-------|----------------|
-| 1 | `components/PriceSummary.tsx:15` | `toNumber()` mid-pipeline | Move to final output only |
-
-## Info
-- New field `rushFee` in `quote.ts` — needs big.js plumbing when backend connects
-
-## Verdict
-PASS / FAIL (any critical finding = FAIL)
+```json
+[
+  {
+    "ruleId": "D-FIN-1",
+    "agent": "finance-sme",
+    "severity": "critical",
+    "file": "lib/foo.ts",
+    "line": 42,
+    "message": "Raw multiplication on price: `price * qty` uses IEEE 754 floating-point",
+    "fix": "Use `money(price).times(qty)` from lib/helpers/money.ts",
+    "dismissible": false,
+    "category": "financial-arithmetic"
+  },
+  {
+    "ruleId": "D-FIN-7",
+    "agent": "finance-sme",
+    "severity": "warning",
+    "file": "components/PriceSummary.tsx",
+    "line": 15,
+    "message": "Inconsistent currency formatting — using template literal `$${val}` instead of formatCurrency()",
+    "fix": "Use formatCurrency(amount) from lib/helpers/money.ts",
+    "dismissible": false,
+    "category": "financial-arithmetic"
+  }
+]
 ```
+
+### Field Reference
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ruleId` | string | Yes | Rule ID from `config/review-rules.json` (e.g., `D-FIN-1`, `D-FIN-4`) |
+| `agent` | string | Yes | Always `"finance-sme"` |
+| `severity` | enum | Yes | `"critical"` \| `"major"` \| `"warning"` \| `"info"` |
+| `file` | string | Yes | Repo-relative file path |
+| `line` | number | No | Line number (omit if finding is cross-file) |
+| `message` | string | Yes | What's wrong — include the offending code snippet |
+| `fix` | string | No | Exact fix using `lib/helpers/money.ts` API |
+| `dismissible` | boolean | Yes | `false` for critical/major, `true` for info |
+| `category` | string | Yes | Must match the rule's category in `config/review-rules.json` |
+
+### Rules for Output
+
+- If no findings, output an empty array: `[]`
+- Every finding must reference a valid `ruleId` from `config/review-rules.json`
+- `severity` must match the rule's configured severity (don't override)
+- `agent` is always `"finance-sme"`
+- A single critical finding means the review FAILS — this is enforced by the gate, not by you
+- Always reference `lib/helpers/money.ts` API in fix recommendations — don't invent helpers
+- `dismissible` is `false` for critical and major, `true` for info, judgment call for warning
 
 ## Rules
 

@@ -86,44 +86,68 @@ Include:
 
 ## Output Format
 
-```markdown
-# Design Audit — [Screen(s) Reviewed]
+Output a **JSON array** of `ReviewFinding` objects. No markdown, no prose — only valid JSON.
 
-## Date
-YYYY-MM-DD
+Each finding must conform to the `reviewFindingSchema` from `lib/schemas/review-pipeline.ts`. Only emit findings for dimensions that **Warn** or **Fail** — passing dimensions produce no findings.
 
-## Screens Audited
-- [Screen name] — [route] — [files examined]
+**Severity mapping**: dimension Fail → `"major"`, dimension Warn → `"warning"`. If 3+ dimensions fail, elevate the single worst finding to `"critical"`.
 
-## Overall Assessment
-[1-2 sentences on current design state]
-
-## Audit Results
-
-| # | Dimension | Result | Notes |
-|---|-----------|--------|-------|
-| 1 | Visual Hierarchy | Pass/Warn/Fail | ... |
-| 2 | Spacing & Rhythm | Pass/Warn/Fail | ... |
-| ... | ... | ... | ... |
-
-## Phase 1 — Critical
-- [Finding with exact fix instructions]
-
-## Phase 2 — Refinement
-- [Finding with exact fix instructions]
-
-## Phase 3 — Polish
-- [Finding with exact fix instructions]
-
-## Design System Updates Required
-- [Token/value changes needed]
-
-## Implementation Notes for Build Agent
-- [Exact file:line, property, old → new]
-
-## Next Step
-Awaiting user approval of Phase [1/2/3]
+```json
+[
+  {
+    "ruleId": "D-DSN-1",
+    "agent": "design-auditor",
+    "severity": "major",
+    "file": "app/(dashboard)/quotes/page.tsx",
+    "line": 45,
+    "message": "Two competing primary CTAs — 'New Quote' button and 'Export' button both use neobrutalist shadow and action color",
+    "fix": "Keep neobrutalist shadow on 'New Quote' only; change 'Export' to ghost variant with text-muted-foreground",
+    "dismissible": false,
+    "category": "design-system"
+  },
+  {
+    "ruleId": "D-MOB-1",
+    "agent": "design-auditor",
+    "severity": "critical",
+    "file": "components/features/quotes/QuoteActions.tsx",
+    "line": 22,
+    "message": "opacity-0 group-hover:opacity-100 without md: prefix — action buttons invisible on touch devices",
+    "fix": "Change to `md:opacity-0 md:group-hover:opacity-100` so buttons are always visible on mobile",
+    "dismissible": false,
+    "category": "mobile-responsive"
+  }
+]
 ```
+
+### Field Reference
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ruleId` | string | Yes | Rule ID from `config/review-rules.json` (e.g., `D-DSN-1`, `D-MOB-3`) |
+| `agent` | string | Yes | Always `"design-auditor"` |
+| `severity` | enum | Yes | `"critical"` \| `"major"` \| `"warning"` \| `"info"` |
+| `file` | string | Yes | Repo-relative file path |
+| `line` | number | No | Line number (omit if finding is cross-file) |
+| `message` | string | Yes | What's wrong — specific, referencing exact elements and values |
+| `fix` | string | No | Exact fix with design token names, old → new values |
+| `dismissible` | boolean | Yes | `false` for critical/major, `true` for info |
+| `category` | string | Yes | Must match the rule's category in `config/review-rules.json` |
+
+### Severity Escalation
+
+- Dimension **Pass** → no finding emitted
+- Dimension **Warn** → `"warning"`
+- Dimension **Fail** → `"major"`
+- **3+ dimension failures** → elevate the worst single finding to `"critical"`
+
+### Rules for Output
+
+- If no findings, output an empty array: `[]`
+- Every finding must reference a valid `ruleId` from `config/review-rules.json`
+- `agent` is always `"design-auditor"`
+- Be specific: "Change `text-blue-500` to `text-action`" not "use the right color token"
+- Include exact file paths, line numbers, old → new values for the build agent
+- `dismissible` is `false` for critical and major, `true` for info, judgment call for warning
 
 ## Rules
 
