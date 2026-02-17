@@ -1,8 +1,8 @@
 [
-  { "slug": "feature", "label": "Feature", "color": "green" },
-  { "slug": "build", "label": "Build", "color": "green" },
-  { "slug": "plan", "label": "Plan", "color": "blue" },
-  { "slug": "decision", "label": "Decision", "color": "amber" },
-  { "slug": "research", "label": "Research", "color": "purple" },
-  { "slug": "learning", "label": "Learning", "color": "amber" }
+  { "slug": "feature", "label": "Feature", "description": "New functionality being built", "color": "green" },
+  { "slug": "build", "label": "Build", "description": "Implementation session producing code changes", "color": "green" },
+  { "slug": "plan", "label": "Plan", "description": "Planning session producing implementation plans or manifests", "color": "blue" },
+  { "slug": "decision", "label": "Decision", "description": "Architectural or design decision with rationale", "color": "amber" },
+  { "slug": "research", "label": "Research", "description": "Exploratory research into problem space or technology", "color": "purple" },
+  { "slug": "learning", "label": "Learning", "description": "Lessons learned and patterns discovered during work", "color": "amber" }
 ]

@@ -1,8 +1,8 @@
 [
-  { "slug": "work-orchestrator", "label": "Work Orchestrator" },
-  { "slug": "skills-framework", "label": "Skills Framework" },
-  { "slug": "agent-system", "label": "Agent System" },
-  { "slug": "knowledge-base", "label": "Knowledge Base" },
-  { "slug": "ci-pipeline", "label": "CI Pipeline" },
-  { "slug": "pm-system", "label": "PM System" }
+  { "slug": "work-orchestrator", "label": "Work Orchestrator", "description": "Pipeline lifecycle management, session dispatch, and build orchestration" },
+  { "slug": "skills-framework", "label": "Skills Framework", "description": "Domain expertise containers with instructions, templates, and references" },
+  { "slug": "agent-system", "label": "Agent System", "description": "Specialized AI agents with own context windows and system prompts" },
+  { "slug": "knowledge-base", "label": "Knowledge Base", "description": "Astro-powered session documentation, search, and project history" },
+  { "slug": "ci-pipeline", "label": "CI Pipeline", "description": "Continuous integration — linting, type checking, build validation" },
+  { "slug": "pm-system", "label": "PM System", "description": "GitHub Projects integration, issue templates, and workflow automation" }
 ]

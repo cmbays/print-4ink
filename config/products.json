@@ -1,10 +1,10 @@
 [
-  { "slug": "dashboard", "label": "Dashboard", "route": "/dashboard" },
-  { "slug": "quotes", "label": "Quotes", "route": "/quotes" },
-  { "slug": "customers", "label": "Customers", "route": "/customers" },
-  { "slug": "invoices", "label": "Invoices", "route": "/invoices" },
-  { "slug": "jobs", "label": "Jobs", "route": "/jobs" },
-  { "slug": "garments", "label": "Garments", "route": "/garments" },
-  { "slug": "screens", "label": "Screens", "route": "/screens" },
-  { "slug": "pricing", "label": "Pricing", "route": "/settings/pricing" }
+  { "slug": "dashboard", "label": "Dashboard", "description": "Overview of shop activity, blocked items, and next actions", "route": "/dashboard" },
+  { "slug": "quotes", "label": "Quotes", "description": "Quote creation and pricing calculator for customer orders", "route": "/quotes" },
+  { "slug": "customers", "label": "Customers", "description": "Customer contact management and order history", "route": "/customers" },
+  { "slug": "invoices", "label": "Invoices", "description": "Invoice generation, payment tracking, and accounts receivable", "route": "/invoices" },
+  { "slug": "jobs", "label": "Jobs", "description": "Production job tracking from design through shipping", "route": "/jobs" },
+  { "slug": "garments", "label": "Garments", "description": "Garment sourcing, SKU selection, and size-run management", "route": "/garments" },
+  { "slug": "screens", "label": "Screens", "description": "Screen room inventory — mesh count, emulsion, burn status", "route": "/screens" },
+  { "slug": "pricing", "label": "Pricing", "description": "Pricing rules, markup tables, and setup fee configuration", "route": "/settings/pricing" }
 ]
