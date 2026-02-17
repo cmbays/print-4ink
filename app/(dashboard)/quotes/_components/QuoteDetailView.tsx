@@ -23,7 +23,8 @@ import {
 import type { Quote, QuoteLineItem } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Artwork } from "@/lib/schemas/artwork";
-import { garmentCatalog, colors as allColors } from "@/lib/mock-data";
+import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@/lib/schemas/garment";
 import { formatDate } from "@/lib/helpers/format";
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@/lib/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
@@ -35,6 +36,8 @@ interface QuoteDetailViewProps {
   quote: Quote;
   customer: Customer | null;
   artworks: Artwork[];
+  garmentCatalog: GarmentCatalog[];
+  colors: Color[];
   mode: "detail" | "review";
   onSend?: () => void;
 }
@@ -47,6 +50,8 @@ export function QuoteDetailView({
   quote,
   customer,
   artworks,
+  garmentCatalog,
+  colors: allColors,
   mode,
   onSend,
 }: QuoteDetailViewProps) {
@@ -82,7 +87,7 @@ export function QuoteDetailView({
     () => quote.lineItems
       .map((item) => allColors.find((c) => c.id === item.colorId)?.hex)
       .filter(Boolean) as string[],
-    [quote.lineItems]
+    [quote.lineItems, allColors]
   );
 
   return (

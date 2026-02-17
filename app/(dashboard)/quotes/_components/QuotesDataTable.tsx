@@ -36,11 +36,11 @@ import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { formatDate } from "@/lib/helpers/format";
-import type { QuoteStatus } from "@/lib/schemas/quote";
-import { quotes as rawQuotes, customers } from "@/lib/mock-data";
+import type { Quote, QuoteStatus } from "@/lib/schemas/quote";
+import type { Customer } from "@/lib/schemas/customer";
 
 // ---------------------------------------------------------------------------
-// Derived table rows from canonical mock data
+// Derived table rows
 // ---------------------------------------------------------------------------
 
 interface TableQuote {
@@ -55,20 +55,10 @@ interface TableQuote {
   isArchived: boolean;
 }
 
-const MOCK_QUOTES: TableQuote[] = rawQuotes.map((q) => {
-  const customer = customers.find((c) => c.id === q.customerId);
-  return {
-    id: q.id,
-    quoteNumber: q.quoteNumber,
-    customerId: q.customerId,
-    customerName: customer?.company ?? customer?.name ?? "Unknown",
-    status: q.status,
-    lineItemCount: q.lineItems.length,
-    total: q.total,
-    createdAt: q.createdAt,
-    isArchived: q.isArchived,
-  };
-});
+interface QuotesDataTableProps {
+  quotes: Quote[];
+  customers: Customer[];
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -93,9 +83,28 @@ type SortDir = z.infer<typeof sortDirSchema>;
 // Component
 // ---------------------------------------------------------------------------
 
-export function QuotesDataTable() {
+export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const tableQuotes = useMemo<TableQuote[]>(
+    () =>
+      quotes.map((q) => {
+        const customer = customers.find((c) => c.id === q.customerId);
+        return {
+          id: q.id,
+          quoteNumber: q.quoteNumber,
+          customerId: q.customerId,
+          customerName: customer?.company ?? customer?.name ?? "Unknown",
+          status: q.status,
+          lineItemCount: q.lineItems.length,
+          total: q.total,
+          createdAt: q.createdAt,
+          isArchived: q.isArchived,
+        };
+      }),
+    [quotes, customers]
+  );
 
   // ---- URL state reads ----------------------------------------------------
   const searchQuery = searchParams.get("q") ?? "";
@@ -223,7 +232,7 @@ export function QuotesDataTable() {
   // ---- Filter + sort pipeline ---------------------------------------------
 
   const filteredQuotes = useMemo(() => {
-    let result = MOCK_QUOTES;
+    let result = tableQuotes;
 
     // 1. Archive toggle (hide archived by default)
     if (!showArchived) {
@@ -272,7 +281,7 @@ export function QuotesDataTable() {
     });
 
     return result;
-  }, [showArchived, activeStatuses, searchQuery, sortKey, sortDir]);
+  }, [tableQuotes, showArchived, activeStatuses, searchQuery, sortKey, sortDir]);
 
   // ---- Check if any filters are active ------------------------------------
 

@@ -1,7 +1,12 @@
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../_components/QuoteForm";
-import { quotes } from "@/lib/mock-data";
+import { getQuoteById } from "@/lib/dal/quotes";
+import { getCustomers } from "@/lib/dal/customers";
+import { getColors } from "@/lib/dal/colors";
+import { getGarmentCatalog } from "@/lib/dal/garments";
+import { getArtworks } from "@/lib/dal/artworks";
+import { getDtfSheetTiers } from "@/lib/dal/settings";
 import type { LineItemData } from "../_components/LineItemRow";
 
 export default async function NewQuotePage({
@@ -10,6 +15,14 @@ export default async function NewQuotePage({
   searchParams: Promise<{ duplicate?: string; customer?: string }>;
 }) {
   const { duplicate, customer: customerParam } = await searchParams;
+
+  const [customers, colors, garmentCatalog, artworks, dtfSheetTiers] = await Promise.all([
+    getCustomers(),
+    getColors(),
+    getGarmentCatalog(),
+    getArtworks(),
+    getDtfSheetTiers(),
+  ]);
 
   let initialData: {
     customerId?: string;
@@ -29,7 +42,7 @@ export default async function NewQuotePage({
   }
 
   if (duplicate) {
-    const sourceQuote = quotes.find((q) => q.id === duplicate);
+    const sourceQuote = await getQuoteById(duplicate);
     if (sourceQuote) {
       isDuplicate = true;
       initialData = {
@@ -63,7 +76,16 @@ export default async function NewQuotePage({
         <h1 className="text-2xl font-semibold tracking-tight">
           {isDuplicate ? "Copy as New" : "New Quote"}
         </h1>
-        <QuoteForm key={duplicate || "new"} mode="create" initialData={initialData} />
+        <QuoteForm
+          key={duplicate || "new"}
+          mode="create"
+          customers={customers}
+          colors={colors}
+          garmentCatalog={garmentCatalog}
+          artworks={artworks}
+          dtfSheetTiers={dtfSheetTiers}
+          initialData={initialData}
+        />
       </div>
     </>
   );

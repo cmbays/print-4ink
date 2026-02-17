@@ -2,10 +2,15 @@ import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../../_components/QuoteForm";
 import type { LineItemData } from "../../_components/LineItemRow";
-import { quotes } from "@/lib/mock-data";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getQuoteById } from "@/lib/dal/quotes";
+import { getCustomers } from "@/lib/dal/customers";
+import { getColors } from "@/lib/dal/colors";
+import { getGarmentCatalog } from "@/lib/dal/garments";
+import { getArtworks } from "@/lib/dal/artworks";
+import { getDtfSheetTiers } from "@/lib/dal/settings";
 
 export default async function EditQuotePage({
   params,
@@ -13,7 +18,7 @@ export default async function EditQuotePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const quote = quotes.find((q) => q.id === id);
+  const quote = await getQuoteById(id);
 
   if (!quote) {
     return (
@@ -35,6 +40,14 @@ export default async function EditQuotePage({
       </div>
     );
   }
+
+  const [customers, colors, garmentCatalog, artworks, dtfSheetTiers] = await Promise.all([
+    getCustomers(),
+    getColors(),
+    getGarmentCatalog(),
+    getArtworks(),
+    getDtfSheetTiers(),
+  ]);
 
   const initialData: {
     customerId?: string;
@@ -71,7 +84,16 @@ export default async function EditQuotePage({
       <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.quotes, { label: quote.quoteNumber, href: `/quotes/${id}` }, { label: "Edit" })} />
       <div className="flex flex-col gap-6">
         <h1 className="text-2xl font-semibold tracking-tight">Edit Quote — {quote.quoteNumber}</h1>
-        <QuoteForm mode="edit" initialData={initialData} quoteId={quote.id} />
+        <QuoteForm
+          mode="edit"
+          customers={customers}
+          colors={colors}
+          garmentCatalog={garmentCatalog}
+          artworks={artworks}
+          dtfSheetTiers={dtfSheetTiers}
+          initialData={initialData}
+          quoteId={quote.id}
+        />
       </div>
     </>
   );

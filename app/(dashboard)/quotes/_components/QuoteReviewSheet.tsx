@@ -13,6 +13,8 @@ import { QuoteDetailView } from "./QuoteDetailView";
 import type { Quote } from "@/lib/schemas/quote";
 import type { Customer } from "@/lib/schemas/customer";
 import type { Artwork } from "@/lib/schemas/artwork";
+import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@/lib/schemas/garment";
 
 interface QuoteReviewSheetProps {
   open: boolean;
@@ -20,6 +22,8 @@ interface QuoteReviewSheetProps {
   quote: Quote;
   customer: Customer | null;
   artworks: Artwork[];
+  garmentCatalog: GarmentCatalog[];
+  colors: Color[];
 }
 
 export function QuoteReviewSheet({
@@ -28,6 +32,8 @@ export function QuoteReviewSheet({
   quote,
   customer,
   artworks,
+  garmentCatalog,
+  colors,
 }: QuoteReviewSheetProps) {
   const router = useRouter();
 
@@ -50,6 +56,8 @@ export function QuoteReviewSheet({
             quote={quote}
             customer={customer}
             artworks={artworks}
+            garmentCatalog={garmentCatalog}
+            colors={colors}
             mode="review"
             onSend={handleSend}
           />

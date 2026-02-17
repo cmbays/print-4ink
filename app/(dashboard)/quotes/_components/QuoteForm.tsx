@@ -25,12 +25,9 @@ import { ArtworkUploadModal } from "./ArtworkUploadModal";
 import { QuoteReviewSheet } from "./QuoteReviewSheet";
 import { ServiceTypeTabBar } from "./ServiceTypeTabBar";
 import { DtfTabContent } from "./DtfTabContent";
-import {
-  customers as mockCustomers,
-  colors as mockColors,
-  garmentCatalog,
-  artworks as mockArtworks,
-} from "@/lib/mock-data";
+import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
@@ -45,6 +42,11 @@ import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
 
 interface QuoteFormProps {
   mode: "create" | "edit";
+  customers: Customer[];
+  colors: Color[];
+  garmentCatalog: GarmentCatalog[];
+  artworks: Artwork[];
+  dtfSheetTiers: DTFSheetTier[];
   initialData?: {
     customerId?: string;
     lineItems?: LineItemData[];
@@ -68,12 +70,12 @@ function createEmptyLineItem(): LineItemData {
   };
 }
 
-export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
+export function QuoteForm({ mode, customers: initialCustomers, colors, garmentCatalog, artworks, dtfSheetTiers, initialData, quoteId }: QuoteFormProps) {
   const router = useRouter();
 
-  // Customer state — keep full Customer objects for backwards compat
-  const [customers, setCustomers] = useState(
-    [...mockCustomers]
+  // Customer state — local copy + any newly-added customers within this form session
+  const [localCustomers, setLocalCustomers] = useState(
+    [...initialCustomers]
   );
   const [customerId, setCustomerId] = useState(
     initialData?.customerId || ""
@@ -142,13 +144,13 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
   >({});
 
   // Derived values
-  const selectedCustomer = customers.find((c) => c.id === customerId);
+  const selectedCustomer = localCustomers.find((c) => c.id === customerId);
   const customerTag: CustomerTag | undefined = selectedCustomer?.tag;
 
   // Map full Customer objects to CustomerOption with derived contactRole
   const customerOptions: CustomerOption[] = useMemo(
     () =>
-      customers.map((c) => {
+      localCustomers.map((c) => {
         const primaryContact = c.contacts.find((ct) => ct.isPrimary);
         return {
           id: c.id,
@@ -162,14 +164,14 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
           contactRole: primaryContact?.role,
         };
       }),
-    [customers]
+    [localCustomers]
   );
 
   // Get artworks for selected customer
   const customerArtworks = useMemo(() => {
     if (!customerId) return [];
-    return [...mockArtworks.filter((a) => a.customerId === customerId), ...localArtworks];
-  }, [customerId, localArtworks]);
+    return [...artworks.filter((a) => a.customerId === customerId), ...localArtworks];
+  }, [artworks, customerId, localArtworks]);
 
   // Artworks selected for this quote — includes both quote-level selections
   // AND any artwork assigned to print locations in line items
@@ -205,7 +207,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     const setupFees = toNumber(money(lineItemSetupFees).plus(quoteSetupFee));
 
     return { garmentSubtotal, decorationSubtotal, setupFees, screenReuseDiscount };
-  }, [lineItems, screenReuse]);
+  }, [lineItems, screenReuse, garmentCatalog]);
 
   // DTF subtotal (N54)
   const dtfSubtotal = sheetCalculation?.totalCost ?? 0;
@@ -279,7 +281,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       );
 
       // Free shipping for contract customers
-      const customer = customers.find((c) => c.id === id);
+      const customer = localCustomers.find((c) => c.id === id);
       if (customer?.tag === "contract") {
         setShipping(0);
       }
@@ -292,7 +294,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         });
       }
     },
-    [customers, errors.customerId]
+    [localCustomers, errors.customerId]
   );
 
   const handleAddNewCustomer = useCallback(
@@ -329,7 +331,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         createdAt: now,
         updatedAt: now,
       };
-      setCustomers((prev) => [...prev, newCustomer]);
+      setLocalCustomers((prev) => [...prev, newCustomer]);
       handleCustomerSelect(newCustomer.id);
     },
     [handleCustomerSelect]
@@ -665,7 +667,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       grouped[item.serviceType].count += 1;
       grouped[item.serviceType].qty += totalQty;
       const garment = garmentCatalog.find((g) => g.id === item.garmentId);
-      const color = mockColors.find((c) => c.id === item.colorId);
+      const color = colors.find((c) => c.id === item.colorId);
       if (color) {
         grouped[item.serviceType].garments.push({
           garmentName: garment ? `${garment.brand} ${garment.sku}` : "Unknown",
@@ -680,7 +682,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
       }
     });
     return grouped;
-  }, [lineItems]);
+  }, [lineItems, garmentCatalog, colors]);
 
   const lineItemSummary = useMemo(() => {
     const entries = Object.entries(serviceTypeBreakdown);
@@ -1023,7 +1025,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
                   onRemove={handleLineItemRemove}
                   canRemove={lineItems.length > 1}
                   garmentCatalog={garmentCatalog}
-                  colors={mockColors}
+                  colors={colors}
                   quoteArtworks={quoteArtworks}
                   errors={lineItemErrors[i]}
                 />
@@ -1059,6 +1061,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
               setActiveSheetIndex={setActiveSheetIndex}
               setSheetCalculation={setSheetCalculation}
               setCanvasLayout={setCanvasLayout}
+              dtfSheetTiers={dtfSheetTiers}
             />
           </div>
         )}
@@ -1187,6 +1190,8 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         quote={buildQuoteForReview()}
         customer={selectedCustomer ?? null}
         artworks={quoteArtworks}
+        garmentCatalog={garmentCatalog}
+        colors={colors}
       />}
     </>
   );

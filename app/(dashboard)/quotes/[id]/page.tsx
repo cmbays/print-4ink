@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { quotes, customers, artworks } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteDetailView } from "@/app/(dashboard)/quotes/_components/QuoteDetailView";
+import { getQuoteById } from "@/lib/dal/quotes";
+import { getCustomerById } from "@/lib/dal/customers";
+import { getArtworks } from "@/lib/dal/artworks";
+import { getGarmentCatalog } from "@/lib/dal/garments";
+import { getColors } from "@/lib/dal/colors";
 
 export default async function QuoteDetailPage({
   params,
@@ -12,7 +16,7 @@ export default async function QuoteDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const quote = quotes.find((q) => q.id === id);
+  const quote = await getQuoteById(id);
 
   if (!quote) {
     return (
@@ -35,10 +39,13 @@ export default async function QuoteDetailPage({
     );
   }
 
-  const customer = customers.find((c) => c.id === quote.customerId) ?? null;
-  const quoteArtworks = artworks.filter((a) =>
-    quote.artworkIds.includes(a.id)
-  );
+  const [customer, allArtworks, garmentCatalog, colors] = await Promise.all([
+    getCustomerById(quote.customerId),
+    getArtworks(),
+    getGarmentCatalog(),
+    getColors(),
+  ]);
+  const quoteArtworks = allArtworks.filter((a) => quote.artworkIds.includes(a.id));
 
   return (
     <>
@@ -49,6 +56,8 @@ export default async function QuoteDetailPage({
           quote={quote}
           customer={customer}
           artworks={quoteArtworks}
+          garmentCatalog={garmentCatalog}
+          colors={colors}
           mode="detail"
         />
       </div>

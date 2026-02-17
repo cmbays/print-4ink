@@ -5,11 +5,11 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
-import { dtfSheetTiers } from "@/lib/mock-data";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import { GangSheetCanvas } from "./GangSheetCanvas";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
+import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
 
 interface DtfTabContentProps {
   lineItems: DtfLineItem[];
@@ -22,6 +22,7 @@ interface DtfTabContentProps {
   setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
   setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>;
   setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>;
+  dtfSheetTiers: DTFSheetTier[];
 }
 
 // Default to Small preset resolved dimensions
@@ -38,6 +39,7 @@ export function DtfTabContent({
   setActiveSheetIndex,
   setSheetCalculation,
   setCanvasLayout,
+  dtfSheetTiers,
 }: DtfTabContentProps) {
   // N43 — addDtfLineItem
   const handleAddLineItem = useCallback(() => {
