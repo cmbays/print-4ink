@@ -215,13 +215,16 @@ Sheet and Dialog components from shadcn/ui use z-50 with a backdrop overlay that
 
 1. **Zod-first types**: Define Zod schema, derive type via `z.infer<typeof schema>`. No separate interfaces.
 2. **Server components default**: Only add `"use client"` when using hooks, event handlers, or browser APIs. When a server component (e.g., `layout.tsx`) needs client interactivity, extract a `"use client"` wrapper component that receives `children` as a prop — keep the parent as a server component.
-3. **DRY components**: Wrap repeated UI into reusable components in `@/components/`.
+3. **DRY components**: Wrap repeated UI into reusable components in `@shared/ui/`.
 4. **Separation of concerns**: Keep logic (hooks) separate from presentation (Tailwind classes).
 5. **URL state**: Filters, search, pagination live in URL query params.
 6. **Breadcrumb navigation**: Deep views use breadcrumbs (Home > Jobs > #1024 > Mockups).
-7. **DAL imports**: Import from `@/lib/dal/{domain}`, never from `mock-data.ts` or `db/` directly.
+7. **Repository imports**: Import from `@infra/repositories/{domain}` (Phase 1/3). Never import from `@infra/repositories/_providers/mock` or `@/lib/mock-data` outside of `src/infrastructure/`. After Phase 4, app layer imports from `@features/{domain}` use-cases only.
 8. **No raw SQL injection**: Never use `sql.raw()` with user input.
-9. **DAL ID validation**: DAL functions validate ID inputs with Zod.
+9. **DAL ID validation**: Repository functions validate ID inputs with Zod.
+10. **No hardcoded URLs or env-specific values**: Use `process.env.NEXT_PUBLIC_*` for client-accessible config, `process.env.*` for server-only. Never hardcode domains, API endpoints, or environment-specific strings.
+11. **Port interfaces**: Code against the port interface (e.g., `ICustomerRepository`), not the concrete implementation. The composition root (`src/infrastructure/bootstrap.ts`) is the only place that wires ports to implementations.
+12. **Logging**: Never use `console.log`/`console.warn`/`console.error` in production code. Use `logger` from `@shared/lib/logger` with bound domain context: `logger.child({ domain: 'quotes' })`.
 
 ## Quality Checklist
 
@@ -327,9 +330,13 @@ git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink push origi
 - No `any` types — use Zod inference or explicit types
 - No colors outside the design token palette
 - No decorative gradients — color communicates meaning
-- No `className` string concatenation — use `cn()` from `@/lib/utils`
+- No `className` string concatenation — use `cn()` from `@shared/lib/cn`
 - No pushing directly to main — always branch + PR
 - No pushing directly to `production` — only merge from `main` via PR or fast-forward
+- No `interface` declarations — use `type` or `z.infer<>` only
+- No `console.log` in production code — use `logger` from `@shared/lib/logger`
+- No hardcoded URLs or environment-specific strings — env vars only
+- No direct imports from `@infra/repositories/_providers/mock` outside `src/infrastructure/`
 
 ## Documentation Model
 
