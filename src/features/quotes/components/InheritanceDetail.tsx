@@ -8,22 +8,21 @@ import {
   CollapsibleTrigger,
 } from '@shared/ui/primitives/collapsible'
 import { cn } from '@shared/lib/cn'
-import { getColorsMutable } from '@infra/repositories/colors'
+import type { Color } from '@domain/entities/color'
 import type { InheritanceChain } from '@domain/rules/customer.rules'
-
-const catalogColors = getColorsMutable()
 
 type InheritanceDetailProps = {
   chain: InheritanceChain
+  colors: Color[]
   onRestore?: (colorId: string) => void
 }
 
-function getColorName(colorId: string): string {
-  return catalogColors.find((c) => c.id === colorId)?.name ?? colorId
+function getColorName(colorId: string, colors: Color[]): string {
+  return colors.find((c) => c.id === colorId)?.name ?? colorId
 }
 
-function ColorChip({ colorId }: { colorId: string }) {
-  const color = catalogColors.find((c) => c.id === colorId)
+function ColorChip({ colorId, colors }: { colorId: string; colors: Color[] }) {
+  const color = colors.find((c) => c.id === colorId)
   if (!color) return <span className="text-xs text-muted-foreground">{colorId}</span>
 
   return (
@@ -38,7 +37,7 @@ function ColorChip({ colorId }: { colorId: string }) {
   )
 }
 
-export function InheritanceDetail({ chain, onRestore }: InheritanceDetailProps) {
+export function InheritanceDetail({ chain, colors, onRestore }: InheritanceDetailProps) {
   const [open, setOpen] = useState(false)
 
   const hasChanges = chain.addedAtLevel.length > 0 || chain.removedAtLevel.length > 0
@@ -76,7 +75,7 @@ export function InheritanceDetail({ chain, onRestore }: InheritanceDetailProps) 
             </p>
             <div className="flex flex-wrap gap-x-3 gap-y-1">
               {chain.globalDefaults.map((id) => (
-                <ColorChip key={id} colorId={id} />
+                <ColorChip key={id} colorId={id} colors={colors} />
               ))}
             </div>
           </div>
@@ -90,7 +89,7 @@ export function InheritanceDetail({ chain, onRestore }: InheritanceDetailProps) 
               </p>
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 {chain.addedAtLevel.map((id) => (
-                  <ColorChip key={id} colorId={id} />
+                  <ColorChip key={id} colorId={id} colors={colors} />
                 ))}
               </div>
             </div>
@@ -106,7 +105,7 @@ export function InheritanceDetail({ chain, onRestore }: InheritanceDetailProps) 
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 {chain.removedAtLevel.map((id) => (
                   <span key={id} className="inline-flex items-center gap-1">
-                    <ColorChip colorId={id} />
+                    <ColorChip colorId={id} colors={colors} />
                     {onRestore && (
                       <button
                         type="button"
@@ -117,7 +116,7 @@ export function InheritanceDetail({ chain, onRestore }: InheritanceDetailProps) 
                           'hover:bg-surface',
                           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
                         )}
-                        aria-label={`Restore ${getColorName(id)}`}
+                        aria-label={`Restore ${getColorName(id, colors)}`}
                       >
                         <RotateCcw size={10} aria-hidden="true" />
                         Restore

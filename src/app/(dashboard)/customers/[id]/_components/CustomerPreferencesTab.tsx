@@ -182,7 +182,7 @@ export function CustomerPreferencesTab({
 
         {/* U55: InheritanceDetail */}
         <div className="mt-3">
-          <InheritanceDetail chain={chain} />
+          <InheritanceDetail chain={chain} colors={catalogColors} />
         </div>
       </section>
 

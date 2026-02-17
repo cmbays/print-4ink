@@ -101,6 +101,13 @@ const eslintConfig = defineConfig([
               message:
                 'src/shared/ cannot import from src/infrastructure/ — shared must not depend on implementation details.',
             },
+            // features/ must not reach into infrastructure/ — use repository imports via app/ wiring
+            {
+              target: './src/features',
+              from: './src/infrastructure',
+              message:
+                'src/features/ cannot import from src/infrastructure/ — features must receive data via props or hooks, not call repositories directly.',
+            },
             // domain/ is the innermost ring — pure business logic, no outer-layer dependencies
             {
               target: './src/domain',

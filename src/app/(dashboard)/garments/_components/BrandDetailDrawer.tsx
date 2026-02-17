@@ -374,6 +374,7 @@ export function BrandDetailDrawer({
             {/* U26-U28: InheritanceDetail — progressive disclosure */}
             <InheritanceDetail
               chain={inheritanceChain}
+              colors={catalogColors}
               onRestore={brandPref.inheritMode === 'customize' ? handleRestoreColor : undefined}
             />
 
