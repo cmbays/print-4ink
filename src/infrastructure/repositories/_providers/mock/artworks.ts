@@ -1,4 +1,4 @@
-import { artworks } from '@/lib/mock-data'
+import { artworks } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Artwork } from '@domain/entities/artwork'
 

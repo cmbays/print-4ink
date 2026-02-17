@@ -15,15 +15,14 @@ import { SERVICE_TYPE_ICONS } from '@/components/features/ServiceTypeBadge'
 import { SERVICE_TYPE_COLORS } from '@domain/constants'
 import { SetupWizard } from './_components/SetupWizard'
 import { TagTemplateMapper } from './_components/TagTemplateMapper'
-// eslint-disable-next-line no-restricted-syntax -- TODO(#403): no repository equivalent for pricing templates yet; migrate when @infra/repositories/pricing exists
 import {
   allScreenPrintTemplates,
   allDTFTemplates,
   tagTemplateMappings,
-} from '@/lib/mock-data-pricing'
+} from '@infra/repositories/pricing'
 import type { TagTemplateMapping } from '@domain/entities/tag-template-mapping'
-// eslint-disable-next-line no-restricted-syntax -- TODO(#403): migrate to repository; no sync customer access without server wrapper
-import { customers } from '@/lib/mock-data'
+import { getCustomersMutable } from '@infra/repositories/customers'
+const customers = getCustomersMutable()
 import {
   calculateTemplateHealth,
   calculateDTFTemplateHealth,

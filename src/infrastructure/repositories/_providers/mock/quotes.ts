@@ -1,4 +1,4 @@
-import { quotes } from '@/lib/mock-data'
+import { quotes } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Quote } from '@domain/entities/quote'
 

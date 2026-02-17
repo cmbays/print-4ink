@@ -1,4 +1,4 @@
-import { colors } from '@/lib/mock-data'
+import { colors } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Color } from '@domain/entities/color'
 

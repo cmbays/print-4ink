@@ -1,4 +1,4 @@
-import { invoices, payments, creditMemos } from '@/lib/mock-data'
+import { invoices, payments, creditMemos } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Invoice, Payment } from '@domain/entities/invoice'
 import type { CreditMemo } from '@domain/entities/credit-memo'

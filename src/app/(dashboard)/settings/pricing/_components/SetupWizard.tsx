@@ -34,7 +34,7 @@ import {
   formatCurrency,
   formatPercent,
 } from '@domain/services/pricing.service'
-import { spStandardTemplate, dtfRetailTemplate } from '@/lib/mock-data-pricing'
+import { spStandardTemplate, dtfRetailTemplate } from '@infra/repositories/pricing'
 import type {
   PricingTemplate,
   QuantityTier,

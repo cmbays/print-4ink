@@ -38,21 +38,9 @@ const eslintConfig = defineConfig([
           ],
         },
       ],
-      // TODO(#403): promote to error once all 33 mock-data violations are migrated to DAL.
-      // Use @/lib/dal/{domain} instead of importing mock-data modules directly.
-      'no-restricted-syntax': [
-        'warn',
-        {
-          selector: "ImportDeclaration[source.value='@/lib/mock-data']",
-          message:
-            'Import from @/lib/dal/{domain} instead of mock-data directly. See lib/dal/. Track: #403',
-        },
-        {
-          selector: "ImportDeclaration[source.value='@/lib/mock-data-pricing']",
-          message:
-            'Import from @/lib/dal/{domain} instead of mock-data-pricing directly. See lib/dal/. Track: #403',
-        },
-      ],
+      // Mock data files are at src/infrastructure/repositories/_providers/mock/data*.ts.
+      // App layer must import via @infra/repositories/{domain} — never from _providers directly.
+      // The no-restricted-imports pattern below enforces this for all src/ consumers.
       // TODO(#404): promote to error once all 145 interface violations are migrated.
       // Use `type` for component props, `z.infer<typeof Schema>` for domain entities.
       '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
@@ -72,26 +60,18 @@ const eslintConfig = defineConfig([
       'no-restricted-imports': 'off',
     },
   },
-  // DAL providers are the canonical consumers of mock-data modules (old path — keep for legacy lib/dal/ during migration)
+  // Test files are allowed to import mock _providers directly for test fixtures
   {
-    files: ['lib/dal/**'],
+    files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
     rules: {
       'no-restricted-imports': 'off',
-      'no-restricted-syntax': 'off',
     },
   },
-  // Infrastructure mock providers are the canonical consumers of mock-data (new path post Phase 1)
+  // MockAdapter is the supplier-layer equivalent of _providers/mock — allowed to import from _providers
   {
-    files: ['src/infrastructure/repositories/_providers/mock/**'],
+    files: ['lib/suppliers/**', 'src/infrastructure/adapters/**'],
     rules: {
-      'no-restricted-syntax': 'off',
-    },
-  },
-  // MockAdapter is the supplier-layer equivalent of dal/_providers/mock — allowed to read mock-data directly
-  {
-    files: ['lib/suppliers/adapters/mock.ts'],
-    rules: {
-      'no-restricted-syntax': 'off',
+      'no-restricted-imports': 'off',
     },
   },
   // Override default ignores of eslint-config-next.

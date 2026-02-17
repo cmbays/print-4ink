@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { getGarmentById, getColorById } from '../garment.rules'
-import { garmentCatalog, colors } from '@/lib/mock-data'
+import { garmentCatalog, colors } from '@infra/repositories/_providers/mock/data'
 
 describe('getGarmentById', () => {
   it('finds garment by ID', () => {

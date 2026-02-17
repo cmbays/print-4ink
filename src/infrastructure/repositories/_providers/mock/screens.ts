@@ -1,4 +1,4 @@
-import { screens } from '@/lib/mock-data'
+import { screens } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Screen } from '@domain/entities/screen'
 

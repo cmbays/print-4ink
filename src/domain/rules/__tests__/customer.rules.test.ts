@@ -9,7 +9,12 @@ import {
   removeFromLevelOnly,
   removeFromSelected,
 } from '../customer.rules'
-import { colors, customers, brandPreferences, autoPropagationConfig } from '@/lib/mock-data'
+import {
+  colors,
+  customers,
+  brandPreferences,
+  autoPropagationConfig,
+} from '@infra/repositories/_providers/mock/data'
 
 // Global favorites from mock data: Black, White, Navy, Royal Blue, Red
 const GLOBAL_FAVORITE_IDS = colors.filter((c) => c.isFavorite === true).map((c) => c.id)

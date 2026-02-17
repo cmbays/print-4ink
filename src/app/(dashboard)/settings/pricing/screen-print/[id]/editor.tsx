@@ -44,7 +44,7 @@ import {
   ToggleRight,
   ToggleLeft,
 } from 'lucide-react'
-import { allScreenPrintTemplates } from '@/lib/mock-data-pricing'
+import { allScreenPrintTemplates } from '@infra/repositories/pricing'
 import { calculateTemplateHealth } from '@domain/services/pricing.service'
 import { cn } from '@shared/lib/cn'
 import { MarginLegend } from '@/components/features/MarginLegend'
