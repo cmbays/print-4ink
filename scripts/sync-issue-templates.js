@@ -39,9 +39,9 @@ function readConfig(relPath) {
   return parsed
 }
 
-const products = readConfig('config/products.json')
-const domains = readConfig('config/domains.json')
-const tools = readConfig('config/tools.json')
+const products = readConfig('src/config/products.json')
+const domains = readConfig('src/config/domains.json')
+const tools = readConfig('tools/orchestration/config/tools.json')
 
 // Build label list: Products → Domains → Tools.
 function validateEntry(entry, relPath) {
@@ -55,15 +55,15 @@ function validateEntry(entry, relPath) {
 
 const labels = []
 for (const entry of products) {
-  validateEntry(entry, 'config/products.json')
+  validateEntry(entry, 'src/config/products.json')
   labels.push(`Product: ${entry.label}`)
 }
 for (const entry of domains) {
-  validateEntry(entry, 'config/domains.json')
+  validateEntry(entry, 'src/config/domains.json')
   labels.push(`Domain: ${entry.label}`)
 }
 for (const entry of tools) {
-  validateEntry(entry, 'config/tools.json')
+  validateEntry(entry, 'tools/orchestration/config/tools.json')
   labels.push(`Tool: ${entry.label}`)
 }
 
