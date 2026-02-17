@@ -11,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { screens, jobs } from "@/lib/mock-data";
+import { getScreens } from "@/lib/dal/screens";
+import { getJobs } from "@/lib/dal/jobs";
 import { BURN_STATUS_LABELS } from "@/lib/constants";
 import { Printer } from "lucide-react";
 import type { BurnStatus } from "@/lib/schemas/screen";
@@ -22,11 +23,13 @@ const BURN_STATUS_COLORS: Record<BurnStatus, string> = {
   reclaimed: "bg-muted text-muted-foreground",
 };
 
-function findJob(jobId: string) {
-  return jobs.find((j) => j.id === jobId) ?? null;
-}
+export default async function ScreensPage() {
+  const [screens, jobs] = await Promise.all([getScreens(), getJobs()]);
 
-export default function ScreensPage() {
+  function findJob(jobId: string) {
+    return jobs.find((j) => j.id === jobId) ?? null;
+  }
+
   return (
     <>
       <Topbar breadcrumbs={buildBreadcrumbs({ label: "Screens" })} />

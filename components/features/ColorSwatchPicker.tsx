@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
 import type { Color } from "@/lib/schemas/color";
-import { colors as catalogColors } from "@/lib/mock-data";
+import { getColorsMutable } from "@/lib/dal/colors";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 
 interface ColorSwatchPickerProps {
@@ -28,8 +28,8 @@ interface ColorSwatchPickerProps {
   onToggleColor?: (colorId: string) => void;
 }
 
-const DEFAULT_COLORS = catalogColors;
-const DEFAULT_FAVORITES = catalogColors
+const DEFAULT_COLORS = getColorsMutable();
+const DEFAULT_FAVORITES = getColorsMutable()
   .filter((c) => c.isFavorite === true)
   .map((c) => c.id);
 

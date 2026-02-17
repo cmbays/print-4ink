@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { getColorById } from "@/lib/helpers/garment-helpers";
 import { resolveEffectiveFavorites } from "@/lib/helpers/color-preferences";
-import { colors as catalogColors } from "@/lib/mock-data";
+import { getColorsMutable } from "@/lib/dal/colors";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
 import type { Color } from "@/lib/schemas/color";
 
@@ -60,7 +60,7 @@ export function GarmentDetailDrawer({
   const garmentColors = useMemo(
     () =>
       garment.availableColors
-        .map((id) => catalogColors.find((c) => c.id === id))
+        .map((id) => getColorsMutable().find((c) => c.id === id))
         .filter((c): c is Color => c != null),
     [garment.availableColors],
   );
@@ -84,7 +84,7 @@ export function GarmentDetailDrawer({
   // N3: toggleDrawerFavorite — toggle color's isFavorite in mock data (writes S2)
   // PHASE 1: mock-data mutation — in Phase 3 this becomes an API call
   function handleToggleColorFavorite(colorId: string) {
-    const color = catalogColors.find((c) => c.id === colorId);
+    const color = getColorsMutable().find((c) => c.id === colorId);
     if (color) {
       color.isFavorite = !color.isFavorite;
       setFavoriteVersion((v) => v + 1);

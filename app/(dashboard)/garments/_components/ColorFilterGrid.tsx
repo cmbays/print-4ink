@@ -9,9 +9,11 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
-import { colors as catalogColors } from "@/lib/mock-data";
+import { getColorsMutable } from "@/lib/dal/colors";
 import type { Color } from "@/lib/schemas/color";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
+
+const catalogColors = getColorsMutable();
 
 interface ColorFilterGridProps {
   selectedColorIds: string[];

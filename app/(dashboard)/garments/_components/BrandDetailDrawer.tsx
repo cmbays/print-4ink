@@ -27,11 +27,13 @@ import {
   removeFromSelected,
 } from "@/lib/helpers/color-preferences";
 import type { ImpactPreview } from "@/lib/helpers/color-preferences";
-import {
-  colors as catalogColors,
-  garmentCatalog,
-  brandPreferences,
-} from "@/lib/mock-data";
+import { getColorsMutable } from "@/lib/dal/colors";
+import { getGarmentCatalogMutable } from "@/lib/dal/garments";
+import { getBrandPreferencesMutable } from "@/lib/dal/settings";
+
+const catalogColors = getColorsMutable();
+const garmentCatalog = getGarmentCatalogMutable();
+const brandPreferences = getBrandPreferencesMutable();
 import type { Color } from "@/lib/schemas/color";
 import { brandPreferenceSchema } from "@/lib/schemas/color-preferences";
 import type { InheritanceMode } from "@/lib/schemas/color-preferences";

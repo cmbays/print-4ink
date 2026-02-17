@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
-import { dtfSheetTiers } from "@/lib/mock-data";
+import { getDtfSheetTiersSync } from "@/lib/dal/settings";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import { GangSheetCanvas } from "./GangSheetCanvas";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
@@ -109,7 +109,7 @@ export function DtfTabContent({
         setSplitMode={setSplitMode}
         setCanvasLayout={setCanvasLayout}
         setActiveSheetIndex={setActiveSheetIndex}
-        tiers={dtfSheetTiers}
+        tiers={getDtfSheetTiersSync()}
       />
 
       {/* U88-U92 — Gang Sheet Canvas (Wave 4) */}

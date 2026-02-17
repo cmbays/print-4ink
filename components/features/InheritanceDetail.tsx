@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { colors as catalogColors } from "@/lib/mock-data";
+import { getColorsMutable } from "@/lib/dal/colors";
 import type { InheritanceChain } from "@/lib/helpers/color-preferences";
 
 interface InheritanceDetailProps {
@@ -17,11 +17,11 @@ interface InheritanceDetailProps {
 }
 
 function getColorName(colorId: string): string {
-  return catalogColors.find((c) => c.id === colorId)?.name ?? colorId;
+  return getColorsMutable().find((c) => c.id === colorId)?.name ?? colorId;
 }
 
 function ColorChip({ colorId }: { colorId: string }) {
-  const color = catalogColors.find((c) => c.id === colorId);
+  const color = getColorsMutable().find((c) => c.id === colorId);
   if (!color) return <span className="text-xs text-muted-foreground">{colorId}</span>;
 
   return (
