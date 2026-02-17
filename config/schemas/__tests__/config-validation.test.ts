@@ -12,6 +12,7 @@ import {
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
+  pipelineFieldsConfigSchema,
 } from "../index";
 
 import rawDomains from "../../domains.json";
@@ -21,6 +22,7 @@ import rawStages from "../../stages.json";
 import rawTags from "../../tags.json";
 import rawPipelineTypes from "../../pipeline-types.json";
 import rawPipelineGates from "../../pipeline-gates.json";
+import rawPipelineFields from "../../pipeline-fields.json";
 
 // ── Data Validation (JSON against schemas) ─────────────────────────
 
@@ -51,6 +53,10 @@ describe("config data validates against schemas", () => {
 
   it("pipeline-gates.json", () => {
     expect(() => pipelineGatesConfigSchema.parse(rawPipelineGates)).not.toThrow();
+  });
+
+  it("pipeline-fields.json", () => {
+    expect(() => pipelineFieldsConfigSchema.parse(rawPipelineFields)).not.toThrow();
   });
 });
 
@@ -164,6 +170,176 @@ describe("pipelineGatesConfigSchema rejects", () => {
           },
         },
         "auto-overrides": {},
+      }),
+    ).toThrow();
+  });
+});
+
+describe("pipelineFieldsConfigSchema rejects", () => {
+  it("invalid jsonType", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "map",
+          description: "D",
+          updatable: false,
+          required: false,
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("missing description", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          updatable: false,
+          required: false,
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("empty description", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "",
+          updatable: false,
+          required: false,
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("bad flag format (no leading dashes)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "type",
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("bad negateFlag format (no --no- prefix)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "boolean",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "--auto",
+          negateFlag: "--disable-auto",
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid inputFormat", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "array",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "--items",
+          inputFormat: "tsv",
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid validate.match value", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "--thing",
+          validate: { source: "config/products.json", match: "regex" },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("invalid validate.type value", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "number",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "--ticket",
+          validate: { type: "jira-ticket" },
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("updatable field without flag (refine)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: true,
+          required: false,
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("non-updatable field with flag (refine)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: false,
+          required: false,
+          flag: "--bad",
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("boolean with flag but missing negateFlag (refine)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "boolean",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "--toggle",
+        },
+      }),
+    ).toThrow();
+  });
+
+  it("non-boolean with negateFlag (refine)", () => {
+    expect(() =>
+      pipelineFieldsConfigSchema.parse({
+        bad: {
+          jsonType: "string",
+          description: "D",
+          updatable: true,
+          required: false,
+          flag: "--name",
+          negateFlag: "--no-name",
+        },
       }),
     ).toThrow();
   });

@@ -7,6 +7,7 @@ import {
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
+  pipelineFieldsConfigSchema,
 } from "@/config/schemas";
 
 import rawDomains from "../../config/domains.json";
@@ -16,6 +17,7 @@ import rawStages from "../../config/stages.json";
 import rawTags from "../../config/tags.json";
 import rawPipelineTypes from "../../config/pipeline-types.json";
 import rawPipelineGates from "../../config/pipeline-gates.json";
+import rawPipelineFields from "../../config/pipeline-fields.json";
 
 // ── Parse Helper (adds file name to validation errors) ──────────────
 
@@ -38,6 +40,7 @@ export const stages = parseConfig(stagesConfigSchema, rawStages, "config/stages.
 export const tags = parseConfig(tagsConfigSchema, rawTags, "config/tags.json");
 export const pipelineTypes = parseConfig(pipelineTypesConfigSchema, rawPipelineTypes, "config/pipeline-types.json");
 export const pipelineGates = parseConfig(pipelineGatesConfigSchema, rawPipelineGates, "config/pipeline-gates.json");
+export const pipelineFields = parseConfig(pipelineFieldsConfigSchema, rawPipelineFields, "config/pipeline-fields.json");
 
 // ── Slug Tuples (for z.enum() consumers) ────────────────────────────
 
@@ -112,6 +115,8 @@ export type {
   TagEntry,
   PipelineTypeEntry,
   PipelineGatesConfig,
+  PipelineFieldEntry,
+  PipelineFieldsConfig,
 } from "@/config/schemas";
 
 export {
@@ -123,4 +128,5 @@ export {
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
+  pipelineFieldsConfigSchema,
 } from "@/config/schemas";
