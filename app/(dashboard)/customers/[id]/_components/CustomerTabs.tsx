@@ -26,6 +26,8 @@ import type { Job } from "@/lib/schemas/job";
 import type { Artwork } from "@/lib/schemas/artwork";
 import type { Invoice } from "@/lib/schemas/invoice";
 import type { Note } from "@/lib/schemas/note";
+import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@/lib/schemas/garment";
 import { CustomerInvoicesTable } from "./CustomerInvoicesTable";
 
 interface CustomerTabsProps {
@@ -36,6 +38,8 @@ interface CustomerTabsProps {
   invoices: Invoice[];
   artworks: Artwork[];
   notes: Note[];
+  colors: Color[];
+  garmentCatalog: GarmentCatalog[];
 }
 
 // Primary tabs shown directly on mobile
@@ -65,6 +69,8 @@ export function CustomerTabs({
   invoices,
   artworks,
   notes,
+  colors,
+  garmentCatalog,
 }: CustomerTabsProps) {
   const defaultTab = customer.lifecycleStage === "prospect" ? "notes" : "activity";
   const [activeTab, setActiveTab] = useState(defaultTab);
@@ -193,7 +199,12 @@ export function CustomerTabs({
       </TabsContent>
 
       <TabsContent value="preferences" className="mt-4">
-        <CustomerPreferencesTab customer={customer} />
+        <CustomerPreferencesTab
+          customer={customer}
+          customers={customers}
+          colors={colors}
+          garmentCatalog={garmentCatalog}
+        />
       </TabsContent>
 
       <TabsContent value="contacts" className="mt-4">
