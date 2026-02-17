@@ -8,7 +8,7 @@ pipelineType: vertical
 products: []
 tools: []
 stage: build
-tags: [refactor, dal, build]
+tags: [build]
 sessionId: "49069648-2de5-4610-a3ee-325b98c05b7c"
 branch: "session/0217-dal-migrate-quotes"
 status: complete

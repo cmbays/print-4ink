@@ -4,11 +4,11 @@ subtitle: "Wave 2 consumer migration — all mock-data imports replaced with DAL
 date: 2026-02-17
 phase: 1
 pipelineName: "Data Access Layer"
-pipelineType: infra
+pipelineType: horizontal
 products: [invoices]
 tools: []
 stage: build
-tags: [build, refactor, dal]
+tags: [build]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
 branch: "session/0217-dal-migrate-invoices"
 status: complete
