@@ -29,6 +29,13 @@ const eslintConfig = defineConfig([
                 'Use <Topbar breadcrumbs={buildBreadcrumbs(...)}> instead of raw <Breadcrumb>. See src/shared/lib/breadcrumbs.ts',
             },
           ],
+          patterns: [
+            {
+              regex: '@infra/repositories/_providers',
+              message:
+                'Import from @infra/repositories/{domain} only. Never import from _providers directly — that layer is infrastructure-internal.',
+            },
+          ],
         },
       ],
       // TODO(#403): promote to error once all 33 mock-data violations are migrated to DAL.
@@ -54,6 +61,13 @@ const eslintConfig = defineConfig([
   // Topbar is the only file allowed to import from @shared/ui/primitives/breadcrumb
   {
     files: ['src/shared/ui/layouts/topbar.tsx'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
+  // Infrastructure layer is allowed to import from _providers internally
+  {
+    files: ['src/infrastructure/**'],
     rules: {
       'no-restricted-imports': 'off',
     },
