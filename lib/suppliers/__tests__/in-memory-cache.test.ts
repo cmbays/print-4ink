@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { InMemoryCacheStore } from '../cache/in-memory';
 
 describe('InMemoryCacheStore', () => {
@@ -6,6 +6,10 @@ describe('InMemoryCacheStore', () => {
 
   beforeEach(() => {
     cache = new InMemoryCacheStore();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('returns null for missing key', async () => {
@@ -22,7 +26,6 @@ describe('InMemoryCacheStore', () => {
     await cache.set('key', 'value', 1); // 1 second TTL
     vi.advanceTimersByTime(1001);
     expect(await cache.get<string>('key')).toBeNull();
-    vi.useRealTimers();
   });
 
   it('returns value before TTL expires', async () => {
@@ -30,7 +33,18 @@ describe('InMemoryCacheStore', () => {
     await cache.set('key', 'value', 10);
     vi.advanceTimersByTime(9000);
     expect(await cache.get<string>('key')).toBe('value');
-    vi.useRealTimers();
+  });
+
+  it('returns null at exact TTL boundary', async () => {
+    vi.useFakeTimers();
+    await cache.set('key', 'value', 1); // 1 second TTL
+    vi.advanceTimersByTime(1000);       // exactly at expiry
+    expect(await cache.get<string>('key')).toBeNull();
+  });
+
+  it('returns null immediately for ttlSeconds=0', async () => {
+    await cache.set('key', 'value', 0);
+    expect(await cache.get<string>('key')).toBeNull();
   });
 
   it('del removes a stored key', async () => {
