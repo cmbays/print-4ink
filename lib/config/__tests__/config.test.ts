@@ -327,6 +327,63 @@ describe("pipeline-fields structural invariants", () => {
     }
   });
 
+  it("all fields have display metadata", () => {
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      expect(
+        field.display,
+        `field "${name}" is missing display metadata`,
+      ).toBeDefined();
+      expect(field.display.section).toBeTruthy();
+      expect(field.display.label).toBeTruthy();
+      expect(field.display.order).toBeGreaterThan(0);
+    }
+  });
+
+  it("no duplicate display orders within a section", () => {
+    const ordersBySection: Record<string, { field: string; order: number }[]> = {};
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      const { section, order } = field.display;
+      if (!ordersBySection[section]) ordersBySection[section] = [];
+      ordersBySection[section].push({ field: name, order });
+    }
+    for (const [section, entries] of Object.entries(ordersBySection)) {
+      const orders = entries.map((e) => e.order);
+      const unique = new Set(orders);
+      expect(
+        unique.size,
+        `Duplicate display orders in section "${section}": ${JSON.stringify(entries)}`,
+      ).toBe(orders.length);
+    }
+  });
+
+  it("title section contains exactly ['id']", () => {
+    const titleFields = Object.entries(pipelineFields)
+      .filter(([, f]) => f.display.section === "title")
+      .map(([name]) => name);
+    expect(titleFields).toEqual(["id"]);
+  });
+
+  it("asset formats (count-list, kv-list, kv-list-issue) only appear in assets section", () => {
+    const assetFormats = new Set(["count-list", "kv-list", "kv-list-issue"]);
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      if (field.display.format && assetFormats.has(field.display.format)) {
+        expect(
+          field.display.section,
+          `field "${name}" uses asset format "${field.display.format}" but is in section "${field.display.section}"`,
+        ).toBe("assets");
+      }
+    }
+  });
+
+  it("all display labels are non-empty strings", () => {
+    for (const [name, field] of Object.entries(pipelineFields)) {
+      expect(
+        typeof field.display.label === "string" && field.display.label.length > 0,
+        `field "${name}" has invalid display label: ${JSON.stringify(field.display.label)}`,
+      ).toBe(true);
+    }
+  });
+
   it("updatable fields are exactly: auto, issue, products, tools, type", () => {
     const updatable = Object.entries(pipelineFields)
       .filter(([, f]) => f.updatable)

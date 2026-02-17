@@ -5,6 +5,10 @@
 #   - No args: dashboard — all pipelines grouped by state, progress indicators, staleness
 #   - With ID: deep dive — full entity detail, artifacts, worktrees, PRs, KB docs
 #
+# The detail view is config-driven: it reads display metadata from
+# config/pipeline-fields.json to auto-generate the output. Adding a new field
+# with display metadata auto-shows in status output with zero code changes.
+#
 # NOTE: All loop body variables MUST be declared before the loop, not inside it.
 # In zsh, `local` (alias for `typeset`) re-declaration inside a loop prints
 # the old value to stdout. Declare once before the loop to avoid this.
@@ -100,57 +104,152 @@ _work_pipeline_status_dashboard() {
     done
 }
 
-# ── Status Deep Dive (with pipeline ID) ──────────────────────────────────────
+# ── Config-Driven Helpers ─────────────────────────────────────────────────────
 
-_work_pipeline_status_detail() {
-    local id="$1"
+# Format a single field value according to its display.format.
+# Usage: _status_format_value <entity_json> <field_name> <format> <empty_text>
+# Outputs the formatted value string.
+_status_format_value() {
+    local entity="$1" field_name="$2" format="$3" empty_text="$4"
+    local raw_value
 
-    # Resolve ID or name
-    id=$(_pipeline_resolve_id "$id") || {
-        echo "  Run 'work status' to see all pipelines." >&2
-        return 1
-    }
+    case "$format" in
+        yes-no)
+            raw_value=$(echo "$entity" | jq -r --arg f "$field_name" '.[$f]')
+            if [[ "$raw_value" == "true" ]]; then
+                echo "yes"
+            else
+                echo "no"
+            fi
+            ;;
+        csv)
+            raw_value=$(echo "$entity" | jq -r --arg f "$field_name" '.[$f] | if type == "array" then (if length == 0 then "" else join(", ") end) else . end')
+            if [[ -z "$raw_value" || "$raw_value" == "null" ]]; then
+                echo "${empty_text:-none}"
+            else
+                echo "$raw_value"
+            fi
+            ;;
+        iso-date)
+            raw_value=$(echo "$entity" | jq -r --arg f "$field_name" '.[$f] // ""')
+            if [[ -z "$raw_value" || "$raw_value" == "null" ]]; then
+                echo "${empty_text:-—}"
+            else
+                echo "$raw_value"
+            fi
+            ;;
+        issue)
+            raw_value=$(echo "$entity" | jq -r --arg f "$field_name" '.[$f] // ""')
+            if [[ -z "$raw_value" || "$raw_value" == "null" ]]; then
+                echo "${empty_text:-none}"
+            else
+                echo "#${raw_value}"
+            fi
+            ;;
+        raw|""|*)
+            raw_value=$(echo "$entity" | jq -r --arg f "$field_name" '.[$f] // ""')
+            if [[ -z "$raw_value" || "$raw_value" == "null" ]]; then
+                echo "${empty_text:-none}"
+            else
+                echo "$raw_value"
+            fi
+            ;;
+    esac
+}
 
-    local entity
-    entity=$(_pipeline_read "$id") || return 1
+# Render a section of label: value rows for header/config/timeline sections.
+# Usage: _status_render_section <section_name> <entity_json>
+# Reads field metadata from pipeline-fields.json sorted by display.order.
+_status_render_section() {
+    local section="$1" entity="$2"
+    local config
+    config="$(_pipeline_fields_config)"
 
-    # Extract fields
-    local p_name p_type p_state p_stage p_auto p_issue
-    local p_created p_started p_completed p_base_branch
-    p_name=$(echo "$entity" | jq -r '.name')
-    p_type=$(echo "$entity" | jq -r '.type')
-    p_state=$(echo "$entity" | jq -r '.state')
+    # Extract fields for this section as TSV: field_name\tlabel\tformat\tempty_text
+    # Sorted by display.order
+    local fields_tsv
+    fields_tsv=$(jq -r --arg sec "$section" '
+        to_entries
+        | map(select(.value.display.section == $sec))
+        | sort_by(.value.display.order)
+        | .[]
+        | [.key, .value.display.label, (.value.display.format // "raw"), (.value.display.emptyText // "")] | @tsv
+    ' "$config")
+
+    [[ -z "$fields_tsv" ]] && return
+
+    # Declare loop vars before the loop (zsh local re-declaration bug)
+    local field_name field_label field_format field_empty formatted_value
+
+    while IFS=$'\t' read -r field_name field_label field_format field_empty; do
+        [[ -z "$field_name" ]] && continue
+        formatted_value=$(_status_format_value "$entity" "$field_name" "$field_format" "$field_empty")
+        printf '  %-14s%s\n' "${field_label}:" "$formatted_value"
+    done <<< "$fields_tsv"
+}
+
+# Render asset sub-sections (count-list and kv-list).
+# Usage: _status_render_assets <entity_json>
+# Reads asset fields from pipeline-fields.json sorted by display.order.
+# Skips empty assets silently.
+_status_render_assets() {
+    local entity="$1"
+    local config
+    config="$(_pipeline_fields_config)"
+
+    # Extract asset fields as TSV: field_name\tlabel\tformat
+    local asset_tsv
+    asset_tsv=$(jq -r '
+        to_entries
+        | map(select(.value.display.section == "assets"))
+        | sort_by(.value.display.order)
+        | .[]
+        | [.key, .value.display.label, (.value.display.format // "raw")] | @tsv
+    ' "$config")
+
+    [[ -z "$asset_tsv" ]] && return
+
+    # Declare loop vars before the loop (zsh local re-declaration bug)
+    local field_name field_label field_format item_count
+
+    while IFS=$'\t' read -r field_name field_label field_format; do
+        [[ -z "$field_name" ]] && continue
+
+        case "$field_format" in
+            count-list)
+                item_count=$(echo "$entity" | jq --arg f "$field_name" '.[$f] | length')
+                [[ "$item_count" -eq 0 ]] && continue
+                echo "--- ${field_label} ($item_count) ---"
+                echo "$entity" | jq -r --arg f "$field_name" '.[$f][] | "  \(.)"'
+                echo ""
+                ;;
+            kv-list)
+                item_count=$(echo "$entity" | jq --arg f "$field_name" '.[$f] | length')
+                [[ "$item_count" -eq 0 ]] && continue
+                echo "--- ${field_label} ---"
+                echo "$entity" | jq -r --arg f "$field_name" '.[$f] | to_entries[] | "  \(.key): \(.value)"'
+                echo ""
+                ;;
+            kv-list-issue)
+                item_count=$(echo "$entity" | jq --arg f "$field_name" '.[$f] | length')
+                [[ "$item_count" -eq 0 ]] && continue
+                echo "--- ${field_label} ---"
+                echo "$entity" | jq -r --arg f "$field_name" '.[$f] | to_entries[] | "  \(.key): #\(.value)"'
+                echo ""
+                ;;
+        esac
+    done <<< "$asset_tsv"
+}
+
+# Render the stage progress stepper.
+# This stays hardcoded because it reads pipeline-types.json to compute which
+# stages are done vs pending — this is derived logic, not just field rendering.
+# Usage: _status_render_progress <entity_json> <pipeline_type>
+_status_render_progress() {
+    local entity="$1" p_type="$2"
+    local p_stage
     p_stage=$(echo "$entity" | jq -r '.stage // "none"')
-    p_auto=$(echo "$entity" | jq -r '.auto')
-    p_issue=$(echo "$entity" | jq -r '.issue // "none"')
-    p_created=$(echo "$entity" | jq -r '.createdAt // "unknown"')
-    p_started=$(echo "$entity" | jq -r '.startedAt // "not started"')
-    p_completed=$(echo "$entity" | jq -r '.completedAt // "not completed"')
-    p_base_branch=$(echo "$entity" | jq -r '.baseBranch // "none"')
 
-    echo "=== Pipeline: $id ==="
-    echo ""
-    echo "  Name:         $p_name"
-    echo "  Type:         $p_type"
-    echo "  State:        $p_state"
-    echo "  Stage:        $p_stage"
-    echo "  Auto:         $p_auto"
-    echo "  Issue:        $p_issue"
-    echo "  Base Branch:  $p_base_branch"
-    echo "  Created:      $p_created"
-    echo "  Started:      $p_started"
-    echo "  Completed:    $p_completed"
-    echo ""
-
-    # Products & Tools
-    local products tools
-    products=$(echo "$entity" | jq -r '.products | if length == 0 then "none" else join(", ") end')
-    tools=$(echo "$entity" | jq -r '.tools | if length == 0 then "none" else join(", ") end')
-    echo "  Products:     $products"
-    echo "  Tools:        $tools"
-    echo ""
-
-    # Stage progress — declare loop vars before loop (zsh local re-declaration bug)
     echo "--- Stage Progress ---"
     local stages s marker artifact_path artifact_status
     stages=$(_pipeline_stages_for_type "$p_type")
@@ -171,42 +270,45 @@ _work_pipeline_status_detail() {
         printf '  %s %s (%s)\n' "$marker" "$s" "$artifact_status"
     done <<< "$stages"
     echo ""
+}
 
-    # Artifacts
-    local artifact_count
-    artifact_count=$(echo "$entity" | jq '.artifacts | length')
-    if [[ "$artifact_count" -gt 0 ]]; then
-        echo "--- Artifacts ---"
-        echo "$entity" | jq -r '.artifacts | to_entries[] | "  \(.key): \(.value)"'
-        echo ""
-    fi
+# ── Status Deep Dive (with pipeline ID) ──────────────────────────────────────
 
-    # Worktrees
-    local worktree_count
-    worktree_count=$(echo "$entity" | jq '.worktrees | length')
-    if [[ "$worktree_count" -gt 0 ]]; then
-        echo "--- Worktrees ($worktree_count) ---"
-        echo "$entity" | jq -r '.worktrees[] | "  \(.)"'
-        echo ""
-    fi
+_work_pipeline_status_detail() {
+    local id="$1"
 
-    # PRs
-    local pr_keys
-    pr_keys=$(echo "$entity" | jq -r '.prs | keys[]' 2>/dev/null)
-    if [[ -n "$pr_keys" ]]; then
-        echo "--- Pull Requests ---"
-        echo "$entity" | jq -r '.prs | to_entries[] | "  \(.key): #\(.value)"'
-        echo ""
-    fi
+    # Resolve ID or name
+    id=$(_pipeline_resolve_id "$id") || {
+        echo "  Run 'work status' to see all pipelines." >&2
+        return 1
+    }
 
-    # KB Docs
-    local kb_count
-    kb_count=$(echo "$entity" | jq '.kbDocs | length')
-    if [[ "$kb_count" -gt 0 ]]; then
-        echo "--- KB Docs ($kb_count) ---"
-        echo "$entity" | jq -r '.kbDocs[] | "  \(.)"'
-        echo ""
-    fi
+    local entity
+    entity=$(_pipeline_read "$id") || return 1
+
+    # Title section
+    echo "=== Pipeline: $id ==="
+    echo ""
+
+    # Header section (Name, Type, State, Stage)
+    _status_render_section "header" "$entity"
+    echo ""
+
+    # Config section (Auto, Issue, Products, Tools, Base Branch)
+    _status_render_section "config" "$entity"
+    echo ""
+
+    # Timeline section (Created, Started, Completed)
+    _status_render_section "timeline" "$entity"
+    echo ""
+
+    # Stage progress stepper (derived logic — stays hardcoded)
+    local p_type
+    p_type=$(echo "$entity" | jq -r '.type')
+    _status_render_progress "$entity" "$p_type"
+
+    # Asset sub-sections (Artifacts, Worktrees, PRs, KB Docs)
+    _status_render_assets "$entity"
 }
 
 # ── Dispatcher ────────────────────────────────────────────────────────────────
