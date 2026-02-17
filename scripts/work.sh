@@ -94,14 +94,15 @@ work() {
         --stack)
             shift
             local topic="${1:-}"
-            [[ -z "$topic" ]] && { echo "Error: topic required. Usage: work --stack <topic> [--prompt \"...\"] [--yolo] [--claude-args \"...\"]"; return 1; }
+            [[ -z "$topic" ]] && { echo "Error: topic required. Usage: work --stack <topic> [--prompt \"...\"] [--yolo] [--no-launch] [--claude-args \"...\"]"; return 1; }
             shift
-            local prompt="" claude_args=""
+            local prompt="" claude_args="" no_launch=""
             while [[ $# -gt 0 ]]; do
                 case "$1" in
                     --prompt)       prompt="${2:-}"; shift 2 ;;
                     --yolo)         claude_args="${claude_args:+$claude_args }--dangerously-skip-permissions"; shift ;;
                     --claude-args)  claude_args="${claude_args:+$claude_args }${2:-}"; shift 2 ;;
+                    --no-launch)    no_launch="1"; shift ;;
                     *)              shift ;;
                 esac
             done
@@ -111,13 +112,13 @@ work() {
                 echo "Error: Not in a git worktree. Use 'work <topic> <base-branch>' instead."
                 return 1
             fi
-            _work_new "$topic" "$current_branch" "$prompt" "$claude_args"
+            _work_new "$topic" "$current_branch" "$prompt" "$claude_args" "$no_launch"
             ;;
         *)
-            # Parse: work <topic> [<base-branch>] [--prompt "..."] [--yolo] [--claude-args "..."]
+            # Parse: work <topic> [<base-branch>] [--prompt "..."] [--yolo] [--no-launch] [--claude-args "..."]
             local topic="$1"; shift
             local base="main"
-            local prompt="" claude_args=""
+            local prompt="" claude_args="" no_launch=""
             # First non-flag arg after topic is the base branch
             if [[ -n "${1:-}" && "${1:0:2}" != "--" ]]; then
                 base="$1"; shift
@@ -127,10 +128,11 @@ work() {
                     --prompt)       prompt="${2:-}"; shift 2 ;;
                     --yolo)         claude_args="${claude_args:+$claude_args }--dangerously-skip-permissions"; shift ;;
                     --claude-args)  claude_args="${claude_args:+$claude_args }${2:-}"; shift 2 ;;
+                    --no-launch)    no_launch="1"; shift ;;
                     *)              shift ;;
                 esac
             done
-            _work_new "$topic" "$base" "$prompt" "$claude_args"
+            _work_new "$topic" "$base" "$prompt" "$claude_args" "$no_launch"
             ;;
     esac
 }
@@ -225,7 +227,7 @@ NOTES
   - Branch naming: session/<MMDD>-<topic> for sessions, build/<pipeline-id> for base
   - Inside Zellij: new workstreams open as tabs in current session
   - Outside Zellij: creates a new Zellij session to attach to
-  - Max 15 concurrent worktrees
+  - Max $PRINT4INK_MAX_WORKTREES concurrent worktrees
   - Pipeline registry: ~/Github/print-4ink-worktrees/.pipeline-registry.json
   - Session registry: ~/Github/print-4ink-worktrees/.session-registry.json
 HELP
@@ -237,6 +239,7 @@ _work_new() {
     local BASE="${2:-main}"
     local PROMPT="${3:-}"
     local CLAUDE_ARGS="${4:-}"
+    local NO_LAUNCH="${5:-}"
 
     # Validate topic
     [[ -z "$TOPIC" ]] && { echo "Error: topic required"; return 1; }
@@ -319,49 +322,55 @@ CONTEXT
     echo "  Port:      $PORT"
     echo "  Dev:       PORT=$PORT npm run dev"
 
+    # Register in session registry BEFORE Zellij launch.
+    # Must happen first so polling can start before the blocking outside-Zellij path.
+    if type _registry_add &>/dev/null; then
+        _registry_add "$TOPIC" "$BRANCH"
+    fi
+
+    # Capture Claude session ID in background (for `work resume`).
+    # Must start BEFORE Zellij launch so polling begins immediately —
+    # otherwise the blocking outside-Zellij path delays polling until after Zellij exits.
+    if type _poll_claude_session_id &>/dev/null; then
+        _poll_claude_session_id "$TOPIC" "$WORKTREE_DIR" &
+        disown
+    fi
+
     # ── Zellij Integration ───────────────────────────────────────────────────
+    local LAYOUT_FILE
+    LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-layout-XXXXXX")
+    chmod 600 "$LAYOUT_FILE"
+
+    {
+        echo "layout {"
+        _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT" "$CLAUDE_ARGS"
+        echo "}"
+    } > "$LAYOUT_FILE"
+
     if [[ -n "${ZELLIJ:-}" ]]; then
         # ── Inside Zellij: add tab to current session ────────────────────
-        local LAYOUT_FILE
-        LAYOUT_FILE=$(mktemp "${TMPDIR:-/tmp}/work-tab-XXXXXX")
-
-        {
-            echo "layout {"
-            _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT" "$CLAUDE_ARGS"
-            echo "}"
-        } > "$LAYOUT_FILE"
-
         zellij action new-tab --layout "$LAYOUT_FILE" --name "$TOPIC"
         echo "  Zellij:    tab '$TOPIC' opened"
 
         # Clean up temp file after Zellij reads it
         (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
         disown
-    else
-        # ── Outside Zellij: create new session ───────────────────────────
-        local SESSION_LAYOUT
-        SESSION_LAYOUT=$(mktemp "${TMPDIR:-/tmp}/work-session-XXXXXX")
-
-        {
-            echo "layout {"
-            _kdl_render_tab "$TOPIC" "$WORKTREE_DIR" "$PROMPT" "$CLAUDE_ARGS"
-            echo "}"
-        } > "$SESSION_LAYOUT"
-
+    elif [[ -n "${NO_LAUNCH:-}" ]]; then
+        # ── No-launch mode: print attach command ─────────────────────────
         echo ""
-        echo "  Start the new Zellij session:"
-        echo "    zellij --new-session-with-layout $SESSION_LAYOUT --session $TOPIC"
-    fi
+        echo "  Zellij session ready. Attach with:"
+        echo "    zellij --new-session-with-layout \"$LAYOUT_FILE\" --session \"$TOPIC\""
+        echo ""
+        echo "  (layout file is temporary — attach before next reboot)"
+    else
+        # ── Outside Zellij: auto-launch session (blocking) ───────────────
+        echo "  Launching Zellij session '$TOPIC'..."
+        echo ""
 
-    # Register in session registry (only pass required args, let defaults handle the rest)
-    if type _registry_add &>/dev/null; then
-        _registry_add "$TOPIC" "$BRANCH"
-    fi
+        zellij --new-session-with-layout "$LAYOUT_FILE" --session "$TOPIC"
 
-    # Capture Claude session ID in background (for `work resume`)
-    if type _poll_claude_session_id &>/dev/null; then
-        _poll_claude_session_id "$TOPIC" "$WORKTREE_DIR" &
-        disown
+        # Cleanup after Zellij session ends
+        rm -f "$LAYOUT_FILE" 2>/dev/null
     fi
 }
 

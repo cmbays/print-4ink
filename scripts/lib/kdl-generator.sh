@@ -14,20 +14,6 @@ _kdl_check_deps() {
     fi
 }
 
-# ── Prompt Sanitization ──────────────────────────────────────────────────
-# Escape and flatten a multi-line prompt for safe KDL embedding.
-# Handles: double-quotes, backslashes, backticks, newlines → single space.
-# Usage: sanitized=$(_kdl_sanitize_prompt "$raw_prompt")
-_kdl_sanitize_prompt() {
-    local raw="$1"
-    # Escape backslashes first, then double-quotes, then backticks
-    local escaped="${raw//\\/\\\\}"
-    escaped="${escaped//\"/\\\"}"
-    escaped="${escaped//\`/\\\`}"
-    # Collapse newlines to spaces, compress whitespace, trim
-    echo "$escaped" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//'
-}
-
 # ── KDL Tab Rendering ────────────────────────────────────────────────────
 # Render a single KDL tab block. Used by both _kdl_generate_wave and _work_build.
 # Usage: _kdl_render_tab <tab_name> <cwd> [prompt] [claude_args]
@@ -35,46 +21,42 @@ _kdl_sanitize_prompt() {
 #   If a prompt is provided, it is written to .session-prompt.md in the cwd
 #   and Claude is told to read it (avoids KDL escaping issues with backticks/quotes).
 #   claude_args are prepended as CLI flags (e.g., "--dangerously-skip-permissions").
+#
+#   Uses a launcher script (.session-launch.sh) so that when Claude exits,
+#   the pane drops to an interactive shell instead of showing "Process exited".
 _kdl_render_tab() {
     local tab_name="$1"
     local cwd="$2"
     local prompt="${3:-}"
     local claude_args="${4:-}"
 
-    # Build KDL args line: [claude_args] [prompt_instruction]
-    # Sanitize claude_args for safe KDL embedding (same escaping as prompts)
-    local args_parts=""
-    [[ -n "$claude_args" ]] && args_parts="\"$(_kdl_sanitize_prompt "$claude_args")\""
+    mkdir -p "$cwd"
+
+    # Build the claude command for the launcher script
+    local claude_cmd="claude"
+    [[ -n "$claude_args" ]] && claude_cmd="claude $claude_args"
 
     if [[ -n "$prompt" && "$prompt" != "null" ]]; then
         # Write prompt to file in worktree (gitignored via .session-* pattern)
-        local prompt_file="${cwd}/.session-prompt.md"
-        mkdir -p "$cwd"
-        echo "$prompt" > "$prompt_file"
-
-        local prompt_instruction="Read .session-prompt.md for your task instructions, then follow them."
-        if [[ -n "$args_parts" ]]; then
-            args_parts="$args_parts \"$prompt_instruction\""
-        else
-            args_parts="\"$prompt_instruction\""
-        fi
+        echo "$prompt" > "${cwd}/.session-prompt.md"
+        claude_cmd="$claude_cmd 'Read .session-prompt.md for your task instructions, then follow them.'"
     fi
 
-    if [[ -n "$args_parts" ]]; then
-        cat <<KDL_TAB
+    # Write launcher script: runs Claude, then drops to interactive shell.
+    # Uses single quotes for the prompt instruction to avoid escaping issues.
+    # exec replaces the process so the Zellij pane stays alive as an interactive shell.
+    cat > "${cwd}/.session-launch.sh" <<LAUNCHER
+#!/usr/bin/env zsh
+$claude_cmd
+exec zsh -i
+LAUNCHER
+    chmod +x "${cwd}/.session-launch.sh"
+
+    cat <<KDL_TAB
     tab name="$tab_name" cwd="$cwd" {
-        pane command="claude" {
-            args $args_parts
-        }
+        pane command="${cwd}/.session-launch.sh"
     }
 KDL_TAB
-    else
-        cat <<KDL_TAB
-    tab name="$tab_name" cwd="$cwd" {
-        pane command="claude"
-    }
-KDL_TAB
-    fi
 }
 
 # ── Layout Generation ─────────────────────────────────────────────────────
