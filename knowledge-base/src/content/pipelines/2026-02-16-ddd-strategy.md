@@ -3,8 +3,10 @@ title: "DDD Architecture Strategy"
 subtitle: "Domain-Driven Design as the architectural lens for project classification"
 date: 2026-02-16
 phase: 2
-vertical: infrastructure
-verticalSecondary: []
+pipelineName: "Infrastructure"
+pipelineType: horizontal
+products: []
+tools: []
 stage: research
 tags: [research, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
