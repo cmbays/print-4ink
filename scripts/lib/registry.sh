@@ -89,6 +89,11 @@ _registry_add() {
     result=$(jq --argjson entry "$entry" '.sessions += [$entry]' "$REGISTRY_FILE")
     _registry_write "$result"
     _registry_unlock
+
+    # Also write to persistent store for post-cleanup resume
+    if type _sessions_persistent_add &>/dev/null; then
+        _sessions_persistent_add "$topic" "$branch" 2>/dev/null || true
+    fi
 }
 
 # Get a session by topic (returns JSON object)
@@ -220,10 +225,18 @@ _poll_claude_session_id() {
     local marker
     marker=$(mktemp "${TMPDIR:-/tmp}/poll-marker-XXXXXX")
 
+    # Declare all locals before the loop (function-scoped, not loop-scoped)
     local elapsed=0 newest session_id
+    local fast_limit=15 fast_interval=1 slow_interval=5 interval
+
+    # Phase 1: fast polling (1s) for first 15s — Claude starts within ~1-2s.
+    # Phase 2: slow polling (5s) for remainder of max_wait.
     while (( elapsed < max_wait )); do
-        sleep 5
-        elapsed=$((elapsed + 5))
+        interval=$slow_interval
+        (( elapsed < fast_limit )) && interval=$fast_interval
+
+        sleep $interval
+        elapsed=$((elapsed + interval))
 
         # Exit early if worktree was removed (session aborted)
         [[ ! -d "$worktree_dir" ]] && break
@@ -234,6 +247,22 @@ _poll_claude_session_id() {
             if [[ -n "$newest" ]]; then
                 session_id=$(basename "$newest" .jsonl)
                 _registry_update "$topic" "claudeSessionId" "$session_id" 2>/dev/null
+
+                # Write to persistent store (survives worktree cleanup)
+                _sessions_persistent_set_id "$topic" "$session_id" 2>/dev/null || true
+
+                # Update CLAUDE_SESSION_ID in the worktree's .envrc.
+                # Uses a sed pattern that matches any existing value (empty or prior capture)
+                # so re-capture after session restart also works correctly.
+                # direnv allow is NOT repeated — it is keyed to the path, not content.
+                local envrc_file="${worktree_dir}/.envrc"
+                if [[ -f "$envrc_file" ]]; then
+                    local tmp_envrc
+                    tmp_envrc=$(mktemp "${envrc_file}.XXXXXX")
+                    sed "s|^export CLAUDE_SESSION_ID=.*$|export CLAUDE_SESSION_ID=\"${session_id}\"|" \
+                        "$envrc_file" > "$tmp_envrc" && mv "$tmp_envrc" "$envrc_file"
+                fi
+
                 rm -f "$marker" 2>/dev/null
                 return 0
             fi
@@ -243,4 +272,125 @@ _poll_claude_session_id() {
     rm -f "$marker" 2>/dev/null
     echo "Warning: Could not capture Claude session ID for '$topic' (timed out after ${max_wait}s)" >&2
     return 1
+}
+
+# ── Persistent Session Store ────────────────────────────────────────────────
+# Survives worktree cleanup. Lives in main repo root (gitignored).
+# Format: { "topic": { sessionId, branch, baseRef, capturedAt, clearedAt } }
+#
+# Locking: uses mktemp+mv for atomic replacement of individual writes.
+# There is a read-modify-write race if the poller and `work clean` fire
+# simultaneously, but a lost write here is recoverable metadata — accepted tradeoff.
+
+# Guard: fail loudly if sourced without PRINT4INK_ROOT (e.g., in standalone test)
+SESSIONS_PERSISTENT_FILE="${PRINT4INK_ROOT:?PRINT4INK_ROOT must be set — source work.sh first}/.claude-sessions.json"
+
+_sessions_persistent_init() {
+    if [[ ! -f "$SESSIONS_PERSISTENT_FILE" ]]; then
+        echo '{}' > "$SESSIONS_PERSISTENT_FILE"
+    fi
+}
+
+# Register a new session in the persistent store.
+# If an entry already exists for the topic, preserve the existing sessionId and
+# clearedAt (do not overwrite a prior session record on topic reuse).
+# Usage: _sessions_persistent_add <topic> <branch> [base_ref]
+_sessions_persistent_add() {
+    _sessions_persistent_init
+    local topic="$1" branch="$2" base_ref="${3:-main}"
+    local now
+    now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+    local tmp
+    tmp=$(mktemp "${SESSIONS_PERSISTENT_FILE}.XXXXXX")
+    # Use |= to merge: preserve existing sessionId/clearedAt if the topic already
+    # exists (e.g., topic reused after a prior cleanup). Only update mutable fields.
+    jq --arg t "$topic" --arg b "$branch" --arg r "$base_ref" --arg now "$now" \
+        '.[$t] |= (if . then
+            .branch = $b | .baseRef = $r | .createdAt = $now
+        else
+            {sessionId: "", branch: $b, baseRef: $r, capturedAt: null, clearedAt: null, createdAt: $now}
+        end)' \
+        "$SESSIONS_PERSISTENT_FILE" > "$tmp" && mv "$tmp" "$SESSIONS_PERSISTENT_FILE"
+}
+
+# Update the session ID in the persistent store.
+# Usage: _sessions_persistent_set_id <topic> <session_id>
+_sessions_persistent_set_id() {
+    _sessions_persistent_init
+    local topic="$1" session_id="$2"
+    local now
+    now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+    # Guard: only update if the topic was registered first.
+    # If _sessions_persistent_add was suppressed (e.g., _registry_add || true failure),
+    # skip the write rather than creating a sparse object with missing branch/baseRef.
+    local existing
+    existing=$(jq -r --arg t "$topic" '.[$t] // empty' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null)
+    if [[ -z "$existing" ]]; then
+        echo "Warning: _sessions_persistent_set_id: no entry for '$topic' — skipping (add was not called)" >&2
+        return 0
+    fi
+
+    local tmp
+    tmp=$(mktemp "${SESSIONS_PERSISTENT_FILE}.XXXXXX")
+    jq --arg t "$topic" --arg id "$session_id" --arg now "$now" \
+        '.[$t].sessionId = $id | .[$t].capturedAt = $now' \
+        "$SESSIONS_PERSISTENT_FILE" > "$tmp" && mv "$tmp" "$SESSIONS_PERSISTENT_FILE"
+}
+
+# Mark a session as cleared (worktree removed). Does NOT delete the record.
+# Usage: _sessions_persistent_clear <topic>
+_sessions_persistent_clear() {
+    _sessions_persistent_init
+    local topic="$1"
+    local now
+    now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+    # Guard: only mark cleared if the topic was registered.
+    local existing
+    existing=$(jq -r --arg t "$topic" '.[$t] // empty' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null)
+    if [[ -z "$existing" ]]; then
+        return 0
+    fi
+
+    local tmp
+    tmp=$(mktemp "${SESSIONS_PERSISTENT_FILE}.XXXXXX")
+    jq --arg t "$topic" --arg now "$now" \
+        '.[$t].clearedAt = $now' \
+        "$SESSIONS_PERSISTENT_FILE" > "$tmp" && mv "$tmp" "$SESSIONS_PERSISTENT_FILE"
+}
+
+# Get session ID for a topic. Checks persistent store first, falls back to registry.
+# Usage: session_id=$(_sessions_persistent_get_id <topic>)
+_sessions_persistent_get_id() {
+    local topic="$1"
+    local id=""
+
+    # 1. Check persistent store
+    if [[ -f "$SESSIONS_PERSISTENT_FILE" ]]; then
+        id=$(jq -r --arg t "$topic" '.[$t].sessionId // ""' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null)
+    fi
+
+    # 2. Fall back to session registry
+    if [[ -z "$id" ]] && type _registry_get &>/dev/null; then
+        id=$(_registry_get "$topic" | jq -r '.claudeSessionId // ""' 2>/dev/null)
+    fi
+
+    echo "$id"
+}
+
+# Get branch info for a topic from persistent store.
+# Usage: branch=$(_sessions_persistent_get_branch <topic>)
+_sessions_persistent_get_branch() {
+    local topic="$1"
+    [[ ! -f "$SESSIONS_PERSISTENT_FILE" ]] && echo "" && return
+    jq -r --arg t "$topic" '.[$t].branch // ""' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null
+}
+
+# Get baseRef for a topic from persistent store.
+_sessions_persistent_get_base_ref() {
+    local topic="$1"
+    [[ ! -f "$SESSIONS_PERSISTENT_FILE" ]] && echo "main" && return
+    jq -r --arg t "$topic" '.[$t].baseRef // "main"' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null
 }

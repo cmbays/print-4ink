@@ -62,6 +62,8 @@ quality-gate/
 .session-context.md
 .session-prompt.md
 .session-launch.sh
+.envrc
+.claude-sessions.json
 
 # Generated progress report (compiled artifact, not source of truth)
 PROGRESS.md
