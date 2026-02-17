@@ -322,6 +322,16 @@ _sessions_persistent_set_id() {
     local now
     now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
+    # Guard: only update if the topic was registered first.
+    # If _sessions_persistent_add was suppressed (e.g., _registry_add || true failure),
+    # skip the write rather than creating a sparse object with missing branch/baseRef.
+    local existing
+    existing=$(jq -r --arg t "$topic" '.[$t] // empty' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null)
+    if [[ -z "$existing" ]]; then
+        echo "Warning: _sessions_persistent_set_id: no entry for '$topic' — skipping (add was not called)" >&2
+        return 0
+    fi
+
     local tmp
     tmp=$(mktemp "${SESSIONS_PERSISTENT_FILE}.XXXXXX")
     jq --arg t "$topic" --arg id "$session_id" --arg now "$now" \
@@ -336,6 +346,13 @@ _sessions_persistent_clear() {
     local topic="$1"
     local now
     now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+    # Guard: only mark cleared if the topic was registered.
+    local existing
+    existing=$(jq -r --arg t "$topic" '.[$t] // empty' "$SESSIONS_PERSISTENT_FILE" 2>/dev/null)
+    if [[ -z "$existing" ]]; then
+        return 0
+    fi
 
     local tmp
     tmp=$(mktemp "${SESSIONS_PERSISTENT_FILE}.XXXXXX")

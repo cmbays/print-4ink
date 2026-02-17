@@ -81,7 +81,7 @@ work() {
         end)
             shift
             if [[ -z "${1:-}" || "${1:0:2}" == "--" ]] && [[ -n "${WORK_PIPELINE_ID:-}" ]]; then
-                echo "  (using \$WORK_PIPELINE_ID: $WORK_PIPELINE_ID)"
+                echo "  (using \$WORK_PIPELINE_ID: $WORK_PIPELINE_ID)" >&2
                 _work_end "$WORK_PIPELINE_ID" "$@"
             else
                 _work_end "$@"
@@ -93,7 +93,7 @@ work() {
             # If $1 is missing or a flag, inject $WORK_PIPELINE_ID as the first
             # positional arg so the subcommand still receives remaining flags ($@).
             if [[ -z "${1:-}" || "${1:0:2}" == "--" ]] && [[ -n "${WORK_PIPELINE_ID:-}" ]]; then
-                echo "  (using \$WORK_PIPELINE_ID: $WORK_PIPELINE_ID)"
+                echo "  (using \$WORK_PIPELINE_ID: $WORK_PIPELINE_ID)" >&2
                 _work_pipeline_status "$WORK_PIPELINE_ID" "$@"
             else
                 _work_pipeline_status "$@"
@@ -752,14 +752,10 @@ _work_resume() {
 
     [[ -z "$topic" ]] && { echo "Usage: work resume <topic> [--new-worktree]"; return 1; }
 
-    # Look up session ID: persistent store first, then registry
+    # Look up session ID via persistent store (falls back to session registry internally)
     local session_id=""
     if type _sessions_persistent_get_id &>/dev/null; then
         session_id=$(_sessions_persistent_get_id "$topic")
-    elif type _registry_get &>/dev/null; then
-        # jq may return multiple lines if topic has multiple registry entries;
-        # pipe through head -1 to take the most recent.
-        session_id=$(_registry_get "$topic" | jq -r '.claudeSessionId // empty' | head -1)
     fi
 
     if [[ -z "$session_id" ]]; then
