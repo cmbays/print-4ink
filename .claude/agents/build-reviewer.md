@@ -89,40 +89,59 @@ When reviewing changed files:
 
 ## Output Format
 
-```markdown
-# Build Review — [Scope]
+Output a **JSON array** of `ReviewFinding` objects. No markdown, no prose — only valid JSON.
 
-## Summary
-- Files reviewed: N
-- Critical: N (must fix before merge)
-- Major: N (should fix before merge)
-- Warning: N (fix soon, file issue if deferred)
-- Info: N (optional improvements)
+Each finding must conform to the `reviewFindingSchema` from `lib/schemas/review-pipeline.ts`:
 
-## Critical Issues
-| # | File:Line | Category | Issue | Fix |
-|---|-----------|----------|-------|-----|
-| 1 | `components/Foo.tsx:12` | Type Safety | Uses `any` type | `z.infer<typeof fooSchema>` |
-
-## Major Issues
-| # | File:Line | Category | Issue | Fix |
-|---|-----------|----------|-------|-----|
-| 1 | `app/page.tsx:45` | Tailwind | Hardcoded `px-[13px]` | Use `px-3` (12px) or `px-3.5` (14px) |
-
-## Warnings
-| # | File:Line | Category | Issue | Recommendation |
-|---|-----------|----------|-------|----------------|
-| 1 | `components/Bar.tsx:8` | DRY | Similar to `components/Baz.tsx:12` | Extract shared component |
-
-## Info
-- `components/NewWidget.tsx` is 420 lines — approaching threshold, consider splitting if it grows
-
-## Verdict
-PASS / NEEDS_FIXES / FAIL
-- PASS: No critical or major issues
-- NEEDS_FIXES: Major issues found but fixable quickly
-- FAIL: Critical issues found — must be resolved
+```json
+[
+  {
+    "ruleId": "U-TYPE-1",
+    "agent": "build-reviewer",
+    "severity": "critical",
+    "file": "components/Foo.tsx",
+    "line": 12,
+    "message": "Uses explicit `any` type annotation — bypasses type system",
+    "fix": "Use `z.infer<typeof fooSchema>` to derive type from Zod schema",
+    "dismissible": false,
+    "category": "type-safety"
+  },
+  {
+    "ruleId": "U-TOK-2",
+    "agent": "build-reviewer",
+    "severity": "major",
+    "file": "app/page.tsx",
+    "line": 45,
+    "message": "Hardcoded spacing value `px-[13px]` outside 8px scale",
+    "fix": "Use `px-3` (12px) or `px-3.5` (14px)",
+    "dismissible": false,
+    "category": "design-tokens"
+  }
+]
 ```
+
+### Field Reference
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ruleId` | string | Yes | Rule ID from `config/review-rules.json` (e.g., `U-TYPE-1`, `U-DRY-3`) |
+| `agent` | string | Yes | Always `"build-reviewer"` |
+| `severity` | enum | Yes | `"critical"` \| `"major"` \| `"warning"` \| `"info"` |
+| `file` | string | Yes | Repo-relative file path |
+| `line` | number | No | Line number (omit if finding is cross-file) |
+| `message` | string | Yes | What's wrong — specific and actionable |
+| `fix` | string | No | Exact fix recommendation |
+| `dismissible` | boolean | Yes | `false` for critical/major, `true` for info |
+| `category` | string | Yes | Must match the rule's category in `config/review-rules.json` |
+
+### Rules for Output
+
+- If no findings, output an empty array: `[]`
+- Every finding must reference a valid `ruleId` from `config/review-rules.json`
+- `severity` must match the rule's configured severity (don't override)
+- `agent` is always `"build-reviewer"`
+- `line` is optional for cross-file or architectural findings — include it when you can
+- `dismissible` is `false` for critical and major, `true` for info, judgment call for warning
 
 ## Rules
 
