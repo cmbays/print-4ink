@@ -41,7 +41,7 @@ import {
   CUSTOMER_TYPE_TAG_LABELS,
   LIFECYCLE_STAGE_LABELS,
   HEALTH_STATUS_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import type { Customer, CustomerTypeTag, LifecycleStage, HealthStatus } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------

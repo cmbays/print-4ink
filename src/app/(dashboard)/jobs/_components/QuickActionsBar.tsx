@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   LayoutGrid,
 } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@domain/entities/job";

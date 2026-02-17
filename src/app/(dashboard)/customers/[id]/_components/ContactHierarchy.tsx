@@ -25,7 +25,7 @@ import { AddGroupSheet } from "./AddGroupSheet";
 import type { Customer } from "@domain/entities/customer";
 import type { Contact } from "@domain/entities/contact";
 import type { ContactRole } from "@domain/entities/contact";
-import { CONTACT_ROLE_LABELS } from "@/lib/constants";
+import { CONTACT_ROLE_LABELS } from "@domain/constants";
 
 interface ContactHierarchyProps {
   customer: Customer;

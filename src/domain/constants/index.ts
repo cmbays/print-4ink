@@ -336,10 +336,10 @@ export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
 // lib/constants/entities.ts — import ENTITY_STYLES from there.
 // CARD_TYPE_BORDER_COLORS kept as a convenience alias for board cards.
 
-export { ENTITY_STYLES } from "@/lib/constants/entities";
+export { ENTITY_STYLES } from "@domain/constants/entities";
 
 // Derived from ENTITY_STYLES to prevent drift
-import { ENTITY_STYLES as _ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES as _ENTITY_STYLES } from "@domain/constants/entities";
 export const CARD_TYPE_BORDER_COLORS = {
   job: _ENTITY_STYLES.job.borderColor,
   quote: _ENTITY_STYLES.quote.borderColor,

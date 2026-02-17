@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { JobsDataTable } from "./JobsDataTable";
 import { MoveLaneDialog } from "./MoveLaneDialog";
 import { BlockReasonDialog } from "./BlockReasonDialog";
-import { LANE_LABELS } from "@/lib/constants";
+import { LANE_LABELS } from "@domain/constants";
 import type { Job, Lane } from "@domain/entities/job";
 import type { Customer } from "@domain/entities/customer";
 

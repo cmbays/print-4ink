@@ -6,7 +6,7 @@ import {
   getZonesForCategory,
   getZoneForPosition,
   normalizePosition,
-} from "@/lib/constants/print-zones";
+} from "@domain/constants/print-zones";
 import { printZoneSchema } from "@domain/entities/mockup-template";
 
 describe("PRINT_ZONES", () => {

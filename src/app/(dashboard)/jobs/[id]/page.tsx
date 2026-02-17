@@ -8,7 +8,7 @@ import { getInvoiceById } from "@infra/repositories/invoices";
 import { getGarmentById } from "@infra/repositories/garments";
 import { getColorById } from "@infra/repositories/colors";
 import { getArtworks } from "@infra/repositories/artworks";
-import { normalizePosition } from "@/lib/constants/print-zones";
+import { normalizePosition } from "@domain/constants/print-zones";
 import { JobDetail } from "./_components/JobDetail";
 import type { ArtworkPlacement } from "@/components/features/mockup";
 

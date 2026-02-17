@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { NOTE_CHANNEL_LABELS } from "@/lib/constants";
+import { NOTE_CHANNEL_LABELS } from "@domain/constants";
 import type { Note, NoteChannel, NoteEntityType } from "@domain/entities/note";
 
 const CHANNEL_COLORS: Record<NoteChannel, string> = {

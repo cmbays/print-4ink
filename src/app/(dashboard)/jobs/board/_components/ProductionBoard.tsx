@@ -31,7 +31,7 @@ import { DraggableCard } from "../../_components/DraggableCard";
 import { BlockReasonDialog } from "../../_components/BlockReasonDialog";
 import { MobileKanbanBoard } from "../../_components/MobileKanbanBoard";
 import { ScratchNoteCapture } from "../../_components/ScratchNoteCapture";
-import { LANE_LABELS } from "@/lib/constants";
+import { LANE_LABELS } from "@domain/constants";
 import {
   computeCapacitySummary,
   computeFilteredCards,

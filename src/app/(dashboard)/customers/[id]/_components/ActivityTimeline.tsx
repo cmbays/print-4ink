@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Clock } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
@@ -11,7 +11,7 @@ import {
   LANE_LABELS,
   LANE_COLORS,
   NOTE_CHANNEL_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import type { Quote } from "@domain/entities/quote";
 import type { Job } from "@domain/entities/job";
 import type { Note } from "@domain/entities/note";

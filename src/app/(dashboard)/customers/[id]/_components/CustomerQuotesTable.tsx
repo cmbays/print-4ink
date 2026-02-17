@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Copy } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
@@ -10,7 +10,7 @@ import { MoneyAmount } from "@/components/features/MoneyAmount";
 import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_COLORS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { formatDate } from "@/lib/helpers/format";
 import type { Quote } from "@domain/entities/quote";
 

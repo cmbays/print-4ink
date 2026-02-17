@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import { money, toNumber } from "@/lib/helpers/money";
 import { cn } from "@/lib/utils";
-import { PRICING_TIER_LABELS, GARMENT_CATEGORY_LABELS } from "@/lib/constants";
+import { PRICING_TIER_LABELS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
 import {
   buildFullMatrixData,
   calculateDTFTierMargin,

@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@/lib/constants";
+import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import type { InvoiceLineItemType } from "@domain/entities/invoice";
 

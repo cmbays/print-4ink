@@ -2,7 +2,7 @@
 
 import { useId, useMemo } from "react";
 import { cn } from "@/lib/utils";
-import { getZoneForPosition } from "@/lib/constants/print-zones";
+import { getZoneForPosition } from "@domain/constants/print-zones";
 import { hexToColorMatrix } from "@domain/rules/color.rules";
 import type { GarmentCategory } from "@domain/entities/garment";
 import type { MockupView } from "@domain/entities/mockup-template";

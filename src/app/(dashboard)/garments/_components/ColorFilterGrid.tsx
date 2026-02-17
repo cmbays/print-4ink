@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { swatchTextStyle } from "@/lib/constants/swatch";
+import { swatchTextStyle } from "@domain/constants/swatch";
 import { getColorsMutable } from "@infra/repositories/colors";
 import type { Color } from "@domain/entities/color";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";

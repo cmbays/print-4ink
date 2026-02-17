@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 
 // Import mock data + constants
 // import { jobs, customers } from "@/lib/mock-data";
-// import { PRODUCTION_STATE_LABELS } from "@/lib/constants";
+// import { PRODUCTION_STATE_LABELS } from "@domain/constants";
 
 // Next.js dynamic route params
 interface PageProps {

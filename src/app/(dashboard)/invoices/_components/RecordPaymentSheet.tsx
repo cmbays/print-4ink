@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
+import { PAYMENT_METHOD_LABELS } from "@domain/constants";
 import { money, formatCurrency } from "@/lib/helpers/money";
 import { paymentMethodEnum } from "@domain/entities/invoice";
 import type { Invoice, PaymentMethod } from "@domain/entities/invoice";

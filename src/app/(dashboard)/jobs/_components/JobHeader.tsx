@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { LaneBadge } from "@/components/features/LaneBadge";
-import { PRIORITY_LABELS, PRIORITY_COLORS, SERVICE_TYPE_LEFT_BORDER_COLORS } from "@/lib/constants";
+import { PRIORITY_LABELS, PRIORITY_COLORS, SERVICE_TYPE_LEFT_BORDER_COLORS } from "@domain/constants";
 import { formatDate } from "@/lib/helpers/format";
 import type { Job } from "@domain/entities/job";
 

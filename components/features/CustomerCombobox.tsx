@@ -24,7 +24,7 @@ import {
   CUSTOMER_TYPE_TAG_LABELS,
   CONTACT_ROLE_LABELS,
   LIFECYCLE_STAGE_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import type { Customer } from "@domain/entities/customer";

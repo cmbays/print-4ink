@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Artwork } from "@domain/entities/artwork";
 import type { CustomerTag } from "@domain/entities/customer";
-import { ARTWORK_TAG_LABELS } from "@/lib/constants";
+import { ARTWORK_TAG_LABELS } from "@domain/constants";
 
 interface ArtworkLibraryProps {
   artworks: Artwork[];

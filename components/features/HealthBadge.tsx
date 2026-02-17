@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { HEALTH_STATUS_LABELS, HEALTH_STATUS_COLORS } from "@/lib/constants";
+import { HEALTH_STATUS_LABELS, HEALTH_STATUS_COLORS } from "@domain/constants";
 import type { HealthStatus } from "@domain/entities/customer";
 
 interface HealthBadgeProps {

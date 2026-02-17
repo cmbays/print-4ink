@@ -30,7 +30,7 @@ import { InvoicePricingSummary } from "./InvoicePricingSummary";
 import { DepositSection } from "./DepositSection";
 import { PaymentTermsSection } from "./PaymentTermsSection";
 import { ReviewSendSheet } from "./ReviewSendSheet";
-import { PAYMENT_TERMS_LABELS } from "@/lib/constants";
+import { PAYMENT_TERMS_LABELS } from "@domain/constants";
 import {
   calculateInvoiceTotal,
   calculateDueDate,

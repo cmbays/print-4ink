@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LANE_LABELS } from "@/lib/constants";
+import { LANE_LABELS } from "@domain/constants";
 import type { Lane } from "@domain/entities/job";
 
 const LANE_OPTIONS: Lane[] = [

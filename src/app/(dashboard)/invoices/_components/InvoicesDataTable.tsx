@@ -34,8 +34,8 @@ import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { computeIsOverdue } from "@domain/rules/invoice.rules";
 import { formatDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
-import { INVOICE_STATUS_LABELS } from "@/lib/constants";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { INVOICE_STATUS_LABELS } from "@domain/constants";
 import type { Invoice, InvoiceStatus } from "@domain/entities/invoice";
 import type { Customer } from "@domain/entities/customer";
 

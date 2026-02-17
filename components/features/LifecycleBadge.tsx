@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { LIFECYCLE_STAGE_LABELS, LIFECYCLE_STAGE_COLORS } from "@/lib/constants";
+import { LIFECYCLE_STAGE_LABELS, LIFECYCLE_STAGE_COLORS } from "@domain/constants";
 import type { LifecycleStage } from "@domain/entities/customer";
 
 interface LifecycleBadgeProps {

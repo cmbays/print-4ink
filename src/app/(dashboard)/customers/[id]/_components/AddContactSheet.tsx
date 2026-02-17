@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CONTACT_ROLE_LABELS } from "@/lib/constants";
+import { CONTACT_ROLE_LABELS } from "@domain/constants";
 import { contactRoleEnum } from "@domain/entities/contact";
 import type { Group } from "@domain/entities/group";
 

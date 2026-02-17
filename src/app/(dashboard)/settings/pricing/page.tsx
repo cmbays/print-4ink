@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Tag, Search } from "lucide-react";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
-import { SERVICE_TYPE_COLORS } from "@/lib/constants";
+import { SERVICE_TYPE_COLORS } from "@domain/constants";
 import { SetupWizard } from "./_components/SetupWizard";
 import { TagTemplateMapper } from "./_components/TagTemplateMapper";
 import {

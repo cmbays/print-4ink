@@ -7,7 +7,7 @@ import { CapacitySummary } from "@/components/features/CapacitySummary";
 import {
   LANE_LABELS,
   PRIORITY_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { getJobs } from "@infra/repositories/jobs";
 import { getCustomers } from "@infra/repositories/customers";
 import { money, toNumber } from "@/lib/helpers/money";

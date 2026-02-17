@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { ArtworkAssignmentPicker } from "./ArtworkAssignmentPicker";
-import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@/lib/constants";
+import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
 import type { GarmentCatalog, GarmentCategory } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 import type { Artwork } from "@domain/entities/artwork";

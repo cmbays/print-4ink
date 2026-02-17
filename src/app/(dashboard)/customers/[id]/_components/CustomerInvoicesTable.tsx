@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   INVOICE_STATUS_BADGE_COLORS,
   INVOICE_STATUS_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { formatDate } from "@/lib/helpers/format";
 import { formatCurrency } from "@/lib/helpers/money";
 import type { Invoice } from "@domain/entities/invoice";

@@ -30,7 +30,7 @@ import {
   INVOICE_LINE_ITEM_TYPE_LABELS,
   PAYMENT_TERMS_LABELS,
   CREDIT_MEMO_REASON_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { computeIsOverdue, isValidStatusTransition } from "@domain/rules/invoice.rules";
 import { formatDate } from "@/lib/helpers/format";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";

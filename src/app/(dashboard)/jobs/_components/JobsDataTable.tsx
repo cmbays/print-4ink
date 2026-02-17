@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 import { z } from "zod";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,7 +46,7 @@ import {
   LANE_LABELS,
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import type { Job, Lane, RiskLevel } from "@domain/entities/job";
 import type { ServiceType } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";

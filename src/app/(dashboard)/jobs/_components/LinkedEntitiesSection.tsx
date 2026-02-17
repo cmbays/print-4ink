@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { User, ExternalLink } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@/lib/constants";
+import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@domain/constants";
 import type { Job } from "@domain/entities/job";
 import type { InvoiceStatus } from "@domain/entities/invoice";
 

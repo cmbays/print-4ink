@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { Badge } from "@/components/ui/badge";
 import {
   LANE_LABELS,
   LANE_COLORS,
   PRIORITY_LABELS,
   PRIORITY_COLORS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { formatDate } from "@/lib/helpers/format";
 import type { Job } from "@domain/entities/job";
 

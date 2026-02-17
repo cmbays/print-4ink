@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PAYMENT_TERMS_LABELS } from "@/lib/constants";
+import { PAYMENT_TERMS_LABELS } from "@domain/constants";
 import { calculateDueDate } from "@domain/rules/invoice.rules";
 import type { PaymentTerms } from "@domain/entities/customer";
 

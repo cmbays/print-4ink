@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { LANE_LABELS } from "@/lib/constants";
+import { LANE_LABELS } from "@domain/constants";
 import type { Lane } from "@domain/entities/job";
 
 interface MobileLaneTabBarProps {

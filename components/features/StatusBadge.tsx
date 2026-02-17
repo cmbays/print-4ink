@@ -7,7 +7,7 @@ import {
   INVOICE_STATUS_LABELS,
   QUOTE_STATUS_BADGE_COLORS,
   QUOTE_STATUS_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 
 // ---------------------------------------------------------------------------
 // Component

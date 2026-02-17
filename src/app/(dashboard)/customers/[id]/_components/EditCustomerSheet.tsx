@@ -25,7 +25,7 @@ import {
   CUSTOMER_TYPE_TAG_LABELS,
   PAYMENT_TERMS_LABELS,
   PRICING_TIER_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import type { Customer, LifecycleStage, CustomerTypeTag, PaymentTerms, PricingTier } from "@domain/entities/customer";
 import { lifecycleStageEnum, customerTypeTagEnum, paymentTermsEnum, pricingTierEnum } from "@domain/entities/customer";
 

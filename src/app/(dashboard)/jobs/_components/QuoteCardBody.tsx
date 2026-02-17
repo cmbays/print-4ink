@@ -1,12 +1,12 @@
 import { Package, Palette, MapPin, Calendar } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { formatShortDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { CARD_TYPE_BORDER_COLORS } from "@/lib/constants";
+import { CARD_TYPE_BORDER_COLORS } from "@domain/constants";
 import type { QuoteCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
