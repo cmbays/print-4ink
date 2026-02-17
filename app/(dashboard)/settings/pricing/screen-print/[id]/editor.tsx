@@ -622,7 +622,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
             UNIFIED PRICING MATRIX CARD
            ══════════════════════════════════════════════════════════ */}
         <Card>
-          <CardHeader className="space-y-3 pb-3">
+          <CardHeader className="space-y-3 px-4 pb-3 md:px-6">
             {/* Row 1: title + legend + mode toggle + manual edit + settings */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <div className="flex items-center gap-2">
@@ -756,7 +756,7 @@ export function ScreenPrintEditor({ templateId }: ScreenPrintEditorProps) {
             />
           </CardHeader>
 
-          <CardContent className="pt-0">
+          <CardContent className="px-4 pt-0 md:px-6">
             {editorMode === "simple" ? (
               <ColorPricingGrid
                 template={simpleTemplate!}
