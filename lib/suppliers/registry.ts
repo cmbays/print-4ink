@@ -1,10 +1,10 @@
 import { DalError } from '@/lib/dal/_shared/errors';
 import { InMemoryCacheStore } from './cache/in-memory';
 import { MockAdapter } from './adapters/mock';
-import type { SupplierAdapter } from './types';
+import { supplierNameSchema } from './types';
+import type { SupplierAdapter, SupplierName } from './types';
 
-const VALID_ADAPTERS = ['mock', 'ss-activewear'] as const;
-type AdapterName = (typeof VALID_ADAPTERS)[number];
+const VALID_ADAPTERS = supplierNameSchema.options;
 
 let _adapter: SupplierAdapter | null = null;
 
@@ -12,7 +12,8 @@ export function getSupplierAdapter(): SupplierAdapter {
   if (_adapter) return _adapter;
 
   const name = process.env.SUPPLIER_ADAPTER;
-  if (!name || !VALID_ADAPTERS.includes(name as AdapterName)) {
+  // `includes` requires a cast: string is not narrowable to SupplierName via overload resolution
+  if (!name || !VALID_ADAPTERS.includes(name as SupplierName)) {
     throw new DalError(
       'PROVIDER',
       `SUPPLIER_ADAPTER must be one of [${VALID_ADAPTERS.join(', ')}], got: '${name}'`,
