@@ -25,26 +25,32 @@ body:
       required: true
 
   - type: dropdown
-    id: product-tool
+    id: product-domain-tool
     attributes:
-      label: Product/Tool
-      description: Which product or tool does this relate to?
-      # Sync with config/products.json + config/tools.json
+      label: Product / Domain / Tool
+      description: Which product, domain, or tool does this relate to?
       options:
-        - Dashboard
-        - Quotes
-        - Customers
-        - Invoices
-        - Jobs
-        - Garments
-        - Screens
-        - Pricing
-        - Work Orchestrator
-        - Skills Framework
-        - Agent System
-        - Knowledge Base
-        - CI Pipeline
-        - PM System
+        # Products
+        - "Product: Dashboard"
+        - "Product: Quotes"
+        - "Product: Customers"
+        - "Product: Invoices"
+        - "Product: Jobs"
+        # Domains
+        - "Domain: Garments"
+        - "Domain: Screens"
+        - "Domain: Pricing"
+        - "Domain: Colors"
+        - "Domain: Direct-to-Film"
+        - "Domain: Screen Printing"
+        - "Domain: Mobile"
+        # Tools
+        - "Tool: Work Orchestrator"
+        - "Tool: Skills Framework"
+        - "Tool: Agent System"
+        - "Tool: Knowledge Base"
+        - "Tool: CI Pipeline"
+        - "Tool: PM System"
     validations:
       required: true
 
