@@ -16,6 +16,9 @@ import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type { JobTask } from "@domain/entities/job";
 import { money, round2, toNumber } from "@/lib/helpers/money";
 
+// Sheet constants live in @domain/constants/dtf — re-exported here for backward compatibility
+export { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, DTF_MAX_SHEET_LENGTH } from "@domain/constants/dtf";
+
 // ---------------------------------------------------------------------------
 // DTF Size Presets (S26) — standalone presets, NOT artwork-tied
 // ---------------------------------------------------------------------------
@@ -53,19 +56,6 @@ export function getDtfTaskTemplate(): JobTask[] {
     sortOrder: i,
   }));
 }
-
-// ---------------------------------------------------------------------------
-// Sheet Constants
-// ---------------------------------------------------------------------------
-
-/** Fixed DTF sheet width in inches */
-export const DTF_SHEET_WIDTH = 22;
-
-/** Recommended spacing between designs in inches */
-export const DTF_DEFAULT_MARGIN = 1;
-
-/** Maximum sheet length in inches (largest tier) */
-export const DTF_MAX_SHEET_LENGTH = 60;
 
 // ---------------------------------------------------------------------------
 // Validation
