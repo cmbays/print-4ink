@@ -36,6 +36,8 @@ body:
         - Product: Customers
         - Product: Invoices
         - Product: Jobs
+        - Product: Garments
+        - Product: Screens
         - Domain: Garments
         - Domain: Screens
         - Domain: Pricing
