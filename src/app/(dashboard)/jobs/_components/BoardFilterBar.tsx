@@ -21,6 +21,7 @@ import {
   SERVICE_TYPE_COLORS,
 } from "@domain/constants";
 import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
 import { z } from "zod";
 import { riskLevelEnum } from "@domain/entities/job";
@@ -150,7 +151,7 @@ export function BoardFilterBar() {
           aria-pressed={cardType === "jobs"}
           onClick={() => setParam("cardType", "jobs")}
         >
-          <ENTITY_STYLES.job.icon className={cn("size-3", cardType === "jobs" && ENTITY_STYLES.job.color)} />
+          <ENTITY_ICONS.job className={cn("size-3", cardType === "jobs" && ENTITY_STYLES.job.color)} />
           Jobs
         </Button>
         <Button
@@ -165,7 +166,7 @@ export function BoardFilterBar() {
           aria-pressed={cardType === "quotes"}
           onClick={() => setParam("cardType", "quotes")}
         >
-          <ENTITY_STYLES.quote.icon className={cn("size-3", cardType === "quotes" && ENTITY_STYLES.quote.color)} />
+          <ENTITY_ICONS.quote className={cn("size-3", cardType === "quotes" && ENTITY_STYLES.quote.color)} />
           Quotes
         </Button>
       </div>

@@ -16,6 +16,7 @@ import {
 
 import { z } from "zod";
 import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -710,7 +711,7 @@ export function JobsDataTable({
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ENTITY_STYLES.job.icon
+          <ENTITY_ICONS.job
             className="size-12 text-muted-foreground/50"
             aria-hidden="true"
           />

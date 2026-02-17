@@ -61,7 +61,7 @@ export function resolveEffectiveFavorites(
 // Return the inheritance chain showing global defaults, added, removed
 // ---------------------------------------------------------------------------
 
-export interface InheritanceChain {
+export type InheritanceChain = {
   globalDefaults: string[];
   addedAtLevel: string[];
   removedAtLevel: string[];
@@ -165,7 +165,7 @@ export function propagateAddition(
 // Return counts and lists of entities that have this color as favorite
 // ---------------------------------------------------------------------------
 
-export interface ImpactPreview {
+export type ImpactPreview = {
   supplierCount: number;
   customerCount: number;
   suppliers: string[];

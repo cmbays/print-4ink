@@ -35,6 +35,7 @@ import { computeIsOverdue } from "@domain/rules/invoice.rules";
 import { formatDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { INVOICE_STATUS_LABELS } from "@domain/constants";
 import type { Invoice, InvoiceStatus } from "@domain/entities/invoice";
 import type { Customer } from "@domain/entities/customer";
@@ -561,7 +562,7 @@ export function InvoicesDataTable({ invoices, customers }: InvoicesDataTableProp
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ENTITY_STYLES.invoice.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
+          <ENTITY_ICONS.invoice className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No invoices found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters

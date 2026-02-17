@@ -332,8 +332,9 @@ export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
 // ---------------------------------------------------------------------------
 // Card Type — Visual Encoding (neobrutalist accent: left border)
 // ---------------------------------------------------------------------------
-// Canonical entity icons, colors, and border colors live in
-// lib/constants/entities.ts — import ENTITY_STYLES from there.
+// Canonical entity labels, colors, and border colors in ENTITY_STYLES.
+// Icons (LucideIcon) are a UI concern — import ENTITY_ICONS from
+// @/lib/constants/entity-icons for rendering.
 // CARD_TYPE_BORDER_COLORS kept as a convenience alias for board cards.
 
 export { ENTITY_STYLES } from "@domain/constants/entities";

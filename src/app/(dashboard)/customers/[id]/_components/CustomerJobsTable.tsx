@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { Badge } from "@/components/ui/badge";
 import {
   LANE_LABELS,
@@ -24,7 +24,7 @@ export function CustomerJobsTable({ jobs }: CustomerJobsTableProps) {
   if (sorted.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-        <ENTITY_STYLES.job.icon className="size-10 mb-3" aria-hidden="true" />
+        <ENTITY_ICONS.job className="size-10 mb-3" aria-hidden="true" />
         <p className="text-sm font-medium">No jobs yet</p>
       </div>
     );

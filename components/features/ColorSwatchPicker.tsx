@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { swatchTextStyle } from "@domain/constants/swatch";
+import { swatchTextStyle } from "@/lib/helpers/swatch";
 import type { Color } from "@domain/entities/color";
 import { getColorsMutable } from "@infra/repositories/colors";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
