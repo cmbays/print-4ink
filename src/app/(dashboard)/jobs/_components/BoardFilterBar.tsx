@@ -17,7 +17,7 @@ import {
 } from '@shared/ui/primitives/select'
 import { RISK_LABELS, SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from '@domain/constants'
 import { ENTITY_STYLES } from '@domain/constants/entities'
-import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { ENTITY_ICONS } from '@shared/constants/entity-icons'
 import { SERVICE_TYPE_ICONS } from '@features/pricing/components/ServiceTypeBadge'
 import { z } from 'zod'
 import { riskLevelEnum } from '@domain/entities/job'

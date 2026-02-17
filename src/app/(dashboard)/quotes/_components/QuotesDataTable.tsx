@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Archive, Package, Plus, Search, SlidersHorizontal, X } from 'lucide-react'
 import { ENTITY_STYLES } from '@domain/constants/entities'
-import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { ENTITY_ICONS } from '@shared/constants/entity-icons'
 import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
 import { z } from 'zod'
 

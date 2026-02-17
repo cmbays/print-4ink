@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { User, ExternalLink } from 'lucide-react'
 import { ENTITY_STYLES } from '@domain/constants/entities'
-import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { ENTITY_ICONS } from '@shared/constants/entity-icons'
 import { cn } from '@shared/lib/cn'
 import { Badge } from '@shared/ui/primitives/badge'
 import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from '@domain/constants'

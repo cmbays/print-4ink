@@ -1,5 +1,5 @@
 import { Package, Palette, MapPin, Calendar } from 'lucide-react'
-import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { ENTITY_ICONS } from '@shared/constants/entity-icons'
 import { cn } from '@shared/lib/cn'
 import { Badge } from '@shared/ui/primitives/badge'
 import { StatusBadge } from '@shared/ui/organisms/StatusBadge'
