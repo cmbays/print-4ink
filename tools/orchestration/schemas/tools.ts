@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { configEntryBase } from './base'
+import { configEntryBase } from '@config/schemas/base'
 
 const toolEntry = configEntryBase.extend({
   icon: z.string().regex(/^[A-Z][a-zA-Z0-9]+$/),

@@ -1,23 +1,22 @@
 import { z } from 'zod'
+import { domainsConfigSchema, productsConfigSchema } from '@config/schemas'
 import {
-  domainsConfigSchema,
-  productsConfigSchema,
   toolsConfigSchema,
   stagesConfigSchema,
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
   pipelineFieldsConfigSchema,
-} from '@/config/schemas'
+} from '../../tools/orchestration/schemas'
 
-import rawDomains from '../../config/domains.json'
-import rawProducts from '../../config/products.json'
-import rawTools from '../../config/tools.json'
-import rawStages from '../../config/stages.json'
-import rawTags from '../../config/tags.json'
-import rawPipelineTypes from '../../config/pipeline-types.json'
-import rawPipelineGates from '../../config/pipeline-gates.json'
-import rawPipelineFields from '../../config/pipeline-fields.json'
+import rawDomains from '../../src/config/domains.json'
+import rawProducts from '../../src/config/products.json'
+import rawTools from '../../tools/orchestration/config/tools.json'
+import rawStages from '../../tools/orchestration/config/stages.json'
+import rawTags from '../../tools/orchestration/config/tags.json'
+import rawPipelineTypes from '../../tools/orchestration/config/pipeline-types.json'
+import rawPipelineGates from '../../tools/orchestration/config/pipeline-gates.json'
+import rawPipelineFields from '../../tools/orchestration/config/pipeline-fields.json'
 
 // ── Parse Helper (adds file name to validation errors) ──────────────
 
@@ -33,25 +32,33 @@ function parseConfig<T>(schema: z.ZodType<T>, data: unknown, fileName: string): 
 
 // ── Validated Typed Arrays ──────────────────────────────────────────
 
-export const domains = parseConfig(domainsConfigSchema, rawDomains, 'config/domains.json')
-export const products = parseConfig(productsConfigSchema, rawProducts, 'config/products.json')
-export const tools = parseConfig(toolsConfigSchema, rawTools, 'config/tools.json')
-export const stages = parseConfig(stagesConfigSchema, rawStages, 'config/stages.json')
-export const tags = parseConfig(tagsConfigSchema, rawTags, 'config/tags.json')
+export const domains = parseConfig(domainsConfigSchema, rawDomains, 'src/config/domains.json')
+export const products = parseConfig(productsConfigSchema, rawProducts, 'src/config/products.json')
+export const tools = parseConfig(
+  toolsConfigSchema,
+  rawTools,
+  'tools/orchestration/config/tools.json'
+)
+export const stages = parseConfig(
+  stagesConfigSchema,
+  rawStages,
+  'tools/orchestration/config/stages.json'
+)
+export const tags = parseConfig(tagsConfigSchema, rawTags, 'tools/orchestration/config/tags.json')
 export const pipelineTypes = parseConfig(
   pipelineTypesConfigSchema,
   rawPipelineTypes,
-  'config/pipeline-types.json'
+  'tools/orchestration/config/pipeline-types.json'
 )
 export const pipelineGates = parseConfig(
   pipelineGatesConfigSchema,
   rawPipelineGates,
-  'config/pipeline-gates.json'
+  'tools/orchestration/config/pipeline-gates.json'
 )
 export const pipelineFields = parseConfig(
   pipelineFieldsConfigSchema,
   rawPipelineFields,
-  'config/pipeline-fields.json'
+  'tools/orchestration/config/pipeline-fields.json'
 )
 
 // ── Slug Tuples (for z.enum() consumers) ────────────────────────────
@@ -119,27 +126,26 @@ export function pipelineTypeLabel(slug: string): string {
 
 // ── Re-export types ─────────────────────────────────────────────────
 
+export type { ConfigEntry, ProductEntry } from '@config/schemas'
+
 export type {
-  ConfigEntry,
-  FieldDisplay,
-  ProductEntry,
   StageEntry,
   ToolEntry,
   TagEntry,
   PipelineTypeEntry,
   PipelineGatesConfig,
+  FieldDisplay,
   PipelineFieldEntry,
   PipelineFieldsConfig,
-} from '@/config/schemas'
+} from '../../tools/orchestration/schemas'
+
+export { configEntryBase, domainsConfigSchema, productsConfigSchema } from '@config/schemas'
 
 export {
-  configEntryBase,
-  domainsConfigSchema,
-  productsConfigSchema,
   toolsConfigSchema,
   stagesConfigSchema,
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
   pipelineFieldsConfigSchema,
-} from '@/config/schemas'
+} from '../../tools/orchestration/schemas'
