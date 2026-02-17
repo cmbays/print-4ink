@@ -73,4 +73,4 @@
 - **Session protocol:** Each session uses `build-session-protocol` skill
 - **Review flow:** Self-review -> PR -> CodeRabbit -> merge checklist
 - **KB docs:** Each session produces a KB doc in `knowledge-base/src/content/sessions/`
-- **Issue tracking:** Deferred review items filed as GitHub Issues with `vertical/{vertical}` label
+- **Issue tracking:** Deferred review items filed as GitHub Issues with the appropriate `product/*`, `domain/*`, or `tool/*` scope label

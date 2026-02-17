@@ -8,13 +8,15 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { colors as catalogColors } from "@/lib/mock-data";
+import { getColorsMutable } from "@/lib/dal/colors";
 import type { InheritanceChain } from "@/lib/helpers/color-preferences";
 
-interface InheritanceDetailProps {
+const catalogColors = getColorsMutable();
+
+type InheritanceDetailProps = {
   chain: InheritanceChain;
   onRestore?: (colorId: string) => void;
-}
+};
 
 function getColorName(colorId: string): string {
   return catalogColors.find((c) => c.id === colorId)?.name ?? colorId;

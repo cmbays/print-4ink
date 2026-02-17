@@ -15,19 +15,22 @@ The canonical operational reference is [`docs/PM.md`](https://github.com/cmbays/
 
 ## Architecture
 
-### 5-Dimension Label Taxonomy
+### 6-Dimension Label Taxonomy
 
-Every issue is categorized across up to 5 dimensions. Three are required:
+Every issue is categorized across up to 6 dimensions. Three are required:
 
 | Dimension | Prefix | Purpose | Examples |
 |-----------|--------|---------|---------|
 | **Type** | `type/*` | What kind of work | `type/feature`, `type/bug`, `type/research`, `type/tech-debt` |
 | **Priority** | `priority/*` | When to do it | `priority/now`, `priority/next`, `priority/later`, `priority/icebox` |
-| **Vertical** | `vertical/*` | Which product or tool | `vertical/quoting`, `vertical/devx`, `vertical/dtf` |
+| **Product** | `product/*` | Things users DO | `product/quotes`, `product/jobs`, `product/customers` |
+| **Domain** | `domain/*` | Things products USE | `domain/garments`, `domain/pricing`, `domain/dtf` |
+| **Tool** | `tool/*` | How we BUILD | `tool/work-orchestrator`, `tool/ci-pipeline`, `tool/pm-system` |
+| Pipeline | `pipeline/*` | Pipeline type (optional) | `pipeline/vertical`, `pipeline/horizontal` |
 | Phase | `phase/*` | Which project phase (optional) | `phase/1`, `phase/2` |
 | Source | `source/*` | How we found it (optional) | `source/interview`, `source/review`, `source/testing` |
 
-Labels encode stable categorical metadata. Runtime state (current status, effort, pipeline stage) lives on project board fields.
+Each issue needs at minimum one scope label: `product/*`, `domain/*`, or `tool/*`. Labels encode stable categorical metadata. Runtime state (current status, effort, pipeline stage) lives on project board fields.
 
 ### Projects v2 Board
 
@@ -62,7 +65,7 @@ Four templates enforce consistent issue creation. Blank issues are disabled.
 | Action | Trigger | Effect |
 |--------|---------|--------|
 | Auto-add to project | Issue/PR opened | Adds to board #4 |
-| PR Labeler | PR opened/synced | Applies `vertical/*` labels by file path |
+| PR Labeler | PR opened/synced | Applies `product/*` / `domain/*` / `tool/*` labels by file path |
 | Template labels | Issue created via form | Applies `type/*` label |
 
 ### `work progress` Command
@@ -81,12 +84,12 @@ Sections: Milestones, Now (priority/now), Next (priority/next), Tracked In (sub-
 | Task | Command |
 |------|---------|
 | Find priority work | `gh issue list -l priority/next --json number,title,labels` |
-| Find work by vertical | `gh issue list -l vertical/quoting --json number,title,state` |
-| Create a feature issue | `gh issue create --template feature-request.yml --title "..." --label "vertical/...,priority/..."` |
+| Find work by product | `gh issue list -l product/quotes --json number,title,state` |
+| Create a feature issue | `gh issue create --template feature-request.yml --title "..." --label "product/...,priority/..."` |
 | Update issue priority | `gh issue edit 123 --add-label "priority/now" --remove-label "priority/next"` |
 | Close with PR reference | `gh issue close 123 --comment "Resolved in PR #456"` |
 | Add sub-issue | GraphQL `addSubIssue` mutation (see `docs/PM.md` Section 5) |
-| Create deferred work | `gh issue create --label "type/tech-debt,priority/later,vertical/...,source/review"` |
+| Create deferred work | `gh issue create --label "type/tech-debt,priority/later,product/...,source/review"` |
 
 Agents read `docs/PM.md` at session start for full PM context. The Quick Reference section (Section 1) provides copy-paste `gh` commands.
 

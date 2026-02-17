@@ -40,7 +40,6 @@ import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { customers } from "@/lib/mock-data";
 import { computeTaskProgress } from "@/lib/helpers/job-utils";
 import { formatDate } from "@/lib/helpers/format";
 import {
@@ -50,6 +49,7 @@ import {
 } from "@/lib/constants";
 import type { Job, Lane, RiskLevel } from "@/lib/schemas/job";
 import type { ServiceType } from "@/lib/schemas/quote";
+import type { Customer } from "@/lib/schemas/customer";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -57,6 +57,7 @@ import type { ServiceType } from "@/lib/schemas/quote";
 
 interface JobsDataTableProps {
   jobs: Job[];
+  customers: Customer[];
   onMoveLane: (job: Job) => void;
   onBlock: (job: Job) => void;
   onUnblock: (job: Job) => void;
@@ -113,6 +114,7 @@ const ALL_RISKS: RiskLevel[] = ["on_track", "getting_tight", "at_risk"];
 
 export function JobsDataTable({
   jobs,
+  customers,
   onMoveLane,
   onBlock,
   onUnblock,
@@ -255,7 +257,7 @@ export function JobsDataTable({
       }
     }
     return map;
-  }, [jobs]);
+  }, [jobs, customers]);
 
   // ---- Filter + sort pipeline ---------------------------------------------
 
