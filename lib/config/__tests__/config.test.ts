@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   domains,
   products,
@@ -131,6 +131,41 @@ describe("structural invariants", () => {
   it("configEntryBase rejects empty labels", () => {
     expect(() => configEntryBase.parse({ slug: "valid", label: "" })).toThrow();
   });
+
+  it("productsConfigSchema rejects entries without route", () => {
+    expect(() =>
+      productsConfigSchema.parse([{ slug: "test", label: "Test" }]),
+    ).toThrow();
+  });
+
+  it("tagsConfigSchema rejects entries without color", () => {
+    expect(() =>
+      tagsConfigSchema.parse([{ slug: "test", label: "Test" }]),
+    ).toThrow();
+  });
+
+  it("pipelineTypesConfigSchema rejects empty stages array", () => {
+    expect(() =>
+      pipelineTypesConfigSchema.parse([
+        { slug: "test", label: "Test", description: "D", stages: [] },
+      ]),
+    ).toThrow();
+  });
+
+  it("stagesConfigSchema rejects invalid core type", () => {
+    expect(() =>
+      stagesConfigSchema.parse([{ slug: "test", label: "Test", core: "yes" }]),
+    ).toThrow();
+  });
+
+  it("all config schemas reject empty arrays", () => {
+    expect(() => domainsConfigSchema.parse([])).toThrow();
+    expect(() => productsConfigSchema.parse([])).toThrow();
+    expect(() => toolsConfigSchema.parse([])).toThrow();
+    expect(() => stagesConfigSchema.parse([])).toThrow();
+    expect(() => tagsConfigSchema.parse([])).toThrow();
+    expect(() => pipelineTypesConfigSchema.parse([])).toThrow();
+  });
 });
 
 // ── Cross-File Consistency ──────────────────────────────────────────
@@ -236,12 +271,21 @@ describe("label lookups", () => {
     expect(pipelineTypeLabel("bug-fix")).toBe("Bug Fix");
   });
 
-  it("label functions return kebab-to-title fallback for unknown slugs", () => {
+  it("label functions return kebab-to-title fallback and warn for unknown slugs", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
     expect(domainLabel("unknown-thing")).toBe("Unknown Thing");
     expect(productLabel("not-real")).toBe("Not Real");
     expect(toolLabel("mystery-tool")).toBe("Mystery Tool");
     expect(stageLabel("fake-stage")).toBe("Fake Stage");
     expect(tagLabel("no-tag")).toBe("No Tag");
     expect(pipelineTypeLabel("custom-pipeline")).toBe("Custom Pipeline");
+
+    expect(warnSpy).toHaveBeenCalledTimes(6);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('unknown slug "unknown-thing"'),
+    );
+
+    warnSpy.mockRestore();
   });
 });

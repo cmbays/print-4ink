@@ -1,7 +1,6 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import stagesConfig from '../../config/stages.json';
 import tagsConfig from '../../config/tags.json';
 import productsConfig from '../../config/products.json';
 import toolsConfig from '../../config/tools.json';

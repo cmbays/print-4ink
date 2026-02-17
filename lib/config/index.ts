@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   domainsConfigSchema,
   productsConfigSchema,
@@ -16,15 +17,27 @@ import rawTags from "../../config/tags.json";
 import rawPipelineTypes from "../../config/pipeline-types.json";
 import rawPipelineGates from "../../config/pipeline-gates.json";
 
+// ── Parse Helper (adds file name to validation errors) ──────────────
+
+function parseConfig<T>(schema: z.ZodType<T>, data: unknown, fileName: string): T {
+  try {
+    return schema.parse(data);
+  } catch (err) {
+    throw new Error(
+      `Config validation failed for ${fileName}:\n${err instanceof z.ZodError ? err.message : String(err)}`,
+    );
+  }
+}
+
 // ── Validated Typed Arrays ──────────────────────────────────────────
 
-export const domains = domainsConfigSchema.parse(rawDomains);
-export const products = productsConfigSchema.parse(rawProducts);
-export const tools = toolsConfigSchema.parse(rawTools);
-export const stages = stagesConfigSchema.parse(rawStages);
-export const tags = tagsConfigSchema.parse(rawTags);
-export const pipelineTypes = pipelineTypesConfigSchema.parse(rawPipelineTypes);
-export const pipelineGates = pipelineGatesConfigSchema.parse(rawPipelineGates);
+export const domains = parseConfig(domainsConfigSchema, rawDomains, "config/domains.json");
+export const products = parseConfig(productsConfigSchema, rawProducts, "config/products.json");
+export const tools = parseConfig(toolsConfigSchema, rawTools, "config/tools.json");
+export const stages = parseConfig(stagesConfigSchema, rawStages, "config/stages.json");
+export const tags = parseConfig(tagsConfigSchema, rawTags, "config/tags.json");
+export const pipelineTypes = parseConfig(pipelineTypesConfigSchema, rawPipelineTypes, "config/pipeline-types.json");
+export const pipelineGates = parseConfig(pipelineGatesConfigSchema, rawPipelineGates, "config/pipeline-gates.json");
 
 // ── Slug Tuples (for z.enum() consumers) ────────────────────────────
 
@@ -56,28 +69,37 @@ const stageLabelMap = buildLabelMap(stages);
 const tagLabelMap = buildLabelMap(tags);
 const pipelineTypeLabelMap = buildLabelMap(pipelineTypes);
 
+function lookupLabel(map: Record<string, string>, slug: string, configName: string): string {
+  const label = map[slug];
+  if (!label) {
+    console.warn(`[config] ${configName}Label called with unknown slug "${slug}"`);
+    return labelFromSlug(slug);
+  }
+  return label;
+}
+
 export function domainLabel(slug: string): string {
-  return domainLabelMap[slug] || labelFromSlug(slug);
+  return lookupLabel(domainLabelMap, slug, "domain");
 }
 
 export function productLabel(slug: string): string {
-  return productLabelMap[slug] || labelFromSlug(slug);
+  return lookupLabel(productLabelMap, slug, "product");
 }
 
 export function toolLabel(slug: string): string {
-  return toolLabelMap[slug] || labelFromSlug(slug);
+  return lookupLabel(toolLabelMap, slug, "tool");
 }
 
 export function stageLabel(slug: string): string {
-  return stageLabelMap[slug] || labelFromSlug(slug);
+  return lookupLabel(stageLabelMap, slug, "stage");
 }
 
 export function tagLabel(slug: string): string {
-  return tagLabelMap[slug] || labelFromSlug(slug);
+  return lookupLabel(tagLabelMap, slug, "tag");
 }
 
 export function pipelineTypeLabel(slug: string): string {
-  return pipelineTypeLabelMap[slug] || labelFromSlug(slug);
+  return lookupLabel(pipelineTypeLabelMap, slug, "pipelineType");
 }
 
 // ── Re-export types ─────────────────────────────────────────────────

@@ -46,7 +46,7 @@ export type PipelineTypeEntry = z.infer<typeof pipelineTypeEntry>;
 // ── Pipeline Gates (unique object shape) ────────────────────────────
 
 const gateStageEntry = z.object({
-  artifacts: z.array(z.string()),
+  artifacts: z.array(z.string().min(1)),
   gate: z.string().min(1),
   next: z.string().nullable(),
 });
