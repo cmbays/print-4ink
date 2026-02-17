@@ -14,24 +14,36 @@ Closes #
 - [ ] Tooling
 - [ ] Docs
 
-## Product/Tool
+## Product / Domain / Tool
 
-<!-- Which product(s) or tool(s) does this touch? Sync with config/products.json + config/tools.json -->
+<!-- Which product(s), domain(s), or tool(s) does this touch? Sync with config/products.json + config/tools.json -->
 
-- [ ] Dashboard
-- [ ] Quotes
-- [ ] Customers
-- [ ] Invoices
-- [ ] Jobs
-- [ ] Garments
-- [ ] Screens
-- [ ] Pricing
-- [ ] Work Orchestrator
-- [ ] Skills Framework
-- [ ] Agent System
-- [ ] Knowledge Base
-- [ ] CI Pipeline
-- [ ] PM System
+**Products:** Dashboard / Quotes / Customers / Invoices / Jobs
+
+**Domains:** Garments / Screens / Pricing / Colors / Direct-to-Film / Screen Printing / Mobile
+
+**Tools:** Work Orchestrator / Skills Framework / Agent System / Knowledge Base / CI Pipeline / PM System
+
+<!-- Check all that apply: -->
+
+- [ ] Product: Dashboard
+- [ ] Product: Quotes
+- [ ] Product: Customers
+- [ ] Product: Invoices
+- [ ] Product: Jobs
+- [ ] Domain: Garments
+- [ ] Domain: Screens
+- [ ] Domain: Pricing
+- [ ] Domain: Colors
+- [ ] Domain: Direct-to-Film
+- [ ] Domain: Screen Printing
+- [ ] Domain: Mobile
+- [ ] Tool: Work Orchestrator
+- [ ] Tool: Skills Framework
+- [ ] Tool: Agent System
+- [ ] Tool: Knowledge Base
+- [ ] Tool: CI Pipeline
+- [ ] Tool: PM System
 
 ## Screenshots
 
