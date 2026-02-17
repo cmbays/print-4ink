@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { Input } from "@shared/ui/primitives/input";
-import { Badge } from "@shared/ui/primitives/badge";
-import { formatCurrency } from "@domain/services/pricing.service";
-import { money, round2, toNumber } from "@domain/lib/money";
-import type { LocationUpcharge } from "@domain/entities/price-matrix";
+import { Input } from '@shared/ui/primitives/input'
+import { Badge } from '@shared/ui/primitives/badge'
+import { formatCurrency } from '@domain/services/pricing.service'
+import { money, round2, toNumber } from '@domain/lib/money'
+import type { LocationUpcharge } from '@domain/entities/price-matrix'
 
 const LOCATION_LABELS: Record<string, string> = {
-  front: "Front",
-  back: "Back",
-  "left-sleeve": "Left Sleeve",
-  "right-sleeve": "Right Sleeve",
-  pocket: "Pocket",
-};
+  front: 'Front',
+  back: 'Back',
+  'left-sleeve': 'Left Sleeve',
+  'right-sleeve': 'Right Sleeve',
+  pocket: 'Pocket',
+}
 
-interface LocationUpchargeEditorProps {
-  locations: LocationUpcharge[];
-  onLocationsChange: (locations: LocationUpcharge[]) => void;
+type LocationUpchargeEditorProps = {
+  locations: LocationUpcharge[]
+  onLocationsChange: (locations: LocationUpcharge[]) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -28,11 +28,9 @@ export function LocationUpchargeEditor({
   onLocationsChange,
 }: LocationUpchargeEditorProps) {
   const updateUpcharge = (index: number, value: number) => {
-    const updated = locations.map((loc, i) =>
-      i === index ? { ...loc, upcharge: value } : loc
-    );
-    onLocationsChange(updated);
-  };
+    const updated = locations.map((loc, i) => (i === index ? { ...loc, upcharge: value } : loc))
+    onLocationsChange(updated)
+  }
 
   return (
     <div className="space-y-2">
@@ -63,9 +61,7 @@ export function LocationUpchargeEditor({
               step={0.25}
               min={0}
               value={loc.upcharge}
-              onChange={(e) =>
-                updateUpcharge(index, parseFloat(e.target.value) || 0)
-              }
+              onChange={(e) => updateUpcharge(index, parseFloat(e.target.value) || 0)}
               onFocus={(e) => e.target.select()}
               className="h-7 pl-5 text-xs text-right"
             />
@@ -75,7 +71,7 @@ export function LocationUpchargeEditor({
 
       {/* Summary */}
       <div className="text-xs text-muted-foreground">
-        Max surcharge (all locations):{" "}
+        Max surcharge (all locations):{' '}
         <span className="text-foreground font-medium">
           {formatCurrency(
             toNumber(round2(locations.reduce((sum, loc) => sum.plus(loc.upcharge), money(0))))
@@ -83,5 +79,5 @@ export function LocationUpchargeEditor({
         </span>
       </div>
     </div>
-  );
+  )
 }

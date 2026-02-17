@@ -1,6 +1,6 @@
 ---
-title: "DTF Gang Sheet Builder — Pre-Build Interview"
-subtitle: "Exhaustive interview with shop owner on DTF workflow, quoting integration, and demo scope"
+title: 'DTF Gang Sheet Builder — Pre-Build Interview'
+subtitle: 'Exhaustive interview with shop owner on DTF workflow, quoting integration, and demo scope'
 date: 2026-02-15
 phase: 1
 pipelineName: dtf-gang-sheet
@@ -9,8 +9,8 @@ products: [quotes, invoices, jobs]
 tools: []
 stage: interview
 tags: [decision, research]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0215-dtf-gang-sheet-research"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0215-dtf-gang-sheet-research'
 status: complete
 ---
 
@@ -88,10 +88,10 @@ Customer contacts Gary (phone/Shopify/walk-in)
 
 ### Two DTF Sub-Services
 
-| Service | What It Is | In Scope? |
-|---------|-----------|-----------|
-| **DTF (film only)** | Print film transfers, sell to other businesses | Yes — demo scope |
-| **DTF + Press** | Print film AND press onto garments (includes garment selection) | No — backlogged |
+| Service             | What It Is                                                      | In Scope?        |
+| ------------------- | --------------------------------------------------------------- | ---------------- |
+| **DTF (film only)** | Print film transfers, sell to other businesses                  | Yes — demo scope |
+| **DTF + Press**     | Print film AND press onto garments (includes garment selection) | No — backlogged  |
 
 ### Volume & Business Model
 
@@ -105,42 +105,42 @@ Customer contacts Gary (phone/Shopify/walk-in)
 
 Each artwork in a customer's library needs service-type-specific metadata:
 
-| Service Type | Artwork Metadata | Example |
-|-------------|-----------------|---------|
-| DTF | **Size templates** with custom labels | "Large/Shirts" = 10x12", "Small/Collectibles" = 4x4" |
-| Screen Print | **Positioning** (placement + distance from collar) | Center Chest, 3" below collar |
-| Both | Artwork flagged as compatible with both | Same image, different metadata per service type |
+| Service Type | Artwork Metadata                                   | Example                                              |
+| ------------ | -------------------------------------------------- | ---------------------------------------------------- |
+| DTF          | **Size templates** with custom labels              | "Large/Shirts" = 10x12", "Small/Collectibles" = 4x4" |
+| Screen Print | **Positioning** (placement + distance from collar) | Center Chest, 3" below collar                        |
+| Both         | Artwork flagged as compatible with both            | Same image, different metadata per service type      |
 
 ## DTF Spacing Standards
 
 Research confirmed industry standards for gang sheet layout:
 
-| Parameter | Minimum | Recommended | Source |
-|-----------|---------|-------------|--------|
-| Between designs | 1/2" (12.7mm) | 1" (25.4mm) | Ninja Transfers |
-| Design to edge | 1/2" (12.7mm) | 1" (25.4mm) | Ninja Transfers |
-| Max gap (waste) | — | 2" (50.8mm) | Ninja Transfers |
-| Element spacing | 1-2mm | 3-5mm | BestPriceDTF |
-| Minimum DPI | 150 | 300 | Industry standard |
+| Parameter       | Minimum       | Recommended | Source            |
+| --------------- | ------------- | ----------- | ----------------- |
+| Between designs | 1/2" (12.7mm) | 1" (25.4mm) | Ninja Transfers   |
+| Design to edge  | 1/2" (12.7mm) | 1" (25.4mm) | Ninja Transfers   |
+| Max gap (waste) | —             | 2" (50.8mm) | Ninja Transfers   |
+| Element spacing | 1-2mm         | 3-5mm       | BestPriceDTF      |
+| Minimum DPI     | 150           | 300         | Industry standard |
 
 ## Screen Print Positioning Standards
 
-| Placement | Standard Size | From Collar | Notes |
-|-----------|--------------|-------------|-------|
-| Center Chest | 6-10" wide, 6-8" tall | 3" (tees), 3.5-5" (hoodies) | Most common |
-| Left Chest | 2.5-5" | 3.5" from center | Keep under 4" |
-| Full Front | 12" wide, 10-14" tall | Varies | Large format |
-| Back Collar | 1-3" | At collar | Small logo/tag |
-| Upper Back | 10-14" wide | Below collar | Yoke area |
-| Sleeve | Max 3" wide | From top | Don't exceed platen |
+| Placement    | Standard Size         | From Collar                 | Notes               |
+| ------------ | --------------------- | --------------------------- | ------------------- |
+| Center Chest | 6-10" wide, 6-8" tall | 3" (tees), 3.5-5" (hoodies) | Most common         |
+| Left Chest   | 2.5-5"                | 3.5" from center            | Keep under 4"       |
+| Full Front   | 12" wide, 10-14" tall | Varies                      | Large format        |
+| Back Collar  | 1-3"                  | At collar                   | Small logo/tag      |
+| Upper Back   | 10-14" wide           | Below collar                | Yoke area           |
+| Sleeve       | Max 3" wide           | From top                    | Don't exceed platen |
 
 ## Demo Build Plan
 
-| Wave | Scope | Dependencies |
-|------|-------|-------------|
-| **1: Foundation** | Service type tabs in quote builder; artwork model update (DTF sizes + screen print positioning); DTF production steps on job cards | None — can parallelize |
-| **2: DTF Core** | DTF line item builder; sheet tier cost optimization; bin-packing with spacing rules | Wave 1 |
-| **3: Visual + Integration** | Read-only sheet canvas; sibling job creation; invoicing alignment; review-lane shipping gate | Wave 2 |
+| Wave                        | Scope                                                                                                                              | Dependencies           |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| **1: Foundation**           | Service type tabs in quote builder; artwork model update (DTF sizes + screen print positioning); DTF production steps on job cards | None — can parallelize |
+| **2: DTF Core**             | DTF line item builder; sheet tier cost optimization; bin-packing with spacing rules                                                | Wave 1                 |
+| **3: Visual + Integration** | Read-only sheet canvas; sibling job creation; invoicing alignment; review-lane shipping gate                                       | Wave 2                 |
 
 ## Gary Questions
 
@@ -187,15 +187,19 @@ Full pre-build interrogation spike with affordance table: [`docs/spikes/spike-dt
 ## Sources
 
 ### Interview
+
 - User interview conducted 2026-02-15 (17 questions across all pre-build-interrogator dimensions)
 - User answered as shop owner based on direct knowledge of 4Ink's DTF operations
 
 ### DTF Spacing Research
+
 - [Ninja Transfers — 8 Common Challenges Designing DTF Gang Sheets](https://ninjatransfers.com/pages/challenges-and-solutions-designing-dtf-gang-sheets)
 - [BestPriceDTF — Designing DTF Gang Sheets Best Practices](https://bestpricedtf.com/blogs/news/designing-dtf-gang-sheets-best-practices-tips)
 
 ### Screen Print Positioning Research
+
 - [Screenprinting.com — Industry Standard for Placements and Dimensions](https://www.screenprinting.com/blogs/news/a-guide-to-industry-standard-for-screen-print-placements-and-dimensions)
 
 ### Prior Session
+
 - [DTF Gang Sheet Builder — Competitive Research](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/pipelines/2026-02-15-dtf-gang-sheet-research.md) — 5-competitor analysis, industry workflows, UX patterns

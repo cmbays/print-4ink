@@ -1,6 +1,6 @@
 ---
-title: "FRONTEND_GUIDELINES"
-description: "Design tokens, component patterns, animation, accessibility, and layout standards. Tailwind v4 + shadcn/ui implementation."
+title: 'FRONTEND_GUIDELINES'
+description: 'Design tokens, component patterns, animation, accessibility, and layout standards. Tailwind v4 + shadcn/ui implementation.'
 category: reference
 status: active
 phase: all
@@ -20,10 +20,10 @@ depends_on:
 
 Our aesthetic combines three influences into a cohesive system:
 
-| Layer | Influence | Treatment |
-|-------|-----------|-----------|
-| **Base** | Linear | Monochrome, opacity hierarchy, extreme restraint |
-| **Polish** | Raycast | OS-native feel, subtle glass, responsive transitions |
+| Layer         | Influence    | Treatment                                               |
+| ------------- | ------------ | ------------------------------------------------------- |
+| **Base**      | Linear       | Monochrome, opacity hierarchy, extreme restraint        |
+| **Polish**    | Raycast      | OS-native feel, subtle glass, responsive transitions    |
 | **Attention** | Neobrutalist | Bold borders, vibrant status colors, springy animations |
 
 **Core Insight**: The contrast between calm base and bold accents makes attention elements pop harder.
@@ -47,6 +47,7 @@ Our aesthetic combines three influences into a cohesive system:
 ### The Jobs Filter
 
 Ask these questions of every UI element:
+
 - "Would a user need to be told this exists?" -> If yes, redesign it until obvious
 - "Can this be removed without losing meaning?" -> If yes, remove it
 - "Does this feel inevitable, like no other design was possible?" -> If no, it's not done
@@ -89,10 +90,10 @@ components/
 Loaded via `next/font` in `app/layout.tsx`. No Google Fonts `<link>` tags.
 
 ```tsx
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from 'next/font/google'
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono' })
 ```
 
 - **Inter**: All UI text (headings, body, labels, buttons)
@@ -121,22 +122,22 @@ Defined in `app/globals.css` via `@theme inline`:
 
   /* Text - Opacity-based hierarchy */
   --color-text-primary: rgba(255, 255, 255, 0.87);
-  --color-text-secondary: rgba(255, 255, 255, 0.60);
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
   --color-text-muted: rgba(255, 255, 255, 0.38);
 
   /* Borders */
   --color-border-subtle: rgba(255, 255, 255, 0.08);
   --color-border-default: rgba(255, 255, 255, 0.12);
-  --color-border-strong: rgba(255, 255, 255, 0.20);
+  --color-border-strong: rgba(255, 255, 255, 0.2);
 
   /* Status colors - Niji palette attention layer */
-  --color-action: #2ab9ff;       /* Niji blue - primary CTAs */
+  --color-action: #2ab9ff; /* Niji blue - primary CTAs */
   --color-action-hover: #1da0e0;
-  --color-success: #54ca74;      /* Niji green - completions */
+  --color-success: #54ca74; /* Niji green - completions */
   --color-success-hover: #43a860;
-  --color-error: #d23e08;        /* Niji red - failures */
+  --color-error: #d23e08; /* Niji red - failures */
   --color-error-hover: #b33407;
-  --color-warning: #ffc663;      /* Niji gold - cautions */
+  --color-warning: #ffc663; /* Niji gold - cautions */
   --color-warning-hover: #e6b050;
 
   /* Effects */
@@ -155,26 +156,28 @@ Defined in `app/globals.css` via `@theme inline`:
 
 ### Color Usage
 
-| Use Case | Tailwind Class | Notes |
-|----------|---------------|-------|
-| Page background | `bg-background` | Niji dark (#141515) |
-| Card/panel | `bg-card` | Elevated (#1c1d1e) |
-| Body text | `text-foreground` | 87% opacity white |
-| Secondary text | `text-muted-foreground` | 60% opacity white |
-| Primary CTA | `text-action` / `bg-action` | Niji blue |
-| Success | `text-success` | Niji green |
-| Error | `text-error` | Niji red |
-| Warning | `text-warning` | Niji gold |
+| Use Case        | Tailwind Class              | Notes               |
+| --------------- | --------------------------- | ------------------- |
+| Page background | `bg-background`             | Niji dark (#141515) |
+| Card/panel      | `bg-card`                   | Elevated (#1c1d1e)  |
+| Body text       | `text-foreground`           | 87% opacity white   |
+| Secondary text  | `text-muted-foreground`     | 60% opacity white   |
+| Primary CTA     | `text-action` / `bg-action` | Niji blue           |
+| Success         | `text-success`              | Niji green          |
+| Error           | `text-error`                | Niji red            |
+| Warning         | `text-warning`              | Niji gold           |
 
 ### When to Use Color
 
 **Use monochrome for:**
+
 - All non-interactive text
 - Borders and dividers
 - Backgrounds
 - Secondary buttons
 
 **Use status colors for:**
+
 - Primary action buttons (Niji blue)
 - Production state badges (varies by state)
 - Error messages (Niji red)
@@ -189,24 +192,24 @@ Defined in `app/globals.css` via `@theme inline`:
 
 Use Tailwind's built-in text utilities. Max 3-4 distinct sizes per screen.
 
-| Tailwind Class | Size | Use |
-|---------------|------|-----|
-| `text-xs` | 12px | Captions, badge labels |
-| `text-sm` | 14px | Secondary text, table cells, buttons |
-| `text-base` | 16px | Body text |
-| `text-lg` | 18px | Emphasis, card titles |
-| `text-xl` | 20px | Section headings (H3) |
-| `text-2xl` | 24px | Page headings (H2) |
+| Tailwind Class | Size | Use                                  |
+| -------------- | ---- | ------------------------------------ |
+| `text-xs`      | 12px | Captions, badge labels               |
+| `text-sm`      | 14px | Secondary text, table cells, buttons |
+| `text-base`    | 16px | Body text                            |
+| `text-lg`      | 18px | Emphasis, card titles                |
+| `text-xl`      | 20px | Section headings (H3)                |
+| `text-2xl`     | 24px | Page headings (H2)                   |
 
 ### Font Weights
 
 Max 3 weights per screen:
 
-| Weight | Tailwind Class | Use |
-|--------|---------------|-----|
-| 400 | `font-normal` | Body text, descriptions |
-| 500 | `font-medium` | Labels, nav items, buttons |
-| 600 | `font-semibold` | Headings, emphasis |
+| Weight | Tailwind Class  | Use                        |
+| ------ | --------------- | -------------------------- |
+| 400    | `font-normal`   | Body text, descriptions    |
+| 500    | `font-medium`   | Labels, nav items, buttons |
+| 600    | `font-semibold` | Headings, emphasis         |
 
 ### Heading Pattern
 
@@ -230,14 +233,14 @@ Max 3 weights per screen:
 
 Use Tailwind spacing utilities exclusively. No hardcoded pixel values.
 
-| Tailwind | Value | Use |
-|----------|-------|-----|
-| `p-1` / `gap-1` | 4px | Tight spacing (badge padding) |
-| `p-2` / `gap-2` | 8px | Related elements (icon + label) |
-| `p-3` / `gap-3` | 12px | Component padding |
-| `p-4` / `gap-4` | 16px | Standard gap between elements |
-| `p-6` / `gap-6` | 24px | Section padding, card padding |
-| `p-8` / `gap-8` | 32px | Large section gaps |
+| Tailwind        | Value | Use                             |
+| --------------- | ----- | ------------------------------- |
+| `p-1` / `gap-1` | 4px   | Tight spacing (badge padding)   |
+| `p-2` / `gap-2` | 8px   | Related elements (icon + label) |
+| `p-3` / `gap-3` | 12px  | Component padding               |
+| `p-4` / `gap-4` | 16px  | Standard gap between elements   |
+| `p-6` / `gap-6` | 24px  | Section padding, card padding   |
+| `p-8` / `gap-8` | 32px  | Large section gaps              |
 
 ### Spacing Philosophy
 
@@ -306,16 +309,16 @@ Map production states to colors via constants:
 ```tsx
 // From lib/constants.ts
 const PRODUCTION_STATE_COLORS: Record<ProductionState, string> = {
-  design: "text-muted-foreground",
-  approval: "text-warning",
-  burning: "text-action",
-  press: "text-action",
-  finishing: "text-success",
-  shipped: "text-success",
-};
+  design: 'text-muted-foreground',
+  approval: 'text-warning',
+  burning: 'text-action',
+  press: 'text-action',
+  finishing: 'text-success',
+  shipped: 'text-success',
+}
 
 // Usage
-<Badge variant="outline" className={PRODUCTION_STATE_COLORS[job.status]}>
+;<Badge variant="outline" className={PRODUCTION_STATE_COLORS[job.status]}>
   {PRODUCTION_STATE_LABELS[job.status]}
 </Badge>
 ```
@@ -342,14 +345,13 @@ const PRODUCTION_STATE_COLORS: Record<ProductionState, string> = {
 
 ```tsx
 // Page transitions, card enter/exit, Kanban column moves
-import { motion, AnimatePresence } from "framer-motion";
-
-<AnimatePresence>
+import { motion, AnimatePresence } from 'framer-motion'
+;<AnimatePresence>
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -10 }}
-    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
   >
     {children}
   </motion.div>
@@ -364,7 +366,7 @@ import { motion, AnimatePresence } from "framer-motion";
 <motion.div
   animate={{ y: 0 }}
   transition={{
-    type: prefersReducedMotion ? "tween" : "spring",
+    type: prefersReducedMotion ? 'tween' : 'spring',
     duration: prefersReducedMotion ? 0 : undefined,
   }}
 />
@@ -379,9 +381,8 @@ Every page must handle these states explicitly.
 ### Empty State
 
 ```tsx
-import { Package } from "lucide-react";
-
-<div className="flex flex-col items-center justify-center py-12 text-center">
+import { Package } from 'lucide-react'
+;<div className="flex flex-col items-center justify-center py-12 text-center">
   <Package className="h-12 w-12 text-muted-foreground/50 mb-4" />
   <h3 className="text-lg font-semibold text-muted-foreground">No jobs yet</h3>
   <p className="text-sm text-muted-foreground/60 mt-1 max-w-xs">
@@ -406,7 +407,10 @@ import { Package } from "lucide-react";
 <div className="rounded-md border border-error/30 bg-error/10 p-4" role="alert">
   <p className="text-sm font-medium text-error">Job not found</p>
   <p className="text-sm text-muted-foreground mt-1">
-    This job may have been removed. <Link href="/jobs" className="text-action underline">Back to Jobs</Link>
+    This job may have been removed.{' '}
+    <Link href="/jobs" className="text-action underline">
+      Back to Jobs
+    </Link>
   </p>
 </div>
 ```
@@ -426,21 +430,21 @@ All interactive elements must have visible `:focus-visible` states. shadcn/ui ha
 
 ### Color Contrast
 
-| Combination | Ratio | Status |
-|-------------|-------|--------|
-| White (87%) on #141515 | 15:1 | AAA |
-| White (60%) on #141515 | 10:1 | AAA |
-| White (38%) on #141515 | 6.5:1 | AAA |
-| Niji blue (#2ab9ff) on #141515 | 9:1 | AAA |
+| Combination                    | Ratio | Status |
+| ------------------------------ | ----- | ------ |
+| White (87%) on #141515         | 15:1  | AAA    |
+| White (60%) on #141515         | 10:1  | AAA    |
+| White (38%) on #141515         | 6.5:1 | AAA    |
+| Niji blue (#2ab9ff) on #141515 | 9:1   | AAA    |
 
 ### Keyboard Navigation
 
-| Key | Action |
-|-----|--------|
-| Tab | Move to next focusable element |
-| Shift+Tab | Move to previous element |
-| Enter | Activate button, submit form |
-| Escape | Close modal/dialog |
+| Key        | Action                                 |
+| ---------- | -------------------------------------- |
+| Tab        | Move to next focusable element         |
+| Shift+Tab  | Move to previous element               |
+| Enter      | Activate button, submit form           |
+| Escape     | Close modal/dialog                     |
 | Arrow keys | Navigate within tabs, menus, dropdowns |
 
 ### ARIA Requirements
@@ -470,11 +474,11 @@ Screen Print Pro is designed for shop office desktop use. Optimize for cursor in
 
 ### Breakpoints
 
-| Width | Target |
-|-------|--------|
-| 1280px | Most laptops |
-| 1440px | External monitors |
-| 1920px+ | Large displays |
+| Width   | Target            |
+| ------- | ----------------- |
+| 1280px  | Most laptops      |
+| 1440px  | External monitors |
+| 1920px+ | Large displays    |
 
 ### Layout Patterns
 
@@ -516,7 +520,7 @@ shadcn/ui handles dark mode token mapping automatically. Custom elements should 
 
 ## Version History
 
-| Date | Change |
-|------|--------|
-| 2026-02-04 | Initial guidelines (dbt-playground context) |
+| Date       | Change                                                            |
+| ---------- | ----------------------------------------------------------------- |
+| 2026-02-04 | Initial guidelines (dbt-playground context)                       |
 | 2026-02-07 | Adapted for Screen Print Pro: Tailwind v4 + shadcn/ui + next/font |

@@ -1,46 +1,46 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomSheet } from "@shared/ui/primitives/bottom-sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { Textarea } from "@shared/ui/primitives/textarea";
-import { Switch } from "@shared/ui/primitives/switch";
-import { Label } from "@shared/ui/primitives/label";
+import { useState } from 'react'
+import { BottomSheet } from '@shared/ui/primitives/bottom-sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { Textarea } from '@shared/ui/primitives/textarea'
+import { Switch } from '@shared/ui/primitives/switch'
+import { Label } from '@shared/ui/primitives/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { Send, ShieldAlert, ShieldCheck } from "lucide-react";
+} from '@shared/ui/primitives/select'
+import { Send, ShieldAlert, ShieldCheck } from 'lucide-react'
 
 const channels = [
-  { value: "phone", label: "Phone" },
-  { value: "email", label: "Email" },
-  { value: "text", label: "Text" },
-  { value: "social", label: "Social" },
-  { value: "in-person", label: "In Person" },
-];
+  { value: 'phone', label: 'Phone' },
+  { value: 'email', label: 'Email' },
+  { value: 'text', label: 'Text' },
+  { value: 'social', label: 'Social' },
+  { value: 'in-person', label: 'In Person' },
+]
 
 const noteTypes = [
-  { value: "internal", label: "Internal" },
-  { value: "customer", label: "Customer" },
-];
+  { value: 'internal', label: 'Internal' },
+  { value: 'customer', label: 'Customer' },
+]
 
-interface NoteCaptureProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  jobTitle: string;
-  currentLane: string;
+type NoteCaptureProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  jobTitle: string
+  currentLane: string
   onSave: (data: {
-    content: string;
-    type: "internal" | "customer";
-    channel: string;
-    blockJob?: boolean;
-    blockReason?: string;
-    unblockJob?: boolean;
-  }) => void;
+    content: string
+    type: 'internal' | 'customer'
+    channel: string
+    blockJob?: boolean
+    blockReason?: string
+    unblockJob?: boolean
+  }) => void
 }
 
 export function NoteCapture({
@@ -50,38 +50,32 @@ export function NoteCapture({
   currentLane,
   onSave,
 }: NoteCaptureProps) {
-  const [content, setContent] = useState("");
-  const [noteType, setNoteType] = useState<"internal" | "customer">("internal");
-  const [channel, setChannel] = useState("phone");
-  const [blockToggle, setBlockToggle] = useState(false);
-  const [unblockToggle, setUnblockToggle] = useState(false);
+  const [content, setContent] = useState('')
+  const [noteType, setNoteType] = useState<'internal' | 'customer'>('internal')
+  const [channel, setChannel] = useState('phone')
+  const [blockToggle, setBlockToggle] = useState(false)
+  const [unblockToggle, setUnblockToggle] = useState(false)
 
-  const isBlocked = currentLane === "blocked";
-  const canSave = content.trim().length > 0;
+  const isBlocked = currentLane === 'blocked'
+  const canSave = content.trim().length > 0
 
   const handleSave = () => {
-    if (!canSave) return;
+    if (!canSave) return
     onSave({
       content: content.trim(),
       type: noteType,
       channel,
       blockJob: !isBlocked && blockToggle ? true : undefined,
-      blockReason:
-        !isBlocked && blockToggle ? content.trim() : undefined,
+      blockReason: !isBlocked && blockToggle ? content.trim() : undefined,
       unblockJob: isBlocked && unblockToggle ? true : undefined,
-    });
+    })
     // State reset via conditional rendering — parent renders
     // {open && <NoteCapture />} so React unmounts/remounts.
-    onOpenChange(false);
-  };
+    onOpenChange(false)
+  }
 
   return (
-    <BottomSheet
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Add Note"
-      description={jobTitle}
-    >
+    <BottomSheet open={open} onOpenChange={onOpenChange} title="Add Note" description={jobTitle}>
       <div className="flex flex-col gap-4 p-4">
         <Textarea
           placeholder="Type your note..."
@@ -93,10 +87,7 @@ export function NoteCapture({
 
         {/* Type + Channel row */}
         <div className="flex gap-2">
-          <Select
-            value={noteType}
-            onValueChange={(v) => setNoteType(v as "internal" | "customer")}
-          >
+          <Select value={noteType} onValueChange={(v) => setNoteType(v as 'internal' | 'customer')}>
             <SelectTrigger className="flex-1">
               <SelectValue />
             </SelectTrigger>
@@ -130,15 +121,9 @@ export function NoteCapture({
               <Label htmlFor="block-toggle" className="text-sm font-medium">
                 Block this job
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Note becomes the block reason
-              </p>
+              <p className="text-xs text-muted-foreground">Note becomes the block reason</p>
             </div>
-            <Switch
-              id="block-toggle"
-              checked={blockToggle}
-              onCheckedChange={setBlockToggle}
-            />
+            <Switch id="block-toggle" checked={blockToggle} onCheckedChange={setBlockToggle} />
           </div>
         )}
 
@@ -149,9 +134,7 @@ export function NoteCapture({
               <Label htmlFor="unblock-toggle" className="text-sm font-medium">
                 Unblock this job
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Move back to previous lane
-              </p>
+              <p className="text-xs text-muted-foreground">Move back to previous lane</p>
             </div>
             <Switch
               id="unblock-toggle"
@@ -161,19 +144,15 @@ export function NoteCapture({
           </div>
         )}
 
-        <Button
-          onClick={handleSave}
-          disabled={!canSave}
-          className="min-h-(--mobile-touch-target)"
-        >
+        <Button onClick={handleSave} disabled={!canSave} className="min-h-(--mobile-touch-target)">
           <Send className="mr-2 h-4 w-4" />
           {blockToggle
-            ? "Save Note & Block Job"
+            ? 'Save Note & Block Job'
             : unblockToggle
-              ? "Save Note & Unblock"
-              : "Save Note"}
+              ? 'Save Note & Unblock'
+              : 'Save Note'}
         </Button>
       </div>
     </BottomSheet>
-  );
+  )
 }

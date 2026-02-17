@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const colorSchema = z.object({
   id: z.string(),
@@ -11,6 +11,6 @@ export const colorSchema = z.object({
   swatchTextColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   family: z.string().min(1),
   isFavorite: z.boolean().optional(),
-});
+})
 
-export type Color = z.infer<typeof colorSchema>;
+export type Color = z.infer<typeof colorSchema>

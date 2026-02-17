@@ -1,6 +1,6 @@
 ---
-title: "Invoicing Breadboard"
-subtitle: "UI affordances, code affordances, wiring, and component boundaries for the invoicing vertical — the buildable blueprint before code."
+title: 'Invoicing Breadboard'
+subtitle: 'UI affordances, code affordances, wiring, and component boundaries for the invoicing vertical — the buildable blueprint before code.'
 date: 2026-02-11
 phase: 1
 pipelineName: invoicing
@@ -9,8 +9,8 @@ products: [invoices, quotes, customers]
 tools: []
 stage: breadboard
 tags: [plan, research]
-sessionId: "ba5ae290-306e-47a6-b09b-c2c10320dad0"
-branch: "session/0211-invoicing-breadboard"
+sessionId: 'ba5ae290-306e-47a6-b09b-c2c10320dad0'
+branch: 'session/0211-invoicing-breadboard'
 status: complete
 ---
 
@@ -20,28 +20,28 @@ status: complete
 
 ## At a Glance
 
-| Stat | Value |
-|------|-------|
-| Places | 9 |
-| UI Affordances | 99 |
-| Code Affordances | 44 |
-| Data Stores | 25 |
-| Components | 18 |
-| Build Steps | 13 |
+| Stat             | Value |
+| ---------------- | ----- |
+| Places           | 9     |
+| UI Affordances   | 99    |
+| Code Affordances | 44    |
+| Data Stores      | 25    |
+| Components       | 18    |
+| Build Steps      | 13    |
 
 ## Places (Screens & Modals)
 
-| ID | Name | Type | Route |
-|----|------|------|-------|
-| P1 | Invoices List | Page | /invoices |
-| P2 | Invoice Detail | Page | /invoices/[id] |
-| P2.1 | Record Payment | Sheet | — |
-| P2.2 | Send Reminder | Modal | — |
-| P2.3 | Void Invoice | Dialog | — |
-| P2.4 | Credit Memo | Modal | — |
-| P3 | New Invoice Form | Page | /invoices/new |
-| P3.1 | Review & Send | Sheet | — |
-| P4 | Edit Invoice | Page (Draft only) | /invoices/[id]/edit |
+| ID   | Name             | Type              | Route               |
+| ---- | ---------------- | ----------------- | ------------------- |
+| P1   | Invoices List    | Page              | /invoices           |
+| P2   | Invoice Detail   | Page              | /invoices/[id]      |
+| P2.1 | Record Payment   | Sheet             | —                   |
+| P2.2 | Send Reminder    | Modal             | —                   |
+| P2.3 | Void Invoice     | Dialog            | —                   |
+| P2.4 | Credit Memo      | Modal             | —                   |
+| P3   | New Invoice Form | Page              | /invoices/new       |
+| P3.1 | Review & Send    | Sheet             | —                   |
+| P4   | Edit Invoice     | Page (Draft only) | /invoices/[id]/edit |
 
 ## Key Design Decisions
 
@@ -67,28 +67,28 @@ Toggle between itemized view (every component as separate line) and bundled view
 
 ## Component Reuse from Quoting
 
-| Component | Source | Reuse Strategy |
-|-----------|--------|----------------|
-| StatusBadge | `components/features/` | Extend for invoice statuses |
-| CustomerCombobox | `components/features/` | Reuse as-is |
-| CollapsibleSection | `quotes/_components/` | Reuse for form sections |
-| PricingSummary | `quotes/_components/` | Pattern reference (new impl) |
-| EmailPreviewModal | `quotes/_components/` | Pattern reference for reminders |
+| Component          | Source                 | Reuse Strategy                  |
+| ------------------ | ---------------------- | ------------------------------- |
+| StatusBadge        | `components/features/` | Extend for invoice statuses     |
+| CustomerCombobox   | `components/features/` | Reuse as-is                     |
+| CollapsibleSection | `quotes/_components/`  | Reuse for form sections         |
+| PricingSummary     | `quotes/_components/`  | Pattern reference (new impl)    |
+| EmailPreviewModal  | `quotes/_components/`  | Pattern reference for reminders |
 
 ## New Components
 
-| Component | Purpose |
-|-----------|---------|
-| InvoiceStatsBar | 4 KPI cards: Outstanding, Overdue, Paid This Month, Avg Days to Pay |
-| InvoicesDataTable | Filterable table with smart view tabs and batch operations |
-| InvoiceForm | Create/edit form shared between new + edit pages |
-| PaymentLedger | Table of payments with running balance |
-| RecordPaymentSheet | Slide-out form for recording payments |
-| DepositSection | Smart deposit with % / flat toggle |
-| ChangeDiffPanel | Quote vs invoice change tracking |
-| ReminderTimeline | Timeline of sent/scheduled payment reminders |
-| CreateCreditMemoModal | Formal CM document creation |
-| OverdueBadge | Shared badge with days count + pulse animation |
+| Component             | Purpose                                                             |
+| --------------------- | ------------------------------------------------------------------- |
+| InvoiceStatsBar       | 4 KPI cards: Outstanding, Overdue, Paid This Month, Avg Days to Pay |
+| InvoicesDataTable     | Filterable table with smart view tabs and batch operations          |
+| InvoiceForm           | Create/edit form shared between new + edit pages                    |
+| PaymentLedger         | Table of payments with running balance                              |
+| RecordPaymentSheet    | Slide-out form for recording payments                               |
+| DepositSection        | Smart deposit with % / flat toggle                                  |
+| ChangeDiffPanel       | Quote vs invoice change tracking                                    |
+| ReminderTimeline      | Timeline of sent/scheduled payment reminders                        |
+| CreateCreditMemoModal | Formal CM document creation                                         |
+| OverdueBadge          | Shared badge with days count + pulse animation                      |
 
 ## Build Order
 
@@ -110,16 +110,16 @@ Toggle between itemized view (every component as separate line) and bundled view
 
 ## Deferred to Phase 2
 
-| Feature | Why Deferred |
-|---------|-------------|
-| PDF generation | Requires library (react-pdf), not critical for mock |
-| Real email sending | Requires backend + SMTP |
-| QuickBooks sync | Requires OAuth + QBO API |
-| Square payment gateway | Requires Square SDK |
-| Late fee auto-calculation | Schema supports, UI deferred |
-| Read receipts | Requires customer portal |
-| Customer portal | Separate vertical per decision #7 |
-| Recurring invoices | Contract customer feature, Phase 2 |
+| Feature                   | Why Deferred                                        |
+| ------------------------- | --------------------------------------------------- |
+| PDF generation            | Requires library (react-pdf), not critical for mock |
+| Real email sending        | Requires backend + SMTP                             |
+| QuickBooks sync           | Requires OAuth + QBO API                            |
+| Square payment gateway    | Requires Square SDK                                 |
+| Late fee auto-calculation | Schema supports, UI deferred                        |
+| Read receipts             | Requires customer portal                            |
+| Customer portal           | Separate vertical per decision #7                   |
+| Recurring invoices        | Contract customer feature, Phase 2                  |
 
 ## Input Documents
 

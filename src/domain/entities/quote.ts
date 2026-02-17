@@ -1,43 +1,33 @@
-import { z } from "zod";
-import { dtfLineItemSchema } from "./dtf-line-item";
-import { sheetCalculationSchema } from "./dtf-sheet-calculation";
+import { z } from 'zod'
+import { dtfLineItemSchema } from './dtf-line-item'
+import { sheetCalculationSchema } from './dtf-sheet-calculation'
 
-export const quoteStatusEnum = z.enum([
-  "draft",
-  "sent",
-  "accepted",
-  "declined",
-  "revised",
-]);
+export const quoteStatusEnum = z.enum(['draft', 'sent', 'accepted', 'declined', 'revised'])
 
-export const serviceTypeEnum = z.enum([
-  "screen-print",
-  "dtf",
-  "embroidery",
-]);
+export const serviceTypeEnum = z.enum(['screen-print', 'dtf', 'embroidery'])
 
 export const printLocationDetailSchema = z.object({
   location: z.string().min(1),
   colorCount: z.number().int().positive(),
   artworkId: z.string().optional(),
   setupFee: z.number().nonnegative(),
-});
+})
 
 export const discountSchema = z.object({
   label: z.string().min(1),
   amount: z.number().positive(),
-  type: z.enum(["manual", "contract", "volume"]),
-});
+  type: z.enum(['manual', 'contract', 'volume']),
+})
 
 export const quoteLineItemSchema = z.object({
   garmentId: z.string().min(1),
   colorId: z.string().min(1),
   sizes: z.record(z.string(), z.number().int().nonnegative()),
-  serviceType: serviceTypeEnum.default("screen-print"),
+  serviceType: serviceTypeEnum.default('screen-print'),
   printLocationDetails: z.array(printLocationDetailSchema),
   unitPrice: z.number().nonnegative(),
   lineTotal: z.number().nonnegative(),
-});
+})
 
 export const quoteSchema = z.object({
   id: z.string().uuid(),
@@ -60,11 +50,11 @@ export const quoteSchema = z.object({
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime().optional(),
   sentAt: z.string().datetime().optional(),
-});
+})
 
-export type QuoteStatus = z.infer<typeof quoteStatusEnum>;
-export type ServiceType = z.infer<typeof serviceTypeEnum>;
-export type PrintLocationDetail = z.infer<typeof printLocationDetailSchema>;
-export type Discount = z.infer<typeof discountSchema>;
-export type QuoteLineItem = z.infer<typeof quoteLineItemSchema>;
-export type Quote = z.infer<typeof quoteSchema>;
+export type QuoteStatus = z.infer<typeof quoteStatusEnum>
+export type ServiceType = z.infer<typeof serviceTypeEnum>
+export type PrintLocationDetail = z.infer<typeof printLocationDetailSchema>
+export type Discount = z.infer<typeof discountSchema>
+export type QuoteLineItem = z.infer<typeof quoteLineItemSchema>
+export type Quote = z.infer<typeof quoteSchema>

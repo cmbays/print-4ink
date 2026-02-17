@@ -102,21 +102,21 @@ The props interface stays the same across all maturity levels:
 
 ```tsx
 interface GarmentMockupProps {
-  garmentCategory: GarmentCategory;     // "t-shirts" | "fleece" | etc.
-  colorHex: string;                      // Target garment color
-  artworkPlacements: ArtworkPlacement[]; // Artwork + position pairs
-  view: MockupView;                      // "front" | "back" | "left-sleeve" | etc.
-  size: "xs" | "sm" | "md" | "lg";      // Display size variant
-  className?: string;                    // Tailwind overrides
+  garmentCategory: GarmentCategory // "t-shirts" | "fleece" | etc.
+  colorHex: string // Target garment color
+  artworkPlacements: ArtworkPlacement[] // Artwork + position pairs
+  view: MockupView // "front" | "back" | "left-sleeve" | etc.
+  size: 'xs' | 'sm' | 'md' | 'lg' // Display size variant
+  className?: string // Tailwind overrides
 }
 
 interface ArtworkPlacement {
-  artworkUrl: string;     // URL to artwork image
-  position: string;       // "front-chest" | "full-back" | etc.
-  scale?: number;         // 1.0 = default fit
-  offsetX?: number;       // % offset from zone center
-  offsetY?: number;       // % offset from zone center
-  rotation?: number;      // degrees (Level 3+)
+  artworkUrl: string // URL to artwork image
+  position: string // "front-chest" | "full-back" | etc.
+  scale?: number // 1.0 = default fit
+  offsetX?: number // % offset from zone center
+  offsetY?: number // % offset from zone center
+  rotation?: number // degrees (Level 3+)
 }
 ```
 
@@ -162,8 +162,10 @@ SVG `<image>` + `<clipPath>` constrains artwork to print zones:
   {/* Artwork overlay — multiply blend for "printed" look */}
   <image
     href={artworkUrl}
-    x={zone.x} y={zone.y}
-    width={zone.width} height={zone.height}
+    x={zone.x}
+    y={zone.y}
+    width={zone.width}
+    height={zone.height}
     clipPath="url(#front-chest-zone)"
     preserveAspectRatio="xMidYMid meet"
     style={{ mixBlendMode: 'multiply' }}
@@ -177,69 +179,69 @@ SVG `<image>` + `<clipPath>` constrains artwork to print zones:
 
 ```typescript
 // lib/schemas/mockup-template.ts
-import { z } from 'zod';
-import { garmentCategoryEnum } from './garment';
+import { z } from 'zod'
+import { garmentCategoryEnum } from './garment'
 
-export const mockupViewEnum = z.enum([
-  'front', 'back', 'left-sleeve', 'right-sleeve'
-]);
+export const mockupViewEnum = z.enum(['front', 'back', 'left-sleeve', 'right-sleeve'])
 
 export const printZoneSchema = z.object({
-  position: z.string(),            // "front-chest", "full-back", etc.
-  x: z.number().min(0).max(100),   // % from left of template viewBox
-  y: z.number().min(0).max(100),   // % from top
+  position: z.string(), // "front-chest", "full-back", etc.
+  x: z.number().min(0).max(100), // % from left of template viewBox
+  y: z.number().min(0).max(100), // % from top
   width: z.number().min(0).max(100),
   height: z.number().min(0).max(100),
-});
+})
 
 export const mockupTemplateSchema = z.object({
   id: z.string().uuid(),
   garmentCategory: garmentCategoryEnum,
   view: mockupViewEnum,
-  svgPath: z.string(),              // Path to SVG asset
+  svgPath: z.string(), // Path to SVG asset
   printZones: z.array(printZoneSchema),
   viewBoxWidth: z.number().positive(),
   viewBoxHeight: z.number().positive(),
-});
+})
 
-export type MockupView = z.infer<typeof mockupViewEnum>;
-export type PrintZone = z.infer<typeof printZoneSchema>;
-export type MockupTemplate = z.infer<typeof mockupTemplateSchema>;
+export type MockupView = z.infer<typeof mockupViewEnum>
+export type PrintZone = z.infer<typeof printZoneSchema>
+export type MockupTemplate = z.infer<typeof mockupTemplateSchema>
 ```
 
 ### MockupRender (Phase 2 — stored composites)
 
 ```typescript
 // lib/schemas/mockup-render.ts
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const mockupRenderSchema = z.object({
   id: z.string().uuid(),
   garmentCatalogId: z.string(),
   colorHex: z.string(),
-  artworkPlacements: z.array(z.object({
-    artworkId: z.string(),
-    printZonePosition: z.string(),
-    scale: z.number().default(1.0),
-    offsetX: z.number().default(0),
-    offsetY: z.number().default(0),
-  })),
-  imageUrl: z.string().url(),        // Stored composite image
-  thumbnailUrl: z.string().url(),    // 80px version
-  artworkVersionHash: z.string(),    // For cache invalidation
+  artworkPlacements: z.array(
+    z.object({
+      artworkId: z.string(),
+      printZonePosition: z.string(),
+      scale: z.number().default(1.0),
+      offsetX: z.number().default(0),
+      offsetY: z.number().default(0),
+    })
+  ),
+  imageUrl: z.string().url(), // Stored composite image
+  thumbnailUrl: z.string().url(), // 80px version
+  artworkVersionHash: z.string(), // For cache invalidation
   renderedAt: z.string().datetime(),
   entityType: z.enum(['quote', 'job']),
   entityId: z.string().uuid(),
-});
+})
 
-export type MockupRender = z.infer<typeof mockupRenderSchema>;
+export type MockupRender = z.infer<typeof mockupRenderSchema>
 ```
 
 ### Existing Schema Changes
 
-| Schema | Field | Type | Purpose |
-|--------|-------|------|---------|
-| `QuoteLineItem` | `mockupRenderIds` | `string[]` (optional) | Links to stored renders (Phase 2) |
+| Schema           | Field               | Type                  | Purpose                              |
+| ---------------- | ------------------- | --------------------- | ------------------------------------ |
+| `QuoteLineItem`  | `mockupRenderIds`   | `string[]` (optional) | Links to stored renders (Phase 2)    |
 | `GarmentCatalog` | `mockupTemplateIds` | `string[]` (optional) | Available templates for this garment |
 
 These are Phase 2 additions. Phase 1 computes mockups on-the-fly from existing data.
@@ -248,17 +250,17 @@ These are Phase 2 additions. Phase 1 computes mockups on-the-fly from existing d
 
 Pre-defined zones per garment category with industry-standard dimensions:
 
-| Zone | Real Size | Default View | Common Use |
-|------|-----------|-------------|------------|
-| `front-chest` | 6-10" x 6-8" | front | Brand logos, statements |
-| `left-chest` | 3-4.5" x 3-4.5" | front | Corporate logos, monograms |
-| `right-chest` | 3-4.5" x 3-4.5" | front | Secondary logos |
-| `full-front` | 12" x 10-14" | front | Main event/team designs |
-| `full-back` | 12" x 10-14" | back | Large designs, names/numbers |
-| `upper-back` | 10-14" x 1-6" | back | Names, one-liners |
-| `nape` | 1-3" x 1-3" | back | Tag replacement |
-| `left-sleeve` | 1-4" x 1-4" | left-sleeve | Small logos, flags |
-| `right-sleeve` | 1-4" x 1-4" | right-sleeve | Small logos, flags |
+| Zone           | Real Size       | Default View | Common Use                   |
+| -------------- | --------------- | ------------ | ---------------------------- |
+| `front-chest`  | 6-10" x 6-8"    | front        | Brand logos, statements      |
+| `left-chest`   | 3-4.5" x 3-4.5" | front        | Corporate logos, monograms   |
+| `right-chest`  | 3-4.5" x 3-4.5" | front        | Secondary logos              |
+| `full-front`   | 12" x 10-14"    | front        | Main event/team designs      |
+| `full-back`    | 12" x 10-14"    | back         | Large designs, names/numbers |
+| `upper-back`   | 10-14" x 1-6"   | back         | Names, one-liners            |
+| `nape`         | 1-3" x 1-3"     | back         | Tag replacement              |
+| `left-sleeve`  | 1-4" x 1-4"     | left-sleeve  | Small logos, flags           |
+| `right-sleeve` | 1-4" x 1-4"     | right-sleeve | Small logos, flags           |
 
 Stored in `lib/constants/print-zones.ts` with percentage coordinates per garment category.
 
@@ -322,12 +324,12 @@ This covers 95% of real-world screen printing jobs in ~10 seconds.
 
 ### Display Size Hierarchy
 
-| Size | Pixels | Context | Detail |
-|------|--------|---------|--------|
-| `xs` | 40-48px | Kanban cards, table rows | Garment silhouette + color |
-| `sm` | 64-80px | Quote line items | Artwork clearly visible |
-| `md` | 280-320px | Job detail, quote detail | Full detail, print location tabs |
-| `lg` | 400-600px | Editor, customer approval | Interactive controls, zoom |
+| Size | Pixels    | Context                   | Detail                           |
+| ---- | --------- | ------------------------- | -------------------------------- |
+| `xs` | 40-48px   | Kanban cards, table rows  | Garment silhouette + color       |
+| `sm` | 64-80px   | Quote line items          | Artwork clearly visible          |
+| `md` | 280-320px | Job detail, quote detail  | Full detail, print location tabs |
+| `lg` | 400-600px | Editor, customer approval | Interactive controls, zoom       |
 
 All sizes render from the same SVG — vector scales naturally.
 
@@ -335,27 +337,29 @@ All sizes render from the same SVG — vector scales naturally.
 
 ### Where Mockups Appear
 
-| Screen | Size | Interaction | Phase |
-|--------|------|-------------|-------|
-| Quote line item (detail view) | `sm` | Click to expand | 1 |
-| Quote creation (preview panel) | `md` | Live preview as data changes | 1 |
-| Job detail ("What We're Printing") | `md` | Front/back toggle, approval badges | 1 |
-| Kanban production board | `xs` | None — visual identifier | 1 |
-| Customer approval page | `lg` | Zoom, approve/reject controls | 2 |
-| Quote PDF/email | `sm` | Static image (server-rendered) | 2 |
-| Invoice detail | `sm` | Click to expand | 2 |
-| Screen room (screen → job link) | `sm` | Artwork reference | 2 |
-| Garment catalog (recent artwork) | `sm` | Preview with recent artwork | 3 |
-| Dashboard recent jobs | `xs` | Visual identifier | 2 |
+| Screen                             | Size | Interaction                        | Phase |
+| ---------------------------------- | ---- | ---------------------------------- | ----- |
+| Quote line item (detail view)      | `sm` | Click to expand                    | 1     |
+| Quote creation (preview panel)     | `md` | Live preview as data changes       | 1     |
+| Job detail ("What We're Printing") | `md` | Front/back toggle, approval badges | 1     |
+| Kanban production board            | `xs` | None — visual identifier           | 1     |
+| Customer approval page             | `lg` | Zoom, approve/reject controls      | 2     |
+| Quote PDF/email                    | `sm` | Static image (server-rendered)     | 2     |
+| Invoice detail                     | `sm` | Click to expand                    | 2     |
+| Screen room (screen → job link)    | `sm` | Artwork reference                  | 2     |
+| Garment catalog (recent artwork)   | `sm` | Preview with recent artwork        | 3     |
+| Dashboard recent jobs              | `xs` | Visual identifier                  | 2     |
 
 ### Existing Component to Evolve
 
 The current `ArtworkPreview` component (`app/(dashboard)/quotes/_components/ArtworkPreview.tsx`) is the seed:
+
 - Takes `garmentColor` (hex) → flat color square
 - Takes `artworkThumbnailUrl` → centered overlay
 - Takes `location` → text label
 
 `GarmentMockup` is its evolution:
+
 - `garmentColor` → `feColorMatrix` on real garment SVG template
 - `artworkThumbnailUrl` → SVG `<image>` at accurate print zone coordinates
 - `location` → maps to `PrintZone` geometry
@@ -381,6 +385,7 @@ public/mockup-templates/
 ```
 
 Requirements:
+
 - Greyscale with shading/highlights (for color tinting to look realistic)
 - Transparent background
 - Clean paths suitable for `feColorMatrix` filtering
@@ -416,6 +421,7 @@ User selects "Gildan 5000, Black"
 ### Print Zone Mapping for Photos
 
 Photos have different perspectives than SVG templates. Phase 2 needs a "template calibration" step:
+
 - For each frequently used garment photo, define print zones manually (one-time setup)
 - Fallback: use category-level default zones for uncalibrated photos
 - Store calibration in `MockupTemplate` schema (same schema, different source image)

@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import { useState, useMemo, useCallback } from "react";
-import { Palette, Package } from "lucide-react";
+import { useState, useMemo, useCallback } from 'react'
+import { Palette, Package } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@shared/ui/primitives/sheet";
-import { ScrollArea } from "@shared/ui/primitives/scroll-area";
-import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
-import { InheritanceToggle } from "@/components/features/InheritanceToggle";
-import { InheritanceDetail } from "@/components/features/InheritanceDetail";
-import { GarmentMiniCard } from "@/components/features/GarmentMiniCard";
-import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
-import { cn } from "@shared/lib/cn";
+} from '@shared/ui/primitives/sheet'
+import { ScrollArea } from '@shared/ui/primitives/scroll-area'
+import { FavoritesColorSection } from '@/components/features/FavoritesColorSection'
+import { InheritanceToggle } from '@/components/features/InheritanceToggle'
+import { InheritanceDetail } from '@/components/features/InheritanceDetail'
+import { GarmentMiniCard } from '@/components/features/GarmentMiniCard'
+import { RemovalConfirmationDialog } from '@/components/features/RemovalConfirmationDialog'
+import { cn } from '@shared/lib/cn'
 import {
   resolveEffectiveFavorites,
   getInheritanceChain,
@@ -25,31 +25,34 @@ import {
   removeFromAll,
   removeFromLevelOnly,
   removeFromSelected,
-} from "@domain/rules/customer.rules";
-import type { ImpactPreview } from "@domain/rules/customer.rules";
-import { getColorsMutable } from "@infra/repositories/colors";
-import { getGarmentCatalogMutable } from "@infra/repositories/garments";
-import { getBrandPreferencesMutable, getAutoPropagationConfigMutable } from "@infra/repositories/settings";
-import { getCustomersMutable } from "@infra/repositories/customers";
-import type { Color } from "@domain/entities/color";
-import { brandPreferenceSchema } from "@domain/entities/color-preferences";
-import type { InheritanceMode } from "@domain/entities/color-preferences";
+} from '@domain/rules/customer.rules'
+import type { ImpactPreview } from '@domain/rules/customer.rules'
+import { getColorsMutable } from '@infra/repositories/colors'
+import { getGarmentCatalogMutable } from '@infra/repositories/garments'
+import {
+  getBrandPreferencesMutable,
+  getAutoPropagationConfigMutable,
+} from '@infra/repositories/settings'
+import { getCustomersMutable } from '@infra/repositories/customers'
+import type { Color } from '@domain/entities/color'
+import { brandPreferenceSchema } from '@domain/entities/color-preferences'
+import type { InheritanceMode } from '@domain/entities/color-preferences'
 
-const catalogColors = getColorsMutable();
-const garmentCatalog = getGarmentCatalogMutable();
-const brandPreferences = getBrandPreferencesMutable();
-const customers = getCustomersMutable();
+const catalogColors = getColorsMutable()
+const garmentCatalog = getGarmentCatalogMutable()
+const brandPreferences = getBrandPreferencesMutable()
+const customers = getCustomersMutable()
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
 type BrandDetailDrawerProps = {
-  brandName: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onGarmentClick?: (garmentId: string) => void;
-};
+  brandName: string
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onGarmentClick?: (garmentId: string) => void
+}
 
 // ---------------------------------------------------------------------------
 // Component
@@ -62,45 +65,45 @@ export function BrandDetailDrawer({
   onGarmentClick,
 }: BrandDetailDrawerProps) {
   // Version counter to force re-render after mock data mutations
-  const [version, setVersion] = useState(0);
+  const [version, setVersion] = useState(0)
   const [pendingRemoval, setPendingRemoval] = useState<{
-    colorId: string;
-    color: Color;
-    impact: ImpactPreview;
-  } | null>(null);
+    colorId: string
+    color: Color
+    impact: ImpactPreview
+  } | null>(null)
 
   // N24: getBrandGarments — filter catalog by brand name
   // version forces recomputation after in-place mock data mutations (Phase 1 only)
   const brandGarments = useMemo(
     () => garmentCatalog.filter((g) => g.brand === brandName),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [brandName, version],
-  );
+    [brandName, version]
+  )
 
   // Get or initialize brand preference
   const brandPref = useMemo(
     () => {
-      const existing = getBrandPreference(brandName, brandPreferences);
-      if (existing) return existing;
+      const existing = getBrandPreference(brandName, brandPreferences)
+      if (existing) return existing
       // Brand has no explicit preference — construct validated fallback
       return brandPreferenceSchema.parse({
         brandName,
-        inheritMode: "inherit",
+        inheritMode: 'inherit',
         favoriteColorIds: [],
         explicitColorIds: [],
         removedInheritedColorIds: [],
-      });
+      })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [brandName, version],
-  );
+    [brandName, version]
+  )
 
   // Resolve effective favorites for this brand
   const effectiveFavoriteIds = useMemo(
-    () => resolveEffectiveFavorites("brand", brandName, catalogColors, customers, brandPreferences),
+    () => resolveEffectiveFavorites('brand', brandName, catalogColors, customers, brandPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [brandName, version],
-  );
+    [brandName, version]
+  )
 
   // Resolve Color objects for favorites
   const favoriteColors = useMemo(
@@ -108,202 +111,225 @@ export function BrandDetailDrawer({
       effectiveFavoriteIds
         .map((id) => catalogColors.find((c) => c.id === id))
         .filter((c): c is Color => c != null),
-    [effectiveFavoriteIds],
-  );
+    [effectiveFavoriteIds]
+  )
 
   // N20: getInheritanceChain for the disclosure section
   const inheritanceChain = useMemo(
-    () => getInheritanceChain("brand", brandName, catalogColors, customers, brandPreferences),
+    () => getInheritanceChain('brand', brandName, catalogColors, customers, brandPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [brandName, version],
-  );
+    [brandName, version]
+  )
 
   // Badge data for FavoritesColorSection (U25)
   const badgeData = useMemo(() => {
-    if (brandPref.inheritMode === "inherit") return undefined;
-    const map = new Map<string, "inherited" | "added">();
-    const explicitSet = new Set(brandPref.explicitColorIds);
+    if (brandPref.inheritMode === 'inherit') return undefined
+    const map = new Map<string, 'inherited' | 'added'>()
+    const explicitSet = new Set(brandPref.explicitColorIds)
     for (const colorId of effectiveFavoriteIds) {
-      map.set(colorId, explicitSet.has(colorId) ? "added" : "inherited");
+      map.set(colorId, explicitSet.has(colorId) ? 'added' : 'inherited')
     }
-    return map;
-  }, [brandPref, effectiveFavoriteIds]);
+    return map
+  }, [brandPref, effectiveFavoriteIds])
 
   // -- Handlers ---------------------------------------------------------------
 
   // N7: setBrandInheritMode — toggle between 'inherit' and 'customize'
   const handleInheritModeChange = useCallback(
     (mode: InheritanceMode) => {
-      const existing = brandPreferences.find((b) => b.brandName === brandName);
+      const existing = brandPreferences.find((b) => b.brandName === brandName)
 
-      if (mode === "customize" && (!existing || existing.inheritMode === "inherit")) {
+      if (mode === 'customize' && (!existing || existing.inheritMode === 'inherit')) {
         // Switching to customize: copy current effective favorites as starting set
-        const currentEffective = resolveEffectiveFavorites("brand", brandName, catalogColors, customers, brandPreferences);
+        const currentEffective = resolveEffectiveFavorites(
+          'brand',
+          brandName,
+          catalogColors,
+          customers,
+          brandPreferences
+        )
 
         if (existing) {
-          existing.inheritMode = "customize";
-          existing.favoriteColorIds = [...currentEffective];
-          existing.explicitColorIds = [];
-          existing.removedInheritedColorIds = [];
+          existing.inheritMode = 'customize'
+          existing.favoriteColorIds = [...currentEffective]
+          existing.explicitColorIds = []
+          existing.removedInheritedColorIds = []
         } else {
           // Create new brand preference entry (Zod-validated)
           brandPreferences.push(
             brandPreferenceSchema.parse({
               brandName,
-              inheritMode: "customize",
+              inheritMode: 'customize',
               favoriteColorIds: [...currentEffective],
               explicitColorIds: [],
               removedInheritedColorIds: [],
-            }),
-          );
+            })
+          )
         }
-      } else if (mode === "inherit" && existing) {
-        existing.inheritMode = "inherit";
-        existing.favoriteColorIds = [];
-        existing.explicitColorIds = [];
-        existing.removedInheritedColorIds = [];
+      } else if (mode === 'inherit' && existing) {
+        existing.inheritMode = 'inherit'
+        existing.favoriteColorIds = []
+        existing.explicitColorIds = []
+        existing.removedInheritedColorIds = []
       }
 
-      setVersion((v) => v + 1);
+      setVersion((v) => v + 1)
     },
-    [brandName],
-  );
+    [brandName]
+  )
 
   // Shared: apply brand-level removal (extracted so dialog handlers can reuse)
   const applyBrandRemoval = useCallback(
     (colorId: string) => {
-      const pref = brandPreferences.find((b) => b.brandName === brandName);
-      if (!pref || pref.inheritMode === "inherit") return;
+      const pref = brandPreferences.find((b) => b.brandName === brandName)
+      if (!pref || pref.inheritMode === 'inherit') return
 
-      const globalFavoriteIds = resolveEffectiveFavorites("global", undefined, catalogColors, customers, brandPreferences);
-      const isGlobalFavorite = globalFavoriteIds.includes(colorId);
+      const globalFavoriteIds = resolveEffectiveFavorites(
+        'global',
+        undefined,
+        catalogColors,
+        customers,
+        brandPreferences
+      )
+      const isGlobalFavorite = globalFavoriteIds.includes(colorId)
 
-      pref.favoriteColorIds = pref.favoriteColorIds.filter((id) => id !== colorId);
-      pref.explicitColorIds = pref.explicitColorIds.filter((id) => id !== colorId);
+      pref.favoriteColorIds = pref.favoriteColorIds.filter((id) => id !== colorId)
+      pref.explicitColorIds = pref.explicitColorIds.filter((id) => id !== colorId)
 
       if (isGlobalFavorite && !pref.removedInheritedColorIds.includes(colorId)) {
-        pref.removedInheritedColorIds.push(colorId);
+        pref.removedInheritedColorIds.push(colorId)
       }
 
-      setVersion((v) => v + 1);
+      setVersion((v) => v + 1)
     },
-    [brandName],
-  );
+    [brandName]
+  )
 
   // N8: toggleBrandFavorite — add/remove color from brand favorites
   const handleToggleFavorite = useCallback(
     (colorId: string) => {
-      const pref = brandPreferences.find((b) => b.brandName === brandName);
-      if (!pref || pref.inheritMode === "inherit") return;
+      const pref = brandPreferences.find((b) => b.brandName === brandName)
+      if (!pref || pref.inheritMode === 'inherit') return
 
-      const isFavorite = pref.favoriteColorIds.includes(colorId);
+      const isFavorite = pref.favoriteColorIds.includes(colorId)
 
       if (isFavorite) {
         // N8→P4: check impact before removing
-        const impact = getImpactPreview("brand", colorId, customers, brandPreferences);
+        const impact = getImpactPreview('brand', colorId, customers, brandPreferences)
         if (!impact.isStub && (impact.supplierCount > 0 || impact.customerCount > 0)) {
           // Open RemovalConfirmationDialog — don't remove yet
-          const color = catalogColors.find((c) => c.id === colorId);
+          const color = catalogColors.find((c) => c.id === colorId)
           if (!color) {
             // Catalog color missing — remove stale reference directly rather than showing broken dialog
-            console.warn(`[BrandDetailDrawer] Color ${colorId} not found in catalog — removing stale brand preference reference`);
-            applyBrandRemoval(colorId);
-            return;
+            console.warn(
+              `[BrandDetailDrawer] Color ${colorId} not found in catalog — removing stale brand preference reference`
+            )
+            applyBrandRemoval(colorId)
+            return
           }
-          setPendingRemoval({ colorId, color, impact });
-          return;
+          setPendingRemoval({ colorId, color, impact })
+          return
         }
         // No children affected (or stub data) — remove directly
-        applyBrandRemoval(colorId);
+        applyBrandRemoval(colorId)
       } else {
         // Adding
-        const globalFavoriteIds = resolveEffectiveFavorites("global", undefined, catalogColors, customers, brandPreferences);
-        const isGlobalFavorite = globalFavoriteIds.includes(colorId);
+        const globalFavoriteIds = resolveEffectiveFavorites(
+          'global',
+          undefined,
+          catalogColors,
+          customers,
+          brandPreferences
+        )
+        const isGlobalFavorite = globalFavoriteIds.includes(colorId)
 
-        pref.favoriteColorIds.push(colorId);
+        pref.favoriteColorIds.push(colorId)
 
         if (!isGlobalFavorite && !pref.explicitColorIds.includes(colorId)) {
-          pref.explicitColorIds.push(colorId);
+          pref.explicitColorIds.push(colorId)
         }
 
-        pref.removedInheritedColorIds = pref.removedInheritedColorIds.filter(
-          (id) => id !== colorId,
-        );
+        pref.removedInheritedColorIds = pref.removedInheritedColorIds.filter((id) => id !== colorId)
 
         // N22: propagateAddition for brand level
-        propagateAddition("brand", colorId, brandPreferences, customers, getAutoPropagationConfigMutable());
+        propagateAddition(
+          'brand',
+          colorId,
+          brandPreferences,
+          customers,
+          getAutoPropagationConfigMutable()
+        )
 
-        setVersion((v) => v + 1);
+        setVersion((v) => v + 1)
       }
     },
-    [brandName, applyBrandRemoval],
-  );
+    [brandName, applyBrandRemoval]
+  )
 
   // P4 action handlers — called from RemovalConfirmationDialog
   const handleRemoveAll = useCallback(() => {
-    if (!pendingRemoval) return;
-    applyBrandRemoval(pendingRemoval.colorId);
-    removeFromAll("brand", pendingRemoval.colorId, brandPreferences, customers);
-    setPendingRemoval(null);
-  }, [pendingRemoval, applyBrandRemoval]);
+    if (!pendingRemoval) return
+    applyBrandRemoval(pendingRemoval.colorId)
+    removeFromAll('brand', pendingRemoval.colorId, brandPreferences, customers)
+    setPendingRemoval(null)
+  }, [pendingRemoval, applyBrandRemoval])
 
   const handleRemoveLevelOnly = useCallback(() => {
-    if (!pendingRemoval) return;
-    applyBrandRemoval(pendingRemoval.colorId);
-    removeFromLevelOnly("brand", pendingRemoval.colorId);
-    setPendingRemoval(null);
-  }, [pendingRemoval, applyBrandRemoval]);
+    if (!pendingRemoval) return
+    applyBrandRemoval(pendingRemoval.colorId)
+    removeFromLevelOnly('brand', pendingRemoval.colorId)
+    setPendingRemoval(null)
+  }, [pendingRemoval, applyBrandRemoval])
 
   const handleRemoveSelected = useCallback(
     (brandNames: string[], customerCompanies: string[]) => {
-      if (!pendingRemoval) return;
-      applyBrandRemoval(pendingRemoval.colorId);
-      removeFromSelected("brand", pendingRemoval.colorId, brandNames, customerCompanies, brandPreferences, customers);
-      setPendingRemoval(null);
+      if (!pendingRemoval) return
+      applyBrandRemoval(pendingRemoval.colorId)
+      removeFromSelected(
+        'brand',
+        pendingRemoval.colorId,
+        brandNames,
+        customerCompanies,
+        brandPreferences,
+        customers
+      )
+      setPendingRemoval(null)
     },
-    [pendingRemoval, applyBrandRemoval],
-  );
+    [pendingRemoval, applyBrandRemoval]
+  )
 
   // N9: restoreInheritedColor — remove from removedInheritedColorIds
   const handleRestoreColor = useCallback(
     (colorId: string) => {
-      const pref = brandPreferences.find((b) => b.brandName === brandName);
-      if (!pref) return;
+      const pref = brandPreferences.find((b) => b.brandName === brandName)
+      if (!pref) return
 
-      pref.removedInheritedColorIds = pref.removedInheritedColorIds.filter(
-        (id) => id !== colorId,
-      );
+      pref.removedInheritedColorIds = pref.removedInheritedColorIds.filter((id) => id !== colorId)
 
       // Re-add to favoriteColorIds if not already present
       if (!pref.favoriteColorIds.includes(colorId)) {
-        pref.favoriteColorIds.push(colorId);
+        pref.favoriteColorIds.push(colorId)
       }
 
-      setVersion((v) => v + 1);
+      setVersion((v) => v + 1)
     },
-    [brandName],
-  );
+    [brandName]
+  )
 
   // -- Render -----------------------------------------------------------------
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full md:max-w-md p-0 flex flex-col"
-      >
+      <SheetContent side="right" className="w-full md:max-w-md p-0 flex flex-col">
         {/* U21: Brand name + garment count header */}
         <SheetHeader className="border-b border-border px-4 py-3">
           <SheetTitle className="text-base">
             {brandName}
             <span className="ml-2 text-sm font-normal text-muted-foreground">
-              {brandGarments.length}{" "}
-              {brandGarments.length === 1 ? "garment" : "garments"}
+              {brandGarments.length} {brandGarments.length === 1 ? 'garment' : 'garments'}
             </span>
           </SheetTitle>
-          <SheetDescription className="sr-only">
-            Color preferences for {brandName}
-          </SheetDescription>
+          <SheetDescription className="sr-only">Color preferences for {brandName}</SheetDescription>
         </SheetHeader>
 
         <ScrollArea className="flex-1">
@@ -325,7 +351,7 @@ export function BrandDetailDrawer({
                 </span>
               </h3>
 
-              {brandPref.inheritMode === "inherit" ? (
+              {brandPref.inheritMode === 'inherit' ? (
                 // Inheriting: read-only view of global defaults
                 <FavoritesColorSection
                   favorites={favoriteColors}
@@ -348,11 +374,7 @@ export function BrandDetailDrawer({
             {/* U26-U28: InheritanceDetail — progressive disclosure */}
             <InheritanceDetail
               chain={inheritanceChain}
-              onRestore={
-                brandPref.inheritMode === "customize"
-                  ? handleRestoreColor
-                  : undefined
-              }
+              onRestore={brandPref.inheritMode === 'customize' ? handleRestoreColor : undefined}
             />
 
             {/* U29: Brand garment list — mini-cards */}
@@ -360,9 +382,7 @@ export function BrandDetailDrawer({
               <h3 className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 <Package size={14} aria-hidden="true" />
                 Garments
-                <span className="text-muted-foreground/60">
-                  ({brandGarments.length})
-                </span>
+                <span className="text-muted-foreground/60">({brandGarments.length})</span>
               </h3>
 
               {brandGarments.length === 0 ? (
@@ -392,7 +412,7 @@ export function BrandDetailDrawer({
         <RemovalConfirmationDialog
           open={!!pendingRemoval}
           onOpenChange={(nextOpen) => {
-            if (!nextOpen) setPendingRemoval(null);
+            if (!nextOpen) setPendingRemoval(null)
           }}
           color={pendingRemoval.color}
           level="brand"
@@ -404,6 +424,5 @@ export function BrandDetailDrawer({
         />
       )}
     </Sheet>
-  );
+  )
 }
-

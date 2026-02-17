@@ -20,12 +20,12 @@ No manual agent selection. No guessing which reviewers are needed. Consistent co
 
 All config is in the `config/` directory at the project root. Load via `lib/review/load-config.ts` — never import raw JSON directly.
 
-| File | Contents |
-|------|----------|
-| `config/review-domains.json` | Glob→domain mappings for Stage 2 |
-| `config/review-composition.json` | Dispatch policies for Stage 3 |
-| `config/review-agents.json` | Agent registry (IDs: `build-reviewer`, `finance-sme`, `design-auditor`) |
-| `config/review-rules.json` | Rule definitions consumed by Stage 6 aggregator |
+| File                             | Contents                                                                |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| `config/review-domains.json`     | Glob→domain mappings for Stage 2                                        |
+| `config/review-composition.json` | Dispatch policies for Stage 3                                           |
+| `config/review-agents.json`      | Agent registry (IDs: `build-reviewer`, `finance-sme`, `design-auditor`) |
+| `config/review-rules.json`       | Rule definitions consumed by Stage 6 aggregator                         |
 
 All schemas are in `lib/schemas/review-config.ts` (config schemas) and `lib/schemas/review-pipeline.ts` (pipeline data schemas).
 
@@ -40,6 +40,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Produce an immutable `PRFacts` object from the current git diff.
 
 **Instructions**:
+
 1. Determine the comparison base:
    - Run `git rev-parse --verify HEAD~1` — if it succeeds, use `HEAD~1`
    - Otherwise (first commit, orphan branch): fall back to `git merge-base HEAD origin/main`
@@ -63,6 +64,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Map changed files to domains and compute a risk score.
 
 **Instructions**:
+
 1. Load `config/review-domains.json` (via `lib/review/load-config.ts`)
 2. For each file in `PRFacts.files`, match against glob patterns in the domain config
 3. Collect the unique set of matched domains
@@ -87,6 +89,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Produce the agent manifest — the list of agents to dispatch and their scope.
 
 **Instructions**:
+
 1. Load `config/review-composition.json` (via `lib/review/load-config.ts`)
 2. For each composition policy:
    - If `trigger.type === "always"` → include the agent
@@ -113,6 +116,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Identify concerns in the diff that the config-based classifier may have missed. Amend the manifest if needed.
 
 **Instructions** (you are the LLM performing this step — no sub-agent spawned):
+
 1. Read the full diff using the same base established in Stage 1: `git diff $BASE` (where `$BASE` is `HEAD~1` or the merge-base fallback determined in Stage 1)
 2. Review the diff against the current `AgentManifest[]`
 3. Ask yourself: "Are there patterns in this diff that none of the dispatched agents are specialized to catch?"
@@ -141,6 +145,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Launch all agents from the manifest in parallel. Collect `ReviewFinding[]` from each.
 
 **Instructions**:
+
 1. For each agent in the amended `AgentManifest[]`, spawn a Task with:
    - `subagent_type`: the agent ID (e.g., `"build-reviewer"`, `"finance-sme"`, `"design-auditor"`)
    - `prompt`: structured prompt including:
@@ -153,6 +158,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 4. If an agent returns invalid JSON or times out: log as a `GapLogEntry` with `concern: "agent-dispatch-failure"` and continue
 
 **Agent prompt template**:
+
 ```
 You are the [agent name] agent performing a structured code review.
 
@@ -187,6 +193,7 @@ Return [] if no findings. Return only the JSON array — no markdown, no prose.
 **Goal**: Merge all findings, dedupe, compute gate decision, produce the final `ReviewReport`.
 
 **Instructions**:
+
 1. Merge all `ReviewFinding[]` arrays from Stage 5 into one flat array
 2. Dedupe: if two findings have the same `ruleId` + `file` + `line`, keep the one with higher severity. For file-level findings where `line` is absent/omitted, deduplicate when `ruleId` + `file` match and both have no `line` field
 3. Sort by severity: `critical` → `major` → `warning` → `info`
@@ -261,6 +268,7 @@ Include this block in every PR body under `### Review summary`:
 ```
 
 If any gaps were logged in Stage 4, add a note:
+
 ```
 - **Review gaps**: [N concerns logged — will create config improvement issues in wrap-up]
 ```
@@ -270,6 +278,7 @@ If any gaps were logged in Stage 4, add a note:
 ## Gap Log Handling
 
 After the PR is merged (or during wrap-up), for each `GapLogEntry`:
+
 1. Create a GitHub Issue with:
    - Title: `review: add rule for [concern]`
    - Labels: `type/tooling`, `vertical/devx`, `priority/low`

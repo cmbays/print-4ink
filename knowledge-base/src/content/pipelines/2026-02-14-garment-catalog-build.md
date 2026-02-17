@@ -1,6 +1,6 @@
 ---
-title: "Garment Catalog & Customer Screen Intelligence — Build"
-subtitle: "Full vertical build: catalog page, customer screens tab, favorites, and cross-linking polish"
+title: 'Garment Catalog & Customer Screen Intelligence — Build'
+subtitle: 'Full vertical build: catalog page, customer screens tab, favorites, and cross-linking polish'
 date: 2026-02-14
 phase: 1
 pipelineName: garments
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: build
 tags: [feature, build]
-sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"
-branch: "session/0214-garment-build"
+sessionId: '3c426af7-3332-4681-bc90-9c5c4d58d74e'
+branch: 'session/0214-garment-build'
 status: complete
 ---
 
@@ -54,38 +54,38 @@ Implemented the full Garment Catalog vertical from the [breadboard](https://gith
 
 ## Files Created
 
-| File | Purpose |
-|------|---------|
-| `lib/schemas/customer-screen.ts` | Customer screen schema |
-| `lib/helpers/garment-helpers.ts` | Garment/color lookup helpers |
-| `lib/helpers/screen-helpers.ts` | Screen derivation from jobs |
-| `components/features/GarmentImage.tsx` | Shared garment image component |
-| `components/features/FavoriteStar.tsx` | Shared favorite toggle component |
-| `app/(dashboard)/garments/page.tsx` | Garment Catalog page |
-| `app/(dashboard)/garments/_components/GarmentCatalogToolbar.tsx` | Toolbar with filters |
-| `app/(dashboard)/garments/_components/GarmentCard.tsx` | Grid card component |
-| `app/(dashboard)/garments/_components/GarmentTableRow.tsx` | Table row component |
-| `app/(dashboard)/garments/_components/GarmentDetailDrawer.tsx` | Detail drawer |
-| `app/(dashboard)/customers/[id]/_components/CustomerScreensTab.tsx` | Screens tab |
-| `app/(dashboard)/customers/[id]/_components/ScreenRecordRow.tsx` | Screen record row |
-| `app/(dashboard)/customers/[id]/_components/ReclaimScreenDialog.tsx` | Reclaim dialog |
-| `lib/schemas/__tests__/customer-screen.test.ts` | Schema tests |
-| `lib/helpers/__tests__/garment-helpers.test.ts` | Helper tests |
-| `lib/helpers/__tests__/screen-helpers.test.ts` | Helper tests |
+| File                                                                 | Purpose                          |
+| -------------------------------------------------------------------- | -------------------------------- |
+| `lib/schemas/customer-screen.ts`                                     | Customer screen schema           |
+| `lib/helpers/garment-helpers.ts`                                     | Garment/color lookup helpers     |
+| `lib/helpers/screen-helpers.ts`                                      | Screen derivation from jobs      |
+| `components/features/GarmentImage.tsx`                               | Shared garment image component   |
+| `components/features/FavoriteStar.tsx`                               | Shared favorite toggle component |
+| `app/(dashboard)/garments/page.tsx`                                  | Garment Catalog page             |
+| `app/(dashboard)/garments/_components/GarmentCatalogToolbar.tsx`     | Toolbar with filters             |
+| `app/(dashboard)/garments/_components/GarmentCard.tsx`               | Grid card component              |
+| `app/(dashboard)/garments/_components/GarmentTableRow.tsx`           | Table row component              |
+| `app/(dashboard)/garments/_components/GarmentDetailDrawer.tsx`       | Detail drawer                    |
+| `app/(dashboard)/customers/[id]/_components/CustomerScreensTab.tsx`  | Screens tab                      |
+| `app/(dashboard)/customers/[id]/_components/ScreenRecordRow.tsx`     | Screen record row                |
+| `app/(dashboard)/customers/[id]/_components/ReclaimScreenDialog.tsx` | Reclaim dialog                   |
+| `lib/schemas/__tests__/customer-screen.test.ts`                      | Schema tests                     |
+| `lib/helpers/__tests__/garment-helpers.test.ts`                      | Helper tests                     |
+| `lib/helpers/__tests__/screen-helpers.test.ts`                       | Helper tests                     |
 
 ## Files Modified
 
-| File | Change |
-|------|--------|
-| `lib/schemas/garment.ts` | Added `isEnabled`, `isFavorite` fields |
-| `lib/schemas/customer.ts` | Added `favoriteGarments`, `favoriteColors` fields |
-| `lib/mock-data.ts` | Expanded 5 to 17 garments, added customer favorites |
-| `components/features/ColorSwatchPicker.tsx` | Added compact mode |
-| `app/(dashboard)/jobs/_components/JobDetailsSection.tsx` | Resolved raw IDs to names |
-| `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx` | Added Screens tab |
-| `app/(dashboard)/quotes/_components/QuoteForm.tsx` | Added new schema fields |
-| `lib/schemas/__tests__/garment.test.ts` | Added isEnabled/isFavorite tests |
-| `lib/schemas/__tests__/customer.test.ts` | Added favorites tests |
+| File                                                          | Change                                              |
+| ------------------------------------------------------------- | --------------------------------------------------- |
+| `lib/schemas/garment.ts`                                      | Added `isEnabled`, `isFavorite` fields              |
+| `lib/schemas/customer.ts`                                     | Added `favoriteGarments`, `favoriteColors` fields   |
+| `lib/mock-data.ts`                                            | Expanded 5 to 17 garments, added customer favorites |
+| `components/features/ColorSwatchPicker.tsx`                   | Added compact mode                                  |
+| `app/(dashboard)/jobs/_components/JobDetailsSection.tsx`      | Resolved raw IDs to names                           |
+| `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx` | Added Screens tab                                   |
+| `app/(dashboard)/quotes/_components/QuoteForm.tsx`            | Added new schema fields                             |
+| `lib/schemas/__tests__/garment.test.ts`                       | Added isEnabled/isFavorite tests                    |
+| `lib/schemas/__tests__/customer.test.ts`                      | Added favorites tests                               |
 
 ## Verification
 

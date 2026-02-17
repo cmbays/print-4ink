@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { Separator } from "@shared/ui/primitives/separator";
-import { formatCurrency } from "@domain/lib/money";
+import { Separator } from '@shared/ui/primitives/separator'
+import { formatCurrency } from '@domain/lib/money'
 
-interface InvoicePricingSummaryProps {
-  subtotal: number;
-  discountTotal: number;
-  shipping: number;
-  taxRate: number;
-  taxAmount: number;
-  total: number;
+type InvoicePricingSummaryProps = {
+  subtotal: number
+  discountTotal: number
+  shipping: number
+  taxRate: number
+  taxAmount: number
+  total: number
 }
 
 export function InvoicePricingSummary({
@@ -50,9 +50,7 @@ export function InvoicePricingSummary({
 
       {/* Tax */}
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">
-          Tax ({taxRate}%)
-        </span>
+        <span className="text-sm text-muted-foreground">Tax ({taxRate}%)</span>
         <span className="text-sm font-medium font-mono text-foreground">
           {formatCurrency(taxAmount)}
         </span>
@@ -68,5 +66,5 @@ export function InvoicePricingSummary({
         </span>
       </div>
     </div>
-  );
+  )
 }

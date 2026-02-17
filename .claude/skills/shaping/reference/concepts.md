@@ -2,24 +2,24 @@
 
 ## Notation
 
-| Level | Notation | Meaning | Relationship |
-|-------|----------|---------|--------------|
-| Requirements | R0, R1, R2... | Problem constraints | Members of set R |
-| Shapes | A, B, C... | Solution options | Pick one from S |
-| Components | C1, C2, C3... | Parts of a shape | Combine within shape |
+| Level        | Notation      | Meaning                   | Relationship           |
+| ------------ | ------------- | ------------------------- | ---------------------- |
+| Requirements | R0, R1, R2... | Problem constraints       | Members of set R       |
+| Shapes       | A, B, C...    | Solution options          | Pick one from S        |
+| Components   | C1, C2, C3... | Parts of a shape          | Combine within shape   |
 | Alternatives | C3-A, C3-B... | Approaches to a component | Pick one per component |
 
 ## Requirement Status Values
 
-| Status | Meaning |
-|--------|---------|
-| Core goal | The fundamental problem being solved |
-| Undecided | Not yet classified |
-| Leaning yes | Probably must-have, needs confirmation |
-| Leaning no | Probably out, needs confirmation |
-| Must-have | Required for the shape to succeed |
-| Nice-to-have | Valuable but can be cut |
-| Out | Explicitly excluded from scope |
+| Status       | Meaning                                |
+| ------------ | -------------------------------------- |
+| Core goal    | The fundamental problem being solved   |
+| Undecided    | Not yet classified                     |
+| Leaning yes  | Probably must-have, needs confirmation |
+| Leaning no   | Probably out, needs confirmation       |
+| Must-have    | Required for the shape to succeed      |
+| Nice-to-have | Valuable but can be cut                |
+| Out          | Explicitly excluded from scope         |
 
 ## Fit Check Rules
 

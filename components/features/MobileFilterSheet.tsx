@@ -1,37 +1,37 @@
-"use client";
+'use client'
 
-import { BottomSheet } from "@shared/ui/primitives/bottom-sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { cn } from "@shared/lib/cn";
+import { BottomSheet } from '@shared/ui/primitives/bottom-sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { cn } from '@shared/lib/cn'
 
-interface FilterOption {
-  value: string;
-  label: string;
+type FilterOption = {
+  value: string
+  label: string
 }
 
-interface FilterGroup {
-  label: string;
-  options: FilterOption[];
-  selected: string[];
-  onToggle: (value: string) => void;
+type FilterGroup = {
+  label: string
+  options: FilterOption[]
+  selected: string[]
+  onToggle: (value: string) => void
 }
 
-interface MobileFilterSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title?: string;
-  sortOptions: FilterOption[];
-  currentSort: string;
-  onSortChange: (value: string) => void;
-  filterGroups?: FilterGroup[];
-  onApply: () => void;
-  onReset: () => void;
+type MobileFilterSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title?: string
+  sortOptions: FilterOption[]
+  currentSort: string
+  onSortChange: (value: string) => void
+  filterGroups?: FilterGroup[]
+  onApply: () => void
+  onReset: () => void
 }
 
 export function MobileFilterSheet({
   open,
   onOpenChange,
-  title = "Sort & Filter",
+  title = 'Sort & Filter',
   sortOptions,
   currentSort,
   onSortChange,
@@ -44,9 +44,7 @@ export function MobileFilterSheet({
       <div className="flex flex-col gap-6 p-4">
         {/* Sort */}
         <div>
-          <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-            Sort by
-          </h3>
+          <h3 className="mb-2 text-sm font-medium text-muted-foreground">Sort by</h3>
           <div className="flex flex-wrap gap-2">
             {sortOptions.map((opt) => (
               <button
@@ -54,12 +52,12 @@ export function MobileFilterSheet({
                 type="button"
                 onClick={() => onSortChange(opt.value)}
                 className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm transition-colors active:scale-95",
-                  "min-h-(--mobile-touch-target)",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  'rounded-full border px-3 py-1.5 text-sm transition-colors active:scale-95',
+                  'min-h-(--mobile-touch-target)',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                   currentSort === opt.value
-                    ? "border-action bg-action/10 text-action"
-                    : "border-border text-muted-foreground hover:bg-surface"
+                    ? 'border-action bg-action/10 text-action'
+                    : 'border-border text-muted-foreground hover:bg-surface'
                 )}
               >
                 {opt.label}
@@ -71,29 +69,27 @@ export function MobileFilterSheet({
         {/* Filter groups */}
         {filterGroups.map((group) => (
           <div key={group.label}>
-            <h3 className="mb-2 text-sm font-medium text-muted-foreground">
-              {group.label}
-            </h3>
+            <h3 className="mb-2 text-sm font-medium text-muted-foreground">{group.label}</h3>
             <div className="flex flex-wrap gap-2">
               {group.options.map((opt) => {
-                const isSelected = group.selected.includes(opt.value);
+                const isSelected = group.selected.includes(opt.value)
                 return (
                   <button
                     key={opt.value}
                     type="button"
                     onClick={() => group.onToggle(opt.value)}
                     className={cn(
-                      "rounded-full border px-3 py-1.5 text-sm transition-colors active:scale-95",
-                      "min-h-(--mobile-touch-target)",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                      'rounded-full border px-3 py-1.5 text-sm transition-colors active:scale-95',
+                      'min-h-(--mobile-touch-target)',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                       isSelected
-                        ? "border-action bg-action/10 text-action"
-                        : "border-border text-muted-foreground hover:bg-surface"
+                        ? 'border-action bg-action/10 text-action'
+                        : 'border-border text-muted-foreground hover:bg-surface'
                     )}
                   >
                     {opt.label}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -110,8 +106,8 @@ export function MobileFilterSheet({
           </Button>
           <Button
             onClick={() => {
-              onApply();
-              onOpenChange(false);
+              onApply()
+              onOpenChange(false)
             }}
             className="flex-1 min-h-(--mobile-touch-target)"
           >
@@ -120,5 +116,5 @@ export function MobileFilterSheet({
         </div>
       </div>
     </BottomSheet>
-  );
+  )
 }

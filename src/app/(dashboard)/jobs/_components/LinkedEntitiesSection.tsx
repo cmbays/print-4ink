@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { User, ExternalLink } from "lucide-react";
-import { ENTITY_STYLES } from "@domain/constants/entities";
-import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { cn } from "@shared/lib/cn";
-import { Badge } from "@shared/ui/primitives/badge";
-import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@domain/constants";
-import type { Job } from "@domain/entities/job";
-import type { InvoiceStatus } from "@domain/entities/invoice";
+import Link from 'next/link'
+import { User, ExternalLink } from 'lucide-react'
+import { ENTITY_STYLES } from '@domain/constants/entities'
+import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { cn } from '@shared/lib/cn'
+import { Badge } from '@shared/ui/primitives/badge'
+import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from '@domain/constants'
+import type { Job } from '@domain/entities/job'
+import type { InvoiceStatus } from '@domain/entities/invoice'
 
-interface LinkedEntitiesSectionProps {
-  job: Job;
-  customerName: string;
-  quoteTotal?: number;
-  invoiceStatus?: InvoiceStatus;
+type LinkedEntitiesSectionProps = {
+  job: Job
+  customerName: string
+  quoteTotal?: number
+  invoiceStatus?: InvoiceStatus
 }
 
 export function LinkedEntitiesSection({
@@ -23,8 +23,8 @@ export function LinkedEntitiesSection({
   quoteTotal,
   invoiceStatus,
 }: LinkedEntitiesSectionProps) {
-  const hasLinks = job.sourceQuoteId || job.invoiceId || job.customerId;
-  if (!hasLinks) return null;
+  const hasLinks = job.sourceQuoteId || job.invoiceId || job.customerId
+  if (!hasLinks) return null
 
   return (
     <section className="rounded-lg border border-border bg-card">
@@ -53,7 +53,11 @@ export function LinkedEntitiesSection({
             badge={
               quoteTotal != null ? (
                 <span className="text-xs font-medium text-foreground tabular-nums">
-                  ${quoteTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  $
+                  {quoteTotal.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </span>
               ) : undefined
             }
@@ -71,10 +75,7 @@ export function LinkedEntitiesSection({
               invoiceStatus ? (
                 <Badge
                   variant="ghost"
-                  className={cn(
-                    "text-xs",
-                    INVOICE_STATUS_BADGE_COLORS[invoiceStatus]
-                  )}
+                  className={cn('text-xs', INVOICE_STATUS_BADGE_COLORS[invoiceStatus])}
                 >
                   {INVOICE_STATUS_LABELS[invoiceStatus]}
                 </Badge>
@@ -84,7 +85,7 @@ export function LinkedEntitiesSection({
         )}
       </div>
     </section>
-  );
+  )
 }
 
 function EntityRow({
@@ -94,11 +95,11 @@ function EntityRow({
   value,
   badge,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  href: string;
-  value: string;
-  badge?: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  href: string
+  value: string
+  badge?: React.ReactNode
 }) {
   return (
     <Link
@@ -113,5 +114,5 @@ function EntityRow({
       {badge && <div className="shrink-0">{badge}</div>}
       <ExternalLink className="size-3.5 shrink-0 text-muted-foreground" />
     </Link>
-  );
+  )
 }

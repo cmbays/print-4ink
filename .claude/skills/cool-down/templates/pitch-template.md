@@ -11,6 +11,7 @@ What user pain or project need does this address? Be specific — reference feed
 ## Solution Sketch
 
 High-level approach. Not a detailed spec — just enough to understand the shape of the work. Include:
+
 - Key components or artifacts that would be produced
 - Rough approach (not implementation details)
 - What "done" looks like
@@ -18,12 +19,14 @@ High-level approach. Not a detailed spec — just enough to understand the shape
 ## Rabbit Holes
 
 What to explicitly avoid or defer. Things that could expand scope if not bounded:
+
 - [thing to avoid and why]
 - [thing to defer to a later cycle]
 
 ## Dependencies
 
 What must be true before this can start?
+
 - [ ] [prerequisite]
 - [ ] [prerequisite]
 

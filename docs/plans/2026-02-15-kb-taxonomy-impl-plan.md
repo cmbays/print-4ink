@@ -17,6 +17,7 @@
 ### Task 1: Create `config/products.json`
 
 **Files:**
+
 - Create: `config/products.json`
 
 **Step 1: Create the config file**
@@ -47,6 +48,7 @@ git push -u origin <branch>
 ### Task 2: Create `config/tools.json`
 
 **Files:**
+
 - Create: `config/tools.json`
 
 **Step 1: Create the config file**
@@ -74,6 +76,7 @@ git push
 ### Task 3: Create `config/workflows.json`
 
 **Files:**
+
 - Create: `config/workflows.json`
 
 **Step 1: Create the config file**
@@ -116,6 +119,7 @@ git push
 ### Task 4: Update `config/stages.json`
 
 **Files:**
+
 - Modify: `config/stages.json`
 
 **Step 1: Add new stages and update existing ones**
@@ -155,28 +159,29 @@ git push
 ### Task 5: Update `content.config.ts` with four collections
 
 **Files:**
+
 - Modify: `knowledge-base/src/content.config.ts`
 
 **Step 1: Rewrite the content config to define all four collections**
 
 ```typescript
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
-import verticalsConfig from '../../config/verticals.json';
-import stagesConfig from '../../config/stages.json';
-import tagsConfig from '../../config/tags.json';
-import productsConfig from '../../config/products.json';
-import toolsConfig from '../../config/tools.json';
-import workflowsConfig from '../../config/workflows.json';
+import { defineCollection } from 'astro:content'
+import { glob } from 'astro/loaders'
+import { z } from 'astro/zod'
+import verticalsConfig from '../../config/verticals.json'
+import stagesConfig from '../../config/stages.json'
+import tagsConfig from '../../config/tags.json'
+import productsConfig from '../../config/products.json'
+import toolsConfig from '../../config/tools.json'
+import workflowsConfig from '../../config/workflows.json'
 
 // Derive enum tuples from canonical config files
-const verticals = verticalsConfig.map((v) => v.slug) as [string, ...string[]];
-const stages = stagesConfig.map((s) => s.slug) as [string, ...string[]];
-const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
-const products = productsConfig.map((p) => p.slug) as [string, ...string[]];
-const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]];
-const workflows = workflowsConfig.map((w) => w.slug) as [string, ...string[]];
+const verticals = verticalsConfig.map((v) => v.slug) as [string, ...string[]]
+const stages = stagesConfig.map((s) => s.slug) as [string, ...string[]]
+const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]]
+const products = productsConfig.map((p) => p.slug) as [string, ...string[]]
+const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]]
+const workflows = workflowsConfig.map((w) => w.slug) as [string, ...string[]]
 
 // ── Pipelines (renamed from sessions) ─────────────────────────────
 const pipelines = defineCollection({
@@ -197,7 +202,7 @@ const pipelines = defineCollection({
     pr: z.string().optional(),
     status: z.enum(['complete', 'in-progress', 'superseded']).default('complete'),
   }),
-});
+})
 
 // ── Products ──────────────────────────────────────────────────────
 const productDocs = defineCollection({
@@ -210,7 +215,7 @@ const productDocs = defineCollection({
     lastUpdated: z.coerce.date(),
     status: z.enum(['current', 'draft', 'deprecated']).default('current'),
   }),
-});
+})
 
 // ── Tools ─────────────────────────────────────────────────────────
 const toolDocs = defineCollection({
@@ -223,7 +228,7 @@ const toolDocs = defineCollection({
     lastUpdated: z.coerce.date(),
     status: z.enum(['current', 'draft', 'deprecated']).default('current'),
   }),
-});
+})
 
 // ── Strategy ──────────────────────────────────────────────────────
 const strategy = defineCollection({
@@ -242,9 +247,9 @@ const strategy = defineCollection({
     pr: z.string().optional(),
     status: z.enum(['complete', 'in-progress']).default('complete'),
   }),
-});
+})
 
-export const collections = { pipelines, productDocs, toolDocs, strategy };
+export const collections = { pipelines, productDocs, toolDocs, strategy }
 ```
 
 **Step 2: Verify the schema compiles**
@@ -268,6 +273,7 @@ git push
 ### Task 6: Migrate content directory — rename sessions → pipelines
 
 **Files:**
+
 - Move: `knowledge-base/src/content/sessions/` → `knowledge-base/src/content/pipelines/`
 
 **Step 1: Use git mv to rename the directory**
@@ -290,9 +296,11 @@ git push
 ### Task 7: Migrate pipeline doc frontmatter (all 53 docs)
 
 **Files:**
+
 - Modify: All 53 files in `knowledge-base/src/content/pipelines/*.md`
 
 This is a bulk transformation. For each file:
+
 1. Replace `vertical: <value>` with `pipeline: <value>`
 2. Remove `verticalSecondary:` line
 3. Add `pipelineType:` based on the classification table in the design doc
@@ -301,32 +309,34 @@ This is a bulk transformation. For each file:
 
 **Classification reference:**
 
-| pipeline value | pipelineType | products | tools |
-|---|---|---|---|
-| quoting | vertical | [quotes] | [] |
-| customer-management | vertical | [customers] | [] |
-| invoicing | vertical | [invoices] | [] |
-| price-matrix | vertical | [pricing] | [] |
-| jobs | vertical | [jobs] | [] |
-| screen-room | vertical | [screens] | [] |
-| garments | vertical | [garments] | [] |
-| dashboard | vertical | [dashboard] | [] |
-| mobile-optimization | horizontal | [dashboard, quotes, customers, invoices, jobs, garments, pricing] | [] |
-| dtf-gang-sheet | vertical | [garments] | [] |
-| devx | horizontal | [] | [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline] |
-| meta | horizontal | [] | [knowledge-base] |
+| pipeline value      | pipelineType | products                                                          | tools                                                                            |
+| ------------------- | ------------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| quoting             | vertical     | [quotes]                                                          | []                                                                               |
+| customer-management | vertical     | [customers]                                                       | []                                                                               |
+| invoicing           | vertical     | [invoices]                                                        | []                                                                               |
+| price-matrix        | vertical     | [pricing]                                                         | []                                                                               |
+| jobs                | vertical     | [jobs]                                                            | []                                                                               |
+| screen-room         | vertical     | [screens]                                                         | []                                                                               |
+| garments            | vertical     | [garments]                                                        | []                                                                               |
+| dashboard           | vertical     | [dashboard]                                                       | []                                                                               |
+| mobile-optimization | horizontal   | [dashboard, quotes, customers, invoices, jobs, garments, pricing] | []                                                                               |
+| dtf-gang-sheet      | vertical     | [garments]                                                        | []                                                                               |
+| devx                | horizontal   | []                                                                | [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline] |
+| meta                | horizontal   | []                                                                | [knowledge-base]                                                                 |
 
 **Step 1: Write a migration script or manually transform each file**
 
 For each `.md` file, the frontmatter transformation looks like this example:
 
 Before:
+
 ```yaml
 vertical: quoting
 verticalSecondary: []
 ```
 
 After:
+
 ```yaml
 pipeline: quoting
 pipelineType: vertical
@@ -335,12 +345,14 @@ tools: []
 ```
 
 Before (devx example):
+
 ```yaml
 vertical: devx
 verticalSecondary: [meta]
 ```
 
 After:
+
 ```yaml
 pipeline: devx
 pipelineType: horizontal
@@ -349,6 +361,7 @@ tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pi
 ```
 
 **Important per-file considerations:**
+
 - `2026-02-14-phase1-cooldown.md` — skip this file entirely, it will be moved to strategy collection in Task 8
 - Some docs have `verticalSecondary: []` (empty array) — just remove the line
 - Some have `verticalSecondary: [meta]` or similar — remove the line, the cross-referencing is now via `products`/`tools`
@@ -375,6 +388,7 @@ git push
 ### Task 8: Move cooldown doc to strategy collection
 
 **Files:**
+
 - Move: `knowledge-base/src/content/pipelines/2026-02-14-phase1-cooldown.md` → `knowledge-base/src/content/strategy/2026-02-14-phase1-cooldown.md`
 - Modify: Update its frontmatter to match the strategy schema
 
@@ -388,32 +402,54 @@ git mv knowledge-base/src/content/pipelines/2026-02-14-phase1-cooldown.md knowle
 **Step 2: Update frontmatter to strategy schema**
 
 Before:
+
 ```yaml
-title: "Phase 1 Cool-Down — Cross-Vertical Learnings"
-subtitle: "Synthesis of patterns, velocity data, and demo week shaping from the full Phase 1 build cycle"
+title: 'Phase 1 Cool-Down — Cross-Vertical Learnings'
+subtitle: 'Synthesis of patterns, velocity data, and demo week shaping from the full Phase 1 build cycle'
 date: 2026-02-14
 phase: 1
 vertical: meta
-verticalSecondary: [quoting, customer-management, invoicing, price-matrix, jobs, garments, screen-room, mobile-optimization]
+verticalSecondary:
+  [
+    quoting,
+    customer-management,
+    invoicing,
+    price-matrix,
+    jobs,
+    garments,
+    screen-room,
+    mobile-optimization,
+  ]
 stage: learnings
 tags: [learning, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0214-cooldown"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0214-cooldown'
 status: complete
 ```
 
 After:
+
 ```yaml
-title: "Phase 1 Cool-Down — Cross-Vertical Learnings"
-subtitle: "Synthesis of patterns, velocity data, and demo week shaping from the full Phase 1 build cycle"
+title: 'Phase 1 Cool-Down — Cross-Vertical Learnings'
+subtitle: 'Synthesis of patterns, velocity data, and demo week shaping from the full Phase 1 build cycle'
 date: 2026-02-14
 docType: cooldown
 phase: 1
-pipelinesCompleted: [quoting, customer-management, invoicing, price-matrix, jobs, garments, screen-room, mobile-optimization]
+pipelinesCompleted:
+  [
+    quoting,
+    customer-management,
+    invoicing,
+    price-matrix,
+    jobs,
+    garments,
+    screen-room,
+    mobile-optimization,
+  ]
 pipelinesLaunched: []
 tags: [learning, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0214-cooldown"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0214-cooldown'
 status: complete
 ```
 
@@ -438,6 +474,7 @@ git push
 ### Task 9: Create product placeholder docs (8 products × 3 docs = 24 files)
 
 **Files:**
+
 - Create: `knowledge-base/src/content/products/<slug>/overview.md` for each of 8 products
 - Create: `knowledge-base/src/content/products/<slug>/history.md` for each of 8 products
 - Create: `knowledge-base/src/content/products/<slug>/decisions.md` for each of 8 products
@@ -454,6 +491,7 @@ done
 **Step 2: Create overview.md for each product**
 
 Template (example for quotes):
+
 ```yaml
 ---
 title: "Quotes"
@@ -482,6 +520,7 @@ Phase 1 mockup complete with mock data.
 Repeat for all 8 products with appropriate titles, subtitles, and route information. Use `status: draft` for all placeholders.
 
 Product details for each:
+
 - **dashboard**: "Dashboard" / "At-a-glance view of shop status, blocked items, and recent activity" / `/dashboard`
 - **quotes**: "Quotes" / "Quote creation, line items, pricing calculation, and approval workflow" / `/quotes`, `/quotes/new`, `/quotes/[id]`
 - **customers**: "Customers" / "Customer directory, contact management, and quote/job history" / `/customers`, `/customers/[id]`
@@ -494,6 +533,7 @@ Product details for each:
 **Step 3: Create history.md for each product**
 
 Template:
+
 ```yaml
 ---
 title: "Quotes — History"
@@ -512,6 +552,7 @@ status: draft
 **Step 4: Create decisions.md for each product**
 
 Template:
+
 ```yaml
 ---
 title: "Quotes — Decisions"
@@ -548,6 +589,7 @@ git push
 ### Task 10: Create tool placeholder docs (5 tools × 3 docs = 15 files)
 
 **Files:**
+
 - Create: `knowledge-base/src/content/tools/<slug>/overview.md` for each of 5 tools
 - Create: `knowledge-base/src/content/tools/<slug>/history.md` for each of 5 tools
 - Create: `knowledge-base/src/content/tools/<slug>/decisions.md` for each of 5 tools
@@ -564,6 +606,7 @@ done
 **Step 2: Create overview.md for each tool**
 
 Tool details:
+
 - **work-orchestrator**: "Work Orchestrator" / "Shell function automating worktree creation, session management, and Claude launch"
 - **skills-framework**: "Skills Framework" / "Domain expertise containers with instructions, templates, and references for Claude agents"
 - **agent-system**: "Agent System" / "Specialized AI assistants with own context windows, system prompts, and tool configurations"
@@ -571,6 +614,7 @@ Tool details:
 - **ci-pipeline**: "CI Pipeline" / "GitHub Actions CI running tsc, lint, test, and build on push/PR to main"
 
 Template (example for work-orchestrator):
+
 ```yaml
 ---
 title: "Work Orchestrator"
@@ -621,11 +665,13 @@ git push
 ### Task 11: Update DocCard component
 
 **Files:**
+
 - Modify: `knowledge-base/src/components/DocCard.astro`
 
 **Step 1: Update the Props interface and link href**
 
 Changes needed:
+
 - `vertical` prop → `pipeline`
 - Remove `verticalSecondary` prop
 - Add `pipelineType` prop (optional, for display)
@@ -650,6 +696,7 @@ git push
 ### Task 12: Update WorkflowChain component
 
 **Files:**
+
 - Modify: `knowledge-base/src/components/WorkflowChain.astro`
 
 **Step 1: Update hardcoded stage order and labels**
@@ -657,17 +704,13 @@ git push
 The component currently has hardcoded `stageOrder` and `shortStageLabels` arrays. Replace with imports from `config/stages.json`:
 
 ```typescript
-import stagesConfig from '../../../config/stages.json';
+import stagesConfig from '../../../config/stages.json'
 
-const stageOrder = stagesConfig
-  .filter((s) => s.pipeline !== false)
-  .map((s) => s.slug);
+const stageOrder = stagesConfig.filter((s) => s.pipeline !== false).map((s) => s.slug)
 
 const shortStageLabels: Record<string, string> = Object.fromEntries(
-  stagesConfig
-    .filter((s) => s.pipeline !== false)
-    .map((s) => [s.slug, s.label])
-);
+  stagesConfig.filter((s) => s.pipeline !== false).map((s) => [s.slug, s.label])
+)
 ```
 
 Also update the link href from `/sessions/${session.slug}` to `/pipelines/${session.slug}`.
@@ -685,16 +728,17 @@ git push
 ### Task 13: Update Pipeline component
 
 **Files:**
+
 - Modify: `knowledge-base/src/components/Pipeline.astro`
 
 **Step 1: Replace hardcoded shortLabels with config import**
 
 ```typescript
-import stagesConfig from '../../../config/stages.json';
+import stagesConfig from '../../../config/stages.json'
 
 const shortLabels: Record<string, string> = Object.fromEntries(
   stagesConfig.map((s) => [s.slug, s.label])
-);
+)
 ```
 
 Update the stage link href from `/verticals/${vertical}/${stage.slug}` to `/pipelines/${vertical}/${stage.slug}`.
@@ -714,11 +758,13 @@ git push
 ### Task 14: Update DecisionRecord component
 
 **Files:**
+
 - Modify: `knowledge-base/src/components/DecisionRecord.astro`
 
 **Step 1: Update link href and prop names**
 
 Change:
+
 - `vertical` prop → `pipeline`
 - Link href from `/sessions/${slug}` to `/pipelines/${slug}`
 
@@ -735,6 +781,7 @@ git push
 ### Task 15: Update VerticalHealth component
 
 **Files:**
+
 - Modify: `knowledge-base/src/components/VerticalHealth.astro`
 
 **Step 1: Rename prop from `vertical` to `pipeline`**
@@ -754,6 +801,7 @@ git push
 ### Task 16: Update Sidebar component
 
 **Files:**
+
 - Modify: `knowledge-base/src/components/Sidebar.astro`
 
 **Step 1: Add Products, Tools, and Strategy sections**
@@ -768,7 +816,7 @@ const views = [
   { id: 'strategy', label: 'Strategy', href: '/strategy' },
   { id: 'decisions', label: 'Decisions', href: '/decisions' },
   { id: 'gary-tracker', label: 'Gary Tracker', href: '/gary-tracker' },
-];
+]
 ```
 
 Rename the "Verticals" section heading to "Pipelines" and update `sessionCount` label from "sessions" to "pipeline docs".
@@ -788,6 +836,7 @@ git push
 ### Task 17: Rename and update pipeline detail page
 
 **Files:**
+
 - Move: `knowledge-base/src/pages/sessions/[...slug].astro` → `knowledge-base/src/pages/pipelines/[...slug].astro`
 - Modify: Update collection references from `sessions` to `pipelines`
 
@@ -802,6 +851,7 @@ rmdir knowledge-base/src/pages/sessions 2>/dev/null || true
 **Step 2: Update the page**
 
 Key changes:
+
 - `getCollection('sessions')` → `getCollection('pipelines')`
 - Destructure `pipeline` instead of `vertical`, `pipelineType` instead of nothing, `products`/`tools` instead of `verticalSecondary`
 - Update the meta grid: "Vertical" label → "Pipeline", link to `/pipelines/${pipeline}` instead of `/verticals/${vertical}`
@@ -828,6 +878,7 @@ git push
 ### Task 18: Rename and update pipeline browse pages
 
 **Files:**
+
 - Move: `knowledge-base/src/pages/verticals/[vertical].astro` → `knowledge-base/src/pages/pipelines/[pipeline].astro`
 - Move: `knowledge-base/src/pages/verticals/[vertical]/[stage].astro` → `knowledge-base/src/pages/pipelines/[pipeline]/[stage].astro`
 
@@ -843,6 +894,7 @@ rm -rf knowledge-base/src/pages/verticals
 **Step 2: Update `[pipeline].astro`**
 
 Key changes:
+
 - `getCollection('sessions')` → `getCollection('pipelines')`
 - `Astro.params.vertical` → `Astro.params.pipeline`
 - Filter by `s.data.pipeline === pipeline` instead of `s.data.vertical === vertical`
@@ -853,6 +905,7 @@ Key changes:
 **Step 3: Update `[pipeline]/[stage].astro`**
 
 Same changes as above, plus:
+
 - `getStaticPaths` generates `pipeline`+`stage` combos from `pipelines` collection
 - Back link points to `/pipelines/${pipeline}`
 - Pipeline component gets `pipeline` prop instead of `vertical`
@@ -876,11 +929,13 @@ git push
 ### Task 19: Update index page
 
 **Files:**
+
 - Modify: `knowledge-base/src/pages/index.astro`
 
 **Step 1: Update collection and variable names**
 
 Key changes:
+
 - `getCollection('sessions')` → `getCollection('pipelines')`
 - All `session` variable names → pipeline-appropriate names (or keep generic `doc`)
 - `verticalCounts` → `pipelineCounts`
@@ -910,11 +965,13 @@ git push
 ### Task 20: Update decisions page
 
 **Files:**
+
 - Modify: `knowledge-base/src/pages/decisions.astro`
 
 **Step 1: Update collection reference and component props**
 
 Key changes:
+
 - `getCollection('sessions')` → `getCollection('pipelines')`
 - `s.data.vertical` → `s.data.pipeline` in DecisionRecord prop
 - DecisionRecord: `vertical` prop → `pipeline`
@@ -932,18 +989,29 @@ git push
 ### Task 21: Update gary-tracker page
 
 **Files:**
+
 - Modify: `knowledge-base/src/pages/gary-tracker.astro`
 
 **Step 1: Update glob path**
 
 Change:
+
 ```typescript
-const sessionFiles = import.meta.glob('/src/content/sessions/*.md', { query: '?raw', import: 'default', eager: true });
+const sessionFiles = import.meta.glob('/src/content/sessions/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
 ```
 
 To:
+
 ```typescript
-const sessionFiles = import.meta.glob('/src/content/pipelines/*.md', { query: '?raw', import: 'default', eager: true });
+const sessionFiles = import.meta.glob('/src/content/pipelines/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
 ```
 
 **Step 2: Commit**
@@ -961,6 +1029,7 @@ git push
 ### Task 22: Create products index page
 
 **Files:**
+
 - Create: `knowledge-base/src/pages/products/index.astro`
 
 **Step 1: Create the products index page**
@@ -968,6 +1037,7 @@ git push
 This page shows a grid of all products with their status and linked pipeline doc counts.
 
 It should:
+
 - Import `productsConfig` from config
 - `getCollection('productDocs')` to get overview docs
 - `getCollection('pipelines')` to count linked pipeline docs per product
@@ -995,11 +1065,13 @@ git push
 ### Task 23: Create product detail page
 
 **Files:**
+
 - Create: `knowledge-base/src/pages/products/[product].astro`
 
 **Step 1: Create the product detail page**
 
 This page serves as the product landing page. It should:
+
 - Use `getStaticPaths()` generating one path per product from `productsConfig`
 - Fetch all `productDocs` for this product slug (overview, history, decisions)
 - Fetch `pipelines` where `products` array contains this product slug
@@ -1023,6 +1095,7 @@ git push
 ### Task 24: Create tools index page
 
 **Files:**
+
 - Create: `knowledge-base/src/pages/tools/index.astro`
 
 **Step 1: Create the tools index page**
@@ -1042,11 +1115,13 @@ git push
 ### Task 25: Create tool detail page
 
 **Files:**
+
 - Create: `knowledge-base/src/pages/tools/[tool].astro`
 
 **Step 1: Create the tool detail page**
 
 Same pattern as product detail page but for tools:
+
 - `getStaticPaths()` from `toolsConfig`
 - Fetch `toolDocs` for this tool slug
 - Fetch `pipelines` where `tools` array contains this tool slug
@@ -1065,6 +1140,7 @@ git push
 ### Task 26: Create strategy index page
 
 **Files:**
+
 - Create: `knowledge-base/src/pages/strategy/index.astro`
 
 **Step 1: Create the strategy index page**
@@ -1084,11 +1160,13 @@ git push
 ### Task 27: Create strategy detail page
 
 **Files:**
+
 - Create: `knowledge-base/src/pages/strategy/[...slug].astro`
 
 **Step 1: Create the strategy detail page**
 
 Similar to the pipeline detail page but adapted for the strategy schema:
+
 - Show docType badge (Cooldown / Planning)
 - Show pipelines completed and pipelines launched as linked lists
 - Render the markdown body
@@ -1122,6 +1200,7 @@ npm run dev
 ```
 
 Verify:
+
 - [ ] `/` — index loads, shows pipeline docs, sidebar has new sections
 - [ ] `/pipelines/<any-slug>` — detail page renders with correct meta grid
 - [ ] `/pipelines/<pipeline-name>` — browse page shows pipeline docs

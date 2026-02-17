@@ -24,6 +24,7 @@ As the project scales (7+ verticals, 529+ tests, stacked PRs across concurrent w
 **In scope (this design)**: Automated quality gate on every build-phase PR (stacked PRs). The building agent's `build-session-protocol` Phase 2 invokes review orchestration automatically.
 
 **Out of scope**:
+
 - Pipeline review stage (full end-to-end review before main merge) — #312
 - CI/GitHub Action integration — #308
 - New agents (security, architecture, integration reviewers) — #310
@@ -38,6 +39,7 @@ This design is informed by research into 7 established software engineering patt
 **What it is**: Decouples data (facts) from logic (rules) from execution (actions). Rules are declarative config, not imperative code.
 
 **Why we apply it**: Review rules will be primarily authored by Claude agents via the gap feedback loop. Separating facts from rules from execution means:
+
 - Adding a new rule = adding a config entry, not changing orchestration code
 - PR metadata is immutable input that every stage reads but never mutates
 - The dispatcher is dumb — it executes decisions, it doesn't make them
@@ -178,12 +180,12 @@ Metric-based, not rule-based (SonarQube pattern). Conditions are evaluated in pr
 
 **`gateDecisionSchema` enum**: `fail` | `needs_fixes` | `pass_with_warnings` | `pass`
 
-| Condition | Decision | Action |
-|-----------|----------|--------|
-| `critical > 0` | `fail` | Building agent must fix before proceeding |
-| `major > 0` | `needs_fixes` | Building agent should fix |
-| `warning > 0` | `pass_with_warnings` | Create tech-debt issues for deferred items |
-| All clean | `pass` | Proceed to PR creation |
+| Condition      | Decision             | Action                                     |
+| -------------- | -------------------- | ------------------------------------------ |
+| `critical > 0` | `fail`               | Building agent must fix before proceeding  |
+| `major > 0`    | `needs_fixes`        | Building agent should fix                  |
+| `warning > 0`  | `pass_with_warnings` | Create tech-debt issues for deferred items |
+| All clean      | `pass`               | Proceed to PR creation                     |
 
 ## Schema-Driven Design
 
@@ -191,33 +193,33 @@ All config and pipeline data is schema-validated. Schemas are the source of trut
 
 ### Config Schemas (`lib/schemas/review-config.ts`)
 
-| Schema | Validates |
-|--------|-----------|
-| `reviewRuleSchema` | Single review rule — fields: `id`, `name`, `severity` (critical/major/warning/info), `agent` (agent ID from registry), `category`, `description`, `detection` (what to look for), `recommendation` (how to fix) |
-| `compositionPolicySchema` | When to dispatch which agent (trigger conditions, dispatch target, priority) |
-| `agentRegistryEntrySchema` | Agent metadata (id, name, tools, capabilities) |
-| `domainMappingSchema` | File glob pattern → domain classification |
+| Schema                     | Validates                                                                                                                                                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `reviewRuleSchema`         | Single review rule — fields: `id`, `name`, `severity` (critical/major/warning/info), `agent` (agent ID from registry), `category`, `description`, `detection` (what to look for), `recommendation` (how to fix) |
+| `compositionPolicySchema`  | When to dispatch which agent (trigger conditions, dispatch target, priority)                                                                                                                                    |
+| `agentRegistryEntrySchema` | Agent metadata (id, name, tools, capabilities)                                                                                                                                                                  |
+| `domainMappingSchema`      | File glob pattern → domain classification                                                                                                                                                                       |
 
 ### Pipeline Schemas (`lib/schemas/review-pipeline.ts`)
 
-| Schema | Validates | Stage |
-|--------|-----------|-------|
-| `prFactsSchema` | Immutable PR metadata | Stage 1 output |
-| `prClassificationSchema` | Domains, risk, type, scope | Stage 2 output |
-| `agentManifestSchema` | Which agents to dispatch with scope | Stage 3 output |
-| `gapLogEntrySchema` | What the config missed + recommendation | Stage 4 output |
-| `reviewFindingSchema` | Single finding from any agent (uniform format) | Stage 5 output |
-| `reviewReportSchema` | Aggregated report with all findings | Stage 6 output |
-| `gateDecisionSchema` | PASS / NEEDS_FIXES / FAIL with metrics | Stage 6 output |
+| Schema                   | Validates                                      | Stage          |
+| ------------------------ | ---------------------------------------------- | -------------- |
+| `prFactsSchema`          | Immutable PR metadata                          | Stage 1 output |
+| `prClassificationSchema` | Domains, risk, type, scope                     | Stage 2 output |
+| `agentManifestSchema`    | Which agents to dispatch with scope            | Stage 3 output |
+| `gapLogEntrySchema`      | What the config missed + recommendation        | Stage 4 output |
+| `reviewFindingSchema`    | Single finding from any agent (uniform format) | Stage 5 output |
+| `reviewReportSchema`     | Aggregated report with all findings            | Stage 6 output |
+| `gateDecisionSchema`     | PASS / NEEDS_FIXES / FAIL with metrics         | Stage 6 output |
 
 ### Config Files
 
-| File | Schema | Contents |
-|------|--------|----------|
-| `config/review-rules.json` | `reviewRuleSchema[]` | ~60 rules for existing agents |
-| `config/review-composition.json` | `compositionPolicySchema[]` | Dispatch policies |
-| `config/review-agents.json` | `agentRegistryEntrySchema[]` | Agent registry |
-| `config/review-domains.json` | `domainMappingSchema[]` | Glob→domain mappings |
+| File                             | Schema                       | Contents                      |
+| -------------------------------- | ---------------------------- | ----------------------------- |
+| `config/review-rules.json`       | `reviewRuleSchema[]`         | ~60 rules for existing agents |
+| `config/review-composition.json` | `compositionPolicySchema[]`  | Dispatch policies             |
+| `config/review-agents.json`      | `agentRegistryEntrySchema[]` | Agent registry                |
+| `config/review-domains.json`     | `domainMappingSchema[]`      | Glob→domain mappings          |
 
 **Rule consumer**: Rules in `review-rules.json` are consumed by two systems: (1) the **aggregator** (Stage 6) uses rule metadata to enrich findings with category/description context, and (2) **agent prompts** reference rules as the checklist of what to scan for. Rules are NOT consumed by the pipeline classifier or composer — those use composition policies. Derive initial rules from each agent's existing check tables (e.g., `build-reviewer`'s 6 categories, `finance-sme`'s 8 rules, `design-auditor`'s 15 dimensions).
 
@@ -270,11 +272,13 @@ Every consumer goes through validated loaders. Raw JSON is never imported direct
 The 3 existing review agents (`build-reviewer`, `finance-sme`, `design-auditor`) currently output markdown reports. They must be migrated to output structured JSON conforming to `reviewFindingSchema`.
 
 **What changes in each agent prompt**:
+
 - Add structured output format section requiring `ReviewFinding[]` JSON
 - Keep the existing review logic (what they check, how they scan)
 - Remove markdown table output format, replace with JSON
 
 **What stays the same**:
+
 - Read-only (agents don't modify code)
 - Same tools (Read, Grep, Glob)
 - Same domain expertise and scan strategies
@@ -287,6 +291,7 @@ The 3 existing review agents (`build-reviewer`, `finance-sme`, `design-auditor`)
 Phase 2 (Self-Review) of `build-session-protocol` currently says "launch sub-agent reviews" with manual agent selection. This changes to:
 
 **Before** (manual):
+
 ```
 Phase 2: Self-Review
 7. Use build-reviewer agent to check for...
@@ -295,6 +300,7 @@ Phase 2: Self-Review
 ```
 
 **After** (automated):
+
 ```
 Phase 2: Self-Review
 7. Invoke review orchestration skill
@@ -373,13 +379,13 @@ No human prompting required. No manual agent selection. Consistent, comprehensiv
 
 ## Design Decisions Log
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Config format | JSON | Agent-authored rules need strict parsing; description fields = validated documentation (unlike YAML comments which are invisible to Zod) |
-| Invocation model | build-session-protocol integration | Quality gate on every build PR, not a manual command |
-| Classifier layers | Config base + LLM gap detector + gap logger | Deterministic base for speed, LLM for coverage, gap log for self-improvement |
-| Rule scope | Existing agents only (~60 rules) | New agents (#310) are a separate issue |
-| Schema separation | Config schemas + pipeline schemas | Data at rest vs data in motion — separate concerns |
-| Gate logic | Severity metrics, not rule counts | Self-maintaining as rules are added/removed |
-| Agent output | Structured JSON (migrated from markdown) | Enables machine aggregation across agents |
-| `work review` command | Out of scope (pipeline review stage, #312) | Different concern — holistic review vs per-PR quality gate |
+| Decision              | Choice                                      | Rationale                                                                                                                                |
+| --------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Config format         | JSON                                        | Agent-authored rules need strict parsing; description fields = validated documentation (unlike YAML comments which are invisible to Zod) |
+| Invocation model      | build-session-protocol integration          | Quality gate on every build PR, not a manual command                                                                                     |
+| Classifier layers     | Config base + LLM gap detector + gap logger | Deterministic base for speed, LLM for coverage, gap log for self-improvement                                                             |
+| Rule scope            | Existing agents only (~60 rules)            | New agents (#310) are a separate issue                                                                                                   |
+| Schema separation     | Config schemas + pipeline schemas           | Data at rest vs data in motion — separate concerns                                                                                       |
+| Gate logic            | Severity metrics, not rule counts           | Self-maintaining as rules are added/removed                                                                                              |
+| Agent output          | Structured JSON (migrated from markdown)    | Enables machine aggregation across agents                                                                                                |
+| `work review` command | Out of scope (pipeline review stage, #312)  | Different concern — holistic review vs per-PR quality gate                                                                               |

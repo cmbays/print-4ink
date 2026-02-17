@@ -1,21 +1,15 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-export const noteChannelEnum = z.enum([
-  "phone",
-  "email",
-  "text",
-  "social",
-  "in-person",
-]);
+export const noteChannelEnum = z.enum(['phone', 'email', 'text', 'social', 'in-person'])
 
 export const noteEntityTypeEnum = z.enum([
-  "customer",
-  "quote",
-  "artwork",
-  "job",
-  "invoice",
-  "credit_memo",
-]);
+  'customer',
+  'quote',
+  'artwork',
+  'job',
+  'invoice',
+  'credit_memo',
+])
 
 export const noteSchema = z.object({
   id: z.string().uuid(),
@@ -26,8 +20,8 @@ export const noteSchema = z.object({
   channel: noteChannelEnum.nullable().default(null),
   entityType: noteEntityTypeEnum,
   entityId: z.string().uuid(),
-});
+})
 
-export type NoteChannel = z.infer<typeof noteChannelEnum>;
-export type NoteEntityType = z.infer<typeof noteEntityTypeEnum>;
-export type Note = z.infer<typeof noteSchema>;
+export type NoteChannel = z.infer<typeof noteChannelEnum>
+export type NoteEntityType = z.infer<typeof noteEntityTypeEnum>
+export type Note = z.infer<typeof noteSchema>

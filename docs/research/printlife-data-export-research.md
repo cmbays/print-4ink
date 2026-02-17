@@ -11,6 +11,7 @@
 **Key Finding**: The Print Life software **does not appear to have documented CSV export functionality** for pricing data. After extensive research including web searches, documentation review, and competitor analysis, no evidence was found of native pricing matrix export features in The Print Life.
 
 **Critical Implications for Screen Print Pro**:
+
 1. Direct PrintLife → Screen Print Pro data migration via file export is **not currently feasible**
 2. 4Ink will likely need to **manually recreate their pricing configuration** in Screen Print Pro
 3. Alternative workarounds exist but require manual effort or technical extraction techniques
@@ -25,16 +26,19 @@
 #### What We Found
 
 **QuickBooks Integration** ([source](https://www.theprintlife.com/)):
+
 - The Print Life connects to QuickBooks Online
 - All invoices created in Print Life duplicate to QB account
 - This integration focuses on **invoice data**, not pricing configuration
 
 **Limited Export Evidence**:
+
 - Q1 2025 updates mention "payment history" and "invoice price breakdown" features ([source](https://www.theprintlife.com/quarter-1-2025-print-life-updates/))
 - No mention of CSV export, pricing matrix export, or data portability features
 - No API documentation found
 
 **What's NOT Available**:
+
 - ❌ No CSV export for pricing matrices
 - ❌ No documented API for programmatic data access
 - ❌ No pricing template export functionality
@@ -43,6 +47,7 @@
 #### Documentation Status
 
 The Print Life has minimal public documentation:
+
 - **Website**: [theprintlife.com](https://www.theprintlife.com/)
 - **Contact**: sales@theprintlife.com | 602-500-2314
 - **Support Hours**: Tuesday-Friday, 10:00 AM - 6:00 PM MST
@@ -60,22 +65,26 @@ The 2025 roadmap ([source](https://www.theprintlife.com/2025-dev-roadmap/)) focu
 Based on available information, The Print Life includes:
 
 **Print Project Builder** ([source](https://www.theprintlife.com/)):
+
 - Supports multiple decoration methods: screen printing, embroidery, DTF
 - Handles "intricate print projects"
 - Includes "impression cost display to each location" (Q1 2025 update)
 
 **Pricing Controls** ([source](https://www.theprintlife.com/the-print-life-screen-print-management-software-2024-update-is-live/)):
+
 - Price override functionality
 - Minimum quantity warnings based on decoration method
 - Setup fee management ("prevents mistakes like forgetting to charge for ink change outs")
 
 **Vendor Integration**:
+
 - SanMar and Alphabroder catalog integration
 - Product catalog with vendor pricing
 
 #### Unknown/Undocumented
 
 We could **not** confirm:
+
 - How pricing matrices are structured internally
 - What dimensions are used (quantity breaks, color tiers, location pricing)
 - Whether multiple pricing templates are supported
@@ -89,11 +98,13 @@ We could **not** confirm:
 #### Current State
 
 **No Public API Found**:
+
 - Extensive searches for "The Print Life API documentation" returned no results
 - No developer portal, API reference, or integration docs available
 - No third-party integration platforms mention Print Life API access
 
 **Existing Integrations**:
+
 - ✅ QuickBooks Online (invoices only)
 - ✅ Twilio (text message quotes/invoices)
 - ✅ Stripe & PayPal (payment processing)
@@ -101,6 +112,7 @@ We could **not** confirm:
 - 🚧 Shopify (planned for 2025)
 
 **Implications**:
+
 - Programmatic data export is **not feasible**
 - No webhook or API-based sync options
 - Integration must rely on manual processes or screen scraping
@@ -112,19 +124,23 @@ We could **not** confirm:
 #### Industry Context
 
 **General Screen Printing Software Migration**:
+
 - Research found **no documented migration stories** from The Print Life to other platforms
 - The Print Life appears to be a smaller player compared to Printavo, InkSoft, and YoPrint
 - Industry discussions focus on migrations between Printavo ↔ InkSoft ↔ YoPrint
 
 **Data Portability Challenges** ([source](https://www.convertcalculator.com/blog/software-for-screenprinters/)):
+
 > "Screen printing software often has system incompatibilities that prevent direct data import from competing platforms like Printavo."
 
 **Known Workaround** ([source](https://teesom.com/free/)):
+
 > "Former Printavo customers can have their data exported to QuickBooks and then imported into Teesom for customer information."
 
 #### User Testimonials
 
 No public reviews or user experiences about The Print Life's data export capabilities were found on:
+
 - Reddit screen printing communities
 - Industry forums (T-Shirt Forums, etc.)
 - Software review sites (Capterra, G2, etc.)
@@ -138,12 +154,14 @@ To establish industry best practices, we researched competitors:
 #### YoPrint
 
 **CSV Import/Export** ([source](https://support.yoprint.com/article/93-import-export-pricing-matrix-as-csv)):
+
 - ✅ Downloadable CSV template for pricing matrices
 - ✅ Bulk upload capability
 - ✅ Pricing based on "print size, location, and quantity"
 - ✅ Easy to manage and update pricing in spreadsheet format
 
 **Configuration** ([source](https://www.yoprint.com/pricing-engine-for-screen-printers-dtg-embroidery)):
+
 - Automated pricing for screen printing, DTG, embroidery
 - Variables: quantity, decoration method, garment type
 - "Price Better. Price Faster. Close More Sales"
@@ -151,6 +169,7 @@ To establish industry best practices, we researched competitors:
 #### Printavo
 
 **Pricing Matrix Import** ([source](https://support.printavo.com/hc/en-us/articles/360057960833)):
+
 - ✅ CSV upload for pricing matrices
 - ✅ Downloadable template from platform
 - ✅ Formula: `(GARMENT COST × YOUR MARKUP) + YOUR PRODUCTION COST`
@@ -158,6 +177,7 @@ To establish industry best practices, we researched competitors:
 - ✅ Excel-compatible editing before upload
 
 **Data Portability** ([source](https://support.printavo.com/hc/en-us/articles/360057960513)):
+
 - Customer import via CSV
 - Data export for custom analysis
 - Strong focus on data migration support
@@ -165,6 +185,7 @@ To establish industry best practices, we researched competitors:
 #### InkSoft
 
 **Pricing Configuration** ([source](https://help.inksoft.com/hc/en-us/articles/8389455610651)):
+
 - Max print color setting for pricing grids
 - Screen Print Pricing Grid structure
 - No CSV import/export mentioned in search results
@@ -178,6 +199,7 @@ To establish industry best practices, we researched competitors:
 Based on industry research ([sources](https://www.printavo.com/blog/screen-printing-pricing-matrix), [screenprintdirect.com](https://screenprintdirect.com/pages/pricing-calculator)):
 
 **Standard Pricing Dimensions**:
+
 1. **Quantity Tiers** (e.g., 12-23, 24-35, 36-47, 48-71, 72+)
 2. **Number of Colors** (1 color, 2 colors, 3 colors, etc.)
 3. **Print Locations** (front, back, sleeve, etc.)
@@ -185,6 +207,7 @@ Based on industry research ([sources](https://www.printavo.com/blog/screen-print
 5. **Garment Cost** (wholesale price + markup)
 
 **Typical Formula** ([source](https://www.printavo.com/blog/screen-printing-pricing/)):
+
 ```
 Finished Price = Blank Product Price + Print Price
 Print Price = Setup Charges + (Per-Item Print Cost × Quantity)
@@ -192,6 +215,7 @@ Industry Markup = 150-200% of wholesale garment cost
 ```
 
 **Common Data Points** ([source](https://exiletech.com/blog/screen-printing-cost-calculator/)):
+
 - Quantity of screens needed
 - Total cost per location
 - Quantity of locations on garment
@@ -207,6 +231,7 @@ Industry Markup = 150-200% of wholesale garment cost
 **Key Finding**: There is **no industry-standard file format** for screen printing pricing data.
 
 Each platform uses its own CSV structure:
+
 - Printavo: Excel-based matrix with specific template
 - YoPrint: Custom CSV template with their field structure
 - InkSoft: Proprietary pricing grid
@@ -223,17 +248,20 @@ Since direct PrintLife export isn't available, here are workarounds:
 ### Option 1: Manual Recreation (RECOMMENDED)
 
 **Process**:
+
 1. User reviews their current pricing in The Print Life
 2. User manually enters pricing rules into Screen Print Pro's pricing matrix UI
 3. Screen Print Pro provides guided workflow with templates
 
 **Pros**:
+
 - ✅ Most reliable approach
 - ✅ Forces user to review and optimize pricing
 - ✅ No data format compatibility issues
 - ✅ Opportunity to simplify pricing structure
 
 **Cons**:
+
 - ⏱️ Time-consuming for complex pricing setups
 - ⚠️ Risk of transcription errors
 
@@ -244,15 +272,18 @@ Since direct PrintLife export isn't available, here are workarounds:
 ### Option 2: Screenshot + Manual Transcription
 
 **Process**:
+
 1. User takes screenshots of pricing screens in The Print Life
 2. User manually transcribes values into Screen Print Pro
 3. Screen Print Pro UI provides side-by-side reference view
 
 **Pros**:
+
 - ✅ Visual reference reduces errors
 - ✅ No technical skills required
 
 **Cons**:
+
 - ⏱️ Still manual effort
 - ⚠️ Tedious for large matrices
 
@@ -263,6 +294,7 @@ Since direct PrintLife export isn't available, here are workarounds:
 ### Option 3: Browser DevTools Data Extraction
 
 **Process**:
+
 1. User logs into The Print Life
 2. Opens pricing configuration screen
 3. Uses browser DevTools console to extract table data
@@ -270,30 +302,36 @@ Since direct PrintLife export isn't available, here are workarounds:
 5. Imports CSV into Screen Print Pro
 
 **Technical Approach** ([source](https://gist.github.com/greenido/c0f529544299f46b668dcdf1e9d8aee8)):
+
 ```javascript
 // Example DevTools console snippet
-const table = document.querySelector('table.pricing-matrix');
-const rows = Array.from(table.querySelectorAll('tr'));
-const csv = rows.map(row =>
-  Array.from(row.querySelectorAll('td, th'))
-    .map(cell => `"${cell.innerText}"`)
-    .join(',')
-).join('\n');
-console.log(csv);
+const table = document.querySelector('table.pricing-matrix')
+const rows = Array.from(table.querySelectorAll('tr'))
+const csv = rows
+  .map((row) =>
+    Array.from(row.querySelectorAll('td, th'))
+      .map((cell) => `"${cell.innerText}"`)
+      .join(',')
+  )
+  .join('\n')
+console.log(csv)
 // User can copy output to clipboard
 ```
 
 **Browser Extensions** ([sources](https://chrome.google.com/webstore/detail/table-data-export/edekdaabfonaodpbggccaamfhggjggki)):
+
 - Table Capture
 - Table Exporter
 - Download table as CSV
 
 **Pros**:
+
 - ✅ Semi-automated
 - ✅ Faster than pure manual entry
 - ✅ Reduces transcription errors
 
 **Cons**:
+
 - ⚠️ Requires technical knowledge
 - ⚠️ Depends on Print Life's HTML structure
 - ⚠️ May break with Print Life UI updates
@@ -306,16 +344,19 @@ console.log(csv);
 ### Option 4: QuickBooks as Bridge (LIMITED)
 
 **Process**:
+
 1. User's Print Life invoices sync to QuickBooks
 2. Export QuickBooks data to CSV
 3. Extract pricing from historical invoices
 4. Import pricing patterns into Screen Print Pro
 
 **Pros**:
+
 - ✅ Uses existing integration
 - ✅ Real historical pricing data
 
 **Cons**:
+
 - ⚠️ Only captures invoice-level pricing, not pricing rules
 - ⚠️ Requires reverse-engineering pricing structure from invoices
 - ⚠️ Incomplete data (no setup fees, no quantity tier rules)
@@ -328,6 +369,7 @@ console.log(csv);
 ### Option 5: Generic CSV Upload
 
 **Process**:
+
 1. Screen Print Pro provides downloadable CSV template
 2. User creates their pricing matrix in Excel/Google Sheets
 3. User saves as CSV
@@ -335,6 +377,7 @@ console.log(csv);
 5. Screen Print Pro validates and imports
 
 **Template Structure** (based on industry standards):
+
 ```csv
 quantity_min,quantity_max,colors,locations,setup_fee,per_item_cost
 12,23,1,1,25.00,8.50
@@ -344,12 +387,14 @@ quantity_min,quantity_max,colors,locations,setup_fee,per_item_cost
 ```
 
 **Pros**:
+
 - ✅ User has full control over data format
 - ✅ Can use Excel formulas to calculate pricing
 - ✅ Portable between any systems
 - ✅ Easy to backup and version
 
 **Cons**:
+
 - ⚠️ Still requires manual data entry
 - ⚠️ User must understand CSV format
 - ⚠️ Risk of formatting errors
@@ -365,6 +410,7 @@ quantity_min,quantity_max,colors,locations,setup_fee,per_item_cost
 Since PrintLife export isn't available, focus on making manual pricing entry **fast and painless**.
 
 **Design Principles**:
+
 1. **Guided Workflow**: Step-by-step wizard for pricing setup
 2. **Smart Defaults**: Pre-populate common industry values
 3. **Templates**: Provide 2-3 starter templates (basic, standard, premium)
@@ -373,6 +419,7 @@ Since PrintLife export isn't available, focus on making manual pricing entry **f
 6. **Validation**: Real-time checks for missing tiers, overlapping ranges
 
 **User Flow**:
+
 ```
 Setup Wizard:
 1. Choose decoration method (screen print, DTF, embroidery)
@@ -393,6 +440,7 @@ Setup Wizard:
 Provide CSV import for **power users** who want to build pricing offline or migrate from competitors.
 
 **Implementation**:
+
 1. Offer downloadable CSV template with clear instructions
 2. Support multiple tab-separated sections: quantity tiers, color pricing, location pricing, setup fees
 3. Robust validation with helpful error messages
@@ -400,6 +448,7 @@ Provide CSV import for **power users** who want to build pricing offline or migr
 5. Allow partial imports (e.g., just update quantity tiers)
 
 **Example Template** (simplified):
+
 ```csv
 # Quantity Breaks
 quantity_min,quantity_max,base_multiplier
@@ -434,6 +483,7 @@ rush_job,50.00
 For users migrating from Print Life who sync to QuickBooks:
 
 **Feature**: "Validate Pricing Against QB Invoices"
+
 1. Import QuickBooks invoice data (optional)
 2. Compare quoted prices in Screen Print Pro vs historical QB prices
 3. Flag discrepancies for review
@@ -450,6 +500,7 @@ For users migrating from Print Life who sync to QuickBooks:
 **Long-term Consideration**: Build a Chrome extension that extracts pricing data from The Print Life (or other competitors).
 
 **How It Works**:
+
 1. User installs "Screen Print Pro Importer" Chrome extension
 2. User logs into The Print Life
 3. Extension detects pricing screens
@@ -459,6 +510,7 @@ For users migrating from Print Life who sync to QuickBooks:
 7. User imports into Screen Print Pro
 
 **Challenges**:
+
 - ⚠️ Brittle (breaks when Print Life changes HTML)
 - ⚠️ Legal/ToS concerns (scraping competitor data)
 - ⚠️ Maintenance burden (updates for each Print Life release)
@@ -469,15 +521,15 @@ For users migrating from Print Life who sync to QuickBooks:
 
 ## Competitive Feature Analysis
 
-| Feature | YoPrint | Printavo | InkSoft | Print Life | Screen Print Pro (Target) |
-|---------|---------|----------|---------|------------|---------------------------|
-| CSV Export | ✅ Yes | ✅ Yes | ❓ Unknown | ❌ No | ✅ **Must Have** |
-| CSV Import | ✅ Yes | ✅ Yes | ❓ Unknown | ❌ No | ✅ **Must Have** |
-| Pricing Templates | ✅ Yes | ✅ Yes | ✅ Yes | ❓ Unknown | ✅ **Must Have** |
-| Guided Setup Wizard | ❓ Unknown | ❓ Unknown | ❓ Unknown | ❌ No | ✅ **Differentiation** |
-| Real-time Validation | ❓ Unknown | ❓ Unknown | ❓ Unknown | ❌ No | ✅ **Differentiation** |
-| QB Integration | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | 🚧 Phase 2 |
-| API Access | ❓ Likely | ❓ Likely | ❓ Likely | ❌ No | 🚧 Phase 3 |
+| Feature              | YoPrint    | Printavo   | InkSoft    | Print Life | Screen Print Pro (Target) |
+| -------------------- | ---------- | ---------- | ---------- | ---------- | ------------------------- |
+| CSV Export           | ✅ Yes     | ✅ Yes     | ❓ Unknown | ❌ No      | ✅ **Must Have**          |
+| CSV Import           | ✅ Yes     | ✅ Yes     | ❓ Unknown | ❌ No      | ✅ **Must Have**          |
+| Pricing Templates    | ✅ Yes     | ✅ Yes     | ✅ Yes     | ❓ Unknown | ✅ **Must Have**          |
+| Guided Setup Wizard  | ❓ Unknown | ❓ Unknown | ❓ Unknown | ❌ No      | ✅ **Differentiation**    |
+| Real-time Validation | ❓ Unknown | ❓ Unknown | ❓ Unknown | ❌ No      | ✅ **Differentiation**    |
+| QB Integration       | ✅ Yes     | ✅ Yes     | ✅ Yes     | ✅ Yes     | 🚧 Phase 2                |
+| API Access           | ❓ Likely  | ❓ Likely  | ❓ Likely  | ❌ No      | 🚧 Phase 3                |
 
 **Key Insight**: Screen Print Pro can **differentiate** by providing the **best manual setup experience** since competitors focus on import but don't optimize first-time setup UX.
 
@@ -488,6 +540,7 @@ For users migrating from Print Life who sync to QuickBooks:
 ### Recommended Import File Format
 
 **Option A: Single CSV with Sections** (simpler for users)
+
 ```csv
 [QUANTITY_BREAKS]
 min,max,multiplier
@@ -506,6 +559,7 @@ per_location,15.00
 ```
 
 **Option B: Multiple CSV Files** (more flexible)
+
 ```
 pricing-import/
   ├── quantity-breaks.csv
@@ -515,21 +569,22 @@ pricing-import/
 ```
 
 **Option C: JSON** (most structured, harder for users)
+
 ```json
 {
   "pricing_matrix": {
     "name": "Standard Screen Print",
     "quantity_breaks": [
-      {"min": 12, "max": 23, "multiplier": 1.00},
-      {"min": 24, "max": 47, "multiplier": 0.85}
+      { "min": 12, "max": 23, "multiplier": 1.0 },
+      { "min": 24, "max": 47, "multiplier": 0.85 }
     ],
     "color_pricing": [
-      {"colors": 1, "additional_cost": 0.00},
-      {"colors": 2, "additional_cost": 1.00}
+      { "colors": 1, "additional_cost": 0.0 },
+      { "colors": 2, "additional_cost": 1.0 }
     ],
     "setup_fees": {
-      "per_color": 25.00,
-      "per_location": 15.00
+      "per_color": 25.0,
+      "per_location": 15.0
     }
   }
 }
@@ -542,6 +597,7 @@ pricing-import/
 ### Validation Rules
 
 **Required Validations**:
+
 1. ✅ Quantity ranges don't overlap
 2. ✅ Quantity ranges don't have gaps
 3. ✅ All numeric fields are positive
@@ -551,6 +607,7 @@ pricing-import/
 7. ✅ Per-item costs are reasonable (warn if > $50)
 
 **Warning Conditions**:
+
 1. ⚠️ Quantity breaks don't follow common industry tiers (12, 24, 48, 72, 144)
 2. ⚠️ Pricing decreases dramatically between tiers (check for typos)
 3. ⚠️ Setup fees are $0 (may be intentional, but uncommon)
@@ -598,12 +655,14 @@ pricing-import/
 **The Print Life does not offer documented pricing data export capabilities.** After exhaustive research, no CSV export, API access, or data portability features were found. This is a **significant limitation** compared to competitors like YoPrint and Printavo, which provide robust import/export tools.
 
 **Implications for Screen Print Pro**:
+
 - ✅ **Opportunity**: Build superior manual pricing setup UX to differentiate from competitors
 - ⚠️ **Challenge**: 4Ink will need to manually recreate their pricing configuration
 - 🎯 **Focus**: Prioritize intuitive pricing matrix builder over import features
 - 📦 **Fallback**: Provide CSV template for users who want offline editing
 
 **Recommended Approach**:
+
 1. Accept that Print Life migration will be manual
 2. Design the best possible manual pricing entry experience
 3. Provide CSV import as power-user feature
@@ -615,6 +674,7 @@ pricing-import/
 ## Sources
 
 ### The Print Life Official Resources
+
 - [The Print Life Homepage](https://www.theprintlife.com/)
 - [2025 Development Roadmap](https://www.theprintlife.com/2025-dev-roadmap/)
 - [Q1 2025 Updates](https://www.theprintlife.com/quarter-1-2025-print-life-updates/)
@@ -623,6 +683,7 @@ pricing-import/
 - [Contact Page](https://www.theprintlife.com/contact-us/)
 
 ### Competitor Resources
+
 - [YoPrint Pricing Matrix Import/Export](https://support.yoprint.com/article/93-import-export-pricing-matrix-as-csv)
 - [YoPrint Pricing Engine](https://www.yoprint.com/pricing-engine-for-screen-printers-dtg-embroidery)
 - [Printavo Pricing Matrix Import](https://support.printavo.com/hc/en-us/articles/360057960833)
@@ -631,12 +692,14 @@ pricing-import/
 - [InkSoft Screen Print Pricing](https://help.inksoft.com/hc/en-us/articles/8389455610651)
 
 ### Industry Resources
+
 - [Screen Printing Software Comparison](https://www.convertcalculator.com/blog/software-for-screenprinters/)
 - [Screen Printing Pricing Calculator](https://screenprintdirect.com/pages/pricing-calculator)
 - [Printavo Pricing Guide](https://www.printavo.com/blog/screen-printing-pricing/)
 - [Exile Tech Cost Calculator Guide](https://exiletech.com/blog/screen-printing-cost-calculator/)
 
 ### Technical Resources
+
 - [Browser Table Export Gist](https://gist.github.com/greenido/c0f529544299f46b668dcdf1e9d8aee8)
 - [Table Capture Extension](https://chrome.google.com/webstore/detail/table-data-export/edekdaabfonaodpbggccaamfhggjggki)
 - [Table Exporter Extension](https://chromewebstore.google.com/detail/table-exporter-scrape-ext/legefalillciaiighbbkgdojbjahhjjfa)

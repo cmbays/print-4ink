@@ -1,6 +1,6 @@
 ---
-title: "Quoting Discovery: Complete"
-subtitle: "Full competitive analysis, user interview, and improved journey design for the Quoting vertical"
+title: 'Quoting Discovery: Complete'
+subtitle: 'Full competitive analysis, user interview, and improved journey design for the Quoting vertical'
 date: 2026-02-08
 phase: 1
 pipelineName: quoting
@@ -9,19 +9,19 @@ products: [quotes]
 tools: []
 stage: research
 tags: [feature, research]
-sessionId: "0fe71069-b9c2-45f3-9a06-5c57de8a013d"
-branch: "main"
+sessionId: '0fe71069-b9c2-45f3-9a06-5c57de8a013d'
+branch: 'main'
 status: complete
 ---
 
 ## Target Improvements
 
-| Metric | Value |
-|--------|-------|
-| 60-70% | Faster (simple quote) |
-| 3-4 min | Target (vs 10 min) |
-| 60% | Fewer clicks |
-| 10 | Friction points found |
+| Metric  | Value                 |
+| ------- | --------------------- |
+| 60-70%  | Faster (simple quote) |
+| 3-4 min | Target (vs 10 min)    |
+| 60%     | Fewer clicks          |
+| 10      | Friction points found |
 
 ## What We Did
 
@@ -43,13 +43,13 @@ Single-page form replaces 6-step wizard. Instant client-side pricing. S&S-style 
 
 ## Top 5 Friction Points
 
-| Friction | Severity | Our Fix |
-|----------|----------|---------|
-| Qty entry blocks on recalculation | Critical | Instant client-side calc, never block |
-| Mandatory unused steps | High | Single-page form, no steps to skip |
-| Art style change resets all selections | High | Non-destructive editing |
-| No quote reuse / duplication | High | Duplicate Quote button |
-| No quote tracking or status | High | Full status dashboard |
+| Friction                               | Severity | Our Fix                               |
+| -------------------------------------- | -------- | ------------------------------------- |
+| Qty entry blocks on recalculation      | Critical | Instant client-side calc, never block |
+| Mandatory unused steps                 | High     | Single-page form, no steps to skip    |
+| Art style change resets all selections | High     | Non-destructive editing               |
+| No quote reuse / duplication           | High     | Duplicate Quote button                |
+| No quote tracking or status            | High     | Full status dashboard                 |
 
 ## Print Life vs Screen Print Pro
 

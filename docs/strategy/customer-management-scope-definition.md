@@ -1,5 +1,5 @@
 ---
-title: "Customer Management Vertical — Scope Definition"
+title: 'Customer Management Vertical — Scope Definition'
 description: "What we'll build (CORE), what we'll mock (PERIPHERAL), what we'll minimize (INTERCONNECTIONS)"
 category: strategy
 status: complete
@@ -42,17 +42,17 @@ The customer detail page is a **dashboard, not a form**. It answers five questio
 
 ## Terminology
 
-| Term | Definition | Phase |
-|------|-----------|-------|
-| **Company** | Top-level entity. Owns aggregate stats, loyalty tier, pricing defaults. | **Phase 1** |
-| **Group** | Optional subdivision within a company (e.g., Marketing Dept, Events Team). Shares artwork context. | **Phase 1** (simple implementation) |
-| **Contact** | Individual person. Has own order history, artwork preferences, communication records. | **Phase 1** |
-| **Lifecycle Stage** | Structured enum: Prospect → New → Repeat → Contract. Auto-progresses based on configurable criteria. | **Phase 1** |
-| **Customer Health** | Automatic pattern detection: Active → Potentially Churning → Churned. Based on ordering frequency. | **Phase 1** (mock data) |
-| **Type Tags** | Flexible classification: Retail, Sports/School, Corporate, Storefront/Merch, Wholesale. Multiple per customer. Extensible. | **Phase 1** (starter set) |
-| **Custom Tags** | Free-form tags with optional attributes (e.g., seasonality). Shop-defined. | **Phase 2** |
-| **Cascading Defaults** | Settings inherit: Company → Group → Contact → Transaction. Each level can override parent. | **Phase 1** (schema design) |
-| **Storefront Customer** | A customer for whom the shop manages a branded online store. Tracked as a type tag. Storefront feature is Phase 2. | **Phase 1** (tag only) |
+| Term                    | Definition                                                                                                                 | Phase                               |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| **Company**             | Top-level entity. Owns aggregate stats, loyalty tier, pricing defaults.                                                    | **Phase 1**                         |
+| **Group**               | Optional subdivision within a company (e.g., Marketing Dept, Events Team). Shares artwork context.                         | **Phase 1** (simple implementation) |
+| **Contact**             | Individual person. Has own order history, artwork preferences, communication records.                                      | **Phase 1**                         |
+| **Lifecycle Stage**     | Structured enum: Prospect → New → Repeat → Contract. Auto-progresses based on configurable criteria.                       | **Phase 1**                         |
+| **Customer Health**     | Automatic pattern detection: Active → Potentially Churning → Churned. Based on ordering frequency.                         | **Phase 1** (mock data)             |
+| **Type Tags**           | Flexible classification: Retail, Sports/School, Corporate, Storefront/Merch, Wholesale. Multiple per customer. Extensible. | **Phase 1** (starter set)           |
+| **Custom Tags**         | Free-form tags with optional attributes (e.g., seasonality). Shop-defined.                                                 | **Phase 2**                         |
+| **Cascading Defaults**  | Settings inherit: Company → Group → Contact → Transaction. Each level can override parent.                                 | **Phase 1** (schema design)         |
+| **Storefront Customer** | A customer for whom the shop manages a branded online store. Tracked as a type tag. Storefront feature is Phase 2.         | **Phase 1** (tag only)              |
 
 ---
 
@@ -65,6 +65,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 **Purpose**: Browse, search, filter, and discover customers with smart views
 
 **Features**:
+
 - [ ] DataTable display with columns: Company, Primary Contact, Type Tags, Lifecycle Stage, Health, Last Order, Lifetime Revenue
 - [ ] **Global search**: Search by company name, any contact name, email, phone, or order details (URL query param)
 - [ ] **Smart view tabs/chips** across the top:
@@ -82,6 +83,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] Archived customers hidden by default, toggle to show
 
 **Acceptance Criteria**:
+
 - ✅ Can search for customer by company name, contact name, email, or phone
 - ✅ Smart views surface the right customers (prospects, top, needs attention, seasonal)
 - ✅ Can filter by type tag and lifecycle stage
@@ -91,6 +93,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - ✅ Archived customers are hidden but accessible
 
 **Quality Checklist**:
+
 - [ ] Visual hierarchy: Smart view tabs most prominent, "Add Customer" is primary CTA
 - [ ] Spacing: Tailwind tokens only
 - [ ] Typography: Max 3-4 sizes (header, column headers, body, small stats)
@@ -109,6 +112,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 **Layout**: One consistent framework that adapts content density based on data available.
 
 **Header Section** (always visible):
+
 - [ ] Company name (large, prominent)
 - [ ] Primary contact name, email, phone (click to copy)
 - [ ] Lifecycle stage badge (Prospect / New / Repeat / Contract)
@@ -124,6 +128,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] Breadcrumb: Dashboard > Customers > River City Brewing Co.
 
 **Tabbed Sections** (below header):
+
 - [ ] **Activity** (default tab): Reverse-chronological timeline of all interactions — quotes created/sent/accepted, jobs started/completed, notes added, artwork uploaded. Timestamped.
 - [ ] **Quotes**: All quotes for this customer. Columns: Quote #, Status, Total, Date. Click → `/quotes/[id]`. "Start Similar Quote" button on each row.
 - [ ] **Jobs**: All jobs for this customer. Columns: Job #, Status, Due Date, Total. Click → `/jobs/[id]` (Phase 2 link).
@@ -133,11 +138,13 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - [ ] **Notes**: All notes (customer-level + linked from quotes/artwork). Pinned notes at top. Channel-tagged (phone/email/text/social/in-person).
 
 **Adaptive Behavior**:
+
 - **Prospect** (sparse data): Header shows contact info + "Create First Quote" CTA. Tabs exist but sections show inviting empty states ("Quotes will appear here when you create one"). Notes tab is pre-selected (prospects need heavy note-taking).
 - **New/Repeat** (moderate data): Stats populate in header. Quotes/Jobs tabs fill with history. Artwork gallery shows designs used.
 - **Contract/Heavy** (rich data): Full stats, deep artwork gallery with smart sorting, pattern visibility in activity timeline.
 
 **Acceptance Criteria**:
+
 - ✅ Header shows complete customer context in 5 seconds
 - ✅ Can navigate between tabs without page reload
 - ✅ Activity timeline shows all interactions chronologically
@@ -150,6 +157,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 - ✅ Empty states are inviting, not broken-looking
 
 **Quality Checklist**:
+
 - [ ] Visual hierarchy: Company name and quick stats most prominent
 - [ ] Spacing: Balanced sections with clear tab separation
 - [ ] Typography: Consistent with quoting views
@@ -166,6 +174,7 @@ These workflows are critical to demonstrating a best-in-class customer managemen
 **Purpose**: Support multi-contact companies with department-level organization
 
 **Data Model**:
+
 ```
 Company (River City Brewing Co.)
   ├── Group: Marketing Dept
@@ -177,6 +186,7 @@ Company (River City Brewing Co.)
 ```
 
 **Features**:
+
 - [ ] **Simple by default**: Most customers = 1 Company + 1 Contact. No groups required.
 - [ ] **Expandable**: "Add Contact" button adds another person. "Add Group" appears when 2+ contacts exist (progressive disclosure).
 - [ ] **Contact roles**: Each contact has a role: Ordering, Art Approver, Billing, Owner, Other
@@ -189,6 +199,7 @@ Company (River City Brewing Co.)
 - [ ] **Discoverability**: Subtle "Add Contact" hint on customer detail page. Tooltip explains groups when relevant.
 
 **Acceptance Criteria**:
+
 - ✅ Can add multiple contacts to a company
 - ✅ Can assign roles to contacts
 - ✅ Can designate primary contact
@@ -197,6 +208,7 @@ Company (River City Brewing Co.)
 - ✅ Simple case (1 contact, no groups) feels clean and unbloated
 
 **Quality Checklist**:
+
 - [ ] Visual: Clean hierarchy display (indented or card-based)
 - [ ] Progressive disclosure: Groups don't appear until needed
 - [ ] Typography: Contact names prominent, roles as subtle badges
@@ -210,14 +222,15 @@ Company (River City Brewing Co.)
 
 **Lifecycle Stages** (structured enum, auto-progressing):
 
-| Stage | Trigger | Display |
-|-------|---------|---------|
-| **Prospect** | Created from quoting or manually added without a completed order | Blue badge |
-| **New Customer** | First completed and paid order | Neutral/white badge |
-| **Repeat** | 2+ completed orders OR orders spanning 2+ distinct months | Green badge |
-| **Contract** | Manual promotion by shop owner (formal agreement) OR configurable spend threshold | Gold badge |
+| Stage            | Trigger                                                                           | Display             |
+| ---------------- | --------------------------------------------------------------------------------- | ------------------- |
+| **Prospect**     | Created from quoting or manually added without a completed order                  | Blue badge          |
+| **New Customer** | First completed and paid order                                                    | Neutral/white badge |
+| **Repeat**       | 2+ completed orders OR orders spanning 2+ distinct months                         | Green badge         |
+| **Contract**     | Manual promotion by shop owner (formal agreement) OR configurable spend threshold | Gold badge          |
 
 **Features**:
+
 - [ ] Auto-transition: Prospect → New (on first completed order), New → Repeat (on 2nd order or 2+ months of orders)
 - [ ] Manual override: Shop owner can promote any customer to Contract status at any time
 - [ ] Configurable thresholds (Phase 2): Settings page where shop sets "Repeat after X orders" and "Contract after $Y spent"
@@ -226,6 +239,7 @@ Company (River City Brewing Co.)
 - [ ] Lifecycle change logged in activity timeline
 
 **Acceptance Criteria**:
+
 - ✅ Prospect auto-promotes to New Customer when mock data shows a completed order
 - ✅ New auto-promotes to Repeat when 2+ orders exist in mock data
 - ✅ Contract can be manually set
@@ -240,14 +254,15 @@ Company (River City Brewing Co.)
 
 **Health States**:
 
-| State | Trigger | Display |
-|-------|---------|---------|
-| **Active** | Ordering within expected pattern | No indicator (absence = healthy) |
-| **Potentially Churning** | No order for 2x their average order interval | Amber "Needs attention" badge |
-| **Churned** | No order for 4x their average order interval or 6+ months, whichever is shorter | Red "Inactive" badge |
-| **Archived** | Manual action by shop owner | Hidden from default views, shown in "Archived" filter |
+| State                    | Trigger                                                                         | Display                                               |
+| ------------------------ | ------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Active**               | Ordering within expected pattern                                                | No indicator (absence = healthy)                      |
+| **Potentially Churning** | No order for 2x their average order interval                                    | Amber "Needs attention" badge                         |
+| **Churned**              | No order for 4x their average order interval or 6+ months, whichever is shorter | Red "Inactive" badge                                  |
+| **Archived**             | Manual action by shop owner                                                     | Hidden from default views, shown in "Archived" filter |
 
 **Features**:
+
 - [ ] Health status calculated from mock data order patterns
 - [ ] "Needs Attention" smart view on customer list filters by Potentially Churning
 - [ ] Health badge on customer detail header (only when not Active)
@@ -256,6 +271,7 @@ Company (River City Brewing Co.)
 - [ ] Reactivate: archived customer can be unarchived
 
 **Acceptance Criteria**:
+
 - ✅ Mock data includes at least 1 customer in each health state
 - ✅ "Needs Attention" view shows only potentially churning customers
 - ✅ Can archive and unarchive a customer
@@ -268,6 +284,7 @@ Company (River City Brewing Co.)
 **Purpose**: Classify customers by business type for filtering and segmentation
 
 **Starter Set**:
+
 - Retail (general retail customers)
 - Sports/School (leagues, teams, schools)
 - Corporate (company-branded apparel)
@@ -275,6 +292,7 @@ Company (River City Brewing Co.)
 - Wholesale (other print shops, decorators, brokers)
 
 **Features**:
+
 - [ ] Multiple tags per customer (a school can also be a storefront customer)
 - [ ] Tags displayed as colored badges on customer list and detail page
 - [ ] Filter customer list by type tag
@@ -282,6 +300,7 @@ Company (River City Brewing Co.)
 - [ ] Phase 1: Starter set only. Phase 2: Custom tags with shop-defined names and optional attributes (e.g., seasonality).
 
 **Acceptance Criteria**:
+
 - ✅ Can assign multiple type tags to a customer
 - ✅ Can filter customer list by type tag
 - ✅ Tags display consistently across list and detail views
@@ -294,6 +313,7 @@ Company (River City Brewing Co.)
 **Purpose**: Create new customers quickly from anywhere — customer list, quote form, or future invoicing
 
 **Fields**:
+
 - [ ] Company Name (required)
 - [ ] Contact Name (required)
 - [ ] Email OR Phone (at least one required — don't force both)
@@ -302,6 +322,7 @@ Company (River City Brewing Co.)
 - [ ] All other fields (address, tax status, payment terms, notes) are optional — can be enriched later
 
 **Features**:
+
 - [ ] Reuses existing `AddCustomerModal` component (expanded)
 - [ ] Creates a full customer record (single source of truth)
 - [ ] Auto-selects the new customer in the quote form if triggered from there
@@ -309,6 +330,7 @@ Company (River City Brewing Co.)
 - [ ] < 30 seconds to complete
 
 **Acceptance Criteria**:
+
 - ✅ Can create customer with just company + contact name + email
 - ✅ New customer appears immediately in customer list and quote form
 - ✅ Auto-tagged as Prospect when created from quoting
@@ -322,13 +344,14 @@ Company (River City Brewing Co.)
 
 **Note Types**:
 
-| Type | Lives On | Surfaces In |
-|------|----------|-------------|
-| **Customer note** | Customer record | Detail page Notes tab, pinned at top if flagged |
-| **Quote note** | Quote record (already exists) | Quote detail, customer Activity timeline |
-| **Artwork note** | Artwork record | Artwork gallery tooltip, quote form artwork selector |
+| Type              | Lives On                      | Surfaces In                                          |
+| ----------------- | ----------------------------- | ---------------------------------------------------- |
+| **Customer note** | Customer record               | Detail page Notes tab, pinned at top if flagged      |
+| **Quote note**    | Quote record (already exists) | Quote detail, customer Activity timeline             |
+| **Artwork note**  | Artwork record                | Artwork gallery tooltip, quote form artwork selector |
 
 **Features**:
+
 - [ ] **Freeform + timestamped**: Each note has content, createdAt, createdBy
 - [ ] **Pinnable**: Important notes can be pinned to top ("Always charge rush fee", "Picky about Pantone matching")
 - [ ] **Channel-tagged** (optional): Phone, Email, Text, Social, In-Person — helps reconstruct communication history
@@ -338,6 +361,7 @@ Company (River City Brewing Co.)
 - [ ] **Prospect-focused**: Notes tab is the default tab for Prospects (heavy back-and-forth during lead conversion)
 
 **Acceptance Criteria**:
+
 - ✅ Can add, pin, and view notes on customer record
 - ✅ Notes are timestamped and attributed
 - ✅ Pinned notes stay at top
@@ -346,6 +370,7 @@ Company (River City Brewing Co.)
 - ✅ Notes tab is default for Prospect lifecycle stage
 
 **Quality Checklist**:
+
 - [ ] Visual: Clean note list, timestamps subtle, pinned notes visually distinct
 - [ ] Interactive: Quick-add input always visible, pin toggle easy to tap
 - [ ] Typography: Note content readable, metadata (date, channel) secondary
@@ -358,6 +383,7 @@ Company (River City Brewing Co.)
 **Purpose**: Visual, volume-prioritized, season-aware artwork display per customer
 
 **Features**:
+
 - [ ] **Thumbnail grid**: Artwork displayed as visual thumbnails (not a text list)
 - [ ] **Smart sort order**:
   1. Volume outliers first — artwork that drives disproportionate sales gets prime position
@@ -373,6 +399,7 @@ Company (River City Brewing Co.)
 - [ ] **"Use in New Quote" action**: Select artwork directly from gallery to start a new quote
 
 **Acceptance Criteria**:
+
 - ✅ Artwork displays as visual thumbnails
 - ✅ Highest-volume artwork appears first
 - ✅ Seasonal artwork surfaces when relevant (mock: based on mock dates)
@@ -380,6 +407,7 @@ Company (River City Brewing Co.)
 - ✅ Can navigate from artwork to its linked quotes
 
 **Quality Checklist**:
+
 - [ ] Visual: This is the aesthetic showpiece — beautiful grid, consistent thumbnails
 - [ ] Spacing: Tight but breathable grid (similar to S&S color swatch density)
 - [ ] Interactive: Hover shows metadata tooltip with notes, click opens detail
@@ -393,17 +421,20 @@ Company (River City Brewing Co.)
 **Purpose**: Track which customers refer new business — word of mouth is 4Ink's primary growth channel
 
 **Features**:
+
 - [ ] **"Referred by" field** on customer record — dropdown of existing customers or free text
 - [ ] **Referral stats on referrer's profile**: "Marcus has referred 4 customers" with names listed
 - [ ] **Referred revenue**: Total revenue from referred customers visible on referrer's detail page
 - [ ] **Referral visible in customer list**: Referral count as a column or badge
 
 **Phase 2 (not building now)**:
+
 - Referral incentive programs (discount triggers based on referral volume)
 - Referral chain visualization
 - Lead source attribution reporting
 
 **Acceptance Criteria**:
+
 - ✅ Can set "Referred by" on a customer record
 - ✅ Referrer's profile shows referral count and referred revenue
 - ✅ Mock data includes at least 2 referral relationships
@@ -419,6 +450,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: Legal requirement for schools, nonprofits, and reseller accounts
 
 **Implementation**:
+
 - [ ] Tax-exempt toggle (boolean) on customer Details tab
 - [ ] Certificate status: Exempt / Not Exempt / Expired
 - [ ] Expiration date field (with visual warning when approaching/past expiry)
@@ -433,6 +465,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: Customers with multiple locations (HQ, warehouse, event venues)
 
 **Implementation**:
+
 - [ ] Billing address (single, on Details tab)
 - [ ] Shipping addresses (multiple, named): "HQ", "Warehouse", "Event Venue"
 - [ ] Default shipping address flag (used on new quotes)
@@ -447,6 +480,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: At-a-glance metrics for customer value assessment
 
 **Implementation**:
+
 - [ ] Lifetime revenue (sum of all completed orders)
 - [ ] Total orders (count)
 - [ ] Average order value
@@ -463,6 +497,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: Reduce reorder friction — the #1 revenue killer identified in research
 
 **Implementation**:
+
 - [ ] Quote rows in customer detail Quotes tab include "Copy as New" action (already built in quoting vertical)
 - [ ] This reuses the existing "Duplicate Quote" / "Copy as New" functionality from the quoting vertical
 - [ ] No new functionality needed — just surface the existing action within the customer detail context
@@ -475,6 +510,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: Different customers have different payment expectations
 
 **Implementation**:
+
 - [ ] Payment terms field on customer Details tab
 - [ ] Options: COD (Cash on Delivery), Payment Upfront, Net 15, Net 30, Net 60
 - [ ] Default for new customers: Payment Upfront (matches 4Ink's current direction)
@@ -489,6 +525,7 @@ These features are valuable but won't block the demo. Show them in UI so the jou
 **Purpose**: Replace hardcoded 7% contract discount with customer-level pricing
 
 **Implementation**:
+
 - [ ] Pricing tier selector: Standard, Preferred (5%), Contract (configurable %)
 - [ ] Custom discount percentage field (overrides tier default)
 - [ ] Discount auto-applied when customer is selected in quote form
@@ -505,6 +542,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 **Current State**: CustomerCombobox selects from mock data, AddCustomerModal creates inline
 **Enhancement**:
+
 - [ ] Customer combobox shows lifecycle stage badge next to each name
 - [ ] Selecting customer auto-loads: artwork library, pricing tier/discount, tax status, shipping address
 - [ ] "View Customer" link on quote form opens customer detail in new tab
@@ -517,6 +555,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 **Current State**: No invoicing exists yet
 **Preparation**:
+
 - [ ] Customer schema includes: paymentTerms, billingAddress, taxExempt, pricingTier, discountPercentage
 - [ ] These fields are designed for invoice inheritance: invoice reads customer defaults, allows per-transaction override
 - [ ] Cascading model: Company → Group → Contact → Transaction (each level can override parent)
@@ -527,6 +566,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 **Current State**: Artwork linked to customers via customerId FK, displayed in quote form
 **Enhancement**:
+
 - [ ] Artwork gallery on customer detail page (smart sorted)
 - [ ] Artwork notes surface as tooltips in gallery and quote form
 - [ ] "Use in New Quote" action from artwork gallery
@@ -537,6 +577,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 **Current State**: No reporting exists
 **Preparation**:
+
 - [ ] Customer stats (revenue, orders, conversion rate) computed from mock data
 - [ ] Customer list sortable by revenue (feeds "Top Customers" view)
 - [ ] Health detection (churn patterns) computed from mock order dates
@@ -547,6 +588,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 **Current State**: 4Ink uses separate software for storefronts
 **Preparation**:
+
 - [ ] "Storefront/Merch" type tag available for customers
 - [ ] No storefront functionality built
 - [ ] Customer schema flexible enough to add storefront-related fields later
@@ -557,6 +599,7 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 **Current State**: Customer Portal will be a separate Phase 1 vertical (external-facing)
 **Preparation**:
+
 - [ ] Customer schema designed to support both internal (this vertical) and external (portal) access
 - [ ] Contact records include email for portal login credentials (future)
 - [ ] Quote/job data linkable to portal views
@@ -619,34 +662,34 @@ These features touch other verticals but won't be fully built yet. Show them in 
 
 ## Scope Summary
 
-| Component | Scope | Status |
-|-----------|-------|--------|
-| Customer List Page | CORE | Build fully (smart views, search, filters, stats bar) |
-| Customer Detail Dashboard | CORE | Build fully (header + tabbed sections, adaptive density) |
-| Company → Group → Contact | CORE | Build hierarchy (simple default, expandable) |
-| Customer Lifecycle | CORE | Auto-progression with hardcoded thresholds |
-| Customer Health Detection | CORE | Mock-based churn detection, "Needs Attention" view |
-| Customer Type Tags | CORE | Starter set, multi-tag, filter support |
-| Quick Add Customer | CORE | Enhanced modal, < 30 seconds, minimal required fields |
-| Customer Notes | CORE | Freeform, pinnable, channel-tagged, contextual surfacing |
-| Smart Artwork Gallery | CORE | Volume-prioritized, season-aware, thumbnails with notes |
-| Referral Tracking | CORE | "Referred by" field + referral stats display |
-| Tax Exempt Tracking | PERIPHERAL | Toggle + status + expiry + mock upload area |
-| Multiple Shipping Addresses | PERIPHERAL | Named addresses with default flag |
-| Customer Statistics | PERIPHERAL | Computed metrics in header and list |
-| Reorder from detail | PERIPHERAL | Surface existing "Copy as New" in customer context |
-| Payment Terms | PERIPHERAL | Customer-level default, cascading to invoices |
-| Pricing Tier / Discount | PERIPHERAL | Customer-level, replaces hardcoded contract discount |
-| Quoting integration | INTERCONNECTION | Enhanced combobox, auto-load customer context |
-| Invoicing preparation | INTERCONNECTION | Schema fields ready for cascading defaults |
-| Artwork library | INTERCONNECTION | Gallery on detail page, notes surfacing |
-| Reporting preparation | INTERCONNECTION | Stats computed, list sortable by revenue |
-| Storefront placeholder | INTERCONNECTION | Type tag only, no storefront functionality |
-| Customer Portal | ❌ SEPARATE VERTICAL | Phase 1 mock demo, scoped independently |
-| Communication auto-import | ❌ NOT BUILDING | Phase 2+ |
-| Custom tags with attributes | ❌ NOT BUILDING | Phase 2-3 |
-| CSV import/export | ❌ NOT BUILDING | Phase 2 |
-| Sales pipeline | ❌ NOT BUILDING | Not planned |
+| Component                   | Scope                | Status                                                   |
+| --------------------------- | -------------------- | -------------------------------------------------------- |
+| Customer List Page          | CORE                 | Build fully (smart views, search, filters, stats bar)    |
+| Customer Detail Dashboard   | CORE                 | Build fully (header + tabbed sections, adaptive density) |
+| Company → Group → Contact   | CORE                 | Build hierarchy (simple default, expandable)             |
+| Customer Lifecycle          | CORE                 | Auto-progression with hardcoded thresholds               |
+| Customer Health Detection   | CORE                 | Mock-based churn detection, "Needs Attention" view       |
+| Customer Type Tags          | CORE                 | Starter set, multi-tag, filter support                   |
+| Quick Add Customer          | CORE                 | Enhanced modal, < 30 seconds, minimal required fields    |
+| Customer Notes              | CORE                 | Freeform, pinnable, channel-tagged, contextual surfacing |
+| Smart Artwork Gallery       | CORE                 | Volume-prioritized, season-aware, thumbnails with notes  |
+| Referral Tracking           | CORE                 | "Referred by" field + referral stats display             |
+| Tax Exempt Tracking         | PERIPHERAL           | Toggle + status + expiry + mock upload area              |
+| Multiple Shipping Addresses | PERIPHERAL           | Named addresses with default flag                        |
+| Customer Statistics         | PERIPHERAL           | Computed metrics in header and list                      |
+| Reorder from detail         | PERIPHERAL           | Surface existing "Copy as New" in customer context       |
+| Payment Terms               | PERIPHERAL           | Customer-level default, cascading to invoices            |
+| Pricing Tier / Discount     | PERIPHERAL           | Customer-level, replaces hardcoded contract discount     |
+| Quoting integration         | INTERCONNECTION      | Enhanced combobox, auto-load customer context            |
+| Invoicing preparation       | INTERCONNECTION      | Schema fields ready for cascading defaults               |
+| Artwork library             | INTERCONNECTION      | Gallery on detail page, notes surfacing                  |
+| Reporting preparation       | INTERCONNECTION      | Stats computed, list sortable by revenue                 |
+| Storefront placeholder      | INTERCONNECTION      | Type tag only, no storefront functionality               |
+| Customer Portal             | ❌ SEPARATE VERTICAL | Phase 1 mock demo, scoped independently                  |
+| Communication auto-import   | ❌ NOT BUILDING      | Phase 2+                                                 |
+| Custom tags with attributes | ❌ NOT BUILDING      | Phase 2-3                                                |
+| CSV import/export           | ❌ NOT BUILDING      | Phase 2                                                  |
+| Sales pipeline              | ❌ NOT BUILDING      | Not planned                                              |
 
 ---
 
@@ -658,18 +701,19 @@ These features touch other verticals but won't be fully built yet. Show them in 
 // lib/schemas/customer.ts (existing)
 export const customerSchema = z.object({
   id: z.string().uuid(),
-  name: z.string().min(1),          // Contact name → becomes primaryContact.name
-  company: z.string().min(1),        // Company name
-  email: z.string().email(),         // → becomes primaryContact.email
-  phone: z.string(),                 // → becomes primaryContact.phone
-  address: z.string(),               // → becomes billingAddress
-  tag: customerTagEnum.default("new"), // → splits into lifecycleStage + typeTags
-});
+  name: z.string().min(1), // Contact name → becomes primaryContact.name
+  company: z.string().min(1), // Company name
+  email: z.string().email(), // → becomes primaryContact.email
+  phone: z.string(), // → becomes primaryContact.phone
+  address: z.string(), // → becomes billingAddress
+  tag: customerTagEnum.default('new'), // → splits into lifecycleStage + typeTags
+})
 ```
 
 ### New Schemas to Create
 
 **Contact Schema** (`lib/schemas/contact.ts`):
+
 ```
 contactSchema = {
   id: uuid
@@ -684,6 +728,7 @@ contactSchema = {
 ```
 
 **Address Schema** (`lib/schemas/address.ts`):
+
 ```
 addressSchema = {
   id: uuid
@@ -700,6 +745,7 @@ addressSchema = {
 ```
 
 **Group Schema** (`lib/schemas/group.ts`):
+
 ```
 groupSchema = {
   id: uuid
@@ -709,6 +755,7 @@ groupSchema = {
 ```
 
 **Note Schema** (`lib/schemas/note.ts`):
+
 ```
 noteSchema = {
   id: uuid
@@ -769,20 +816,21 @@ customerSchema = {
 
 **Customers (8-10 covering all lifecycle stages, health states, and type tags)**:
 
-| Customer | Lifecycle | Health | Type Tags | Contacts | Special |
-|----------|-----------|--------|-----------|----------|---------|
-| River City Brewing Co. | Repeat | Active | Retail | Marcus Rivera (primary), Lisa Park (art) | 2 referrals, high volume |
-| Lonestar Lacrosse League | Contract | Active | Sports/School | Sarah Chen (primary, ordering + billing) | Tax exempt, Net 30 |
-| Thompson Family Reunion 2026 | New | Active | Retail | Jake Thompson (primary) | One-off, referred by Marcus |
-| Sunset 5K Run | Prospect | Active | Retail | Maria Gonzalez (primary) | Has quote, no order yet |
-| Lakeside Music Festival | Repeat | Potentially Churning | Corporate | Chris Patel (primary), Amy Wong (billing) | Last order 4 months ago |
-| Metro Youth Soccer | Contract | Active | Sports/School | Coach Williams (ordering), Janet Lee (billing, AP) | Tax exempt, seasonal (spring + fall) |
-| TikTok Merch Co. | Repeat | Active | Storefront/Merch, Retail | Alex Kim (primary) | Storefront customer, mentoring relationship |
-| Riverside Church | New | Active | Retail | Pastor James (primary) | Referred by Lonestar |
-| CrossTown Printing | Contract | Active | Wholesale | Mike Davis (primary) | Other print shop, contract pricing |
-| Mountain View HS | Prospect | Active | Sports/School | Athletic Director (primary) | Tax exempt, quoted but no order |
+| Customer                     | Lifecycle | Health               | Type Tags                | Contacts                                           | Special                                     |
+| ---------------------------- | --------- | -------------------- | ------------------------ | -------------------------------------------------- | ------------------------------------------- |
+| River City Brewing Co.       | Repeat    | Active               | Retail                   | Marcus Rivera (primary), Lisa Park (art)           | 2 referrals, high volume                    |
+| Lonestar Lacrosse League     | Contract  | Active               | Sports/School            | Sarah Chen (primary, ordering + billing)           | Tax exempt, Net 30                          |
+| Thompson Family Reunion 2026 | New       | Active               | Retail                   | Jake Thompson (primary)                            | One-off, referred by Marcus                 |
+| Sunset 5K Run                | Prospect  | Active               | Retail                   | Maria Gonzalez (primary)                           | Has quote, no order yet                     |
+| Lakeside Music Festival      | Repeat    | Potentially Churning | Corporate                | Chris Patel (primary), Amy Wong (billing)          | Last order 4 months ago                     |
+| Metro Youth Soccer           | Contract  | Active               | Sports/School            | Coach Williams (ordering), Janet Lee (billing, AP) | Tax exempt, seasonal (spring + fall)        |
+| TikTok Merch Co.             | Repeat    | Active               | Storefront/Merch, Retail | Alex Kim (primary)                                 | Storefront customer, mentoring relationship |
+| Riverside Church             | New       | Active               | Retail                   | Pastor James (primary)                             | Referred by Lonestar                        |
+| CrossTown Printing           | Contract  | Active               | Wholesale                | Mike Davis (primary)                               | Other print shop, contract pricing          |
+| Mountain View HS             | Prospect  | Active               | Sports/School            | Athletic Director (primary)                        | Tax exempt, quoted but no order             |
 
 Each customer includes:
+
 - Contacts with roles and primary designation
 - At least one address
 - Lifecycle stage and health status

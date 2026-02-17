@@ -15,6 +15,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Tools used**: WebSearch, WebFetch
 
 **Pages researched**:
+
 - theprintlife.com/our-services/ — feature overview
 - theprintlife.com 2024 update — bug fixes, new features
 - theprintlife.com Q1 2025 updates — payment fixes, new matrix pricing types
@@ -32,6 +33,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Setup**: Created `/tmp/pw-explorer/` with `npm install playwright`. Wrote 7 incremental scripts (`explore.mjs` through `flow7.mjs`) to progressively navigate the 6-step quoting flow.
 
 **What we captured**:
+
 - Step 1 (Add Items): Product catalog grid, 12 products, search bar, filter sidebar, product modal with 103 color swatches
 - Step 2 (Select Qty): Full color swatch grid (top), size/qty table (bottom) with live stock levels, blocking recalculation
 - Step 3 (Add Art): 5 print location buttons, sparse page, art upload required to proceed
@@ -40,6 +42,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Screenshots saved**: `/tmp/4ink-step*.png` (12 screenshots across all exploration scripts)
 
 **Friction found during exploration**:
+
 - 103 color swatches with no search
 - Blocking recalculation on qty entry (confirmed by user)
 - Modal overlay intercepting NEXT button clicks
@@ -54,6 +57,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Format**: Text-based conversation in Claude Code session
 
 **Questions covered**:
+
 1. Workflow: 5-20 quotes/week, 50/50 simple/complex, ~10 min each
 2. Pain Points: Blocking recalculation (#1), mandatory unused steps, forced color swatches, art style reset
 3. Desired Features: Hybrid approval, quote reuse/duplication, keyboard navigation, S&S color swatch UI
@@ -61,6 +65,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 5. Success Criteria: "simpler more intuitive less clicks faster more delightful"
 
 **Key quotes**:
+
 - "each time I put in a number and then hit tab it slowly re-calculates before I can input any more information"
 - "there's steps that we don't need, but can't skip adding extra clicks"
 - "if you upload the image and then you switched to a different style it resets all the options. It's a bad experience"
@@ -75,6 +80,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Output**: `docs/competitive-analysis/print-life-quoting-analysis.md`
 
 **Sections written**:
+
 - Product Overview (company info)
 - Quoting Feature List (observed via Playwright + web research)
 - Key UI Elements (product cards, color swatches, size/qty table, stepper)
@@ -91,6 +97,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Output**: `docs/competitive-analysis/print-life-journey-quoting.md`
 
 **Sections written**:
+
 - Journey Overview (simple + complex metrics)
 - Detailed Journey: Simple Quote (6 steps, ASCII flowchart)
 - Detailed Journey: Complex Quote (multiply steps 1-5 per garment)
@@ -105,6 +112,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 **Output**: `docs/strategy/screen-print-pro-journey-quoting.md`
 
 **Key design decisions**:
+
 - Single-page form replaces 6-step wizard
 - Instant client-side pricing (never block input)
 - S&S-style dense color swatch grid (per 4Ink owner request)
@@ -115,6 +123,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 - Price override (editable grand total)
 
 **Build order defined**:
+
 1. Quotes List (`/quotes`)
 2. New Quote Form (`/quotes/new`)
 3. Quote Detail (`/quotes/[id]`)
@@ -125,6 +134,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 ## Step 7: Scope Definition Update + Docs
 
 **Updated**: `docs/strategy/quoting-scope-definition.md`
+
 - Added S&S Color Swatch as CORE component
 - Added price override, quote notes, Revised status
 - Made Duplicate/Edit functional (not just non-functional buttons)

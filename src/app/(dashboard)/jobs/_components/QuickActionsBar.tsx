@@ -1,32 +1,22 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import {
-  ArrowRightLeft,
-  ShieldAlert,
-  ShieldCheck,
-  LayoutGrid,
-} from "lucide-react";
-import { ENTITY_STYLES } from "@domain/constants/entities";
-import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import type { Job } from "@domain/entities/job";
+import Link from 'next/link'
+import { ArrowRightLeft, ShieldAlert, ShieldCheck, LayoutGrid } from 'lucide-react'
+import { ENTITY_STYLES } from '@domain/constants/entities'
+import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import type { Job } from '@domain/entities/job'
 
-interface QuickActionsBarProps {
-  job: Job;
-  onMoveLane: () => void;
-  onBlock: () => void;
-  onUnblock: () => void;
+type QuickActionsBarProps = {
+  job: Job
+  onMoveLane: () => void
+  onBlock: () => void
+  onUnblock: () => void
 }
 
-export function QuickActionsBar({
-  job,
-  onMoveLane,
-  onBlock,
-  onUnblock,
-}: QuickActionsBarProps) {
-  const isBlocked = job.lane === "blocked";
+export function QuickActionsBar({ job, onMoveLane, onBlock, onUnblock }: QuickActionsBarProps) {
+  const isBlocked = job.lane === 'blocked'
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -63,7 +53,7 @@ export function QuickActionsBar({
       {job.sourceQuoteId && (
         <Button variant="outline" size="sm" className="gap-1.5" asChild>
           <Link href={`/quotes/${job.sourceQuoteId}`}>
-            <ENTITY_ICONS.quote className={cn("size-3.5", ENTITY_STYLES.quote.color)} />
+            <ENTITY_ICONS.quote className={cn('size-3.5', ENTITY_STYLES.quote.color)} />
             View Quote
           </Link>
         </Button>
@@ -73,7 +63,7 @@ export function QuickActionsBar({
       {job.invoiceId && (
         <Button variant="outline" size="sm" className="gap-1.5" asChild>
           <Link href={`/invoices/${job.invoiceId}`}>
-            <ENTITY_ICONS.invoice className={cn("size-3.5", ENTITY_STYLES.invoice.color)} />
+            <ENTITY_ICONS.invoice className={cn('size-3.5', ENTITY_STYLES.invoice.color)} />
             View Invoice
           </Link>
         </Button>
@@ -87,5 +77,5 @@ export function QuickActionsBar({
         </Link>
       </Button>
     </div>
-  );
+  )
 }

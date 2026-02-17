@@ -16,14 +16,14 @@ Verify whether GitHub's native issue types are available on personal repos via t
 
 ## Questions & Findings
 
-| # | Question | Finding |
-|---|----------|---------|
-| **S1-Q1** | Does `gh issue type list` return issue types? | **No.** `gh issue type` is not a valid subcommand in gh 2.86.0. |
-| **S1-Q2** | Can `gh issue create --type` create a typed issue? | **No.** `--type` flag does not exist on `gh issue create`. |
-| **S1-Q3** | Does `gh issue list --type` filter by type? | **No.** `--type` flag does not exist on `gh issue list`. |
-| **S1-Q4** | Do YAML templates support `type:` top-level key? | **Moot** — types can't be created without `admin:org` scope (see S1-Q6). |
-| **S1-Q5** | What `gh` version is required? | gh 2.86.0 (2026-01-21) has zero issue type CLI support. No subcommands, no flags. |
-| **S1-Q6** | Can types be created on personal repos? | **Partially.** GraphQL mutation `createIssueType` exists. Requires `admin:org` scope (currently only have `read:org`). Types are **owner-level** (not repo-level) — `ownerId` is required, `repositoryId` is not accepted. |
+| #         | Question                                           | Finding                                                                                                                                                                                                                    |
+| --------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S1-Q1** | Does `gh issue type list` return issue types?      | **No.** `gh issue type` is not a valid subcommand in gh 2.86.0.                                                                                                                                                            |
+| **S1-Q2** | Can `gh issue create --type` create a typed issue? | **No.** `--type` flag does not exist on `gh issue create`.                                                                                                                                                                 |
+| **S1-Q3** | Does `gh issue list --type` filter by type?        | **No.** `--type` flag does not exist on `gh issue list`.                                                                                                                                                                   |
+| **S1-Q4** | Do YAML templates support `type:` top-level key?   | **Moot** — types can't be created without `admin:org` scope (see S1-Q6).                                                                                                                                                   |
+| **S1-Q5** | What `gh` version is required?                     | gh 2.86.0 (2026-01-21) has zero issue type CLI support. No subcommands, no flags.                                                                                                                                          |
+| **S1-Q6** | Can types be created on personal repos?            | **Partially.** GraphQL mutation `createIssueType` exists. Requires `admin:org` scope (currently only have `read:org`). Types are **owner-level** (not repo-level) — `ownerId` is required, `repositoryId` is not accepted. |
 
 ## Detailed Findings
 
@@ -49,19 +49,28 @@ The `issueTypes` field exists in the GraphQL schema on `Repository`:
 
 ```graphql
 # Returns null — types not yet created/enabled on this repo
-{ repository(owner: "cmbays", name: "print-4ink") { issueTypes(first: 10) { nodes { id name } } } }
+{
+  repository(owner: "cmbays", name: "print-4ink") {
+    issueTypes(first: 10) {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+}
 # → {"data":{"repository":{"issueTypes":null}}}
 ```
 
 The `createIssueType` mutation exists with this input schema:
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `ownerId` | ID! | Yes | User or org node ID |
-| `isEnabled` | Boolean! | Yes | — |
-| `name` | String! | Yes | — |
-| `description` | String | No | — |
-| `color` | IssueTypeColor | No | GRAY, BLUE, GREEN, YELLOW, ORANGE, RED, PINK, PURPLE |
+| Field         | Type           | Required | Notes                                                |
+| ------------- | -------------- | -------- | ---------------------------------------------------- |
+| `ownerId`     | ID!            | Yes      | User or org node ID                                  |
+| `isEnabled`   | Boolean!       | Yes      | —                                                    |
+| `name`        | String!        | Yes      | —                                                    |
+| `description` | String         | No       | —                                                    |
+| `color`       | IssueTypeColor | No       | GRAY, BLUE, GREEN, YELLOW, ORANGE, RED, PINK, PURPLE |
 
 **Blocker**: Requires `admin:org` scope. Current token scopes: `admin:public_key`, `gist`, `read:org`, `repo`, `workflow`.
 
@@ -82,17 +91,20 @@ $ gh api graphql -f query='mutation { createIssueType(input: {ownerId: "MDQ6VXNl
 **Keep `type/*` labels. Include type dropdown in templates.**
 
 Rationale:
+
 - Zero CLI support means agents cannot create, list, or filter by type — the core agent workflow breaks
 - GraphQL-only with `admin:org` scope is too high-friction for a solo dev project
 - `type/*` labels are already established, agents can read/write them via `gh issue edit --add-label`
 - The interview's "one mechanism per dimension" principle still holds — labels handle type for now, with a clear upgrade path
 
 **Revisit when**:
+
 1. `gh` CLI adds native `issue type` subcommand (track: https://github.com/cli/cli/issues)
 2. GitHub reduces scope requirements for personal repos
 3. Or: user manually enables types via web UI and grants `admin:org` scope
 
 **Impact on Shape B**:
+
 - B1.1 (label cleanup): Keep `type/*` labels (8 labels: bug, feature, feedback, research, tech-debt, refactor, tooling, ux-review)
 - B2.1 (templates): Include `type/*` in auto-labels per template
 - B3.2 (PM doc): Document label-based type workflow, note future migration path to native types

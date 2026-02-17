@@ -1,6 +1,6 @@
 ---
-title: "SCREEN_AUDIT_PROTOCOL"
-description: "15-point visual quality audit for screens. Run before marking implementation steps complete or at user review checkpoints."
+title: 'SCREEN_AUDIT_PROTOCOL'
+description: '15-point visual quality audit for screens. Run before marking implementation steps complete or at user review checkpoints.'
 category: reference
 status: active
 phase: all
@@ -40,50 +40,50 @@ Before running the audit, ensure:
 
 #### 1. Visual Hierarchy
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Does the eye land where it should? | Primary action is most prominent |
-| Is the most important element obvious? | No competing elements at same visual weight |
-| Can a user understand the screen in 5 seconds? | Purpose is immediately clear |
+| Question                                       | Pass Criteria                               |
+| ---------------------------------------------- | ------------------------------------------- |
+| Does the eye land where it should?             | Primary action is most prominent            |
+| Is the most important element obvious?         | No competing elements at same visual weight |
+| Can a user understand the screen in 5 seconds? | Purpose is immediately clear                |
 
 **Check**: Heading sizes use `text-2xl` > `text-xl` > `text-lg` hierarchy.
 
 #### 2. Spacing & Rhythm
 
-| Question | Pass Criteria |
-|----------|---------------|
+| Question                                  | Pass Criteria                       |
+| ----------------------------------------- | ----------------------------------- |
 | Is whitespace consistent and intentional? | All spacing uses Tailwind utilities |
-| Do elements breathe or are they cramped? | Minimum `gap-4` between sections |
-| Is vertical rhythm harmonious? | Consistent gaps throughout |
+| Do elements breathe or are they cramped?  | Minimum `gap-4` between sections    |
+| Is vertical rhythm harmonious?            | Consistent gaps throughout          |
 
 **Check**: No hardcoded pixel values for margins/padding.
 
 #### 3. Typography
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Are type sizes establishing clear hierarchy? | Max 3-4 distinct sizes per screen |
-| Are there too many font weights competing? | Max 3 weights (normal, medium, semibold) |
-| Does the type feel calm or chaotic? | Inter for UI, JetBrains Mono for code only |
+| Question                                     | Pass Criteria                              |
+| -------------------------------------------- | ------------------------------------------ |
+| Are type sizes establishing clear hierarchy? | Max 3-4 distinct sizes per screen          |
+| Are there too many font weights competing?   | Max 3 weights (normal, medium, semibold)   |
+| Does the type feel calm or chaotic?          | Inter for UI, JetBrains Mono for code only |
 
 **Check**: All text uses Tailwind `text-*` and `font-*` utilities.
 
 #### 4. Color
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Is color used with restraint and purpose? | Base layer is monochrome |
-| Do colors guide attention or scatter it? | Status colors only for communication |
-| Is contrast sufficient for accessibility? | WCAG AA minimum (4.5:1 for text) |
+| Question                                  | Pass Criteria                        |
+| ----------------------------------------- | ------------------------------------ |
+| Is color used with restraint and purpose? | Base layer is monochrome             |
+| Do colors guide attention or scatter it?  | Status colors only for communication |
+| Is contrast sufficient for accessibility? | WCAG AA minimum (4.5:1 for text)     |
 
 **Check**: Colors use design tokens — no hex/rgb literals in components.
 
 #### 5. Alignment & Grid
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Do elements sit on a consistent grid? | Visual alignment at all edges |
-| Is anything off by 1-2 pixels? | Pixel-perfect alignment |
+| Question                                        | Pass Criteria                   |
+| ----------------------------------------------- | ------------------------------- |
+| Do elements sit on a consistent grid?           | Visual alignment at all edges   |
+| Is anything off by 1-2 pixels?                  | Pixel-perfect alignment         |
 | Does every element feel locked into the layout? | No floating or misaligned items |
 
 ---
@@ -92,31 +92,31 @@ Before running the audit, ensure:
 
 #### 6. Components
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Are similar elements styled identically? | Same component = same styles everywhere |
-| Are interactive elements obviously interactive? | Cursor changes, hover states present |
-| Are all states accounted for? | Disabled, hover, active, focus-visible all styled |
+| Question                                        | Pass Criteria                                     |
+| ----------------------------------------------- | ------------------------------------------------- |
+| Are similar elements styled identically?        | Same component = same styles everywhere           |
+| Are interactive elements obviously interactive? | Cursor changes, hover states present              |
+| Are all states accounted for?                   | Disabled, hover, active, focus-visible all styled |
 
 **Check**: Uses shadcn/ui components from `components/ui/` where possible.
 
 #### 7. Iconography
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Are icons consistent in style and weight? | All from Lucide React |
-| Are they consistent in size? | Icons use standard sizes (`h-4 w-4`, `h-5 w-5`, `h-6 w-6`) |
-| Do they support meaning or just decorate? | Every icon has purpose |
+| Question                                  | Pass Criteria                                              |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| Are icons consistent in style and weight? | All from Lucide React                                      |
+| Are they consistent in size?              | Icons use standard sizes (`h-4 w-4`, `h-5 w-5`, `h-6 w-6`) |
+| Do they support meaning or just decorate? | Every icon has purpose                                     |
 
 **Standard**: Lucide React only. No emoji. No custom SVGs.
 
 #### 8. Motion & Transitions
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Do transitions feel natural and purposeful? | Tailwind `transition-*` for hover, Framer Motion for layout |
-| Is there motion that exists for no reason? | Remove decorative animations |
-| Does the page feel responsive to interaction? | Immediate feedback on click/hover |
+| Question                                      | Pass Criteria                                               |
+| --------------------------------------------- | ----------------------------------------------------------- |
+| Do transitions feel natural and purposeful?   | Tailwind `transition-*` for hover, Framer Motion for layout |
+| Is there motion that exists for no reason?    | Remove decorative animations                                |
+| Does the page feel responsive to interaction? | Immediate feedback on click/hover                           |
 
 **Check**: Respects `prefers-reduced-motion`.
 
@@ -126,36 +126,38 @@ Before running the audit, ensure:
 
 #### 9. Empty States
 
-| Question | Pass Criteria |
-|----------|---------------|
-| What does this screen look like with no data? | Intentional empty state designed |
-| Do blank screens feel intentional or broken? | Clear messaging with Lucide icon |
+| Question                                      | Pass Criteria                                |
+| --------------------------------------------- | -------------------------------------------- |
+| What does this screen look like with no data? | Intentional empty state designed             |
+| Do blank screens feel intentional or broken?  | Clear messaging with Lucide icon             |
 | Is the user guided toward their first action? | CTA present in empty state where appropriate |
 
 **Screen Print Pro examples**:
+
 - Jobs List with no jobs: "No jobs yet. Jobs will appear here."
 - Dashboard with no blocked items: "All clear — no blocked jobs"
 - Customer Detail with no quotes: "No quotes for this customer"
 
 #### 10. Loading States
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Are loading indicators consistent? | Same skeleton/spinner pattern everywhere |
-| Does the page feel alive while waiting? | Visual feedback during operations |
-| Are long operations handled? | Progress indication for >2s operations |
+| Question                                | Pass Criteria                            |
+| --------------------------------------- | ---------------------------------------- |
+| Are loading indicators consistent?      | Same skeleton/spinner pattern everywhere |
+| Does the page feel alive while waiting? | Visual feedback during operations        |
+| Are long operations handled?            | Progress indication for >2s operations   |
 
 **Note**: Phase 1 uses mock data (synchronous), so loading states are minimal. Design skeleton patterns for Phase 2.
 
 #### 11. Error States
 
-| Question | Pass Criteria |
-|----------|---------------|
+| Question                                | Pass Criteria                            |
+| --------------------------------------- | ---------------------------------------- |
 | Are error messages styled consistently? | Use `text-error` / `border-error` tokens |
-| Do they feel helpful and clear? | Plain language, actionable guidance |
-| Are error messages accessible? | `role="alert"` or `aria-live` |
+| Do they feel helpful and clear?         | Plain language, actionable guidance      |
+| Are error messages accessible?          | `role="alert"` or `aria-live`            |
 
 **Screen Print Pro examples**:
+
 - Invalid job ID: "Job not found" + link back to `/jobs`
 - No search results: "No results for '[query]'" + clear search action
 
@@ -165,41 +167,41 @@ Before running the audit, ensure:
 
 #### 12. Dark Mode
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Do all semantic colors hold up? | Using `bg-background`, `text-foreground`, etc. |
-| Are there hardcoded colors bypassing the theme? | No hex values in component code |
-| Are shadows appropriate? | Subtle or removed |
+| Question                                        | Pass Criteria                                  |
+| ----------------------------------------------- | ---------------------------------------------- |
+| Do all semantic colors hold up?                 | Using `bg-background`, `text-foreground`, etc. |
+| Are there hardcoded colors bypassing the theme? | No hex values in component code                |
+| Are shadows appropriate?                        | Subtle or removed                              |
 
 **Note**: Dark mode is default. Verify all elements use Tailwind semantic classes.
 
 #### 13. Density
 
-| Question | Pass Criteria |
-|----------|---------------|
-| Can anything be removed without losing meaning? | Apply Jobs Filter |
-| Are there redundant elements? | No duplicate information |
-| Is every element earning its place? | Justify each element's existence |
+| Question                                        | Pass Criteria                    |
+| ----------------------------------------------- | -------------------------------- |
+| Can anything be removed without losing meaning? | Apply Jobs Filter                |
+| Are there redundant elements?                   | No duplicate information         |
+| Is every element earning its place?             | Justify each element's existence |
 
 #### 14. Responsiveness
 
-| Question | Pass Criteria |
-|----------|---------------|
+| Question                                       | Pass Criteria               |
+| ---------------------------------------------- | --------------------------- |
 | Does the layout handle different window sizes? | Test 1280px, 1440px, 1920px |
-| Does content remain readable at all widths? | No horizontal overflow |
-| Are controls accessible at all sizes? | Touch targets adequate |
+| Does content remain readable at all widths?    | No horizontal overflow      |
+| Are controls accessible at all sizes?          | Touch targets adequate      |
 
 **Note**: Desktop-first. Mobile is Phase 2 scope.
 
 #### 15. Accessibility
 
-| Requirement | Implementation |
-|-------------|----------------|
-| Keyboard navigation | All interactive elements focusable via Tab |
-| Focus states | Visible `:focus-visible` indicators |
-| ARIA labels | Icon-only buttons have `aria-label`, dynamic content has roles |
-| Color contrast | 4.5:1 minimum for text |
-| Screen reader flow | Logical reading order, headings in correct hierarchy |
+| Requirement         | Implementation                                                 |
+| ------------------- | -------------------------------------------------------------- |
+| Keyboard navigation | All interactive elements focusable via Tab                     |
+| Focus states        | Visible `:focus-visible` indicators                            |
+| ARIA labels         | Icon-only buttons have `aria-label`, dynamic content has roles |
+| Color contrast      | 4.5:1 minimum for text                                         |
+| Screen reader flow  | Logical reading order, headings in correct hierarchy           |
 
 ---
 
@@ -245,23 +247,26 @@ For **every element** on the screen, ask these five questions:
 
 ### Summary
 
-| Category | Score | Notes |
-|----------|-------|-------|
-| Visual Quality (1-5) | X/5 | |
-| Component Consistency (6-8) | X/3 | |
-| State Handling (9-11) | X/3 | |
-| Responsive & Accessible (12-15) | X/4 | |
-| **Total** | **X/15** | |
+| Category                        | Score    | Notes |
+| ------------------------------- | -------- | ----- |
+| Visual Quality (1-5)            | X/5      |       |
+| Component Consistency (6-8)     | X/3      |       |
+| State Handling (9-11)           | X/3      |       |
+| Responsive & Accessible (12-15) | X/4      |       |
+| **Total**                       | **X/15** |       |
 
 ### Detailed Findings
 
 #### Passing
+
 - [List items that pass]
 
 #### Warnings
+
 - [List items with minor issues]
 
 #### Failing
+
 - [List items that fail]
 
 ### Jobs Filter Results
@@ -281,23 +286,25 @@ For **every element** on the screen, ask these five questions:
 
 ## Scoring Guide
 
-| Score | Meaning | Action |
-|-------|---------|--------|
+| Score | Meaning     | Action                            |
+| ----- | ----------- | --------------------------------- |
 | 15/15 | Exceptional | Ready for user acceptance testing |
-| 12-14 | Good | Polish and present |
-| 9-11 | Acceptable | Address warnings before review |
-| 6-8 | Needs Work | Complete failing items |
-| <6 | Failing | Significant rework required |
+| 12-14 | Good        | Polish and present                |
+| 9-11  | Acceptable  | Address warnings before review    |
+| 6-8   | Needs Work  | Complete failing items            |
+| <6    | Failing     | Significant rework required       |
 
 ---
 
 ## When to Run This Audit
 
 **Required**:
+
 - Before marking an IMPLEMENTATION_PLAN step as complete
 - Before each user review checkpoint (Checkpoints 1, 2, 3)
 
 **Recommended**:
+
 - After significant UI changes to existing screens
 - During the Step 10 polish pass
 
@@ -314,7 +321,7 @@ For **every element** on the screen, ask these five questions:
 
 ## Version History
 
-| Date | Change |
-|------|--------|
-| 2026-02-04 | Initial protocol (as PLAYGROUND_AUDIT_PROTOCOL.md) |
+| Date       | Change                                                                    |
+| ---------- | ------------------------------------------------------------------------- |
+| 2026-02-04 | Initial protocol (as PLAYGROUND_AUDIT_PROTOCOL.md)                        |
 | 2026-02-07 | Adapted for Screen Print Pro: renamed, updated examples, fixed references |

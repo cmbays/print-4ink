@@ -1,18 +1,18 @@
-import { Package, Palette, MapPin, Calendar, Zap } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Badge } from "@shared/ui/primitives/badge";
-import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
-import { GarmentMockupThumbnail } from "@/components/features/mockup";
-import { TaskProgressBar } from "@/components/features/TaskProgressBar";
-import { formatShortDate } from "@shared/lib/format";
-import { MoneyAmount } from "@/components/features/MoneyAmount";
+import { Package, Palette, MapPin, Calendar, Zap } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Badge } from '@shared/ui/primitives/badge'
+import { ServiceTypeBadge } from '@/components/features/ServiceTypeBadge'
+import { GarmentMockupThumbnail } from '@/components/features/mockup'
+import { TaskProgressBar } from '@/components/features/TaskProgressBar'
+import { formatShortDate } from '@shared/lib/format'
+import { MoneyAmount } from '@/components/features/MoneyAmount'
 import {
   RISK_COLORS,
   CARD_TYPE_BORDER_COLORS,
   INVOICE_STATUS_LABELS,
   INVOICE_STATUS_BADGE_COLORS,
-} from "@domain/constants";
-import type { JobCard } from "@domain/entities/board-card";
+} from '@domain/constants'
+import type { JobCard } from '@domain/entities/board-card'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -20,36 +20,36 @@ import type { JobCard } from "@domain/entities/board-card";
 
 /** Strip leading customer name from title to avoid duplication on card. */
 function deduplicateTitle(title: string, customerName: string): string {
-  const separators = [" — ", " – ", " - "];
+  const separators = [' — ', ' – ', ' - ']
   for (const sep of separators) {
     if (title.startsWith(customerName + sep)) {
-      return title.slice(customerName.length + sep.length);
+      return title.slice(customerName.length + sep.length)
     }
   }
-  return title;
+  return title
 }
 
 /** Shared container classes for job cards (desktop & mobile). */
 export function jobCardContainerClass(card: JobCard, className?: string) {
   return cn(
-    "group relative rounded-lg bg-elevated border border-border px-3 py-2",
-    "border-l-2",
+    'group relative rounded-lg bg-elevated border border-border px-3 py-2',
+    'border-l-2',
     CARD_TYPE_BORDER_COLORS.job,
-    "cursor-pointer select-none",
-    "hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-    "transition-all duration-150",
-    !!card.blockReason && "opacity-60",
-    className,
-  );
+    'cursor-pointer select-none',
+    'hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    'transition-all duration-150',
+    !!card.blockReason && 'opacity-60',
+    className
+  )
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-interface JobCardBodyProps {
-  card: JobCard;
+type JobCardBodyProps = {
+  card: JobCard
 }
 
 /**
@@ -58,8 +58,8 @@ interface JobCardBodyProps {
  * Desktop is the source of truth — changes here update both views.
  */
 export function JobCardBody({ card }: JobCardBodyProps) {
-  const isDone = card.lane === "done";
-  const isRush = card.priority === "rush";
+  const isDone = card.lane === 'done'
+  const isRush = card.priority === 'rush'
 
   return (
     <>
@@ -69,17 +69,21 @@ export function JobCardBody({ card }: JobCardBodyProps) {
           <GarmentMockupThumbnail
             garmentCategory={card.garmentCategory}
             colorHex={card.garmentColorHex}
-            artworkPlacements={card.primaryArtworkUrl ? [{
-              artworkUrl: card.primaryArtworkUrl,
-              position: "front-chest",
-            }] : []}
+            artworkPlacements={
+              card.primaryArtworkUrl
+                ? [
+                    {
+                      artworkUrl: card.primaryArtworkUrl,
+                      position: 'front-chest',
+                    },
+                  ]
+                : []
+            }
             className="shrink-0"
           />
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground truncate">
-            {card.customerName}
-          </p>
+          <p className="text-sm font-semibold text-foreground truncate">{card.customerName}</p>
           <p className="text-xs text-muted-foreground truncate">
             {deduplicateTitle(card.title, card.customerName)}
           </p>
@@ -94,13 +98,8 @@ export function JobCardBody({ card }: JobCardBodyProps) {
             </div>
           )}
           <div className="flex flex-col items-center gap-1">
-            <ServiceTypeBadge
-              serviceType={card.serviceType}
-              variant="icon-only"
-            />
-            {isRush && (
-              <Zap className="size-3.5 text-error" aria-label="Rush order" />
-            )}
+            <ServiceTypeBadge serviceType={card.serviceType} variant="icon-only" />
+            {isRush && <Zap className="size-3.5 text-error" aria-label="Rush order" />}
           </div>
         </div>
       </div>
@@ -132,11 +131,15 @@ export function JobCardBody({ card }: JobCardBodyProps) {
           />
         </div>
         <div className="flex flex-col items-end gap-0.5">
-          <span className={cn("inline-flex items-center gap-1", RISK_COLORS[card.riskLevel])}>
+          <span className={cn('inline-flex items-center gap-1', RISK_COLORS[card.riskLevel])}>
             <Calendar className="size-3" />
             {formatShortDate(card.dueDate)}
           </span>
-          <MoneyAmount value={card.orderTotal} format="compact" className="font-medium text-foreground" />
+          <MoneyAmount
+            value={card.orderTotal}
+            format="compact"
+            className="font-medium text-foreground"
+          />
         </div>
       </div>
 
@@ -145,15 +148,12 @@ export function JobCardBody({ card }: JobCardBodyProps) {
         <div className="mt-1">
           <Badge
             variant="ghost"
-            className={cn(
-              "text-xs",
-              INVOICE_STATUS_BADGE_COLORS[card.invoiceStatus],
-            )}
+            className={cn('text-xs', INVOICE_STATUS_BADGE_COLORS[card.invoiceStatus])}
           >
             {INVOICE_STATUS_LABELS[card.invoiceStatus]}
           </Badge>
         </div>
       )}
     </>
-  );
+  )
 }

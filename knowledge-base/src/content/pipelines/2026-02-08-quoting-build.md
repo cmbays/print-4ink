@@ -1,6 +1,6 @@
 ---
-title: "Quoting Vertical Build"
-subtitle: "Complete implementation of the Quoting vertical — 3 pages, 15+ components, artwork system, flat pricing model, collapsible form sections. Built with parallel agents, polished via CodeRabbit review."
+title: 'Quoting Vertical Build'
+subtitle: 'Complete implementation of the Quoting vertical — 3 pages, 15+ components, artwork system, flat pricing model, collapsible form sections. Built with parallel agents, polished via CodeRabbit review.'
 date: 2026-02-08
 phase: 1
 pipelineName: quoting
@@ -9,17 +9,17 @@ products: [quotes, customers]
 tools: []
 stage: build
 tags: [feature, build]
-sessionId: "13546e08-2ee1-4de3-94a7-c2a596a15e1a"
-pr: "#13,#14,#20"
+sessionId: '13546e08-2ee1-4de3-94a7-c2a596a15e1a'
+pr: '#13,#14,#20'
 status: complete
 ---
 
-| Metric | Value |
-|--------|-------|
-| 172 | Tests Passing |
-| 0 | Lint Warnings |
-| 15+ | Components |
-| 3 | Pages |
+| Metric | Value         |
+| ------ | ------------- |
+| 172    | Tests Passing |
+| 0      | Lint Warnings |
+| 15+    | Components    |
+| 3      | Pages         |
 
 ## Verification
 
@@ -76,32 +76,32 @@ Replaces flat price override. Discount types: manual, contract, volume. Each has
 
 ## Components (15+)
 
-| Component | Description |
-|-----------|-------------|
-| **ColorSwatchPicker** | S&S Activewear-style dense swatch grid. 42 colors, search, favorites, keyboard nav, ARIA. |
-| **CustomerCombobox** | Type-ahead search with tag badges, phone display, info card. "Add New Customer" modal. |
-| **ArtworkLibrary** | Customer-tag-aware grid. Search + tag filters for contract, recently-used for repeat, upload dropzone for new. |
-| **ArtworkUploadModal** | Mock upload with name, color count, tag multi-select, save-to-library toggle. |
-| **ArtworkAssignmentPicker** | Per-location inline dropdown from quote's curated artwork set. Mini thumbnails. |
-| **ArtworkPreview** | Garment color swatch rectangle with artwork thumbnail overlay. |
-| **CollapsibleSection** | Accordion wrapper with title, icon, summary when collapsed, completion checkmark. Controlled mode for programmatic open/close. |
-| **PricingSummary** | Full breakdown: subtotal, setup fees, discounts (add/remove), shipping (FREE badge), tax, grand total, savings banner. |
-| **DiscountRow** | Editable row with label, amount, type badge, delete button. Reused in form and detail views. |
-| **QuoteDetailView** | Reusable for detail page and review sheet. Service type badges, per-location details, artwork previews. |
-| **QuoteReviewSheet** | Full-screen Sheet (slides from right). Shows quote preview before sending. Keeps form state intact. |
-| **EmailPreviewModal** | Email preview with pricing breakdown. Mock send with toast confirmation. |
-| **StatusBadge** | Semantic color mapping: Draft=muted, Sent=action, Accepted=success, Declined=error, Revised=warning. |
+| Component                   | Description                                                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **ColorSwatchPicker**       | S&S Activewear-style dense swatch grid. 42 colors, search, favorites, keyboard nav, ARIA.                                      |
+| **CustomerCombobox**        | Type-ahead search with tag badges, phone display, info card. "Add New Customer" modal.                                         |
+| **ArtworkLibrary**          | Customer-tag-aware grid. Search + tag filters for contract, recently-used for repeat, upload dropzone for new.                 |
+| **ArtworkUploadModal**      | Mock upload with name, color count, tag multi-select, save-to-library toggle.                                                  |
+| **ArtworkAssignmentPicker** | Per-location inline dropdown from quote's curated artwork set. Mini thumbnails.                                                |
+| **ArtworkPreview**          | Garment color swatch rectangle with artwork thumbnail overlay.                                                                 |
+| **CollapsibleSection**      | Accordion wrapper with title, icon, summary when collapsed, completion checkmark. Controlled mode for programmatic open/close. |
+| **PricingSummary**          | Full breakdown: subtotal, setup fees, discounts (add/remove), shipping (FREE badge), tax, grand total, savings banner.         |
+| **DiscountRow**             | Editable row with label, amount, type badge, delete button. Reused in form and detail views.                                   |
+| **QuoteDetailView**         | Reusable for detail page and review sheet. Service type badges, per-location details, artwork previews.                        |
+| **QuoteReviewSheet**        | Full-screen Sheet (slides from right). Shows quote preview before sending. Keeps form state intact.                            |
+| **EmailPreviewModal**       | Email preview with pricing breakdown. Mock send with toast confirmation.                                                       |
+| **StatusBadge**             | Semantic color mapping: Draft=muted, Sent=action, Accepted=success, Declined=error, Revised=warning.                           |
 
 ## Data Layer
 
-| Schema | Details |
-|--------|---------|
-| **artwork.ts** (new) | Artwork with customerId, name, fileName, thumbnailUrl, colorCount, tags[], createdAt, lastUsedAt. |
-| **color.ts** (new) | 42 mock colors with hex, swatchTextColor, family, isFavorite. Mirrors S&S Activewear API shapes. |
-| **quote.ts** | Service types, per-location printLocationDetails (location, colorCount, setupFee, artworkId), discounts[] (label, amount, type), shipping, tax, artworkIds[]. |
-| **customer.ts** | Added customerTagEnum ("new" \| "repeat" \| "contract") with behavior differentiation. |
-| **garment.ts** | Catalog with brand, SKU, name, basePrice, availableColors, availableSizes. |
-| **mock-data.ts** | 5 customers (with tags), 42 colors, 5 garments, 6 quotes (all statuses, discount examples), 8 artworks, 8 SVG placeholders. |
+| Schema               | Details                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **artwork.ts** (new) | Artwork with customerId, name, fileName, thumbnailUrl, colorCount, tags[], createdAt, lastUsedAt.                                                             |
+| **color.ts** (new)   | 42 mock colors with hex, swatchTextColor, family, isFavorite. Mirrors S&S Activewear API shapes.                                                              |
+| **quote.ts**         | Service types, per-location printLocationDetails (location, colorCount, setupFee, artworkId), discounts[] (label, amount, type), shipping, tax, artworkIds[]. |
+| **customer.ts**      | Added customerTagEnum ("new" \| "repeat" \| "contract") with behavior differentiation.                                                                        |
+| **garment.ts**       | Catalog with brand, SKU, name, basePrice, availableColors, availableSizes.                                                                                    |
+| **mock-data.ts**     | 5 customers (with tags), 42 colors, 5 garments, 6 quotes (all statuses, discount examples), 8 artworks, 8 SVG placeholders.                                   |
 
 ## Build Approach
 

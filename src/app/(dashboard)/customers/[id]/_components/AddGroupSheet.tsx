@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,29 +8,29 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@shared/ui/primitives/sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
+} from '@shared/ui/primitives/sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
 
-interface AddGroupSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+type AddGroupSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function AddGroupSheet({ open, onOpenChange }: AddGroupSheetProps) {
-  const [groupName, setGroupName] = useState("");
+  const [groupName, setGroupName] = useState('')
 
   function handleCreate() {
     // Phase 1: No actual save
-    console.log("Group created", { name: groupName });
-    setGroupName("");
-    onOpenChange(false);
+    console.log('Group created', { name: groupName })
+    setGroupName('')
+    onOpenChange(false)
   }
 
   function handleOpenChange(nextOpen: boolean) {
-    if (!nextOpen) setGroupName("");
-    onOpenChange(nextOpen);
+    if (!nextOpen) setGroupName('')
+    onOpenChange(nextOpen)
   }
 
   return (
@@ -38,9 +38,7 @@ export function AddGroupSheet({ open, onOpenChange }: AddGroupSheetProps) {
       <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>Create Group</SheetTitle>
-          <SheetDescription>
-            Create a new group to organize contacts.
-          </SheetDescription>
+          <SheetDescription>Create a new group to organize contacts.</SheetDescription>
         </SheetHeader>
 
         <div className="px-4 space-y-4">
@@ -67,5 +65,5 @@ export function AddGroupSheet({ open, onOpenChange }: AddGroupSheetProps) {
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

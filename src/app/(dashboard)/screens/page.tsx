@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs } from "@shared/lib/breadcrumbs";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
+import Link from 'next/link'
+import { Topbar } from '@shared/ui/layouts/topbar'
+import { buildBreadcrumbs } from '@shared/lib/breadcrumbs'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@shared/ui/primitives/card'
 import {
   Table,
   TableBody,
@@ -10,29 +10,29 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
-import { getScreens } from "@infra/repositories/screens";
-import { getJobs } from "@infra/repositories/jobs";
-import { BURN_STATUS_LABELS } from "@domain/constants";
-import { Printer } from "lucide-react";
-import type { BurnStatus } from "@domain/entities/screen";
+} from '@shared/ui/primitives/table'
+import { getScreens } from '@infra/repositories/screens'
+import { getJobs } from '@infra/repositories/jobs'
+import { BURN_STATUS_LABELS } from '@domain/constants'
+import { Printer } from 'lucide-react'
+import type { BurnStatus } from '@domain/entities/screen'
 
 const BURN_STATUS_COLORS: Record<BurnStatus, string> = {
-  pending: "bg-warning/10 text-warning border border-warning/20",
-  burned: "bg-success/10 text-success border border-success/20",
-  reclaimed: "bg-muted text-muted-foreground",
-};
+  pending: 'bg-warning/10 text-warning border border-warning/20',
+  burned: 'bg-success/10 text-success border border-success/20',
+  reclaimed: 'bg-muted text-muted-foreground',
+}
 
 export default async function ScreensPage() {
-  const [screens, jobs] = await Promise.all([getScreens(), getJobs()]);
+  const [screens, jobs] = await Promise.all([getScreens(), getJobs()])
 
   function findJob(jobId: string) {
-    return jobs.find((j) => j.id === jobId) ?? null;
+    return jobs.find((j) => j.id === jobId) ?? null
   }
 
   return (
     <>
-      <Topbar breadcrumbs={buildBreadcrumbs({ label: "Screens" })} />
+      <Topbar breadcrumbs={buildBreadcrumbs({ label: 'Screens' })} />
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Screens</h1>
@@ -45,9 +45,7 @@ export default async function ScreensPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Printer className="size-5 text-action" />
-              <CardTitle className="text-base">
-                Screens ({screens.length})
-              </CardTitle>
+              <CardTitle className="text-base">Screens ({screens.length})</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -72,20 +70,15 @@ export default async function ScreensPage() {
                       <TableCell className="font-medium text-foreground tabular-nums">
                         {screen.meshCount}
                       </TableCell>
-                      <TableCell className="text-foreground">
-                        {screen.emulsionType}
-                      </TableCell>
+                      <TableCell className="text-foreground">{screen.emulsionType}</TableCell>
                       <TableCell>
-                        <Badge
-                          variant="ghost"
-                          className={BURN_STATUS_COLORS[screen.burnStatus]}
-                        >
+                        <Badge variant="ghost" className={BURN_STATUS_COLORS[screen.burnStatus]}>
                           {BURN_STATUS_LABELS[screen.burnStatus]}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         {(() => {
-                          const job = findJob(screen.jobId);
+                          const job = findJob(screen.jobId)
                           return job ? (
                             <Link
                               href={`/jobs/${screen.jobId}`}
@@ -97,7 +90,7 @@ export default async function ScreensPage() {
                             <span className="text-muted-foreground italic text-sm">
                               Unknown job
                             </span>
-                          );
+                          )
                         })()}
                       </TableCell>
                     </TableRow>
@@ -109,5 +102,5 @@ export default async function ScreensPage() {
         </Card>
       </div>
     </>
-  );
+  )
 }

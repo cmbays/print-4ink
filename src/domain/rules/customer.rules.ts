@@ -1,13 +1,13 @@
-import type { Color } from "@domain/entities/color";
-import type { Customer } from "@domain/entities/customer";
-import type { BrandPreference, PropagationConfig } from "@domain/entities/color-preferences";
+import type { Color } from '@domain/entities/color'
+import type { Customer } from '@domain/entities/customer'
+import type { BrandPreference, PropagationConfig } from '@domain/entities/color-preferences'
 
 // ---------------------------------------------------------------------------
 // Shared: global favorites derived from catalog
 // ---------------------------------------------------------------------------
 
 function getGlobalFavoriteIds(colors: Color[]): string[] {
-  return colors.filter((c) => c.isFavorite === true).map((c) => c.id);
+  return colors.filter((c) => c.isFavorite === true).map((c) => c.id)
 }
 
 // ---------------------------------------------------------------------------
@@ -15,42 +15,42 @@ function getGlobalFavoriteIds(colors: Color[]): string[] {
 // Walk global → brand → customer hierarchy, return colorIds[]
 // ---------------------------------------------------------------------------
 
-type EntityType = "global" | "brand" | "customer";
+type EntityType = 'global' | 'brand' | 'customer'
 
 export function resolveEffectiveFavorites(
   entityType: EntityType,
   entityId: string | undefined,
   colors: Color[],
   customers: Customer[],
-  brandPreferences: BrandPreference[],
+  brandPreferences: BrandPreference[]
 ): string[] {
-  const globalFavorites = getGlobalFavoriteIds(colors);
+  const globalFavorites = getGlobalFavoriteIds(colors)
 
   switch (entityType) {
-    case "global":
-      return globalFavorites;
+    case 'global':
+      return globalFavorites
 
-    case "brand": {
-      const brand = brandPreferences.find((b) => b.brandName === entityId);
-      if (!brand || brand.inheritMode === "inherit") {
-        return globalFavorites;
+    case 'brand': {
+      const brand = brandPreferences.find((b) => b.brandName === entityId)
+      if (!brand || brand.inheritMode === 'inherit') {
+        return globalFavorites
       }
-      return brand.favoriteColorIds;
+      return brand.favoriteColorIds
     }
 
-    case "customer": {
-      const customer = customers.find((c) => c.id === entityId);
+    case 'customer': {
+      const customer = customers.find((c) => c.id === entityId)
       if (!customer || customer.favoriteColors.length === 0) {
         // No customer customization — fall through to global
         // For Phase 1: customer inherits from global (brand resolution added in V4)
-        return globalFavorites;
+        return globalFavorites
       }
-      return customer.favoriteColors;
+      return customer.favoriteColors
     }
 
     default: {
-      const _exhaustive: never = entityType;
-      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`);
+      const _exhaustive: never = entityType
+      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`)
     }
   }
 }
@@ -61,9 +61,9 @@ export function resolveEffectiveFavorites(
 // ---------------------------------------------------------------------------
 
 export type InheritanceChain = {
-  globalDefaults: string[];
-  addedAtLevel: string[];
-  removedAtLevel: string[];
+  globalDefaults: string[]
+  addedAtLevel: string[]
+  removedAtLevel: string[]
 }
 
 export function getInheritanceChain(
@@ -71,43 +71,39 @@ export function getInheritanceChain(
   entityId: string | undefined,
   colors: Color[],
   customers: Customer[],
-  brandPreferences: BrandPreference[],
+  brandPreferences: BrandPreference[]
 ): InheritanceChain {
-  const globalDefaults = getGlobalFavoriteIds(colors);
+  const globalDefaults = getGlobalFavoriteIds(colors)
 
   switch (entityType) {
-    case "global":
-      return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+    case 'global':
+      return { globalDefaults, addedAtLevel: [], removedAtLevel: [] }
 
-    case "brand": {
-      const brand = brandPreferences.find((b) => b.brandName === entityId);
-      if (!brand || brand.inheritMode === "inherit") {
-        return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+    case 'brand': {
+      const brand = brandPreferences.find((b) => b.brandName === entityId)
+      if (!brand || brand.inheritMode === 'inherit') {
+        return { globalDefaults, addedAtLevel: [], removedAtLevel: [] }
       }
       return {
         globalDefaults,
         addedAtLevel: brand.explicitColorIds,
         removedAtLevel: brand.removedInheritedColorIds,
-      };
+      }
     }
 
-    case "customer": {
-      const customer = customers.find((c) => c.id === entityId);
+    case 'customer': {
+      const customer = customers.find((c) => c.id === entityId)
       if (!customer || customer.favoriteColors.length === 0) {
-        return { globalDefaults, addedAtLevel: [], removedAtLevel: [] };
+        return { globalDefaults, addedAtLevel: [], removedAtLevel: [] }
       }
-      const addedAtLevel = customer.favoriteColors.filter(
-        (id) => !globalDefaults.includes(id)
-      );
-      const removedAtLevel = globalDefaults.filter(
-        (id) => !customer.favoriteColors.includes(id)
-      );
-      return { globalDefaults, addedAtLevel, removedAtLevel };
+      const addedAtLevel = customer.favoriteColors.filter((id) => !globalDefaults.includes(id))
+      const removedAtLevel = globalDefaults.filter((id) => !customer.favoriteColors.includes(id))
+      return { globalDefaults, addedAtLevel, removedAtLevel }
     }
 
     default: {
-      const _exhaustive: never = entityType;
-      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`);
+      const _exhaustive: never = entityType
+      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`)
     }
   }
 }
@@ -119,25 +115,25 @@ export function getInheritanceChain(
 // ---------------------------------------------------------------------------
 
 export function propagateAddition(
-  level: "global" | "brand",
+  level: 'global' | 'brand',
   colorId: string,
   brandPreferences: BrandPreference[],
   customers: Customer[],
-  autoPropagationConfig: PropagationConfig,
+  autoPropagationConfig: PropagationConfig
 ): void {
-  if (!autoPropagationConfig.autoPropagate) return;
+  if (!autoPropagationConfig.autoPropagate) return
 
-  if (level === "global") {
+  if (level === 'global') {
     // Propagate to all brands in inherit mode
     for (const brand of brandPreferences) {
-      if (brand.inheritMode === "inherit") {
+      if (brand.inheritMode === 'inherit') {
         // Inherit mode brands get it automatically via resolution — no explicit write needed
-        continue;
+        continue
       }
       // Customize mode brands: add if not explicitly removed
       if (!brand.removedInheritedColorIds.includes(colorId)) {
         if (!brand.favoriteColorIds.includes(colorId)) {
-          brand.favoriteColorIds.push(colorId);
+          brand.favoriteColorIds.push(colorId)
         }
       }
     }
@@ -145,20 +141,20 @@ export function propagateAddition(
     for (const customer of customers) {
       if (customer.favoriteColors.length === 0) {
         // Inheriting — gets it automatically via resolution
-        continue;
+        continue
       }
       // Has customizations: add if not already present
       if (!customer.favoriteColors.includes(colorId)) {
-        customer.favoriteColors.push(colorId);
+        customer.favoriteColors.push(colorId)
       }
     }
   }
 
-  if (level === "brand") {
+  if (level === 'brand') {
     // PHASE 1 STUB: Brand→customer propagation not wired until V4/V5.
     console.warn(
-      "[color-preferences] propagateAddition: brand-level propagation is a Phase 1 stub (no-op)"
-    );
+      '[color-preferences] propagateAddition: brand-level propagation is a Phase 1 stub (no-op)'
+    )
   }
 }
 
@@ -168,31 +164,31 @@ export function propagateAddition(
 // ---------------------------------------------------------------------------
 
 export type ImpactPreview = {
-  supplierCount: number;
-  customerCount: number;
-  suppliers: string[];
-  customers: string[];
+  supplierCount: number
+  customerCount: number
+  suppliers: string[]
+  customers: string[]
   /** True when the result is incomplete due to Phase 1 limitations */
-  isStub?: boolean;
+  isStub?: boolean
 }
 
 export function getImpactPreview(
-  level: "global" | "brand",
+  level: 'global' | 'brand',
   colorId: string,
   customers: Customer[],
-  brandPreferences: BrandPreference[],
+  brandPreferences: BrandPreference[]
 ): ImpactPreview {
-  const affectedSuppliers: string[] = [];
-  const affectedCustomers: string[] = [];
+  const affectedSuppliers: string[] = []
+  const affectedCustomers: string[] = []
 
-  if (level === "global") {
+  if (level === 'global') {
     // Check which brands have this color (explicitly or inherited)
     for (const brand of brandPreferences) {
-      if (brand.inheritMode === "inherit") {
+      if (brand.inheritMode === 'inherit') {
         // Would lose it if removed from global
-        affectedSuppliers.push(brand.brandName);
+        affectedSuppliers.push(brand.brandName)
       } else if (brand.favoriteColorIds.includes(colorId)) {
-        affectedSuppliers.push(brand.brandName);
+        affectedSuppliers.push(brand.brandName)
       }
     }
 
@@ -200,9 +196,9 @@ export function getImpactPreview(
     for (const customer of customers) {
       if (customer.favoriteColors.length === 0) {
         // Inheriting — would lose it if removed from global
-        affectedCustomers.push(customer.company);
+        affectedCustomers.push(customer.company)
       } else if (customer.favoriteColors.includes(colorId)) {
-        affectedCustomers.push(customer.company);
+        affectedCustomers.push(customer.company)
       }
     }
 
@@ -211,7 +207,7 @@ export function getImpactPreview(
       customerCount: affectedCustomers.length,
       suppliers: affectedSuppliers,
       customers: affectedCustomers,
-    };
+    }
   }
 
   // PHASE 1 STUB: Brand-level impact preview requires customer→brand link (V4/V5)
@@ -221,7 +217,7 @@ export function getImpactPreview(
     suppliers: [],
     customers: [],
     isStub: true,
-  };
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -229,11 +225,9 @@ export function getImpactPreview(
 // ---------------------------------------------------------------------------
 
 function stripColorFromBrand(brand: BrandPreference, colorId: string): void {
-  brand.favoriteColorIds = brand.favoriteColorIds.filter((id) => id !== colorId);
-  brand.explicitColorIds = brand.explicitColorIds.filter((id) => id !== colorId);
-  brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter(
-    (id) => id !== colorId
-  );
+  brand.favoriteColorIds = brand.favoriteColorIds.filter((id) => id !== colorId)
+  brand.explicitColorIds = brand.explicitColorIds.filter((id) => id !== colorId)
+  brand.removedInheritedColorIds = brand.removedInheritedColorIds.filter((id) => id !== colorId)
 }
 
 // ---------------------------------------------------------------------------
@@ -243,16 +237,16 @@ function stripColorFromBrand(brand: BrandPreference, colorId: string): void {
 // ---------------------------------------------------------------------------
 
 export function removeFromAll(
-  level: "global" | "brand",
+  level: 'global' | 'brand',
   colorId: string,
   brandPreferences: BrandPreference[],
-  customers: Customer[],
+  customers: Customer[]
 ): void {
-  if (level === "global") {
+  if (level === 'global') {
     // Remove from all brands that explicitly have this color
     for (const brand of brandPreferences) {
-      if (brand.inheritMode === "customize") {
-        stripColorFromBrand(brand, colorId);
+      if (brand.inheritMode === 'customize') {
+        stripColorFromBrand(brand, colorId)
       }
       // Inherit-mode brands lose it automatically via resolution
     }
@@ -260,17 +254,17 @@ export function removeFromAll(
     // Remove from all customers with explicit favorites
     for (const customer of customers) {
       if (customer.favoriteColors.length > 0) {
-        customer.favoriteColors = customer.favoriteColors.filter(
-          (id) => id !== colorId
-        );
+        customer.favoriteColors = customer.favoriteColors.filter((id) => id !== colorId)
       }
       // Inheriting customers lose it automatically via resolution
     }
   }
 
-  if (level === "brand") {
+  if (level === 'brand') {
     // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
-    console.warn("[customer.rules] removeFromAll: brand-level cascade is a Phase 1 stub (no-op) — implement in V5");
+    console.warn(
+      '[customer.rules] removeFromAll: brand-level cascade is a Phase 1 stub (no-op) — implement in V5'
+    )
   }
 }
 
@@ -281,12 +275,9 @@ export function removeFromAll(
 // PHASE 1: No downstream mutation needed — inheritance resolution handles it.
 // ---------------------------------------------------------------------------
 
-export function removeFromLevelOnly(
-  level: "global" | "brand",
-  colorId: string,
-): void {
-  void level;
-  void colorId;
+export function removeFromLevelOnly(level: 'global' | 'brand', colorId: string): void {
+  void level
+  void colorId
   // No downstream changes needed — let inheritance resolution handle it:
   // - Inherit-mode children: lose it automatically (no longer in parent)
   // - Customize-mode children: keep it (in their own favoriteColorIds)
@@ -300,37 +291,34 @@ export function removeFromLevelOnly(
 // ---------------------------------------------------------------------------
 
 export function removeFromSelected(
-  level: "global" | "brand",
+  level: 'global' | 'brand',
   colorId: string,
   brandNames: string[],
   customerCompanies: string[],
   brandPreferences: BrandPreference[],
-  customers: Customer[],
+  customers: Customer[]
 ): void {
-  if (level === "global") {
+  if (level === 'global') {
     // Remove from selected brands
     for (const brand of brandPreferences) {
-      if (brandNames.includes(brand.brandName) && brand.inheritMode === "customize") {
-        stripColorFromBrand(brand, colorId);
+      if (brandNames.includes(brand.brandName) && brand.inheritMode === 'customize') {
+        stripColorFromBrand(brand, colorId)
       }
     }
 
     // Remove from selected customers
     for (const customer of customers) {
-      if (
-        customerCompanies.includes(customer.company) &&
-        customer.favoriteColors.length > 0
-      ) {
-        customer.favoriteColors = customer.favoriteColors.filter(
-          (id) => id !== colorId
-        );
+      if (customerCompanies.includes(customer.company) && customer.favoriteColors.length > 0) {
+        customer.favoriteColors = customer.favoriteColors.filter((id) => id !== colorId)
       }
     }
   }
 
-  if (level === "brand") {
+  if (level === 'brand') {
     // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
-    console.warn("[customer.rules] removeFromSelected: brand-level cascade is a Phase 1 stub (no-op) — implement in V5");
+    console.warn(
+      '[customer.rules] removeFromSelected: brand-level cascade is a Phase 1 stub (no-op) — implement in V5'
+    )
   }
 }
 
@@ -340,7 +328,7 @@ export function removeFromSelected(
 
 export function getBrandPreference(
   brandName: string,
-  brandPreferences: BrandPreference[],
+  brandPreferences: BrandPreference[]
 ): BrandPreference | undefined {
-  return brandPreferences.find((b) => b.brandName === brandName);
+  return brandPreferences.find((b) => b.brandName === brandName)
 }

@@ -1,6 +1,6 @@
 ---
-title: "Knowledge Base"
-subtitle: "Astro-powered documentation site with Pagefind search, pipeline tracking, and workflow chains"
+title: 'Knowledge Base'
+subtitle: 'Astro-powered documentation site with Pagefind search, pipeline tracking, and workflow chains'
 tool: knowledge-base
 docType: overview
 lastUpdated: 2026-02-15
@@ -9,7 +9,7 @@ status: draft
 
 ## Overview
 
-*To be written. This is a placeholder created during the KB taxonomy restructure.*
+_To be written. This is a placeholder created during the KB taxonomy restructure._
 
 ## Key Commands
 

@@ -1,6 +1,6 @@
 ---
-title: "Quoting Breadboard"
-subtitle: "Visual blueprint mapping all Places, UI affordances, code affordances, and wiring for the Quoting vertical. Produced by the breadboarding skill as input to the frontend-builder agent."
+title: 'Quoting Breadboard'
+subtitle: 'Visual blueprint mapping all Places, UI affordances, code affordances, and wiring for the Quoting vertical. Produced by the breadboarding skill as input to the frontend-builder agent.'
 date: 2026-02-08
 phase: 1
 pipelineName: quoting
@@ -9,17 +9,17 @@ products: [quotes]
 tools: []
 stage: breadboard
 tags: [plan, build]
-sessionId: "09b70260-83ac-4830-9b02-ed8c0683f699"
-branch: "feat/quoting-discovery"
+sessionId: '09b70260-83ac-4830-9b02-ed8c0683f699'
+branch: 'feat/quoting-discovery'
 status: complete
 ---
 
-| Metric | Value |
-|--------|-------|
-| Places | 7 |
-| UI Affordances | 65 |
-| Code Affordances | 32 |
-| Data Stores | 18 |
+| Metric           | Value |
+| ---------------- | ----- |
+| Places           | 7     |
+| UI Affordances   | 65    |
+| Code Affordances | 32    |
+| Data Stores      | 18    |
 
 ## Places & Navigation Flow
 
@@ -111,25 +111,25 @@ flowchart TD
 
 ## Places
 
-| ID | Place | Type | Entry Point |
-|----|-------|------|-------------|
-| P1 | Quotes List | Page | `/quotes` |
-| P2 | New Quote Form | Page | `/quotes/new` |
-| P2.1 | Customer Creation Modal | Modal | "Add New Customer" in P2 |
-| P2.2 | Color Swatch Picker | Popover | Color field in P2 line item |
-| P3 | Quote Detail | Page | `/quotes/[id]` |
-| P3.1 | Email Preview Modal | Modal | "Send to Customer" in P3 |
-| P4 | Edit Quote Form | Page | `/quotes/[id]/edit` |
+| ID   | Place                   | Type    | Entry Point                 |
+| ---- | ----------------------- | ------- | --------------------------- |
+| P1   | Quotes List             | Page    | `/quotes`                   |
+| P2   | New Quote Form          | Page    | `/quotes/new`               |
+| P2.1 | Customer Creation Modal | Modal   | "Add New Customer" in P2    |
+| P2.2 | Color Swatch Picker     | Popover | Color field in P2 line item |
+| P3   | Quote Detail            | Page    | `/quotes/[id]`              |
+| P3.1 | Email Preview Modal     | Modal   | "Send to Customer" in P3    |
+| P4   | Edit Quote Form         | Page    | `/quotes/[id]/edit`         |
 
 ## Shared Components (Reusable)
 
 Built first, used across verticals.
 
-| Component | Used In | Location |
-|-----------|---------|----------|
+| Component             | Used In                           | Location               |
+| --------------------- | --------------------------------- | ---------------------- |
 | **ColorSwatchPicker** | P2.2 (Quote Form color selection) | `components/features/` |
-| **CustomerCombobox** | P2, P4 (customer selection) | `components/features/` |
-| **StatusBadge** | P1, P3 (quote status display) | `components/features/` |
+| **CustomerCombobox**  | P2, P4 (customer selection)       | `components/features/` |
+| **StatusBadge**       | P1, P3 (quote status display)     | `components/features/` |
 
 ## Build Order
 

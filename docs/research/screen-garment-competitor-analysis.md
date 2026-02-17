@@ -33,6 +33,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: 4Ink's current tool. ~200 shops. Angular SPA. Built by a screen printer with 10+ years of experience who found existing tools inadequate.
 
 **Screen Room / Screen Management**:
+
 - **No dedicated screen management feature**
 - No screen tracking (mesh count, burn status, tension)
 - No screen-to-job linking
@@ -41,6 +42,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Production workflow is basic: step-based project progression with mock approval
 
 **Garment Catalog / Inventory**:
+
 - **SanMar catalog integration** via product API (confirmed in 2024 update)
 - Custom products feature: create reusable products, set pricing, manage inventory, upload images, assign sizes
 - Impression cost display per print location (added 2024)
@@ -49,6 +51,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - No mention of AlphaBroder/S&S integration beyond SanMar
 
 **UI Patterns**:
+
 - Angular SPA with project cards
 - Customer portal with qty visibility
 - Store feature (undergoing overhaul as of 2024)
@@ -63,6 +66,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: Largest player in market. Thousands of shops. Known for simplicity and strong community. Now part of Inktavo ecosystem.
 
 **Screen Room / Screen Management**:
+
 - **No dedicated screen room feature**
 - Can store mesh information in the system for reference
 - Blog content about mesh counts and exposure calculators (educational, not tooling)
@@ -71,6 +75,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - No screen inventory or utilization metrics
 
 **Garment Catalog / Inventory**:
+
 - Built-in supplier catalogs for pricing/quoting
 - Pulls products and prices from suppliers for suggested retail pricing
 - Pricing matrix: quantity breaks, imprint locations
@@ -79,6 +84,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - No advanced garment browsing experience — catalog is a quoting tool, not a browser
 
 **UI Patterns**:
+
 - Clean, simple interface (widely praised)
 - Drag-and-drop calendar for scheduling
 - Mobile app exists but **chronically buggy** (won't load on updated iPhones per Oct 2024 review)
@@ -86,6 +92,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Strong onboarding — new employees pick up quickly
 
 **Weaknesses (from reviews)**:
+
 - No read/write user permissions (painful at 20+ employees)
 - No third-party brokerage/outsourced ordering support
 - Mobile app unreliable
@@ -100,12 +107,14 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: Broader custom manufacturing focus (print, sign, apparel shops). Two tiers: Express and Pro.
 
 **Screen Room / Screen Management**:
+
 - **No dedicated screen room feature**
 - Visual production boards for job tracking
 - No screen lifecycle, mesh tracking, or screen inventory
 - Production workflow covers job stages, not screen stages
 
 **Garment Catalog / Inventory**:
+
 - **Strongest vendor catalog integration** among competitors
 - Integrated catalogs: SanMar, AlphaBroder, S&S Activewear, TSC Apparel, Carolina Made, Uneek, PenCarrie, AS Colour
 - Pull styles, sizes, and costs directly from vendors
@@ -116,6 +125,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Compiles purchasing lists of blanks needed across open orders
 
 **UI Patterns**:
+
 - Complex, full-featured interface — steep learning curve
 - Production board visualization
 - Custom PDF export (limited; $150/doc for custom templates)
@@ -123,6 +133,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Mobile: limited mentions
 
 **Weaknesses (from reviews)**:
+
 - Buggy feature releases (2FA lockouts, sales tax bugs, golden products issues)
 - UI navigation difficulties — not intuitive
 - Slow performance
@@ -138,12 +149,14 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: Screen-print focused. Claims "#1 Screen Printing Software." Free tier available. 80+ features. Built specifically for decorated apparel.
 
 **Screen Room / Screen Management**:
+
 - **No dedicated screen room feature** (despite being screen-print focused!)
 - Job board, calendar, and task board for production management
 - No screen tracking, lifecycle, or inventory
 - No screen-to-job linking
 
 **Garment Catalog / Inventory**:
+
 - **Broadest vendor integration**: AlphaBroder, Augusta Sportswear, Blue Generation, SanMar, S&S Activewear, TSC Apparel (continuously adding more)
 - **Live vendor integration** — real-time stock levels and pricing (not just cached catalog data)
 - Multi-warehouse inventory control (multiple locations or zones within a building)
@@ -153,6 +166,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Customer self-service portal for order tracking, payments, quote advancement
 
 **UI Patterns**:
+
 - Feature-rich but cluttered interface
 - Dashboard with job board, calendar, task board
 - Online customer portal
@@ -167,12 +181,14 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: Newer entrant with modern UI. Cloud-native. Barcode-driven workflows. Growing quickly.
 
 **Screen Room / Screen Management**:
+
 - **No dedicated screen room feature**
 - No screen tracking or lifecycle
 - No screen inventory
 - Production management via drag-and-drop scheduler with customizable workflows
 
 **Garment Catalog / Inventory**:
+
 - Vendor integration: SanMar, AlphaBroder, S&S Activewear
 - **Real-time inventory** across multiple locations
 - Stock categories: available, on-hand, incoming, committed
@@ -183,6 +199,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Multi-warehouse with stock transfers between locations
 
 **UI Patterns**:
+
 - **Most modern UI** in the market — clean, contemporary design
 - Barcode-driven: print barcoded work orders, box labels, packing slips; single scan brings up everything
 - Drag-and-drop scheduler with timeline, calendar, and list views
@@ -198,6 +215,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: E-commerce + production management. Built for garment decorators of all types (screen print, embroidery, DTG, DTF, sublimation). Strong e-commerce/storefront focus.
 
 **Screen Room / Screen Management**:
+
 - **No dedicated screen room feature**
 - Production calendar with task assignment to press operators
 - Workflow tracking: order progress from approval through completion
@@ -205,6 +223,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Low-resolution image flagging before production
 
 **Garment Catalog / Inventory**:
+
 - Supplier catalog integration: SanMar, S&S Activewear, BTC Activewear, Gildan Brands
 - Live pricing and stock level updates
 - Product search by style, color, and size
@@ -214,6 +233,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Pricing engine: screen setup fees, extra color charges, underbase costs, garment minimums, rush markups
 
 **UI Patterns**:
+
 - E-commerce storefront builder (team stores, fundraising, corporate programs, online shops)
 - Production calendar view
 - Artwork mockup generation
@@ -229,6 +249,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: General manufacturing ERP. Not screen-print specific. Useful for inventory/asset management patterns.
 
 **Relevant Patterns for Screen Room**:
+
 - **Batch & serial number tracking** — closest analog to individual screen tracking
 - Bin location assignment — could map to screen rack positions
 - Bill of materials (BOM) — screen = component linked to job
@@ -237,6 +258,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Multi-location inventory with transfer tracking
 
 **Relevant Patterns for Garment Catalog**:
+
 - Real-time inventory across products, materials, locations
 - Reorder point automation based on levels and lead times
 - Make-to-order (MTO) and make-to-stock (MTS) workflows
@@ -244,6 +266,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Demand forecasting from stock analysis
 
 **UI Patterns**:
+
 - Modern, clean manufacturing dashboard
 - Visual production planning
 - Real-time shop floor visibility
@@ -258,9 +281,11 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: E-commerce platform for custom branded merchandise. Part of Inktavo ecosystem (with Printavo). Design-to-print focus.
 
 **Screen Room / Screen Management**:
+
 - **None** — InkSoft is an e-commerce/design platform, not production management
 
 **Garment Catalog / Inventory**:
+
 - **Best catalog browsing experience** for customer-facing stores
 - Integrated supplier feeds: SanMar, S&S Activewear (with recommended products filter), AlphaBroder, and others
 - Products added from supplier catalogs with auto-populated info (cost, sizing, details, images)
@@ -271,6 +296,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 - Online design tool with product mockups
 
 **UI Patterns**:
+
 - Store-front focused — best product browsing UX
 - Product category organization
 - Design customization interface
@@ -285,12 +311,15 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 **Background**: Art management tool for print shops. Formerly Digital Art Solutions. Part of Inktavo ecosystem.
 
 **Screen Room / Screen Management**:
+
 - **None** — art/design tool only
 
 **Garment Catalog / Inventory**:
+
 - **None** — focused on design templates and artwork, not garments
 
 **Relevant Features**:
+
 - 25,000+ vector design templates
 - Stock Art Customizer (text editing, clip art swapping, color scheme unification)
 - Color separations for screen printing (production-ready output)
@@ -305,18 +334,18 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 
 ### Screen Room Management
 
-| Feature | PrintLife | Printavo | ShopVOX | Teesom | YoPrint | DecoNetwork | Katana | InkSoft | GraphicsFlow |
-|---------|-----------|----------|---------|--------|---------|-------------|--------|---------|-------------|
-| Dedicated screen management | - | - | - | - | - | - | N/A | - | - |
-| Screen tracking (individual) | - | - | - | - | - | - | Serial# | - | - |
-| Mesh count tracking | - | Ref only | - | - | - | - | Custom | - | - |
-| Burn status tracking | - | - | - | - | - | - | - | - | - |
-| Tension readings | - | - | - | - | - | - | - | - | - |
-| Screen-to-job linking | - | - | - | - | - | - | BOM | - | - |
-| Screen lifecycle workflow | - | - | - | - | - | - | - | - | - |
-| Screen inventory dashboard | - | - | - | - | - | - | Partial | - | - |
-| Utilization metrics | - | - | - | - | - | - | - | - | - |
-| Bulk operations (reclaim) | - | - | - | - | - | - | Batch | - | - |
+| Feature                      | PrintLife | Printavo | ShopVOX | Teesom | YoPrint | DecoNetwork | Katana  | InkSoft | GraphicsFlow |
+| ---------------------------- | --------- | -------- | ------- | ------ | ------- | ----------- | ------- | ------- | ------------ |
+| Dedicated screen management  | -         | -        | -       | -      | -       | -           | N/A     | -       | -            |
+| Screen tracking (individual) | -         | -        | -       | -      | -       | -           | Serial# | -       | -            |
+| Mesh count tracking          | -         | Ref only | -       | -      | -       | -           | Custom  | -       | -            |
+| Burn status tracking         | -         | -        | -       | -      | -       | -           | -       | -       | -            |
+| Tension readings             | -         | -        | -       | -      | -       | -           | -       | -       | -            |
+| Screen-to-job linking        | -         | -        | -       | -      | -       | -           | BOM     | -       | -            |
+| Screen lifecycle workflow    | -         | -        | -       | -      | -       | -           | -       | -       | -            |
+| Screen inventory dashboard   | -         | -        | -       | -      | -       | -           | Partial | -       | -            |
+| Utilization metrics          | -         | -        | -       | -      | -       | -           | -       | -       | -            |
+| Bulk operations (reclaim)    | -         | -        | -       | -      | -       | -           | Batch   | -       | -            |
 
 **Legend**: `-` = Not available | `Ref only` = Reference info, not tracking | `Partial` = Related feature exists | `N/A` = Not applicable
 
@@ -326,38 +355,38 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 
 ### Garment Catalog / Inventory
 
-| Feature | PrintLife | Printavo | ShopVOX | Teesom | YoPrint | DecoNetwork | Katana | InkSoft | GraphicsFlow |
-|---------|-----------|----------|---------|--------|---------|-------------|--------|---------|-------------|
-| Garment catalog browser | Basic | Basic | Yes | Yes | Yes | Yes | N/A | Best | - |
-| Vendor catalog integration | SanMar | Multiple | Best | Best | Good | Good | N/A | Good | - |
-| SanMar | Yes | Yes | Yes | Yes | Yes | Yes | - | Yes | - |
-| S&S Activewear | - | Yes | Yes | Yes | Yes | Yes | - | Yes | - |
-| AlphaBroder | - | Yes | Yes | Yes | Yes | - | - | Yes | - |
-| Other vendors | - | ? | 8+ | 6+ | 3 | 4+ | - | Multiple | - |
-| Live pricing | - | Yes | Yes | Yes | Yes | Yes | - | Yes | - |
-| Live stock levels | - | ? | Alert-based | Yes (best) | Yes | Yes | - | Optional | - |
-| Size/color matrix | Basic | Basic | Yes | Yes | Yes | Yes | - | Yes | - |
-| Multi-warehouse | - | - | - | Yes | Yes | - | Yes | - | - |
-| Auto-reorder | - | - | Yes | - | Yes | Yes | Yes | - | - |
-| Vendor swapping | - | - | - | Yes (best) | - | - | - | - | - |
-| Purchase orders | - | - | Yes | Yes | Yes | Yes | Yes | - | - |
-| Stock images | Basic | Basic | Yes | Yes | Yes | Yes | - | Best | - |
-| Search/filter | Basic | Basic | Good | Good | Good | Style/Color/Size | - | Best | - |
-| Feeds into quoting | Yes | Yes | Yes | Yes | Yes | Yes | - | E-commerce | - |
+| Feature                    | PrintLife | Printavo | ShopVOX     | Teesom     | YoPrint | DecoNetwork      | Katana | InkSoft    | GraphicsFlow |
+| -------------------------- | --------- | -------- | ----------- | ---------- | ------- | ---------------- | ------ | ---------- | ------------ |
+| Garment catalog browser    | Basic     | Basic    | Yes         | Yes        | Yes     | Yes              | N/A    | Best       | -            |
+| Vendor catalog integration | SanMar    | Multiple | Best        | Best       | Good    | Good             | N/A    | Good       | -            |
+| SanMar                     | Yes       | Yes      | Yes         | Yes        | Yes     | Yes              | -      | Yes        | -            |
+| S&S Activewear             | -         | Yes      | Yes         | Yes        | Yes     | Yes              | -      | Yes        | -            |
+| AlphaBroder                | -         | Yes      | Yes         | Yes        | Yes     | -                | -      | Yes        | -            |
+| Other vendors              | -         | ?        | 8+          | 6+         | 3       | 4+               | -      | Multiple   | -            |
+| Live pricing               | -         | Yes      | Yes         | Yes        | Yes     | Yes              | -      | Yes        | -            |
+| Live stock levels          | -         | ?        | Alert-based | Yes (best) | Yes     | Yes              | -      | Optional   | -            |
+| Size/color matrix          | Basic     | Basic    | Yes         | Yes        | Yes     | Yes              | -      | Yes        | -            |
+| Multi-warehouse            | -         | -        | -           | Yes        | Yes     | -                | Yes    | -          | -            |
+| Auto-reorder               | -         | -        | Yes         | -          | Yes     | Yes              | Yes    | -          | -            |
+| Vendor swapping            | -         | -        | -           | Yes (best) | -       | -                | -      | -          | -            |
+| Purchase orders            | -         | -        | Yes         | Yes        | Yes     | Yes              | Yes    | -          | -            |
+| Stock images               | Basic     | Basic    | Yes         | Yes        | Yes     | Yes              | -      | Best       | -            |
+| Search/filter              | Basic     | Basic    | Good        | Good       | Good    | Style/Color/Size | -      | Best       | -            |
+| Feeds into quoting         | Yes       | Yes      | Yes         | Yes        | Yes     | Yes              | -      | E-commerce | -            |
 
 ---
 
 ### UI Patterns
 
-| Pattern | PrintLife | Printavo | ShopVOX | Teesom | YoPrint | DecoNetwork |
-|---------|-----------|----------|---------|--------|---------|-------------|
-| Primary layout | Cards | List/Calendar | Board | Dashboard | Board/List | Calendar |
-| Mobile support | - | Buggy | Limited | Limited | Good | Limited |
-| Bulk actions | - | - | Yes | - | Yes | - |
-| Barcode scanning | - | - | - | - | Yes (best) | - |
-| Drag-and-drop | - | Calendar | Board | - | Scheduler | Calendar |
-| Empty states | Unknown | Minimal | Unknown | Unknown | Designed | Unknown |
-| Customer portal | Yes | Yes | Yes | Yes | Yes | Yes (best) |
+| Pattern          | PrintLife | Printavo      | ShopVOX | Teesom    | YoPrint    | DecoNetwork |
+| ---------------- | --------- | ------------- | ------- | --------- | ---------- | ----------- |
+| Primary layout   | Cards     | List/Calendar | Board   | Dashboard | Board/List | Calendar    |
+| Mobile support   | -         | Buggy         | Limited | Limited   | Good       | Limited     |
+| Bulk actions     | -         | -             | Yes     | -         | Yes        | -           |
+| Barcode scanning | -         | -             | -       | -         | Yes (best) | -           |
+| Drag-and-drop    | -         | Calendar      | Board   | -         | Scheduler  | Calendar    |
+| Empty states     | Unknown   | Minimal       | Unknown | Unknown   | Designed   | Unknown     |
+| Customer portal  | Yes       | Yes           | Yes     | Yes       | Yes        | Yes (best)  |
 
 ---
 
@@ -366,6 +395,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 ### Gap 1: Screen Room Management (MASSIVE)
 
 **Nobody has it.** This is the most striking finding. Screen printing is literally named after the screens, yet no software tracks them. Current industry practice:
+
 - Whiteboards in the darkroom
 - Excel spreadsheets
 - Physical four-cart system (Speed → Take → Clean → Drying)
@@ -379,6 +409,7 @@ Garment Catalog is better served — most competitors offer vendor catalog integ
 ### Gap 2: Screen-to-Job Linking
 
 No competitor links physical screens to specific jobs in software. Press operators know which screens go with which job through physical labels, sticky notes, or memory. This is a workflow gap that causes:
+
 - Wrong screens loaded on press
 - Screens reclaimed before job reprint
 - Lost screen history for repeat jobs ("What mesh did we use last time?")
@@ -386,6 +417,7 @@ No competitor links physical screens to specific jobs in software. Press operato
 ### Gap 3: Screen Lifecycle Analytics
 
 No one tracks screen lifecycle data:
+
 - How many burn cycles before a screen needs re-meshing?
 - Which mesh counts are most utilized vs. sitting idle?
 - Average turnaround time from reclaim to ready?
@@ -394,6 +426,7 @@ No one tracks screen lifecycle data:
 ### Gap 4: Garment Catalog UX
 
 While vendor integrations exist everywhere, the **browsing experience** is universally utilitarian. Current catalogs are designed for quoting workflows (search → select → price), not for discovery or visual browsing. Nobody offers:
+
 - Visual garment browser with large product photos
 - Side-by-side style comparison
 - Color swatch palettes per garment
@@ -437,17 +470,17 @@ While not screen-print specific, Katana's serial number tracking, bin location m
 
 ## Pricing & Positioning
 
-| Competitor | Starting Price | Mid Tier | Top Tier | Model | Free Tier |
-|------------|---------------|----------|----------|-------|-----------|
-| **PrintLife** | ~$30/mo (est.) | — | — | Flat monthly | — |
-| **Printavo** | $49/mo (Starter) | $149/mo (Standard) | $199/mo (Premium) | Per-plan | Free trial |
-| **ShopVOX** | ~$55/mo (Express) | ~$95/mo (Pro base) | +$29/user | Per-plan + per-user | Free trial |
-| **Teesom** | Free (≤20 orders/mo) | $67/mo (single user) | $97-147/mo (multi) | Per-plan | Yes (full features, limited orders) |
-| **YoPrint** | ~$60/mo ($2/day) | — | — | Tiered | 14-day trial |
-| **DecoNetwork** | $199/mo (Standard) | $299/mo (Premium est.) | Enterprise (custom) | Per-plan | Free demo |
-| **Katana** | $179/mo | — | — | Per-plan + usage | 14-day trial |
-| **InkSoft** | ~$150/mo (est.) | — | — | Per-plan | Demo only |
-| **GraphicsFlow** | ~$49/mo (est.) | — | — | Per-plan | Free trial |
+| Competitor       | Starting Price       | Mid Tier               | Top Tier            | Model               | Free Tier                           |
+| ---------------- | -------------------- | ---------------------- | ------------------- | ------------------- | ----------------------------------- |
+| **PrintLife**    | ~$30/mo (est.)       | —                      | —                   | Flat monthly        | —                                   |
+| **Printavo**     | $49/mo (Starter)     | $149/mo (Standard)     | $199/mo (Premium)   | Per-plan            | Free trial                          |
+| **ShopVOX**      | ~$55/mo (Express)    | ~$95/mo (Pro base)     | +$29/user           | Per-plan + per-user | Free trial                          |
+| **Teesom**       | Free (≤20 orders/mo) | $67/mo (single user)   | $97-147/mo (multi)  | Per-plan            | Yes (full features, limited orders) |
+| **YoPrint**      | ~$60/mo ($2/day)     | —                      | —                   | Tiered              | 14-day trial                        |
+| **DecoNetwork**  | $199/mo (Standard)   | $299/mo (Premium est.) | Enterprise (custom) | Per-plan            | Free demo                           |
+| **Katana**       | $179/mo              | —                      | —                   | Per-plan + usage    | 14-day trial                        |
+| **InkSoft**      | ~$150/mo (est.)      | —                      | —                   | Per-plan            | Demo only                           |
+| **GraphicsFlow** | ~$49/mo (est.)       | —                      | —                   | Per-plan            | Free trial                          |
 
 **Positioning spectrum**:
 
@@ -490,33 +523,36 @@ Every competitor treats the catalog as a quoting input. Screen Print Pro can tre
 ### 3. Connect Screen Room to Production Pipeline
 
 The real power comes from linking screens to the broader production workflow:
+
 - Quote → Job → Screens needed → Screen room prep → Press → Reclaim
 - "This job needs 4 screens: 2x 156-mesh, 1x 230-mesh, 1x 110-mesh. 3 are ready, 1 needs burning."
 - Dashboard card: "Screens to burn for tomorrow's jobs"
 
 ### 4. Steal Patterns Liberally
 
-| Pattern | Steal From | Apply To |
-|---------|-----------|----------|
-| Serial/asset tracking | Katana MRP | Screen registry |
-| Bin location management | Katana MRP | Screen rack positions |
-| BOM linking | Katana MRP | Screen-to-job association |
-| Live vendor integration | Teesom | Garment catalog pricing |
-| Barcode scanning workflow | YoPrint | Screen identification |
-| Product browsing UX | InkSoft | Garment catalog browser |
+| Pattern                   | Steal From       | Apply To                       |
+| ------------------------- | ---------------- | ------------------------------ |
+| Serial/asset tracking     | Katana MRP       | Screen registry                |
+| Bin location management   | Katana MRP       | Screen rack positions          |
+| BOM linking               | Katana MRP       | Screen-to-job association      |
+| Live vendor integration   | Teesom           | Garment catalog pricing        |
+| Barcode scanning workflow | YoPrint          | Screen identification          |
+| Product browsing UX       | InkSoft          | Garment catalog browser        |
 | Multi-warehouse inventory | Teesom / YoPrint | Multi-location screen tracking |
-| Visual production board | ShopVOX | Screen room dashboard |
-| Clean modern UI | YoPrint | Everything |
+| Visual production board   | ShopVOX          | Screen room dashboard          |
+| Clean modern UI           | YoPrint          | Everything                     |
 
 ### 5. Phase 1 Scope Recommendations
 
 **Screen Room (high confidence — blue ocean)**:
+
 - Screen registry with lifecycle states (the core innovation)
 - Screen-to-job linking (the production connection)
 - Dashboard with state counts and upcoming needs
 - Bulk reclaim/coat operations
 
 **Garment Catalog (moderate confidence — differentiate on UX)**:
+
 - Visual catalog browser with product images
 - Size/color matrix display
 - Brand/style/category organization
@@ -535,6 +571,7 @@ The real power comes from linking screens to the broader production workflow:
 ## Appendix: Research Sources
 
 ### Competitor Websites
+
 - [PrintLife](https://www.theprintlife.com/)
 - [Printavo](https://www.printavo.com/)
 - [ShopVOX](https://shopvox.com/)
@@ -546,6 +583,7 @@ The real power comes from linking screens to the broader production workflow:
 - [GraphicsFlow](https://www.graphicsflow.com/)
 
 ### Feature & Help Documentation
+
 - [ShopVOX SanMar Integration](https://docs.shopvox.com/article/qtpap33i9h-san-mar-apparel-catalog-integration)
 - [ShopVOX Custom Catalog Import](https://docs.shopvox.com/article/wqkwlp7imi-importing-custom-catalogs-for-apparel-from-other-suppliers)
 - [Teesom Features (80+)](https://teesom.com/teesom-features/)
@@ -559,6 +597,7 @@ The real power comes from linking screens to the broader production workflow:
 - [PrintLife 2024 Update](https://www.theprintlife.com/the-print-life-screen-print-management-software-2024-update-is-live/)
 
 ### Reviews & Comparisons
+
 - [Printavo Capterra Reviews](https://www.capterra.com/p/154421/Printavo/reviews/)
 - [ShopVOX Capterra Reviews](https://www.capterra.com/p/155218/shopVOX/reviews/)
 - [Printavo SoftwareWorld Review](https://www.softwareworld.co/software/printavo-reviews/)
@@ -567,6 +606,7 @@ The real power comes from linking screens to the broader production workflow:
 - [Screen Printing Software (17 Tools)](https://www.convertcalculator.com/blog/software-for-screenprinters/)
 
 ### Industry & Community
+
 - [Darkroom Optimization 101](https://www.screenprinting.com/blogs/news/darkroom-optimization-101-how-many-screens-does-your-shop-really-need)
 - [Ink Management Software (Screen Printing Mag)](https://screenprintingmag.com/ink-management-software/)
 - [T-Shirt Forums: Software Discussion](https://www.t-shirtforums.com/threads/what-software-do-you-use-in-your-screen-printing-shop.883653/)
@@ -591,36 +631,40 @@ OnSite/ShopWorx is notably absent from the main analysis but deserves special at
 
 This is the precise gap Screen Print Pro should fill: **screen-as-first-class-entity with lifecycle management**, not screen-as-job-metadata.
 
-*Sources: [OnSite Features](https://www.shopworx.com/onsite-screen-print-business-software/), [ShopWorx Screen Printing](https://www.shopworx.com/industries/screen-printing-management-software/)*
+_Sources: [OnSite Features](https://www.shopworx.com/onsite-screen-print-business-software/), [ShopWorx Screen Printing](https://www.shopworx.com/industries/screen-printing-management-software/)_
 
 ### Printmatics — Smart Scheduling Pattern
 
 Printmatics offers two patterns worth noting:
+
 - **Drag-and-drop production calendar**: Schedule jobs across departments and equipment types
 - **Dynamic filter production monitor**: Track workflow filtered by department, customer, equipment type
 - **Smart Scheduler**: Auto-schedules production as efficiently as possible
 
 These production scheduling patterns could apply to screen room prep workflow (which screens to burn/coat/reclaim next based on job schedule).
 
-*Source: [Printmatics Screen Printing](https://www.printmatics.com/screen-printing-shop-management-software)*
+_Source: [Printmatics Screen Printing](https://www.printmatics.com/screen-printing-shop-management-software)_
 
 ### Additional User Complaints (Across Competitors)
 
 From Capterra/review research, common pain points relevant to our verticals:
 
 **Printavo**:
+
 - No read/write permissions — painful at scale (20+ employees)
 - No real receiving system — can't track what arrived when
 - Can't assign automated job run times
 - Mobile app chronically buggy (won't load on updated iPhones, Oct 2024 review)
 
 **ShopVOX**:
+
 - 2FA launch was broken — expired codes, user lockouts
 - Sales tax, "golden products" features launched with critical bugs
 - Significant pricing creep over time
 - Express vs Pro tier confusion
 
 **DecoNetwork**:
+
 - **Batch production extremely lacking** — must process each order individually
 - **Sorting orders is very difficult** with the current system
 - Not designed for showroom operations
@@ -628,6 +672,7 @@ From Capterra/review research, common pain points relevant to our verticals:
 - Slow to add desired features
 
 **YoPrint**:
+
 - Relatively new — some features missing compared to established tools
 - No webstore/merch store feature (frequently requested)
 - Smaller ecosystem and community
@@ -635,6 +680,7 @@ From Capterra/review research, common pain points relevant to our verticals:
 ### Printavo Status System — Pattern Worth Studying
 
 Printavo's custom invoice status system is the best workflow pattern in the market:
+
 - **Unlimited custom statuses** (some shops have 100+)
 - **Color-coded badges** on calendar and production board
 - **Status-triggered notifications**: Internal and external (email/SMS)
@@ -643,22 +689,23 @@ Printavo's custom invoice status system is the best workflow pattern in the mark
 
 This pattern — custom statuses with triggers — is directly applicable to screen lifecycle states. When a screen transitions to "Needs Reclaim," it could trigger a notification to the screen room team.
 
-*Source: [Printavo Customizing Statuses](https://support.printavo.com/hc/en-us/articles/360054178254-4-2-Customizing-Job-Statuses)*
+_Source: [Printavo Customizing Statuses](https://support.printavo.com/hc/en-us/articles/360054178254-4-2-Customizing-Job-Statuses)_
 
 ### Vendor Integration Landscape Note
 
 **S&S Activewear acquired AlphaBroder in August 2024**, consolidating two of the biggest wholesale apparel distributors. This means:
+
 - Fewer vendor APIs to integrate in Phase 2
 - Potentially simplified supplier catalog integration
 - Vendor-agnostic design is critical — the supplier landscape is consolidating
 
 ### Summary of Additional Findings
 
-| Insight | Impact on Screen Print Pro |
-|---------|---------------------------|
-| OnSite tracks screen data as job metadata, not asset inventory | Confirms the "screen as first-class entity" approach is novel |
+| Insight                                                                | Impact on Screen Print Pro                                                       |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| OnSite tracks screen data as job metadata, not asset inventory         | Confirms the "screen as first-class entity" approach is novel                    |
 | Printavo's status trigger system is the market's best workflow pattern | Adopt for screen lifecycle transitions (status change → notification/automation) |
-| Printmatics smart scheduler auto-allocates production | Future feature: auto-suggest screens to burn based on job schedule |
-| Batch production is a known pain point (DecoNetwork) | Ensure screen room supports bulk operations from day one |
-| S&S + AlphaBroder consolidation | Build vendor integration vendor-agnostically |
-| Mobile apps are universally weak or buggy | Mobile screen room tracking is a differentiation opportunity |
+| Printmatics smart scheduler auto-allocates production                  | Future feature: auto-suggest screens to burn based on job schedule               |
+| Batch production is a known pain point (DecoNetwork)                   | Ensure screen room supports bulk operations from day one                         |
+| S&S + AlphaBroder consolidation                                        | Build vendor integration vendor-agnostically                                     |
+| Mobile apps are universally weak or buggy                              | Mobile screen room tracking is a differentiation opportunity                     |

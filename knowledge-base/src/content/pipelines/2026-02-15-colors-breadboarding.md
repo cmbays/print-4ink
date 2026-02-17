@@ -1,6 +1,6 @@
 ---
-title: "Colors — Breadboard: Affordances, Wiring & Vertical Slices"
-subtitle: "48 UI affordances, 25 code affordances, 8 data stores across 6 places — sliced into 6 vertical increments"
+title: 'Colors — Breadboard: Affordances, Wiring & Vertical Slices'
+subtitle: '48 UI affordances, 25 code affordances, 8 data stores across 6 places — sliced into 6 vertical increments'
 date: 2026-02-15
 phase: 1
 pipelineName: colors
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: breadboard
 tags: [plan]
-sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
-branch: "session/0215-color-prefs"
+sessionId: '08cc4e02-a47a-42b3-b9c9-d47e392c498b'
+branch: 'session/0215-color-prefs'
 status: complete
 ---
 
@@ -21,37 +21,37 @@ Transformed Shape A's 7 parts (A1-A7) from the color preference shaping doc into
 
 ## Breadboard Scope
 
-| Metric | Count |
-|--------|-------|
-| Places | 6 (2 modified, 4 new) |
-| UI affordances | 48 |
-| Code affordances | 25 |
-| Data stores | 8 |
-| New components | 8 |
-| Modified components | 5 |
-| Vertical slices | 6 |
+| Metric              | Count                 |
+| ------------------- | --------------------- |
+| Places              | 6 (2 modified, 4 new) |
+| UI affordances      | 48                    |
+| Code affordances    | 25                    |
+| Data stores         | 8                     |
+| New components      | 8                     |
+| Modified components | 5                     |
+| Vertical slices     | 6                     |
 
 ## Places
 
-| # | Place | Type |
-|---|-------|------|
-| P1 | Garment Catalog | Modified — swatch filter replaces text dropdown; cards show favorites |
-| P1.1 | Garment Detail Drawer | Modified — two-section favorites/all layout, scroll fix |
-| P1.2 | Brand Detail Drawer | NEW — brand colors with Beth Meyer inherit/customize toggle |
-| P2 | Settings > Colors | NEW — global favorite management at `/settings/colors` |
-| P3 | Customer Preferences Tab | NEW — customer favorites (colors, brands, garments) |
-| P4 | Removal Confirmation Dialog | NEW — impact preview + selective propagation |
+| #    | Place                       | Type                                                                  |
+| ---- | --------------------------- | --------------------------------------------------------------------- |
+| P1   | Garment Catalog             | Modified — swatch filter replaces text dropdown; cards show favorites |
+| P1.1 | Garment Detail Drawer       | Modified — two-section favorites/all layout, scroll fix               |
+| P1.2 | Brand Detail Drawer         | NEW — brand colors with Beth Meyer inherit/customize toggle           |
+| P2   | Settings > Colors           | NEW — global favorite management at `/settings/colors`                |
+| P3   | Customer Preferences Tab    | NEW — customer favorites (colors, brands, garments)                   |
+| P4   | Removal Confirmation Dialog | NEW — impact preview + selective propagation                          |
 
 ## Vertical Slices
 
-| # | Slice | Demo |
-|---|-------|------|
-| V1 | Swatch filter + honest cards | "Click color swatches to filter; cards show favorites + count" |
-| V2 | Drawer favorites + scroll fix | "Open drawer: favorites at top, full palette below, scrolls correctly" |
-| V3 | Global favorites page | "Settings > Colors: tap swatches to set shop-wide favorites" |
-| V4 | Brand detail drawer | "Click 'Gildan' → drawer → toggle customize → add Sport Grey" |
-| V5 | Customer preferences | "Customer > Preferences: set ACME Corp's colors, brands, garments" |
-| V6 | Inheritance engine + removal dialog | "Remove global color → '5 customers affected' → choose targets" |
+| #   | Slice                               | Demo                                                                   |
+| --- | ----------------------------------- | ---------------------------------------------------------------------- |
+| V1  | Swatch filter + honest cards        | "Click color swatches to filter; cards show favorites + count"         |
+| V2  | Drawer favorites + scroll fix       | "Open drawer: favorites at top, full palette below, scrolls correctly" |
+| V3  | Global favorites page               | "Settings > Colors: tap swatches to set shop-wide favorites"           |
+| V4  | Brand detail drawer                 | "Click 'Gildan' → drawer → toggle customize → add Sport Grey"          |
+| V5  | Customer preferences                | "Customer > Preferences: set ACME Corp's colors, brands, garments"     |
+| V6  | Inheritance engine + removal dialog | "Remove global color → '5 customers affected' → choose targets"        |
 
 ### Parallelization Windows
 
@@ -88,6 +88,7 @@ Root cause: nested `ScrollArea` components — the drawer has one and the picker
 ## Phase 2 Extensions
 
 7 code affordances planned for Phase 2 backend:
+
 - Server actions for all toggle operations (N4, N8, N13)
 - DAL function for hierarchy resolution (N19)
 - Batch update for propagation (N22)

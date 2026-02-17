@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { Pencil, Copy, Send, Receipt, Hammer } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { EmailPreviewModal } from "./EmailPreviewModal";
-import type { Quote } from "@domain/entities/quote";
-import type { Customer } from "@domain/entities/customer";
+import { useState } from 'react'
+import Link from 'next/link'
+import { Pencil, Copy, Send, Receipt, Hammer } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { EmailPreviewModal } from './EmailPreviewModal'
+import type { Quote } from '@domain/entities/quote'
+import type { Customer } from '@domain/entities/customer'
 
-interface QuoteActionsProps {
-  quote: Quote;
-  customer: Customer | null;
+type QuoteActionsProps = {
+  quote: Quote
+  customer: Customer | null
 }
 
 export function QuoteActions({ quote, customer }: QuoteActionsProps) {
-  const [emailOpen, setEmailOpen] = useState(false);
-  const isDraft = quote.status === "draft";
-  const isAccepted = quote.status === "accepted";
+  const [emailOpen, setEmailOpen] = useState(false)
+  const isDraft = quote.status === 'draft'
+  const isAccepted = quote.status === 'accepted'
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -51,11 +51,7 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
         </Link>
       </Button>
       {isDraft && customer && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setEmailOpen(true)}
-        >
+        <Button variant="outline" size="sm" onClick={() => setEmailOpen(true)}>
           <Send className="size-4" />
           Send
         </Button>
@@ -77,5 +73,5 @@ export function QuoteActions({ quote, customer }: QuoteActionsProps) {
         />
       )}
     </div>
-  );
+  )
 }

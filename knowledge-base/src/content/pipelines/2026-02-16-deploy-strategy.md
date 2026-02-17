@@ -1,6 +1,6 @@
 ---
-title: "Two-Branch Vercel Deployment Model"
-subtitle: "Branch-gated deployments to fix Hobby plan rate limiting — main (preview) + production (live)"
+title: 'Two-Branch Vercel Deployment Model'
+subtitle: 'Branch-gated deployments to fix Hobby plan rate limiting — main (preview) + production (live)'
 date: 2026-02-16
 phase: 1
 pipelineName: deploy-strategy
@@ -9,9 +9,9 @@ products: []
 tools: [ci-pipeline]
 stage: build
 tags: [build, decision]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0216-deploy-strategy"
-pr: "https://github.com/cmbays/print-4ink/pull/314"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0216-deploy-strategy'
+pr: 'https://github.com/cmbays/print-4ink/pull/314'
 status: complete
 ---
 
@@ -32,11 +32,11 @@ feature/session branches ──PR──→ main ──merge──→ production
                            (Gary demo URL)      (4ink live domain)
 ```
 
-| Branch | Vercel Role | Build Trigger | Purpose |
-|--------|-------------|---------------|---------|
-| `main` | Preview | Every merge from PR | Integration + stakeholder review |
-| `production` | Production | Manual merge from `main` | Live app for end users |
-| Feature/session | Skipped | Never (via `ignoreCommand`) | Development work |
+| Branch          | Vercel Role | Build Trigger               | Purpose                          |
+| --------------- | ----------- | --------------------------- | -------------------------------- |
+| `main`          | Preview     | Every merge from PR         | Integration + stakeholder review |
+| `production`    | Production  | Manual merge from `main`    | Live app for end users           |
+| Feature/session | Skipped     | Never (via `ignoreCommand`) | Development work                 |
 
 ### Why Two Branches (Not Three)
 
@@ -44,12 +44,12 @@ A three-branch model (`dev` / `staging` / `production`) is industry standard at 
 
 ### Alternatives Considered
 
-| Alternative | Assessment |
-|---|---|
-| Upgrade to Vercel Pro ($20/mo) | Removes limits but adds recurring cost for a Phase 1 mockup. Premature. |
-| `ignoreCommand` without `production` branch | Solves rate limiting but loses preview/production separation. |
-| Move off Vercel | Over-engineering. Vercel is the right tool for Next.js. |
-| Manual Vercel deploys (CLI only) | Breaks GitOps model. Fragile. |
+| Alternative                                 | Assessment                                                              |
+| ------------------------------------------- | ----------------------------------------------------------------------- |
+| Upgrade to Vercel Pro ($20/mo)              | Removes limits but adds recurring cost for a Phase 1 mockup. Premature. |
+| `ignoreCommand` without `production` branch | Solves rate limiting but loses preview/production separation.           |
+| Move off Vercel                             | Over-engineering. Vercel is the right tool for Next.js.                 |
+| Manual Vercel deploys (CLI only)            | Breaks GitOps model. Fragile.                                           |
 
 ## What Was Built
 
@@ -103,6 +103,7 @@ These cannot be automated via code:
 ## Key Design Decision: `ignoreCommand` Semantics
 
 Vercel's `ignoreCommand` uses counterintuitive exit codes:
+
 - **Exit 0** = skip the build ("ignore this commit")
 - **Exit 1** = proceed with the build ("do NOT ignore")
 

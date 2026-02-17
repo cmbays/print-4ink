@@ -1,22 +1,15 @@
-"use client";
+'use client'
 
-import type { MarginBreakdown } from "@domain/entities/price-matrix";
-import { formatCurrency, formatPercent } from "@domain/services/pricing.service";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
+import type { MarginBreakdown } from '@domain/entities/price-matrix'
+import { formatCurrency, formatPercent } from '@domain/services/pricing.service'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
 
-interface CostBreakdownTooltipProps {
-  breakdown: MarginBreakdown;
-  children: React.ReactNode;
+type CostBreakdownTooltipProps = {
+  breakdown: MarginBreakdown
+  children: React.ReactNode
 }
 
-export function CostBreakdownTooltip({
-  breakdown,
-  children,
-}: CostBreakdownTooltipProps) {
+export function CostBreakdownTooltip({ breakdown, children }: CostBreakdownTooltipProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
@@ -25,9 +18,7 @@ export function CostBreakdownTooltip({
           {/* Revenue */}
           <div className="flex items-center justify-between gap-6">
             <span className="text-muted-foreground">Revenue:</span>
-            <span className="text-foreground">
-              {formatCurrency(breakdown.revenue)}
-            </span>
+            <span className="text-foreground">{formatCurrency(breakdown.revenue)}</span>
           </div>
 
           {/* Separator */}
@@ -36,28 +27,20 @@ export function CostBreakdownTooltip({
           {/* Costs */}
           <div className="flex items-center justify-between gap-6">
             <span className="text-muted-foreground">Garment:</span>
-            <span className="text-foreground">
-              -{formatCurrency(breakdown.garmentCost)}
-            </span>
+            <span className="text-foreground">-{formatCurrency(breakdown.garmentCost)}</span>
           </div>
           <div className="flex items-center justify-between gap-6">
             <span className="text-muted-foreground">Ink:</span>
-            <span className="text-foreground">
-              -{formatCurrency(breakdown.inkCost)}
-            </span>
+            <span className="text-foreground">-{formatCurrency(breakdown.inkCost)}</span>
           </div>
           <div className="flex items-center justify-between gap-6">
             <span className="text-muted-foreground">Overhead:</span>
-            <span className="text-foreground">
-              -{formatCurrency(breakdown.overheadCost)}
-            </span>
+            <span className="text-foreground">-{formatCurrency(breakdown.overheadCost)}</span>
           </div>
           {breakdown.laborCost !== undefined && breakdown.laborCost > 0 && (
             <div className="flex items-center justify-between gap-6">
               <span className="text-muted-foreground">Labor:</span>
-              <span className="text-foreground">
-                -{formatCurrency(breakdown.laborCost)}
-              </span>
+              <span className="text-foreground">-{formatCurrency(breakdown.laborCost)}</span>
             </div>
           )}
 
@@ -80,5 +63,5 @@ export function CostBreakdownTooltip({
         </div>
       </TooltipContent>
     </Tooltip>
-  );
+  )
 }

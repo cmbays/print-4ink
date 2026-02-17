@@ -14,18 +14,19 @@ The KB has a single flat collection (`sessions`) with 53 docs. Everything is a "
 
 ### Four Content Collections
 
-| Collection | Purpose | Temporal Model |
-|---|---|---|
+| Collection    | Purpose                                         | Temporal Model               |
+| ------------- | ----------------------------------------------- | ---------------------------- |
 | **pipelines** | Build process history (renamed from `sessions`) | Historical — ordered by date |
-| **products** | App feature suite documentation | Living — kept current |
-| **tools** | Dev infrastructure documentation | Living — kept current |
-| **strategy** | Strategic planning & cooldowns | Historical — ordered by date |
+| **products**  | App feature suite documentation                 | Living — kept current        |
+| **tools**     | Dev infrastructure documentation                | Living — kept current        |
+| **strategy**  | Strategic planning & cooldowns                  | Historical — ordered by date |
 
 ### Config Files (DRY Enums)
 
 All collection schemas derive enums from canonical JSON config files. No hardcoded lists.
 
 **`config/products.json`** — canonical app feature suites:
+
 ```json
 [
   { "slug": "dashboard", "label": "Dashboard", "route": "/dashboard" },
@@ -40,6 +41,7 @@ All collection schemas derive enums from canonical JSON config files. No hardcod
 ```
 
 **`config/tools.json`** — dev infrastructure tools:
+
 ```json
 [
   { "slug": "work-orchestrator", "label": "Work Orchestrator" },
@@ -51,6 +53,7 @@ All collection schemas derive enums from canonical JSON config files. No hardcod
 ```
 
 **`config/workflows.json`** — pipeline types with stage sequences:
+
 ```json
 [
   {
@@ -83,23 +86,24 @@ Note: `stages.json` needs `shape` and `wrap-up` added as part of this work, sinc
 #### Pipelines (renamed from sessions)
 
 ```yaml
-title: string                         # required
-subtitle: string                      # required
-date: date                            # required
-phase: 1-3                            # required
-pipeline: enum(verticals.json slugs)  # required — replaces "vertical"
-pipelineType: enum(workflows.json)    # required — vertical|polish|horizontal|bug-fix
-products: [enum(products.json)]       # optional — which products this touches
-tools: [enum(tools.json)]             # optional — which tools this touches
-stage: enum(stages.json)              # required
-tags: [enum(tags.json)]               # required
-sessionId: string                     # optional
-branch: string                        # optional
-pr: string                            # optional
-status: complete|in-progress|superseded  # default: complete
+title: string # required
+subtitle: string # required
+date: date # required
+phase: 1-3 # required
+pipeline: enum(verticals.json slugs) # required — replaces "vertical"
+pipelineType: enum(workflows.json) # required — vertical|polish|horizontal|bug-fix
+products: [enum(products.json)] # optional — which products this touches
+tools: [enum(tools.json)] # optional — which tools this touches
+stage: enum(stages.json) # required
+tags: [enum(tags.json)] # required
+sessionId: string # optional
+branch: string # optional
+pr: string # optional
+status: complete|in-progress|superseded # default: complete
 ```
 
 Changes from current session schema:
+
 - `vertical` → `pipeline` (same enum source for now)
 - `verticalSecondary` → removed (replaced by `products` + `tools` arrays)
 - NEW: `pipelineType` — classifies the workflow type
@@ -109,15 +113,16 @@ Changes from current session schema:
 #### Products
 
 ```yaml
-title: string                         # required
-subtitle: string                      # required
-product: enum(products.json)          # required — canonical slug
-docType: overview|history|decisions|reference  # required
-lastUpdated: date                     # required
-status: current|draft|deprecated      # default: current
+title: string # required
+subtitle: string # required
+product: enum(products.json) # required — canonical slug
+docType: overview|history|decisions|reference # required
+lastUpdated: date # required
+status: current|draft|deprecated # default: current
 ```
 
 Doc types:
+
 - `overview` — living landing page (current state, how it works)
 - `history` — changelog linking to pipeline docs + PRs
 - `decisions` — timeline of key decisions with links to source docs
@@ -126,12 +131,12 @@ Doc types:
 #### Tools
 
 ```yaml
-title: string                         # required
-subtitle: string                      # required
-tool: enum(tools.json)                # required — canonical slug
-docType: overview|history|decisions   # required
-lastUpdated: date                     # required
-status: current|draft|deprecated      # default: current
+title: string # required
+subtitle: string # required
+tool: enum(tools.json) # required — canonical slug
+docType: overview|history|decisions # required
+lastUpdated: date # required
+status: current|draft|deprecated # default: current
 ```
 
 Same pattern as products but without `reference` (tools are more self-contained).
@@ -139,18 +144,18 @@ Same pattern as products but without `reference` (tools are more self-contained)
 #### Strategy
 
 ```yaml
-title: string                         # required
-subtitle: string                      # required
-date: date                            # required
-docType: cooldown|planning            # required — extensible
-phase: number                         # which phase this covers
-pipelinesCompleted: [string]          # pipelines cooling down from
-pipelinesLaunched: [string]           # pipelines decided for next cycle
-tags: [enum(tags.json)]              # required
-sessionId: string                    # optional
-branch: string                       # optional
-pr: string                           # optional
-status: complete|in-progress         # default: complete
+title: string # required
+subtitle: string # required
+date: date # required
+docType: cooldown|planning # required — extensible
+phase: number # which phase this covers
+pipelinesCompleted: [string] # pipelines cooling down from
+pipelinesLaunched: [string] # pipelines decided for next cycle
+tags: [enum(tags.json)] # required
+sessionId: string # optional
+branch: string # optional
+pr: string # optional
+status: complete|in-progress # default: complete
 ```
 
 ### Directory Structure
@@ -202,24 +207,25 @@ Linking works bidirectionally:
 
 ### Routing
 
-| Route | Purpose |
-|---|---|
-| `/` | Dashboard — overview of all collections |
-| `/pipelines/[...slug]` | Pipeline doc detail |
-| `/pipelines/[pipeline]` | Browse pipeline docs by pipeline name |
-| `/pipelines/[pipeline]/[stage]` | Filter by pipeline name + stage |
-| `/products` | Products index grid |
-| `/products/[product]` | Product detail (overview + history + decisions + linked pipelines) |
-| `/tools` | Tools index grid |
-| `/tools/[tool]` | Tool detail (overview + history + decisions + linked pipelines) |
-| `/strategy` | Strategy/cooldowns index |
-| `/strategy/[...slug]` | Strategy doc detail |
-| `/decisions` | Aggregate decision timeline across all products/tools |
-| `/gary-tracker` | Gary questions (unchanged) |
+| Route                           | Purpose                                                            |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `/`                             | Dashboard — overview of all collections                            |
+| `/pipelines/[...slug]`          | Pipeline doc detail                                                |
+| `/pipelines/[pipeline]`         | Browse pipeline docs by pipeline name                              |
+| `/pipelines/[pipeline]/[stage]` | Filter by pipeline name + stage                                    |
+| `/products`                     | Products index grid                                                |
+| `/products/[product]`           | Product detail (overview + history + decisions + linked pipelines) |
+| `/tools`                        | Tools index grid                                                   |
+| `/tools/[tool]`                 | Tool detail (overview + history + decisions + linked pipelines)    |
+| `/strategy`                     | Strategy/cooldowns index                                           |
+| `/strategy/[...slug]`           | Strategy doc detail                                                |
+| `/decisions`                    | Aggregate decision timeline across all products/tools              |
+| `/gary-tracker`                 | Gary questions (unchanged)                                         |
 
 ### Migration Plan
 
 **Pipeline docs (53 existing sessions):**
+
 1. Move `content/sessions/` → `content/pipelines/`
 2. Update all frontmatter: `vertical` → `pipeline`, add `pipelineType` + `products` + `tools`
 3. Remove `verticalSecondary` field
@@ -227,20 +233,20 @@ Linking works bidirectionally:
 
 **Pipeline classification:**
 
-| Current `vertical` | `pipelineType` | `products` | `tools` |
-|---|---|---|---|
-| quoting | vertical | [quotes] | [] |
-| customer-management | vertical | [customers] | [] |
-| invoicing | vertical | [invoices] | [] |
-| price-matrix | vertical | [pricing] | [] |
-| jobs | vertical | [jobs] | [] |
-| screen-room | vertical | [screens] | [] |
-| garments | vertical | [garments] | [] |
-| dashboard | vertical | [dashboard] | [] |
-| mobile-optimization | horizontal | [dashboard, quotes, customers, invoices, jobs, garments, pricing] | [] |
-| dtf-gang-sheet | vertical | [garments] | [] |
-| devx | horizontal | [] | [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline] |
-| meta | horizontal | [] | [knowledge-base] |
+| Current `vertical`  | `pipelineType` | `products`                                                        | `tools`                                                                          |
+| ------------------- | -------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| quoting             | vertical       | [quotes]                                                          | []                                                                               |
+| customer-management | vertical       | [customers]                                                       | []                                                                               |
+| invoicing           | vertical       | [invoices]                                                        | []                                                                               |
+| price-matrix        | vertical       | [pricing]                                                         | []                                                                               |
+| jobs                | vertical       | [jobs]                                                            | []                                                                               |
+| screen-room         | vertical       | [screens]                                                         | []                                                                               |
+| garments            | vertical       | [garments]                                                        | []                                                                               |
+| dashboard           | vertical       | [dashboard]                                                       | []                                                                               |
+| mobile-optimization | horizontal     | [dashboard, quotes, customers, invoices, jobs, garments, pricing] | []                                                                               |
+| dtf-gang-sheet      | vertical       | [garments]                                                        | []                                                                               |
+| devx                | horizontal     | []                                                                | [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline] |
+| meta                | horizontal     | []                                                                | [knowledge-base]                                                                 |
 
 **Strategy docs**: Migrate `2026-02-14-phase1-cooldown.md` from pipelines to strategy collection.
 
@@ -253,6 +259,7 @@ Linking works bidirectionally:
 ### Workflow Integration (Future)
 
 Pipeline wrap-up phase should:
+
 1. Create pipeline history doc in `content/pipelines/` (new schema)
 2. Update relevant product `overview.md` if product state changed
 3. Update relevant tool `overview.md` if tool was modified

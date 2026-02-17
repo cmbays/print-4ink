@@ -1,6 +1,6 @@
 ---
-title: "Centralize Project Configs & Deduplicate Code"
-subtitle: "Consolidated verticals, stages, and tags from 7+ locations into 3 canonical JSON config files. Fixed 4 code duplication issues."
+title: 'Centralize Project Configs & Deduplicate Code'
+subtitle: 'Consolidated verticals, stages, and tags from 7+ locations into 3 canonical JSON config files. Fixed 4 code duplication issues.'
 date: 2026-02-15
 phase: 1
 pipelineName: devx
@@ -9,9 +9,9 @@ products: []
 tools: [work-orchestrator, skills-framework, agent-system, knowledge-base, ci-pipeline]
 stage: build
 tags: [build, decision]
-sessionId: "48e010ca-a08f-4c6e-b64b-63bcfc798f5b"
-branch: "session/0215-config-audit"
-pr: "https://github.com/cmbays/print-4ink/pull/195"
+sessionId: '48e010ca-a08f-4c6e-b64b-63bcfc798f5b'
+branch: 'session/0215-config-audit'
+pr: 'https://github.com/cmbays/print-4ink/pull/195'
 status: complete
 ---
 
@@ -25,6 +25,7 @@ Shared concepts (verticals, stages, tags) were duplicated across 7+ locations in
 - `CLAUDE.md` — inline vertical/stage/tag tables
 
 These had already drifted out of sync:
+
 - `dtf-gang-sheet` and `devx` were missing from 4 KB UI files
 - `mobile-optimization` was missing from the stage detail page
 - `polish` stage was missing from VerticalHealth component
@@ -47,6 +48,7 @@ JSON was chosen over TypeScript because these files are consumed across project 
 ### Consumer Migrations
 
 9 KB files migrated to import from config:
+
 - `content.config.ts` — Zod enums derived from JSON imports using `as [string, ...string[]]` tuple assertion
 - `Sidebar.astro`, `DocCard.astro`, `VerticalHealth.astro` — vertical/stage/tag label maps from config
 - `index.astro`, `[vertical].astro`, `[stage].astro` — pipeline stages and static paths from config
@@ -55,12 +57,12 @@ JSON was chosen over TypeScript because these files are consumed across project 
 
 ### Code Dedup Fixes
 
-| File | Fix |
-|------|-----|
-| `sidebar.tsx` | Imports `PRIMARY_NAV`/`SECONDARY_NAV` from `navigation.ts`, uses Map lookup with sidebar-specific ordering |
-| `StatusBadge.tsx` | Imports `QUOTE_STATUS_BADGE_COLORS` from `lib/constants.ts` |
-| `BoardFilterBar.tsx` | Imports `SERVICE_TYPE_ICONS` from `ServiceTypeBadge` |
-| `SetupWizard.tsx` | Imports `ServiceType` from `@/lib/schemas/quote` |
+| File                 | Fix                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `sidebar.tsx`        | Imports `PRIMARY_NAV`/`SECONDARY_NAV` from `navigation.ts`, uses Map lookup with sidebar-specific ordering |
+| `StatusBadge.tsx`    | Imports `QUOTE_STATUS_BADGE_COLORS` from `lib/constants.ts`                                                |
+| `BoardFilterBar.tsx` | Imports `SERVICE_TYPE_ICONS` from `ServiceTypeBadge`                                                       |
+| `SetupWizard.tsx`    | Imports `ServiceType` from `@/lib/schemas/quote`                                                           |
 
 ## Key Decisions
 
@@ -74,11 +76,11 @@ JSON was chosen over TypeScript because these files are consumed across project 
 
 3 agents ran in parallel after implementation:
 
-| Agent | Findings |
-|-------|----------|
-| **Code reviewer** (CodeRabbit) | Found 2 missed consumers (`DocCard.astro`, `VerticalHealth.astro` still hardcoded). Fixed. |
-| **Build verifier** | All green: tsc 0 errors, 529 tests, Next.js build, KB 101 pages |
-| **Silent failure hunter** | 3 actionable findings: work.sh error handling (CRITICAL), sidebar non-null assertions (HIGH), cooldown filtered from Zod (HIGH). All fixed. |
+| Agent                          | Findings                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Code reviewer** (CodeRabbit) | Found 2 missed consumers (`DocCard.astro`, `VerticalHealth.astro` still hardcoded). Fixed.                                                  |
+| **Build verifier**             | All green: tsc 0 errors, 529 tests, Next.js build, KB 101 pages                                                                             |
+| **Silent failure hunter**      | 3 actionable findings: work.sh error handling (CRITICAL), sidebar non-null assertions (HIGH), cooldown filtered from Zod (HIGH). All fixed. |
 
 The review agents caught issues the initial implementation missed. The DocCard component was missing 3 verticals (`dtf-gang-sheet`, `devx`, `mobile-optimization`) and the VerticalHealth component was missing 2 verticals plus the `polish` stage.
 

@@ -1,6 +1,6 @@
 ---
-title: "Colors — Interview & Design Decisions"
-subtitle: "User interview shaping the color preference system: hierarchy, inheritance, UX patterns"
+title: 'Colors — Interview & Design Decisions'
+subtitle: 'User interview shaping the color preference system: hierarchy, inheritance, UX patterns'
 date: 2026-02-15
 phase: 1
 pipelineName: colors
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: interview
 tags: [decision, plan]
-sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
-branch: "session/0215-color-prefs"
+sessionId: '08cc4e02-a47a-42b3-b9c9-d47e392c498b'
+branch: 'session/0215-color-prefs'
 status: complete
 ---
 
@@ -22,6 +22,7 @@ Interactive brainstorming session with the shop owner to design a hierarchical c
 ## Origin: Issue #169
 
 The original issue identified two problems:
+
 1. **Toolbar color filter** uses a text-based dropdown instead of visual color swatches
 2. **Garment card colors** show only 8 of N available colors, which is misleading
 
@@ -31,11 +32,11 @@ During the interview, these surface-level UX issues revealed a deeper need: stru
 
 ### D1: Three-Level Favoriting Hierarchy
 
-| Level | Purpose | Example |
-|---|---|---|
-| **Global** | Shop's go-to colors regardless of supplier | "We do a lot of Black and Navy" |
-| **Supplier/Brand** | Supplier-specific palette preferences | "For Gildan, we love Sport Grey" |
-| **Customer** | Customer-specific color preferences | "ACME Corp always wants Royal Blue" |
+| Level              | Purpose                                    | Example                             |
+| ------------------ | ------------------------------------------ | ----------------------------------- |
+| **Global**         | Shop's go-to colors regardless of supplier | "We do a lot of Black and Navy"     |
+| **Supplier/Brand** | Supplier-specific palette preferences      | "For Gildan, we love Sport Grey"    |
+| **Customer**       | Customer-specific color preferences        | "ACME Corp always wants Royal Blue" |
 
 **Rationale**: Suppliers have consistent color palettes across their garment lines, making supplier-level the natural grouping. Global covers universal staples (Black, White, Navy). Customer covers per-account preferences.
 
@@ -44,6 +45,7 @@ During the interview, these surface-level UX issues revealed a deeper need: stru
 Each entity owns its own `favoriteColorIds: string[]`. No centralized preference store.
 
 **Alternatives considered**:
+
 - Centralized preference store with scoped entries — rejected as over-abstract
 - Cascading profiles with override (CSS-style) — rejected as too complex to debug
 
@@ -60,6 +62,7 @@ Core colors (Black, White, Navy) are universal — "Black is Black" regardless o
 Cards show only favorited colors (not first 8 of N) with a "12 colors available" count. Tap to open detail drawer for full palette.
 
 **Alternatives considered**:
+
 - All colors in scrollable row — rejected as too busy
 - Color family dots (one per family) — rejected as too abstract
 
@@ -80,6 +83,7 @@ Progressive disclosure (expandable section) shows the inheritance chain only whe
 Each level below global gets a toggle: "Use [Parent] colors" / "Customize colors." Simple binary choice that non-technical users understand.
 
 **Alternatives considered**:
+
 - Per-color star overlays (filled/dimmed) — rejected as confusing (dimmed star looks like "click to favorite")
 - No toggle, always editable — rejected as unclear whether changes affect this level or parent
 
@@ -92,6 +96,7 @@ No star overlays on individual swatches. The Favorites section at the top of the
 ### D9: Selective Propagation on Removal
 
 When removing a global color, the confirmation offers:
+
 - **Remove everywhere** (simple path)
 - **Remove from global only** (safe path)
 - **Customize selections** (progressive disclosure — checkboxes for each supplier/customer)
@@ -106,11 +111,11 @@ Default to flat grid (Gary's preference, matches Sammar-style layout where neigh
 
 ### D11: Where Each Level Lives in the UI
 
-| Level | Location |
-|---|---|
-| Global | Settings > Colors (new screen, like Settings > Pricing) |
-| Supplier | Garments section, brand/supplier view |
-| Customer | Customer detail, Preferences tab |
+| Level    | Location                                                |
+| -------- | ------------------------------------------------------- |
+| Global   | Settings > Colors (new screen, like Settings > Pricing) |
+| Supplier | Garments section, brand/supplier view                   |
+| Customer | Customer detail, Preferences tab                        |
 
 **Principle**: "If you're setting up a supplier, you go to the supplier tab. If it's global, it makes sense for it to be in settings. If it's customer level, you set it up when viewing a customer."
 
@@ -128,13 +133,13 @@ Customer preferences include favorite colors, favorite brands, and favorite garm
 
 ## Build Phases
 
-| Phase | Scope | Ticket |
-|---|---|---|
-| 1 | UX fixes: toolbar swatch picker, card favorites, drawer scroll | From #169 |
-| 2 | Global color favorites: Settings > Colors screen | New ticket |
-| 3 | Supplier/brand favorites: inherit/customize toggle, progressive disclosure | New ticket |
-| 4 | Customer preferences: inherit/customize, selective propagation, global config | New ticket |
-| 5 | Polish: impact previews, per-color reset, notification system | New ticket |
+| Phase | Scope                                                                         | Ticket     |
+| ----- | ----------------------------------------------------------------------------- | ---------- |
+| 1     | UX fixes: toolbar swatch picker, card favorites, drawer scroll                | From #169  |
+| 2     | Global color favorites: Settings > Colors screen                              | New ticket |
+| 3     | Supplier/brand favorites: inherit/customize toggle, progressive disclosure    | New ticket |
+| 4     | Customer preferences: inherit/customize, selective propagation, global config | New ticket |
+| 5     | Polish: impact previews, per-color reset, notification system                 | New ticket |
 
 ## Artifacts
 

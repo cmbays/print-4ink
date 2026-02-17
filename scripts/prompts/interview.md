@@ -28,6 +28,7 @@ Conduct a structured requirements interview with the user (shop owner) to define
 ## Output
 
 Produce a KB session doc at `{KB_DIR}/` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=interview, tags=[decision, plan]
 - Interview transcript summary (structured, not verbatim)
 - Requirements matrix (feature, priority, complexity, notes)

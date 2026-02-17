@@ -52,16 +52,16 @@ All sessions run concurrently. No mutual dependencies. Produces GitHub API state
 1. Audit current labels: `gh label list --repo cmbays/print-4ink --json name`
 2. Re-label affected issues (N1) — for each ad-hoc label, find issues and replace:
 
-   | Ad-Hoc Label | Replacement | Command |
-   |--------------|-------------|---------|
-   | `enhancement` | `type/feature` | `gh issue list -l enhancement --json number \| jq -r '.[].number'` then per issue: `gh issue edit N --remove-label enhancement --add-label type/feature` |
-   | `meta` | `type/tooling` | Same pattern |
-   | `devx` | `vertical/devx` | Same pattern |
-   | `refactor` | `type/refactor` | Just delete (replacement already exists) |
-   | `data-quality` | `type/tech-debt` | Same pattern |
-   | `knowledge-base` | `vertical/devx` | Same pattern |
-   | `polish` | `type/refactor` | Same pattern |
-   | `accessibility` | `type/tech-debt` | Same pattern |
+   | Ad-Hoc Label     | Replacement      | Command                                                                                                                                                  |
+   | ---------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `enhancement`    | `type/feature`   | `gh issue list -l enhancement --json number \| jq -r '.[].number'` then per issue: `gh issue edit N --remove-label enhancement --add-label type/feature` |
+   | `meta`           | `type/tooling`   | Same pattern                                                                                                                                             |
+   | `devx`           | `vertical/devx`  | Same pattern                                                                                                                                             |
+   | `refactor`       | `type/refactor`  | Just delete (replacement already exists)                                                                                                                 |
+   | `data-quality`   | `type/tech-debt` | Same pattern                                                                                                                                             |
+   | `knowledge-base` | `vertical/devx`  | Same pattern                                                                                                                                             |
+   | `polish`         | `type/refactor`  | Same pattern                                                                                                                                             |
+   | `accessibility`  | `type/tech-debt` | Same pattern                                                                                                                                             |
 
 3. Delete 8 ad-hoc labels (N2): `gh label delete <name> --yes` for each
 4. Delete 4 unused defaults (N3): `documentation`, `good first issue`, `help wanted`, `question`
@@ -84,34 +84,36 @@ All sessions run concurrently. No mutual dependencies. Produces GitHub API state
 
 1. Verify scope: `gh auth status` — confirm `project` in scopes
 2. Create project (N5):
+
    ```bash
    gh project create --owner @me --title "Screen Print Pro" --format json
    ```
+
    Record the project number from output.
 
 3. Create 8 custom fields (N6) — each via `gh project field-create`:
 
-   | Field | Type | Options |
-   |-------|------|---------|
-   | Status | SINGLE_SELECT (built-in) | Triage, Backlog, Ready, In Progress, In Review, Done |
-   | Priority | SINGLE_SELECT | Urgent, High, Normal, Low |
-   | Product | SINGLE_SELECT | Dashboard, Quotes, Customers, Invoices, Jobs, Garments, Screens, Pricing |
-   | Tool | SINGLE_SELECT | Work Orchestrator, Skills Framework, Agent System, Knowledge Base, CI Pipeline, PM System |
-   | Pipeline ID | TEXT | — |
-   | Pipeline Stage | SINGLE_SELECT | Research, Interview, Shaping, Breadboarding, Impl Planning, Build, Review, Wrap-up |
-   | Effort | SINGLE_SELECT | Trivial, Small, Medium, Large |
-   | Phase | SINGLE_SELECT | Phase 1, Phase 2, Phase 3 |
+   | Field          | Type                     | Options                                                                                   |
+   | -------------- | ------------------------ | ----------------------------------------------------------------------------------------- |
+   | Status         | SINGLE_SELECT (built-in) | Triage, Backlog, Ready, In Progress, In Review, Done                                      |
+   | Priority       | SINGLE_SELECT            | Urgent, High, Normal, Low                                                                 |
+   | Product        | SINGLE_SELECT            | Dashboard, Quotes, Customers, Invoices, Jobs, Garments, Screens, Pricing                  |
+   | Tool           | SINGLE_SELECT            | Work Orchestrator, Skills Framework, Agent System, Knowledge Base, CI Pipeline, PM System |
+   | Pipeline ID    | TEXT                     | —                                                                                         |
+   | Pipeline Stage | SINGLE_SELECT            | Research, Interview, Shaping, Breadboarding, Impl Planning, Build, Review, Wrap-up        |
+   | Effort         | SINGLE_SELECT            | Trivial, Small, Medium, Large                                                             |
+   | Phase          | SINGLE_SELECT            | Phase 1, Phase 2, Phase 3                                                                 |
 
    Source values from `config/products.json`, `config/tools.json`, `config/stages.json`.
 
 4. Configure 4 views (N7) — via web UI or GraphQL:
 
-   | View | Layout | Group By | Filter |
-   |------|--------|----------|--------|
-   | Board | Board | Status | `is:open` |
-   | By Product | Table | Product | `is:open` |
-   | Pipeline Tracker | Table | Pipeline Stage | Pipeline ID is not empty |
-   | Roadmap | Roadmap | — | `is:open` |
+   | View             | Layout  | Group By       | Filter                   |
+   | ---------------- | ------- | -------------- | ------------------------ |
+   | Board            | Board   | Status         | `is:open`                |
+   | By Product       | Table   | Product        | `is:open`                |
+   | Pipeline Tracker | Table   | Pipeline Stage | Pipeline ID is not empty |
+   | Roadmap          | Roadmap | —              | `is:open`                |
 
 5. Record project URL — needed by Task 2.2
 
@@ -128,6 +130,7 @@ All sessions run concurrently. No mutual dependencies. Produces GitHub API state
 **Steps:**
 
 1. Create milestone (N8):
+
    ```bash
    gh api repos/cmbays/print-4ink/milestones \
      -f title="D-Day" \
@@ -155,10 +158,12 @@ All sessions run concurrently. No mutual dependencies. Produces GitHub API state
 **Steps:**
 
 1. Scan all open issues for checkbox patterns (N10):
+
    ```bash
    gh issue list --state open --json number,body --limit 200 | \
      jq -r '.[] | select(.body != null) | select(.body | test("- \\[[ x]\\] #[0-9]+")) | .number'
    ```
+
    Known tracking issues: #166, #192, #216 (may discover more).
 
 2. For each tracking issue, extract parent-child pairs:
@@ -166,11 +171,13 @@ All sessions run concurrently. No mutual dependencies. Produces GitHub API state
    - Each `#N` becomes a child of the tracking issue
 
 3. Get node IDs for all involved issues:
+
    ```bash
    gh issue view <NUMBER> --json id --jq '.id'
    ```
 
 4. Create sub-issue relationships (N11):
+
    ```bash
    gh api graphql -f query='
      mutation {
@@ -201,6 +208,7 @@ All sessions run concurrently after Wave 1 gate (all 4 Wave 1 tasks complete). E
 **Size:** Medium
 **Depends on:** Wave 1 complete (label names finalized by Task 1.1)
 **Files:**
+
 - `.github/ISSUE_TEMPLATE/feature-request.yml` (NEW)
 - `.github/ISSUE_TEMPLATE/bug-report.yml` (NEW)
 - `.github/ISSUE_TEMPLATE/research-task.yml` (NEW)
@@ -248,6 +256,7 @@ All sessions run concurrently after Wave 1 gate (all 4 Wave 1 tasks complete). E
 **Depends on:** Wave 1 complete (project URL from Task 1.2)
 **Human gate:** Human must provide PROJECT_PAT value (Prerequisite P2)
 **Files:**
+
 - `.github/workflows/auto-project.yml` (NEW)
 
 **Steps:**
@@ -287,33 +296,36 @@ All sessions run concurrently after Wave 1 gate (all 4 Wave 1 tasks complete). E
 **Size:** Small
 **Depends on:** Wave 1 complete (label names finalized by Task 1.1)
 **Files:**
+
 - `.github/labeler.yml` (NEW)
 - `.github/workflows/labeler.yml` (NEW)
 
 **Steps:**
 
 1. Write `.github/labeler.yml` (N20) — `vertical/*` labels only (Decision D7):
+
    ```yaml
    'vertical/quoting':
      - changed-files:
-       - any-glob-to-any-file: 'app/(dashboard)/quotes/**'
+         - any-glob-to-any-file: 'app/(dashboard)/quotes/**'
    'vertical/jobs':
      - changed-files:
-       - any-glob-to-any-file: 'app/(dashboard)/jobs/**'
+         - any-glob-to-any-file: 'app/(dashboard)/jobs/**'
    'vertical/garments':
      - changed-files:
-       - any-glob-to-any-file: 'app/(dashboard)/garments/**'
+         - any-glob-to-any-file: 'app/(dashboard)/garments/**'
    'vertical/price-matrix':
      - changed-files:
-       - any-glob-to-any-file: 'app/(dashboard)/settings/pricing/**'
+         - any-glob-to-any-file: 'app/(dashboard)/settings/pricing/**'
    'vertical/devx':
      - changed-files:
-       - any-glob-to-any-file:
-         - 'knowledge-base/**'
-         - 'scripts/**'
-         - 'config/**'
-         - '.github/**'
+         - any-glob-to-any-file:
+             - 'knowledge-base/**'
+             - 'scripts/**'
+             - 'config/**'
+             - '.github/**'
    ```
+
    Cross-cutting paths (`lib/schemas/**`, `docs/**`, `components/ui/**`) left unmapped — not every PR needs an auto-label.
 
 2. Write `.github/workflows/labeler.yml` (N21):
@@ -345,6 +357,7 @@ All sessions run concurrently after Wave 1 gate (all 4 Wave 1 tasks complete). E
 **Size:** Medium
 **Depends on:** Wave 1 complete (board + milestones for queries)
 **Files:**
+
 - `scripts/work.sh` (MODIFY — add dispatcher case + new function)
 - `.gitignore` (MODIFY — add PROGRESS.md)
 - `config/tools.json` (MODIFY — add pm-system entry)
@@ -352,51 +365,63 @@ All sessions run concurrently after Wave 1 gate (all 4 Wave 1 tasks complete). E
 **Steps:**
 
 1. **PROGRESS.md migration** (N24) — do this FIRST on the feature branch:
+
    ```bash
    git rm --cached PROGRESS.md
    ```
+
    Then add `PROGRESS.md` to `.gitignore`. Both steps on the feature branch so the PR carries the tracked→gitignored transition.
 
 2. **Add dispatcher case** (N22) — in work.sh `work()` function, add after the phase commands block:
+
    ```bash
    progress)   shift; _work_progress "$@" ;;
    ```
 
 3. **Write `_work_progress()` function** (N23) — queries GitHub API via `gh`:
 
-   | Section | Query | Command |
-   |---------|-------|---------|
-   | Milestones | Progress per milestone | `gh api repos/{owner}/{repo}/milestones --jq '...'` |
-   | Now | Priority/now issues | `gh issue list -l priority/now --json number,title,state,labels` |
-   | Next | Priority/next issues (8-10) | `gh issue list -l priority/next --json number,title,state,labels` |
-   | Blocked | Issues with blocking dependencies | Sub-issue dependency queries via GraphQL |
-   | Recent PRs | Merged in last 7 days | `gh pr list --state merged --limit 10 --json number,title,mergedAt` |
-   | Stale | Issues not updated in 30+ days | `gh issue list --sort updated --json number,title,updatedAt` |
+   | Section    | Query                             | Command                                                             |
+   | ---------- | --------------------------------- | ------------------------------------------------------------------- |
+   | Milestones | Progress per milestone            | `gh api repos/{owner}/{repo}/milestones --jq '...'`                 |
+   | Now        | Priority/now issues               | `gh issue list -l priority/now --json number,title,state,labels`    |
+   | Next       | Priority/next issues (8-10)       | `gh issue list -l priority/next --json number,title,state,labels`   |
+   | Blocked    | Issues with blocking dependencies | Sub-issue dependency queries via GraphQL                            |
+   | Recent PRs | Merged in last 7 days             | `gh pr list --state merged --limit 10 --json number,title,mergedAt` |
+   | Stale      | Issues not updated in 30+ days    | `gh issue list --sort updated --json number,title,updatedAt`        |
 
    Output format — writes to `PROGRESS.md` in CWD:
+
    ```markdown
    # Progress Report
+
    Generated: YYYY-MM-DD HH:MM
 
    ## Milestones
+
    ### D-Day (Feb 21) — 1/3 complete
+
    - [x] #177 Pricing Mobile
    - [ ] #145 Wizards (in progress)
    - [ ] #144 DTF Pricing (blocked by #143)
 
    ## Now (priority/now)
+
    - #216 PM Overhaul — In Progress
 
    ## Next (priority/next) — 8 items
+
    ...
 
    ## Blocked
+
    - #144 blocked by #143
 
    ## Recent PRs (last 7 days)
+
    - #210 feat(kb): taxonomy restructure (merged Feb 15)
 
    ## Stale (>30 days)
+
    ...
    ```
 
@@ -406,6 +431,7 @@ All sessions run concurrently after Wave 1 gate (all 4 Wave 1 tasks complete). E
    ```
 
 **Acceptance:**
+
 - `work progress` generates `PROGRESS.md` with all 6 sections and live data
 - `PROGRESS.md` is in `.gitignore` (not tracked)
 - `config/tools.json` includes `pm-system` entry
@@ -430,6 +456,7 @@ Tasks run one after the other. B3.1 requires human interaction. B3.2 requires al
 For each open issue, present to human (N26) and apply decisions (N27-N28):
 
 **Grooming checklist per issue:**
+
 1. Has correct `type/*` label
 2. Has correct `priority/*` label (hard triage: `priority/next` down to ~8-10 truly-next items)
 3. Has correct `vertical/*` label
@@ -439,6 +466,7 @@ For each open issue, present to human (N26) and apply decisions (N27-N28):
 7. Known blocked-by/blocking relationships set (e.g., #144 blocked by #143) — enables R3 dependency visibility
 
 **Known close candidates:**
+
 - #85 (gh dash filters) — superseded by #216
 - #63 (KB CodeRabbit feedback) — likely resolved
 - #73 (React Hook Form) — duplicate of #15
@@ -446,6 +474,7 @@ For each open issue, present to human (N26) and apply decisions (N27-N28):
 **Pending decision from Task 1.1:** `type/ux-review` → fold into `type/feedback` or `source/review`
 
 **Bulk board add** (N29): After all issues groomed, add surviving issues to project board:
+
 ```bash
 # For each issue number:
 gh project item-add <PROJECT_NUMBER> --owner @me --url https://github.com/cmbays/print-4ink/issues/<N>
@@ -462,6 +491,7 @@ gh project item-add <PROJECT_NUMBER> --owner @me --url https://github.com/cmbays
 **Size:** Medium
 **Depends on:** Task 3.1 (grooming complete — doc must reflect final state)
 **Files:**
+
 - `docs/PM.md` (NEW)
 - `CLAUDE.md` (MODIFY — canonical doc table)
 
@@ -469,25 +499,25 @@ gh project item-add <PROJECT_NUMBER> --owner @me --url https://github.com/cmbays
 
 1. **Write `docs/PM.md`** (N30) — 10 sections, each starting with 2-line agent quick-scan summary:
 
-   | # | Section | Contents |
-   |---|---------|----------|
-   | 1 | Quick Reference | 4 agent workflows as `gh` commands: find work, create issue, update status, close issue |
-   | 2 | Issue Lifecycle | Status flow: Created → Triage → Backlog → Ready → In Progress → In Review → Done. Maps to board Status field. |
-   | 3 | Label Taxonomy | Complete reference table. Rules: every issue needs `type/*` + `priority/*` + `vertical/*`. List all valid labels. |
-   | 4 | Issue Templates | When to use each (feature, bug, research, tracking). What fields mean. Auto-label behavior. |
-   | 5 | Dependency Patterns | Three types: hierarchy (sub-issues), dependency (blocked-by/blocking), context (mentions). Commands for each. |
-   | 6 | Epic Pattern | Parent issue = goal/pipeline. Sub-issues = stages. Progressive creation. Post-D-Day pattern description. |
-   | 7 | Pipeline Flow | Pipeline ID format (`YYYYMMDD-topic`), stage tracking, issue creation during pipeline. |
-   | 8 | Agent Conventions | How to find work, create issues, update status. Comment routing: `@cmbays` for human-needed, regular comments for agent-to-agent. |
-   | 9 | Milestones & Cycles | Shape Up rhythm. Three human touchpoints: Bet, Interview, Smoke Test. Cooldown flow. |
-   | 10 | Automation | What Actions handle (auto-add, auto-label). What agents handle (issue creation, status updates). What humans handle (grooming, closing). |
+   | #   | Section             | Contents                                                                                                                                 |
+   | --- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+   | 1   | Quick Reference     | 4 agent workflows as `gh` commands: find work, create issue, update status, close issue                                                  |
+   | 2   | Issue Lifecycle     | Status flow: Created → Triage → Backlog → Ready → In Progress → In Review → Done. Maps to board Status field.                            |
+   | 3   | Label Taxonomy      | Complete reference table. Rules: every issue needs `type/*` + `priority/*` + `vertical/*`. List all valid labels.                        |
+   | 4   | Issue Templates     | When to use each (feature, bug, research, tracking). What fields mean. Auto-label behavior.                                              |
+   | 5   | Dependency Patterns | Three types: hierarchy (sub-issues), dependency (blocked-by/blocking), context (mentions). Commands for each.                            |
+   | 6   | Epic Pattern        | Parent issue = goal/pipeline. Sub-issues = stages. Progressive creation. Post-D-Day pattern description.                                 |
+   | 7   | Pipeline Flow       | Pipeline ID format (`YYYYMMDD-topic`), stage tracking, issue creation during pipeline.                                                   |
+   | 8   | Agent Conventions   | How to find work, create issues, update status. Comment routing: `@cmbays` for human-needed, regular comments for agent-to-agent.        |
+   | 9   | Milestones & Cycles | Shape Up rhythm. Three human touchpoints: Bet, Interview, Smoke Test. Cooldown flow.                                                     |
+   | 10  | Automation          | What Actions handle (auto-add, auto-label). What agents handle (issue creation, status updates). What humans handle (grooming, closing). |
 
    Design principle: "How we work" complement to CLAUDE.md's "how we build."
 
 2. **Update CLAUDE.md** (N31) — add row to canonical doc table:
 
-   | Document | Purpose | Update When |
-   |----------|---------|-------------|
+   | Document     | Purpose                                                          | Update When               |
+   | ------------ | ---------------------------------------------------------------- | ------------------------- |
    | `docs/PM.md` | PM workflows, labels, templates, dependencies, agent conventions | PM infrastructure changes |
 
 **Acceptance:** `docs/PM.md` exists with all 10 sections. Each section has 2-line summary + expanded detail. CLAUDE.md canonical doc table includes `docs/PM.md` row.
@@ -496,41 +526,42 @@ gh project item-add <PROJECT_NUMBER> --owner @me --url https://github.com/cmbays
 
 ## Summary
 
-| Wave | Sessions | Type | Parallel? | Gate |
-|------|----------|------|-----------|------|
-| Prerequisites | Human | PAT scope + PROJECT_PAT prep | — | Before Wave 1 |
-| Wave 1: Foundation | 4 | API operations (no PRs) | Yes — all 4 concurrent | None |
-| Wave 2: Infrastructure | 4 | File changes → PRs | Yes — all 4 concurrent | Wave 1 complete |
-| Wave 3: Convergence | 2 | Interactive + doc write | No — serial | Wave 2 PRs merged |
+| Wave                   | Sessions | Type                         | Parallel?              | Gate              |
+| ---------------------- | -------- | ---------------------------- | ---------------------- | ----------------- |
+| Prerequisites          | Human    | PAT scope + PROJECT_PAT prep | —                      | Before Wave 1     |
+| Wave 1: Foundation     | 4        | API operations (no PRs)      | Yes — all 4 concurrent | None              |
+| Wave 2: Infrastructure | 4        | File changes → PRs           | Yes — all 4 concurrent | Wave 1 complete   |
+| Wave 3: Convergence    | 2        | Interactive + doc write      | No — serial            | Wave 2 PRs merged |
 
 **Total: 10 sessions across 3 waves.**
 
 **Merge order:**
+
 1. Wave 1: No PRs (API state changes only — labels, board, milestone, sub-issues)
 2. Wave 2: 4 independent PRs (no file overlap), merge in any order
 3. Wave 3: Task 3.1 is API-only (no PR), Task 3.2 produces final PR
 
 **File ownership (no conflicts):**
 
-| Session | Files |
-|---------|-------|
+| Session  | Files                                                          |
+| -------- | -------------------------------------------------------------- |
 | Task 2.1 | `.github/ISSUE_TEMPLATE/*`, `.github/pull_request_template.md` |
-| Task 2.2 | `.github/workflows/auto-project.yml` |
-| Task 2.3 | `.github/labeler.yml`, `.github/workflows/labeler.yml` |
-| Task 2.4 | `scripts/work.sh`, `.gitignore`, `config/tools.json` |
-| Task 3.2 | `docs/PM.md`, `CLAUDE.md` |
+| Task 2.2 | `.github/workflows/auto-project.yml`                           |
+| Task 2.3 | `.github/labeler.yml`, `.github/workflows/labeler.yml`         |
+| Task 2.4 | `scripts/work.sh`, `.gitignore`, `config/tools.json`           |
+| Task 3.2 | `docs/PM.md`, `CLAUDE.md`                                      |
 
 ---
 
 ## Key References
 
-| Artifact | Path |
-|----------|------|
-| Breadboard (reflected) | `docs/breadboards/pm-overhaul-breadboard.md` |
-| Shaping doc | `docs/shaping/pm-overhaul/shaping.md` |
-| Frame | `docs/shaping/pm-overhaul/frame.md` |
-| Issue type spike | `docs/shaping/pm-overhaul/spike-issue-types.md` |
-| Interview notes | `docs/research/2026-02-15-pm-overhaul-interview.md` |
-| Products config | `config/products.json` |
-| Tools config | `config/tools.json` |
-| Stages config | `config/stages.json` |
+| Artifact               | Path                                                |
+| ---------------------- | --------------------------------------------------- |
+| Breadboard (reflected) | `docs/breadboards/pm-overhaul-breadboard.md`        |
+| Shaping doc            | `docs/shaping/pm-overhaul/shaping.md`               |
+| Frame                  | `docs/shaping/pm-overhaul/frame.md`                 |
+| Issue type spike       | `docs/shaping/pm-overhaul/spike-issue-types.md`     |
+| Interview notes        | `docs/research/2026-02-15-pm-overhaul-interview.md` |
+| Products config        | `config/products.json`                              |
+| Tools config           | `config/tools.json`                                 |
+| Stages config          | `config/stages.json`                                |

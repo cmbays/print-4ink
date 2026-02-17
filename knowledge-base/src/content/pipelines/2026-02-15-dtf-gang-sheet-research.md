@@ -1,6 +1,6 @@
 ---
-title: "DTF Gang Sheet Builder — Competitive Research"
-subtitle: "Competitor analysis, industry workflows, and UX patterns for in-house DTF gang sheet building"
+title: 'DTF Gang Sheet Builder — Competitive Research'
+subtitle: 'Competitor analysis, industry workflows, and UX patterns for in-house DTF gang sheet building'
 date: 2026-02-15
 phase: 1
 pipelineName: dtf-gang-sheet
@@ -10,8 +10,8 @@ domains: [pricing]
 tools: []
 stage: research
 tags: [research]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0215-dtf-gang-sheet-research"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0215-dtf-gang-sheet-research'
 status: complete
 ---
 
@@ -40,17 +40,18 @@ Gang sheet builders split into two distinct categories:
 
 ### Competitor Comparison
 
-| Tool | Category | Platform | Pricing | Auto-Nesting | Transparency Tools | Sticker Support | RIP Integration | Setup Difficulty |
-|------|----------|----------|---------|--------------|-------------------|-----------------|-----------------|-----------------|
-| **Drip Apps** (4Ink's current) | Customer-facing | Shopify app | Free + 5% commission (max $12/order) | No (manual drag-drop) | No | Yes (auto cutlines) | Export PNG/PDF | Easy |
-| **Antigro Designer** | Customer-facing | Shopify app | Free + 5% per download | Yes (auto-nesting) | No | Yes | Export PNG/PDF | Moderate (needs setup) |
-| **Kixxl** | Customer-facing | Shopify/WooCommerce | Subscription | Yes (AI-powered) | Yes (halftoning + cleanup) | Yes | Export PNG/PDF/TIFF | Easy |
-| **DTF Transfer Studio** | Production | Desktop (Win/Mac) | Subscription | Yes (multiple algorithms) | Yes (halftoning + dithering) | Yes (cut paths) | TIFF/PDF with spot channels, CutContour | Moderate |
-| **Fiery Digital Factory DTF** | Production/RIP | Desktop | Licensed | Yes (integrated into print queue) | Yes (full color management) | N/A | Native (IS the RIP) | Complex |
+| Tool                           | Category        | Platform            | Pricing                              | Auto-Nesting                      | Transparency Tools           | Sticker Support     | RIP Integration                         | Setup Difficulty       |
+| ------------------------------ | --------------- | ------------------- | ------------------------------------ | --------------------------------- | ---------------------------- | ------------------- | --------------------------------------- | ---------------------- |
+| **Drip Apps** (4Ink's current) | Customer-facing | Shopify app         | Free + 5% commission (max $12/order) | No (manual drag-drop)             | No                           | Yes (auto cutlines) | Export PNG/PDF                          | Easy                   |
+| **Antigro Designer**           | Customer-facing | Shopify app         | Free + 5% per download               | Yes (auto-nesting)                | No                           | Yes                 | Export PNG/PDF                          | Moderate (needs setup) |
+| **Kixxl**                      | Customer-facing | Shopify/WooCommerce | Subscription                         | Yes (AI-powered)                  | Yes (halftoning + cleanup)   | Yes                 | Export PNG/PDF/TIFF                     | Easy                   |
+| **DTF Transfer Studio**        | Production      | Desktop (Win/Mac)   | Subscription                         | Yes (multiple algorithms)         | Yes (halftoning + dithering) | Yes (cut paths)     | TIFF/PDF with spot channels, CutContour | Moderate               |
+| **Fiery Digital Factory DTF**  | Production/RIP  | Desktop             | Licensed                             | Yes (integrated into print queue) | Yes (full color management)  | N/A                 | Native (IS the RIP)                     | Complex                |
 
 ### Detailed Tool Profiles
 
 #### Drip Apps: Build a Gang Sheet (4Ink's Current Tool)
+
 - **What it does**: Customers upload designs, drag-and-drop to arrange on a fixed-width canvas, resize/rotate/duplicate, checkout pays per sheet size
 - **Strengths**: 5.0 rating (38 reviews), Shopify Flow integration, auto-fill for faster building, background removal, text addition, PSD/PDF support
 - **Weaknesses**: No auto-nesting (customers arrange manually), no transparency cleanup, no production workflow features, customer-facing only
@@ -59,6 +60,7 @@ Gang sheet builders split into two distinct categories:
 - **Source**: [Shopify App Store](https://apps.shopify.com/build-a-gang-sheet)
 
 #### Antigro Designer
+
 - **What it does**: Auto-nests customer-uploaded graphics onto gang sheets in the smallest possible dimensions
 - **Strengths**: 5.0 rating (14 reviews), auto-nesting (20% efficiency gain reported), design library with shop's own artwork, DPI quality checks, overlap detection
 - **Weaknesses**: No halftoning, no transparency cleanup, requires professional setup (their team assists), more industrial-focused
@@ -66,6 +68,7 @@ Gang sheet builders split into two distinct categories:
 - **Source**: [Shopify App Store](https://apps.shopify.com/antigro-gang-sheet-builder), [gangsheetbuilder.com](https://gangsheetbuilder.com/)
 
 #### Kixxl
+
 - **What it does**: AI-powered gang sheet builder with transparency detection/cleanup, halftoning, sticker making, order forwarding
 - **Strengths**: Only tool with full transparency cleanup (slider-controlled, like Cadlink/Neostampa), AI auto-nesting, feature toggles for shop owners, WooCommerce support
 - **Weaknesses**: Newer to market, subscription-based (not per-use), less established reputation
@@ -73,6 +76,7 @@ Gang sheet builders split into two distinct categories:
 - **Source**: [kixxl.com](https://kixxl.com/), [Best Gang Sheet Builder Comparison](https://kixxl.com/best-gang-sheet-builder-dtf-print-shops-2025/)
 
 #### DTF Transfer Studio
+
 - **What it does**: Desktop production software for validating, preparing, and nesting DTF graphics with advanced RIP integration
 - **Strengths**: Multiple nesting algorithms (choose best for each job), underbase generation with adjustable choke/spread, built-in image editor, vector cut paths, exports TIFF with spot channels + CutContour PDFs
 - **Weaknesses**: Desktop-only (Win/Mac), subscription required, not customer-facing
@@ -80,6 +84,7 @@ Gang sheet builders split into two distinct categories:
 - **Source**: [dtftransferstudio.com](https://dtftransferstudio.com/)
 
 #### Fiery Digital Factory DTF Edition
+
 - **What it does**: Complete RIP and production workflow with integrated gang sheet builder
 - **Strengths**: Professional ICC profiling, gang sheet builder in the print queue, markup system (job labels, cut indicators, print length tracking), Desktop and Production editions
 - **Weaknesses**: Full RIP software (complex, expensive), overkill if you already have a RIP
@@ -141,18 +146,19 @@ Every gang sheet builder follows this pattern:
 
 ### What Separates Good From Great
 
-| Pattern | Basic (Drip Apps) | Advanced (DTF Transfer Studio) |
-|---------|-------------------|-------------------------------|
-| Nesting | Manual drag-drop | AI auto-nesting with multiple algorithms |
-| File validation | Basic format check | DPI check, transparency detection, color profile validation |
-| Sheet sizing | Fixed tier selection | Dynamic sizing (auto-shrink to smallest needed) |
-| Output | PNG/PDF | TIFF with spot channels, CutContour paths |
-| Order tracking | Per-order | Batch orders onto sheets with job tracking |
-| Template reuse | None | Save and reuse layout templates |
+| Pattern         | Basic (Drip Apps)    | Advanced (DTF Transfer Studio)                              |
+| --------------- | -------------------- | ----------------------------------------------------------- |
+| Nesting         | Manual drag-drop     | AI auto-nesting with multiple algorithms                    |
+| File validation | Basic format check   | DPI check, transparency detection, color profile validation |
+| Sheet sizing    | Fixed tier selection | Dynamic sizing (auto-shrink to smallest needed)             |
+| Output          | PNG/PDF              | TIFF with spot channels, CutContour paths                   |
+| Order tracking  | Per-order            | Batch orders onto sheets with job tracking                  |
+| Template reuse  | None                 | Save and reuse layout templates                             |
 
 ### UX Patterns Specific to Production (vs. Customer-Facing)
 
 Production tools add:
+
 - **Order queue** — See pending orders that need gang sheets built
 - **Batch grouping** — Group orders by due date, customer, rush status
 - **Job linking** — Each design on a sheet links back to its source order/job
@@ -164,16 +170,16 @@ Production tools add:
 
 ### Existing Assets
 
-| Asset | Location | Reusable For |
-|-------|----------|-------------|
-| DTF pricing schema | `lib/schemas/dtf-pricing.ts` | Sheet tier pricing, rush fees, film types, customer discounts |
-| DTF pricing editor | `/settings/pricing/dtf/[id]` | Settings UI patterns, tier editor component |
-| DTF sheet tier editor | `components/.../DTFSheetTierEditor.tsx` | Sheet size tier management |
-| DTF pricing calculator | `components/.../DTFPricingCalculator.tsx` | Price calculation with customer tier/rush/film type |
-| Service type enum | `lib/schemas/quote.ts` → `serviceTypeEnum` | DTF as `"dtf"` service type |
-| Pricing engine | `lib/pricing-engine.ts` → `calculateDTFPrice()` | DTF-specific price calculations |
-| Mock DTF templates | `lib/mock-data-pricing.ts` | Test data for DTF sheets |
-| Quote line items | `lib/schemas/quote.ts` | DTF line items in quotes |
+| Asset                  | Location                                        | Reusable For                                                  |
+| ---------------------- | ----------------------------------------------- | ------------------------------------------------------------- |
+| DTF pricing schema     | `lib/schemas/dtf-pricing.ts`                    | Sheet tier pricing, rush fees, film types, customer discounts |
+| DTF pricing editor     | `/settings/pricing/dtf/[id]`                    | Settings UI patterns, tier editor component                   |
+| DTF sheet tier editor  | `components/.../DTFSheetTierEditor.tsx`         | Sheet size tier management                                    |
+| DTF pricing calculator | `components/.../DTFPricingCalculator.tsx`       | Price calculation with customer tier/rush/film type           |
+| Service type enum      | `lib/schemas/quote.ts` → `serviceTypeEnum`      | DTF as `"dtf"` service type                                   |
+| Pricing engine         | `lib/pricing-engine.ts` → `calculateDTFPrice()` | DTF-specific price calculations                               |
+| Mock DTF templates     | `lib/mock-data-pricing.ts`                      | Test data for DTF sheets                                      |
+| Quote line items       | `lib/schemas/quote.ts`                          | DTF line items in quotes                                      |
 
 ### What Needs to Be Built
 
@@ -187,6 +193,7 @@ Production tools add:
 ### Schema Gaps
 
 The existing DTF pricing schema handles **how much to charge**. The gang sheet builder needs schemas for:
+
 - **Gang sheet** — id, dimensions, designs (with positions/sizes), linked jobs/orders, status, created date
 - **Design placement** — design image ref, x/y position, width/height, rotation, source order ID
 - **Sheet queue** — ordered list of gang sheets ready for printing
@@ -194,19 +201,25 @@ The existing DTF pricing schema handles **how much to charge**. The gang sheet b
 ## Key Findings and Recommendations
 
 ### Finding 1: Two Distinct Workflows
+
 The customer-facing builder (Drip Apps on Shopify) and the production builder (Screen Print Pro) serve different purposes. The Shopify app lets customers build their own sheets for ordering. Screen Print Pro should let Gary arrange **his pending orders** onto sheets for production.
 
 ### Finding 2: Auto-Nesting Is Table Stakes
+
 Every serious competitor has auto-nesting. Manual drag-drop is the baseline. For Phase 1 mockup, a visual canvas with manual arrangement is sufficient, but the UI should have an "Auto-Arrange" button (even if it uses a simple algorithm) to demonstrate the concept.
 
 ### Finding 3: Sheet Size Pricing Already Exists
+
 The DTF pricing schema and editor already handle the 10 sheet size tiers (22" x 24" through 22" x 240"). The gang sheet builder should consume this data to show pricing as the user builds.
 
 ### Finding 4: The Killer Feature Is Order-to-Sheet
+
 What no competitor fully solves: **connecting production orders to gang sheet layouts**. Shopify apps are customer-facing. Desktop tools are standalone. Screen Print Pro can uniquely link jobs → gang sheets → production status, giving Gary visibility into what's on each sheet and which orders are fulfilled.
 
 ### Finding 5: Phase 1 Scope Should Be Visual + Mock
+
 For the Feb 21 demo, the gang sheet builder needs:
+
 - Visual canvas with sheet size selection
 - Upload/add designs with drag-drop arrangement
 - Resize, rotate, duplicate controls
@@ -257,6 +270,7 @@ This is sufficient to validate the concept with Gary. Advanced features (halfton
 ## Sources
 
 ### Competitor Tools
+
 - [Drip Apps: Build a Gang Sheet — Shopify App Store](https://apps.shopify.com/build-a-gang-sheet)
 - [Antigro Designer — gangsheetbuilder.com](https://gangsheetbuilder.com/)
 - [Kixxl — AI Gang Sheet Builder](https://kixxl.com/)
@@ -265,17 +279,20 @@ This is sufficient to validate the concept with Gary. Advanced features (halfton
 - [4Ink Current Builder](https://4ink.com/products/gang-sheet-bullder)
 
 ### Comparison & Reviews
+
 - [Best Gang Sheet Builder — Kixxl vs Dripsapp vs Antigro (2025)](https://kixxl.com/best-gang-sheet-builder-dtf-print-shops-2025/)
 - [Antigro Shopify Reviews](https://apps.shopify.com/antigro-gang-sheet-builder/reviews)
 - [Drip Apps Shopify Reviews](https://apps.shopify.com/build-a-gang-sheet/reviews)
 
 ### Industry Workflow
+
 - [Fast DTF Transfer — Build a Gang Sheet Guide](https://fastdtftransfer.com/blogs/news/build-a-gang-sheet)
 - [DTF Gang Sheet Step-by-Step](https://www.dtfpowderstore.com/dtf-gangsheet-builder-step-by-step-guide-to-perfect-sheets/)
 - [DTF Gang Sheet Workflow Guide](https://www.dtfuvbuilder.com/dtf-gangsheet-builder-workflow-a-step-by-step-guide/)
 - [xTool — What Is a DTF Gang Sheet](https://www.xtool.com/blogs/xtool-academy/what-is-dtf-gang-sheet-and-how-to-make-one)
 
 ### Prior Research (Internal)
+
 - [DTF Gang Sheet Pricing Research](https://github.com/cmbays/print-4ink/blob/main/docs/research/05-dtf-gang-sheet-pricing.md) — Cost structures, pricing models, margin analysis
 - [Price Matrix Build Session](https://github.com/cmbays/print-4ink/blob/main/knowledge-base/src/content/pipelines/2026-02-12-price-matrix-build.md) — DTF editor implementation
 - [GitHub Issue #144](https://github.com/cmbays/print-4ink/issues/144) — DTF Gang Sheet Builder feature request

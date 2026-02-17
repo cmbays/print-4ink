@@ -1,8 +1,4 @@
-import type {
-  AgentManifestEntry,
-  PRFacts,
-  AgentResult,
-} from "@domain/entities/review-pipeline";
+import type { AgentManifestEntry, PRFacts, AgentResult } from '@domain/entities/review-pipeline'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -18,8 +14,8 @@ import type {
  */
 export type AgentLauncher = (
   entry: AgentManifestEntry,
-  facts: PRFacts,
-) => Promise<Omit<AgentResult, "error"> & { error?: string }>;
+  facts: PRFacts
+) => Promise<Omit<AgentResult, 'error'> & { error?: string }>
 
 // ---------------------------------------------------------------------------
 // dispatch — Stage 5
@@ -40,47 +36,45 @@ export type AgentLauncher = (
 export async function dispatch(
   manifest: AgentManifestEntry[],
   facts: PRFacts,
-  launcher: AgentLauncher,
+  launcher: AgentLauncher
 ): Promise<AgentResult[]> {
   if (manifest.length === 0) {
-    return [];
+    return []
   }
 
   const promises = manifest.map(async (entry): Promise<AgentResult> => {
-    const startMs = Date.now();
+    const startMs = Date.now()
 
     try {
-      const raw = await launcher(entry, facts);
+      const raw = await launcher(entry, facts)
       // Strip error field for success status to satisfy the schema refinement
       const result: AgentResult = {
         agentId: raw.agentId,
         status: raw.status,
         findings: raw.findings,
         durationMs: raw.durationMs,
-      };
-      // Only attach error for non-success statuses
-      if (raw.status !== "success" && raw.error) {
-        result.error = raw.error;
       }
-      return result;
+      // Only attach error for non-success statuses
+      if (raw.status !== 'success' && raw.error) {
+        result.error = raw.error
+      }
+      return result
     } catch (err: unknown) {
-      const durationMs = Date.now() - startMs;
-      const message =
-        err instanceof Error ? err.message : String(err);
+      const durationMs = Date.now() - startMs
+      const message = err instanceof Error ? err.message : String(err)
 
       const isTimeout =
-        message.toLowerCase().includes("timed out") ||
-        message.toLowerCase().includes("timeout");
+        message.toLowerCase().includes('timed out') || message.toLowerCase().includes('timeout')
 
       return {
         agentId: entry.agentId,
-        status: isTimeout ? "timeout" : "error",
+        status: isTimeout ? 'timeout' : 'error',
         findings: [],
         durationMs,
         error: message,
-      };
+      }
     }
-  });
+  })
 
-  return Promise.all(promises);
+  return Promise.all(promises)
 }

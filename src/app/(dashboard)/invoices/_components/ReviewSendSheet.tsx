@@ -1,38 +1,38 @@
-"use client";
+'use client'
 
-import { Send, X } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { Separator } from "@shared/ui/primitives/separator";
+import { Send, X } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { Separator } from '@shared/ui/primitives/separator'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@shared/ui/primitives/sheet";
-import { InvoicePricingSummary } from "./InvoicePricingSummary";
-import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
-import { formatCurrency } from "@domain/lib/money";
-import type { InvoiceLineItemData } from "./InvoiceLineItemRow";
+} from '@shared/ui/primitives/sheet'
+import { InvoicePricingSummary } from './InvoicePricingSummary'
+import { INVOICE_LINE_ITEM_TYPE_LABELS } from '@domain/constants'
+import { formatCurrency } from '@domain/lib/money'
+import type { InvoiceLineItemData } from './InvoiceLineItemRow'
 
-interface ReviewSendSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  invoiceNumber: string;
-  customerName: string;
-  customerCompany: string;
-  customerEmail: string;
-  lineItems: InvoiceLineItemData[];
-  subtotal: number;
-  discountTotal: number;
-  shipping: number;
-  taxRate: number;
-  taxAmount: number;
-  total: number;
-  depositAmount: number;
-  dueDate: string;
-  paymentTerms: string;
-  onSend: () => void;
+type ReviewSendSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  invoiceNumber: string
+  customerName: string
+  customerCompany: string
+  customerEmail: string
+  lineItems: InvoiceLineItemData[]
+  subtotal: number
+  discountTotal: number
+  shipping: number
+  taxRate: number
+  taxAmount: number
+  total: number
+  depositAmount: number
+  dueDate: string
+  paymentTerms: string
+  onSend: () => void
 }
 
 export function ReviewSendSheet({
@@ -55,8 +55,8 @@ export function ReviewSendSheet({
   onSend,
 }: ReviewSendSheetProps) {
   function handleSend() {
-    onOpenChange(false);
-    onSend();
+    onOpenChange(false)
+    onSend()
   }
 
   return (
@@ -72,18 +72,14 @@ export function ReviewSendSheet({
         <div className="mt-6 space-y-6">
           {/* Customer Info */}
           <div className="rounded-lg border border-border bg-elevated p-4 space-y-1">
-            <p className="text-sm font-medium text-foreground">
-              {customerCompany}
-            </p>
+            <p className="text-sm font-medium text-foreground">{customerCompany}</p>
             <p className="text-sm text-muted-foreground">{customerName}</p>
             <p className="text-sm text-muted-foreground">{customerEmail}</p>
           </div>
 
           {/* Line Items Table */}
           <div>
-            <h3 className="mb-2 text-sm font-medium text-foreground">
-              Line Items
-            </h3>
+            <h3 className="mb-2 text-sm font-medium text-foreground">Line Items</h3>
             <div className="rounded-lg border border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
@@ -160,19 +156,17 @@ export function ReviewSendSheet({
 
           {/* Email Preview */}
           <div>
-            <h3 className="mb-2 text-sm font-medium text-foreground">
-              Email Preview
-            </h3>
+            <h3 className="mb-2 text-sm font-medium text-foreground">Email Preview</h3>
             <div className="rounded-lg border border-border bg-surface p-4 space-y-2">
               <p className="text-xs text-muted-foreground">To: {customerEmail}</p>
               <p className="text-sm font-medium text-foreground">
                 Invoice {invoiceNumber} for {formatCurrency(total)}
               </p>
               <p className="text-sm text-muted-foreground">
-                Hi {(customerName || "").split(" ")[0] || "there"}, please find attached invoice{" "}
+                Hi {(customerName || '').split(' ')[0] || 'there'}, please find attached invoice{' '}
                 {invoiceNumber} for {formatCurrency(total)}.
                 {depositAmount > 0 &&
-                  ` A deposit of ${formatCurrency(depositAmount)} is requested.`}{" "}
+                  ` A deposit of ${formatCurrency(depositAmount)} is requested.`}{' '}
                 Payment is due by {dueDate}.
               </p>
             </div>
@@ -180,10 +174,7 @@ export function ReviewSendSheet({
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-2">
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
               <X size={16} className="mr-2" />
               Cancel
             </Button>
@@ -198,5 +189,5 @@ export function ReviewSendSheet({
         </div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

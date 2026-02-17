@@ -1,25 +1,22 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Receipt } from "lucide-react";
-import { Badge } from "@shared/ui/primitives/badge";
+import Link from 'next/link'
+import { Receipt } from 'lucide-react'
+import { Badge } from '@shared/ui/primitives/badge'
 
-import {
-  INVOICE_STATUS_BADGE_COLORS,
-  INVOICE_STATUS_LABELS,
-} from "@domain/constants";
-import { formatDate } from "@shared/lib/format";
-import { formatCurrency } from "@domain/lib/money";
-import type { Invoice } from "@domain/entities/invoice";
+import { INVOICE_STATUS_BADGE_COLORS, INVOICE_STATUS_LABELS } from '@domain/constants'
+import { formatDate } from '@shared/lib/format'
+import { formatCurrency } from '@domain/lib/money'
+import type { Invoice } from '@domain/entities/invoice'
 
-interface CustomerInvoicesTableProps {
-  invoices: Invoice[];
+type CustomerInvoicesTableProps = {
+  invoices: Invoice[]
 }
 
 export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) {
   const sorted = [...invoices].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  )
 
   if (sorted.length === 0) {
     return (
@@ -28,7 +25,7 @@ export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) 
         <p className="text-sm font-medium">No invoices yet</p>
         <p className="text-xs mt-1">Invoices will appear here once created</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -59,9 +56,7 @@ export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) 
                     {invoice.invoiceNumber}
                   </Link>
                 </td>
-                <td className="py-3 text-muted-foreground">
-                  {formatDate(invoice.createdAt)}
-                </td>
+                <td className="py-3 text-muted-foreground">{formatDate(invoice.createdAt)}</td>
                 <td className="py-3">
                   <Badge variant="ghost" className={INVOICE_STATUS_BADGE_COLORS[invoice.status]}>
                     {INVOICE_STATUS_LABELS[invoice.status]}
@@ -71,9 +66,11 @@ export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) 
                   {formatCurrency(invoice.total)}
                 </td>
                 <td className="py-3 text-right font-mono text-foreground">
-                  {invoice.balanceDue > 0
-                    ? formatCurrency(invoice.balanceDue)
-                    : <span className="text-muted-foreground">&mdash;</span>}
+                  {invoice.balanceDue > 0 ? (
+                    formatCurrency(invoice.balanceDue)
+                  ) : (
+                    <span className="text-muted-foreground">&mdash;</span>
+                  )}
                 </td>
               </tr>
             ))}
@@ -100,9 +97,7 @@ export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) 
               <span className="font-mono text-sm text-foreground">
                 {formatCurrency(invoice.total)}
               </span>
-              <span className="text-xs text-muted-foreground">
-                {formatDate(invoice.createdAt)}
-              </span>
+              <span className="text-xs text-muted-foreground">{formatDate(invoice.createdAt)}</span>
             </div>
             {invoice.balanceDue > 0 && (
               <p className="mt-1 text-xs text-muted-foreground">
@@ -113,5 +108,5 @@ export function CustomerInvoicesTable({ invoices }: CustomerInvoicesTableProps) 
         ))}
       </div>
     </>
-  );
+  )
 }

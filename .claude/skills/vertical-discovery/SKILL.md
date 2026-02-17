@@ -18,25 +18,21 @@ Use at the start of each new vertical (Invoicing, Customer Management, Pricing M
 **Preferred**: Use the `@playwright/mcp` MCP server for structured browser exploration.
 
 **Configuration** (add to `.claude.json` project config or global config):
+
 ```json
 {
   "mcpServers": {
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp",
-        "--headless",
-        "--viewport-size=1440x900",
-        "--caps=vision"
-      ]
+      "args": ["-y", "@playwright/mcp", "--headless", "--viewport-size=1440x900", "--caps=vision"]
     }
   }
 }
 ```
 
 **Key flags**:
+
 - `--headless` — run without visible browser (required for CI/automated sessions)
 - `--viewport-size=1440x900` — standard desktop viewport for consistent screenshots
 - `--caps=vision` — enable screenshot/vision capabilities for analyzing UI
@@ -46,6 +42,7 @@ Use at the start of each new vertical (Invoicing, Customer Management, Pricing M
 **After adding config**: Restart Claude Code session (`/quit` then relaunch) for MCP tools to become available.
 
 **Fallback** (if MCP not configured): Set up a manual Playwright environment:
+
 ```bash
 mkdir -p /tmp/pw-explorer && cd /tmp/pw-explorer
 npm init -y && npm install playwright
@@ -58,14 +55,14 @@ The MCP approach is strongly preferred because it gives Claude direct tool acces
 
 Each vertical discovery produces exactly 4 documents (+ updates to 2 existing docs):
 
-| # | Document | Location | Purpose |
-|---|----------|----------|---------|
-| 1 | Competitive Analysis | `docs/competitive-analysis/{competitor}-{vertical}-analysis.md` | Feature list, UI patterns, friction points |
-| 2 | Journey Map | `docs/competitive-analysis/{competitor}-{vertical}-journey.md` | Step-by-step workflow, click/time metrics |
-| 3 | Improved Journey | `docs/strategy/screen-print-pro-journey-{vertical}.md` | Our redesigned workflow with targets |
-| 4 | Scope Definition | `docs/strategy/{vertical}-scope-definition.md` | CORE/PERIPHERAL/INTERCONNECTIONS |
-| 5 | PROGRESS.md | `PROGRESS.md` | Session log entry |
-| 6 | for_human doc | `for_human/{date}-{vertical}-discovery.html` | Human-readable summary |
+| #   | Document             | Location                                                        | Purpose                                    |
+| --- | -------------------- | --------------------------------------------------------------- | ------------------------------------------ |
+| 1   | Competitive Analysis | `docs/competitive-analysis/{competitor}-{vertical}-analysis.md` | Feature list, UI patterns, friction points |
+| 2   | Journey Map          | `docs/competitive-analysis/{competitor}-{vertical}-journey.md`  | Step-by-step workflow, click/time metrics  |
+| 3   | Improved Journey     | `docs/strategy/screen-print-pro-journey-{vertical}.md`          | Our redesigned workflow with targets       |
+| 4   | Scope Definition     | `docs/strategy/{vertical}-scope-definition.md`                  | CORE/PERIPHERAL/INTERCONNECTIONS           |
+| 5   | PROGRESS.md          | `PROGRESS.md`                                                   | Session log entry                          |
+| 6   | for_human doc        | `for_human/{date}-{vertical}-discovery.html`                    | Human-readable summary                     |
 
 ## Workflow: 7 Steps
 
@@ -74,6 +71,7 @@ Each vertical discovery produces exactly 4 documents (+ updates to 2 existing do
 **Goal**: Understand the competitor product's context, history, and feature set.
 
 **Checklist** (use `templates/web-research-checklist.md`):
+
 - [ ] Company overview: founder, team size, user base, pricing
 - [ ] Technology stack (if observable): framework, hosting, integrations
 - [ ] Feature list for the vertical (from marketing site, help docs, changelogs)
@@ -90,6 +88,7 @@ Each vertical discovery produces exactly 4 documents (+ updates to 2 existing do
 **Goal**: Navigate the competitor's actual UI to document screens, interactions, friction points, and data.
 
 **Checklist** (use `templates/playwright-exploration-guide.md`):
+
 - [ ] Identify the entry URL(s) for the vertical's workflow
 - [ ] Navigate through the complete flow start-to-finish
 - [ ] Screenshot every screen/step
@@ -102,6 +101,7 @@ Each vertical discovery produces exactly 4 documents (+ updates to 2 existing do
 **Tools**: Playwright MCP (preferred) or manual Playwright scripts
 
 **Using Playwright MCP** (when available):
+
 ```text
 Use the Playwright MCP tools to:
 1. Navigate to [URL]
@@ -114,6 +114,7 @@ Use the Playwright MCP tools to:
 The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`, `browser_snapshot`, `browser_take_screenshot`. Use snapshot for structured accessibility data, screenshot for visual analysis.
 
 **Exploration strategy**:
+
 1. First pass: Navigate the "happy path" end-to-end, screenshot everything
 2. Second pass: Try the complex path (multi-item, edge cases)
 3. Third pass: Look for hidden features, settings, shortcuts
@@ -125,6 +126,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 **Goal**: Understand the user's actual workflow, pain points, and wishes.
 
 **Checklist** (use `templates/interview-questions-template.md`):
+
 - [ ] Adapt template questions to the specific vertical
 - [ ] Cover 5 areas: Current Workflow, Pain Points, Desired Features, Interconnections, Success Criteria
 - [ ] Ask open-ended questions, then follow up with specifics
@@ -134,6 +136,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 - [ ] Ask what "success" looks like for this vertical
 
 **Question categories**:
+
 1. **Workflow** (8-10 questions): How do you currently do X? Walk me through a typical Y.
 2. **Pain Points** (5-8 questions): What's most frustrating? What takes too long?
 3. **Desired Features** (5-8 questions): What do you wish it could do? What would save you the most time?
@@ -149,6 +152,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 **Template**: `templates/competitive-analysis.md`
 
 **Sections**:
+
 1. Product Overview (company, tech, users, pricing)
 2. Feature List (checkboxes: observed vs not explored)
 3. Key UI Elements (what the user actually sees)
@@ -169,6 +173,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 **Template**: `templates/journey-map.md`
 
 **Sections**:
+
 1. Terminology block (Internal vs External, Phase 1 vs Phase 2)
 2. Journey Overview (simple + complex variants with metrics)
 3. Detailed Journey: Simple (ASCII flowchart with time/friction per step)
@@ -188,6 +193,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 **Template**: `templates/improved-journey.md`
 
 **Sections**:
+
 1. Terminology block (Internal vs External, Phase 1 vs Phase 2)
 2. Design Principles (from discovery findings)
 3. Journey Overview (internal + external targets with metrics)
@@ -207,6 +213,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 **Goal**: Update the scope definition with all discovery findings and update project tracking.
 
 **Actions**:
+
 1. Update `docs/strategy/{vertical}-scope-definition.md` with findings
 2. Add phase indicators (Phase 1/Phase 2) to every feature
 3. Ensure CORE/PERIPHERAL/INTERCONNECTIONS are accurate

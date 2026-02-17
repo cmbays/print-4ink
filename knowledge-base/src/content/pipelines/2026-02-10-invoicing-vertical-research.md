@@ -1,6 +1,6 @@
 ---
-title: "Invoicing Vertical Research"
-subtitle: "Comprehensive competitive, UX, integration, compliance, and industry research for the Screen Print Pro invoicing vertical"
+title: 'Invoicing Vertical Research'
+subtitle: 'Comprehensive competitive, UX, integration, compliance, and industry research for the Screen Print Pro invoicing vertical'
 date: 2026-02-10
 phase: 1
 pipelineName: invoicing
@@ -9,16 +9,16 @@ products: [invoices, quotes]
 tools: []
 stage: research
 tags: [research, plan]
-sessionId: "2e017579-35ba-4702-9fa6-428c2bbcec28"
-branch: "session/0210-invoicing-research"
+sessionId: '2e017579-35ba-4702-9fa6-428c2bbcec28'
+branch: 'session/0210-invoicing-research'
 status: complete
 ---
 
-| Metric | Value |
-|--------|-------|
-| 5 | Research Agents |
-| 6 | Competitors Analyzed |
-| 80+ | Sources Cited |
+| Metric | Value                |
+| ------ | -------------------- |
+| 5      | Research Agents      |
+| 6      | Competitors Analyzed |
+| 80+    | Sources Cited        |
 
 1. [Executive Summary](#1-executive-summary)
 2. [Industry Best Practices](#2-industry-best-practices)
@@ -62,29 +62,29 @@ Estimate/Quote  →  Customer Approval  →  Deposit (50%)  →  Work Order
 
 ### Standard Invoice Line Item Categories
 
-| Category | Description | Typical Pricing |
-|----------|-------------|-----------------|
-| Garment Cost | Wholesale with 150-200% markup | $5 wholesale → $7.50-$10 |
-| Print Cost | Per piece, per color, per location | $1.80-$5.00/piece |
-| Screen Setup | Per screen (per color per location) | $10-$30/screen |
-| Art/Design | Custom artwork or modifications | $25 (text) to $65/hr (custom) |
-| Color Change | Switching ink mid-run | $10-$15/change |
-| Rush Fee | Tiered by turnaround time | 10-50% surcharge |
-| Shipping | Carrier charges + handling | Actual + $6/box handling |
-| Film Output | Cost of film positives | $12-$15 per spot color |
-| Pantone Match | Custom color mixing | $10-$15 per color |
-| Sample/Pre-prod | Test prints before full run | $150+ minimum |
+| Category        | Description                         | Typical Pricing               |
+| --------------- | ----------------------------------- | ----------------------------- |
+| Garment Cost    | Wholesale with 150-200% markup      | $5 wholesale → $7.50-$10      |
+| Print Cost      | Per piece, per color, per location  | $1.80-$5.00/piece             |
+| Screen Setup    | Per screen (per color per location) | $10-$30/screen                |
+| Art/Design      | Custom artwork or modifications     | $25 (text) to $65/hr (custom) |
+| Color Change    | Switching ink mid-run               | $10-$15/change                |
+| Rush Fee        | Tiered by turnaround time           | 10-50% surcharge              |
+| Shipping        | Carrier charges + handling          | Actual + $6/box handling      |
+| Film Output     | Cost of film positives              | $12-$15 per spot color        |
+| Pantone Match   | Custom color mixing                 | $10-$15 per color             |
+| Sample/Pre-prod | Test prints before full run         | $150+ minimum                 |
 
 ### Payment Terms by Customer Type
 
-| Term | Who Gets It | Notes |
-|------|------------|-------|
-| 100% Upfront | New/unknown customers | Full payment before production |
-| 50% Deposit + Balance | Standard for most jobs | Industry standard |
-| COD | Walk-in customers | Payment at pickup |
-| Net 15 | Established customers | Requires credit application |
-| Net 30 | Large/corporate accounts | 1.5%/month late fee standard |
-| Net 60 | Rare, large contracts only | High risk for small shops |
+| Term                  | Who Gets It                | Notes                          |
+| --------------------- | -------------------------- | ------------------------------ |
+| 100% Upfront          | New/unknown customers      | Full payment before production |
+| 50% Deposit + Balance | Standard for most jobs     | Industry standard              |
+| COD                   | Walk-in customers          | Payment at pickup              |
+| Net 15                | Established customers      | Requires credit application    |
+| Net 30                | Large/corporate accounts   | 1.5%/month late fee standard   |
+| Net 60                | Rare, large contracts only | High risk for small shops      |
 
 ### Industry Spoilage Standards
 
@@ -112,30 +112,30 @@ Spoilage affects invoicing through credit memos and adjustments:
 
 ### Feature Comparison Matrix
 
-| Feature | PrintLife | Printavo | shopVOX | DecoNetwork | InkSoft |
-|---------|----------|----------|---------|-------------|---------|
-| Quote → Invoice | Yes | Yes | 3-step | 1-click | Yes |
-| Progress invoicing | No | Partial | Best | Yes | Partial |
-| Multi-invoice payment | No | Unique | No | No | No |
-| Invoice read receipts | No | No | Unique | No | No |
-| Stripe | Yes | Yes | Yes | DecoPay | Own |
-| QuickBooks Online | Yes | 2hr sync | Yes | Yes | No |
-| Xero / Sage | No | No | Both | Both | No |
-| SMS invoicing | Twilio | Premium | No | No | No |
-| Customer portal | Strong | Yes | cPortal | Yes | Yes |
-| Multi-user / roles | No | Limited | Yes | Yes | Yes |
-| Supplier catalogs | Best | No | No | Yes | Yes |
-| AR / Sales reports | Basic | Full | Best | Limited | Basic |
+| Feature               | PrintLife | Printavo | shopVOX | DecoNetwork | InkSoft |
+| --------------------- | --------- | -------- | ------- | ----------- | ------- |
+| Quote → Invoice       | Yes       | Yes      | 3-step  | 1-click     | Yes     |
+| Progress invoicing    | No        | Partial  | Best    | Yes         | Partial |
+| Multi-invoice payment | No        | Unique   | No      | No          | No      |
+| Invoice read receipts | No        | No       | Unique  | No          | No      |
+| Stripe                | Yes       | Yes      | Yes     | DecoPay     | Own     |
+| QuickBooks Online     | Yes       | 2hr sync | Yes     | Yes         | No      |
+| Xero / Sage           | No        | No       | Both    | Both        | No      |
+| SMS invoicing         | Twilio    | Premium  | No      | No          | No      |
+| Customer portal       | Strong    | Yes      | cPortal | Yes         | Yes     |
+| Multi-user / roles    | No        | Limited  | Yes     | Yes         | Yes     |
+| Supplier catalogs     | Best      | No       | No      | Yes         | Yes     |
+| AR / Sales reports    | Basic     | Full     | Best    | Limited     | Basic   |
 
 ### Pricing Comparison
 
-| Platform | Entry | Mid Tier | Top Tier | Model |
-|----------|-------|----------|----------|-------|
-| PrintLife | Not public | Not public | Not public | Subscription |
-| Printavo | $49/mo | $149/mo | $199/mo + $99 Merch | Tiered flat |
-| shopVOX | $99 + $19/user | $199 + $39/user | Custom | Base + per-user |
-| DecoNetwork | $199/mo | Custom | Custom | Tiered + license |
-| InkSoft | $314/mo | $419/mo | — | Flat rate |
+| Platform    | Entry          | Mid Tier        | Top Tier            | Model            |
+| ----------- | -------------- | --------------- | ------------------- | ---------------- |
+| PrintLife   | Not public     | Not public      | Not public          | Subscription     |
+| Printavo    | $49/mo         | $149/mo         | $199/mo + $99 Merch | Tiered flat      |
+| shopVOX     | $99 + $19/user | $199 + $39/user | Custom              | Base + per-user  |
+| DecoNetwork | $199/mo        | Custom          | Custom              | Tiered + license |
+| InkSoft     | $314/mo        | $419/mo         | —                   | Flat rate        |
 
 ### PrintLife Deep Assessment
 
@@ -179,22 +179,22 @@ Spoilage affects invoicing through credit memos and adjustments:
 
 ### Integration with Existing Verticals
 
-| Vertical | Integration Point | Data Flow |
-|----------|-------------------|-----------|
-| Quotes | Quote → Invoice conversion | Line items, pricing, discounts snapshot & lock. Only accepted quotes can generate invoices. |
-| Customers | Financial context | `paymentTerms` → due date calc, `taxExempt` → tax rate, `billingAddress` → invoice address, `pricingTier` → default discount |
-| Artwork | Billable charges | Art creation ($40 flat), revisions ($65/hr), complex custom (quoted). Referenced via `artworkId` |
-| Screen Room | Setup fee itemization | Screen burn ($15-35/screen), reclaim ($5-10), color change ($5/screen). Linked via `jobId` |
-| Production | Invoice triggers | "design" → deposit invoice, "shipped" → final invoice. Auto-flag shipped jobs with unpaid invoices |
+| Vertical    | Integration Point          | Data Flow                                                                                                                    |
+| ----------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Quotes      | Quote → Invoice conversion | Line items, pricing, discounts snapshot & lock. Only accepted quotes can generate invoices.                                  |
+| Customers   | Financial context          | `paymentTerms` → due date calc, `taxExempt` → tax rate, `billingAddress` → invoice address, `pricingTier` → default discount |
+| Artwork     | Billable charges           | Art creation ($40 flat), revisions ($65/hr), complex custom (quoted). Referenced via `artworkId`                             |
+| Screen Room | Setup fee itemization      | Screen burn ($15-35/screen), reclaim ($5-10), color change ($5/screen). Linked via `jobId`                                   |
+| Production  | Invoice triggers           | "design" → deposit invoice, "shipped" → final invoice. Auto-flag shipped jobs with unpaid invoices                           |
 
 ### Integration with Future Verticals
 
-| Vertical | Invoice Data Consumed |
-|----------|-----------------------|
-| Jobs | Quoted vs actual vs billed comparison. Profitability per job. Margin analysis. |
+| Vertical  | Invoice Data Consumed                                                                                          |
+| --------- | -------------------------------------------------------------------------------------------------------------- |
+| Jobs      | Quoted vs actual vs billed comparison. Profitability per job. Margin analysis.                                 |
 | Reporting | AR aging (0-30, 31-60, 61-90, 90+), payment velocity, customer lifetime value, revenue trends, discount impact |
-| Shipping | Shipping line items, delivery confirmation triggers final invoice, tracking numbers attached to invoices |
-| Inventory | Garment COGS flows to job costing. Size upcharges through to invoice. Spoilage absorbed in margin. |
+| Shipping  | Shipping line items, delivery confirmation triggers final invoice, tracking numbers attached to invoices       |
+| Inventory | Garment COGS flows to job costing. Size upcharges through to invoice. Spoilage absorbed in margin.             |
 
 ### Schema Dependencies
 
@@ -237,6 +237,7 @@ Garments     /garments
 **Layout:** Sticky header (invoice # + status + actions) → Customer info card → Source links (quote, job) → Line items table → Pricing summary → Payment ledger + "Record Payment" → Reminder timeline → Notes
 
 **Actions by status:**
+
 - Draft: Edit, Send, Delete
 - Sent/Open: Record Payment, Send Reminder, Void, Duplicate
 - Overdue: Record Payment, Send Reminder (escalated), Void
@@ -254,54 +255,54 @@ Garments     /garments
 
 ### Status Badges
 
-| Status | Style | Token |
-|--------|-------|-------|
-| Draft | `bg-muted text-muted-foreground` | Neutral, low emphasis |
-| Sent / Open | `bg-action/10 text-action` | Niji blue — awaiting action |
-| Partially Paid | `bg-warning/10 text-warning` | Gold — in progress |
-| Paid | `bg-success/10 text-success` | Green — complete |
-| Overdue | `bg-error/10 text-error` | Red — needs attention |
-| Void | `bg-muted text-muted-foreground` | Struck through, dimmed |
+| Status         | Style                            | Token                       |
+| -------------- | -------------------------------- | --------------------------- |
+| Draft          | `bg-muted text-muted-foreground` | Neutral, low emphasis       |
+| Sent / Open    | `bg-action/10 text-action`       | Niji blue — awaiting action |
+| Partially Paid | `bg-warning/10 text-warning`     | Gold — in progress          |
+| Paid           | `bg-success/10 text-success`     | Green — complete            |
+| Overdue        | `bg-error/10 text-error`         | Red — needs attention       |
+| Void           | `bg-muted text-muted-foreground` | Struck through, dimmed      |
 
 ### Component Reuse Strategy
 
 Extensive reuse from existing components minimizes build effort:
 
-| Existing Component | Reuse For |
-|--------------------|-----------|
-| `StatusBadge` | Extend to support InvoiceStatus |
-| `ColumnHeaderMenu` | Invoice table column sorting/filtering |
-| `CustomerCombobox` | Customer selection on invoice form |
-| `CollapsibleSection` | Invoice form sections |
-| `LineItemRow` | Invoice line items (from quotes) |
-| `PricingSummary` | Invoice pricing section |
-| `EmailPreviewModal` | Invoice email preview |
+| Existing Component   | Reuse For                              |
+| -------------------- | -------------------------------------- |
+| `StatusBadge`        | Extend to support InvoiceStatus        |
+| `ColumnHeaderMenu`   | Invoice table column sorting/filtering |
+| `CustomerCombobox`   | Customer selection on invoice form     |
+| `CollapsibleSection` | Invoice form sections                  |
+| `LineItemRow`        | Invoice line items (from quotes)       |
+| `PricingSummary`     | Invoice pricing section                |
+| `EmailPreviewModal`  | Invoice email preview                  |
 
 ### New Components Needed
 
-| Component | Purpose |
-|-----------|---------|
-| `InvoiceStatsBar` | 4 KPI cards for invoice list page |
-| `PaymentLedger` | Table of recorded payments on invoice detail |
-| `RecordPaymentSheet` | Slide-out form for recording payments |
-| `InvoiceActions` | Context-aware action buttons per status |
-| `PaymentReminderTimeline` | Visual timeline of sent/scheduled reminders |
-| `OverdueBadge` | Badge with days overdue + pulse animation |
+| Component                 | Purpose                                      |
+| ------------------------- | -------------------------------------------- |
+| `InvoiceStatsBar`         | 4 KPI cards for invoice list page            |
+| `PaymentLedger`           | Table of recorded payments on invoice detail |
+| `RecordPaymentSheet`      | Slide-out form for recording payments        |
+| `InvoiceActions`          | Context-aware action buttons per status      |
+| `PaymentReminderTimeline` | Visual timeline of sent/scheduled reminders  |
+| `OverdueBadge`            | Badge with days overdue + pulse animation    |
 
 ## 6. Legal & Compliance
 
 ### Tax Treatment: Screen Printing Is Fabrication
 
-**Critical:** In virtually all major US states, screen printing is classified as **fabrication of tangible personal property**. The *entire* charge (materials + labor + setup + design) is taxable. Separately stating labor does NOT make it exempt. The only common exemption is a valid resale certificate.
+**Critical:** In virtually all major US states, screen printing is classified as **fabrication of tangible personal property**. The _entire_ charge (materials + labor + setup + design) is taxable. Separately stating labor does NOT make it exempt. The only common exemption is a valid resale certificate.
 
-| State | Tax Rate (State) | Treatment |
-|-------|-----------------|-----------|
-| California | 7.25% + local | Fabrication. Setup/rush fees included in taxable amount. |
-| Texas | 6.25% + local (8.25% max) | Fabrication. Total sales price including all expenses. |
-| Florida | 6% + local | Fully taxable. All charges even when separately stated. |
-| New York | 4% + local (8.875% NYC) | Fabrication under Section 1105(c)(2). |
-| Ohio | 5.75% + local | Services to tangible personal property are taxable. |
-| North Carolina | 4.75% + local | Creative design charges included in taxable sales price. |
+| State          | Tax Rate (State)          | Treatment                                                |
+| -------------- | ------------------------- | -------------------------------------------------------- |
+| California     | 7.25% + local             | Fabrication. Setup/rush fees included in taxable amount. |
+| Texas          | 6.25% + local (8.25% max) | Fabrication. Total sales price including all expenses.   |
+| Florida        | 6% + local                | Fully taxable. All charges even when separately stated.  |
+| New York       | 4% + local (8.875% NYC)   | Fabrication under Section 1105(c)(2).                    |
+| Ohio           | 5.75% + local             | Services to tangible personal property are taxable.      |
+| North Carolina | 4.75% + local             | Creative design charges included in taxable sales price. |
 
 ### Required Invoice Elements (US)
 
@@ -318,24 +319,24 @@ Extensive reuse from existing components minimizes build effort:
 
 ### Data Integrity Requirements
 
-| Requirement | Implementation |
-|-------------|----------------|
+| Requirement          | Implementation                                                                 |
+| -------------------- | ------------------------------------------------------------------------------ |
 | Invoice immutability | Never modify issued invoices. Use credit memos + new invoices for corrections. |
-| Sequential numbering | Auto-increment, never skip or reuse voided numbers |
-| Audit trail | Log every action: who, what, when, before/after values. Append-only. |
-| Data retention | 7 years minimum (covers bad debt deductions, underreporting) |
-| Never hard-delete | Void invoices, never delete. Keep all financial records. |
-| PCI compliance | Never store card numbers. Use tokenized processors (Stripe/Square). |
+| Sequential numbering | Auto-increment, never skip or reuse voided numbers                             |
+| Audit trail          | Log every action: who, what, when, before/after values. Append-only.           |
+| Data retention       | 7 years minimum (covers bad debt deductions, underreporting)                   |
+| Never hard-delete    | Void invoices, never delete. Keep all financial records.                       |
+| PCI compliance       | Never store card numbers. Use tokenized processors (Stripe/Square).            |
 
 ### Accounting Integration: QuickBooks Online
 
-| Entity | Direction | Notes |
-|--------|-----------|-------|
-| Customers | Bidirectional | Name, email, address, tax-exempt |
-| Invoices | App → QBO | Line items, tax, totals, due dates |
-| Payments | App → QBO | Method, amount, applied to invoice |
-| Tax Rates | QBO → App | Pull configured rates |
-| Credit Memos | App → QBO | For refunds and adjustments |
+| Entity       | Direction     | Notes                              |
+| ------------ | ------------- | ---------------------------------- |
+| Customers    | Bidirectional | Name, email, address, tax-exempt   |
+| Invoices     | App → QBO     | Line items, tax, totals, due dates |
+| Payments     | App → QBO     | Method, amount, applied to invoice |
+| Tax Rates    | QBO → App     | Pull configured rates              |
+| Credit Memos | App → QBO     | For refunds and adjustments        |
 
 **Top integration pitfalls:** Duplicate entries (biggest risk), 2-hour sync delays (Printavo), tax rounding differences, orphan records from deleted-not-voided invoices, OAuth token expiration. Use idempotency keys and always void (never delete).
 
@@ -353,13 +354,13 @@ Extensive reuse from existing components minimizes build effort:
 
 ### Core Enums
 
-| Enum | Values |
-|------|--------|
-| `invoiceStatusEnum` | draft, sent, viewed, partial, paid, void, cancelled |
-| `billingTypeEnum` | full, deposit, progress, final |
-| `paymentMethodEnum` | cash, check, credit-card, debit-card, ach, venmo, zelle, paypal, other |
+| Enum                      | Values                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------- |
+| `invoiceStatusEnum`       | draft, sent, viewed, partial, paid, void, cancelled                                   |
+| `billingTypeEnum`         | full, deposit, progress, final                                                        |
+| `paymentMethodEnum`       | cash, check, credit-card, debit-card, ach, venmo, zelle, paypal, other                |
 | `invoiceLineItemTypeEnum` | garment, decoration, setup, artwork, shipping, rush, discount, tax, adjustment, other |
-| `creditMemoReasonEnum` | overpayment, return, defect, pricing-error, void-partial-paid, goodwill, other |
+| `creditMemoReasonEnum`    | overpayment, return, defect, pricing-error, void-partial-paid, goodwill, other        |
 
 ### Invoice Schema (Key Fields)
 
@@ -402,12 +403,12 @@ invoiceSchema = z.object({
 
 ### New Files Needed
 
-| File | Purpose |
-|------|---------|
-| `lib/schemas/invoice.ts` | Invoice schema + line item, payment, discount sub-schemas + all enums |
-| `lib/schemas/credit-memo.ts` | Credit memo schema for adjustments and voids |
-| Update `lib/constants.ts` | Add status labels, colors, billing type labels, payment method labels |
-| Update `lib/schemas/note.ts` | Add "invoice" to `noteEntityTypeEnum` |
+| File                         | Purpose                                                               |
+| ---------------------------- | --------------------------------------------------------------------- |
+| `lib/schemas/invoice.ts`     | Invoice schema + line item, payment, discount sub-schemas + all enums |
+| `lib/schemas/credit-memo.ts` | Credit memo schema for adjustments and voids                          |
+| Update `lib/constants.ts`    | Add status labels, colors, billing type labels, payment method labels |
+| Update `lib/schemas/note.ts` | Add "invoice" to `noteEntityTypeEnum`                                 |
 
 ## 8. Build Sequence
 
@@ -498,27 +499,27 @@ Only Printavo offers basic P&L per order. We show real-time margin: garment cost
 
 Critical decisions made during user interview with 4Ink owner. These override research recommendations where they differ.
 
-| # | Decision | Answer | Rationale |
-|---|----------|--------|-----------|
-| 1 | Current invoicing state | QuickBooks (manual entry) | Eliminating double-entry is the core value prop |
-| 2 | Line item display | Configurable per invoice | Toggle between itemized and bundled views |
-| 3 | Deposit policy | Varies by customer | Smart defaults from tier + history |
-| 4 | Accounting software | QuickBooks (Online or Desktop TBD) | Need to confirm with Chris |
-| 5 | Quote-to-invoice conversion | Manual one-click | Allows production changes before invoicing |
-| 6 | Payment processor | **Square** (4Ink's existing) | Don't fix what isn't broken |
-| 7 | Customer-facing view | Separate vertical (customer portal) | All external views handled in portal vertical |
-| 8 | Progress billing | Deposit + final only | Single invoice, deposits as partial payments |
-| 9 | Deposit UX | Smart default with manual override | % or flat amount, driven by customer context |
-| 10 | Invoice numbering | Match QuickBooks scheme | Ensures clean sync when integrated |
-| 11 | Read receipts | Phase 2 (with customer portal) | Build status infrastructure now |
-| 12 | Change tracking | Lightweight diff log | Track quote-to-invoice divergence internally |
-| 13 | Payment reminders | Gentle cadence | 3 days before, on due, 3/7 days overdue |
-| 14 | Late fees | Yes, configurable per customer | Auto-calculate, separate line item |
-| 15 | Credit memos | Formal CM documents | Linked to original invoice, needed for QB sync |
-| 16 | Phase 1 scope | Full internal flow | Schema + list + detail + create + payments + customer tab |
-| 17 | Customer-furnished garments | Supported | Print/setup only, no garment charge |
-| 18 | Multi-state tax | Mostly IN, some KY | Tax rate per invoice (not hardcoded) |
-| 19 | AR aging | Stats bar on list page | Detailed report deferred to reporting vertical |
+| #   | Decision                    | Answer                              | Rationale                                                 |
+| --- | --------------------------- | ----------------------------------- | --------------------------------------------------------- |
+| 1   | Current invoicing state     | QuickBooks (manual entry)           | Eliminating double-entry is the core value prop           |
+| 2   | Line item display           | Configurable per invoice            | Toggle between itemized and bundled views                 |
+| 3   | Deposit policy              | Varies by customer                  | Smart defaults from tier + history                        |
+| 4   | Accounting software         | QuickBooks (Online or Desktop TBD)  | Need to confirm with Chris                                |
+| 5   | Quote-to-invoice conversion | Manual one-click                    | Allows production changes before invoicing                |
+| 6   | Payment processor           | **Square** (4Ink's existing)        | Don't fix what isn't broken                               |
+| 7   | Customer-facing view        | Separate vertical (customer portal) | All external views handled in portal vertical             |
+| 8   | Progress billing            | Deposit + final only                | Single invoice, deposits as partial payments              |
+| 9   | Deposit UX                  | Smart default with manual override  | % or flat amount, driven by customer context              |
+| 10  | Invoice numbering           | Match QuickBooks scheme             | Ensures clean sync when integrated                        |
+| 11  | Read receipts               | Phase 2 (with customer portal)      | Build status infrastructure now                           |
+| 12  | Change tracking             | Lightweight diff log                | Track quote-to-invoice divergence internally              |
+| 13  | Payment reminders           | Gentle cadence                      | 3 days before, on due, 3/7 days overdue                   |
+| 14  | Late fees                   | Yes, configurable per customer      | Auto-calculate, separate line item                        |
+| 15  | Credit memos                | Formal CM documents                 | Linked to original invoice, needed for QB sync            |
+| 16  | Phase 1 scope               | Full internal flow                  | Schema + list + detail + create + payments + customer tab |
+| 17  | Customer-furnished garments | Supported                           | Print/setup only, no garment charge                       |
+| 18  | Multi-state tax             | Mostly IN, some KY                  | Tax rate per invoice (not hardcoded)                      |
+| 19  | AR aging                    | Stats bar on list page              | Detailed report deferred to reporting vertical            |
 
 ### Key Design Decision: Single Invoice with Partial Payments
 
@@ -554,14 +555,14 @@ Research recommended Stripe. **4Ink already uses Square.** Default to Square for
 
 All agent research was captured in detailed markdown documents. These are the primary sources for this synthesis.
 
-| Document | Path | Contents |
-|----------|------|----------|
-| Industry Best Practices | `docs/spikes/invoicing-industry-practices.md` | 8-step quote-to-cash pipeline, line item categories & pricing, payment terms, rush fee tiers, spoilage standards, top 10 pain points |
-| Competitor Analysis | `docs/spikes/invoicing-competitor-analysis.md` | Deep dive on PrintLife, Printavo, shopVOX, DecoNetwork, InkSoft, GraphicsFlow. Feature matrix, pricing comparison, differentiation opportunities |
-| Integration Architecture | `docs/spikes/invoicing-integration-map.md` | Data flow diagrams, schema dependency map, field mapping (quote → invoice), integration with 5 existing + 4 future verticals, build order |
-| UX Patterns | `docs/spikes/invoicing-ux-patterns.md` | Route map, 3 key screen designs (list, detail, new), status badges, component reuse (7 existing + 6 new), user journeys, anti-patterns |
-| Legal & Compliance | `docs/spikes/invoicing-compliance.md` | State tax treatment (8 states), required invoice elements, data integrity, record retention, PCI DSS, ACH, QB integration entity mapping |
-| Decision Record | `docs/spikes/invoicing-decisions.md` | Full 19-decision record from user interview with detailed rationale for key decisions, open items for future resolution |
+| Document                 | Path                                           | Contents                                                                                                                                         |
+| ------------------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Industry Best Practices  | `docs/spikes/invoicing-industry-practices.md`  | 8-step quote-to-cash pipeline, line item categories & pricing, payment terms, rush fee tiers, spoilage standards, top 10 pain points             |
+| Competitor Analysis      | `docs/spikes/invoicing-competitor-analysis.md` | Deep dive on PrintLife, Printavo, shopVOX, DecoNetwork, InkSoft, GraphicsFlow. Feature matrix, pricing comparison, differentiation opportunities |
+| Integration Architecture | `docs/spikes/invoicing-integration-map.md`     | Data flow diagrams, schema dependency map, field mapping (quote → invoice), integration with 5 existing + 4 future verticals, build order        |
+| UX Patterns              | `docs/spikes/invoicing-ux-patterns.md`         | Route map, 3 key screen designs (list, detail, new), status badges, component reuse (7 existing + 6 new), user journeys, anti-patterns           |
+| Legal & Compliance       | `docs/spikes/invoicing-compliance.md`          | State tax treatment (8 states), required invoice elements, data integrity, record retention, PCI DSS, ACH, QB integration entity mapping         |
+| Decision Record          | `docs/spikes/invoicing-decisions.md`           | Full 19-decision record from user interview with detailed rationale for key decisions, open items for future resolution                          |
 
 ---
 

@@ -2,7 +2,7 @@
 // The lib/config/__tests__/config.test.ts file tests the runtime gateway
 // (parseConfig helper, slug tuples, label lookups).
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from 'vitest'
 import {
   configEntryBase,
   domainsConfigSchema,
@@ -13,460 +13,448 @@ import {
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
   pipelineFieldsConfigSchema,
-} from "../index";
+} from '../index'
 
-import rawDomains from "../../domains.json";
-import rawProducts from "../../products.json";
-import rawTools from "../../tools.json";
-import rawStages from "../../stages.json";
-import rawTags from "../../tags.json";
-import rawPipelineTypes from "../../pipeline-types.json";
-import rawPipelineGates from "../../pipeline-gates.json";
-import rawPipelineFields from "../../pipeline-fields.json";
+import rawDomains from '../../domains.json'
+import rawProducts from '../../products.json'
+import rawTools from '../../tools.json'
+import rawStages from '../../stages.json'
+import rawTags from '../../tags.json'
+import rawPipelineTypes from '../../pipeline-types.json'
+import rawPipelineGates from '../../pipeline-gates.json'
+import rawPipelineFields from '../../pipeline-fields.json'
 
 // ── Data Validation (JSON against schemas) ─────────────────────────
 
-describe("config data validates against schemas", () => {
-  it("domains.json", () => {
-    expect(() => domainsConfigSchema.parse(rawDomains)).not.toThrow();
-  });
+describe('config data validates against schemas', () => {
+  it('domains.json', () => {
+    expect(() => domainsConfigSchema.parse(rawDomains)).not.toThrow()
+  })
 
-  it("products.json", () => {
-    expect(() => productsConfigSchema.parse(rawProducts)).not.toThrow();
-  });
+  it('products.json', () => {
+    expect(() => productsConfigSchema.parse(rawProducts)).not.toThrow()
+  })
 
-  it("tools.json", () => {
-    expect(() => toolsConfigSchema.parse(rawTools)).not.toThrow();
-  });
+  it('tools.json', () => {
+    expect(() => toolsConfigSchema.parse(rawTools)).not.toThrow()
+  })
 
-  it("stages.json", () => {
-    expect(() => stagesConfigSchema.parse(rawStages)).not.toThrow();
-  });
+  it('stages.json', () => {
+    expect(() => stagesConfigSchema.parse(rawStages)).not.toThrow()
+  })
 
-  it("tags.json", () => {
-    expect(() => tagsConfigSchema.parse(rawTags)).not.toThrow();
-  });
+  it('tags.json', () => {
+    expect(() => tagsConfigSchema.parse(rawTags)).not.toThrow()
+  })
 
-  it("pipeline-types.json", () => {
-    expect(() => pipelineTypesConfigSchema.parse(rawPipelineTypes)).not.toThrow();
-  });
+  it('pipeline-types.json', () => {
+    expect(() => pipelineTypesConfigSchema.parse(rawPipelineTypes)).not.toThrow()
+  })
 
-  it("pipeline-gates.json", () => {
-    expect(() => pipelineGatesConfigSchema.parse(rawPipelineGates)).not.toThrow();
-  });
+  it('pipeline-gates.json', () => {
+    expect(() => pipelineGatesConfigSchema.parse(rawPipelineGates)).not.toThrow()
+  })
 
-  it("pipeline-fields.json", () => {
-    expect(() => pipelineFieldsConfigSchema.parse(rawPipelineFields)).not.toThrow();
-  });
-});
+  it('pipeline-fields.json', () => {
+    expect(() => pipelineFieldsConfigSchema.parse(rawPipelineFields)).not.toThrow()
+  })
+})
 
 // ── Negative Tests (contract enforcement) ──────────────────────────
 
-describe("configEntryBase contract", () => {
-  it("rejects missing description", () => {
+describe('configEntryBase contract', () => {
+  it('rejects missing description', () => {
+    expect(() => configEntryBase.parse({ slug: 'valid', label: 'Valid' })).toThrow()
+  })
+
+  it('rejects empty description', () => {
     expect(() =>
-      configEntryBase.parse({ slug: "valid", label: "Valid" }),
-    ).toThrow();
-  });
+      configEntryBase.parse({ slug: 'valid', label: 'Valid', description: '' })
+    ).toThrow()
+  })
+})
 
-  it("rejects empty description", () => {
+describe('productsConfigSchema rejects', () => {
+  const base = { slug: 'test', label: 'Test', description: 'D' }
+
+  it('missing icon', () => {
+    expect(() => productsConfigSchema.parse([{ ...base, route: '/test' }])).toThrow()
+  })
+
+  it('invalid route format (no leading slash)', () => {
     expect(() =>
-      configEntryBase.parse({ slug: "valid", label: "Valid", description: "" }),
-    ).toThrow();
-  });
-});
+      productsConfigSchema.parse([{ ...base, route: 'test', icon: 'TestIcon' }])
+    ).toThrow()
+  })
 
-describe("productsConfigSchema rejects", () => {
-  const base = { slug: "test", label: "Test", description: "D" };
-
-  it("missing icon", () => {
+  it('invalid icon format (not PascalCase)', () => {
     expect(() =>
-      productsConfigSchema.parse([{ ...base, route: "/test" }]),
-    ).toThrow();
-  });
+      productsConfigSchema.parse([{ ...base, route: '/test', icon: 'testIcon' }])
+    ).toThrow()
+  })
+})
 
-  it("invalid route format (no leading slash)", () => {
-    expect(() =>
-      productsConfigSchema.parse([{ ...base, route: "test", icon: "TestIcon" }]),
-    ).toThrow();
-  });
+describe('toolsConfigSchema rejects', () => {
+  const base = { slug: 'test', label: 'Test', description: 'D' }
 
-  it("invalid icon format (not PascalCase)", () => {
-    expect(() =>
-      productsConfigSchema.parse([{ ...base, route: "/test", icon: "testIcon" }]),
-    ).toThrow();
-  });
-});
+  it('missing icon', () => {
+    expect(() => toolsConfigSchema.parse([base])).toThrow()
+  })
 
-describe("toolsConfigSchema rejects", () => {
-  const base = { slug: "test", label: "Test", description: "D" };
+  it('invalid icon format (not PascalCase)', () => {
+    expect(() => toolsConfigSchema.parse([{ ...base, icon: 'lowercase' }])).toThrow()
+  })
+})
 
-  it("missing icon", () => {
-    expect(() =>
-      toolsConfigSchema.parse([base]),
-    ).toThrow();
-  });
+describe('tagsConfigSchema rejects', () => {
+  const base = { slug: 'test', label: 'Test', description: 'D' }
 
-  it("invalid icon format (not PascalCase)", () => {
-    expect(() =>
-      toolsConfigSchema.parse([{ ...base, icon: "lowercase" }]),
-    ).toThrow();
-  });
-});
+  it('invalid color name', () => {
+    expect(() => tagsConfigSchema.parse([{ ...base, color: 'magenta' }])).toThrow()
+  })
 
-describe("tagsConfigSchema rejects", () => {
-  const base = { slug: "test", label: "Test", description: "D" };
-
-  it("invalid color name", () => {
-    expect(() =>
-      tagsConfigSchema.parse([{ ...base, color: "magenta" }]),
-    ).toThrow();
-  });
-
-  it("accepts valid color names", () => {
-    for (const color of ["green", "blue", "amber", "purple"]) {
-      expect(() =>
-        tagsConfigSchema.parse([{ ...base, color }]),
-      ).not.toThrow();
+  it('accepts valid color names', () => {
+    for (const color of ['green', 'blue', 'amber', 'purple']) {
+      expect(() => tagsConfigSchema.parse([{ ...base, color }])).not.toThrow()
     }
-  });
-});
+  })
+})
 
-describe("pipelineTypesConfigSchema rejects", () => {
-  it("unknown stage slugs", () => {
+describe('pipelineTypesConfigSchema rejects', () => {
+  it('unknown stage slugs', () => {
     expect(() =>
       pipelineTypesConfigSchema.parse([
-        { slug: "test", label: "Test", description: "D", stages: ["nonexistent-stage"] },
-      ]),
-    ).toThrow();
-  });
-});
+        { slug: 'test', label: 'Test', description: 'D', stages: ['nonexistent-stage'] },
+      ])
+    ).toThrow()
+  })
+})
 
-describe("pipelineGatesConfigSchema rejects", () => {
-  it("missing description on gate stage entry", () => {
+describe('pipelineGatesConfigSchema rejects', () => {
+  it('missing description on gate stage entry', () => {
     expect(() =>
       pipelineGatesConfigSchema.parse({
         stages: {
           test: {
             artifacts: [],
-            gate: "artifact-exists",
+            gate: 'artifact-exists',
             next: null,
           },
         },
-        "auto-overrides": {},
-      }),
-    ).toThrow();
-  });
+        'auto-overrides': {},
+      })
+    ).toThrow()
+  })
 
-  it("invalid gate type", () => {
+  it('invalid gate type', () => {
     expect(() =>
       pipelineGatesConfigSchema.parse({
         stages: {
           test: {
-            description: "D",
+            description: 'D',
             artifacts: [],
-            gate: "unknown-gate-type",
+            gate: 'unknown-gate-type',
             next: null,
           },
         },
-        "auto-overrides": {},
-      }),
-    ).toThrow();
-  });
-});
+        'auto-overrides': {},
+      })
+    ).toThrow()
+  })
+})
 
-describe("pipelineFieldsConfigSchema rejects", () => {
+describe('pipelineFieldsConfigSchema rejects', () => {
   // Shared valid display object — added to all negative tests so each tests exactly one invalid condition
-  const validDisplay = { section: "header" as const, label: "X", order: 1 };
+  const validDisplay = { section: 'header' as const, label: 'X', order: 1 }
 
-  it("invalid jsonType", () => {
+  it('invalid jsonType', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "map",
-          description: "D",
+          jsonType: 'map',
+          description: 'D',
           updatable: false,
           required: false,
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("missing description", () => {
+  it('missing description', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
+          jsonType: 'string',
           updatable: false,
           required: false,
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("empty description", () => {
+  it('empty description', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "",
+          jsonType: 'string',
+          description: '',
           updatable: false,
           required: false,
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("missing display metadata", () => {
+  it('missing display metadata', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("bad flag format (no leading dashes)", () => {
+  it('bad flag format (no leading dashes)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "type",
+          flag: 'type',
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("bad negateFlag format (no --no- prefix)", () => {
+  it('bad negateFlag format (no --no- prefix)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "boolean",
-          description: "D",
+          jsonType: 'boolean',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "--auto",
-          negateFlag: "--disable-auto",
+          flag: '--auto',
+          negateFlag: '--disable-auto',
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid inputFormat", () => {
+  it('invalid inputFormat', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "array",
-          description: "D",
+          jsonType: 'array',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "--items",
-          inputFormat: "tsv",
+          flag: '--items',
+          inputFormat: 'tsv',
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid validate.match value", () => {
+  it('invalid validate.match value', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "--thing",
-          validate: { source: "config/products.json", match: "regex" },
+          flag: '--thing',
+          validate: { source: 'config/products.json', match: 'regex' },
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid validate.type value", () => {
+  it('invalid validate.type value', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "number",
-          description: "D",
+          jsonType: 'number',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "--ticket",
-          validate: { type: "jira-ticket" },
+          flag: '--ticket',
+          validate: { type: 'jira-ticket' },
           display: validDisplay,
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("updatable field without flag (refine)", () => {
+  it('updatable field without flag (refine)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: true,
           required: false,
-          display: { section: "header", label: "Bad", order: 1 },
+          display: { section: 'header', label: 'Bad', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("non-updatable field with flag (refine)", () => {
+  it('non-updatable field with flag (refine)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          flag: "--bad",
-          display: { section: "header", label: "Bad", order: 1 },
+          flag: '--bad',
+          display: { section: 'header', label: 'Bad', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("boolean with flag but missing negateFlag (refine)", () => {
+  it('boolean with flag but missing negateFlag (refine)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "boolean",
-          description: "D",
+          jsonType: 'boolean',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "--toggle",
-          display: { section: "header", label: "Toggle", order: 1 },
+          flag: '--toggle',
+          display: { section: 'header', label: 'Toggle', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("non-boolean with negateFlag (refine)", () => {
+  it('non-boolean with negateFlag (refine)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: true,
           required: false,
-          flag: "--name",
-          negateFlag: "--no-name",
-          display: { section: "header", label: "Name", order: 1 },
+          flag: '--name',
+          negateFlag: '--no-name',
+          display: { section: 'header', label: 'Name', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid display section value", () => {
+  it('invalid display section value', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "footer", label: "X", order: 1 },
+          display: { section: 'footer', label: 'X', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("missing display label", () => {
+  it('missing display label', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "header", order: 1 },
+          display: { section: 'header', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("empty display label", () => {
+  it('empty display label', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "header", label: "", order: 1 },
+          display: { section: 'header', label: '', order: 1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid display format value", () => {
+  it('invalid display format value', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "header", label: "X", order: 1, format: "markdown" },
+          display: { section: 'header', label: 'X', order: 1, format: 'markdown' },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid display order (zero)", () => {
+  it('invalid display order (zero)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "header", label: "X", order: 0 },
+          display: { section: 'header', label: 'X', order: 0 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid display order (negative)", () => {
+  it('invalid display order (negative)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "header", label: "X", order: -1 },
+          display: { section: 'header', label: 'X', order: -1 },
         },
-      }),
-    ).toThrow();
-  });
+      })
+    ).toThrow()
+  })
 
-  it("invalid display order (non-integer)", () => {
+  it('invalid display order (non-integer)', () => {
     expect(() =>
       pipelineFieldsConfigSchema.parse({
         bad: {
-          jsonType: "string",
-          description: "D",
+          jsonType: 'string',
+          description: 'D',
           updatable: false,
           required: false,
-          display: { section: "header", label: "X", order: 1.5 },
+          display: { section: 'header', label: 'X', order: 1.5 },
         },
-      }),
-    ).toThrow();
-  });
-});
+      })
+    ).toThrow()
+  })
+})

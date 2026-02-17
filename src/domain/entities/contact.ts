@@ -1,12 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod'
 
-export const contactRoleEnum = z.enum([
-  "ordering",
-  "art-approver",
-  "billing",
-  "owner",
-  "other",
-]);
+export const contactRoleEnum = z.enum(['ordering', 'art-approver', 'billing', 'owner', 'other'])
 
 export const contactSchema = z.object({
   id: z.string().uuid(),
@@ -17,7 +11,7 @@ export const contactSchema = z.object({
   isPrimary: z.boolean().default(false),
   notes: z.string().optional(),
   groupId: z.string().uuid().optional(),
-});
+})
 
-export type ContactRole = z.infer<typeof contactRoleEnum>;
-export type Contact = z.infer<typeof contactSchema>;
+export type ContactRole = z.infer<typeof contactRoleEnum>
+export type Contact = z.infer<typeof contactSchema>

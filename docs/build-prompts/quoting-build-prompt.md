@@ -26,16 +26,19 @@ Read these files in order before doing anything:
 Build the complete Quoting workflow: 3 pages + 3 reusable components + expanded mock data.
 
 **Pages:**
+
 - `/quotes` — Quotes List (DataTable, status filters, search, quick actions, duplicate)
 - `/quotes/new` — New Quote Form (single-page, instant pricing, S&S color swatch, line items)
 - `/quotes/[id]` — Quote Detail (read-only view, action buttons, breadcrumbs)
 
 **Reusable Components:**
+
 - `ColorSwatchPicker` — S&S-style dense color grid (white text overlay via `swatchTextColor`, search, favorites)
 - `CustomerCombobox` — Type-ahead with "Add New Customer" modal
 - `EmailPreviewModal` — "Send to Customer" mockup (doesn't actually send)
 
 **Data Layer:**
+
 - Update Zod schemas to mirror S&S API field shapes (see API reference doc)
 - Expand mock data: 6 quotes (all statuses), 30-50 colors with hex + swatchTextColor, 5 garments with sizes/prices
 
@@ -111,6 +114,7 @@ Create a team called `quoting-build`. Follow the orchestration patterns in `docs
 ### Quality Standards
 
 Every component must pass the quality checklist in `CLAUDE.md`:
+
 - Visual hierarchy clear — primary action most prominent
 - Spacing uses Tailwind tokens only (no hardcoded px)
 - Colors use semantic tokens (`text-action`, `bg-action`, `shadow-action`) — never palette colors

@@ -33,6 +33,7 @@ Conduct a comprehensive quality review of the {VERTICAL} vertical: code quality,
 ## Output
 
 Produce a KB session doc at `{KB_DIR}/` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=review, tags=[learning]
 - Pass/fail matrix per audit dimension
 - Issues found and whether fixed or deferred

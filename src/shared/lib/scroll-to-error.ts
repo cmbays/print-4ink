@@ -11,16 +11,14 @@ export function scrollToFirstError() {
   // before we attempt to find and scroll to the error element.
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const errorEl = document.querySelector('[role="alert"]');
+      const errorEl = document.querySelector('[role="alert"]')
       if (errorEl) {
-        const prefersReducedMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         errorEl.scrollIntoView({
-          behavior: prefersReducedMotion ? "auto" : "smooth",
-          block: "center",
-        });
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'center',
+        })
       }
-    });
-  });
+    })
+  })
 }

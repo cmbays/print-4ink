@@ -8,18 +8,13 @@
 // --- SERVER or CLIENT decision ---
 // If the page has search/filter via URL params: "use client" + useSearchParams()
 // If the page is purely rendering mock data: server component (no directive)
-"use client";
+'use client'
 
-import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@shared/ui/primitives/card";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Input } from "@shared/ui/primitives/input";
+import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@shared/ui/primitives/card'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Input } from '@shared/ui/primitives/input'
 import {
   Table,
   TableBody,
@@ -27,26 +22,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
+} from '@shared/ui/primitives/table'
 // import { PageHeader } from "@/components/features/page-header";
 // import { StatusBadge } from "@/components/features/status-badge";
 // import { PriorityBadge } from "@/components/features/priority-badge";
 // import { EmptyState } from "@/components/features/empty-state";
 // import { DataTable } from "@/components/features/data-table";
-import { Search } from "lucide-react";
-import { cn } from "@shared/lib/cn";
+import { Search } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
 
 // Import mock data + constants for this domain
 // import { jobs } from "@/lib/mock-data";
 // import { PRODUCTION_STATE_LABELS, PRODUCTION_STATE_COLORS } from "@domain/constants";
 
 export default function ExampleListPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   // URL state for filters
-  const query = searchParams.get("q") ?? "";
-  const statusFilter = searchParams.get("status") ?? "all";
+  const query = searchParams.get('q') ?? ''
+  const statusFilter = searchParams.get('status') ?? 'all'
 
   // Filter logic
   // const filtered = items.filter(item => {
@@ -60,12 +55,8 @@ export default function ExampleListPage() {
       {/* Page header */}
       {/* <PageHeader title="Jobs" subtitle="Manage production jobs" action={...} /> */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {/* Page title from APP_FLOW */}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {/* Subtitle */}
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{/* Page title from APP_FLOW */}</h1>
+        <p className="text-sm text-muted-foreground">{/* Subtitle */}</p>
       </div>
 
       {/* Toolbar: search + filters + optional action button */}
@@ -77,13 +68,13 @@ export default function ExampleListPage() {
             className="pl-9"
             value={query}
             onChange={(e) => {
-              const params = new URLSearchParams(searchParams.toString());
+              const params = new URLSearchParams(searchParams.toString())
               if (e.target.value) {
-                params.set("q", e.target.value);
+                params.set('q', e.target.value)
               } else {
-                params.delete("q");
+                params.delete('q')
               }
-              router.replace(`?${params.toString()}`);
+              router.replace(`?${params.toString()}`)
             }}
           />
         </div>
@@ -138,5 +129,5 @@ export default function ExampleListPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

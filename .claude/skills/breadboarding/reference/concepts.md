@@ -15,6 +15,7 @@ A breadboard maps a system using three types of interactive elements (plus Place
 Things users **see and interact with**. These are tangible entry points into the system.
 
 **Examples**:
+
 - Customer Combobox (type-ahead search input)
 - "Save as Draft" button
 - Status filter tabs (All | Draft | Sent | ...)
@@ -23,6 +24,7 @@ Things users **see and interact with**. These are tangible entry points into the
 - "Remove" link on a line item row
 
 **NOT UI affordances** (these are layout/decoration, not interactive):
+
 - Section headings
 - Static labels
 - Separator lines
@@ -33,6 +35,7 @@ Things users **see and interact with**. These are tangible entry points into the
 Functions, handlers, and computations that **execute when triggered**. Users don't see these directly, but they're the machinery that makes UI affordances work.
 
 **Phase 1 examples** (client-side):
+
 - `calculateLineTotal(garmentPrice, colors, locations, qty)` — pricing formula
 - `filterQuotes(status, searchQuery)` — filter array + update URL params
 - `addLineItem()` — append empty row to form state
@@ -40,6 +43,7 @@ Functions, handlers, and computations that **execute when triggered**. Users don
 - `toggleFavoriteColor(colorId)` — add/remove from favorites list
 
 **Phase 2 examples** (server-side):
+
 - `createQuote(data)` — API route, writes to database
 - `sendQuoteEmail(quoteId, recipientEmail)` — email service call
 - `fetchCustomers(query)` — database query with search
@@ -50,6 +54,7 @@ Functions, handlers, and computations that **execute when triggered**. Users don
 State that **persists and gets read/written**. Not ephemeral UI state like "is this dropdown open" — stores hold data that other affordances depend on.
 
 **Examples**:
+
 - URL search params (`?status=draft&q=brewery`) — persists across navigation
 - Form state (line items array, selected customer) — persists during form session
 - Mock data imports (quotes, customers, garments) — read-only in Phase 1
@@ -67,12 +72,14 @@ A **Place** is a bounded context where specific affordances become available. Pl
 If you can't interact with elements **behind** something, you've entered a different Place.
 
 **Creates a new Place** (blocks what's behind):
+
 - A different page route (`/quotes` → `/quotes/new`)
 - A modal dialog (background is dimmed/inert)
 - A full-screen overlay
 - A confirmation dialog
 
 **Does NOT create a new Place** (local state change):
+
 - Accordion expand/collapse (content behind is still interactive)
 - Dropdown menu open (closes on outside click, content behind accessible)
 - Tooltip hover
@@ -141,14 +148,14 @@ U-qty-input type
 
 Name actual things, not abstractions.
 
-| Good | Bad |
-|------|-----|
-| Customer Combobox | search input |
+| Good                   | Bad              |
+| ---------------------- | ---------------- |
+| Customer Combobox      | search input     |
 | "Save as Draft" button | secondary action |
-| Status filter tabs | filter mechanism |
-| Color swatch square | color selector |
-| `calculateLineTotal()` | pricing logic |
-| `filterQuotes(status)` | filter function |
+| Status filter tabs     | filter mechanism |
+| Color swatch square    | color selector   |
+| `calculateLineTotal()` | pricing logic    |
+| `filterQuotes(status)` | filter function  |
 
 If you can't name it specifically, you probably don't understand the design yet. Go back to the scope definition or journey design.
 
@@ -165,6 +172,7 @@ Affordance groupings naturally reveal component boundaries:
 ### Shared Component Indicators
 
 A group of affordances should become a shared component when:
+
 - They appear in 2+ Places or 2+ verticals
 - They have their own internal state (e.g., ColorSwatchPicker has search, favorites, selection)
 - They're complex enough to warrant their own file (5+ affordances)
@@ -172,6 +180,7 @@ A group of affordances should become a shared component when:
 ### Vertical-Specific Component Indicators
 
 Keep as local component when:
+
 - Only used in one Place
 - No internal state beyond what the parent manages
 - Simple enough to be inline (1-3 affordances)
@@ -213,12 +222,13 @@ The reference is a **UI affordance** -- it represents "this widget/component ren
 
 In affordance tables, list the reference as a UI affordance:
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U1 | P1 | page-header | Edit button | click | -> N1 | -- |
-| _letter-browser | P1 | -- | Widget reference | -- | -> P3 | -- |
+| #                | Place | Component   | Affordance       | Control | Wires Out | Returns To |
+| ---------------- | ----- | ----------- | ---------------- | ------- | --------- | ---------- |
+| U1               | P1    | page-header | Edit button      | click   | -> N1     | --         |
+| \_letter-browser | P1    | --          | Widget reference | --      | -> P3     | --         |
 
 Style place references with a dashed border to distinguish them in Mermaid:
+
 ```
 classDef placeRef fill:#FFB3BA,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5
 ```
@@ -238,11 +248,11 @@ If one mode includes everything from another plus more, show this with a **place
 
 In affordance tables for the extended place:
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To | Notes |
-|---|-------|-----------|------------|---------|-----------|------------|-------|
-| _letter-browser (Read) | P4 | -- | Inherits all of P3 | -- | -> P3 | -- | |
-| U3 | P4 | edit-toolbar | Add button | click | -> N3 | -- | NEW |
-| U4 | P4 | edit-toolbar | Edit button | click | -> N4 | -- | NEW |
+| #                       | Place | Component    | Affordance         | Control | Wires Out | Returns To | Notes |
+| ----------------------- | ----- | ------------ | ------------------ | ------- | --------- | ---------- | ----- |
+| \_letter-browser (Read) | P4    | --           | Inherits all of P3 | --      | -> P3     | --         |       |
+| U3                      | P4    | edit-toolbar | Add button         | click   | -> N3     | --         | NEW   |
+| U4                      | P4    | edit-toolbar | Edit button        | click   | -> N4     | --         | NEW   |
 
 The state flag (e.g., `editMode$`) that switches between modes is a **navigation mechanism**, not a data store. Don't include it as an S in either place.
 
@@ -253,16 +263,17 @@ The state flag (e.g., `editMode$`) that switches between modes is a **navigation
 A **subplace** is a defined subset of a Place -- a contained area that groups related affordances. Use hierarchical IDs: `P2.1`, `P2.2`, etc.
 
 Use subplaces when:
+
 - A Place contains multiple distinct widgets or sections
 - You're detailing one part of a larger Place
 - You want to show what's in scope vs out of scope
 
 In affordance tables, use the subplace ID in the Place column:
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U3 | P2.1 | sales-widget | "Refresh" button | click | -> N4 | -- |
-| U7 | P2.2 | activity-feed | activity list | render | -- | -- |
+| #   | Place | Component     | Affordance       | Control | Wires Out | Returns To |
+| --- | ----- | ------------- | ---------------- | ------- | --------- | ---------- |
+| U3  | P2.1  | sales-widget  | "Refresh" button | click   | -> N4     | --         |
+| U7  | P2.2  | activity-feed | activity list    | render  | --        | --         |
 
 In Mermaid, nest the subplace subgraph inside the parent. Use the same background color (no distinct fill) -- the subplace is part of the parent, not a separate Place. Add a placeholder sibling to show there's more on the page that you're not detailing:
 
@@ -276,11 +287,12 @@ otherContent[["... other page content ..."]]
 
 The database and resolvers aren't floating infrastructure -- they're a **Place** with their own affordances. Model them just like any other Place:
 
-| # | Place | Description |
-|---|-------|-------------|
-| P4 | Backend | API resolvers and database |
+| #   | Place   | Description                |
+| --- | ------- | -------------------------- |
+| P4  | Backend | API resolvers and database |
 
 Backend affordances follow the same rules:
+
 - **Code affordances (N)**: API routes, resolver functions, server actions
 - **Data stores (S)**: Database tables, cache entries
 
@@ -289,6 +301,7 @@ Database tables (S) belong inside the Backend Place alongside the resolvers (N) 
 **Screen Print Pro convention**: In Phase 1, Backend is not built -- code affordances in the Backend Place are tagged Phase 2. In Phase 2, the Backend Place contains Supabase tables (S), Drizzle queries (N), and server actions (N).
 
 When spanning frontend + backend, label both as Places:
+
 ```
 P1: Quotes List (Frontend)
 P4: Backend (API + DB)
@@ -313,11 +326,13 @@ Look for sections where tracing the wiring reveals a "pinch point" -- many affor
 ### How to Chunk
 
 1. **In the main diagram**, replace the subsystem with a single stadium-shaped node:
+
    ```
    dynamicForm[["CHUNK: dynamic-form"]]
    ```
 
 2. **Wire to/from the chunk** using the boundary signals:
+
    ```
    N24 -->|formDefinition| dynamicForm
    dynamicForm -.->|valid$| U8
@@ -338,11 +353,11 @@ Chunks often map naturally to reusable components -- they become the shared comp
 
 An affordance is something you can **act upon** that has meaningful identity in the system. Several things look like affordances but are actually just implementation mechanisms:
 
-| Type | Example | Why it's not an affordance |
-|------|---------|---------------------------|
-| **Visual containers** | `modal-frame wrapper` | You can't act on a wrapper -- it's just a Place boundary |
-| **Internal transforms** | `letterDataTransform()` | Implementation detail of the caller -- not separately actionable |
-| **Navigation mechanisms** | `modalService.open()` | Just the "how" of getting to a Place -- wire to the destination directly |
+| Type                      | Example                 | Why it's not an affordance                                               |
+| ------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| **Visual containers**     | `modal-frame wrapper`   | You can't act on a wrapper -- it's just a Place boundary                 |
+| **Internal transforms**   | `letterDataTransform()` | Implementation detail of the caller -- not separately actionable         |
+| **Navigation mechanisms** | `modalService.open()`   | Just the "how" of getting to a Place -- wire to the destination directly |
 
 When reviewing affordance tables, double-check each Code affordance and ask:
 
@@ -372,6 +387,7 @@ N41: updateUrl() -> S15    (wires to Browser URL store)
 This makes the data flow explicit. The store can also have return wires showing how external state flows back in.
 
 Common external stores to model:
+
 - `Browser URL` -- query params, hash fragments
 - `localStorage` / `sessionStorage` -- persisted client state
 - `Clipboard` -- copy/paste operations
@@ -386,6 +402,7 @@ Common external stores to model:
 A data store belongs in the Place where its data is **consumed** to enable some effect -- not where it's produced. Writes from other Places are "reaching into" that Place's state.
 
 To determine where a store belongs:
+
 1. **Trace read/write relationships** -- Who writes? Who reads?
 2. **The readers determine placement** -- that's where behavior is enabled
 3. **If only one Place reads**, the store goes inside that Place
@@ -400,16 +417,17 @@ Before putting a store in a separate DATA STORES section, verify it's actually r
 
 The tables are the truth. Mermaid diagrams are optional visualizations for humans. Use these standard colors:
 
-| Type | Color | Hex | classDef |
-|------|-------|-----|----------|
-| UI affordances | Pink | `#FFB3BA` | `fill:#FFB3BA,stroke:#d87093,color:#000` |
-| Code affordances | Grey | `#C0C0C0` | `fill:#C0C0C0,stroke:#808080,color:#000` |
-| Data stores | Lavender | `#D8BFD8` | `fill:#D8BFD8,stroke:#9370db,color:#000` |
-| Chunks | Blue | `#87CEEB` | `fill:#87CEEB,stroke:#0288d1,color:#000,stroke-width:2px` |
-| Place references | Pink (dashed) | `#FFB3BA` | `fill:#FFB3BA,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5` |
-| Places (subgraphs) | White/transparent | -- | Subgraph boundary |
+| Type               | Color             | Hex       | classDef                                                            |
+| ------------------ | ----------------- | --------- | ------------------------------------------------------------------- |
+| UI affordances     | Pink              | `#FFB3BA` | `fill:#FFB3BA,stroke:#d87093,color:#000`                            |
+| Code affordances   | Grey              | `#C0C0C0` | `fill:#C0C0C0,stroke:#808080,color:#000`                            |
+| Data stores        | Lavender          | `#D8BFD8` | `fill:#D8BFD8,stroke:#9370db,color:#000`                            |
+| Chunks             | Blue              | `#87CEEB` | `fill:#87CEEB,stroke:#0288d1,color:#000,stroke-width:2px`           |
+| Place references   | Pink (dashed)     | `#FFB3BA` | `fill:#FFB3BA,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5` |
+| Places (subgraphs) | White/transparent | --        | Subgraph boundary                                                   |
 
 Line conventions:
+
 - **Solid (`-->`)**: Wires Out -- calls, triggers, writes (control flow)
 - **Dashed (`-.->`)**: Returns To -- return values, data store reads (data flow)
 - **Labeled (`-.->|...|`)**: Abbreviated flow -- intermediate steps omitted

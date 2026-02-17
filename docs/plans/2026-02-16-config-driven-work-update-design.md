@@ -24,11 +24,11 @@ This is the pilot for the broader Schema-Driven Configuration Design epic (#325)
 
 **Approach A: Field Definition File** was selected over two alternatives:
 
-| Approach | Description | Verdict |
-|----------|-------------|---------|
+| Approach                     | Description                                           | Verdict                                                                      |
+| ---------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
 | **A: Field Definition File** | `config/pipeline-fields.json` read at runtime by `jq` | **Selected** — matches project conventions, zero build step, portable schema |
-| B: Inline Metadata | Bash heredoc function returning schema JSON | Rejected — fragile, not consumable by non-shell tools |
-| C: Code Generation | Node.js/jq script generates static shell code | Rejected — adds build step, drift risk, over-engineered for ~6 fields |
+| B: Inline Metadata           | Bash heredoc function returning schema JSON           | Rejected — fragile, not consumable by non-shell tools                        |
+| C: Code Generation           | Node.js/jq script generates static shell code         | Rejected — adds build step, drift risk, over-engineered for ~6 fields        |
 
 ## Schema Design — `config/pipeline-fields.json`
 
@@ -90,25 +90,26 @@ Non-updatable fields (`id`, `name`, `stage`, `state`, `baseBranch`, `worktrees`,
 
 ### Schema Field Reference
 
-| Schema Key | Type | Purpose |
-|------------|------|---------|
-| `jsonType` | `"string" \| "boolean" \| "number" \| "array" \| "object"` | Determines dispatch handler and jq update function |
-| `description` | string | Human-readable description for help text and documentation |
-| `updatable` | boolean | Whether `work update` can modify this field |
-| `required` | boolean | Whether `work define` requires this field |
-| `default` | any | Default value when field is not specified |
-| `flag` | string | CLI flag name (e.g., `"--type"`) |
-| `negateFlag` | string | Negation flag for booleans (e.g., `"--no-auto"`) |
-| `inputFormat` | `"csv"` | How CLI input is parsed before storage |
-| `validate.source` | string | Path to config file for slug validation |
-| `validate.key` | string | JSON key to validate against in source file |
-| `validate.type` | string | Special validator name (e.g., `"github-issue"`) |
+| Schema Key        | Type                                                       | Purpose                                                    |
+| ----------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| `jsonType`        | `"string" \| "boolean" \| "number" \| "array" \| "object"` | Determines dispatch handler and jq update function         |
+| `description`     | string                                                     | Human-readable description for help text and documentation |
+| `updatable`       | boolean                                                    | Whether `work update` can modify this field                |
+| `required`        | boolean                                                    | Whether `work define` requires this field                  |
+| `default`         | any                                                        | Default value when field is not specified                  |
+| `flag`            | string                                                     | CLI flag name (e.g., `"--type"`)                           |
+| `negateFlag`      | string                                                     | Negation flag for booleans (e.g., `"--no-auto"`)           |
+| `inputFormat`     | `"csv"`                                                    | How CLI input is parsed before storage                     |
+| `validate.source` | string                                                     | Path to config file for slug validation                    |
+| `validate.key`    | string                                                     | JSON key to validate against in source file                |
+| `validate.type`   | string                                                     | Special validator name (e.g., `"github-issue"`)            |
 
 ## Runtime Architecture
 
 ### `_work_update()` — Three Phases
 
 **Phase 1 — Load schema**:
+
 ```bash
 local schema
 schema=$(jq -r 'to_entries[] | select(.value.updatable == true)' "$PIPELINE_FIELDS_CONFIG")
@@ -116,6 +117,7 @@ schema=$(jq -r 'to_entries[] | select(.value.updatable == true)' "$PIPELINE_FIEL
 
 **Phase 2 — Flag dispatch**:
 Loop over `$@` arguments. For each flag:
+
 1. Look up which field it maps to (match against `flag` or `negateFlag`)
 2. Read the field's `jsonType`
 3. Delegate to type-specific handler:
@@ -134,35 +136,36 @@ Reads schema, filters to `updatable: true`, formats each field's `flag`, `negate
 
 Extracted into `pipeline-entity.sh` for reuse by `define`, `update`, and future commands:
 
-| Helper | Signature | Purpose |
-|--------|-----------|---------|
+| Helper                         | Signature                   | Purpose                                                       |
+| ------------------------------ | --------------------------- | ------------------------------------------------------------- |
 | `_pipeline_validate_csv_slugs` | `<config_file> <key> <csv>` | Split CSV, trim whitespace, validate each slug against config |
-| `_pipeline_validate_issue` | `<issue_num>` | Validate numeric, best-effort GitHub check with `--` safety |
+| `_pipeline_validate_issue`     | `<issue_num>`               | Validate numeric, best-effort GitHub check with `--` safety   |
 
 ## Review Fixes Addressed
 
-| # | Finding | Fix |
-|---|---------|-----|
-| 1 | `((updated++))` exit code 1 when 0 | `updated=$((updated + 1))` |
-| 2 | `${2:?}` ugly error messages | Explicit `if [[ -z ... ]]` with clear message |
-| 3 | Non-numeric `--issue` input | `[[ "$val" =~ ^[0-9]+$ ]]` before `gh` call |
-| 4 | Missing field blocklist | Structural: only `updatable: true` fields accepted |
-| 5 | Flag injection on `gh issue view` | Numeric validation + `-- "$issue_num"` |
-| 6 | No product/tool slug validation | Validate against `validate.source` config |
-| 7 | Whitespace in CSV | `jq` trim with `gsub` |
+| #   | Finding                            | Fix                                                |
+| --- | ---------------------------------- | -------------------------------------------------- |
+| 1   | `((updated++))` exit code 1 when 0 | `updated=$((updated + 1))`                         |
+| 2   | `${2:?}` ugly error messages       | Explicit `if [[ -z ... ]]` with clear message      |
+| 3   | Non-numeric `--issue` input        | `[[ "$val" =~ ^[0-9]+$ ]]` before `gh` call        |
+| 4   | Missing field blocklist            | Structural: only `updatable: true` fields accepted |
+| 5   | Flag injection on `gh issue view`  | Numeric validation + `-- "$issue_num"`             |
+| 6   | No product/tool slug validation    | Validate against `validate.source` config          |
+| 7   | Whitespace in CSV                  | `jq` trim with `gsub`                              |
 
 ## Files Changed
 
-| File | Change |
-|------|--------|
-| `config/pipeline-fields.json` | **NEW** — field schema for all pipeline entity fields |
-| `scripts/lib/pipeline-update.sh` | **REWRITE** — config-driven flag dispatch, auto-help |
+| File                             | Change                                                               |
+| -------------------------------- | -------------------------------------------------------------------- |
+| `config/pipeline-fields.json`    | **NEW** — field schema for all pipeline entity fields                |
+| `scripts/lib/pipeline-update.sh` | **REWRITE** — config-driven flag dispatch, auto-help                 |
 | `scripts/lib/pipeline-entity.sh` | **ADD** — `_pipeline_validate_csv_slugs`, `_pipeline_validate_issue` |
-| `scripts/work.sh` | **MINOR** — help text delegates to `_work_update_help` |
+| `scripts/work.sh`                | **MINOR** — help text delegates to `_work_update_help`               |
 
 ## Testing
 
 Manual verification:
+
 - `work update <id> --type bug-fix` — validates against pipeline-types.json
 - `work update <id> --auto` / `--no-auto` — toggles boolean
 - `work update <id> --issue 306` — validates numeric + GitHub check
@@ -175,6 +178,7 @@ Manual verification:
 ## Future (Epic #325)
 
 This pilot validates the schema shape. Subsequent sub-issues apply the same pattern to:
+
 - `work define` (#327) — reads `required`, `default`, `flag` from schema
 - `work status` (#326) — reads `description` for field labels
 - Help text generation (#332) — unified `--help` across all commands

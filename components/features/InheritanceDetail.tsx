@@ -1,30 +1,30 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { ChevronRight, Globe, Plus, Minus, RotateCcw } from "lucide-react";
+import { useState } from 'react'
+import { ChevronRight, Globe, Plus, Minus, RotateCcw } from 'lucide-react'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@shared/ui/primitives/collapsible";
-import { cn } from "@shared/lib/cn";
-import { getColorsMutable } from "@infra/repositories/colors";
-import type { InheritanceChain } from "@domain/rules/customer.rules";
+} from '@shared/ui/primitives/collapsible'
+import { cn } from '@shared/lib/cn'
+import { getColorsMutable } from '@infra/repositories/colors'
+import type { InheritanceChain } from '@domain/rules/customer.rules'
 
-const catalogColors = getColorsMutable();
+const catalogColors = getColorsMutable()
 
 type InheritanceDetailProps = {
-  chain: InheritanceChain;
-  onRestore?: (colorId: string) => void;
-};
+  chain: InheritanceChain
+  onRestore?: (colorId: string) => void
+}
 
 function getColorName(colorId: string): string {
-  return catalogColors.find((c) => c.id === colorId)?.name ?? colorId;
+  return catalogColors.find((c) => c.id === colorId)?.name ?? colorId
 }
 
 function ColorChip({ colorId }: { colorId: string }) {
-  const color = catalogColors.find((c) => c.id === colorId);
-  if (!color) return <span className="text-xs text-muted-foreground">{colorId}</span>;
+  const color = catalogColors.find((c) => c.id === colorId)
+  if (!color) return <span className="text-xs text-muted-foreground">{colorId}</span>
 
   return (
     <span className="inline-flex items-center gap-1">
@@ -35,34 +35,27 @@ function ColorChip({ colorId }: { colorId: string }) {
       />
       <span className="text-xs text-foreground">{color.name}</span>
     </span>
-  );
+  )
 }
 
-export function InheritanceDetail({
-  chain,
-  onRestore,
-}: InheritanceDetailProps) {
-  const [open, setOpen] = useState(false);
+export function InheritanceDetail({ chain, onRestore }: InheritanceDetailProps) {
+  const [open, setOpen] = useState(false)
 
-  const hasChanges =
-    chain.addedAtLevel.length > 0 || chain.removedAtLevel.length > 0;
+  const hasChanges = chain.addedAtLevel.length > 0 || chain.removedAtLevel.length > 0
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger
         className={cn(
-          "flex w-full items-center gap-1.5 rounded-sm px-2 py-1.5 text-xs text-muted-foreground transition-colors",
-          "min-h-(--mobile-touch-target) md:min-h-0",
-          "hover:text-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          'flex w-full items-center gap-1.5 rounded-sm px-2 py-1.5 text-xs text-muted-foreground transition-colors',
+          'min-h-(--mobile-touch-target) md:min-h-0',
+          'hover:text-foreground',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
         )}
       >
         <ChevronRight
           size={14}
-          className={cn(
-            "transition-transform motion-reduce:transition-none",
-            open && "rotate-90"
-          )}
+          className={cn('transition-transform motion-reduce:transition-none', open && 'rotate-90')}
           aria-hidden="true"
         />
         View color settings details
@@ -119,10 +112,10 @@ export function InheritanceDetail({
                         type="button"
                         onClick={() => onRestore(id)}
                         className={cn(
-                          "inline-flex items-center gap-0.5 rounded-sm px-1 py-0.5 text-[10px] text-action transition-colors",
-                          "min-h-(--mobile-touch-target) md:min-h-0",
-                          "hover:bg-surface",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          'inline-flex items-center gap-0.5 rounded-sm px-1 py-0.5 text-[10px] text-action transition-colors',
+                          'min-h-(--mobile-touch-target) md:min-h-0',
+                          'hover:bg-surface',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
                         )}
                         aria-label={`Restore ${getColorName(id)}`}
                       >
@@ -144,5 +137,5 @@ export function InheritanceDetail({
         </div>
       </CollapsibleContent>
     </Collapsible>
-  );
+  )
 }

@@ -45,6 +45,7 @@ This document maps how the price matrix vertical integrates with other Screen Pr
 ```
 
 **Flow Direction**:
+
 - Price Matrix → Customer (contract rates lookup)
 - Price Matrix + Customer → Quoting (apply rates, calculate totals)
 - Quoting → Invoicing (lock quoted prices, convert to invoice)
@@ -61,28 +62,31 @@ Customer records determine **which pricing rules apply** for a given quote or jo
 ### Data Flows
 
 **Customer → Price Matrix** (pricing context):
+
 ```typescript
 interface CustomerPricingContext {
-  customerId: string;
-  tier: 'standard' | 'contract' | 'vip';
-  contractPriceSheetId?: string; // If negotiated rates exist
-  lifetimeOrderCount: number;     // For loyalty tiers
-  lifetimeRevenue: number;        // For volume discounts
-  discountAuthority: {            // Manual override rules
-    maxPercentage: number;        // e.g., 15% max discount
-    requiresApproval: boolean;    // If exceeds threshold
-  };
+  customerId: string
+  tier: 'standard' | 'contract' | 'vip'
+  contractPriceSheetId?: string // If negotiated rates exist
+  lifetimeOrderCount: number // For loyalty tiers
+  lifetimeRevenue: number // For volume discounts
+  discountAuthority: {
+    // Manual override rules
+    maxPercentage: number // e.g., 15% max discount
+    requiresApproval: boolean // If exceeds threshold
+  }
 }
 ```
 
 **Price Matrix → Customer** (pricing feedback):
+
 ```typescript
 interface CustomerPricingHistory {
-  customerId: string;
-  averageMargin: number;          // Historical margin for this customer
-  totalDiscountsGiven: number;    // Lifetime discount total
-  mostRecentQuoteDate: Date;
-  priceSheetVersion: string;      // Track which price sheet was used
+  customerId: string
+  averageMargin: number // Historical margin for this customer
+  totalDiscountsGiven: number // Lifetime discount total
+  mostRecentQuoteDate: Date
+  priceSheetVersion: string // Track which price sheet was used
 }
 ```
 
@@ -119,21 +123,25 @@ const CustomerPriceSheetSchema = z.object({
   priceSheetType: z.enum(['standard', 'contract', 'volume']),
 
   // Contract-specific overrides
-  flatPrintRate: z.number().optional(),      // Per-print cost (e.g., $0.50)
-  screenSetupRate: z.number().optional(),    // Per-color setup (e.g., $20)
-  colorChangeRate: z.number().optional(),    // Per-screen color change (e.g., $5)
-  artworkFeeBasic: z.number().optional(),    // Basic artwork fee
+  flatPrintRate: z.number().optional(), // Per-print cost (e.g., $0.50)
+  screenSetupRate: z.number().optional(), // Per-color setup (e.g., $20)
+  colorChangeRate: z.number().optional(), // Per-screen color change (e.g., $5)
+  artworkFeeBasic: z.number().optional(), // Basic artwork fee
   artworkFeeAdvanced: z.number().optional(), // Hourly rate for advanced artwork
 
   // Loyalty/volume discounts
-  volumeDiscountTiers: z.array(z.object({
-    minQuantity: z.number(),
-    discountPercentage: z.number(),
-  })).optional(),
+  volumeDiscountTiers: z
+    .array(
+      z.object({
+        minQuantity: z.number(),
+        discountPercentage: z.number(),
+      })
+    )
+    .optional(),
 
   notes: z.string().optional(),
-  approvedBy: z.string().optional(),         // Manager who approved contract
-});
+  approvedBy: z.string().optional(), // Manager who approved contract
+})
 
 const CustomerTierSchema = z.object({
   customerId: z.string(),
@@ -142,7 +150,7 @@ const CustomerTierSchema = z.object({
   lifetimeOrderCount: z.number(),
   lifetimeRevenue: z.number(),
   averageMargin: z.number(),
-});
+})
 ```
 
 ### API Surface
@@ -150,15 +158,15 @@ const CustomerTierSchema = z.object({
 ```typescript
 // Customer pricing lookup (called by quoting engine)
 interface PriceMatrixAPI {
-  getCustomerPricing(customerId: string): Promise<CustomerPricingContext>;
-  applyCustomerDiscounts(customerId: string, basePrice: number): Promise<number>;
-  validateDiscountAuthority(customerId: string, discountPercent: number): Promise<boolean>;
+  getCustomerPricing(customerId: string): Promise<CustomerPricingContext>
+  applyCustomerDiscounts(customerId: string, basePrice: number): Promise<number>
+  validateDiscountAuthority(customerId: string, discountPercent: number): Promise<boolean>
 }
 
 // Customer history update (called after invoice completion)
 interface CustomerAPI {
-  updateLifetimeMetrics(customerId: string, orderValue: number, margin: number): Promise<void>;
-  recalculateTier(customerId: string): Promise<CustomerTier>;
+  updateLifetimeMetrics(customerId: string, orderValue: number, margin: number): Promise<void>
+  recalculateTier(customerId: string): Promise<CustomerTier>
 }
 ```
 
@@ -173,52 +181,55 @@ The quoting vertical is the **primary consumer** of the price matrix. Auto-calcu
 ### Data Flows
 
 **Quote Request → Price Matrix**:
+
 ```typescript
 interface QuotePricingRequest {
-  customerId: string;
+  customerId: string
   lineItems: Array<{
-    description: string;
-    quantity: number;
-    colors: number;              // Ink colors
-    printLocations: number;      // Front, back, sleeve, etc.
-    garmentSKU: string;          // Links to garment catalog
-    garmentQuantity: number;     // Total pieces
-  }>;
+    description: string
+    quantity: number
+    colors: number // Ink colors
+    printLocations: number // Front, back, sleeve, etc.
+    garmentSKU: string // Links to garment catalog
+    garmentQuantity: number // Total pieces
+  }>
   setupFees: {
-    screenCount: number;         // Unique screens needed
-    artworkComplexity: 'basic' | 'advanced';
-  };
-  rushOrder: boolean;
-  customerSuppliedGarments: boolean;
+    screenCount: number // Unique screens needed
+    artworkComplexity: 'basic' | 'advanced'
+  }
+  rushOrder: boolean
+  customerSuppliedGarments: boolean
 }
 ```
 
 **Price Matrix → Quote**:
+
 ```typescript
 interface QuotePricingResponse {
   lineItems: Array<{
-    lineItemId: string;
-    unitPrice: number;           // Per-garment decoration cost
-    garmentCost: number;         // Per-garment base cost (if shop-supplied)
-    lineTotal: number;
-    marginPercent: number;       // Calculated margin for this line
-    priceBreakdown: {            // Transparency for user
-      baseRate: number;
-      customerDiscount: number;
-      setupFeeAllocation: number;
-    };
-  }>;
+    lineItemId: string
+    unitPrice: number // Per-garment decoration cost
+    garmentCost: number // Per-garment base cost (if shop-supplied)
+    lineTotal: number
+    marginPercent: number // Calculated margin for this line
+    priceBreakdown: {
+      // Transparency for user
+      baseRate: number
+      customerDiscount: number
+      setupFeeAllocation: number
+    }
+  }>
   setupFees: {
-    screenSetup: number;         // Total screen setup cost
-    artworkFees: number;
-    rushFee: number;
-    total: number;
-  };
-  subtotal: number;
-  tax: number;                   // If applicable
-  grandTotal: number;
-  overallMargin: number;         // Weighted average margin
-  warnings: string[];            // e.g., "Margin below 30% threshold"
+    screenSetup: number // Total screen setup cost
+    artworkFees: number
+    rushFee: number
+    total: number
+  }
+  subtotal: number
+  tax: number // If applicable
+  grandTotal: number
+  overallMargin: number // Weighted average margin
+  warnings: string[] // e.g., "Margin below 30% threshold"
 }
 ```
 
@@ -262,19 +273,19 @@ const QuoteLineItemSchema = z.object({
   garmentQuantity: z.number(),
 
   // Pricing breakdown (from price matrix)
-  unitDecorationCost: z.number(),  // What we charge per piece
-  unitGarmentCost: z.number(),     // Garment wholesale cost
-  unitTotalPrice: z.number(),      // Decoration + garment
-  lineTotal: z.number(),           // Unit total × quantity
+  unitDecorationCost: z.number(), // What we charge per piece
+  unitGarmentCost: z.number(), // Garment wholesale cost
+  unitTotalPrice: z.number(), // Decoration + garment
+  lineTotal: z.number(), // Unit total × quantity
 
   // Costing (internal, not shown to customer)
-  directLaborCost: z.number(),     // Labor per piece
-  inkCost: z.number(),             // Ink per piece
-  contributionMargin: z.number(),  // Line total - variable costs
+  directLaborCost: z.number(), // Labor per piece
+  inkCost: z.number(), // Ink per piece
+  contributionMargin: z.number(), // Line total - variable costs
   marginPercent: z.number(),
 
-  priceMatrixVersion: z.string(),  // Audit trail
-});
+  priceMatrixVersion: z.string(), // Audit trail
+})
 
 const QuoteSchema = z.object({
   // ... existing fields
@@ -293,24 +304,24 @@ const QuoteSchema = z.object({
   // Margin tracking
   overallMargin: z.number(),
   contributionMargin: z.number(),
-  requiresApproval: z.boolean(),   // If margin below threshold
+  requiresApproval: z.boolean(), // If margin below threshold
   approvedBy: z.string().optional(),
 
   // Version control
-  priceSheetUsed: z.string(),      // Which price sheet applied
-  quoteLockDate: z.date(),         // When pricing was locked
-  expirationDate: z.date(),        // Quote expires after 30 days
-});
+  priceSheetUsed: z.string(), // Which price sheet applied
+  quoteLockDate: z.date(), // When pricing was locked
+  expirationDate: z.date(), // Quote expires after 30 days
+})
 ```
 
 ### API Surface
 
 ```typescript
 interface QuoteAPI {
-  calculateQuote(request: QuotePricingRequest): Promise<QuotePricingResponse>;
-  recalculateQuote(quoteId: string): Promise<QuotePricingResponse>; // If price sheet changes
-  lockQuotePrice(quoteId: string): Promise<void>; // Freeze pricing for customer approval
-  applyManualDiscount(quoteId: string, discountPercent: number, reason: string): Promise<void>;
+  calculateQuote(request: QuotePricingRequest): Promise<QuotePricingResponse>
+  recalculateQuote(quoteId: string): Promise<QuotePricingResponse> // If price sheet changes
+  lockQuotePrice(quoteId: string): Promise<void> // Freeze pricing for customer approval
+  applyManualDiscount(quoteId: string, discountPercent: number, reason: string): Promise<void>
 }
 ```
 
@@ -325,55 +336,57 @@ Invoicing converts **approved quotes into billable documents**, honoring quoted 
 ### Data Flows
 
 **Quote → Invoice** (price lock):
+
 ```typescript
 interface InvoiceFromQuote {
-  quoteId: string;
-  invoiceDate: Date;
+  quoteId: string
+  invoiceDate: Date
 
   // Price lock: use quoted prices, not current matrix
-  honorQuotedPrices: true;
+  honorQuotedPrices: true
 
   // Partial invoicing (e.g., deposit, then balance)
-  billingType: 'full' | 'deposit' | 'progress' | 'final';
-  depositPercentage?: number;      // e.g., 50% upfront
+  billingType: 'full' | 'deposit' | 'progress' | 'final'
+  depositPercentage?: number // e.g., 50% upfront
 
-  lineItemsToInvoice: string[];    // Subset of quote line items
+  lineItemsToInvoice: string[] // Subset of quote line items
 }
 ```
 
 **Invoice → Accounting**:
+
 ```typescript
 interface InvoiceRecord {
-  invoiceId: string;
-  quoteId: string;
-  customerId: string;
-  jobId?: string;                  // If converted to job
+  invoiceId: string
+  quoteId: string
+  customerId: string
+  jobId?: string // If converted to job
 
   lineItems: Array<{
-    description: string;
-    quantity: number;
-    unitPrice: number;
-    lineTotal: number;
-  }>;
+    description: string
+    quantity: number
+    unitPrice: number
+    lineTotal: number
+  }>
 
-  subtotal: number;
-  taxRate: number;
-  taxAmount: number;
+  subtotal: number
+  taxRate: number
+  taxAmount: number
   discounts: Array<{
-    type: 'contract' | 'loyalty' | 'manual';
-    amount: number;
-    reason: string;
-    approvedBy?: string;
-  }>;
-  grandTotal: number;
+    type: 'contract' | 'loyalty' | 'manual'
+    amount: number
+    reason: string
+    approvedBy?: string
+  }>
+  grandTotal: number
 
-  paymentStatus: 'unpaid' | 'partial' | 'paid';
-  amountPaid: number;
-  amountDue: number;
+  paymentStatus: 'unpaid' | 'partial' | 'paid'
+  amountPaid: number
+  amountDue: number
 
   // Audit trail
-  pricingLockedAt: Date;
-  pricingSnapshot: object;         // Frozen quote pricing
+  pricingLockedAt: Date
+  pricingSnapshot: object // Frozen quote pricing
 }
 ```
 
@@ -419,14 +432,14 @@ const InvoiceLineItemSchema = z.object({
   lineTotal: z.number(),
 
   // Progress billing
-  percentageInvoiced: z.number(),  // Track partial billing (0-100%)
-  previouslyInvoiced: z.number(),  // Amount already billed
-  thisInvoiceAmount: z.number(),   // Current invoice portion
-});
+  percentageInvoiced: z.number(), // Track partial billing (0-100%)
+  previouslyInvoiced: z.number(), // Amount already billed
+  thisInvoiceAmount: z.number(), // Current invoice portion
+})
 
 const InvoiceSchema = z.object({
   id: z.string().uuid(),
-  invoiceNumber: z.string(),       // INV-1001, INV-1002, etc.
+  invoiceNumber: z.string(), // INV-1001, INV-1002, etc.
   quoteId: z.string().optional(),
   customerId: z.string(),
   jobId: z.string().optional(),
@@ -440,14 +453,16 @@ const InvoiceSchema = z.object({
   lineItems: z.array(InvoiceLineItemSchema),
 
   subtotal: z.number(),
-  discounts: z.array(z.object({
-    type: z.enum(['contract', 'loyalty', 'manual', 'promotional']),
-    amount: z.number(),
-    percentage: z.number(),
-    reason: z.string(),
-    approvedBy: z.string().optional(),
-    appliedAt: z.date(),
-  })),
+  discounts: z.array(
+    z.object({
+      type: z.enum(['contract', 'loyalty', 'manual', 'promotional']),
+      amount: z.number(),
+      percentage: z.number(),
+      reason: z.string(),
+      approvedBy: z.string().optional(),
+      appliedAt: z.date(),
+    })
+  ),
   totalDiscounts: z.number(),
 
   taxRate: z.number(),
@@ -458,12 +473,14 @@ const InvoiceSchema = z.object({
   amountPaid: z.number(),
   amountDue: z.number(),
 
-  payments: z.array(z.object({
-    paymentDate: z.date(),
-    amount: z.number(),
-    method: z.enum(['cash', 'check', 'credit', 'ach', 'online']),
-    reference: z.string(),
-  })),
+  payments: z.array(
+    z.object({
+      paymentDate: z.date(),
+      amount: z.number(),
+      method: z.enum(['cash', 'check', 'credit', 'ach', 'online']),
+      reference: z.string(),
+    })
+  ),
 
   // Pricing audit trail
   pricingSnapshot: z.object({
@@ -475,18 +492,18 @@ const InvoiceSchema = z.object({
   // Accounting integration
   quickbooksId: z.string().optional(),
   syncedAt: z.date().optional(),
-});
+})
 ```
 
 ### API Surface
 
 ```typescript
 interface InvoiceAPI {
-  createInvoiceFromQuote(quoteId: string, options: InvoiceFromQuote): Promise<Invoice>;
-  createProgressInvoice(quoteId: string, milestonePercent: number): Promise<Invoice>;
-  applyPayment(invoiceId: string, amount: number, method: string): Promise<Invoice>;
-  syncToQuickBooks(invoiceId: string): Promise<void>;
-  getInvoicesByCustomer(customerId: string): Promise<Invoice[]>;
+  createInvoiceFromQuote(quoteId: string, options: InvoiceFromQuote): Promise<Invoice>
+  createProgressInvoice(quoteId: string, milestonePercent: number): Promise<Invoice>
+  applyPayment(invoiceId: string, amount: number, method: string): Promise<Invoice>
+  syncToQuickBooks(invoiceId: string): Promise<void>
+  getInvoicesByCustomer(customerId: string): Promise<Invoice[]>
 }
 ```
 
@@ -501,58 +518,59 @@ The reporting vertical consumes pricing data to calculate **margins by job, cust
 ### Data Flows
 
 **Price Matrix + Invoices + Production → Reports**:
+
 ```typescript
 interface MarginReportRequest {
-  reportType: 'job' | 'customer' | 'product' | 'time-series';
-  dateRange: { start: Date; end: Date };
+  reportType: 'job' | 'customer' | 'product' | 'time-series'
+  dateRange: { start: Date; end: Date }
   filters?: {
-    customerId?: string;
-    productCategory?: string;
-    minMargin?: number;
-    maxMargin?: number;
-  };
+    customerId?: string
+    productCategory?: string
+    minMargin?: number
+    maxMargin?: number
+  }
 }
 
 interface MarginReportResponse {
   summary: {
-    totalRevenue: number;
-    totalCost: number;
-    totalMargin: number;
-    averageMarginPercent: number;
-  };
+    totalRevenue: number
+    totalCost: number
+    totalMargin: number
+    averageMarginPercent: number
+  }
 
   byJob: Array<{
-    jobId: string;
-    jobNumber: string;
-    customer: string;
-    revenue: number;
-    cost: number;
-    margin: number;
-    marginPercent: number;
-  }>;
+    jobId: string
+    jobNumber: string
+    customer: string
+    revenue: number
+    cost: number
+    margin: number
+    marginPercent: number
+  }>
 
   byCustomer: Array<{
-    customerId: string;
-    customerName: string;
-    jobCount: number;
-    totalRevenue: number;
-    averageMargin: number;
-    lifetimeValue: number;
-  }>;
+    customerId: string
+    customerName: string
+    jobCount: number
+    totalRevenue: number
+    averageMargin: number
+    lifetimeValue: number
+  }>
 
   byProductType: Array<{
-    category: string;           // e.g., "T-Shirts", "Hoodies", "Hats"
-    jobCount: number;
-    totalRevenue: number;
-    averageMargin: number;
-  }>;
+    category: string // e.g., "T-Shirts", "Hoodies", "Hats"
+    jobCount: number
+    totalRevenue: number
+    averageMargin: number
+  }>
 
   trends: Array<{
-    period: string;             // e.g., "2026-02", "2026-W06"
-    revenue: number;
-    margin: number;
-    jobCount: number;
-  }>;
+    period: string // e.g., "2026-02", "2026-W06"
+    revenue: number
+    margin: number
+    jobCount: number
+  }>
 }
 ```
 
@@ -602,20 +620,20 @@ const JobCostingSchema = z.object({
   directCosts: z.object({
     garmentCost: z.number(),
     inkCost: z.number(),
-    laborCost: z.number(),        // Hours × labor rate
-    setupCost: z.number(),        // Screen prep labor
+    laborCost: z.number(), // Hours × labor rate
+    setupCost: z.number(), // Screen prep labor
     total: z.number(),
   }),
 
   // Overhead allocation (calculated)
-  overheadAllocated: z.number(),  // Proportional share of fixed costs
+  overheadAllocated: z.number(), // Proportional share of fixed costs
 
   // Margin calculation
-  totalCost: z.number(),           // Direct + overhead
-  grossProfit: z.number(),         // Revenue - total cost
-  marginPercent: z.number(),       // (Profit / Revenue) × 100
-  contributionMargin: z.number(),  // Revenue - direct costs
-});
+  totalCost: z.number(), // Direct + overhead
+  grossProfit: z.number(), // Revenue - total cost
+  marginPercent: z.number(), // (Profit / Revenue) × 100
+  contributionMargin: z.number(), // Revenue - direct costs
+})
 
 const CustomerMarginSchema = z.object({
   customerId: z.string(),
@@ -635,19 +653,19 @@ const CustomerMarginSchema = z.object({
 
   lifetimeValue: z.number(),
   lifetimeMargin: z.number(),
-});
+})
 ```
 
 ### API Surface
 
 ```typescript
 interface ReportingAPI {
-  getMarginReport(request: MarginReportRequest): Promise<MarginReportResponse>;
-  getJobCosting(jobId: string): Promise<JobCosting>;
-  getCustomerMargin(customerId: string, dateRange: DateRange): Promise<CustomerMargin>;
-  getProductMix(): Promise<ProductMixReport>;
-  getPricingTrends(dateRange: DateRange): Promise<PricingTrendReport>;
-  getDiscountImpactAnalysis(): Promise<DiscountImpactReport>;
+  getMarginReport(request: MarginReportRequest): Promise<MarginReportResponse>
+  getJobCosting(jobId: string): Promise<JobCosting>
+  getCustomerMargin(customerId: string, dateRange: DateRange): Promise<CustomerMargin>
+  getProductMix(): Promise<ProductMixReport>
+  getPricingTrends(dateRange: DateRange): Promise<PricingTrendReport>
+  getDiscountImpactAnalysis(): Promise<DiscountImpactReport>
 }
 ```
 
@@ -662,45 +680,47 @@ Production tracks **actual costs vs. quoted prices**, enabling profitability vis
 ### Data Flows
 
 **Quote → Production** (cost targets):
+
 ```typescript
 interface ProductionCostTargets {
-  jobId: string;
-  quoteId: string;
+  jobId: string
+  quoteId: string
 
   // Estimated costs (from quote)
-  estimatedLaborHours: number;
-  estimatedLaborCost: number;
-  estimatedInkCost: number;
-  estimatedSetupTime: number;
+  estimatedLaborHours: number
+  estimatedLaborCost: number
+  estimatedInkCost: number
+  estimatedSetupTime: number
 
   // Budgeted margin
-  targetMarginPercent: number;
-  targetMarginDollars: number;
+  targetMarginPercent: number
+  targetMarginDollars: number
 }
 ```
 
 **Production → Reporting** (actual costs):
+
 ```typescript
 interface ProductionActuals {
-  jobId: string;
+  jobId: string
 
   // Actual costs (tracked during production)
-  actualLaborHours: number;
-  actualLaborCost: number;
-  actualInkUsed: number;          // Ounces or grams
-  actualInkCost: number;
-  actualSetupTime: number;
+  actualLaborHours: number
+  actualLaborCost: number
+  actualInkUsed: number // Ounces or grams
+  actualInkCost: number
+  actualSetupTime: number
 
   // Variance analysis
-  laborVariance: number;           // Actual - estimated
-  inkVariance: number;
-  timeVariance: number;
+  laborVariance: number // Actual - estimated
+  inkVariance: number
+  timeVariance: number
 
   // Realized margin
-  quotedRevenue: number,
-  actualCost: number;
-  realizedMargin: number;
-  realizedMarginPercent: number;
+  quotedRevenue: number
+  actualCost: number
+  realizedMargin: number
+  realizedMarginPercent: number
 }
 ```
 
@@ -753,7 +773,7 @@ const JobCostingSchema = z.object({
     laborCost: z.number(),
     inkCost: z.number(),
     setupTime: z.number(),
-    garmentSpoilage: z.number(),  // Value of wasted garments
+    garmentSpoilage: z.number(), // Value of wasted garments
     totalCost: z.number(),
   }),
 
@@ -774,7 +794,7 @@ const JobCostingSchema = z.object({
   // Flags
   exceededEstimate: z.boolean(),
   varianceThresholdBreached: z.boolean(),
-});
+})
 
 const ProductionTimeEntrySchema = z.object({
   id: z.string().uuid(),
@@ -787,18 +807,23 @@ const ProductionTimeEntrySchema = z.object({
   laborRate: z.number(),
   cost: z.number(),
   notes: z.string().optional(),
-});
+})
 ```
 
 ### API Surface
 
 ```typescript
 interface ProductionAPI {
-  getCostTargets(jobId: string): Promise<ProductionCostTargets>;
-  recordTimeEntry(entry: ProductionTimeEntry): Promise<void>;
-  recordMaterialUsage(jobId: string, material: string, quantity: number, cost: number): Promise<void>;
-  getJobCosting(jobId: string): Promise<JobCosting>;
-  getVarianceReport(jobId: string): Promise<VarianceReport>;
+  getCostTargets(jobId: string): Promise<ProductionCostTargets>
+  recordTimeEntry(entry: ProductionTimeEntry): Promise<void>
+  recordMaterialUsage(
+    jobId: string,
+    material: string,
+    quantity: number,
+    cost: number
+  ): Promise<void>
+  getJobCosting(jobId: string): Promise<JobCosting>
+  getVarianceReport(jobId: string): Promise<VarianceReport>
 }
 ```
 
@@ -877,12 +902,14 @@ Invoice
 **Scope**: Build the price matrix engine with basic pricing rules.
 
 **Deliverables**:
+
 - Price matrix schema (base rates, quantity breaks)
 - Pricing calculation engine
 - Quote integration (auto-calculate quotes)
 - Mock data for price sheets
 
 **Success Criteria**:
+
 - Quote form pulls pricing from matrix
 - Quantity breaks apply correctly
 - Margin calculation works
@@ -895,12 +922,14 @@ Invoice
 **Scope**: Add customer-specific pricing overrides.
 
 **Deliverables**:
+
 - Customer price sheets (contract pricing)
 - Customer tier system (loyalty)
 - Manual discount controls
 - Discount approval workflow
 
 **Success Criteria**:
+
 - Contract customers see negotiated rates
 - Loyalty discounts apply automatically
 - Manual discounts require approval if exceeding threshold
@@ -913,6 +942,7 @@ Invoice
 **Scope**: Convert approved quotes to invoices with price locking.
 
 **Deliverables**:
+
 - Invoice vertical (new)
 - Quote-to-invoice conversion
 - Price locking mechanism
@@ -921,6 +951,7 @@ Invoice
 - Payment tracking
 
 **Success Criteria**:
+
 - Approved quotes convert to invoices
 - Invoice honors quoted prices (even if matrix changes)
 - Deposit invoicing works (e.g., 50% upfront)
@@ -934,6 +965,7 @@ Invoice
 **Scope**: Track actual costs during production, compare to quote estimates.
 
 **Deliverables**:
+
 - Production time entry system
 - Material usage tracking
 - Job costing schema (estimated vs. actual)
@@ -941,6 +973,7 @@ Invoice
 - Real-time profitability view
 
 **Success Criteria**:
+
 - Operators log time per job
 - Actual costs accumulate during production
 - Variance report shows estimated vs. actual
@@ -953,6 +986,7 @@ Invoice
 **Scope**: Comprehensive margin reporting across jobs, customers, products.
 
 **Deliverables**:
+
 - Reporting vertical (new)
 - Margin reports (job, customer, product, time-series)
 - Pricing trends
@@ -960,6 +994,7 @@ Invoice
 - Revenue forecasting
 
 **Success Criteria**:
+
 - View margin by job
 - View margin by customer
 - View margin by product type
@@ -973,6 +1008,7 @@ Invoice
 **Scope**: External integrations and advanced pricing logic.
 
 **Deliverables**:
+
 - QuickBooks integration (invoice sync)
 - Vendor integrations (SanMar, AlphaBroder live pricing)
 - Rebate management (volume discounts)
@@ -980,6 +1016,7 @@ Invoice
 - Advanced pricing rules engine (conditional logic)
 
 **Success Criteria**:
+
 - Invoices sync to QuickBooks automatically
 - Garment costs pulled from vendor APIs
 - Rebates calculated and applied
@@ -994,19 +1031,19 @@ Invoice
 ```typescript
 interface PriceMatrixService {
   // Pricing calculation
-  calculatePrice(request: PricingRequest): Promise<PricingResponse>;
+  calculatePrice(request: PricingRequest): Promise<PricingResponse>
 
   // Customer pricing
-  getCustomerPricing(customerId: string): Promise<CustomerPricingContext>;
-  applyCustomerDiscounts(customerId: string, basePrice: number): Promise<number>;
+  getCustomerPricing(customerId: string): Promise<CustomerPricingContext>
+  applyCustomerDiscounts(customerId: string, basePrice: number): Promise<number>
 
   // Price sheet management
-  getPriceSheet(version: string): Promise<PriceSheet>;
-  createPriceSheet(priceSheet: PriceSheet): Promise<PriceSheet>;
-  updatePriceSheet(version: string, updates: Partial<PriceSheet>): Promise<PriceSheet>;
+  getPriceSheet(version: string): Promise<PriceSheet>
+  createPriceSheet(priceSheet: PriceSheet): Promise<PriceSheet>
+  updatePriceSheet(version: string, updates: Partial<PriceSheet>): Promise<PriceSheet>
 
   // Validation
-  validateDiscountAuthority(customerId: string, discountPercent: number): Promise<boolean>;
+  validateDiscountAuthority(customerId: string, discountPercent: number): Promise<boolean>
 }
 ```
 
@@ -1014,10 +1051,10 @@ interface PriceMatrixService {
 
 ```typescript
 interface QuoteService {
-  calculateQuote(request: QuotePricingRequest): Promise<QuotePricingResponse>;
-  createQuote(quote: Quote): Promise<Quote>;
-  lockQuotePrice(quoteId: string): Promise<void>;
-  convertToInvoice(quoteId: string): Promise<Invoice>;
+  calculateQuote(request: QuotePricingRequest): Promise<QuotePricingResponse>
+  createQuote(quote: Quote): Promise<Quote>
+  lockQuotePrice(quoteId: string): Promise<void>
+  convertToInvoice(quoteId: string): Promise<Invoice>
 }
 ```
 
@@ -1025,9 +1062,9 @@ interface QuoteService {
 
 ```typescript
 interface InvoiceService {
-  createInvoiceFromQuote(quoteId: string, options: InvoiceFromQuote): Promise<Invoice>;
-  applyPayment(invoiceId: string, payment: Payment): Promise<Invoice>;
-  syncToQuickBooks(invoiceId: string): Promise<void>;
+  createInvoiceFromQuote(quoteId: string, options: InvoiceFromQuote): Promise<Invoice>
+  applyPayment(invoiceId: string, payment: Payment): Promise<Invoice>
+  syncToQuickBooks(invoiceId: string): Promise<void>
 }
 ```
 
@@ -1035,10 +1072,10 @@ interface InvoiceService {
 
 ```typescript
 interface ReportingService {
-  getMarginReport(request: MarginReportRequest): Promise<MarginReportResponse>;
-  getJobCosting(jobId: string): Promise<JobCosting>;
-  getCustomerMargin(customerId: string): Promise<CustomerMargin>;
-  getPricingTrends(dateRange: DateRange): Promise<PricingTrendReport>;
+  getMarginReport(request: MarginReportRequest): Promise<MarginReportResponse>
+  getJobCosting(jobId: string): Promise<JobCosting>
+  getCustomerMargin(customerId: string): Promise<CustomerMargin>
+  getPricingTrends(dateRange: DateRange): Promise<PricingTrendReport>
 }
 ```
 
@@ -1046,10 +1083,10 @@ interface ReportingService {
 
 ```typescript
 interface ProductionService {
-  recordTimeEntry(entry: ProductionTimeEntry): Promise<void>;
-  recordMaterialUsage(jobId: string, material: Material): Promise<void>;
-  getJobCosting(jobId: string): Promise<JobCosting>;
-  getVarianceReport(jobId: string): Promise<VarianceReport>;
+  recordTimeEntry(entry: ProductionTimeEntry): Promise<void>
+  recordMaterialUsage(jobId: string, material: Material): Promise<void>
+  getJobCosting(jobId: string): Promise<JobCosting>
+  getVarianceReport(jobId: string): Promise<VarianceReport>
 }
 ```
 

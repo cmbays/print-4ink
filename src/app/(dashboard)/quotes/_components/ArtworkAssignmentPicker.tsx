@@ -1,28 +1,24 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { Check, ChevronsUpDown, ImageIcon } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@shared/ui/primitives/popover";
+import Image from 'next/image'
+import { Check, ChevronsUpDown, ImageIcon } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@shared/ui/primitives/popover'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
-} from "@shared/ui/primitives/command";
-import { useState } from "react";
-import type { Artwork } from "@domain/entities/artwork";
+} from '@shared/ui/primitives/command'
+import { useState } from 'react'
+import type { Artwork } from '@domain/entities/artwork'
 
-interface ArtworkAssignmentPickerProps {
-  artworks: Artwork[];
-  selectedArtworkId?: string;
-  onSelect: (artworkId: string | undefined) => void;
+type ArtworkAssignmentPickerProps = {
+  artworks: Artwork[]
+  selectedArtworkId?: string
+  onSelect: (artworkId: string | undefined) => void
 }
 
 export function ArtworkAssignmentPicker({
@@ -30,23 +26,17 @@ export function ArtworkAssignmentPicker({
   selectedArtworkId,
   onSelect,
 }: ArtworkAssignmentPickerProps) {
-  const [open, setOpen] = useState(false);
-  const selected = artworks.find((a) => a.id === selectedArtworkId);
+  const [open, setOpen] = useState(false)
+  const selected = artworks.find((a) => a.id === selectedArtworkId)
 
   if (artworks.length === 0) {
-    return (
-      <span className="text-xs text-muted-foreground italic">No artwork selected</span>
-    );
+    return <span className="text-xs text-muted-foreground italic">No artwork selected</span>
   }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 gap-1.5 text-xs px-2"
-        >
+        <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-xs px-2">
           {selected ? (
             <>
               <Image
@@ -77,14 +67,14 @@ export function ArtworkAssignmentPicker({
                   key={artwork.id}
                   value={artwork.id}
                   onSelect={(value) => {
-                    onSelect(value === selectedArtworkId ? undefined : value);
-                    setOpen(false);
+                    onSelect(value === selectedArtworkId ? undefined : value)
+                    setOpen(false)
                   }}
                 >
                   <Check
                     className={cn(
-                      "mr-2 size-4",
-                      selectedArtworkId === artwork.id ? "opacity-100" : "opacity-0"
+                      'mr-2 size-4',
+                      selectedArtworkId === artwork.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   <Image
@@ -96,7 +86,9 @@ export function ArtworkAssignmentPicker({
                   />
                   <div className="flex flex-col">
                     <span className="text-xs truncate">{artwork.name}</span>
-                    <span className="text-xs text-muted-foreground">{artwork.colorCount} colors</span>
+                    <span className="text-xs text-muted-foreground">
+                      {artwork.colorCount} colors
+                    </span>
                   </div>
                 </CommandItem>
               ))}
@@ -105,5 +97,5 @@ export function ArtworkAssignmentPicker({
         </Command>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

@@ -14,16 +14,16 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 
 ## Quick Reference
 
-| Agent | Use When | Example Invocation | Preloaded Skills | Output |
-|-------|----------|-------------------|------------------|--------|
-| `frontend-builder` | Building screens or components | "Use frontend-builder agent to build PageHeader" | breadboarding, screen-builder, quality-gate | Screen/component files |
-| `requirements-interrogator` | Before building complex features | "Ask requirements-interrogator about Kanban workflow" | pre-build-interrogator | Spike doc in `docs/spikes/` |
-| `design-auditor` | Design review checkpoint | "Have design-auditor review the jobs screen" | design-audit | `ReviewFinding[]` JSON |
-| `feature-strategist` | Competitive analysis, feature planning | "Use feature-strategist for quote system analysis" | feature-strategy | Feature plan in `docs/` |
-| `doc-sync` | Sync docs with code changes | "Have doc-sync check APP_FLOW against built screens" | doc-sync | Updated canonical docs |
-| `secretary` (Ada) | Project pulse, 1:1 check-ins, strategic advice | "Start a 1:1 with Ada" | one-on-one, cool-down | Memory updates, recommendations |
-| `finance-sme` | Dispatched by review orchestration (financial domain) | Auto-dispatched by `review-orchestration` skill | — | `ReviewFinding[]` JSON |
-| `build-reviewer` | Dispatched by review orchestration (universal) | Auto-dispatched by `review-orchestration` skill | — | `ReviewFinding[]` JSON |
+| Agent                       | Use When                                              | Example Invocation                                    | Preloaded Skills                            | Output                          |
+| --------------------------- | ----------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------- | ------------------------------- |
+| `frontend-builder`          | Building screens or components                        | "Use frontend-builder agent to build PageHeader"      | breadboarding, screen-builder, quality-gate | Screen/component files          |
+| `requirements-interrogator` | Before building complex features                      | "Ask requirements-interrogator about Kanban workflow" | pre-build-interrogator                      | Spike doc in `docs/spikes/`     |
+| `design-auditor`            | Design review checkpoint                              | "Have design-auditor review the jobs screen"          | design-audit                                | `ReviewFinding[]` JSON          |
+| `feature-strategist`        | Competitive analysis, feature planning                | "Use feature-strategist for quote system analysis"    | feature-strategy                            | Feature plan in `docs/`         |
+| `doc-sync`                  | Sync docs with code changes                           | "Have doc-sync check APP_FLOW against built screens"  | doc-sync                                    | Updated canonical docs          |
+| `secretary` (Ada)           | Project pulse, 1:1 check-ins, strategic advice        | "Start a 1:1 with Ada"                                | one-on-one, cool-down                       | Memory updates, recommendations |
+| `finance-sme`               | Dispatched by review orchestration (financial domain) | Auto-dispatched by `review-orchestration` skill       | —                                           | `ReviewFinding[]` JSON          |
+| `build-reviewer`            | Dispatched by review orchestration (universal)        | Auto-dispatched by `review-orchestration` skill       | —                                           | `ReviewFinding[]` JSON          |
 
 ## Agent Details
 
@@ -38,6 +38,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Backend, docs (except PROGRESS.md)
 
 **When to use**:
+
 - Building any screen within a vertical (uses breadboard as build blueprint)
 - Creating shared components (StatusBadge, DataTable, PageHeader, etc.)
 - Wiring navigation, breadcrumbs, and cross-links
@@ -53,6 +54,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code, design system files
 
 **When to use**:
+
 - Before Steps 4 (Kanban board) and 6 (Quote form) — pre-build ritual
 - Any screen where behavior is ambiguous or has complex interactions
 - When the user describes a feature that isn't fully specified in APP_FLOW
@@ -68,6 +70,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code (read-only)
 
 **When to use**:
+
 - After completing Steps 3, 6, 10 (major checkpoints in IMPLEMENTATION_PLAN)
 - Before user acceptance testing
 - When the user asks "how does this screen look?"
@@ -83,6 +86,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code (read-only for source)
 
 **When to use**:
+
 - When analyzing Print Life screenshots for competitive advantages
 - When planning new features based on user feedback (Phase 2)
 - When the user asks "what should we build next?"
@@ -98,6 +102,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code (read-only for source)
 
 **When to use**:
+
 - After completing a step in IMPLEMENTATION_PLAN
 - When docs feel stale or out of sync with built code
 - At the start of Phase 2 (full doc audit before user iteration)
@@ -113,6 +118,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code, canonical docs (recommends updates, doesn't make them)
 
 **When to use**:
+
 - Starting a new work session (1:1 check-in for focus recommendation)
 - Between-cycle retrospectives (cool-down skill)
 - Strategic questions about project direction
@@ -129,6 +135,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code (read-only)
 
 **When to use**:
+
 - Self-review step of build-session-protocol (automatically invoked when diff touches financial code)
 - After modifying any schema with monetary fields
 - After changes to pricing engine, invoice utils, or quote calculations
@@ -144,6 +151,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Never touches**: Code (read-only)
 
 **When to use**:
+
 - Self-review step of build-session-protocol (always invoked)
 - Before creating a PR for any build session
 - When reviewing code quality concerns raised by CodeRabbit
@@ -207,6 +215,7 @@ build-session-protocol Phase 2 → review-orchestration skill → [build-reviewe
 **Use for**: All build sessions. `build-session-protocol` Phase 2 invokes `review-orchestration` automatically — no manual agent selection required.
 
 **Gate outcomes**:
+
 - `fail` / `needs_fixes` → fix findings, re-run review-orchestration
 - `pass_with_warnings` → file warnings as GitHub Issues, proceed to PR
 - `pass` → proceed directly to PR
@@ -217,27 +226,28 @@ Review agents (`build-reviewer`, `finance-sme`, `design-auditor`) now output str
 
 Skills live in `.claude/skills/` and are either preloaded by agents or invoked explicitly.
 
-| Skill | Trigger | Purpose | Preloaded By |
-|-------|---------|---------|--------------|
-| `vertical-discovery` | Start of each new vertical | 7-step competitor research + user interview + journey design | — (invoked explicitly) |
-| `shaping` | After interview, before breadboarding | R x S methodology — requirements, shapes, fit checks, spikes | — (invoked explicitly) |
-| `breadboarding` | After shaping, before impl-planning | Map shaped parts into affordances, wiring, and vertical slices | `frontend-builder` |
-| `breadboard-reflection` | After breadboarding, before impl-planning | QA audit of breadboards — smell detection, naming test, wiring verification | — (standalone, invoked explicitly) |
-| `screen-builder` | Starting screen builds | Build screens with design system + quality checklist + templates | `frontend-builder` |
-| `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report | `frontend-builder` |
-| `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions | `requirements-interrogator` |
-| `design-audit` | Design review checkpoints | 15-dimension audit against design system | `design-auditor` |
-| `feature-strategy` | Feature planning | Product strategy frameworks and feature plan templates | `feature-strategist` |
-| `doc-sync` | After completing steps | Drift detection and doc synchronization | `doc-sync` |
-| `one-on-one` | 1:1 check-ins | Structured check-in protocol | `secretary` |
-| `cool-down` | Between build cycles, after demos | Retrospective synthesis and forward planning (Shape Up) | `secretary` |
-| `build-session-protocol` | Build sessions | Completion protocol — Phase 2 auto-invokes `review-orchestration` | — (invoked explicitly) |
-| `review-orchestration` | Phase 2 of every build session (auto-invoked) | 6-stage automated quality gate: normalize → classify → compose → gap-detect → dispatch → aggregate | — (invoked by build-session-protocol) |
-| `implementation-planning` | After breadboard, before build | Sequenced build step generation | — (invoked explicitly) |
-| `gary-tracker` | Questions for the user | Track and surface unanswered questions | — (invoked explicitly) |
-| `learnings-synthesis` | After sessions | Extract and document lessons learned | — (invoked explicitly) |
+| Skill                     | Trigger                                       | Purpose                                                                                            | Preloaded By                          |
+| ------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `vertical-discovery`      | Start of each new vertical                    | 7-step competitor research + user interview + journey design                                       | — (invoked explicitly)                |
+| `shaping`                 | After interview, before breadboarding         | R x S methodology — requirements, shapes, fit checks, spikes                                       | — (invoked explicitly)                |
+| `breadboarding`           | After shaping, before impl-planning           | Map shaped parts into affordances, wiring, and vertical slices                                     | `frontend-builder`                    |
+| `breadboard-reflection`   | After breadboarding, before impl-planning     | QA audit of breadboards — smell detection, naming test, wiring verification                        | — (standalone, invoked explicitly)    |
+| `screen-builder`          | Starting screen builds                        | Build screens with design system + quality checklist + templates                                   | `frontend-builder`                    |
+| `quality-gate`            | After completing a screen                     | Audit against 10-category quality checklist with pass/fail report                                  | `frontend-builder`                    |
+| `pre-build-interrogator`  | Before complex features                       | Exhaustive questioning to eliminate assumptions                                                    | `requirements-interrogator`           |
+| `design-audit`            | Design review checkpoints                     | 15-dimension audit against design system                                                           | `design-auditor`                      |
+| `feature-strategy`        | Feature planning                              | Product strategy frameworks and feature plan templates                                             | `feature-strategist`                  |
+| `doc-sync`                | After completing steps                        | Drift detection and doc synchronization                                                            | `doc-sync`                            |
+| `one-on-one`              | 1:1 check-ins                                 | Structured check-in protocol                                                                       | `secretary`                           |
+| `cool-down`               | Between build cycles, after demos             | Retrospective synthesis and forward planning (Shape Up)                                            | `secretary`                           |
+| `build-session-protocol`  | Build sessions                                | Completion protocol — Phase 2 auto-invokes `review-orchestration`                                  | — (invoked explicitly)                |
+| `review-orchestration`    | Phase 2 of every build session (auto-invoked) | 6-stage automated quality gate: normalize → classify → compose → gap-detect → dispatch → aggregate | — (invoked by build-session-protocol) |
+| `implementation-planning` | After breadboard, before build                | Sequenced build step generation                                                                    | — (invoked explicitly)                |
+| `gary-tracker`            | Questions for the user                        | Track and surface unanswered questions                                                             | — (invoked explicitly)                |
+| `learnings-synthesis`     | After sessions                                | Extract and document lessons learned                                                               | — (invoked explicitly)                |
 
 **Notes**:
+
 - `shaping` is invoked explicitly at the start of a vertical pipeline. A dedicated shaping agent is a candidate for Phase 2 if shaping becomes frequent enough to justify agent-level isolation.
 - `breadboard-reflection` is always invoked as a standalone skill after breadboarding completes. It is intentionally not preloaded by any agent — it acts as an independent QA checkpoint, not part of the builder's workflow.
 
@@ -261,13 +271,16 @@ All agents produce structured markdown:
 # [Agent Name] Output — [Vertical/Task]
 
 ## Summary
+
 [1-2 sentences]
 
 ## Deliverables
+
 - File created/modified: [path]
 - Quality gate: [pass/warn/fail] (if applicable)
 
 ## Next Step
+
 [What agent should run next OR "Ready for user review"]
 ```
 
@@ -342,9 +355,11 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 ## Workflow
 
 ### Step 1: [Action]
+
 [Instructions]
 
 ### Step 2: [Action]
+
 [Instructions]
 
 ## Rules

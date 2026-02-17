@@ -1,6 +1,6 @@
 ---
-title: "Breadboarding Skill"
-subtitle: "Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Maps UI affordances, code affordances, data stores, and wiring before any code is written."
+title: 'Breadboarding Skill'
+subtitle: 'Promoted breadboarding from Phase 2 deferral to full Phase 1 skill. Maps UI affordances, code affordances, data stores, and wiring before any code is written.'
 date: 2026-02-08
 phase: 1
 pipelineName: devx
@@ -9,8 +9,8 @@ products: []
 tools: [skills-framework]
 stage: build
 tags: [feature, decision]
-sessionId: "09b70260-83ac-4830-9b02-ed8c0683f699"
-branch: "feat/breadboarding-skill"
+sessionId: '09b70260-83ac-4830-9b02-ed8c0683f699'
+branch: 'feat/breadboarding-skill'
 status: complete
 ---
 
@@ -27,11 +27,11 @@ On Feb 8, we pivoted to **vertical-by-vertical development**. This changed the e
 
 ## What Was Created
 
-| Stat | Value |
-|------|-------|
-| Skill Files | 3 |
-| Workflow Steps | 9 |
-| Total Skills | 8 |
+| Stat           | Value |
+| -------------- | ----- |
+| Skill Files    | 3     |
+| Workflow Steps | 9     |
+| Total Skills   | 8     |
 
 ### Skill Files
 
@@ -49,11 +49,11 @@ Key concepts reference: UI Affordances (U), Code Affordances (N), Data Stores (S
 
 ## Three Core Concepts
 
-| Element | Symbol | What It Represents | Example |
-|---------|--------|---------------------|---------|
-| UI Affordance | `U` | Things users see and interact with | Customer Combobox, "Save as Draft" button |
-| Code Affordance | `N` | Functions that execute when triggered | `calculateLineTotal()`, `filterQuotes()` |
-| Data Store | `S` | State that persists and gets read/written | URL params, form state, mock data imports |
+| Element         | Symbol | What It Represents                        | Example                                   |
+| --------------- | ------ | ----------------------------------------- | ----------------------------------------- |
+| UI Affordance   | `U`    | Things users see and interact with        | Customer Combobox, "Save as Draft" button |
+| Code Affordance | `N`    | Functions that execute when triggered     | `calculateLineTotal()`, `filterQuotes()`  |
+| Data Store      | `S`    | State that persists and gets read/written | URL params, form state, mock data imports |
 
 ## Workflow Integration
 
@@ -65,17 +65,17 @@ Discovery -> Scope Definition -> Breadboarding -> Build Execution -> Demo & Iter
 
 ### What Changed
 
-| File | Change |
-|------|--------|
-| `.claude/skills/breadboarding/` | Created: SKILL.md, templates/, reference/ |
-| `docs/breadboards/` | Created: output directory for breadboard documents |
-| `vertical-by-vertical-strategy.md` | Added Phase 2.5: Breadboarding (with 2.5.1 and 2.5.2 sub-steps) |
-| `CLAUDE.md` | Architecture, pre-build ritual, skills table, orchestration patterns |
-| `frontend-builder.md` | Added breadboarding to skills, breadboard-first startup sequence |
-| `docs/AGENTS.md` | Vertical Build Chain pattern (Pattern 1), 5 orchestration patterns |
-| `progress.txt` | Skill count 6 -> 8, session log entry, breadboard as build step 1 |
-| `MEMORY.md` | Updated skill count, 5-phase methodology, shaping skills status |
-| `STRATEGY_README.md` | Added breadboarding phase section, updated document statuses |
+| File                               | Change                                                               |
+| ---------------------------------- | -------------------------------------------------------------------- |
+| `.claude/skills/breadboarding/`    | Created: SKILL.md, templates/, reference/                            |
+| `docs/breadboards/`                | Created: output directory for breadboard documents                   |
+| `vertical-by-vertical-strategy.md` | Added Phase 2.5: Breadboarding (with 2.5.1 and 2.5.2 sub-steps)      |
+| `CLAUDE.md`                        | Architecture, pre-build ritual, skills table, orchestration patterns |
+| `frontend-builder.md`              | Added breadboarding to skills, breadboard-first startup sequence     |
+| `docs/AGENTS.md`                   | Vertical Build Chain pattern (Pattern 1), 5 orchestration patterns   |
+| `progress.txt`                     | Skill count 6 -> 8, session log entry, breadboard as build step 1    |
+| `MEMORY.md`                        | Updated skill count, 5-phase methodology, shaping skills status      |
+| `STRATEGY_README.md`               | Added breadboarding phase section, updated document statuses         |
 
 ## Next Step
 

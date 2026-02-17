@@ -1,6 +1,6 @@
 ---
-title: "work() — Worktree Orchestrator"
-subtitle: "Single command to create worktrees, tmux sessions, and launch Claude — with Agent Teams integration via tmux hook."
+title: 'work() — Worktree Orchestrator'
+subtitle: 'Single command to create worktrees, tmux sessions, and launch Claude — with Agent Teams integration via tmux hook.'
 date: 2026-02-10
 phase: 1
 pipelineName: devx
@@ -9,8 +9,8 @@ products: []
 tools: [work-orchestrator]
 stage: build
 tags: [build, feature]
-sessionId: "c2b2fb1b-b94a-4b17-bab0-3616c520c716"
-branch: "session/0210-worktree-migration"
+sessionId: 'c2b2fb1b-b94a-4b17-bab0-3616c520c716'
+branch: 'session/0210-worktree-migration'
 status: complete
 ---
 
@@ -22,10 +22,10 @@ Manual worktree setup requires 4-5 commands per session: pull main, create workt
 
 A single `work <topic>` shell function handles everything: worktree creation from main repo, npm install, port scanning, tmux session/window creation, Claude launch, and an `after-split-window` hook that auto-converts Agent Teams panes into proper windows.
 
-| Metric | Value |
-|--------|-------|
-| 1 | Command |
-| ~220 | Lines of Bash |
+| Metric | Value         |
+| ------ | ------------- |
+| 1      | Command       |
+| ~220   | Lines of Bash |
 
 ## Ghostty + Tmux Architecture
 
@@ -56,17 +56,17 @@ Ghostty Quick Terminal (hotkey toggle)
 
 ## Commands Reference
 
-| Command | What It Does |
-|---------|--------------|
-| `work <topic>` | New workstream: detached tmux session + worktree + Claude |
-| `work <topic> <base>` | Related work: window in parent's tmux session + worktree |
-| `work <topic> --prompt "..."` | Seed new Claude with an initial task prompt |
-| `work --stack <topic>` | Stack from current branch (auto-detects from $PWD) |
-| `work list` | Show sessions, windows, worktrees, ports |
-| `work focus` | Read-only tiled monitor of all windows in current session |
-| `work unfocus` | Exit focus mode |
-| `work clean <topic>` | Remove worktree + tmux + branch (with confirmation) |
-| `work build <manifest> [--wave N] [--yolo]` | Execute build from YAML manifest (see below) |
+| Command                                     | What It Does                                              |
+| ------------------------------------------- | --------------------------------------------------------- |
+| `work <topic>`                              | New workstream: detached tmux session + worktree + Claude |
+| `work <topic> <base>`                       | Related work: window in parent's tmux session + worktree  |
+| `work <topic> --prompt "..."`               | Seed new Claude with an initial task prompt               |
+| `work --stack <topic>`                      | Stack from current branch (auto-detects from $PWD)        |
+| `work list`                                 | Show sessions, windows, worktrees, ports                  |
+| `work focus`                                | Read-only tiled monitor of all windows in current session |
+| `work unfocus`                              | Exit focus mode                                           |
+| `work clean <topic>`                        | Remove worktree + tmux + branch (with confirmation)       |
+| `work build <manifest> [--wave N] [--yolo]` | Execute build from YAML manifest (see below)              |
 
 ## Manifest-Driven Builds
 
@@ -84,6 +84,7 @@ work build docs/plans/2026-02-15-colors-manifest.yaml --wave 2
 ```
 
 **What it does per wave:**
+
 1. Pulls latest main
 2. Creates a worktree + branch per session (`session/MMDD-<topic>`)
 3. Runs `npm install` in each worktree
@@ -91,6 +92,7 @@ work build docs/plans/2026-02-15-colors-manifest.yaml --wave 2
 5. Generates a Zellij KDL layout and opens tabs (or prints launch command if outside Zellij)
 
 **Flags:**
+
 - `--wave N` — which wave to run (0-indexed, default: 0)
 - `--yolo` — passes `--dangerously-skip-permissions` to all Claude sessions
 - `--claude-args "..."` — pass arbitrary CLI flags to Claude
@@ -165,14 +167,14 @@ work focus                             # See all 5 tiled
 
 ## Tmux Navigation Cheatsheet
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+b s` | Session picker (all features) |
-| `Ctrl+b n` | Next window (cycle agents) |
-| `Ctrl+b p` | Previous window |
-| `Ctrl+b w` | Window tree (all sessions + windows) |
-| `Ctrl+b z` | Zoom pane (in focus view) |
-| `work unfocus` | Exit focus mode |
+| Shortcut       | Action                               |
+| -------------- | ------------------------------------ |
+| `Ctrl+b s`     | Session picker (all features)        |
+| `Ctrl+b n`     | Next window (cycle agents)           |
+| `Ctrl+b p`     | Previous window                      |
+| `Ctrl+b w`     | Window tree (all sessions + windows) |
+| `Ctrl+b z`     | Zoom pane (in focus view)            |
+| `work unfocus` | Exit focus mode                      |
 
 ## Setup
 

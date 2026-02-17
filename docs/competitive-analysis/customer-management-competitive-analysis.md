@@ -1,6 +1,6 @@
 ---
-title: "Customer Management — Competitive Analysis"
-description: "Comprehensive analysis of customer management/CRM features across 9 screen printing and print shop management software competitors"
+title: 'Customer Management — Competitive Analysis'
+description: 'Comprehensive analysis of customer management/CRM features across 9 screen printing and print shop management software competitors'
 category: competitive-analysis
 status: complete
 phase: 1
@@ -749,48 +749,48 @@ last-verified: 2026-02-09
 
 ### Core Customer Management Features
 
-| Feature | Printavo | ShopWorks | InkSoft | GraphicsFlow | OMG | DecoNetwork | printIQ | Kothari | Print Life |
-|---------|---------|-----------|---------|-------------|-----|-------------|---------|---------|------------|
-| **Customer profiles** | Yes | Yes | Yes | Minimal | Yes | Yes | Yes | No | Basic |
-| **Company/org entity** | Via QBO | Yes | Yes | No | Yes | Yes | Yes | No | No |
-| **Multiple contacts per company** | Yes | Yes | Yes | Multiple per approval | Yes (role-based) | Yes | Yes | No | No |
-| **Contact roles** | Primary/Additional | CRM leads | Client/Prospect | N/A | Orders/Art/Billing | Sales team assign | N/A | N/A | N/A |
-| **Custom fields** | No | Limited | No | Custom design request fields | No | Yes | Via API | No | No |
-| **Tax-exempt status** | Yes (QBO sync) | Yes (Avalara) | Custom tax rates | N/A | Yes (TaxJar/Avalara) | Yes (company-level) | Yes | No | Yes (filter) |
-| **Payment terms** | Yes (importable) | Yes (built-in A/R) | N/A | N/A | Via Stripe | Yes (account terms) | Yes | No | No |
-| **Credit limits** | No | Yes | No | No | No | No | Yes | No | No |
+| Feature                           | Printavo           | ShopWorks          | InkSoft          | GraphicsFlow                 | OMG                  | DecoNetwork         | printIQ | Kothari | Print Life   |
+| --------------------------------- | ------------------ | ------------------ | ---------------- | ---------------------------- | -------------------- | ------------------- | ------- | ------- | ------------ |
+| **Customer profiles**             | Yes                | Yes                | Yes              | Minimal                      | Yes                  | Yes                 | Yes     | No      | Basic        |
+| **Company/org entity**            | Via QBO            | Yes                | Yes              | No                           | Yes                  | Yes                 | Yes     | No      | No           |
+| **Multiple contacts per company** | Yes                | Yes                | Yes              | Multiple per approval        | Yes (role-based)     | Yes                 | Yes     | No      | No           |
+| **Contact roles**                 | Primary/Additional | CRM leads          | Client/Prospect  | N/A                          | Orders/Art/Billing   | Sales team assign   | N/A     | N/A     | N/A          |
+| **Custom fields**                 | No                 | Limited            | No               | Custom design request fields | No                   | Yes                 | Via API | No      | No           |
+| **Tax-exempt status**             | Yes (QBO sync)     | Yes (Avalara)      | Custom tax rates | N/A                          | Yes (TaxJar/Avalara) | Yes (company-level) | Yes     | No      | Yes (filter) |
+| **Payment terms**                 | Yes (importable)   | Yes (built-in A/R) | N/A              | N/A                          | Via Stripe           | Yes (account terms) | Yes     | No      | No           |
+| **Credit limits**                 | No                 | Yes                | No               | No                           | No                   | No                  | Yes     | No      | No           |
 
 ### Communication & Portal
 
-| Feature | Printavo | ShopWorks | InkSoft | GraphicsFlow | OMG | DecoNetwork | printIQ | Kothari | Print Life |
-|---------|---------|-----------|---------|-------------|-----|-------------|---------|---------|------------|
-| **Built-in messaging** | Yes | ProofStuff | Order status | Art comments | Email templates | Notes + email | Portal | No | Email |
-| **Customer portal** | Public Profile + Merch | ProofStuff + Pay | Self-serve portal | Art Portal | Order Hub | Online stores + account | Portal + SmartSite | No | Basic portal |
-| **Artwork approval** | Via portal | ProofStuff (digital sig) | Order approval | Core feature | Order Hub | Artwork approvals | Via portal | No | Auto-notify |
-| **Self-serve ordering** | Merch stores | ManageOrders | Storefronts | Design requests | Online Stores | Online stores | Portal ordering | No | Customer quoting |
-| **Payment portal** | Yes (stored billing) | ShopWorks Pay | InkSoft Payments | No | Stripe | Store checkout | Payment gateway | No | Email-based |
-| **Automated notifications** | Flexible automation engine | ProofStuff reminders | Order status | Approval alerts | Status updates | Abandoned cart + status | Automated purchasing | No | Production stage |
+| Feature                     | Printavo                   | ShopWorks                | InkSoft           | GraphicsFlow    | OMG             | DecoNetwork             | printIQ              | Kothari | Print Life       |
+| --------------------------- | -------------------------- | ------------------------ | ----------------- | --------------- | --------------- | ----------------------- | -------------------- | ------- | ---------------- |
+| **Built-in messaging**      | Yes                        | ProofStuff               | Order status      | Art comments    | Email templates | Notes + email           | Portal               | No      | Email            |
+| **Customer portal**         | Public Profile + Merch     | ProofStuff + Pay         | Self-serve portal | Art Portal      | Order Hub       | Online stores + account | Portal + SmartSite   | No      | Basic portal     |
+| **Artwork approval**        | Via portal                 | ProofStuff (digital sig) | Order approval    | Core feature    | Order Hub       | Artwork approvals       | Via portal           | No      | Auto-notify      |
+| **Self-serve ordering**     | Merch stores               | ManageOrders             | Storefronts       | Design requests | Online Stores   | Online stores           | Portal ordering      | No      | Customer quoting |
+| **Payment portal**          | Yes (stored billing)       | ShopWorks Pay            | InkSoft Payments  | No              | Stripe          | Store checkout          | Payment gateway      | No      | Email-based      |
+| **Automated notifications** | Flexible automation engine | ProofStuff reminders     | Order status      | Approval alerts | Status updates  | Abandoned cart + status | Automated purchasing | No      | Production stage |
 
 ### Data Management
 
-| Feature | Printavo | ShopWorks | InkSoft | GraphicsFlow | OMG | DecoNetwork | printIQ | Kothari | Print Life |
-|---------|---------|-----------|---------|-------------|-----|-------------|---------|---------|------------|
-| **Order history** | Yes | Yes | Yes | Art history | Yes | Yes | Yes | Job history | Yes |
-| **Communication logs** | Yes (activity feed) | Yes | Notes | Approval timeline | Order-level | Yes (History/Notes tab) | Yes | No | Limited |
-| **Tags/segmentation** | Order tags (#) | Lead scoring | Customer tags | Art tags | Custom statuses | Contract Price Levels | Via CRM integration | No | Tax-exempt filter only |
-| **CSV import** | Yes (template) | Import wizard | Via QBO | No | Upload data | Yes (smart matching) | API | No | No |
-| **CSV export** | Yes | Yes | CRM report | No | Via integrations | Yes | API | No | No |
-| **QuickBooks sync** | Yes (bidirectional) | No (built-in acct) | Export only | No | Built-in acct | Yes (one-way) | Yes | No | Yes |
-| **Other integrations** | 1000+ via Zapier | SAGE, Shopify, etc. | ShipStation | Inktavo ecosystem | APIs, POD, ERP | Xero, Zoho CRM, QBO | Xero, HubSpot, Zoho | Printers only | S&S, SanMar |
+| Feature                | Printavo            | ShopWorks           | InkSoft       | GraphicsFlow      | OMG              | DecoNetwork             | printIQ             | Kothari       | Print Life             |
+| ---------------------- | ------------------- | ------------------- | ------------- | ----------------- | ---------------- | ----------------------- | ------------------- | ------------- | ---------------------- |
+| **Order history**      | Yes                 | Yes                 | Yes           | Art history       | Yes              | Yes                     | Yes                 | Job history   | Yes                    |
+| **Communication logs** | Yes (activity feed) | Yes                 | Notes         | Approval timeline | Order-level      | Yes (History/Notes tab) | Yes                 | No            | Limited                |
+| **Tags/segmentation**  | Order tags (#)      | Lead scoring        | Customer tags | Art tags          | Custom statuses  | Contract Price Levels   | Via CRM integration | No            | Tax-exempt filter only |
+| **CSV import**         | Yes (template)      | Import wizard       | Via QBO       | No                | Upload data      | Yes (smart matching)    | API                 | No            | No                     |
+| **CSV export**         | Yes                 | Yes                 | CRM report    | No                | Via integrations | Yes                     | API                 | No            | No                     |
+| **QuickBooks sync**    | Yes (bidirectional) | No (built-in acct)  | Export only   | No                | Built-in acct    | Yes (one-way)           | Yes                 | No            | Yes                    |
+| **Other integrations** | 1000+ via Zapier    | SAGE, Shopify, etc. | ShipStation   | Inktavo ecosystem | APIs, POD, ERP   | Xero, Zoho CRM, QBO     | Xero, HubSpot, Zoho | Printers only | S&S, SanMar            |
 
 ### Pricing & Terms
 
-| Feature | Printavo | ShopWorks | InkSoft | GraphicsFlow | OMG | DecoNetwork | printIQ | Kothari | Print Life |
-|---------|---------|-----------|---------|-------------|-----|-------------|---------|---------|------------|
-| **Customer-specific pricing** | Discount per order | Job-level pricing | Coupons/discounts | N/A | Quote-level | Contract Price Levels | Pricing agreements | Ink cost calc | Price override |
-| **Tiered pricing** | Pricing matrix | Included | Quantity discounts | N/A | No | Volume + contract levels | Yes | No | Matrix-based |
-| **Internal notes** | Production Notes | Task alerts | Contact notes | Approval notes | Order notes | Internal notes + email | Order notes | No | Basic |
-| **Customer-facing notes** | Customer Notes | ProofStuff | Order status | Comments | Order Hub | Notes via email + portal | Portal messages | No | Auto emails |
+| Feature                       | Printavo           | ShopWorks         | InkSoft            | GraphicsFlow   | OMG         | DecoNetwork              | printIQ            | Kothari       | Print Life     |
+| ----------------------------- | ------------------ | ----------------- | ------------------ | -------------- | ----------- | ------------------------ | ------------------ | ------------- | -------------- |
+| **Customer-specific pricing** | Discount per order | Job-level pricing | Coupons/discounts  | N/A            | Quote-level | Contract Price Levels    | Pricing agreements | Ink cost calc | Price override |
+| **Tiered pricing**            | Pricing matrix     | Included          | Quantity discounts | N/A            | No          | Volume + contract levels | Yes                | No            | Matrix-based   |
+| **Internal notes**            | Production Notes   | Task alerts       | Contact notes      | Approval notes | Order notes | Internal notes + email   | Order notes        | No            | Basic          |
+| **Customer-facing notes**     | Customer Notes     | ProofStuff        | Order status       | Comments       | Order Hub   | Notes via email + portal | Portal messages    | No            | Auto emails    |
 
 ---
 
@@ -817,24 +817,25 @@ last-verified: 2026-02-09
 
 ### Standout Features to Consider
 
-| Feature | Source | Relevance |
-|---------|--------|-----------|
-| Customer-stored billing (saved cards) | Printavo | High -- reduces payment friction |
-| Contract Price Levels (customer tiers) | DecoNetwork | High -- eliminates per-order discount entry |
-| Role-based contacts (Orders/Art/Billing) | OMG | High -- routes communications correctly |
-| Client vs. Prospect auto-classification | InkSoft | Medium -- automatic lead qualification |
-| Lead scoring and sales funnel | ShopWorks | Low for Phase 1, high for growth |
-| Custom customer fields | DecoNetwork | High -- every shop has unique needs |
-| Smart CSV import with deduplication | DecoNetwork | High -- critical for migration |
-| Automated reorder reminders | Printavo | High -- drives repeat business |
-| Sales team assignment per company | DecoNetwork | Medium -- useful for multi-person shops |
-| Customer sales summary popup (hover) | DecoNetwork | Medium -- quick customer context |
-| Public Profile URL (no login) | Printavo | Medium -- frictionless customer access |
-| Art Approval event timeline | GraphicsFlow | Medium -- audit trail for disputes |
+| Feature                                  | Source       | Relevance                                   |
+| ---------------------------------------- | ------------ | ------------------------------------------- |
+| Customer-stored billing (saved cards)    | Printavo     | High -- reduces payment friction            |
+| Contract Price Levels (customer tiers)   | DecoNetwork  | High -- eliminates per-order discount entry |
+| Role-based contacts (Orders/Art/Billing) | OMG          | High -- routes communications correctly     |
+| Client vs. Prospect auto-classification  | InkSoft      | Medium -- automatic lead qualification      |
+| Lead scoring and sales funnel            | ShopWorks    | Low for Phase 1, high for growth            |
+| Custom customer fields                   | DecoNetwork  | High -- every shop has unique needs         |
+| Smart CSV import with deduplication      | DecoNetwork  | High -- critical for migration              |
+| Automated reorder reminders              | Printavo     | High -- drives repeat business              |
+| Sales team assignment per company        | DecoNetwork  | Medium -- useful for multi-person shops     |
+| Customer sales summary popup (hover)     | DecoNetwork  | Medium -- quick customer context            |
+| Public Profile URL (no login)            | Printavo     | Medium -- frictionless customer access      |
+| Art Approval event timeline              | GraphicsFlow | Medium -- audit trail for disputes          |
 
 ### Recommended Feature Prioritization for Screen Print Pro
 
 **CORE (Must Have)**:
+
 1. Customer profile: name, company, email, phone, address (billing + shipping), tax-exempt status
 2. Company/contact hierarchy with multiple contacts per company
 3. Contact roles: Primary, Billing, Art/Design, Shipping
@@ -847,6 +848,7 @@ last-verified: 2026-02-09
 10. QuickBooks Online sync (customers, invoices, payments)
 
 **PERIPHERAL (Should Have)**:
+
 1. Payment terms per customer (Net 30, Due on Receipt, etc.)
 2. Customer-specific default discount percentage
 3. Custom fields (admin-defined, per customer)
@@ -857,6 +859,7 @@ last-verified: 2026-02-09
 8. Reorder suggestions based on past order patterns
 
 **INTERCONNECTIONS**:
+
 - Quoting: customer selected on quote; quote history visible on customer profile
 - Invoicing: payment terms from customer profile auto-applied
 - Artwork approval: art contacts notified; approval status on customer timeline
@@ -877,6 +880,7 @@ last-verified: 2026-02-09
 ## Sources
 
 ### Printavo
+
 - [Printavo Official Site](https://www.printavo.com/)
 - [Printavo Features](https://www.printavo.com/features/solutions/)
 - [Printavo Support - Customers](https://support.printavo.com/hc/en-us/articles/1260805600530-Customers)
@@ -893,6 +897,7 @@ last-verified: 2026-02-09
 - [Printavo + InkSoft Integration](https://www.printavo.com/blog/integration-printavo-and-inksoft/)
 
 ### ShopWorks (OnSite)
+
 - [ShopWorks Official Site](https://www.shopworx.com/)
 - [ShopWorks OnSite ERP](https://www.shopworx.com/why-onsite/)
 - [ShopWorks OnSite Business Management](https://www.shopworx.com/onsite-business-management-software/)
@@ -903,6 +908,7 @@ last-verified: 2026-02-09
 - [ShopWorks OnSite Reviews - Financesonline](https://reviews.financesonline.com/p/shopworks-onsite/)
 
 ### InkSoft
+
 - [InkSoft Official Site](https://www.inksoft.com/)
 - [InkSoft Manage Everything](https://www.inksoft.com/manage-everything/)
 - [InkSoft Help - CRM](https://help.inksoft.com/hc/en-us/articles/9161041181211-Customer-Relationship-Management-CRM)
@@ -913,6 +919,7 @@ last-verified: 2026-02-09
 - [InkSoft Feature Update - Order Approval Settings](https://www.inksoft.com/feature-update-require-order-approval-settings/)
 
 ### GraphicsFlow
+
 - [GraphicsFlow Official Site](https://www.graphicsflow.com/)
 - [GraphicsFlow Art Approval Updates](https://www.graphicsflow.com/art-approval-updates-enhanced-tracking-and-notifications/)
 - [GraphicsFlow Art Portal](https://www.graphicsflow.com/meet-modern-customer-demands-with-graphicsflow-and-art-portal/)
@@ -920,6 +927,7 @@ last-verified: 2026-02-09
 - [GraphicsFlow Design Request Updates](https://www.graphicsflow.com/art-portal-and-design-request-updates/)
 
 ### OrderMyGear (OMG)
+
 - [OrderMyGear Official Site](https://www.ordermygear.com/)
 - [OMG Order Management](https://www.ordermygear.com/order-management/)
 - [OMG Online Stores](https://www.ordermygear.com/online-stores/)
@@ -927,6 +935,7 @@ last-verified: 2026-02-09
 - [OMG Presentations](https://www.ordermygear.com/presentations/)
 
 ### DecoNetwork
+
 - [DecoNetwork Official Site](https://www.deconetwork.com/)
 - [DecoNetwork Customer Management Features](https://www.deconetwork.com/customer-management/features)
 - [DecoNetwork Help - Customer Fields](https://help.deconetwork.com/hc/en-us/articles/235251588-Customer-Fields)
@@ -945,6 +954,7 @@ last-verified: 2026-02-09
 - [DecoNetwork vs InkSoft](https://www.deconetwork.com/deconetwork-vs-inksoft/)
 
 ### printIQ
+
 - [printIQ Official Site](https://printiq.com/)
 - [printIQ Enterprise](https://printiq.com/products/enterprise/)
 - [printIQ Third-Party Integrations](https://printiq.com/third-party-software-integrations/)
@@ -952,17 +962,20 @@ last-verified: 2026-02-09
 - [printIQ IQconnect API](https://printiq.com/iqconnect-api/)
 
 ### Kothari Print Pro
+
 - [Kothari Info-Tech Products](https://www.kothariinfotech.com/products.html)
 - [Kothari DTG Edition](https://www.kothariinfotech.com/dtg-edition.html)
 - [Kothari Print Pro - LogoJET](https://www.logojet.com/pages/kothari-print-pro-rip-software-logojet-edition)
 
 ### Print Life
+
 - [The Print Life Official Site](https://www.theprintlife.com/)
 - [Print Life 2024 Update](https://www.theprintlife.com/the-print-life-screen-print-management-software-2024-update-is-live/)
 - [Print Life Q1 2025 Updates](https://www.theprintlife.com/quarter-1-2025-print-life-updates/)
 - [Print Life Welcome](https://www.theprintlife.com/welcome-to-the-print-life-screen-print-management-software/)
 
 ### General Industry
+
 - [Top 6 CRMs for the Printing Industry - INSIDEA](https://insidea.com/blog/hubspot/crms-for-the-printing-industry/)
 - [Top 8 Screen Printing Shop Management Software - DecoNetwork](https://www.deconetwork.com/top-8-screen-printing-shop-management-software-picks/)
 - [Screen Printing Software Comparison - Teesom](https://teesom.com/inksoft-deconet-teesom/)

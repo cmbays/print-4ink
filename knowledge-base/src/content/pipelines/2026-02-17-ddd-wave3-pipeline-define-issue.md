@@ -1,17 +1,17 @@
 ---
-title: "DDD Wave 3: Issue-Driven work define + domains field"
-subtitle: "Label inference, name derivation, and domains as first-class pipeline field"
+title: 'DDD Wave 3: Issue-Driven work define + domains field'
+subtitle: 'Label inference, name derivation, and domains as first-class pipeline field'
 date: 2026-02-17
 phase: 1
-pipelineName: "DDD Enablement Epic"
+pipelineName: 'DDD Enablement Epic'
 pipelineType: horizontal
 products: []
-tools: ["work-orchestrator", "pm-system", "ci-pipeline"]
-domains: ["garments", "screens", "pricing"]
+tools: ['work-orchestrator', 'pm-system', 'ci-pipeline']
+domains: ['garments', 'screens', 'pricing']
 stage: wrap-up
 tags: [build, decision]
-sessionId: "0a1b62cb-84e6-46ff-b178-9021bb5a09ae"
-branch: "session/0217-ddd-324"
+sessionId: '0a1b62cb-84e6-46ff-b178-9021bb5a09ae'
+branch: 'session/0217-ddd-324'
 status: complete
 ---
 
@@ -25,13 +25,13 @@ Closes the DDD Enablement Epic (#315). The last piece: making the pipeline syste
 
 When `--issue N` is provided, the command fetches the issue's labels and title, then auto-populates fields:
 
-| Label pattern | Field |
-|---|---|
-| `pipeline/<type>` | type (falls back to `vertical` with warning) |
-| `product/<slug>` | products |
-| `tool/<slug>` | tools |
-| `domain/<slug>` | domains |
-| Issue title (derived) | name (if not explicitly given) |
+| Label pattern         | Field                                        |
+| --------------------- | -------------------------------------------- |
+| `pipeline/<type>`     | type (falls back to `vertical` with warning) |
+| `product/<slug>`      | products                                     |
+| `tool/<slug>`         | tools                                        |
+| `domain/<slug>`       | domains                                      |
+| Issue title (derived) | name (if not explicitly given)               |
 
 The output shows what was inferred AND any explicit overrides:
 
@@ -55,6 +55,7 @@ The output shows what was inferred AND any explicit overrides:
 ### Name derivation from issue title
 
 A `_derive_name_from_issue_title` helper strips noise then takes 5 words:
+
 1. Strip backtick code spans, angle-bracket refs, `(#N)` refs
 2. Strip conventional-commit prefix (`feat(x):`, `fix(y):`)
 3. Lowercase, replace non-alphanumeric with spaces
@@ -79,6 +80,7 @@ When the user provides flags that differ from what labels infer, both are shown 
 ### `pipeline/*` label fallback
 
 No `pipeline/*` label → type defaults to `vertical` with a warning, not an error. This is appropriate because:
+
 1. Most issues are about product verticals
 2. The label taxonomy is still being rolled out
 3. Failing would be annoying when the label is just missing

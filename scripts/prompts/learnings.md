@@ -27,6 +27,7 @@ Synthesize cross-cutting patterns from the entire {VERTICAL} vertical build cycl
 ## Output
 
 Produce a KB session doc at `{KB_DIR}/` with:
+
 - Frontmatter: vertical={VERTICAL}, stage=learnings, tags=[learning]
 - Pattern catalog (reusable approaches)
 - Pain point inventory with root causes

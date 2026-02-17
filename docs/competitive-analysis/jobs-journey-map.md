@@ -1,6 +1,6 @@
 ---
-title: "Jobs Vertical — Current Journey Map"
-description: "Step-by-step journey map of how production jobs flow today at 4Ink, with friction points from competitor analysis and user interview"
+title: 'Jobs Vertical — Current Journey Map'
+description: 'Step-by-step journey map of how production jobs flow today at 4Ink, with friction points from competitor analysis and user interview'
 category: competitive-analysis
 status: complete
 phase: 1
@@ -22,17 +22,20 @@ depends-on:
 ## Current State: How 4Ink Works Today
 
 ### Tools in Use
+
 - **PrintLife**: Quote creation, basic production Kanban (4 lanes)
 - **Wall calendar**: Primary daily/weekly planning tool
 - **Memory**: Gary's mental model of capacity and priorities
 - **Phone/email**: Customer communication
 
 ### Team Structure
+
 - **Gary** (owner): Quotes, screen prep, coordination, planning — the hub for all decisions
 - **2-3 employees**: Press operation (automatic + manual), bagging, boxing, shipping
 - **No digital assignment system** — Gary verbally directs work
 
 ### Service Types
+
 1. **Screen Printing** — Main business. Large jobs (50-500+ shirts). Multi-day production.
 2. **DTF (Direct to Film)** — High-volume rush orders. Often selling prints only. Interrupt-driven throughout the day.
 3. **Embroidery** — Periodic large jobs. Requires digitizer setup. Different equipment/skills.
@@ -210,30 +213,30 @@ KEY DIFFERENCE: Digitizing replaces screen prep. Different equipment path.
 
 ### Critical (Blocks core workflow)
 
-| # | Friction | Current Impact | Frequency |
-|---|---------|---------------|-----------|
-| 1 | **No quick capture** — opportunities lost when Gary is busy | Forgotten leads, missed revenue | Daily |
-| 2 | **No capacity awareness** — can't confidently commit delivery dates | Over-promising, rush stress, late deliveries | Multiple times/week |
-| 3 | **No quality gate** — shipped bad work (embroidery incident) | Customer complaints, rework costs, reputation damage | Occasional but devastating |
-| 4 | **Screen prep invisible** — no tracking of screens, mesh, burn status | Only Gary knows. Bus factor = 1. | Every screen printing job |
+| #   | Friction                                                              | Current Impact                                       | Frequency                  |
+| --- | --------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------- |
+| 1   | **No quick capture** — opportunities lost when Gary is busy           | Forgotten leads, missed revenue                      | Daily                      |
+| 2   | **No capacity awareness** — can't confidently commit delivery dates   | Over-promising, rush stress, late deliveries         | Multiple times/week        |
+| 3   | **No quality gate** — shipped bad work (embroidery incident)          | Customer complaints, rework costs, reputation damage | Occasional but devastating |
+| 4   | **Screen prep invisible** — no tracking of screens, mesh, burn status | Only Gary knows. Bus factor = 1.                     | Every screen printing job  |
 
 ### High (Significant daily friction)
 
-| # | Friction | Current Impact | Frequency |
-|---|---------|---------------|-----------|
-| 5 | **Wall calendar is single source of truth** — fragile, not shareable | Can't plan remotely, no backup, limited space | Constant |
-| 6 | **DTF interrupts disrupt planned work** — no way to assess impact | Delays screen printing jobs, creates capacity crunch | Several times/day |
-| 7 | **No "what do I work on today?" view** — start each day figuring it out | Wasted morning time, reactive instead of proactive | Every morning |
-| 8 | **Quote pipeline has no states** — can't see what's pending, sent, accepted | No sales funnel visibility | Multiple times/week |
+| #   | Friction                                                                    | Current Impact                                       | Frequency           |
+| --- | --------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------- |
+| 5   | **Wall calendar is single source of truth** — fragile, not shareable        | Can't plan remotely, no backup, limited space        | Constant            |
+| 6   | **DTF interrupts disrupt planned work** — no way to assess impact           | Delays screen printing jobs, creates capacity crunch | Several times/day   |
+| 7   | **No "what do I work on today?" view** — start each day figuring it out     | Wasted morning time, reactive instead of proactive   | Every morning       |
+| 8   | **Quote pipeline has no states** — can't see what's pending, sent, accepted | No sales funnel visibility                           | Multiple times/week |
 
 ### Medium (Adds friction, workaround exists)
 
-| # | Friction | Current Impact | Frequency |
-|---|---------|---------------|-----------|
-| 9 | **No blocked-item visibility** — waiting on blanks, art, customer — just remembered | Items fall through cracks, surprised at press time | Weekly |
-| 10 | **Customer communication outside system** — email/phone, no central record | Context lost, have to ask again, no history | Constant |
-| 11 | **No production analytics** — no idea of throughput, trends, seasonality data | Can't plan hiring, can't optimize scheduling | Ongoing blind spot |
-| 12 | **Payment disconnected from production** — job done but payment state unknown | Manual reconciliation needed | Per job |
+| #   | Friction                                                                            | Current Impact                                     | Frequency          |
+| --- | ----------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------ |
+| 9   | **No blocked-item visibility** — waiting on blanks, art, customer — just remembered | Items fall through cracks, surprised at press time | Weekly             |
+| 10  | **Customer communication outside system** — email/phone, no central record          | Context lost, have to ask again, no history        | Constant           |
+| 11  | **No production analytics** — no idea of throughput, trends, seasonality data       | Can't plan hiring, can't optimize scheduling       | Ongoing blind spot |
+| 12  | **Payment disconnected from production** — job done but payment state unknown       | Manual reconciliation needed                       | Per job            |
 
 ---
 
@@ -241,14 +244,14 @@ KEY DIFFERENCE: Digitizing replaces screen prep. Different equipment path.
 
 ### Gary's Typical Day (estimated from interview)
 
-| Activity | Time | % of Day | Digital Tool Used |
-|----------|------|----------|-------------------|
-| Phone/email (customer communication) | 2 hrs | 25% | Email, phone |
-| Quote building | 1-2 hrs | 15-20% | PrintLife |
-| Screen prep (burn, register) | 2-3 hrs | 25-30% | None |
-| Production oversight & coordination | 1-2 hrs | 15-20% | None (verbal) |
-| Planning (wall calendar, mental) | 30-60 min | 5-10% | Wall calendar |
-| Admin (shipping labels, payments) | 30-60 min | 5-10% | Various |
+| Activity                             | Time      | % of Day | Digital Tool Used |
+| ------------------------------------ | --------- | -------- | ----------------- |
+| Phone/email (customer communication) | 2 hrs     | 25%      | Email, phone      |
+| Quote building                       | 1-2 hrs   | 15-20%   | PrintLife         |
+| Screen prep (burn, register)         | 2-3 hrs   | 25-30%   | None              |
+| Production oversight & coordination  | 1-2 hrs   | 15-20%   | None (verbal)     |
+| Planning (wall calendar, mental)     | 30-60 min | 5-10%    | Wall calendar     |
+| Admin (shipping labels, payments)    | 30-60 min | 5-10%    | Various           |
 
 **Key insight**: Gary spends ~65% of his day on activities with NO digital tool support (screen prep, coordination, planning). The biggest opportunity isn't improving what he does in PrintLife — it's digitizing what he currently does from memory and wall calendars.
 
@@ -257,17 +260,20 @@ KEY DIFFERENCE: Digitizing replaces screen prep. Different equipment path.
 ## Capacity Patterns (from Interview)
 
 ### Feast or Famine
+
 - Some days: barely any work, employees under-utilized
 - Other days: way over capacity, staying late, rushing
 - No smoothing mechanism — reactive to incoming orders
 
 ### The Delivery Speed Trap
+
 - 4Ink differentiates on fast turnaround
 - This leads to over-promising when busy
 - User's recommendation: dynamic rush pricing based on queue depth
 - System should help answer: "Can we take this on without risking existing commitments?"
 
 ### Interrupt Pattern (DTF)
+
 - Large screen printing jobs = planned, multi-day
 - DTF orders = unplanned, interrupt-driven, same-day
 - These two patterns compete for attention and capacity

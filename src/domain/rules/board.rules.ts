@@ -1,57 +1,57 @@
-import { laneEnum } from "@domain/entities/job";
-import type { Lane } from "@domain/entities/job";
-import type { BoardCard } from "@domain/entities/board-card";
-import type { JobCard, ScratchNoteCard } from "@domain/entities/board-card";
-import type { Job } from "@domain/entities/job";
-import type { Customer } from "@domain/entities/customer";
-import type { Invoice } from "@domain/entities/invoice";
-import type { GarmentCatalog } from "@domain/entities/garment";
-import type { Color } from "@domain/entities/color";
-import type { Artwork } from "@domain/entities/artwork";
-import { computeTaskProgress } from "@domain/rules/job.rules";
+import { laneEnum } from '@domain/entities/job'
+import type { Lane } from '@domain/entities/job'
+import type { BoardCard } from '@domain/entities/board-card'
+import type { JobCard, ScratchNoteCard } from '@domain/entities/board-card'
+import type { Job } from '@domain/entities/job'
+import type { Customer } from '@domain/entities/customer'
+import type { Invoice } from '@domain/entities/invoice'
+import type { GarmentCatalog } from '@domain/entities/garment'
+import type { Color } from '@domain/entities/color'
+import type { Artwork } from '@domain/entities/artwork'
+import { computeTaskProgress } from '@domain/rules/job.rules'
 
 /** Drag IDs are "job:{uuid}", "quote:{quoteId}", "scratch:{uuid}" */
 export function parseDragId(dragId: string): { cardType: string; cardId: string } | null {
-  const idx = dragId.indexOf(":");
-  if (idx === -1) return null;
-  return { cardType: dragId.slice(0, idx), cardId: dragId.slice(idx + 1) };
+  const idx = dragId.indexOf(':')
+  if (idx === -1) return null
+  return { cardType: dragId.slice(0, idx), cardId: dragId.slice(idx + 1) }
 }
 
 /** Droppable IDs are "{section}:{lane}" */
 export function parseDroppableId(droppableId: string): { section: string; lane: Lane } | null {
-  const idx = droppableId.indexOf(":");
-  if (idx === -1) return null;
-  const parsed = laneEnum.safeParse(droppableId.slice(idx + 1));
-  if (!parsed.success) return null;
+  const idx = droppableId.indexOf(':')
+  if (idx === -1) return null
+  const parsed = laneEnum.safeParse(droppableId.slice(idx + 1))
+  if (!parsed.success) return null
   return {
     section: droppableId.slice(0, idx),
     lane: parsed.data,
-  };
+  }
 }
 
 /** Map card type to section for same-row constraint */
 export function cardTypeToSection(cardType: string): string {
-  if (cardType === "job") return "jobs";
-  return "quotes"; // quote and scratch are in quotes section
+  if (cardType === 'job') return 'jobs'
+  return 'quotes' // quote and scratch are in quotes section
 }
 
 /** Get display label for a card (used in dialogs) */
 export function getCardLabel(card: BoardCard): string {
   switch (card.type) {
-    case "job":
-      return `${card.jobNumber}: ${card.customerName}`;
-    case "quote":
-      return `Quote: ${card.customerName}`;
-    case "scratch_note":
-      return `Note: ${card.content.slice(0, 40)}`;
+    case 'job':
+      return `${card.jobNumber}: ${card.customerName}`
+    case 'quote':
+      return `Quote: ${card.customerName}`
+    case 'scratch_note':
+      return `Note: ${card.content.slice(0, 40)}`
   }
 }
 
 /** Get due date for sorting (scratch notes have no due date → sort to top) */
 export function getCardSortDate(card: BoardCard): string {
-  if (card.type === "scratch_note") return "0000-00-00"; // sort to top
-  if (card.type === "job") return card.dueDate;
-  return card.dueDate ?? "9999-99-99"; // quotes without due date sort to bottom
+  if (card.type === 'scratch_note') return '0000-00-00' // sort to top
+  if (card.type === 'job') return card.dueDate
+  return card.dueDate ?? '9999-99-99' // quotes without due date sort to bottom
 }
 
 // ---------------------------------------------------------------------------
@@ -64,21 +64,19 @@ export function projectJobToCard(
   invoices: Invoice[],
   garmentCatalog: GarmentCatalog[],
   colors: Color[],
-  artworks: Artwork[],
+  artworks: Artwork[]
 ): JobCard {
-  const customer = customers.find((c) => c.id === job.customerId);
-  const progress = computeTaskProgress(job.tasks);
-  const invoice = job.invoiceId
-    ? invoices.find((inv) => inv.id === job.invoiceId)
-    : undefined;
+  const customer = customers.find((c) => c.id === job.customerId)
+  const progress = computeTaskProgress(job.tasks)
+  const invoice = job.invoiceId ? invoices.find((inv) => inv.id === job.invoiceId) : undefined
 
   return {
-    type: "job",
+    type: 'job',
     id: job.id,
     jobNumber: job.jobNumber,
     title: job.title,
     customerId: job.customerId,
-    customerName: customer?.company ?? "Unknown",
+    customerName: customer?.company ?? 'Unknown',
     lane: job.lane,
     serviceType: job.serviceType,
     quantity: job.quantity,
@@ -99,36 +97,39 @@ export function projectJobToCard(
     blockReason: job.blockReason,
     orderTotal: job.orderTotal,
     garmentCategory: (() => {
-      const garmentId = job.garmentDetails[0]?.garmentId;
-      const garment = garmentCatalog.find((g) => g.id === garmentId);
-      return garment?.baseCategory;
+      const garmentId = job.garmentDetails[0]?.garmentId
+      const garment = garmentCatalog.find((g) => g.id === garmentId)
+      return garment?.baseCategory
     })(),
     garmentColorHex: (() => {
-      const colorId = job.garmentDetails[0]?.colorId;
-      const color = colors.find((c) => c.id === colorId);
-      return color?.hex;
+      const colorId = job.garmentDetails[0]?.colorId
+      const color = colors.find((c) => c.id === colorId)
+      return color?.hex
     })(),
     primaryArtworkUrl: (() => {
-      const artworkId = job.artworkIds?.[0];
-      const artwork = artworks.find((a) => a.id === artworkId);
-      return artwork?.thumbnailUrl;
+      const artworkId = job.artworkIds?.[0]
+      const artwork = artworks.find((a) => a.id === artworkId)
+      return artwork?.thumbnailUrl
     })(),
-  };
+  }
 }
 
 // ---------------------------------------------------------------------------
 // Projection: ScratchNote → ScratchNoteCard view model
 // ---------------------------------------------------------------------------
 
-export function projectScratchNoteToCard(
-  note: { id: string; content: string; createdAt: string; isArchived: boolean },
-): ScratchNoteCard {
+export function projectScratchNoteToCard(note: {
+  id: string
+  content: string
+  createdAt: string
+  isArchived: boolean
+}): ScratchNoteCard {
   return {
-    type: "scratch_note",
+    type: 'scratch_note',
     id: note.id,
     content: note.content,
     createdAt: note.createdAt,
     isArchived: note.isArchived,
-    lane: "ready",
-  };
+    lane: 'ready',
+  }
 }

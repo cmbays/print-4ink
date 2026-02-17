@@ -17,11 +17,13 @@
 ### Task 0.1: Schemas + Types
 
 **Files:**
+
 - `lib/schemas/color-preferences.ts` — NEW
 - `lib/schemas/customer.ts` — MODIFY
 - `lib/schemas/__tests__/color-preferences.test.ts` — NEW
 
 **Steps:**
+
 1. Create `lib/schemas/color-preferences.ts` with:
    - `brandPreferenceSchema`: `{ brandName, inheritMode: 'inherit' | 'customize', favoriteColorIds[], explicitColorIds[], removedInheritedColorIds[] }`
    - `customerPreferenceSchema`: `{ inheritMode, favoriteColorIds[], favoriteBrandNames[], favoriteGarmentIds[] }`
@@ -36,9 +38,11 @@
 ### Task 0.2: Mock Data
 
 **Files:**
+
 - `lib/mock-data.ts` — MODIFY
 
 **Steps:**
+
 1. Update `colors` array: ensure 5 `isFavorite: true` colors remain (Black, White, Navy, Royal Blue, Red) — these map to S2 global favorites
 2. Add `brandPreferences` mock map:
    - Gildan: `inheritMode: 'customize'`, adds Sport Grey + Heather Athletic, removes none
@@ -54,10 +58,12 @@
 ### Task 0.3: Shared Helpers
 
 **Files:**
+
 - `lib/helpers/color-preferences.ts` — NEW
 - `lib/helpers/__tests__/color-preferences.test.ts` — NEW
 
 **Steps:**
+
 1. `resolveEffectiveFavorites(entityType, entityId)` — N19:
    - Walks: global (S2 — colors with `isFavorite`) → brand overrides (S3) → customer overrides (S4)
    - Returns `colorIds[]` (empty `[]` when all levels empty — R5 graceful degradation)
@@ -78,12 +84,14 @@
 ### Task 0.4: Shared Components
 
 **Files:**
+
 - `components/features/ColorSwatchPicker.tsx` — MODIFY
 - `components/features/FavoritesColorSection.tsx` — NEW
 - `components/features/InheritanceToggle.tsx` — NEW
 - `components/features/InheritanceDetail.tsx` — NEW
 
 **Steps:**
+
 1. **ColorSwatchPicker** — add `multiSelect` mode:
    - New props: `multiSelect?: boolean`, `selectedColorIds?: string[]`, `onToggleColor?: (colorId: string) => void`
    - When `multiSelect=true`: click toggles colorId in/out of `selectedColorIds[]`; renders check/ring indicator
@@ -106,11 +114,13 @@
 ### Task 0.5: Navigation
 
 **Files:**
+
 - `components/layout/sidebar.tsx` — MODIFY
 - `lib/constants/navigation.ts` — MODIFY
 - `docs/APP_FLOW.md` — MODIFY
 
 **Steps:**
+
 1. Add `/settings/colors` to `SIDEBAR_SETTINGS_ORDER` after `/settings/pricing`
 2. Add nav item to `SECONDARY_NAV`: `{ label: "Color Settings", href: "/settings/colors", icon: Palette }`
 3. Update `APP_FLOW.md` screen inventory with new route
@@ -124,12 +134,14 @@
 ### Task 1.1: V1 — Swatch Filter + Honest Cards (Session A)
 
 **Files:**
+
 - `app/(dashboard)/garments/_components/ColorFilterGrid.tsx` — NEW
 - `app/(dashboard)/garments/_components/GarmentCatalogToolbar.tsx` — MODIFY
 - `app/(dashboard)/garments/_components/GarmentCard.tsx` — MODIFY
 - `app/(dashboard)/garments/page.tsx` — MODIFY
 
 **Steps:**
+
 1. Create `ColorFilterGrid` component:
    - Wraps `ColorSwatchPicker` in `multiSelect` mode with compact layout
    - Renders in toolbar position where color family dropdown was
@@ -155,9 +167,11 @@
 ### Task 1.2: V2 — Drawer Favorites + Scroll Fix (Session B)
 
 **Files:**
+
 - `app/(dashboard)/garments/_components/GarmentDetailDrawer.tsx` — MODIFY
 
 **Steps:**
+
 1. Replace single `ColorSwatchPicker` with `FavoritesColorSection`:
    - Compute favorites via `resolveEffectiveFavorites('global')` (Phase 1 always global context)
    - Pass resolved favorites + all garment colors to FavoritesColorSection
@@ -178,10 +192,12 @@
 ### Task 1.3: V3 — Global Favorites Page (Session C)
 
 **Files:**
+
 - `app/(dashboard)/settings/colors/page.tsx` — NEW
 - `app/(dashboard)/settings/colors/layout.tsx` — NEW (optional, for breadcrumb)
 
 **Steps:**
+
 1. Create `SettingsColorsPage`:
    - Page header "Colors" with breadcrumb (Settings > Colors)
    - Use `FavoritesColorSection` for the main favorites/all-colors layout
@@ -212,6 +228,7 @@
 ### Task 2.1: V4 — Brand Detail Drawer
 
 **Files:**
+
 - `app/(dashboard)/garments/_components/BrandDetailDrawer.tsx` — NEW
 - `app/(dashboard)/garments/_components/GarmentCard.tsx` — MODIFY (wire brand click)
 - `app/(dashboard)/garments/_components/GarmentCatalogToolbar.tsx` — MODIFY (wire brand click)
@@ -219,6 +236,7 @@
 - `app/(dashboard)/garments/page.tsx` — MODIFY (drawer state + handler)
 
 **Steps:**
+
 1. Create `BrandDetailDrawer`:
    - Sheet/drawer with brand name + garment count header (U21)
    - Close button (U20)
@@ -256,10 +274,12 @@
 ### Task 3.1: V5 — Customer Preferences (Session A)
 
 **Files:**
+
 - `app/(dashboard)/customers/[id]/_components/CustomerPreferencesTab.tsx` — NEW
 - `app/(dashboard)/customers/[id]/_components/CustomerTabs.tsx` — MODIFY
 
 **Steps:**
+
 1. Create `CustomerPreferencesTab`:
    - Color Preferences section (U51-U55):
      - `InheritanceToggle` (U52): dynamic label — "Use [primary brand] colors" if brand favorites set, else "Use global colors"
@@ -290,11 +310,13 @@
 ### Task 3.2: V6 — Inheritance Engine + Removal Dialog (Session B)
 
 **Files:**
+
 - `components/features/RemovalConfirmationDialog.tsx` — NEW
 - `app/(dashboard)/settings/colors/page.tsx` — MODIFY (make P4 stubs live)
 - `app/(dashboard)/garments/_components/BrandDetailDrawer.tsx` — MODIFY (make P4 stubs live)
 
 **Steps:**
+
 1. Create `RemovalConfirmationDialog` (P4):
    - Color swatch + name display (U65)
    - Impact count message (U66): "N suppliers and N customers have this color"
@@ -358,13 +380,13 @@ Wave 3: (parallel)
 
 ## Session Count
 
-| Wave | Sessions | Parallel? | Topics |
-|------|----------|-----------|--------|
-| 0 | 1 | serial | colors-foundation |
-| 1 | 3 | parallel | colors-swatch-filter, colors-drawer-favorites, colors-global-settings |
-| 2 | 1 | serial | colors-brand-drawer |
-| 3 | 2 | parallel | colors-customer-prefs, colors-removal-dialog |
-| **Total** | **7** | | |
+| Wave      | Sessions | Parallel? | Topics                                                                |
+| --------- | -------- | --------- | --------------------------------------------------------------------- |
+| 0         | 1        | serial    | colors-foundation                                                     |
+| 1         | 3        | parallel  | colors-swatch-filter, colors-drawer-favorites, colors-global-settings |
+| 2         | 1        | serial    | colors-brand-drawer                                                   |
+| 3         | 2        | parallel  | colors-customer-prefs, colors-removal-dialog                          |
+| **Total** | **7**    |           |                                                                       |
 
 ## Key Integration Points
 
@@ -377,18 +399,19 @@ Wave 3: (parallel)
 
 ## File Conflict Matrix
 
-| | V1 | V2 | V3 | V4 | V5 | V6 |
-|---|---|---|---|---|---|---|
-| GarmentCatalogToolbar | W | | | W | | |
-| GarmentCard | W | | | W | | |
-| GarmentDetailDrawer | | W | | W | | |
-| garments/page.tsx | W | | | W | | |
-| settings/colors/page.tsx | | | W | | | W |
-| BrandDetailDrawer | | | | W | | W |
-| CustomerTabs | | | | | W | |
-| CustomerPreferencesTab | | | | | W | |
+|                          | V1  | V2  | V3  | V4  | V5  | V6  |
+| ------------------------ | --- | --- | --- | --- | --- | --- |
+| GarmentCatalogToolbar    | W   |     |     | W   |     |     |
+| GarmentCard              | W   |     |     | W   |     |     |
+| GarmentDetailDrawer      |     | W   |     | W   |     |     |
+| garments/page.tsx        | W   |     |     | W   |     |     |
+| settings/colors/page.tsx |     |     | W   |     |     | W   |
+| BrandDetailDrawer        |     |     |     | W   |     | W   |
+| CustomerTabs             |     |     |     |     | W   |     |
+| CustomerPreferencesTab   |     |     |     |     | W   |     |
 
 W = writes to file. Sessions within the same wave must NOT share W's.
+
 - Wave 1 (V1, V2, V3): no shared files
 - Wave 3 (V5, V6): no shared files
 

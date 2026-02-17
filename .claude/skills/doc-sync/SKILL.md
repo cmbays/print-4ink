@@ -11,6 +11,7 @@ Use after completing a step in IMPLEMENTATION_PLAN, when docs feel stale, or at 
 ### 1. Identify Sync Scope
 
 Determine what to check:
+
 - **After a step**: Check docs related to what was built
 - **Full audit**: Check all canonical docs against current codebase
 - **Targeted**: Check specific doc flagged as potentially stale
@@ -28,6 +29,7 @@ For each canonical doc being checked, read:
 Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to check each doc:
 
 **APP_FLOW.md**:
+
 - Every route in `app/(dashboard)/` has a corresponding entry
 - Every screen's sections match the actual components rendered
 - Navigation links in the doc match `<Link>` elements in code
@@ -35,23 +37,27 @@ Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to 
 - Empty/error states documented match actual implementations
 
 **IMPLEMENTATION_PLAN.md**:
+
 - Completed steps are marked as done
 - Step descriptions match what was actually built
 - Dependencies between steps are still accurate
 - Remaining steps are still relevant and correctly scoped
 
 **TECH_STACK.md**:
+
 - All dependencies in `package.json` are documented
 - Version numbers match actual installed versions
 - No documented dependencies have been removed
 - No new dependencies were added without documentation
 
 **PRD.md**:
+
 - Feature acceptance criteria match implemented behavior
 - No features were added that aren't in the PRD
 - Feature status (planned/built/deferred) is accurate
 
 **CLAUDE.md**:
+
 - Commands section matches actual `package.json` scripts
 - Architecture section matches actual file structure
 - Design system tokens match `globals.css` `@theme inline` block
@@ -59,6 +65,7 @@ Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to 
 - Lessons Learned section is current
 
 **PROGRESS.md**:
+
 - "What's Built" matches actual built screens
 - "What's Next" matches IMPLEMENTATION_PLAN current step
 - Session log entries are chronological and accurate
@@ -69,23 +76,28 @@ Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to 
 # Doc Sync Report — [Date]
 
 ## Docs Checked
+
 - [List of docs checked with Last Verified dates]
 
 ## Drift Detected
 
 ### [Doc Name]
+
 - **Line/Section**: [where the drift is]
 - **Doc says**: [what the doc currently states]
 - **Reality**: [what the code actually does]
 - **Fix**: [exact edit to make the doc accurate]
 
 ## No Drift
+
 - [Docs that are accurate]
 
 ## Cross-Reference Issues
+
 - [Any contradictions between docs]
 
 ## Proposed Updates
+
 [Numbered list of changes, ready for approval]
 ```
 
@@ -101,16 +113,20 @@ Use the checklist at `.claude/skills/doc-sync/checklists/drift-detection.md` to 
 # Doc Sync Output — [Date]
 
 ## Summary
+
 [1-2 sentences on sync status]
 
 ## Deliverables
+
 - Drift report: agent-outputs/doc-sync-[date].md
 - Docs updated: [list]
 
 ## Drift Found
+
 - [N] docs had drift, [M] changes applied
 
 ## Next Step
+
 [When to run doc-sync next — suggest milestone or date]
 ```
 

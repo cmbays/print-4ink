@@ -1,43 +1,37 @@
-"use client";
+'use client'
 
-import { Trash2 } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
+import { Trash2 } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
-import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
-import type { InvoiceLineItemType } from "@domain/entities/invoice";
+} from '@shared/ui/primitives/select'
+import { INVOICE_LINE_ITEM_TYPE_LABELS } from '@domain/constants'
+import { money, round2, toNumber, formatCurrency } from '@domain/lib/money'
+import type { InvoiceLineItemType } from '@domain/entities/invoice'
 
-const LINE_ITEM_TYPES: InvoiceLineItemType[] = [
-  "garment",
-  "setup",
-  "artwork",
-  "rush",
-  "other",
-];
+const LINE_ITEM_TYPES: InvoiceLineItemType[] = ['garment', 'setup', 'artwork', 'rush', 'other']
 
-export interface InvoiceLineItemData {
-  id: string;
-  type: InvoiceLineItemType;
-  description: string;
-  quantity: number;
-  unitPrice: number;
+export type InvoiceLineItemData = {
+  id: string
+  type: InvoiceLineItemType
+  description: string
+  quantity: number
+  unitPrice: number
 }
 
-interface InvoiceLineItemRowProps {
-  index: number;
-  item: InvoiceLineItemData;
-  onChange: (index: number, item: InvoiceLineItemData) => void;
-  onRemove: (index: number) => void;
-  canRemove: boolean;
-  errors?: Record<string, string>;
+type InvoiceLineItemRowProps = {
+  index: number
+  item: InvoiceLineItemData
+  onChange: (index: number, item: InvoiceLineItemData) => void
+  onRemove: (index: number) => void
+  canRemove: boolean
+  errors?: Record<string, string>
 }
 
 export function InvoiceLineItemRow({
@@ -48,10 +42,10 @@ export function InvoiceLineItemRow({
   canRemove,
   errors,
 }: InvoiceLineItemRowProps) {
-  const lineTotal = toNumber(round2(money(item.quantity).times(item.unitPrice)));
+  const lineTotal = toNumber(round2(money(item.quantity).times(item.unitPrice)))
 
   function updateField(partial: Partial<InvoiceLineItemData>) {
-    onChange(index, { ...item, ...partial });
+    onChange(index, { ...item, ...partial })
   }
 
   return (
@@ -62,9 +56,7 @@ export function InvoiceLineItemRow({
           <Label className="text-xs text-muted-foreground">Type</Label>
           <Select
             value={item.type}
-            onValueChange={(value: InvoiceLineItemType) =>
-              updateField({ type: value })
-            }
+            onValueChange={(value: InvoiceLineItemType) => updateField({ type: value })}
           >
             <SelectTrigger className="h-9 text-sm">
               <SelectValue />
@@ -86,7 +78,7 @@ export function InvoiceLineItemRow({
             value={item.description}
             onChange={(e) => updateField({ description: e.target.value })}
             placeholder="Item description..."
-            className={errors?.description ? "border-error" : ""}
+            className={errors?.description ? 'border-error' : ''}
             aria-label={`Line item ${index + 1} description`}
           />
           {errors?.description && (
@@ -102,10 +94,10 @@ export function InvoiceLineItemRow({
           <Input
             type="number"
             min={1}
-            value={item.quantity || ""}
+            value={item.quantity || ''}
             onChange={(e) => {
-              const val = parseInt(e.target.value, 10);
-              updateField({ quantity: isNaN(val) ? 1 : Math.max(1, val) });
+              const val = parseInt(e.target.value, 10)
+              updateField({ quantity: isNaN(val) ? 1 : Math.max(1, val) })
             }}
             className="text-right"
             placeholder="0"
@@ -120,10 +112,10 @@ export function InvoiceLineItemRow({
             type="number"
             min={0}
             step={0.01}
-            value={item.unitPrice || ""}
+            value={item.unitPrice || ''}
             onChange={(e) => {
-              const val = parseFloat(e.target.value);
-              updateField({ unitPrice: isNaN(val) ? 0 : Math.max(0, val) });
+              const val = parseFloat(e.target.value)
+              updateField({ unitPrice: isNaN(val) ? 0 : Math.max(0, val) })
             }}
             className="text-right"
             placeholder="$0.00"
@@ -158,5 +150,5 @@ export function InvoiceLineItemRow({
         </div>
       </div>
     </div>
-  );
+  )
 }

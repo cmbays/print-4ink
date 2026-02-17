@@ -3,7 +3,7 @@ waves:
   # ============================================================================
   # WAVE 0: Foundation Infrastructure
   # ============================================================================
-  - name: "Foundation Infrastructure"
+  - name: 'Foundation Infrastructure'
     serial: true
     sessions:
       - topic: dal-foundation
@@ -133,7 +133,7 @@ waves:
   # ============================================================================
   # WAVE 1: All Domain Providers + Customer Migration
   # ============================================================================
-  - name: "All Domain Providers + Customer Migration"
+  - name: 'All Domain Providers + Customer Migration'
     serial: true
     sessions:
       - topic: dal-providers
@@ -276,7 +276,7 @@ waves:
   # ============================================================================
   # WAVE 2: Consumer Migration (Parallel)
   # ============================================================================
-  - name: "Consumer Migration"
+  - name: 'Consumer Migration'
     serial: false
     sessions:
       # --- Session A: Dashboard + Jobs ---
@@ -519,7 +519,7 @@ waves:
   # ============================================================================
   # WAVE 3: Services Extraction (Parallel)
   # ============================================================================
-  - name: "Services Extraction"
+  - name: 'Services Extraction'
     serial: false
     sessions:
       # --- Session A: Color Resolution ---
@@ -660,7 +660,7 @@ waves:
   # ============================================================================
   # WAVE 4: Cleanup + Verification
   # ============================================================================
-  - name: "Cleanup + Verification"
+  - name: 'Cleanup + Verification'
     serial: true
     sessions:
       - topic: dal-cleanup

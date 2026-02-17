@@ -13,8 +13,8 @@ design: docs/plans/2026-02-14-garment-mockup-design.md
 breadboard: docs/breadboards/mockup-engine-breadboard.md
 
 waves:
-  - name: "Foundation (Tasks 1-4)"
-    serial: false  # Tasks 1-4 can run in parallel
+  - name: 'Foundation (Tasks 1-4)'
+    serial: false # Tasks 1-4 can run in parallel
     sessions:
       - topic: mockup-w0-schemas
         prompt: |
@@ -76,8 +76,8 @@ waves:
           Commit and push.
         stage: build
 
-  - name: "Data Layer (Tasks 5, 5A)"
-    serial: true  # 5A depends on 5
+  - name: 'Data Layer (Tasks 5, 5A)'
+    serial: true # 5A depends on 5
     sessions:
       - topic: mockup-w1-mock-data
         prompt: |
@@ -99,8 +99,8 @@ waves:
         stage: build
         dependsOn: mockup-w0-schemas
 
-  - name: "Components (Tasks 6-10)"
-    serial: false  # Tasks 6-9 parallel, Task 10 depends on all
+  - name: 'Components (Tasks 6-10)'
+    serial: false # Tasks 6-9 parallel, Task 10 depends on all
     sessions:
       - topic: mockup-w2-filter-provider
         prompt: |
@@ -132,8 +132,8 @@ waves:
         stage: build
         dependsOn: mockup-w1-mock-data
 
-  - name: "Integration (Tasks 11-13)"
-    serial: false  # All three integration tasks can run in parallel
+  - name: 'Integration (Tasks 11-13)'
+    serial: false # All three integration tasks can run in parallel
     sessions:
       - topic: mockup-w3-quote-integration
         prompt: |
@@ -184,7 +184,7 @@ waves:
         stage: build
         dependsOn: mockup-w2-core-component
 
-  - name: "Validation + PR (Tasks 14-15)"
+  - name: 'Validation + PR (Tasks 14-15)'
     serial: true
     sessions:
       - topic: mockup-w4-validate

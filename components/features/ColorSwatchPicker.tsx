@@ -1,37 +1,31 @@
-"use client";
+'use client'
 
-import { useState, useRef, useMemo } from "react";
-import { Search, Check, Star } from "lucide-react";
-import { Input } from "@shared/ui/primitives/input";
-import { ScrollArea } from "@shared/ui/primitives/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { cn } from "@shared/lib/cn";
-import { swatchTextStyle } from "@/lib/helpers/swatch";
-import type { Color } from "@domain/entities/color";
-import { getColorsMutable } from "@infra/repositories/colors";
-import { useGridKeyboardNav } from "@shared/hooks/useGridKeyboardNav";
+import { useState, useRef, useMemo } from 'react'
+import { Search, Check, Star } from 'lucide-react'
+import { Input } from '@shared/ui/primitives/input'
+import { ScrollArea } from '@shared/ui/primitives/scroll-area'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { cn } from '@shared/lib/cn'
+import { swatchTextStyle } from '@/lib/helpers/swatch'
+import type { Color } from '@domain/entities/color'
+import { getColorsMutable } from '@infra/repositories/colors'
+import { useGridKeyboardNav } from '@shared/hooks/useGridKeyboardNav'
 
 type ColorSwatchPickerProps = {
-  colors: Color[];
-  selectedColorId?: string;
-  onSelect: (colorId: string) => void;
-  favorites?: string[];
-  onToggleFavorite?: (colorId: string) => void;
-  compact?: boolean;
-  maxCompactSwatches?: number;
-  multiSelect?: boolean;
-  selectedColorIds?: string[];
-  onToggleColor?: (colorId: string) => void;
-};
+  colors: Color[]
+  selectedColorId?: string
+  onSelect: (colorId: string) => void
+  favorites?: string[]
+  onToggleFavorite?: (colorId: string) => void
+  compact?: boolean
+  maxCompactSwatches?: number
+  multiSelect?: boolean
+  selectedColorIds?: string[]
+  onToggleColor?: (colorId: string) => void
+}
 
-const DEFAULT_COLORS = getColorsMutable();
-const DEFAULT_FAVORITES = DEFAULT_COLORS
-  .filter((c) => c.isFavorite === true)
-  .map((c) => c.id);
+const DEFAULT_COLORS = getColorsMutable()
+const DEFAULT_FAVORITES = DEFAULT_COLORS.filter((c) => c.isFavorite === true).map((c) => c.id)
 
 function Swatch({
   color,
@@ -41,12 +35,12 @@ function Swatch({
   onToggleFavorite,
   tabIndex,
 }: {
-  color: Color;
-  isSelected: boolean;
-  isFavorite: boolean;
-  onSelect: () => void;
-  onToggleFavorite?: () => void;
-  tabIndex: number;
+  color: Color
+  isSelected: boolean
+  isFavorite: boolean
+  onSelect: () => void
+  onToggleFavorite?: () => void
+  tabIndex: number
 }) {
   return (
     <Tooltip>
@@ -54,21 +48,21 @@ function Swatch({
         <div
           role="option"
           aria-selected={isSelected}
-          aria-label={`${color.name}${isSelected ? " (selected)" : ""}`}
+          aria-label={`${color.name}${isSelected ? ' (selected)' : ''}`}
           tabIndex={tabIndex}
           onClick={onSelect}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onSelect();
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              onSelect()
             }
           }}
           className={cn(
-            "group relative flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-transform",
-            "hover:scale-105 hover:ring-1 hover:ring-foreground/30",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            "motion-reduce:transition-none",
-            isSelected && "ring-2 ring-action"
+            'group relative flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-transform',
+            'hover:scale-105 hover:ring-1 hover:ring-foreground/30',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            'motion-reduce:transition-none',
+            isSelected && 'ring-2 ring-action'
           )}
           style={{ backgroundColor: color.hex }}
         >
@@ -77,7 +71,7 @@ function Swatch({
             className="pointer-events-none select-none text-center leading-tight"
             style={swatchTextStyle(color.swatchTextColor)}
           >
-            {isSelected ? "" : color.name}
+            {isSelected ? '' : color.name}
           </span>
 
           {/* Selected checkmark */}
@@ -94,11 +88,15 @@ function Swatch({
           {onToggleFavorite && (
             <button
               type="button"
-              aria-label={isFavorite ? `Remove ${color.name} from favorites` : `Add ${color.name} to favorites`}
+              aria-label={
+                isFavorite
+                  ? `Remove ${color.name} from favorites`
+                  : `Add ${color.name} to favorites`
+              }
               tabIndex={-1}
               onClick={(e) => {
-                e.stopPropagation();
-                onToggleFavorite();
+                e.stopPropagation()
+                onToggleFavorite()
               }}
               className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center opacity-0 transition-opacity hover:opacity-100 group-hover:opacity-100 focus-visible:opacity-100 motion-reduce:transition-none"
               style={{
@@ -107,7 +105,7 @@ function Swatch({
             >
               <Star
                 size={16}
-                className={cn(isFavorite && "fill-current")}
+                className={cn(isFavorite && 'fill-current')}
                 style={{ color: color.swatchTextColor }}
                 aria-hidden="true"
               />
@@ -119,7 +117,7 @@ function Swatch({
         {color.name}
       </TooltipContent>
     </Tooltip>
-  );
+  )
 }
 
 export function ColorSwatchPicker({
@@ -134,30 +132,28 @@ export function ColorSwatchPicker({
   selectedColorIds = [],
   onToggleColor,
 }: ColorSwatchPickerProps) {
-  const [search, setSearch] = useState("");
-  const gridRef = useRef<HTMLDivElement>(null);
+  const [search, setSearch] = useState('')
+  const gridRef = useRef<HTMLDivElement>(null)
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return colors;
-    const q = search.toLowerCase();
+    if (!search.trim()) return colors
+    const q = search.toLowerCase()
     return colors.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.family.toLowerCase().includes(q)
-    );
-  }, [colors, search]);
+      (c) => c.name.toLowerCase().includes(q) || c.family.toLowerCase().includes(q)
+    )
+  }, [colors, search])
 
   const favoriteColors = useMemo(
     () => filtered.filter((c) => favorites.includes(c.id)),
     [filtered, favorites]
-  );
+  )
 
-  const handleKeyDown = useGridKeyboardNav(gridRef, '[role="option"]', 42);
+  const handleKeyDown = useGridKeyboardNav(gridRef, '[role="option"]', 42)
 
   // Compact mode: simple row of small swatches
   if (compact) {
-    const displayColors = colors.slice(0, maxCompactSwatches ?? 8);
-    const remaining = colors.length - displayColors.length;
+    const displayColors = colors.slice(0, maxCompactSwatches ?? 8)
+    const remaining = colors.length - displayColors.length
     return (
       <div className="flex items-center gap-0.5">
         {displayColors.map((color) => (
@@ -174,13 +170,9 @@ export function ColorSwatchPicker({
             </TooltipContent>
           </Tooltip>
         ))}
-        {remaining > 0 && (
-          <span className="ml-1 text-xs text-muted-foreground">
-            +{remaining}
-          </span>
-        )}
+        {remaining > 0 && <span className="ml-1 text-xs text-muted-foreground">+{remaining}</span>}
       </div>
-    );
+    )
   }
 
   return (
@@ -210,31 +202,19 @@ export function ColorSwatchPicker({
               <Star size={16} className="fill-current" aria-hidden="true" />
               Favorites
             </p>
-            <div
-              className="flex flex-wrap gap-0.5"
-              role="listbox"
-              aria-label="Favorite colors"
-            >
+            <div className="flex flex-wrap gap-0.5" role="listbox" aria-label="Favorite colors">
               {favoriteColors.map((color) => (
                 <Swatch
                   key={`fav-${color.id}`}
                   color={color}
                   isSelected={
-                    multiSelect
-                      ? selectedColorIds.includes(color.id)
-                      : selectedColorId === color.id
+                    multiSelect ? selectedColorIds.includes(color.id) : selectedColorId === color.id
                   }
                   isFavorite={true}
                   onSelect={() =>
-                    multiSelect && onToggleColor
-                      ? onToggleColor(color.id)
-                      : onSelect(color.id)
+                    multiSelect && onToggleColor ? onToggleColor(color.id) : onSelect(color.id)
                   }
-                  onToggleFavorite={
-                    onToggleFavorite
-                      ? () => onToggleFavorite(color.id)
-                      : undefined
-                  }
+                  onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(color.id) : undefined}
                   tabIndex={0}
                 />
               ))}
@@ -247,9 +227,7 @@ export function ColorSwatchPicker({
           <p className="mb-1.5 text-xs font-medium text-muted-foreground">
             All Colors
             {search.trim() && (
-              <span className="ml-1 text-muted-foreground/60">
-                ({filtered.length})
-              </span>
+              <span className="ml-1 text-muted-foreground/60">({filtered.length})</span>
             )}
           </p>
           {filtered.length === 0 ? (
@@ -269,21 +247,13 @@ export function ColorSwatchPicker({
                   key={color.id}
                   color={color}
                   isSelected={
-                    multiSelect
-                      ? selectedColorIds.includes(color.id)
-                      : selectedColorId === color.id
+                    multiSelect ? selectedColorIds.includes(color.id) : selectedColorId === color.id
                   }
                   isFavorite={favorites.includes(color.id)}
                   onSelect={() =>
-                    multiSelect && onToggleColor
-                      ? onToggleColor(color.id)
-                      : onSelect(color.id)
+                    multiSelect && onToggleColor ? onToggleColor(color.id) : onSelect(color.id)
                   }
-                  onToggleFavorite={
-                    onToggleFavorite
-                      ? () => onToggleFavorite(color.id)
-                      : undefined
-                  }
+                  onToggleFavorite={onToggleFavorite ? () => onToggleFavorite(color.id) : undefined}
                   tabIndex={i === 0 ? 0 : -1}
                 />
               ))}
@@ -292,5 +262,5 @@ export function ColorSwatchPicker({
         </div>
       </ScrollArea>
     </div>
-  );
+  )
 }

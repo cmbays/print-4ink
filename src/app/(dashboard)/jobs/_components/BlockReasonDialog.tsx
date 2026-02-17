@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { ShieldAlert } from "lucide-react";
+import { useState } from 'react'
+import { ShieldAlert } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -9,16 +9,16 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import { Textarea } from "@shared/ui/primitives/textarea";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import { Textarea } from '@shared/ui/primitives/textarea'
 
-interface BlockReasonDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  cardLabel: string;
-  onConfirm: (reason: string) => void;
-  onCancel: () => void;
+type BlockReasonDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  cardLabel: string
+  onConfirm: (reason: string) => void
+  onCancel: () => void
 }
 
 export function BlockReasonDialog({
@@ -28,24 +28,24 @@ export function BlockReasonDialog({
   onConfirm,
   onCancel,
 }: BlockReasonDialogProps) {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState('')
 
   function handleConfirm() {
-    if (!reason.trim()) return;
-    onConfirm(reason.trim());
-    setReason("");
+    if (!reason.trim()) return
+    onConfirm(reason.trim())
+    setReason('')
   }
 
   function handleCancel() {
-    setReason("");
-    onCancel();
+    setReason('')
+    onCancel()
   }
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      handleCancel();
+      handleCancel()
     }
-    onOpenChange(nextOpen);
+    onOpenChange(nextOpen)
   }
 
   return (
@@ -57,9 +57,7 @@ export function BlockReasonDialog({
             Block Card
           </DialogTitle>
           <DialogDescription>
-            Why is{" "}
-            <span className="font-medium text-foreground">{cardLabel}</span>{" "}
-            blocked?
+            Why is <span className="font-medium text-foreground">{cardLabel}</span> blocked?
           </DialogDescription>
         </DialogHeader>
 
@@ -75,15 +73,11 @@ export function BlockReasonDialog({
           <Button variant="outline" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleConfirm}
-            disabled={!reason.trim()}
-          >
+          <Button variant="destructive" onClick={handleConfirm} disabled={!reason.trim()}>
             Block
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

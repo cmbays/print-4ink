@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { BottomSheet } from "@shared/ui/primitives/bottom-sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { Textarea } from "@shared/ui/primitives/textarea";
-import { ShieldAlert } from "lucide-react";
+import { useState } from 'react'
+import { BottomSheet } from '@shared/ui/primitives/bottom-sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { Textarea } from '@shared/ui/primitives/textarea'
+import { ShieldAlert } from 'lucide-react'
 
-interface BlockReasonSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  jobTitle: string;
-  onConfirm: (reason: string) => void;
+type BlockReasonSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  jobTitle: string
+  onConfirm: (reason: string) => void
 }
 
 export function BlockReasonSheet({
@@ -19,7 +19,7 @@ export function BlockReasonSheet({
   jobTitle,
   onConfirm,
 }: BlockReasonSheetProps) {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState('')
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Block Job">
@@ -37,8 +37,8 @@ export function BlockReasonSheet({
         />
         <Button
           onClick={() => {
-            onConfirm(reason.trim() || "Blocked (no reason given)");
-            onOpenChange(false);
+            onConfirm(reason.trim() || 'Blocked (no reason given)')
+            onOpenChange(false)
           }}
           className="min-h-(--mobile-touch-target) bg-warning text-background hover:bg-warning-hover"
         >
@@ -46,5 +46,5 @@ export function BlockReasonSheet({
         </Button>
       </div>
     </BottomSheet>
-  );
+  )
 }

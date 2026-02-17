@@ -1,7 +1,7 @@
 name: Feature Request
 description: Suggest a new feature or enhancement
-title: "[Feature] "
-labels: ["type/feature"]
+title: '[Feature] '
+labels: ['type/feature']
 body:
   - type: markdown
     attributes:
@@ -23,7 +23,7 @@ body:
     attributes:
       label: Motivation
       description: Who needs this and why? What workflow pain does it address?
-      placeholder: "As a [shop owner/agent/developer], I need... because..."
+      placeholder: 'As a [shop owner/agent/developer], I need... because...'
     validations:
       required: false
 

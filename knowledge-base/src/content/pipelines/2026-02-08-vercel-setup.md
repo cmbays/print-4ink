@@ -1,6 +1,6 @@
 ---
-title: "Vercel Setup with Access Code Protection"
-subtitle: "4Ink demo deployment infrastructure"
+title: 'Vercel Setup with Access Code Protection'
+subtitle: '4Ink demo deployment infrastructure'
 date: 2026-02-08
 phase: 1
 pipelineName: meta
@@ -9,8 +9,8 @@ products: []
 tools: [knowledge-base]
 stage: build
 tags: [build]
-sessionId: "09b70260-83ac-4830-9b02-ed8c0683f699"
-branch: "feat/vercel-setup"
+sessionId: '09b70260-83ac-4830-9b02-ed8c0683f699'
+branch: 'feat/vercel-setup'
 status: complete
 ---
 

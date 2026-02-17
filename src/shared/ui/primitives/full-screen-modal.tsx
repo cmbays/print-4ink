@@ -1,24 +1,24 @@
-"use client";
+'use client'
 
-import { useIsMobile } from "@shared/hooks/use-is-mobile";
+import { useIsMobile } from '@shared/hooks/use-is-mobile'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import { X } from "lucide-react";
-import { cn } from "@shared/lib/cn";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import { X } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
 
-interface FullScreenModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
+type FullScreenModalProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  description?: string
+  children: React.ReactNode
+  footer?: React.ReactNode
 }
 
 export function FullScreenModal({
@@ -29,15 +29,12 @@ export function FullScreenModal({
   children,
   footer,
 }: FullScreenModalProps) {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile()
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={cn(
-          isMobile &&
-            "h-full max-h-full w-full max-w-full rounded-none border-0 p-0"
-        )}
+        className={cn(isMobile && 'h-full max-h-full w-full max-w-full rounded-none border-0 p-0')}
         showCloseButton={!isMobile}
       >
         {isMobile ? (
@@ -50,10 +47,10 @@ export function FullScreenModal({
             </DialogHeader>
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <div>
-                <h2 aria-hidden="true" className="text-sm font-semibold">{title}</h2>
-                {description && (
-                  <p className="text-xs text-muted-foreground">{description}</p>
-                )}
+                <h2 aria-hidden="true" className="text-sm font-semibold">
+                  {title}
+                </h2>
+                {description && <p className="text-xs text-muted-foreground">{description}</p>}
               </div>
               <Button
                 variant="ghost"
@@ -67,19 +64,13 @@ export function FullScreenModal({
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto p-4">{children}</div>
             {/* Sticky footer */}
-            {footer && (
-              <div className="border-t border-border p-4 pb-safe">
-                {footer}
-              </div>
-            )}
+            {footer && <div className="border-t border-border p-4 pb-safe">{footer}</div>}
           </div>
         ) : (
           <>
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
-              {description && (
-                <DialogDescription>{description}</DialogDescription>
-              )}
+              {description && <DialogDescription>{description}</DialogDescription>}
             </DialogHeader>
             {children}
             {footer}
@@ -87,5 +78,5 @@ export function FullScreenModal({
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

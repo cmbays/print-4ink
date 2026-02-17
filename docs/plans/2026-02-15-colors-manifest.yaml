@@ -1,6 +1,6 @@
 vertical: colors
 waves:
-  - name: "Wave 0: Foundation"
+  - name: 'Wave 0: Foundation'
     serial: true
     sessions:
       - topic: colors-foundation
@@ -70,7 +70,7 @@ waves:
           - Use `build-session-protocol` for completion flow
           - Create KB session doc when done
 
-  - name: "Wave 1: Catalog UX + Global Settings"
+  - name: 'Wave 1: Catalog UX + Global Settings'
     serial: false
     sessions:
       - topic: colors-swatch-filter
@@ -243,7 +243,7 @@ waves:
           ### Demo
           "Settings > Colors: tap swatches to set shop-wide favorites"
 
-  - name: "Wave 2: Brand Hierarchy"
+  - name: 'Wave 2: Brand Hierarchy'
     serial: true
     sessions:
       - topic: colors-brand-drawer
@@ -313,7 +313,7 @@ waves:
           ### Demo
           "Click 'Gildan' → drawer → toggle customize → add Sport Grey"
 
-  - name: "Wave 3: Customer + Removal"
+  - name: 'Wave 3: Customer + Removal'
     serial: false
     sessions:
       - topic: colors-customer-prefs

@@ -1,6 +1,6 @@
 ---
-title: "Colors — UX Research: Hierarchical Settings Inheritance"
-subtitle: "Industry best practices for cascading color preferences across global, supplier, and customer levels"
+title: 'Colors — UX Research: Hierarchical Settings Inheritance'
+subtitle: 'Industry best practices for cascading color preferences across global, supplier, and customer levels'
 date: 2026-02-15
 phase: 1
 pipelineName: colors
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: research
 tags: [research, decision]
-sessionId: "08cc4e02-a47a-42b3-b9c9-d47e392c498b"
-branch: "session/0215-color-prefs"
+sessionId: '08cc4e02-a47a-42b3-b9c9-d47e392c498b'
+branch: 'session/0215-color-prefs'
 status: complete
 ---
 
@@ -61,6 +61,7 @@ Each setting labeled "Inherited" or "Overridden" with clear visual text. Toggle 
 ### 6. CrashPlan Push vs. Lock
 
 Two distinct propagation modes:
+
 - **Push**: Changes the setting on children, but they can change it later (soft propagation)
 - **Lock**: Pushes and prevents children from changing it (hard enforcement)
 
@@ -92,11 +93,11 @@ Child theme settings are completely isolated from parent. No live inheritance. U
 
 ## Industry Propagation Consensus
 
-| Change Type | Industry Standard | Rationale |
-|---|---|---|
-| Additive (parent adds) | Auto-propagate to all children | Low risk, children gain a new option |
+| Change Type                   | Industry Standard                         | Rationale                               |
+| ----------------------------- | ----------------------------------------- | --------------------------------------- |
+| Additive (parent adds)        | Auto-propagate to all children            | Low risk, children gain a new option    |
 | Modification (parent changes) | Auto-propagate to non-overridden children | Medium risk, respect explicit overrides |
-| Removal (parent removes) | Require confirmation + show impact | High risk, may break active workflows |
+| Removal (parent removes)      | Require confirmation + show impact        | High risk, may break active workflows   |
 
 This asymmetry is consistent across Figma, CSS, Unity, and Google Workspace.
 
@@ -112,19 +113,23 @@ This asymmetry is consistent across Figma, CSS, Unity, and Google Workspace.
 ## Print/Promo Industry Color Management
 
 ### DecoNetwork
+
 Palettes created at system level, assigned to specific stores. Flat model (assign palette X to store Y), no hierarchical inheritance.
 
 ### Printavo / Industry Practice
+
 Shops standardize on ~44 PMS colors, create physical color cards, hang in shop. Customer preferences tracked through job notes and tribal knowledge.
 
 **Key finding**: No competitor has a hierarchical color preference system. This is genuinely novel and differentiating.
 
 ### Swatch Display (Baymard Institute)
+
 All color swatches should be visible on mobile — 57% of sites fail at this. Flat swatch grids scan faster than grouped layouts for visual properties.
 
 ## Recommended Architecture
 
 **Live Inheritance with Override Preservation** (Figma model) combined with:
+
 - **Beth Meyer toggle** at each level ("Use parent colors" / "Customize")
 - **CrashPlan push** for propagation controls (soft propagation by default)
 - **Unity override bar** concept for progressive disclosure of provenance

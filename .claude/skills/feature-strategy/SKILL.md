@@ -61,6 +61,7 @@ Think across these feature types (detailed in `.claude/skills/feature-strategy/r
 Create ONE file using the template at `.claude/skills/feature-strategy/templates/feature-plan-template.md`.
 
 Structure:
+
 1. Executive Summary (3-5 sentences)
 2. Current State (working, almost there, missing, at risk)
 3. Phase 1: Ship This Week (3-5 high impact, low effort)
@@ -84,17 +85,21 @@ For each feature include: what it does, why it matters now, what it builds on, w
 # Feature Strategy Output — [Context]
 
 ## Summary
+
 [1-2 sentences on biggest opportunity]
 
 ## Deliverables
-- Feature plan: docs/FEATURE_PLAN_[YYYYMMDD].md
+
+- Feature plan: docs/FEATURE*PLAN*[YYYYMMDD].md
 
 ## Key Findings
+
 - [Finding 1]
 - [Finding 2]
 - [Finding 3]
 
 ## Next Step
+
 Awaiting user review and approval of feature plan
 ```
 

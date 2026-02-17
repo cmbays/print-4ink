@@ -1,6 +1,6 @@
 ---
-title: "Garment Catalog & Customer Screen Intelligence — Breadboard"
-subtitle: "Mapped all places, affordances, wiring, component boundaries, and build order for the combined Garment Catalog + Customer Screens + Favorites + Cross-linking build"
+title: 'Garment Catalog & Customer Screen Intelligence — Breadboard'
+subtitle: 'Mapped all places, affordances, wiring, component boundaries, and build order for the combined Garment Catalog + Customer Screens + Favorites + Cross-linking build'
 date: 2026-02-14
 phase: 1
 pipelineName: garments
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: breadboard
 tags: [plan, decision]
-sessionId: "3c426af7-3332-4681-bc90-9c5c4d58d74e"
-branch: "session/0214-garment-breadboard"
+sessionId: '3c426af7-3332-4681-bc90-9c5c4d58d74e'
+branch: 'session/0214-garment-breadboard'
 status: complete
 ---
 
@@ -25,14 +25,14 @@ Produced the breadboard document for the combined Garment Catalog build — the 
 
 ### Places (5 new + 3 existing modified)
 
-| ID | Place | Type |
-|----|-------|------|
-| P1 | Garment Catalog (`/garments`) | Page |
-| P1.1 | Garment Detail Drawer | Drawer |
-| P2 | Customer Detail — Screens Tab | Tab panel |
-| P2.1 | Reclaim Screen Confirmation | Dialog |
-| P3 | Customer Favorites (cross-context inline stars) | Cross-context |
-| P4-P6 | Dashboard, Customer Jobs, Invoice Detail | Existing (cross-link updates) |
+| ID    | Place                                           | Type                          |
+| ----- | ----------------------------------------------- | ----------------------------- |
+| P1    | Garment Catalog (`/garments`)                   | Page                          |
+| P1.1  | Garment Detail Drawer                           | Drawer                        |
+| P2    | Customer Detail — Screens Tab                   | Tab panel                     |
+| P2.1  | Reclaim Screen Confirmation                     | Dialog                        |
+| P3    | Customer Favorites (cross-context inline stars) | Cross-context                 |
+| P4-P6 | Dashboard, Customer Jobs, Invoice Detail        | Existing (cross-link updates) |
 
 ### Affordance Counts
 
@@ -50,12 +50,12 @@ Produced the breadboard document for the combined Garment Catalog build — the 
 1. Schema updates (garment `isEnabled`/`isFavorite`, customer favorites fields, simplified screen schema)
 2. Lookup helpers (`getGarmentById`, `getColorById`)
 3. Expand mock data (5 → 15+ garments)
-4-6. Shared components (GarmentImage, FavoriteStar, ColorSwatch compact)
-7-11. Garment Catalog page (toolbar → cards → table → drawer → orchestration)
-12-14. Customer Screens tab (derived data → tab component → CustomerTabs update)
-15-16. Customer favorites integration
-17-19. Cross-linking (#65, #66, #68)
-20. Fix Job Detail raw garment/color ID display
+   4-6. Shared components (GarmentImage, FavoriteStar, ColorSwatch compact)
+   7-11. Garment Catalog page (toolbar → cards → table → drawer → orchestration)
+   12-14. Customer Screens tab (derived data → tab component → CustomerTabs update)
+   15-16. Customer favorites integration
+   17-19. Cross-linking (#65, #66, #68)
+4. Fix Job Detail raw garment/color ID display
 
 ## Key Design Decisions
 
@@ -86,8 +86,8 @@ All 20 CORE features from the discovery session mapped to specific affordances. 
 
 ## Artifacts
 
-| File | Description |
-|------|-------------|
+| File                                             | Description                                                                         |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | `docs/breadboards/garment-catalog-breadboard.md` | Full breadboard with places, affordances, wiring, component boundaries, build order |
 
 ## Resume Command

@@ -1,29 +1,20 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import {
-  AlertTriangle,
-  ArrowLeft,
-  Save,
-  Copy,
-  Trash2,
-  Pencil,
-  Check,
-  X,
-} from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@shared/ui/primitives/button";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
+import { useState } from 'react'
+import Link from 'next/link'
+import { AlertTriangle, ArrowLeft, Save, Copy, Trash2, Pencil, Check, X } from 'lucide-react'
+import { toast } from 'sonner'
+import { Button } from '@shared/ui/primitives/button'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@shared/ui/primitives/card";
+} from '@shared/ui/primitives/card'
 import {
   Table,
   TableBody,
@@ -31,7 +22,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@shared/ui/primitives/table";
+} from '@shared/ui/primitives/table'
 import {
   Dialog,
   DialogContent,
@@ -40,167 +31,158 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@shared/ui/primitives/dialog";
-import { DTFSheetTierEditor } from "../../_components/DTFSheetTierEditor";
-import { DTFPricingCalculator } from "../../_components/DTFPricingCalculator";
-import { allDTFTemplates } from "@/lib/mock-data-pricing";
-import type {
-  DTFPricingTemplate,
-  DTFSheetTier,
-  DTFCostConfig,
-} from "@domain/entities/dtf-pricing";
+} from '@shared/ui/primitives/dialog'
+import { DTFSheetTierEditor } from '../../_components/DTFSheetTierEditor'
+import { DTFPricingCalculator } from '../../_components/DTFPricingCalculator'
+import { allDTFTemplates } from '@/lib/mock-data-pricing'
+import type { DTFPricingTemplate, DTFSheetTier, DTFCostConfig } from '@domain/entities/dtf-pricing'
 
 // ---------------------------------------------------------------------------
 // Label maps
 // ---------------------------------------------------------------------------
 
 const RUSH_LABELS: Record<string, string> = {
-  standard: "Standard",
-  "2-day": "2-Day Rush",
-  "next-day": "Next Day",
-  "same-day": "Same Day",
-};
+  standard: 'Standard',
+  '2-day': '2-Day Rush',
+  'next-day': 'Next Day',
+  'same-day': 'Same Day',
+}
 
 const FILM_LABELS: Record<string, string> = {
-  standard: "Standard",
-  glossy: "Glossy",
-  metallic: "Metallic",
-  glow: "Glow-in-Dark",
-};
+  standard: 'Standard',
+  glossy: 'Glossy',
+  metallic: 'Metallic',
+  glow: 'Glow-in-Dark',
+}
 
 const TIER_LABELS: Record<string, string> = {
-  standard: "Standard",
-  preferred: "Preferred",
-  contract: "Contract",
-  wholesale: "Wholesale",
-};
+  standard: 'Standard',
+  preferred: 'Preferred',
+  contract: 'Contract',
+  wholesale: 'Wholesale',
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function deepCopy<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
+  return JSON.parse(JSON.stringify(obj))
 }
 
 function formatTimestamp(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-interface DTFEditorClientProps {
-  templateId: string;
+type DTFEditorClientProps = {
+  templateId: string
 }
 
 export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
-  const sourceTemplate = allDTFTemplates.find((t) => t.id === templateId);
+  const sourceTemplate = allDTFTemplates.find((t) => t.id === templateId)
 
   const [template, setTemplate] = useState<DTFPricingTemplate | null>(
     sourceTemplate ? deepCopy(sourceTemplate) : null
-  );
+  )
 
   // Inline name editing
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [editName, setEditName] = useState(sourceTemplate?.name ?? "");
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [editName, setEditName] = useState(sourceTemplate?.name ?? '')
 
   // Delete confirmation
-  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   // -------------------------------------------------------------------------
   // State updaters (declared before early return to satisfy hook rules)
   // -------------------------------------------------------------------------
 
   const updateTemplate = (partial: Partial<DTFPricingTemplate>) => {
-    setTemplate((prev) => (prev ? { ...prev, ...partial } : prev));
-  };
+    setTemplate((prev) => (prev ? { ...prev, ...partial } : prev))
+  }
 
-  const updateSheetTier = (
-    index: number,
-    field: keyof DTFSheetTier,
-    value: number
-  ) => {
+  const updateSheetTier = (index: number, field: keyof DTFSheetTier, value: number) => {
     setTemplate((prev) => {
-      if (!prev) return prev;
-      const tiers = [...prev.sheetTiers];
-      tiers[index] = { ...tiers[index], [field]: value };
-      return { ...prev, sheetTiers: tiers };
-    });
-  };
+      if (!prev) return prev
+      const tiers = [...prev.sheetTiers]
+      tiers[index] = { ...tiers[index], [field]: value }
+      return { ...prev, sheetTiers: tiers }
+    })
+  }
 
   const addSheetTier = () => {
     setTemplate((prev) => {
-      if (!prev) return prev;
-      const lastTier = prev.sheetTiers[prev.sheetTiers.length - 1];
-      const newLength = lastTier ? lastTier.length + 24 : 24;
+      if (!prev) return prev
+      const lastTier = prev.sheetTiers[prev.sheetTiers.length - 1]
+      const newLength = lastTier ? lastTier.length + 24 : 24
       const newTier: DTFSheetTier = {
         width: 22,
         length: newLength,
         retailPrice: 0,
-      };
-      return { ...prev, sheetTiers: [...prev.sheetTiers, newTier] };
-    });
-  };
+      }
+      return { ...prev, sheetTiers: [...prev.sheetTiers, newTier] }
+    })
+  }
 
   const removeSheetTier = (index: number) => {
     setTemplate((prev) => {
-      if (!prev) return prev;
-      if (prev.sheetTiers.length <= 1) return prev;
+      if (!prev) return prev
+      if (prev.sheetTiers.length <= 1) return prev
       return {
         ...prev,
         sheetTiers: prev.sheetTiers.filter((_, i) => i !== index),
-      };
-    });
-  };
+      }
+    })
+  }
 
   const updateCustomerDiscount = (index: number, discountPercent: number) => {
     setTemplate((prev) => {
-      if (!prev) return prev;
-      const discounts = [...prev.customerTierDiscounts];
-      discounts[index] = { ...discounts[index], discountPercent };
-      return { ...prev, customerTierDiscounts: discounts };
-    });
-  };
+      if (!prev) return prev
+      const discounts = [...prev.customerTierDiscounts]
+      discounts[index] = { ...discounts[index], discountPercent }
+      return { ...prev, customerTierDiscounts: discounts }
+    })
+  }
 
-  const updateRushFee = (
-    index: number,
-    field: "percentageUpcharge" | "flatFee",
-    value: number
-  ) => {
+  const updateRushFee = (index: number, field: 'percentageUpcharge' | 'flatFee', value: number) => {
     setTemplate((prev) => {
-      if (!prev) return prev;
-      const fees = [...prev.rushFees];
-      fees[index] = { ...fees[index], [field]: field === "flatFee" && value === 0 ? undefined : value };
-      return { ...prev, rushFees: fees };
-    });
-  };
+      if (!prev) return prev
+      const fees = [...prev.rushFees]
+      fees[index] = {
+        ...fees[index],
+        [field]: field === 'flatFee' && value === 0 ? undefined : value,
+      }
+      return { ...prev, rushFees: fees }
+    })
+  }
 
   const updateFilmType = (index: number, multiplier: number) => {
     setTemplate((prev) => {
-      if (!prev) return prev;
-      const types = [...prev.filmTypes];
-      types[index] = { ...types[index], multiplier };
-      return { ...prev, filmTypes: types };
-    });
-  };
+      if (!prev) return prev
+      const types = [...prev.filmTypes]
+      types[index] = { ...types[index], multiplier }
+      return { ...prev, filmTypes: types }
+    })
+  }
 
   const updateCostConfig = (field: keyof DTFCostConfig, value: number) => {
     setTemplate((prev) => {
-      if (!prev) return prev;
+      if (!prev) return prev
       return {
         ...prev,
         costConfig: { ...prev.costConfig, [field]: value },
-      };
-    });
-  };
+      }
+    })
+  }
 
   // -------------------------------------------------------------------------
   // Not found state
@@ -208,7 +190,10 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
 
   if (!template) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 p-12 text-center" role="alert">
+      <div
+        className="flex flex-col items-center justify-center gap-4 p-12 text-center"
+        role="alert"
+      >
         <AlertTriangle className="size-12 text-muted-foreground/50" />
         <p className="text-lg font-semibold tracking-tight">Template Not Found</p>
         <p className="text-sm text-muted-foreground">
@@ -221,7 +206,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
           </Link>
         </Button>
       </div>
-    );
+    )
   }
 
   // -------------------------------------------------------------------------
@@ -229,36 +214,36 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
   // -------------------------------------------------------------------------
 
   const handleSave = () => {
-    updateTemplate({ updatedAt: new Date().toISOString() });
-    toast.success("Template saved", {
+    updateTemplate({ updatedAt: new Date().toISOString() })
+    toast.success('Template saved', {
       description: `"${template.name}" has been updated.`,
-    });
-  };
+    })
+  }
 
   const handleDuplicate = () => {
-    toast.success("Template duplicated", {
+    toast.success('Template duplicated', {
       description: `A copy of "${template.name}" has been created.`,
-    });
-  };
+    })
+  }
 
   const handleDelete = () => {
-    toast.success("Template deleted", {
-      description: "The template has been removed.",
-    });
-    setDeleteOpen(false);
-  };
+    toast.success('Template deleted', {
+      description: 'The template has been removed.',
+    })
+    setDeleteOpen(false)
+  }
 
   const handleNameSave = () => {
     if (editName.trim()) {
-      updateTemplate({ name: editName.trim() });
-      setIsEditingName(false);
+      updateTemplate({ name: editName.trim() })
+      setIsEditingName(false)
     }
-  };
+  }
 
   const handleNameCancel = () => {
-    setEditName(template.name);
-    setIsEditingName(false);
-  };
+    setEditName(template.name)
+    setIsEditingName(false)
+  }
 
   // -------------------------------------------------------------------------
   // Render
@@ -279,8 +264,8 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                   className="h-8 w-64 text-lg font-semibold"
                   autoFocus
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") handleNameSave();
-                    if (e.key === "Escape") handleNameCancel();
+                    if (e.key === 'Enter') handleNameSave()
+                    if (e.key === 'Escape') handleNameCancel()
                   }}
                 />
                 <Button
@@ -310,8 +295,8 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                   size="icon"
                   className="h-7 w-7"
                   onClick={() => {
-                    setEditName(template.name);
-                    setIsEditingName(true);
+                    setEditName(template.name)
+                    setIsEditingName(true)
                   }}
                   aria-label="Edit template name"
                 >
@@ -346,15 +331,12 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
               <DialogHeader>
                 <DialogTitle>Delete Template</DialogTitle>
                 <DialogDescription>
-                  Are you sure you want to delete &quot;{template.name}&quot;?
-                  This action cannot be undone.
+                  Are you sure you want to delete &quot;{template.name}&quot;? This action cannot be
+                  undone.
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setDeleteOpen(false)}
-                >
+                <Button variant="outline" onClick={() => setDeleteOpen(false)}>
                   Cancel
                 </Button>
                 <Button variant="destructive" onClick={handleDelete}>
@@ -386,9 +368,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
           {/* Customer Tier Discounts */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">
-                Customer Tier Discounts
-              </CardTitle>
+              <CardTitle className="text-base">Customer Tier Discounts</CardTitle>
               <CardDescription>
                 Discount percentages applied based on customer pricing tier
               </CardDescription>
@@ -413,10 +393,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                             type="number"
                             value={discount.discountPercent}
                             onChange={(e) =>
-                              updateCustomerDiscount(
-                                index,
-                                parseFloat(e.target.value) || 0
-                              )
+                              updateCustomerDiscount(index, parseFloat(e.target.value) || 0)
                             }
                             className="h-8 w-20 text-sm"
                             min={0}
@@ -464,7 +441,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                             onChange={(e) =>
                               updateRushFee(
                                 index,
-                                "percentageUpcharge",
+                                'percentageUpcharge',
                                 parseFloat(e.target.value) || 0
                               )
                             }
@@ -481,14 +458,10 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                           <span className="text-muted-foreground text-sm">$</span>
                           <Input
                             type="number"
-                            value={fee.flatFee ?? ""}
+                            value={fee.flatFee ?? ''}
                             onChange={(e) => {
-                              const val = e.target.value;
-                              updateRushFee(
-                                index,
-                                "flatFee",
-                                val === "" ? 0 : parseFloat(val) || 0
-                              );
+                              const val = e.target.value
+                              updateRushFee(index, 'flatFee', val === '' ? 0 : parseFloat(val) || 0)
                             }}
                             className="h-8 w-20 text-sm"
                             min={0}
@@ -508,9 +481,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Film Type Multipliers</CardTitle>
-              <CardDescription>
-                Price multiplier applied for specialty film types
-              </CardDescription>
+              <CardDescription>Price multiplier applied for specialty film types</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
@@ -531,12 +502,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                           <Input
                             type="number"
                             value={film.multiplier}
-                            onChange={(e) =>
-                              updateFilmType(
-                                index,
-                                parseFloat(e.target.value) || 1
-                              )
-                            }
+                            onChange={(e) => updateFilmType(index, parseFloat(e.target.value) || 1)}
                             className="h-8 w-20 text-sm"
                             min={0.1}
                             max={5}
@@ -563,19 +529,14 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
             <CardContent>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">
-                    Film Cost ($/sq.ft.)
-                  </Label>
+                  <Label className="text-xs text-muted-foreground">Film Cost ($/sq.ft.)</Label>
                   <div className="flex items-center gap-1">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       type="number"
                       value={template.costConfig.filmCostPerSqFt}
                       onChange={(e) =>
-                        updateCostConfig(
-                          "filmCostPerSqFt",
-                          parseFloat(e.target.value) || 0
-                        )
+                        updateCostConfig('filmCostPerSqFt', parseFloat(e.target.value) || 0)
                       }
                       className="h-8 text-sm"
                       min={0}
@@ -584,19 +545,14 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">
-                    Ink Cost ($/sq.in.)
-                  </Label>
+                  <Label className="text-xs text-muted-foreground">Ink Cost ($/sq.in.)</Label>
                   <div className="flex items-center gap-1">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       type="number"
                       value={template.costConfig.inkCostPerSqIn}
                       onChange={(e) =>
-                        updateCostConfig(
-                          "inkCostPerSqIn",
-                          parseFloat(e.target.value) || 0
-                        )
+                        updateCostConfig('inkCostPerSqIn', parseFloat(e.target.value) || 0)
                       }
                       className="h-8 text-sm"
                       min={0}
@@ -605,19 +561,14 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">
-                    Powder Cost ($/sq.ft.)
-                  </Label>
+                  <Label className="text-xs text-muted-foreground">Powder Cost ($/sq.ft.)</Label>
                   <div className="flex items-center gap-1">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       type="number"
                       value={template.costConfig.powderCostPerSqFt}
                       onChange={(e) =>
-                        updateCostConfig(
-                          "powderCostPerSqFt",
-                          parseFloat(e.target.value) || 0
-                        )
+                        updateCostConfig('powderCostPerSqFt', parseFloat(e.target.value) || 0)
                       }
                       className="h-8 text-sm"
                       min={0}
@@ -626,19 +577,14 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-muted-foreground">
-                    Labor Rate ($/hr)
-                  </Label>
+                  <Label className="text-xs text-muted-foreground">Labor Rate ($/hr)</Label>
                   <div className="flex items-center gap-1">
                     <span className="text-muted-foreground text-sm">$</span>
                     <Input
                       type="number"
                       value={template.costConfig.laborRatePerHour}
                       onChange={(e) =>
-                        updateCostConfig(
-                          "laborRatePerHour",
-                          parseFloat(e.target.value) || 0
-                        )
+                        updateCostConfig('laborRatePerHour', parseFloat(e.target.value) || 0)
                       }
                       className="h-8 text-sm"
                       min={0}
@@ -657,7 +603,7 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
                       value={template.costConfig.equipmentOverheadPerSqFt}
                       onChange={(e) =>
                         updateCostConfig(
-                          "equipmentOverheadPerSqFt",
+                          'equipmentOverheadPerSqFt',
                           parseFloat(e.target.value) || 0
                         )
                       }
@@ -678,5 +624,5 @@ export function DTFEditorClient({ templateId }: DTFEditorClientProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

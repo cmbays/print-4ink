@@ -52,6 +52,7 @@ For large batches, the plan provides exact sed commands. Always run `tsc --noEmi
 ### Task 0.1: Create directory skeleton
 
 **Files:**
+
 - Create: `src/domain/entities/`, `src/domain/value-objects/`, `src/domain/rules/`, `src/domain/services/`, `src/domain/ports/`, `src/domain/events/`, `src/domain/constants/`
 - Create: `src/features/quotes/`, `src/features/jobs/`, `src/features/customers/`, `src/features/invoices/`, `src/features/garments/`, `src/features/screens/`, `src/features/pricing/`
 - Create: `src/shared/ui/atoms/`, `src/shared/ui/molecules/`, `src/shared/ui/organisms/`, `src/shared/ui/layouts/`, `src/shared/ui/primitives/`, `src/shared/hooks/`, `src/shared/lib/`, `src/shared/types/`, `src/shared/providers/`, `src/shared/constants/`
@@ -88,6 +89,7 @@ git commit -m "chore: scaffold src/ and tools/ directory skeleton for Clean Arch
 ### Task 0.2: Add path aliases to tsconfig.json
 
 **Files:**
+
 - Modify: `tsconfig.json`
 
 **Step 1: Update tsconfig.json paths**
@@ -104,9 +106,9 @@ Add new layer-specific aliases. Keep existing `@/*` mapping to `./*` for backwar
       "@features/*": ["./src/features/*"],
       "@shared/*": ["./src/shared/*"],
       "@infra/*": ["./src/infrastructure/*"],
-      "@config/*": ["./src/config/*"]
-    }
-  }
+      "@config/*": ["./src/config/*"],
+    },
+  },
 }
 ```
 
@@ -138,13 +140,14 @@ git commit -m "chore: add layer-specific path aliases for Clean Architecture"
 ### Task 0.3: Update vitest.config.ts aliases
 
 **Files:**
+
 - Modify: `vitest.config.ts`
 
 **Step 1: Add matching aliases to Vitest**
 
 ```typescript
-import { defineConfig } from "vitest/config";
-import path from "path";
+import { defineConfig } from 'vitest/config'
+import path from 'path'
 
 export default defineConfig({
   test: {
@@ -152,15 +155,15 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "."),
-      "@domain": path.resolve(__dirname, "src/domain"),
-      "@features": path.resolve(__dirname, "src/features"),
-      "@shared": path.resolve(__dirname, "src/shared"),
-      "@infra": path.resolve(__dirname, "src/infrastructure"),
-      "@config": path.resolve(__dirname, "src/config"),
+      '@': path.resolve(__dirname, '.'),
+      '@domain': path.resolve(__dirname, 'src/domain'),
+      '@features': path.resolve(__dirname, 'src/features'),
+      '@shared': path.resolve(__dirname, 'src/shared'),
+      '@infra': path.resolve(__dirname, 'src/infrastructure'),
+      '@config': path.resolve(__dirname, 'src/config'),
     },
   },
-});
+})
 ```
 
 **Step 2: Verify tests still pass**
@@ -211,6 +214,7 @@ EOF
 ### Task 1.1: Move `app/` → `src/app/`
 
 **Files:**
+
 - Move: `app/` → `src/app/` (134 TSX files)
 - Modify: `middleware.ts` (stays at root, update imports if needed)
 
@@ -251,6 +255,7 @@ git commit -m "refactor: move app/ → src/app/"
 ### Task 1.2: Move `lib/dal/_shared/` → `src/infrastructure/repositories/_shared/`
 
 **Files:**
+
 - Move: `lib/dal/_shared/errors.ts`, `lib/dal/_shared/result.ts`, `lib/dal/_shared/validation.ts`
 
 **Step 1: Move files**
@@ -286,6 +291,7 @@ git commit -m "refactor: move DAL shared (errors, result, validation) → infras
 ### Task 1.3: Move `lib/dal/_providers/` → `src/infrastructure/repositories/_providers/`
 
 **Files:**
+
 - Move: `lib/dal/_providers/index.ts` and all `lib/dal/_providers/mock/*.ts` (10 files)
 
 **Step 1: Move provider files**
@@ -321,6 +327,7 @@ git commit -m "refactor: move DAL providers → infrastructure/repositories/_pro
 ### Task 1.4: Move DAL repository facades → `src/infrastructure/repositories/`
 
 **Files:**
+
 - Move: `lib/dal/customers.ts`, `lib/dal/quotes.ts`, `lib/dal/jobs.ts`, `lib/dal/invoices.ts`, `lib/dal/garments.ts`, `lib/dal/screens.ts`, `lib/dal/artworks.ts`, `lib/dal/colors.ts`, `lib/dal/settings.ts`
 
 **Step 1: Move repository files**
@@ -364,6 +371,7 @@ git commit -m "refactor: move DAL repositories → infrastructure/repositories/ 
 ### Task 1.5: Move DAL tests → `src/infrastructure/repositories/__tests__/`
 
 **Files:**
+
 - Move: `lib/dal/__tests__/*.test.ts` (4 test files)
 
 **Step 1: Move test files**
@@ -396,6 +404,7 @@ git commit -m "refactor: move DAL tests → infrastructure/repositories/__tests_
 ### Task 1.6: Move `lib/auth/` → `src/infrastructure/auth/`
 
 **Files:**
+
 - Move: `lib/auth/session.ts`
 
 **Step 1: Move auth**
@@ -426,6 +435,7 @@ git commit -m "refactor: move auth → infrastructure/auth/"
 ### Task 1.7: Create `src/infrastructure/bootstrap.ts`
 
 **Files:**
+
 - Create: `src/infrastructure/bootstrap.ts`
 
 **Step 1: Write minimal composition root**
@@ -440,15 +450,15 @@ git commit -m "refactor: move auth → infrastructure/auth/"
 // NOTE: Port interfaces (ICustomerRepository, etc.) will be defined in Phase 2
 // when domain/ports/ is created. For now, this file documents the wiring pattern.
 
-export { getCustomers, getCustomerById } from './repositories/customers';
-export { getQuotes, getQuoteById } from './repositories/quotes';
-export { getJobs, getJobById } from './repositories/jobs';
-export { getInvoices, getInvoiceById } from './repositories/invoices';
-export { getGarments } from './repositories/garments';
-export { getScreens } from './repositories/screens';
-export { getArtworks } from './repositories/artworks';
-export { getColors } from './repositories/colors';
-export { getSettings } from './repositories/settings';
+export { getCustomers, getCustomerById } from './repositories/customers'
+export { getQuotes, getQuoteById } from './repositories/quotes'
+export { getJobs, getJobById } from './repositories/jobs'
+export { getInvoices, getInvoiceById } from './repositories/invoices'
+export { getGarments } from './repositories/garments'
+export { getScreens } from './repositories/screens'
+export { getArtworks } from './repositories/artworks'
+export { getColors } from './repositories/colors'
+export { getSettings } from './repositories/settings'
 ```
 
 > **Note:** This is deliberately minimal per user feedback. No DI container. Factory functions come in Phase 2 when ports are defined. For now, it's a re-export barrel that centralizes repository access.
@@ -456,12 +466,12 @@ export { getSettings } from './repositories/settings';
 > **Phase 2 evolution:** When ports exist, replace re-exports with real factories:
 >
 > ```typescript
-> import { MockQuoteRepository } from './repositories/_providers/mock/quotes';
-> import type { IQuoteRepository } from '@domain/ports/quote.repository';
+> import { MockQuoteRepository } from './repositories/_providers/mock/quotes'
+> import type { IQuoteRepository } from '@domain/ports/quote.repository'
 >
 > export function getQuoteRepository(): IQuoteRepository {
 >   // Later: if (process.env.DATA_PROVIDER === 'supabase') return new SupabaseQuoteRepo();
->   return new MockQuoteRepository();
+>   return new MockQuoteRepository()
 > }
 > ```
 >
@@ -553,6 +563,7 @@ EOF
 ### Task 2.1: Move schemas → `src/domain/entities/`
 
 **Files:**
+
 - Move: `lib/schemas/*.ts` (25 schema files) → `src/domain/entities/`
 - Move: `lib/schemas/__tests__/*.test.ts` (22 test files) → `src/domain/entities/__tests__/`
 
@@ -599,6 +610,7 @@ git commit -m "refactor: move schemas → domain/entities/ and update all import
 ### Task 2.2: Move pricing engine → `src/domain/services/pricing.service.ts`
 
 **Files:**
+
 - Move: `lib/pricing-engine.ts` → `src/domain/services/pricing.service.ts`
 
 **Step 1: Move file**
@@ -633,6 +645,7 @@ git commit -m "refactor: move pricing-engine → domain/services/pricing.service
 ### Task 2.3: Move DTF modules → `src/domain/services/` and `src/domain/rules/`
 
 **Files:**
+
 - Move: `lib/dtf/shelf-pack.ts` → `src/domain/services/dtf.service.ts` (algorithmic — 2D bin packing)
 - Move: `lib/dtf/cost-optimize.ts` → `src/domain/rules/dtf.rules.ts` (business rules — cost optimization)
 - Move: `lib/dtf/dtf-constants.ts` → merge into `src/domain/rules/dtf.rules.ts` (constants used by rules)
@@ -693,6 +706,7 @@ git commit -m "refactor: move DTF → domain/services/dtf.service + domain/rules
 ### Task 2.4: Extract business rules from `lib/helpers/` → `src/domain/rules/`
 
 **Files:**
+
 - Move: `lib/helpers/color-matrix.ts` → `src/domain/rules/color.rules.ts`
 - Move: `lib/helpers/job-utils.ts` → `src/domain/rules/job.rules.ts`
 - Move: `lib/helpers/invoice-utils.ts` → `src/domain/rules/invoice.rules.ts`
@@ -774,6 +788,7 @@ git commit -m "refactor: extract business rules → domain/rules/ (grouped by do
 ### Task 2.5: Move domain constants → `src/domain/constants/`
 
 **Files:**
+
 - Move: `lib/constants.ts` → `src/domain/constants/index.ts` (381 lines of status labels/colors)
 - Move: `lib/constants/entities.ts` → `src/domain/constants/entities.ts`
 - Move: `lib/constants/print-zones.ts` → `src/domain/constants/print-zones.ts`
@@ -823,6 +838,7 @@ git commit -m "refactor: move domain constants → domain/constants/"
 ### Task 2.6: Create domain ports (interfaces)
 
 **Files:**
+
 - Create: `src/domain/ports/customer.repository.ts`
 - Create: `src/domain/ports/quote.repository.ts`
 - Create: `src/domain/ports/job.repository.ts`
@@ -837,24 +853,24 @@ For each repository, define an interface matching the current function signature
 
 ```typescript
 // src/domain/ports/customer.repository.ts
-import type { Customer } from '@domain/entities/customer';
-import type { Contact } from '@domain/entities/contact';
-import type { Note } from '@domain/entities/note';
-import type { Quote } from '@domain/entities/quote';
-import type { Job } from '@domain/entities/job';
-import type { Invoice } from '@domain/entities/invoice';
-import type { Artwork } from '@domain/entities/artwork';
+import type { Customer } from '@domain/entities/customer'
+import type { Contact } from '@domain/entities/contact'
+import type { Note } from '@domain/entities/note'
+import type { Quote } from '@domain/entities/quote'
+import type { Job } from '@domain/entities/job'
+import type { Invoice } from '@domain/entities/invoice'
+import type { Artwork } from '@domain/entities/artwork'
 
 export type ICustomerRepository = {
-  getAll(): Promise<Customer[]>;
-  getById(id: string): Promise<Customer | null>;
-  getQuotes(customerId: string): Promise<Quote[]>;
-  getJobs(customerId: string): Promise<Job[]>;
-  getContacts(customerId: string): Promise<Contact[]>;
-  getNotes(customerId: string): Promise<Note[]>;
-  getArtworks(customerId: string): Promise<Artwork[]>;
-  getInvoices(customerId: string): Promise<Invoice[]>;
-};
+  getAll(): Promise<Customer[]>
+  getById(id: string): Promise<Customer | null>
+  getQuotes(customerId: string): Promise<Quote[]>
+  getJobs(customerId: string): Promise<Job[]>
+  getContacts(customerId: string): Promise<Contact[]>
+  getNotes(customerId: string): Promise<Note[]>
+  getArtworks(customerId: string): Promise<Artwork[]>
+  getInvoices(customerId: string): Promise<Invoice[]>
+}
 ```
 
 Use generic names (`getAll()`, `getById()`) instead of domain-prefixed (`getCustomers()`) for consistency across repos. Domain context comes from the type parameter. Repeat for quotes, jobs, invoices.
@@ -865,10 +881,10 @@ Use generic names (`getAll()`, `getById()`) instead of domain-prefixed (`getCust
 
 ```typescript
 // src/domain/ports/index.ts
-export type { ICustomerRepository } from './customer.repository';
-export type { IQuoteRepository } from './quote.repository';
-export type { IJobRepository } from './job.repository';
-export type { IInvoiceRepository } from './invoice.repository';
+export type { ICustomerRepository } from './customer.repository'
+export type { IQuoteRepository } from './quote.repository'
+export type { IJobRepository } from './job.repository'
+export type { IInvoiceRepository } from './invoice.repository'
 ```
 
 **Step 3: Verify**
@@ -960,6 +976,7 @@ These two issues were identified during Phase 2 code review and intentionally de
 `board.rules.ts`, `garment.rules.ts`, `customer.rules.ts`, `screen.rules.ts` all import collections directly from mock-data at module scope. Domain rules should be pure functions that receive data as parameters.
 
 **Fix in Phase 3:** Refactor each function to accept its data collections as arguments (dependency injection). The infrastructure layer (mock repositories) provides the data when calling these functions. Example:
+
 ```typescript
 // Before (Phase 2 state):
 import { garmentCatalog, colors } from "@/lib/mock-data";
@@ -969,6 +986,7 @@ export function getGarmentById(id: string) { return garmentCatalog.find(...); }
 export function getGarmentById(id: string, catalog: Garment[]) { return catalog.find(...); }
 // Called from: mockGarmentRepository.getById = (id) => getGarmentById(id, mockData.garmentCatalog)
 ```
+
 Files to refactor: `src/domain/rules/board.rules.ts`, `garment.rules.ts`, `customer.rules.ts`, `screen.rules.ts`.
 
 #### I2 — Bidirectional import between `dtf.service.ts` and `dtf.rules.ts`
@@ -987,6 +1005,7 @@ Files to refactor: `src/domain/rules/board.rules.ts`, `garment.rules.ts`, `custo
 ### Task 3.1: Move `components/ui/` → `src/shared/ui/primitives/`
 
 **Files:**
+
 - Move: `components/ui/*.tsx` (29 shadcn/ui components)
 
 **Step 1: Move files**
@@ -1033,6 +1052,7 @@ git commit -m "refactor: move components/ui/ → shared/ui/primitives/"
 ### Task 3.2: Move `components/layout/` → `src/shared/ui/layouts/`
 
 **Files:**
+
 - Move: `components/layout/*.tsx` (9 layout components)
 
 **Step 1: Move files**
@@ -1063,6 +1083,7 @@ git commit -m "refactor: move components/layout/ → shared/ui/layouts/"
 ### Task 3.3: Move hooks → `src/shared/hooks/`
 
 **Files:**
+
 - Move: `lib/hooks/use-is-mobile.ts`, `lib/hooks/useDebounce.ts`, `lib/hooks/useGridKeyboardNav.ts`, `lib/hooks/useSpreadsheetEditor.ts` → `src/shared/hooks/`
 - Evaluate: `lib/hooks/useColorFilter.ts` — check usage count
 
@@ -1112,6 +1133,7 @@ git commit -m "refactor: move hooks → shared/hooks/ (domain-specific hooks def
 ### Task 3.4: Move cross-cutting utilities → `src/shared/lib/`
 
 **Files:**
+
 - Move: `lib/utils.ts` → `src/shared/lib/cn.ts` (Tailwind class merge utility)
 - Move: `lib/helpers/money.ts` → `src/shared/lib/money.ts`
 - Move: `lib/helpers/format.ts` → `src/shared/lib/format.ts`
@@ -1171,6 +1193,7 @@ git commit -m "refactor: move cross-cutting utilities → shared/lib/"
 ### Task 3.5: Move navigation constants → `src/shared/constants/`
 
 **Files:**
+
 - Move: `lib/constants/navigation.ts` → `src/shared/constants/navigation.ts`
 - Move: `lib/constants/garment-catalog.ts` → `src/shared/constants/garment-catalog.ts`
 
@@ -1214,6 +1237,7 @@ npm run dev
 ```
 
 Check each page loads correctly:
+
 - [ ] Dashboard (`/`)
 - [ ] Customers (`/customers`, `/customers/[id]`)
 - [ ] Quotes (`/quotes`, `/quotes/new`, `/quotes/[id]`)
@@ -1270,10 +1294,10 @@ EOF
 
 All constants follow a two-tier placement rule:
 
-| Tier | Rule | Location |
-|------|------|----------|
-| **Domain-wide** | Used across 2+ features, describes shared domain state (status labels, entity styles, risk levels, lifecycle stages) | `src/domain/constants/` |
-| **Feature-scoped** | Used only within one vertical, describes that feature's specific concepts | `src/features/{domain}/constants/` |
+| Tier               | Rule                                                                                                                 | Location                           |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| **Domain-wide**    | Used across 2+ features, describes shared domain state (status labels, entity styles, risk levels, lifecycle stages) | `src/domain/constants/`            |
+| **Feature-scoped** | Used only within one vertical, describes that feature's specific concepts                                            | `src/features/{domain}/constants/` |
 
 **Phase 2 decisions to revisit in Phase 4 (flagged for audit):**
 
@@ -1285,6 +1309,7 @@ All constants follow a two-tier placement rule:
 ### Task 4.1: Move feature components from `components/features/` to `src/features/`
 
 **Files:**
+
 - Move: `components/features/*.tsx` (36 files) → distributed across `src/features/{domain}/components/`
 
 Per user feedback: before deciding shared vs. feature, check usage count.
@@ -1398,6 +1423,7 @@ git commit -m "refactor: distribute feature components into features/ and shared
 ### Task 4.2: Split config — app runtime vs. dev tooling
 
 **Files:**
+
 - Move (app runtime): `config/products.json`, `config/domains.json` → `src/config/`
 - Move (dev tooling): `config/pipeline-types.json`, `config/stages.json`, `config/pipeline-fields.json`, `config/pipeline-gates.json`, `config/review-*.json`, `config/tags.json`, `config/tools.json` → `tools/orchestration/config/`
 - Move: `config/schemas/` → split between `src/config/schemas/` (app) and `tools/orchestration/schemas/` (dev)
@@ -1439,23 +1465,26 @@ Create `src/config/index.ts` for app configs only:
 
 ```typescript
 // src/config/index.ts
-import { z } from "zod";
-import { domainsConfigSchema, productsConfigSchema } from "./schemas";
-import rawDomains from "./domains.json";
-import rawProducts from "./products.json";
+import { z } from 'zod'
+import { domainsConfigSchema, productsConfigSchema } from './schemas'
+import rawDomains from './domains.json'
+import rawProducts from './products.json'
 
 function parseConfig<T>(schema: z.ZodType<T>, data: unknown, fileName: string): T {
-  try { return schema.parse(data); }
-  catch (err) {
-    throw new Error(`Config validation failed for ${fileName}:\n${err instanceof z.ZodError ? err.message : String(err)}`);
+  try {
+    return schema.parse(data)
+  } catch (err) {
+    throw new Error(
+      `Config validation failed for ${fileName}:\n${err instanceof z.ZodError ? err.message : String(err)}`
+    )
   }
 }
 
-export const domains = parseConfig(domainsConfigSchema, rawDomains, "config/domains.json");
-export const products = parseConfig(productsConfigSchema, rawProducts, "config/products.json");
+export const domains = parseConfig(domainsConfigSchema, rawDomains, 'config/domains.json')
+export const products = parseConfig(productsConfigSchema, rawProducts, 'config/products.json')
 
-export const domainSlugs = domains.map((d) => d.slug) as [string, ...string[]];
-export const productSlugs = products.map((p) => p.slug) as [string, ...string[]];
+export const domainSlugs = domains.map((d) => d.slug) as [string, ...string[]]
+export const productSlugs = products.map((p) => p.slug) as [string, ...string[]]
 ```
 
 Move `lib/config/index.ts` for dev tooling into `tools/orchestration/` (or delete if only consumed by tests and KB).
@@ -1482,6 +1511,7 @@ git commit -m "refactor: split config — app runtime → src/config/, dev tooli
 ### Task 4.3: Move review engine → `tools/orchestration/review/`
 
 **Files:**
+
 - Move: `lib/review/*.ts` (9 modules) → `tools/orchestration/review/`
 - Move: `lib/review/__tests__/*.test.ts` (8 tests) → `tools/orchestration/review/__tests__/`
 
@@ -1530,6 +1560,7 @@ git commit -m "refactor: move review engine → tools/orchestration/review/"
 Per user feedback: ensure mock providers consume correctly after relocation.
 
 **Files:**
+
 - Move: `lib/mock-data.ts` → `src/infrastructure/repositories/_providers/mock/data.ts`
 - Move: `lib/mock-data-pricing.ts` → `src/infrastructure/repositories/_providers/mock/data-pricing.ts`
 
@@ -1596,9 +1627,9 @@ Should be very small — only intentional root-level references (like middleware
       "@features/*": ["./src/features/*"],
       "@shared/*": ["./src/shared/*"],
       "@infra/*": ["./src/infrastructure/*"],
-      "@config/*": ["./src/config/*"]
-    }
-  }
+      "@config/*": ["./src/config/*"],
+    },
+  },
 }
 ```
 
@@ -1641,6 +1672,7 @@ git commit -m "refactor: switch @/* alias from root to src/"
 Per user feedback: enforce warn first, then error.
 
 **Files:**
+
 - Modify: `eslint.config.mjs`
 
 **Step 1: Install eslint-plugin-import (if not already)**
@@ -1740,6 +1772,7 @@ git commit -m "chore: remove old empty directories after migration"
 ### Task 4.8: Update documentation
 
 **Files:**
+
 - Modify: `CLAUDE.md` — update Architecture section, import paths, all references to old paths
 - Create: `docs/ARCHITECTURE.md` — new architecture overview with Mermaid diagram
 - Modify: `docs/APP_FLOW.md` — update all import path references
@@ -1749,7 +1782,7 @@ git commit -m "chore: remove old empty directories after migration"
 
 Per user feedback: include a Mermaid diagram of layers/dependencies.
 
-```markdown
+````markdown
 # Architecture
 
 ## Layer Dependency Diagram
@@ -1790,6 +1823,8 @@ graph TB
     style APP fill:#f87171,color:#000
     style TOOLS fill:#94a3b8,color:#000
 ```
+````
+
 (Full content to be written by executing engineer)
 
 **Step 2: Update CLAUDE.md Architecture section**

@@ -21,6 +21,7 @@
 ## The User
 
 **Chris** — Owner/operator of 4Ink screen-printing shop
+
 - 1-3 employees, 5-20 active jobs at any time
 - Desktop-first (shop office computer)
 - Values speed and clarity over features
@@ -28,6 +29,7 @@
 - **Key need**: "What's blocked? What's due soon? What's next?"
 
 **Context from owner interview** (2026-02-10):
+
 - Pricing structures are ad hoc — no formal organized rate sheets
 - Single user, no permission system ("I just tell them not to change the pricing")
 - PrintLife has no export capability — all migration is manual
@@ -67,14 +69,15 @@ End of Day
 
 The industry uses a **four-cart system** for physical organization:
 
-| Cart | State | Description |
-|------|-------|-------------|
-| **Speed Cart** | Ready (coated + imaged) | Staged for press, linked to a specific job |
-| **Take Cart** | Dirty (post-print) | Coming off press, need reclaiming |
-| **Clean Cart** | Clean (reclaimed + degreased) | Ready to coat with emulsion |
-| **Drying Cabinet** | Drying (freshly coated) | Drying post-coat, before imaging |
+| Cart               | State                         | Description                                |
+| ------------------ | ----------------------------- | ------------------------------------------ |
+| **Speed Cart**     | Ready (coated + imaged)       | Staged for press, linked to a specific job |
+| **Take Cart**      | Dirty (post-print)            | Coming off press, need reclaiming          |
+| **Clean Cart**     | Clean (reclaimed + degreased) | Ready to coat with emulsion                |
+| **Drying Cabinet** | Drying (freshly coated)       | Drying post-coat, before imaging           |
 
 **Additional states** not captured by the cart system:
+
 - **New** — freshly purchased, never used
 - **In Use** — currently on press during a print run
 - **Storage** — burned and held for repeat jobs (don't reclaim yet)
@@ -83,18 +86,17 @@ The industry uses a **four-cart system** for physical organization:
 ### What Chris Needs to Know at a Glance
 
 **Primary questions** (from PRD user stories US-5.1, US-5.2):
+
 1. "Which screens need burning, and for which jobs?" (morning planning)
 2. "Which screens are currently burned and ready?" (production readiness)
 3. "Which screens have been reclaimed and are available?" (inventory)
 
-**Secondary questions** (from production workflow):
-4. "How many screens does tomorrow's job need?" (advance planning)
-5. "What mesh count does this job require?" (match screen to job)
-6. "Is there a screen already burned for this repeat job?" (reuse saved screens)
+**Secondary questions** (from production workflow): 4. "How many screens does tomorrow's job need?" (advance planning) 5. "What mesh count does this job require?" (match screen to job) 6. "Is there a screen already burned for this repeat job?" (reuse saved screens)
 
 ### Screen Data Model — What's Tracked
 
 **Current schema** (`lib/schemas/screen.ts`):
+
 ```typescript
 {
   id: UUID,
@@ -120,19 +122,20 @@ The industry uses a **four-cart system** for physical organization:
 
 The existing mock data in `mock-data.ts` has 5 screens:
 
-| Mesh Count | Emulsion | Status | Job |
-|-----------|----------|--------|-----|
-| 160 | Dual Cure | burned | J-1024 (River City Staff Tees) |
-| 230 | Dual Cure | burned | J-1024 (River City Staff Tees) |
-| 110 | Photopolymer | pending | J-1026 (Lonestar Lacrosse) |
-| 160 | Dual Cure | pending | J-1026 (Lonestar Lacrosse) |
-| 200 | Dual Cure | reclaimed | J-1028 (River City QC Review) |
+| Mesh Count | Emulsion     | Status    | Job                            |
+| ---------- | ------------ | --------- | ------------------------------ |
+| 160        | Dual Cure    | burned    | J-1024 (River City Staff Tees) |
+| 230        | Dual Cure    | burned    | J-1024 (River City Staff Tees) |
+| 110        | Photopolymer | pending   | J-1026 (Lonestar Lacrosse)     |
+| 160        | Dual Cure    | pending   | J-1026 (Lonestar Lacrosse)     |
+| 200        | Dual Cure    | reclaimed | J-1028 (River City QC Review)  |
 
 **Observation**: Only 5 screens across 3 jobs. A real shop would have 80-100 screens in rotation (industry guidance: 4-5x daily usage). This mock data is minimal but demonstrates the core relationships.
 
 ### Production Integration Points
 
 From `APP_FLOW.md` and job mock data, screens connect to jobs through:
+
 - **Job tasks**: "Screens burned" and "Screens registered on press" are canonical tasks for screen-print jobs
 - **Job complexity**: Each job tracks `screenCount` (e.g., J-1024 has 5 screens, J-1030 has 7)
 - **Screen Room page**: Cross-links to jobs via clickable job references
@@ -147,6 +150,7 @@ From `APP_FLOW.md` and job mock data, screens connect to jobs through:
 Based on industry research and the existing codebase, garment selection involves:
 
 **For quoting** (front-office):
+
 1. **Brand** — Customer preference or shop recommendation (Bella+Canvas, Gildan, Comfort Colors, Next Level)
 2. **Style/SKU** — Specific product (e.g., Bella+Canvas 3001 = Unisex Jersey Short Sleeve Tee)
 3. **Base price** — Wholesale cost (feeds into margin calculation)
@@ -155,6 +159,7 @@ Based on industry research and the existing codebase, garment selection involves
 6. **Category** — T-shirts vs. fleece vs. outerwear vs. headwear
 
 **For production** (back-office):
+
 1. **Color match** — Does the garment color work with the ink colors for this design?
 2. **Size breakdown** — How many of each size? (S: 10, M: 50, L: 80, XL: 40)
 3. **Vendor availability** — Is it in stock? (Phase 2/3 — vendor integration)
@@ -164,6 +169,7 @@ Based on industry research and the existing codebase, garment selection involves
 ### How the Catalog Feeds into Quoting
 
 From the owner interview and existing schema:
+
 ```
 Customer requests quote
   → Select garment from catalog (brand + style)
@@ -175,6 +181,7 @@ Customer requests quote
 ```
 
 **Key insight from interview**: Garment cost is a core component of the margin calculation:
+
 ```
 Margin = Revenue - (Garment Cost + Ink Cost + Overhead)
 ```
@@ -184,6 +191,7 @@ The garment catalog isn't just a browsing tool — it's a **pricing input** that
 ### Existing Garment Data Model
 
 **Job-level garment** (`garmentSchema`):
+
 ```typescript
 {
   sku: string,        // "3001"
@@ -195,6 +203,7 @@ The garment catalog isn't just a browsing tool — it's a **pricing input** that
 ```
 
 **Catalog-level garment** (`garmentCatalogSchema`):
+
 ```typescript
 {
   id: string,
@@ -213,6 +222,7 @@ The garment catalog isn't just a browsing tool — it's a **pricing input** that
 ```
 
 **Color schema** (`colorSchema`):
+
 ```typescript
 {
   id: string,
@@ -227,19 +237,20 @@ The garment catalog isn't just a browsing tool — it's a **pricing input** that
 
 ### Current Mock Catalog (5 garments)
 
-| Brand | SKU | Name | Category | Base Price | Colors | Sizes |
-|-------|-----|------|----------|-----------|--------|-------|
-| Bella+Canvas | 3001 | Unisex Jersey Short Sleeve Tee | t-shirts | $3.50 | 19 | XS-3XL |
-| Gildan | 5000 | Heavy Cotton Tee | t-shirts | $2.75 | 19 | XS-3XL |
-| Gildan | 18500 | Heavy Blend Hooded Sweatshirt | fleece | $9.50 | 12 | S-5XL |
-| Next Level | 6210 | Unisex CVC V-Neck Tee | t-shirts | $4.25 | 10 | XS-3XL |
-| Comfort Colors | 1717 | Garment Dyed Heavyweight Tee | t-shirts | $5.00 | 13 | S-4XL |
+| Brand          | SKU   | Name                           | Category | Base Price | Colors | Sizes  |
+| -------------- | ----- | ------------------------------ | -------- | ---------- | ------ | ------ |
+| Bella+Canvas   | 3001  | Unisex Jersey Short Sleeve Tee | t-shirts | $3.50      | 19     | XS-3XL |
+| Gildan         | 5000  | Heavy Cotton Tee               | t-shirts | $2.75      | 19     | XS-3XL |
+| Gildan         | 18500 | Heavy Blend Hooded Sweatshirt  | fleece   | $9.50      | 12     | S-5XL  |
+| Next Level     | 6210  | Unisex CVC V-Neck Tee          | t-shirts | $4.25      | 10     | XS-3XL |
+| Comfort Colors | 1717  | Garment Dyed Heavyweight Tee   | t-shirts | $5.00      | 13     | S-4XL  |
 
 **Observation**: The catalog mirrors S&S Activewear's API shape (noted in code comments). This is intentional — when vendor integration comes in Phase 3, the schema is ready.
 
 ### Garment Categories (from schema)
 
 The `garmentCategoryEnum` currently supports:
+
 - `t-shirts` (4 of 5 mock items)
 - `fleece` (1 of 5 mock items)
 - `outerwear` (0 mock items)
@@ -253,32 +264,38 @@ Phase 1 only needs t-shirts and fleece. The category system is ready for expansi
 ## What Already Exists in the Codebase
 
 ### Schemas (Complete)
+
 - `screen.ts` — Screen schema with burn status enum
 - `garment.ts` — Both job-level garment and catalog-level garment schemas
 - `color.ts` — Color schema with hex values, families, favorites
 
 ### Mock Data (Minimal but Functional)
+
 - 5 screens across 3 jobs
 - 5 catalog garments across 4 brands
 - Rich color catalog (appears to be 20+ colors with hex values)
 - Jobs reference garments via `garmentDetails` with `garmentId` and `colorId`
 
 ### Navigation (Defined)
+
 - Screen Room at `/screens` — sidebar link, breadcrumb trail
 - Garment Catalog at `/garments` — sidebar link, breadcrumb trail
 - Cross-links: Screen Room → Job Detail (click linked job)
 
 ### User Stories (Defined in PRD)
+
 - **US-5.1**: See all screens with burn status and linked job
 - **US-5.2**: Filter screens by burn status
 - **US-6.1**: Browse garment styles used across jobs
 - **US-6.2**: See which jobs use a particular garment style
 
 ### Empty States (Defined in APP_FLOW)
+
 - Screen Room: "No screens tracked yet"
 - (Garment Catalog empty state not explicitly defined — needs one)
 
 ### Page Specs (Minimal in APP_FLOW)
+
 - **Screen Room**: Full width table, burn status filter, columns: Screen ID, Mesh Count, Emulsion Type, Burn Status, Linked Job
 - **Garment Catalog**: Grouped list or table, grouped by brand, fields: SKU, Style, Brand, Color
 
@@ -289,6 +306,7 @@ Phase 1 only needs t-shirts and fleece. The category system is ready for expansi
 ### PrintLife Pain Points (what Screen Print Pro replaces)
 
 From the research and interview data:
+
 1. **No screen room tracking** — screen status is entirely verbal/manual
 2. **Limited garment catalog** — SanMar integration only, no rich browsing
 3. **No data export** — can't migrate anything (pricing, customers, catalog)
@@ -298,6 +316,7 @@ From the research and interview data:
 ### Industry Pain Points (from forums and competitor reviews)
 
 **Screen Room**:
+
 - Most shops use whiteboards or spreadsheets to track screens
 - No software connects screen status to job readiness
 - Operators rely on memory for "which mesh count did we use last time?"
@@ -305,6 +324,7 @@ From the research and interview data:
 - Wrong screens get loaded on press because of poor labeling
 
 **Garment Catalog**:
+
 - Competitor catalogs are quoting tools, not browsing tools — utilitarian UX
 - No visual way to compare garments side-by-side
 - Size/color matrix display is typically data-dense and hard to read
@@ -317,33 +337,33 @@ From the research and interview data:
 
 ### Screen Room — Phase 1
 
-| Criteria | Measurement |
-|----------|-------------|
-| Chris can see screen room state in 5 seconds | Dashboard-like scan of pending/burned/reclaimed counts |
-| Chris can identify screens to burn before production | Filter to "pending" → see mesh count, linked job |
-| Chris can tell which job a screen belongs to | Click job link from screen row |
-| Screen status is always current | Burn status reflects actual state |
-| The page feels useful, not just a table | Visual status badges, count summaries, filter UX |
+| Criteria                                             | Measurement                                            |
+| ---------------------------------------------------- | ------------------------------------------------------ |
+| Chris can see screen room state in 5 seconds         | Dashboard-like scan of pending/burned/reclaimed counts |
+| Chris can identify screens to burn before production | Filter to "pending" → see mesh count, linked job       |
+| Chris can tell which job a screen belongs to         | Click job link from screen row                         |
+| Screen status is always current                      | Burn status reflects actual state                      |
+| The page feels useful, not just a table              | Visual status badges, count summaries, filter UX       |
 
 ### Garment Catalog — Phase 1
 
-| Criteria | Measurement |
-|----------|-------------|
-| Chris can browse garments visually | Grouped by brand with clear visual hierarchy |
-| Chris can find a specific garment quickly | Search by SKU, name, or brand |
-| Chris can see available colors at a glance | Color swatches (from color schema hex values) |
-| Chris can see available sizes at a glance | Size range display with price adjustments noted |
-| Chris can see which jobs use a garment | Click to view linked jobs |
-| The catalog feels like a catalog, not a spreadsheet | Cards or rich list items, not just table rows |
+| Criteria                                            | Measurement                                     |
+| --------------------------------------------------- | ----------------------------------------------- |
+| Chris can browse garments visually                  | Grouped by brand with clear visual hierarchy    |
+| Chris can find a specific garment quickly           | Search by SKU, name, or brand                   |
+| Chris can see available colors at a glance          | Color swatches (from color schema hex values)   |
+| Chris can see available sizes at a glance           | Size range display with price adjustments noted |
+| Chris can see which jobs use a garment              | Click to view linked jobs                       |
+| The catalog feels like a catalog, not a spreadsheet | Cards or rich list items, not just table rows   |
 
 ### Cross-Vertical Success
 
-| Criteria | How |
-|----------|-----|
-| Screen Room connects to Jobs | Click screen → linked job detail |
-| Garment Catalog connects to Jobs | Click garment → jobs using this garment |
-| Dashboard surfaces screen room blockers | "Screens pending" could appear in needs-attention |
-| Quote flow references catalog | (Phase 2: garment selector in quote form pulls from catalog) |
+| Criteria                                | How                                                          |
+| --------------------------------------- | ------------------------------------------------------------ |
+| Screen Room connects to Jobs            | Click screen → linked job detail                             |
+| Garment Catalog connects to Jobs        | Click garment → jobs using this garment                      |
+| Dashboard surfaces screen room blockers | "Screens pending" could appear in needs-attention            |
+| Quote flow references catalog           | (Phase 2: garment selector in quote form pulls from catalog) |
 
 ---
 
@@ -403,10 +423,12 @@ The garment catalog is a **pricing foundation** that feeds directly into quoting
 ### The ROADMAP Context
 
 The ROADMAP says:
+
 > Screen Room vertical (simple — data table + status badges)
 > Garment Catalog vertical (simple — grouped display)
 
 This is accurate for Phase 1 scope. But "simple" doesn't mean "thoughtless" — even a data table benefits from:
+
 - Summary statistics at top (counts by status)
 - Meaningful filter presets
 - Visual status badges
@@ -420,6 +442,7 @@ The competitive analysis shows nobody does screen room management well — **thi
 ## Sources
 
 ### Project Documents
+
 - `docs/PRD.md` — Feature F10 (Screen Room), F11 (Garment Catalog), user stories US-5.x, US-6.x
 - `docs/APP_FLOW.md` — Screen Room and Garment Catalog page specs, navigation, empty states
 - `docs/ROADMAP.md` — Phase 1 remaining verticals, strategic context
@@ -431,6 +454,7 @@ The competitive analysis shows nobody does screen room management well — **thi
 - `docs/research/printlife-data-export-research.md` — PrintLife limitations, vendor integration context
 
 ### Industry Research
+
 - [Darkroom Optimization 101](https://www.screenprinting.com/blogs/news/darkroom-optimization-101-how-many-screens-does-your-shop-really-need) — Four-cart system, screen inventory sizing
 - [Screen Room Workflow Optimization](https://imprintnext.com/blog/how-can-you-optimize-your-screen-room-for-efficient-workflow) — Daily workflow, automation
 - [Screen Reclaim Process](https://www.printavo.com/blog/how-to-reclaim-screens-in-your-print-shop/) — Reclaim workflow steps

@@ -1,6 +1,6 @@
 ---
-title: "Garments Vertical — Consolidated Breadboard"
-subtitle: "Comprehensive affordance mapping incorporating catalog build, mockup engine, and interview-driven enhancements"
+title: 'Garments Vertical — Consolidated Breadboard'
+subtitle: 'Comprehensive affordance mapping incorporating catalog build, mockup engine, and interview-driven enhancements'
 date: 2026-02-15
 phase: 1
 pipelineName: garments
@@ -10,8 +10,8 @@ domains: [garments]
 tools: []
 stage: breadboard
 tags: [plan]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0215-garments-breadboard"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0215-garments-breadboard'
 status: complete
 ---
 
@@ -35,51 +35,57 @@ The original garment-catalog-breadboard was used for the initial build (20 build
 
 9 Places (6 built, 3 from mockup engine):
 
-| Place | Status |
-|-------|--------|
-| Garment Catalog (`/garments`) | Built |
-| Garment Detail Drawer | Built |
-| Customer Screens Tab | Built |
-| Reclaim Screen Dialog | Built |
-| Customer Favorites (inline) | Built |
-| Mockup — Quote Detail | Separate breadboard |
-| Mockup — Job Detail | Separate breadboard |
-| Mockup — Kanban Board | Separate breadboard |
+| Place                         | Status              |
+| ----------------------------- | ------------------- |
+| Garment Catalog (`/garments`) | Built               |
+| Garment Detail Drawer         | Built               |
+| Customer Screens Tab          | Built               |
+| Reclaim Screen Dialog         | Built               |
+| Customer Favorites (inline)   | Built               |
+| Mockup — Quote Detail         | Separate breadboard |
+| Mockup — Job Detail           | Separate breadboard |
+| Mockup — Kanban Board         | Separate breadboard |
 
 Plus 3 cross-linking places (Dashboard, Customer Jobs, Invoice Detail) — all built.
 
 ## New Schema Requirements
 
 ### `garmentCatalogSchema` additions
+
 - `weight: z.number().positive().optional()` — garment weight in oz (e.g., 5.3)
 - `fabricType: z.string().optional()` — fabric composition (e.g., "100% Ring-Spun Cotton")
 
 ### `quoteLineItemSchema` additions
+
 - `customerSupplied: z.boolean().default(false)` — skip garment cost when true
 - `handlingFee: z.number().nonnegative().default(0)` — flat fee for customer-supplied
 
 ### New helper
+
 - `WEIGHT_RANGES` constant with 3 buckets: Lightweight (<4 oz), Midweight (4-6 oz), Heavyweight (>6 oz)
 
 ## Build Order Summary (10 tasks)
 
-| Window | Tasks | Complexity |
-|--------|-------|------------|
-| A: Schema + data | #1-3 (weight/fabric schema, mock data, helpers) | Low |
-| B: UI filters | #4-6 (toolbar dropdowns, card badges, filter logic) | Low-Medium |
-| C: Customer-supplied | #7-8 (schema + mock data) | Low |
-| D: Tests | #10 (schema validation) | Low |
-| Deferred | #9 (customer-supplied UI in quote form) | Medium — deferred to quoting v2 |
+| Window               | Tasks                                               | Complexity                      |
+| -------------------- | --------------------------------------------------- | ------------------------------- |
+| A: Schema + data     | #1-3 (weight/fabric schema, mock data, helpers)     | Low                             |
+| B: UI filters        | #4-6 (toolbar dropdowns, card badges, filter logic) | Low-Medium                      |
+| C: Customer-supplied | #7-8 (schema + mock data)                           | Low                             |
+| D: Tests             | #10 (schema validation)                             | Low                             |
+| Deferred             | #9 (customer-supplied UI in quote form)             | Medium — deferred to quoting v2 |
 
 ## Decisions
 
 ### D1: Weight as numeric, not categorical
+
 Storing raw weight (e.g., 5.3 oz) rather than pre-categorized buckets. The `WEIGHT_RANGES` helper converts to display-friendly labels. This preserves precision for future API data without category mapping drift.
 
 ### D2: Customer-supplied schema now, UI later
+
 The `customerSupplied` and `handlingFee` fields are added to the schema in this cycle. The UI integration into the quote form is deferred to when the quoting vertical is next touched — avoids cross-vertical scope creep.
 
 ### D3: Breadboard consolidation over replacement
+
 Rather than deleting `garment-catalog-breadboard.md`, the new `garments-breadboard.md` supersedes it. The original remains as a build reference for PR #109. The new doc clearly tags every affordance with its build status.
 
 ## Open Questions

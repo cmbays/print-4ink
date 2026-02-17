@@ -77,17 +77,17 @@ Research -> Interview -> Breadboard -> Plan -> Build -> Polish -> Review -> Lear
                                                              (between cycles)
 ```
 
-| # | Stage | Sessions | Automation | KB Doc | Skills/Agents |
-|---|-------|----------|-----------|--------|---------------|
-| 1 | Research | 1 (agent team) | High | `{v}-research.md` | vertical-discovery, feature-strategist, firecrawl |
-| 2 | Interview | 1 (manual) | Medium | `{v}-interview.md` | requirements-interrogator, gary-tracker |
-| 3 | Breadboard | 1 (solo) | Medium | `{v}-breadboard.md` | breadboarding |
-| 4 | Plan | 1 (solo + agents) | High | `{v}-impl-plan.md` | implementation-planning (NEW) |
-| 5 | Build | N (waves) | High | `{v}-build-overview.md` + wave docs | build-session-protocol (NEW), screen-builder, frontend-builder |
-| 6 | Polish | 1-2 (iterative) | Low | `{v}-polish.md` | quality-gate, design-audit |
-| 7 | Review | 1 (agent team) | High | `{v}-review.md` | quality-gate, design-auditor, doc-sync |
-| 8 | Learnings | 1 (synthesis) | High | `{v}-learnings.md` | learnings-synthesis (NEW) |
-| - | Cool-down | 1 | Medium | n/a (updates ROADMAP) | cool-down (from PM session) |
+| #   | Stage      | Sessions          | Automation | KB Doc                              | Skills/Agents                                                  |
+| --- | ---------- | ----------------- | ---------- | ----------------------------------- | -------------------------------------------------------------- |
+| 1   | Research   | 1 (agent team)    | High       | `{v}-research.md`                   | vertical-discovery, feature-strategist, firecrawl              |
+| 2   | Interview  | 1 (manual)        | Medium     | `{v}-interview.md`                  | requirements-interrogator, gary-tracker                        |
+| 3   | Breadboard | 1 (solo)          | Medium     | `{v}-breadboard.md`                 | breadboarding                                                  |
+| 4   | Plan       | 1 (solo + agents) | High       | `{v}-impl-plan.md`                  | implementation-planning (NEW)                                  |
+| 5   | Build      | N (waves)         | High       | `{v}-build-overview.md` + wave docs | build-session-protocol (NEW), screen-builder, frontend-builder |
+| 6   | Polish     | 1-2 (iterative)   | Low        | `{v}-polish.md`                     | quality-gate, design-audit                                     |
+| 7   | Review     | 1 (agent team)    | High       | `{v}-review.md`                     | quality-gate, design-auditor, doc-sync                         |
+| 8   | Learnings  | 1 (synthesis)     | High       | `{v}-learnings.md`                  | learnings-synthesis (NEW)                                      |
+| -   | Cool-down  | 1                 | Medium     | n/a (updates ROADMAP)               | cool-down (from PM session)                                    |
 
 ## 4. The `work` Function v2
 
@@ -138,7 +138,7 @@ work help [phase]                  # Usage with flag options per phase
 ```yaml
 vertical: jobs
 waves:
-  - name: "Foundation"
+  - name: 'Foundation'
     serial: true
     sessions:
       - topic: jobs-w1-schemas
@@ -147,7 +147,7 @@ waves:
           Build Zod schemas and mock data for the Jobs vertical.
         stage: build
 
-  - name: "Parallel Build"
+  - name: 'Parallel Build'
     serial: false
     sessions:
       - topic: jobs-w2-kanban
@@ -192,13 +192,13 @@ waves:
 
 ### Naming Conventions
 
-| Type | Branch Pattern | Example |
-|------|---------------|---------|
-| Pipeline stage | `session/MMDD-{vertical}-{stage}` | `session/0214-jobs-research` |
-| Build wave | `session/MMDD-{vertical}-w{N}-{topic}` | `session/0215-jobs-w2-kanban` |
-| Build overview | `session/MMDD-{vertical}-build-overview` | `session/0215-jobs-build-overview` |
-| Polish | `session/MMDD-{vertical}-polish` | `session/0217-jobs-polish` |
-| Fork | `session/MMDD-{vertical}-{stage}-explore` | `session/0215-jobs-w2-kanban-explore` |
+| Type           | Branch Pattern                            | Example                               |
+| -------------- | ----------------------------------------- | ------------------------------------- |
+| Pipeline stage | `session/MMDD-{vertical}-{stage}`         | `session/0214-jobs-research`          |
+| Build wave     | `session/MMDD-{vertical}-w{N}-{topic}`    | `session/0215-jobs-w2-kanban`         |
+| Build overview | `session/MMDD-{vertical}-build-overview`  | `session/0215-jobs-build-overview`    |
+| Polish         | `session/MMDD-{vertical}-polish`          | `session/0217-jobs-polish`            |
+| Fork           | `session/MMDD-{vertical}-{stage}-explore` | `session/0215-jobs-w2-kanban-explore` |
 
 Claude session names mirror the branch topic portion.
 
@@ -247,6 +247,7 @@ Ada is not a generic assistant. She is a character with an evolving personality,
 ### Memory Architecture
 
 Ada maintains her own memory files at her agent's memory path:
+
 - `personality.md` — current narrative arc, vocabulary, themes, running jokes
 - `project-pulse.md` — her understanding of project state, what excites her, what concerns her
 - `1on1-log.md` — summaries of past 1:1 check-ins, evolving relationship
@@ -318,6 +319,7 @@ Each `work <phase>` reads the appropriate level for context.
 ### Immediate Fix
 
 Fix colon->space pattern syntax in `~/.claude/settings.json`:
+
 ```
 BROKEN: Bash(gh pr:*)    -> matches "gh pr:view" not "gh pr view"
 FIXED:  Bash(gh pr *)    -> matches "gh pr view", "gh pr create"
@@ -331,22 +333,22 @@ Explore hookify (Issue #80) for context-aware permission management. Consider pe
 
 ### Skills
 
-| Skill | Stage | Purpose |
-|-------|-------|---------|
-| `implementation-planning` | Plan | YAML manifest + human-readable plan |
-| `build-session-protocol` | Build | Standardized completion flow |
-| `merge-checklist` | Build | PR merge report template |
-| `learnings-synthesis` | Learnings | Cross-session pattern extraction |
-| `gary-tracker` | Interview | Auto-tag unknowns for Gary |
-| `one-on-one` | All (Secretary) | Structured 1:1 check-in with Ada |
+| Skill                     | Stage           | Purpose                             |
+| ------------------------- | --------------- | ----------------------------------- |
+| `implementation-planning` | Plan            | YAML manifest + human-readable plan |
+| `build-session-protocol`  | Build           | Standardized completion flow        |
+| `merge-checklist`         | Build           | PR merge report template            |
+| `learnings-synthesis`     | Learnings       | Cross-session pattern extraction    |
+| `gary-tracker`            | Interview       | Auto-tag unknowns for Gary          |
+| `one-on-one`              | All (Secretary) | Structured 1:1 check-in with Ada    |
 
 ### Agents
 
-| Agent | Stage | Purpose |
-|-------|-------|---------|
-| `secretary` (Ada) | All | Executive assistant with evolving personality |
-| `finance-sme` | Build (review) | Financial calculation safety |
-| `build-reviewer` | Build (review) | Multi-agent code review team |
+| Agent             | Stage          | Purpose                                       |
+| ----------------- | -------------- | --------------------------------------------- |
+| `secretary` (Ada) | All            | Executive assistant with evolving personality |
+| `finance-sme`     | Build (review) | Financial calculation safety                  |
+| `build-reviewer`  | Build (review) | Multi-agent code review team                  |
 
 ## 12. PM Integration
 
@@ -366,20 +368,20 @@ Build session protocol auto-creates GitHub Issues for deferred review items with
 
 ## 13. Key Decisions
 
-| # | Decision | Rationale |
-|---|----------|-----------|
-| D1 | Zellij over tmux | KDL layouts for declarative one-touch execution |
-| D2 | Launch from worktrees parent | Session storage survives worktree cleanup |
-| D3 | JSON session registry | Simple, readable, Claude-friendly, extensible |
-| D4 | 8-stage pipeline + cool-down | Comprehensive coverage with clear boundaries |
-| D5 | `work <phase>` commands | Auto-wire skills/agents; eliminate inconsistency |
-| D6 | `work build` with YAML manifests | Machine-readable plans generate Zellij layouts |
-| D7 | Merge checklist on PR | Build trust for autonomous builds |
-| D8 | `devx` vertical slug | Distinct from `meta` (random captures) |
-| D9 | Build overview + wave docs | 1:1 session-to-doc parity with summary header |
-| D10 | Fork via `--fork-session` | Experimentation branches, append `-explore` |
-| D11 | Ada (Secretary) with personality | Executive assistant with evolving narrative arc |
-| D12 | Shell orchestration, not Claude | Deterministic, no context burn, repeatable |
-| D13 | GitHub-native PM | Issues + labels + milestones; start light |
-| D14 | Build session protocol as skill | Consistent completion flow across all builds |
-| D15 | 1:1 skill for structured check-ins | Regular cadence with Ada for project pulse |
+| #   | Decision                           | Rationale                                        |
+| --- | ---------------------------------- | ------------------------------------------------ |
+| D1  | Zellij over tmux                   | KDL layouts for declarative one-touch execution  |
+| D2  | Launch from worktrees parent       | Session storage survives worktree cleanup        |
+| D3  | JSON session registry              | Simple, readable, Claude-friendly, extensible    |
+| D4  | 8-stage pipeline + cool-down       | Comprehensive coverage with clear boundaries     |
+| D5  | `work <phase>` commands            | Auto-wire skills/agents; eliminate inconsistency |
+| D6  | `work build` with YAML manifests   | Machine-readable plans generate Zellij layouts   |
+| D7  | Merge checklist on PR              | Build trust for autonomous builds                |
+| D8  | `devx` vertical slug               | Distinct from `meta` (random captures)           |
+| D9  | Build overview + wave docs         | 1:1 session-to-doc parity with summary header    |
+| D10 | Fork via `--fork-session`          | Experimentation branches, append `-explore`      |
+| D11 | Ada (Secretary) with personality   | Executive assistant with evolving narrative arc  |
+| D12 | Shell orchestration, not Claude    | Deterministic, no context burn, repeatable       |
+| D13 | GitHub-native PM                   | Issues + labels + milestones; start light        |
+| D14 | Build session protocol as skill    | Consistent completion flow across all builds     |
+| D15 | 1:1 skill for structured check-ins | Regular cadence with Ada for project pulse       |

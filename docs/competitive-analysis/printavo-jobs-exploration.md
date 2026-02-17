@@ -10,18 +10,18 @@
 
 ### Primary Navigation (Left Sidebar)
 
-| Section | Purpose | Sub-sections |
-|---------|---------|-------------|
-| **Dashboard/Home** | Today's overview | Today screen (mobile), calendar overview |
-| **Sales** | Quotes pipeline | Quotes list, new quote creation |
-| **Invoices/Orders** | Active & completed jobs | Invoices list, sorted by status |
-| **Calendar** | Visual scheduling | Monthly / Weekly / Daily views |
-| **Tasks** | Action items | Tasks tab (all tasks across jobs) |
-| **Customers** | CRM | Customer list, customer detail/portal |
-| **Financials** | Money | Analytics, Revenue & Expenses, Payments |
-| **Power Scheduler** | Production board (Premium) | Gantt-style multi-department view |
-| **Merch Stores** | E-commerce | Online storefronts |
-| **My Account** | Settings | Statuses, Automations, Workflow Customization, Preset Task Lists, Approvals, Types of Work |
+| Section             | Purpose                    | Sub-sections                                                                               |
+| ------------------- | -------------------------- | ------------------------------------------------------------------------------------------ |
+| **Dashboard/Home**  | Today's overview           | Today screen (mobile), calendar overview                                                   |
+| **Sales**           | Quotes pipeline            | Quotes list, new quote creation                                                            |
+| **Invoices/Orders** | Active & completed jobs    | Invoices list, sorted by status                                                            |
+| **Calendar**        | Visual scheduling          | Monthly / Weekly / Daily views                                                             |
+| **Tasks**           | Action items               | Tasks tab (all tasks across jobs)                                                          |
+| **Customers**       | CRM                        | Customer list, customer detail/portal                                                      |
+| **Financials**      | Money                      | Analytics, Revenue & Expenses, Payments                                                    |
+| **Power Scheduler** | Production board (Premium) | Gantt-style multi-department view                                                          |
+| **Merch Stores**    | E-commerce                 | Online storefronts                                                                         |
+| **My Account**      | Settings                   | Statuses, Automations, Workflow Customization, Preset Task Lists, Approvals, Types of Work |
 
 ### Key Routes / Views
 
@@ -42,27 +42,28 @@
 
 ### Step-by-Step Flow
 
-| # | Action | Clicks | Notes |
-|---|--------|--------|-------|
-| 1 | Click "+ Quote" (or Sales > + Quote) | 1 | Top-level action, always accessible |
-| 2 | Select or create customer | 1-3 | Search existing or "+ New Customer" |
-| 3 | Add Line Items (garments) | 2+ | Search products, select sizes/quantities |
-| 4 | Group into Line Item Groups (LIG) | 1-2 | Bundle by imprint/decoration type |
-| 5 | Add Imprint info per LIG | 2-3 | Print location, pantone colors, thread counts |
-| 6 | Upload mockups/artwork | 2-3 | "+ Mockup" button in imprint modal, drag-drop files |
-| 7 | Apply pricing matrix | 2 | Select matrix + delineator, click "Refresh Pricing" |
-| 8 | Add Details (dates, notes, PO#) | 3-5 | Customer Due Date, Production Due Date, notes |
-| 9 | Save Quote | 1 | Quote created with default gray "Quote" status |
-| 10 | Send for approval | 2-3 | Via messaging system or automation trigger |
-| 11 | Customer approves | 0 | Customer clicks approve link in email |
-| 12 | Status changes → Invoice | 1 (or auto) | Manual status change or automation |
-| 13 | Move through production statuses | 1 per status | Each status change = 1 click or barcode scan |
+| #   | Action                               | Clicks       | Notes                                               |
+| --- | ------------------------------------ | ------------ | --------------------------------------------------- |
+| 1   | Click "+ Quote" (or Sales > + Quote) | 1            | Top-level action, always accessible                 |
+| 2   | Select or create customer            | 1-3          | Search existing or "+ New Customer"                 |
+| 3   | Add Line Items (garments)            | 2+           | Search products, select sizes/quantities            |
+| 4   | Group into Line Item Groups (LIG)    | 1-2          | Bundle by imprint/decoration type                   |
+| 5   | Add Imprint info per LIG             | 2-3          | Print location, pantone colors, thread counts       |
+| 6   | Upload mockups/artwork               | 2-3          | "+ Mockup" button in imprint modal, drag-drop files |
+| 7   | Apply pricing matrix                 | 2            | Select matrix + delineator, click "Refresh Pricing" |
+| 8   | Add Details (dates, notes, PO#)      | 3-5          | Customer Due Date, Production Due Date, notes       |
+| 9   | Save Quote                           | 1            | Quote created with default gray "Quote" status      |
+| 10  | Send for approval                    | 2-3          | Via messaging system or automation trigger          |
+| 11  | Customer approves                    | 0            | Customer clicks approve link in email               |
+| 12  | Status changes → Invoice             | 1 (or auto)  | Manual status change or automation                  |
+| 13  | Move through production statuses     | 1 per status | Each status change = 1 click or barcode scan        |
 
 **Estimated total clicks**: ~20-30 for full quote creation to production handoff
 
 ### Mobile App Flow (Simplified)
 
 The mobile app uses a 3-step wizard:
+
 1. **Sales > + Quote** → Select customer
 2. **Line Items** tab → Add products
 3. **Details** tab → Dates, notes → **Save**
@@ -74,12 +75,14 @@ The mobile app uses a 3-step wizard:
 ### 3.1 Status System
 
 Statuses are the **core workflow engine**. They are:
+
 - **Fully customizable** — name, color, order
 - **Color-coded** — shops choose colors, typically by department
 - **Binary type** — each status is either "Quote" or "Invoice" type
 - **Default** — gray "Quote" status (not editable) is default for new quotes
 
 **Typical Status Flow**:
+
 ```text
 Quote (gray, default)
   → Quote Sent / Out for Approval
@@ -93,12 +96,14 @@ Quote (gray, default)
 ```
 
 **Configuration**: My Account > Customize Order Statuses
+
 - Name, edit, delete statuses
 - Select colors
 - Set as "Quote" or "Invoice" type
 - Reorder workflow sequence
 
 **Key insight**: Statuses are "stopping points" — they represent waiting states:
+
 - Waiting for department action
 - Waiting for customer response
 - Waiting for vendor/distributor
@@ -108,13 +113,14 @@ Quote (gray, default)
 
 Three views with drag-and-drop scheduling:
 
-| View | Granularity | Use Case |
-|------|-------------|----------|
-| **Monthly** | Day-level | Overview of entire month's schedule |
-| **Weekly** | Hour-level | Detailed weekly planning |
-| **Daily** | Hour-level | Granular daily scheduling |
+| View        | Granularity | Use Case                            |
+| ----------- | ----------- | ----------------------------------- |
+| **Monthly** | Day-level   | Overview of entire month's schedule |
+| **Weekly**  | Hour-level  | Detailed weekly planning            |
+| **Daily**   | Hour-level  | Granular daily scheduling           |
 
 **Key behaviors**:
+
 - Dragging a job to a new date automatically updates **Production Due Date**
 - Alert fires if Production Due Date is dragged past Customer Due Date (failsafe)
 - Jobs appear on calendar based on configurable status trigger
@@ -124,10 +130,10 @@ Three views with drag-and-drop scheduling:
 
 Every order has TWO dates:
 
-| Date | Purpose | Calendar Behavior |
-|------|---------|-------------------|
-| **Production Due Date** | When job should be produced | Drives calendar placement, updated by drag-drop |
-| **Customer Due Date** | When customer expects delivery | Failsafe boundary, syncs to QuickBooks as "Due Date" |
+| Date                    | Purpose                        | Calendar Behavior                                    |
+| ----------------------- | ------------------------------ | ---------------------------------------------------- |
+| **Production Due Date** | When job should be produced    | Drives calendar placement, updated by drag-drop      |
+| **Customer Due Date**   | When customer expects delivery | Failsafe boundary, syncs to QuickBooks as "Due Date" |
 
 Production Due Date should always be BEFORE Customer Due Date. This separation is critical for shops that need buffer time between production and delivery.
 
@@ -138,17 +144,20 @@ A Gantt-style production board for multi-department tracking:
 **Core Concept**: "Types of Work" — each decoration method (screen printing, embroidery, digital, finishing) is an independent workflow with custom steps.
 
 **Configuration**:
+
 - My Account > Workflow Customization > Types of Work
 - Each Type of Work has custom steps and step statuses
 - Types of Work are associated with Stations
 - Can be preassigned to pricing matrices
 
 **Scheduling Methods**:
+
 1. Click "Date" cell → select from popup calendar
 2. Click and drag imprint row onto a date row
 3. Reschedule by dragging to new date
 
 **Filters & Views**:
+
 - Filter by dates, types of work, stations
 - Save custom views (Super Admins can share views with all users)
 - Track multiple decoration types on a single job simultaneously
@@ -160,11 +169,13 @@ A Gantt-style production board for multi-department tracking:
 **Tasks** are non-sequential action items (e.g., "Mix ink", "Set up screens", "Re-order blanks").
 
 **Where tasks appear**:
+
 - Calendar preview modal (click a job)
 - "Tasks" tab on individual job
 - Central "Tasks" tab in left sidebar
 
 **Preset Task Lists**:
+
 - Created at My Account > Preset Task List
 - One-click application to any job
 - Can be auto-applied via automation (e.g., when artwork approved → assign production task list)
@@ -176,26 +187,27 @@ A Gantt-style production board for multi-department tracking:
 
 **Available Triggers**:
 
-| Trigger | Example |
-|---------|---------|
-| If status changed to... | "Artwork Approved" |
-| If all tasks in preset list completed... | All pre-press tasks done |
-| If imprints added to Power Scheduler... | Work scheduled |
-| If type of work step status changed... | Screen burning complete |
-| If requested approval is approved... | Customer approved artwork |
-| If quote/invoice paid in full... | Payment received |
+| Trigger                                  | Example                   |
+| ---------------------------------------- | ------------------------- |
+| If status changed to...                  | "Artwork Approved"        |
+| If all tasks in preset list completed... | All pre-press tasks done  |
+| If imprints added to Power Scheduler...  | Work scheduled            |
+| If type of work step status changed...   | Screen burning complete   |
+| If requested approval is approved...     | Customer approved artwork |
+| If quote/invoice paid in full...         | Payment received          |
 
 **Available Actions**:
 
-| Action | Example |
-|--------|---------|
-| Change status to... | Move to "In Production" |
+| Action                       | Example                   |
+| ---------------------------- | ------------------------- |
+| Change status to...          | Move to "In Production"   |
 | Send email and/or text to... | Notify customer of status |
-| Apply preset task list... | Assign production tasks |
-| Request payment for X%... | Request 50% deposit |
-| Request approval... | Send artwork for approval |
+| Apply preset task list...    | Assign production tasks   |
+| Request payment for X%...    | Request 50% deposit       |
+| Request approval...          | Send artwork for approval |
 
 **Key behavior**: One trigger can fire MULTIPLE actions. Example chain:
+
 1. Trigger: Customer approves quote
 2. Actions: Change status to "Quote Approved" + Request 50% payment + Assign production task list
 
@@ -210,11 +222,13 @@ A Gantt-style production board for multi-department tracking:
 ### 3.8 Customer-Facing Features
 
 **Customer Portal**:
+
 - View all orders, quotes, artwork approvals, account balance
 - Enlarge artwork files from public invoice view
 - Approve quotes and artwork via email links
 
 **Approval Types**:
+
 - Quote Approval (pricing/scope)
 - Artwork Approval (mockups/proofs)
 - Approvals can be separated or combined
@@ -222,6 +236,7 @@ A Gantt-style production board for multi-department tracking:
 - Sent via messaging system or automated
 
 **Messaging System**:
+
 - Accessible on every quote
 - Hosts all order details and communications
 - Thread-based per order
@@ -231,14 +246,14 @@ A Gantt-style production board for multi-department tracking:
 
 Dynamic content injection for emails/messages:
 
-| Category | Examples |
-|----------|---------|
-| Customer | `[customer-full-name]`, `[customer-company-name]`, `[customer-email-address]` |
-| Invoice | `[invoice-id]`, `[invoice-status]`, `[invoice-nickname]`, `[invoice-public-url]` |
-| Owner | `[invoice-owner-first-name]`, `[invoice-owner-email-address]` |
-| Payment | `[payment-request-amount]` |
-| Address | `[invoice-shipping-address]`, `[invoice-billing-address]` |
-| Custom | `[work-order-public-url]` |
+| Category | Examples                                                                         |
+| -------- | -------------------------------------------------------------------------------- |
+| Customer | `[customer-full-name]`, `[customer-company-name]`, `[customer-email-address]`    |
+| Invoice  | `[invoice-id]`, `[invoice-status]`, `[invoice-nickname]`, `[invoice-public-url]` |
+| Owner    | `[invoice-owner-first-name]`, `[invoice-owner-email-address]`                    |
+| Payment  | `[payment-request-amount]`                                                       |
+| Address  | `[invoice-shipping-address]`, `[invoice-billing-address]`                        |
+| Custom   | `[work-order-public-url]`                                                        |
 
 ### 3.10 Purchase Orders & Receiving (Premium)
 
@@ -299,6 +314,7 @@ Status
 ```
 
 ### Query Capabilities
+
 - Filter orders by production date range, status IDs
 - Sort by visual ID
 - Cursor-based pagination
@@ -308,11 +324,11 @@ Status
 
 ## 5. Pricing Tiers
 
-| Plan | Price | Key Features |
-|------|-------|-------------|
-| **Starter** | $99/mo | Core quoting, invoicing, calendar, basic workflow |
-| **Standard** | $149/mo | + Automations, enhanced features |
-| **Premium** | $199-399/mo (varies) | + Power Scheduler, Barcoding, Receiving, Tags, Text Messaging, Pricing Matrices, Domain Customization, Production File Upload |
+| Plan         | Price                | Key Features                                                                                                                  |
+| ------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Starter**  | $99/mo               | Core quoting, invoicing, calendar, basic workflow                                                                             |
+| **Standard** | $149/mo              | + Automations, enhanced features                                                                                              |
+| **Premium**  | $199-399/mo (varies) | + Power Scheduler, Barcoding, Receiving, Tags, Text Messaging, Pricing Matrices, Domain Customization, Production File Upload |
 
 Free trial available. All plans are cloud-hosted with web + mobile access.
 
@@ -322,37 +338,37 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 
 ### Critical
 
-| Issue | Description |
-|-------|-------------|
-| **Accounting inaccuracies** | Doesn't handle customer overpayments, sales tax reporting has "horror stories", QuickBooks sync requires manual review of every invoice |
-| **Payment processor lock-in** | Removed all third-party payment processors after VC buyout; only their in-house processor remains |
-| **Mobile app reliability** | Periods where app won't open for months; won't load on some current iPhones |
+| Issue                         | Description                                                                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Accounting inaccuracies**   | Doesn't handle customer overpayments, sales tax reporting has "horror stories", QuickBooks sync requires manual review of every invoice |
+| **Payment processor lock-in** | Removed all third-party payment processors after VC buyout; only their in-house processor remains                                       |
+| **Mobile app reliability**    | Periods where app won't open for months; won't load on some current iPhones                                                             |
 
 ### High
 
-| Issue | Description |
-|-------|-------------|
+| Issue                         | Description                                                               |
+| ----------------------------- | ------------------------------------------------------------------------- |
 | **No role-based permissions** | No read/write permission system; problematic for shops with 20+ employees |
-| **PO/Receiving limitations** | Must receive entire order at once — no shortage/overage handling |
-| **No third-party brokerage** | Can't manage outsourced/brokered orders |
-| **Slow feature development** | Known for promising fixes and ignoring them "for literally years" |
+| **PO/Receiving limitations**  | Must receive entire order at once — no shortage/overage handling          |
+| **No third-party brokerage**  | Can't manage outsourced/brokered orders                                   |
+| **Slow feature development**  | Known for promising fixes and ignoring them "for literally years"         |
 
 ### Medium
 
-| Issue | Description |
-|-------|-------------|
-| **Status skipping bypasses automations** | Jumping statuses means associated automations don't fire |
-| **Mobile editing bugs** | Editing jobs in app adds zeros to unfilled columns, auto-adds print locations |
-| **No automated job run times** | Can't automatically assign production time estimates |
-| **Limited customization** | Users want more workflow and UI customization options |
-| **Power Scheduler premium-only** | Core production feature locked behind highest tier |
+| Issue                                    | Description                                                                   |
+| ---------------------------------------- | ----------------------------------------------------------------------------- |
+| **Status skipping bypasses automations** | Jumping statuses means associated automations don't fire                      |
+| **Mobile editing bugs**                  | Editing jobs in app adds zeros to unfilled columns, auto-adds print locations |
+| **No automated job run times**           | Can't automatically assign production time estimates                          |
+| **Limited customization**                | Users want more workflow and UI customization options                         |
+| **Power Scheduler premium-only**         | Core production feature locked behind highest tier                            |
 
 ### Low
 
-| Issue | Description |
-|-------|-------------|
-| **Scalability ceiling** | Works well for small shops; users report outgrowing it at 20-30 people |
-| **InkSoft integration fragmented** | Separate subscriptions despite shared parent company; separate logins |
+| Issue                              | Description                                                            |
+| ---------------------------------- | ---------------------------------------------------------------------- |
+| **Scalability ceiling**            | Works well for small shops; users report outgrowing it at 20-30 people |
+| **InkSoft integration fragmented** | Separate subscriptions despite shared parent company; separate logins  |
 
 ---
 
@@ -360,20 +376,20 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 
 ### What Works Well
 
-| Strength | Why It Helps Shop Owners |
-|----------|------------------------|
-| **Color-coded, fully customizable statuses** | Instant visual scan of workflow state; matches any shop's actual process |
-| **Dual date system** | Separates "when to produce" from "when customer expects it" — critical for scheduling buffer |
-| **Calendar drag-and-drop with failsafe** | Fast rescheduling with built-in guard against missing customer deadlines |
-| **Automation chains** | One trigger → multiple actions eliminates manual busywork (status change + payment request + task assignment) |
-| **Preset task lists** | One-click assignment of standard production checklists; ensures nothing is missed |
-| **Barcode scanning** | Hands-free status updates on production floor; every department can track jobs |
-| **Line Item Groups + Imprints** | Flexible bundling by decoration type; each group gets its own mockups and pricing |
-| **Mockup Creator** | Built-in tool to place designs on product images; no external design tool needed |
-| **Types of Work (Power Scheduler)** | Track screen printing, embroidery, digital, finishing as independent workflows on same job |
-| **Customer portal with approvals** | Self-service for customers reduces back-and-forth; automated approval workflow |
-| **Shortcode system** | Dynamic personalization in all communications; reduces errors in notifications |
-| **Simple onboarding** | Frequently praised for ease of setup and intuitive interface |
+| Strength                                     | Why It Helps Shop Owners                                                                                      |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Color-coded, fully customizable statuses** | Instant visual scan of workflow state; matches any shop's actual process                                      |
+| **Dual date system**                         | Separates "when to produce" from "when customer expects it" — critical for scheduling buffer                  |
+| **Calendar drag-and-drop with failsafe**     | Fast rescheduling with built-in guard against missing customer deadlines                                      |
+| **Automation chains**                        | One trigger → multiple actions eliminates manual busywork (status change + payment request + task assignment) |
+| **Preset task lists**                        | One-click assignment of standard production checklists; ensures nothing is missed                             |
+| **Barcode scanning**                         | Hands-free status updates on production floor; every department can track jobs                                |
+| **Line Item Groups + Imprints**              | Flexible bundling by decoration type; each group gets its own mockups and pricing                             |
+| **Mockup Creator**                           | Built-in tool to place designs on product images; no external design tool needed                              |
+| **Types of Work (Power Scheduler)**          | Track screen printing, embroidery, digital, finishing as independent workflows on same job                    |
+| **Customer portal with approvals**           | Self-service for customers reduces back-and-forth; automated approval workflow                                |
+| **Shortcode system**                         | Dynamic personalization in all communications; reduces errors in notifications                                |
+| **Simple onboarding**                        | Frequently praised for ease of setup and intuitive interface                                                  |
 
 ### Community & Ecosystem
 
@@ -429,31 +445,32 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 
 ## 9. Printavo Feature Matrix
 
-| Feature | Starter ($99) | Standard ($149) | Premium ($199+) |
-|---------|:---:|:---:|:---:|
-| Quoting & Invoicing | ✓ | ✓ | ✓ |
-| Customer Management | ✓ | ✓ | ✓ |
-| Calendar (3 views) | ✓ | ✓ | ✓ |
-| Custom Statuses | ✓ | ✓ | ✓ |
-| Tasks | ✓ | ✓ | ✓ |
-| Approvals | ✓ | ✓ | ✓ |
-| QuickBooks Sync | ✓ | ✓ | ✓ |
-| Zapier Integration | ✓ | ✓ | ✓ |
-| Automations | ? | ✓ | ✓ |
-| Pricing Matrices | | | ✓ |
-| Power Scheduler | | | ✓ |
-| Barcoding | | | ✓ |
-| Receiving | | | ✓ |
-| Tags | | | ✓ |
-| Text Messaging | | | ✓ |
-| Domain Customization | | | ✓ |
-| Production File Upload | | | ✓ |
+| Feature                | Starter ($99) | Standard ($149) | Premium ($199+) |
+| ---------------------- | :-----------: | :-------------: | :-------------: |
+| Quoting & Invoicing    |       ✓       |        ✓        |        ✓        |
+| Customer Management    |       ✓       |        ✓        |        ✓        |
+| Calendar (3 views)     |       ✓       |        ✓        |        ✓        |
+| Custom Statuses        |       ✓       |        ✓        |        ✓        |
+| Tasks                  |       ✓       |        ✓        |        ✓        |
+| Approvals              |       ✓       |        ✓        |        ✓        |
+| QuickBooks Sync        |       ✓       |        ✓        |        ✓        |
+| Zapier Integration     |       ✓       |        ✓        |        ✓        |
+| Automations            |       ?       |        ✓        |        ✓        |
+| Pricing Matrices       |               |                 |        ✓        |
+| Power Scheduler        |               |                 |        ✓        |
+| Barcoding              |               |                 |        ✓        |
+| Receiving              |               |                 |        ✓        |
+| Tags                   |               |                 |        ✓        |
+| Text Messaging         |               |                 |        ✓        |
+| Domain Customization   |               |                 |        ✓        |
+| Production File Upload |               |                 |        ✓        |
 
 ---
 
 ## 10. Sources
 
 ### Official Documentation
+
 - [Printavo Support: Customizing Job Statuses](https://support.printavo.com/hc/en-us/articles/360054178254-4-2-Customizing-Job-Statuses)
 - [Printavo Support: Power Scheduler (Premium)](https://support.printavo.com/hc/en-us/articles/4414754434587-4-8-Power-Scheduler-Premium)
 - [Printavo Support: Calendar Management Basics](https://support.printavo.com/hc/en-us/articles/360055969893-4-7-Calendar-Management-Basics)
@@ -465,6 +482,7 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 - [Printavo Support: Statuses](https://support.printavo.com/hc/en-us/articles/1260804469010-Statuses)
 
 ### Blog Posts
+
 - [Printavo Blog: Power Scheduler](https://www.printavo.com/blog/power-scheduler/)
 - [Printavo Blog: Status Guide](https://www.printavo.com/blog/status-guide/)
 - [Printavo Blog: 3 Ways To Use Statuses](https://www.printavo.com/blog/3-ways-to-use-statuses-in-printavo/)
@@ -478,25 +496,30 @@ Free trial available. All plans are cloud-hosted with web + mobile access.
 - [Printavo Blog: 16 Status Change Notification Ideas](https://www.printavo.com/blog/16-status-change-notifications-for-screen-printing/)
 
 ### API Documentation
+
 - [Printavo API v2.0 (GraphQL)](https://www.printavo.com/docs/api/v2)
 - [Printavo API Query Operations](https://www.printavo.com/docs/api/v2/operation/query/)
 
 ### Review Sites
+
 - [Capterra: Printavo Reviews](https://www.capterra.com/p/154421/Printavo/reviews/)
 - [GetApp: Printavo](https://www.getapp.com/website-ecommerce-software/a/printavo/)
 - [Software Advice: Printavo](https://www.softwareadvice.com/print-estimating/printavo-profile/)
 - [SoftwareSuggest: Printavo](https://www.softwaresuggest.com/printavo)
 
 ### Competitor Comparisons
+
 - [YoPrint: 6 Best Printavo Alternatives](https://www.yoprint.com/blog/6-best-printavo-alternatives)
 - [DecoNetwork: Top 8 Screen Printing Software](https://www.deconetwork.com/top-8-screen-printing-shop-management-software-picks/)
 - [DecoNetwork vs Printavo](https://www.deconetwork.com/deconetwork-vs-printavo/)
 - [Teesom: InkSoft vs Printavo vs Teesom](https://teesom.com/the-essential-guide-inksoft-vs-printavo/)
 
 ### Forums
+
 - [T-Shirt Forums: Teesom vs Printavo](https://www.t-shirtforums.com/threads/teesom-vs-printavo.896546/)
 - [T-Shirt Forums: Has Anyone Used Printavo?](https://www.t-shirtforums.com/threads/has-anyone-actually-used-printavo.216153/)
 
 ### Mobile App
+
 - [Printavo iOS App Store](https://apps.apple.com/us/app/printavo/id1191027240)
 - [Printavo Blog: Mobile App](https://www.printavo.com/blog/printavo-mobile-app-now-on-android-and-ios/)

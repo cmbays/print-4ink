@@ -38,11 +38,11 @@ Shaping -> Breadboarding -> **BB Reflection** -> Impl Planning
 
 ### Decision Points
 
-| Decision | Interactive | Auto |
-|---|---|---|
+| Decision            | Interactive                | Auto                            |
+| ------------------- | -------------------------- | ------------------------------- |
 | Which smells to fix | Human reviews, prioritizes | Agent fixes all detected smells |
-| Affordance splits | Human validates naming | Agent applies naming test rules |
-| Wiring corrections | Human reviews changes | Agent traces and fixes |
+| Affordance splits   | Human validates naming     | Agent applies naming test rules |
+| Wiring corrections  | Human reviews changes      | Agent traces and fixes          |
 
 ### Phase Awareness
 
@@ -65,15 +65,15 @@ At each link, ask: does this step logically lead to the next? Does the wiring ma
 
 ### What Smells Look Like
 
-| Smell | What you notice | Phase |
-|-------|-----------------|-------|
-| **Incoherent wiring** | A node writes to S1 AND triggers the thing that writes to S1 — redundant or contradictory | 1 |
-| **Missing path** | The user story requires an effect, but no wiring path produces it | 1 |
-| **Diagram-only nodes** | Nodes in the diagram that aren't in the affordance tables — decoration, not real affordances | 1 |
-| **Naming resistance** | You can't name an affordance with one idiomatic verb (see Naming Test below) | 1 |
-| **Stale affordances** | The breadboard shows something that no longer exists in the code | 2 |
-| **Wrong causality** | The wiring shows A calls B, but the code shows C calls B | 2 |
-| **Implementation mismatch** | The code has logic paths, functions, or call chains that aren't represented in the breadboard | 2 |
+| Smell                       | What you notice                                                                               | Phase |
+| --------------------------- | --------------------------------------------------------------------------------------------- | ----- |
+| **Incoherent wiring**       | A node writes to S1 AND triggers the thing that writes to S1 — redundant or contradictory     | 1     |
+| **Missing path**            | The user story requires an effect, but no wiring path produces it                             | 1     |
+| **Diagram-only nodes**      | Nodes in the diagram that aren't in the affordance tables — decoration, not real affordances  | 1     |
+| **Naming resistance**       | You can't name an affordance with one idiomatic verb (see Naming Test below)                  | 1     |
+| **Stale affordances**       | The breadboard shows something that no longer exists in the code                              | 2     |
+| **Wrong causality**         | The wiring shows A calls B, but the code shows C calls B                                      | 2     |
+| **Implementation mismatch** | The code has logic paths, functions, or call chains that aren't represented in the breadboard | 2     |
 
 The first four are visible from the breadboard and requirements alone. The last three require comparing to the implementation — read the actual code and check each affordance: does it exist? Does the wiring match what the code actually calls and returns? Is anything missing?
 
@@ -91,12 +91,12 @@ For each affordance:
 2. **What is the step-level effect?** What does THIS affordance do — not the downstream chain, just its own direct effect?
 3. **Name it with one verb.** Describe the step-level effect with a single, idiomatic English verb.
 
-| Signal | Meaning |
-|--------|---------|
-| One verb covers all code paths | Boundary is correct |
-| Need "or" to connect two verbs | Likely two affordances bundled together |
-| Name doesn't feel idiomatic | Boundary is wrong |
-| Name matches a downstream effect, not this step | You're naming the chain, not the step |
+| Signal                                          | Meaning                                 |
+| ----------------------------------------------- | --------------------------------------- |
+| One verb covers all code paths                  | Boundary is correct                     |
+| Need "or" to connect two verbs                  | Likely two affordances bundled together |
+| Name doesn't feel idiomatic                     | Boundary is wrong                       |
+| Name matches a downstream effect, not this step | You're naming the chain, not the step   |
 
 #### Step-Level vs Chain-Level Effects
 
@@ -107,6 +107,7 @@ Name what THIS step does, not the downstream cascade.
 **Step-level** (right): The orchestrator's own effect is handling/dispatching -> `handle_place_locale`. The adding happens downstream.
 
 How to check:
+
 1. List everything the affordance calls downstream
 2. Remove all of that — what's left?
 3. Name what's left
@@ -117,11 +118,11 @@ If what's left is just sequencing and branching, it's a handler. Name it as such
 
 Names should reflect what the affordance affords from the caller's perspective — the effect the caller achieves by using it.
 
-| Perspective | Question | Example |
-|-------------|----------|---------|
-| **Caller** | "What can I achieve by calling this?" | N3 calls N4 -> "handle place_locale tool call" |
-| **Step** | "What does this function do, not its callees?" | N4 itself -> "dispatch to validate, resolve, insert" |
-| **Effect** | "What changes in the system after this runs?" | N15 -> "locale is extracted from its position" |
+| Perspective | Question                                       | Example                                              |
+| ----------- | ---------------------------------------------- | ---------------------------------------------------- |
+| **Caller**  | "What can I achieve by calling this?"          | N3 calls N4 -> "handle place_locale tool call"       |
+| **Step**    | "What does this function do, not its callees?" | N4 itself -> "dispatch to validate, resolve, insert" |
+| **Effect**  | "What changes in the system after this runs?"  | N15 -> "locale is extracted from its position"       |
 
 #### External Tools vs Internal Handlers
 

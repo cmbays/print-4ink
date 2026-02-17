@@ -1,18 +1,13 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@shared/ui/primitives/sheet";
-import { Layers } from "lucide-react";
-import { SECONDARY_NAV } from "@shared/constants/navigation";
+import Link from 'next/link'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@shared/ui/primitives/sheet'
+import { Layers } from 'lucide-react'
+import { SECONDARY_NAV } from '@shared/constants/navigation'
 
-interface MobileDrawerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+type MobileDrawerProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) {
@@ -40,5 +35,5 @@ export function MobileDrawer({ open, onOpenChange }: MobileDrawerProps) {
         </nav>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

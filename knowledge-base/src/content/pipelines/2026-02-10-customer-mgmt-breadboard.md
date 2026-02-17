@@ -1,6 +1,6 @@
 ---
-title: "Customer Management Breadboard"
-subtitle: "Interactive visualization of Places, Components, Wiring, and Build Order for the Customer Management vertical"
+title: 'Customer Management Breadboard'
+subtitle: 'Interactive visualization of Places, Components, Wiring, and Build Order for the Customer Management vertical'
 date: 2026-02-10
 phase: 1
 pipelineName: customer-management
@@ -9,17 +9,17 @@ products: [customers, quotes, jobs]
 tools: []
 stage: breadboard
 tags: [plan, build]
-sessionId: "69497710-9bb5-46d9-8e49-949cda0e9d65"
-branch: "session/0209-customer-mgmt-discovery"
+sessionId: '69497710-9bb5-46d9-8e49-949cda0e9d65'
+branch: 'session/0209-customer-mgmt-discovery'
 status: complete
 ---
 
-| Stat | Value |
-|------|-------|
-| Places | 9 |
-| UI Affordances | 102 |
-| Code Affordances | 33 |
-| Components | 21 |
+| Stat             | Value |
+| ---------------- | ----- |
+| Places           | 9     |
+| UI Affordances   | 102   |
+| Code Affordances | 33    |
+| Components       | 21    |
 
 ## Place Map
 
@@ -98,15 +98,15 @@ P2 Customer Detail
 
 ## P2 Tab Structure
 
-| Tab | Notes | Affordances |
-|-----|-------|-------------|
-| Activity | Default tab | 3 |
-| Quotes | | 3 |
-| Jobs | | 2 |
-| Artwork | | 7 |
-| Contacts | | 7 |
-| Details | | 8 |
-| Notes | Default for Prospects | 8 |
+| Tab      | Notes                 | Affordances |
+| -------- | --------------------- | ----------- |
+| Activity | Default tab           | 3           |
+| Quotes   |                       | 3           |
+| Jobs     |                       | 2           |
+| Artwork  |                       | 7           |
+| Contacts |                       | 7           |
+| Details  |                       | 8           |
+| Notes    | Default for Prospects | 8           |
 
 ## Component Map
 

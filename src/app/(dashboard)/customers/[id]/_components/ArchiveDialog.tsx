@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -8,25 +8,21 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import type { Customer } from "@domain/entities/customer";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import type { Customer } from '@domain/entities/customer'
 
-interface ArchiveDialogProps {
-  customer: Customer;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+type ArchiveDialogProps = {
+  customer: Customer
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
-export function ArchiveDialog({
-  customer,
-  open,
-  onOpenChange,
-}: ArchiveDialogProps) {
+export function ArchiveDialog({ customer, open, onOpenChange }: ArchiveDialogProps) {
   function handleArchive() {
     // Phase 1: No actual archive
-    console.log("Customer archived", customer.id);
-    onOpenChange(false);
+    console.log('Customer archived', customer.id)
+    onOpenChange(false)
   }
 
   return (
@@ -38,17 +34,13 @@ export function ArchiveDialog({
             Archive Customer
           </DialogTitle>
           <DialogDescription>
-            Are you sure you want to archive{" "}
-            <span className="font-medium text-foreground">
-              {customer.company}
-            </span>
-            ?
+            Are you sure you want to archive{' '}
+            <span className="font-medium text-foreground">{customer.company}</span>?
           </DialogDescription>
         </DialogHeader>
 
         <p className="text-sm text-muted-foreground">
-          Archived customers won&apos;t appear in searches or lists. You can
-          restore them later.
+          Archived customers won&apos;t appear in searches or lists. You can restore them later.
         </p>
 
         <DialogFooter>
@@ -61,5 +53,5 @@ export function ArchiveDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

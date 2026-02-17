@@ -1,6 +1,6 @@
 ---
-title: "Customers — Decisions"
-subtitle: "Key decisions made during Customers development"
+title: 'Customers — Decisions'
+subtitle: 'Key decisions made during Customers development'
 product: customers
 docType: decisions
 lastUpdated: 2026-02-15
@@ -9,4 +9,4 @@ status: draft
 
 ## Decision Log
 
-*Key decisions will be aggregated here from pipeline sessions.*
+_Key decisions will be aggregated here from pipeline sessions._

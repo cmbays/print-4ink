@@ -1,7 +1,7 @@
 name: Bug Report
 description: Report a bug or unexpected behavior
-title: "[Bug] "
-labels: ["type/bug"]
+title: '[Bug] '
+labels: ['type/bug']
 body:
   - type: textarea
     id: what-happened
@@ -67,7 +67,7 @@ body:
     attributes:
       label: URL / Route
       description: Which page or route does this occur on?
-      placeholder: "e.g., /quotes/new, /dashboard"
+      placeholder: 'e.g., /quotes/new, /dashboard'
     validations:
       required: false
 

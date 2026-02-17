@@ -4,4 +4,4 @@ export {
   getColors,
   getColorById,
   getColorsMutable,
-} from '@infra/repositories/_providers/mock/colors';
+} from '@infra/repositories/_providers/mock/colors'

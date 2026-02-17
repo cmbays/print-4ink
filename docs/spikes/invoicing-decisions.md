@@ -9,27 +9,27 @@
 
 ## Summary of All Decisions
 
-| # | Decision | Answer | Rationale |
-|---|----------|--------|-----------|
-| 1 | Current invoicing state | QuickBooks (manual entry) | Eliminating double-entry is the core value prop |
-| 2 | Line item display | Configurable per invoice | Toggle between itemized and bundled views |
-| 3 | Deposit policy | Varies by customer | Smart defaults from tier + history |
-| 4 | Accounting software | QuickBooks (Online or Desktop TBD) | Need to confirm with Chris |
-| 5 | Quote-to-invoice conversion | Manual one-click | Allows production changes before invoicing |
-| 6 | Payment processor | Square (4Ink's existing processor) | Don't fix what isn't broken |
-| 7 | Customer-facing view | Separate vertical (customer portal) | All external views handled in portal vertical |
-| 8 | Progress billing | Deposit + final only | Single invoice, deposits as partial payments |
-| 9 | Deposit UX | Smart default with manual override | % or flat amount, driven by customer context |
-| 10 | Invoice numbering | Match QuickBooks scheme | Ensures clean sync when integrated |
-| 11 | Read receipts | Phase 2 (with customer portal) | Build status infrastructure now |
-| 12 | Change tracking | Lightweight diff log | Track quote-to-invoice divergence internally |
-| 13 | Payment reminders | Gentle cadence | 3 days before, on due, 3/7 days overdue |
-| 14 | Late fees | Yes, configurable per customer | Auto-calculate, separate line item |
-| 15 | Credit memos | Formal CM documents | Linked to original invoice, needed for QB sync |
-| 16 | Phase 1 scope | Full internal flow | Schema + list + detail + create + payments + customer tab |
-| 17 | Customer-furnished garments | Supported | Print/setup only, no garment charge |
-| 18 | Multi-state tax | Mostly IN, some KY | Tax rate per invoice (not hardcoded) |
-| 19 | AR aging | Stats bar on list page | Detailed report deferred to reporting vertical |
+| #   | Decision                    | Answer                              | Rationale                                                 |
+| --- | --------------------------- | ----------------------------------- | --------------------------------------------------------- |
+| 1   | Current invoicing state     | QuickBooks (manual entry)           | Eliminating double-entry is the core value prop           |
+| 2   | Line item display           | Configurable per invoice            | Toggle between itemized and bundled views                 |
+| 3   | Deposit policy              | Varies by customer                  | Smart defaults from tier + history                        |
+| 4   | Accounting software         | QuickBooks (Online or Desktop TBD)  | Need to confirm with Chris                                |
+| 5   | Quote-to-invoice conversion | Manual one-click                    | Allows production changes before invoicing                |
+| 6   | Payment processor           | Square (4Ink's existing processor)  | Don't fix what isn't broken                               |
+| 7   | Customer-facing view        | Separate vertical (customer portal) | All external views handled in portal vertical             |
+| 8   | Progress billing            | Deposit + final only                | Single invoice, deposits as partial payments              |
+| 9   | Deposit UX                  | Smart default with manual override  | % or flat amount, driven by customer context              |
+| 10  | Invoice numbering           | Match QuickBooks scheme             | Ensures clean sync when integrated                        |
+| 11  | Read receipts               | Phase 2 (with customer portal)      | Build status infrastructure now                           |
+| 12  | Change tracking             | Lightweight diff log                | Track quote-to-invoice divergence internally              |
+| 13  | Payment reminders           | Gentle cadence                      | 3 days before, on due, 3/7 days overdue                   |
+| 14  | Late fees                   | Yes, configurable per customer      | Auto-calculate, separate line item                        |
+| 15  | Credit memos                | Formal CM documents                 | Linked to original invoice, needed for QB sync            |
+| 16  | Phase 1 scope               | Full internal flow                  | Schema + list + detail + create + payments + customer tab |
+| 17  | Customer-furnished garments | Supported                           | Print/setup only, no garment charge                       |
+| 18  | Multi-state tax             | Mostly IN, some KY                  | Tax rate per invoice (not hardcoded)                      |
+| 19  | AR aging                    | Stats bar on list page              | Detailed report deferred to reporting vertical            |
 
 ---
 
@@ -42,6 +42,7 @@
 **Decision**: Single invoice for the full amount. Deposits recorded as partial payments. The invoice shows balance due that updates automatically.
 
 **Example Timeline:**
+
 ```
 Step                    Status          Balance Due
 ─────────────────────────────────────────────────────
@@ -59,11 +60,13 @@ Final payment ($500)    Paid            $0
 **Context**: User wants an automated, intelligent deposit recommendation rather than a fixed percentage.
 
 **Decision**: Default deposit amount driven by:
+
 - **Customer tier** (standard/preferred/contract/wholesale) sets baseline %
 - **Payment history** (revenue, on-time record) can adjust recommendation
 - **Contract terms** — contract customers may have fixed negotiated amounts
 
 **Schema additions needed on customer:**
+
 - `defaultDepositPercent` — baseline from tier
 - `contractDepositAmount` — override for contract customers
 

@@ -1,6 +1,6 @@
 ---
-title: "APP_FLOW_STANDARD"
-description: "Template and process for writing APP_FLOW documentation. Defines required sections, user journey format, and state definitions."
+title: 'APP_FLOW_STANDARD'
+description: 'Template and process for writing APP_FLOW documentation. Defines required sections, user journey format, and state definitions.'
 category: reference
 status: active
 phase: all
@@ -16,6 +16,7 @@ depends_on: []
 ## Overview
 
 APP_FLOW.md documents **every screen, route, and user journey** for an application or tool. It serves as the authoritative reference for:
+
 - How users navigate through the interface
 - What triggers each flow
 - Decision points and branching logic
@@ -29,12 +30,14 @@ This standard defines HOW to create APP_FLOW documentation for any playground or
 ## Why APP_FLOW Matters
 
 Without APP_FLOW documentation:
+
 - Agents guess how users move through the interface
 - Navigation inconsistencies emerge
 - Error states are forgotten
 - User journeys aren't tested end-to-end
 
 With APP_FLOW documentation:
+
 - Every path is explicit and testable
 - Agents build exactly what's specified
 - Design reviews can verify flows are implemented
@@ -64,11 +67,11 @@ List every screen/view with its route:
 ```markdown
 ## Screen Inventory
 
-| Screen | Route/State | Description |
-|--------|-------------|-------------|
-| Home | `/` or default view | Landing state when tool opens |
-| [Screen Name] | [route or state] | [Brief description] |
-| [Screen Name] | [route or state] | [Brief description] |
+| Screen        | Route/State         | Description                   |
+| ------------- | ------------------- | ----------------------------- |
+| Home          | `/` or default view | Landing state when tool opens |
+| [Screen Name] | [route or state]    | [Brief description]           |
+| [Screen Name] | [route or state]    | [Brief description]           |
 ```
 
 ### 3. User Journeys
@@ -102,13 +105,15 @@ Document each distinct user journey. A journey is a sequence of steps to accompl
    - ...
 
 #### Success State
+
 - [What the user sees when journey completes successfully]
 - [Any confirmation or feedback]
 
 #### Error States
-| Error Condition | User Sees | Recovery Action |
-|-----------------|-----------|-----------------|
-| [Condition] | [Error message/state] | [How to recover] |
+
+| Error Condition | User Sees             | Recovery Action  |
+| --------------- | --------------------- | ---------------- |
+| [Condition]     | [Error message/state] | [How to recover] |
 ```
 
 ### 4. Navigation Map
@@ -129,14 +134,14 @@ Or use Mermaid for visual representation:
 ```markdown
 ## Navigation Map
 
-​```mermaid
+​`mermaid
 flowchart TD
     A[Home] -->|Click Start| B[Setup]
     B -->|Configure| C[Main View]
     C -->|Complete| D[Results]
     D -->|Reset| A
     C -->|Cancel| A
-​```
+​`
 ```
 
 ### 5. State Definitions
@@ -147,16 +152,19 @@ Document important UI states:
 ## State Definitions
 
 ### Empty State
+
 - **When**: [Condition that triggers empty state]
 - **Shows**: [What the user sees]
 - **Action**: [What the user can do]
 
 ### Loading State
+
 - **When**: [Condition that triggers loading]
 - **Shows**: [Loading indicator description]
 - **Duration**: [Expected duration or timeout]
 
 ### Error State
+
 - **When**: [Condition that triggers error]
 - **Shows**: [Error message/UI]
 - **Recovery**: [How user recovers]
@@ -167,11 +175,11 @@ Document important UI states:
 ```markdown
 ## Keyboard Shortcuts
 
-| Key | Action | Context |
-|-----|--------|---------|
-| `Esc` | Close modal | When modal is open |
-| `Enter` | Submit | When form is focused |
-| `?` | Show help | Global |
+| Key     | Action      | Context              |
+| ------- | ----------- | -------------------- |
+| `Esc`   | Close modal | When modal is open   |
+| `Enter` | Submit      | When form is focused |
+| `?`     | Show help   | Global               |
 ```
 
 ---
@@ -181,6 +189,7 @@ Document important UI states:
 ### Step 1: Identify the Tool's Purpose
 
 Answer these questions:
+
 1. What is the primary task users accomplish?
 2. Who are the users?
 3. How do they discover this tool?
@@ -188,6 +197,7 @@ Answer these questions:
 ### Step 2: Inventory All Screens
 
 Walk through the tool and list every distinct view/state:
+
 - What screens exist?
 - What routes or state changes trigger them?
 - What's the hierarchy (main views vs sub-views)?
@@ -195,6 +205,7 @@ Walk through the tool and list every distinct view/state:
 ### Step 3: Map User Journeys
 
 For each major task, trace the path:
+
 1. Where does the user start?
 2. What actions do they take?
 3. What decisions do they face?
@@ -203,6 +214,7 @@ For each major task, trace the path:
 ### Step 4: Document States
 
 For each screen, identify:
+
 - Default state (with data)
 - Empty state (no data)
 - Loading state (waiting)
@@ -212,6 +224,7 @@ For each screen, identify:
 ### Step 5: Validate with Walkthrough
 
 Walk through each journey as a user would:
+
 - Is every step documented?
 - Are all decision points captured?
 - Are error recoveries clear?
@@ -232,11 +245,11 @@ Walk through each journey as a user would:
 
 ## Screen Inventory
 
-| Screen | Route/State | Description |
-|--------|-------------|-------------|
-| Settings List | default | List of setting categories |
-| Category Detail | selected category | Settings for one category |
-| Confirmation | after save | Success feedback |
+| Screen          | Route/State       | Description                |
+| --------------- | ----------------- | -------------------------- |
+| Settings List   | default           | List of setting categories |
+| Category Detail | selected category | Settings for one category  |
+| Confirmation    | after save        | Success feedback           |
 
 ## User Journeys
 
@@ -271,19 +284,21 @@ Walk through each journey as a user would:
      - If save fails: Show error message, keep panel open
 
 #### Success State
+
 - Toast notification: "Settings saved"
 - Panel closes
 - Changes take effect immediately
 
 #### Error States
-| Error Condition | User Sees | Recovery Action |
-|-----------------|-----------|-----------------|
-| Network error | "Could not save. Check connection." | Retry button |
-| Invalid value | Field highlighted red with message | Correct value |
+
+| Error Condition | User Sees                           | Recovery Action |
+| --------------- | ----------------------------------- | --------------- |
+| Network error   | "Could not save. Check connection." | Retry button    |
+| Invalid value   | Field highlighted red with message  | Correct value   |
 
 ## Navigation Map
 
-​```mermaid
+​`mermaid
 flowchart TD
     A[Closed] -->|Click gear| B[Settings List]
     B -->|Click category| C[Category Detail]
@@ -293,21 +308,24 @@ flowchart TD
     F -->|Retry| C
     C -->|Cancel| B
     B -->|Close| A
-​```
+​`
 
 ## State Definitions
 
 ### Empty State
+
 - **When**: Category has no settings
 - **Shows**: "No settings available for this category"
 - **Action**: User can select different category
 
 ### Loading State
+
 - **When**: Saving changes
 - **Shows**: Spinner on Save button, button disabled
 - **Duration**: Typically < 1s
 
 ### Error State
+
 - **When**: Save fails
 - **Shows**: Red banner with error message
 - **Recovery**: Retry button or fix invalid values
@@ -342,6 +360,6 @@ Before considering an APP_FLOW document complete:
 
 ## Version History
 
-| Date | Change |
-|------|--------|
+| Date       | Change                   |
+| ---------- | ------------------------ |
 | 2026-02-04 | Initial standard created |

@@ -50,28 +50,28 @@ The `work` CLI system has the right pieces (worktrees, sessions, Claude sessions
 
 Products match what the app shows to users. Config: `config/products.json`
 
-| Product | Route | Slug |
-|---|---|---|
-| Dashboard | `/dashboard` | `dashboard` |
-| Quotes | `/quotes` | `quotes` |
-| Customers | `/customers` | `customers` |
-| Invoices | `/invoices` | `invoices` |
-| Jobs | `/jobs` | `jobs` |
-| Garments | `/garments` | `garments` |
-| Screens | `/screens` | `screens` |
-| Pricing | `/settings/pricing` | `pricing` |
+| Product   | Route               | Slug        |
+| --------- | ------------------- | ----------- |
+| Dashboard | `/dashboard`        | `dashboard` |
+| Quotes    | `/quotes`           | `quotes`    |
+| Customers | `/customers`        | `customers` |
+| Invoices  | `/invoices`         | `invoices`  |
+| Jobs      | `/jobs`             | `jobs`      |
+| Garments  | `/garments`         | `garments`  |
+| Screens   | `/screens`          | `screens`   |
+| Pricing   | `/settings/pricing` | `pricing`   |
 
 ### Tools (Dev Infrastructure)
 
 Dev-facing systems and tooling. Config: `config/tools.json`
 
-| Tool | Slug |
-|---|---|
+| Tool              | Slug                |
+| ----------------- | ------------------- |
 | Work Orchestrator | `work-orchestrator` |
-| Skills Framework | `skills-framework` |
-| Agent System | `agent-system` |
-| Knowledge Base | `knowledge-base` |
-| CI Pipeline | `ci-pipeline` |
+| Skills Framework  | `skills-framework`  |
+| Agent System      | `agent-system`      |
+| Knowledge Base    | `knowledge-base`    |
+| CI Pipeline       | `ci-pipeline`       |
 
 ### Pipelines (Work Instances)
 
@@ -81,12 +81,12 @@ Pipelines are operational instances that build/improve products and tools. They 
 
 ## Pipeline Model
 
-| Concept | What It Is | Example | Source |
-|---|---|---|---|
-| **Pipeline** | An instance of development work | — | Pipeline registry |
-| **Pipeline Type** | Workflow template defining stages | `vertical`, `polish`, `horizontal`, `bug-fix` | `config/pipeline-types.json` (enum) |
-| **Pipeline ID** | Unique identifier (`YYYYMMDD-topic`) | `20260215-colors` | Generated at `work define` |
-| **Pipeline Name** | Human-friendly label (= topic) | `colors`, `quotes-backend` | Free text at `work define` |
+| Concept           | What It Is                           | Example                                       | Source                              |
+| ----------------- | ------------------------------------ | --------------------------------------------- | ----------------------------------- |
+| **Pipeline**      | An instance of development work      | —                                             | Pipeline registry                   |
+| **Pipeline Type** | Workflow template defining stages    | `vertical`, `polish`, `horizontal`, `bug-fix` | `config/pipeline-types.json` (enum) |
+| **Pipeline ID**   | Unique identifier (`YYYYMMDD-topic`) | `20260215-colors`                             | Generated at `work define`          |
+| **Pipeline Name** | Human-friendly label (= topic)       | `colors`, `quotes-backend`                    | Free text at `work define`          |
 
 ### Pipeline ID Generation
 
@@ -110,14 +110,14 @@ Frontmatter: pipelineId: "20260215-colors"
 ready → active → building → reviewing → wrapped → cooled
 ```
 
-| State | Meaning | Transition |
-|---|---|---|
-| `ready` | Defined and configured, waiting to start | `work define` creates |
-| `active` | Pre-build stages running (research → plan) | `work start` transitions |
-| `building` | Build waves running | Auto after plan approval |
-| `reviewing` | Final review, waiting for human merge | Auto after build complete |
-| `wrapped` | Wrap-up done, waiting for cooldown batch | `work end` transitions |
-| `cooled` | Cooldown processed, pipeline complete | `work cooldown` transitions |
+| State       | Meaning                                    | Transition                  |
+| ----------- | ------------------------------------------ | --------------------------- |
+| `ready`     | Defined and configured, waiting to start   | `work define` creates       |
+| `active`    | Pre-build stages running (research → plan) | `work start` transitions    |
+| `building`  | Build waves running                        | Auto after plan approval    |
+| `reviewing` | Final review, waiting for human merge      | Auto after build complete   |
+| `wrapped`   | Wrap-up done, waiting for cooldown batch   | `work end` transitions      |
+| `cooled`    | Cooldown processed, pipeline complete      | `work cooldown` transitions |
 
 ---
 
@@ -162,16 +162,16 @@ Pipeline types are extensible — new types added to config as needs arise.
 
 Config: `config/stages.json`
 
-| # | Stage | Skill(s) | Agent(s) | Notes |
-|---|---|---|---|---|
-| 1 | `research` | *(future, #201)* | `feature-strategist` + sub-agents | Internal + external research |
-| 2 | `interview` | `pre-build-interrogator` | `requirements-interrogator` | Human required |
-| 3 | `shape` | `shaping` | *(main session)* | Stage ≠ skill name |
-| 4 | `breadboard` | `breadboarding` + `breadboard-reflection` | *(main session)* | Reflection is sub-step, produces `reflection.md` |
-| 5 | `plan` | `implementation-planning` | *(main session)* | Produces manifest |
-| 6 | `build` | `screen-builder`, `quality-gate` | `frontend-builder` | Base branch + stacked PRs |
-| 7 | `review` | `design-audit` | `design-auditor`, `build-reviewer` | Human merges PR |
-| 8 | `wrap-up` | `doc-sync` *(partial)* | *(main session)* | Learnings + doc sync + summary |
+| #   | Stage        | Skill(s)                                  | Agent(s)                           | Notes                                            |
+| --- | ------------ | ----------------------------------------- | ---------------------------------- | ------------------------------------------------ |
+| 1   | `research`   | _(future, #201)_                          | `feature-strategist` + sub-agents  | Internal + external research                     |
+| 2   | `interview`  | `pre-build-interrogator`                  | `requirements-interrogator`        | Human required                                   |
+| 3   | `shape`      | `shaping`                                 | _(main session)_                   | Stage ≠ skill name                               |
+| 4   | `breadboard` | `breadboarding` + `breadboard-reflection` | _(main session)_                   | Reflection is sub-step, produces `reflection.md` |
+| 5   | `plan`       | `implementation-planning`                 | _(main session)_                   | Produces manifest                                |
+| 6   | `build`      | `screen-builder`, `quality-gate`          | `frontend-builder`                 | Base branch + stacked PRs                        |
+| 7   | `review`     | `design-audit`                            | `design-auditor`, `build-reviewer` | Human merges PR                                  |
+| 8   | `wrap-up`    | `doc-sync` _(partial)_                    | _(main session)_                   | Learnings + doc sync + summary                   |
 
 **Non-pipeline operations**: `cooldown` (batched across completed pipelines, not per-pipeline)
 
@@ -236,12 +236,14 @@ Three phases, three commands, no naming overlap with stages.
 
 **Command**: `work start <id>`
 **Session architecture**:
+
 - One worktree for the entire pre-build phase
 - One branch, one PR (or stacked commits)
 - Each stage = a commit on the same branch
 - One Claude session (resumable — good context to preserve)
 
 **Human involvement**:
+
 - Research: automated (team of sub-agents for internal + external research)
 - Interview: HUMAN REQUIRED (the only mandatory human stage)
 - Shape: automated (shaping skill)
@@ -254,11 +256,13 @@ Three phases, three commands, no naming overlap with stages.
 
 **Command**: `work build <id>`
 **Session architecture**:
+
 - Base branch: `build/<pipeline-id>`
 - Each wave spawns N session branches stacked on base
 - Each session: code → test → self-review → PR (draft) → thorough self-review → mark ready → CodeRabbit → address issues → merge to base
 
 **CodeRabbit merge rules**:
+
 1. Keep PR in draft mode during self-review
 2. Mark ready for review when self-review complete
 3. CodeRabbit reviews
@@ -267,6 +271,7 @@ Three phases, three commands, no naming overlap with stages.
 6. Once no critical/major remaining: address all remaining issues, merge (don't wait for another review cycle)
 
 **Wave progression**:
+
 - Wave 0 must merge to base before Wave 1 starts
 - Within a wave: sessions are parallel
 - Auto-wave advancement when all sessions in wave N merge
@@ -274,6 +279,7 @@ Three phases, three commands, no naming overlap with stages.
 **Human involvement**: NONE during build phase
 
 **Stacked PR flow**:
+
 ```
 main
   └── build/20260215-colors              ← base branch
@@ -290,6 +296,7 @@ main
 **Command**: `work end <id>`
 
 **Review stage**:
+
 - All breadboard affordances implemented?
 - Canonical docs compliance (design system, coding standards)
 - Integration: do the pieces work together?
@@ -298,6 +305,7 @@ main
 - Human involvement: MERGE THE PR (this is the approval signal)
 
 **Claude merge detection**:
+
 ```bash
 while true; do
   state=$(gh pr view "$PR_NUMBER" --json state -q '.state')
@@ -308,6 +316,7 @@ done
 ```
 
 **Wrap-up stage**:
+
 - Creates wrap-up doc in pipeline artifact directory
 - Contents: what was built, plan deviations, patterns discovered, review issues, learnings, PR/KB doc links, recommended agent memory updates
 - Does NOT update PROGRESS.md (deferred to cooldown)
@@ -316,6 +325,7 @@ done
 ### Cooldown (batched, periodic)
 
 **Command**: `work cooldown`
+
 - Runs after N pipelines reach `wrapped` state
 - Reads all wrap-up docs since last cooldown
 - Synthesizes cross-cutting themes
@@ -329,16 +339,16 @@ done
 
 ## Work Command Set
 
-| Command | Phase | What It Does | Who Triggers |
-|---|---|---|---|
-| `work define <name>` | — | Create pipeline entity, link to issue, configure type/flags | Human |
-| `work start <id>` | Pre-build | Create worktree, launch Claude, run research → plan | Human (future: agent) |
-| `work build <id>` | Build | Read manifest, run build waves | Automated (after plan) |
-| `work end <id>` | Post-build | Run review + wrap-up, mark as wrapped | Automated (after merge) |
-| `work status [<id>]` | — | Dashboard (no id) or deep dive (with id) | Human or agent |
-| `work list` | — | Infrastructure view: worktrees, sessions, ports per pipeline | Human |
-| `work clean <id>` | — | Remove worktrees, branches for completed pipeline | Human |
-| `work cooldown` | — | Batch process wrapped pipelines, update PROGRESS.md | Human |
+| Command              | Phase      | What It Does                                                 | Who Triggers            |
+| -------------------- | ---------- | ------------------------------------------------------------ | ----------------------- |
+| `work define <name>` | —          | Create pipeline entity, link to issue, configure type/flags  | Human                   |
+| `work start <id>`    | Pre-build  | Create worktree, launch Claude, run research → plan          | Human (future: agent)   |
+| `work build <id>`    | Build      | Read manifest, run build waves                               | Automated (after plan)  |
+| `work end <id>`      | Post-build | Run review + wrap-up, mark as wrapped                        | Automated (after merge) |
+| `work status [<id>]` | —          | Dashboard (no id) or deep dive (with id)                     | Human or agent          |
+| `work list`          | —          | Infrastructure view: worktrees, sessions, ports per pipeline | Human                   |
+| `work clean <id>`    | —          | Remove worktrees, branches for completed pipeline            | Human                   |
+| `work cooldown`      | —          | Batch process wrapped pipelines, update PROGRESS.md          | Human                   |
 
 ### `work define` — Pipeline Creation
 
@@ -358,6 +368,7 @@ Creates pipeline in `ready` state. Does NOT start execution.
 ### `work start` — Pipeline Execution
 
 Picks up a `ready` pipeline:
+
 1. Creates worktree + branch from main
 2. Launches Claude session
 3. Claude reads: linked issue, product/tool entity docs, prior pipeline wrap-ups, ROADMAP.md
@@ -429,6 +440,7 @@ Pipeline state file tracks completion:
 ```
 
 When an agent finishes a stage:
+
 1. Writes required artifacts
 2. Updates pipeline state with completion metadata
 3. Updates products/tools in pipeline config if scope changed
@@ -500,6 +512,7 @@ docs/
 Not a pipeline stage — its own pipeline type. Triggered by feedback after initial build.
 
 **Purpose**: Bridges the 20% gap between vision and what was built. NOT just bug fixes — includes:
+
 - Pivots from experience/learnings
 - Communication gaps (vision wasn't fully conveyed)
 - UX improvements that emerge from seeing the built product
@@ -513,6 +526,7 @@ Not a pipeline stage — its own pipeline type. Triggered by feedback after init
 ## Config Architecture
 
 ### Tier 1: Project Identity
+
 ```
 config/products.json          # App products (enum: Dashboard, Quotes, Customers, ...)
 config/tools.json             # Dev tools (enum: Work Orchestrator, Skills Framework, ...)
@@ -522,17 +536,20 @@ config/tags.json              # KB tags (enum: feature, build, plan, decision, .
 ```
 
 ### Tier 2: Pipeline Definition
+
 ```
 config/pipeline-gates.json    # Stage prerequisites, required artifacts, gate rules
 ```
 
 ### Tier 3: Pipeline State
+
 ```
 Pipeline registry (JSON or DB) — instances of pipelines with state
 Session registry — child sessions within pipelines
 ```
 
 ### Tier 4: App-Domain Constants
+
 ```
 config/navigation.json        # Nav items shared between sidebar, bottom tab, mobile drawer
 config/service-types.json     # screen-print, dtf, embroidery
@@ -548,22 +565,24 @@ config/service-types.json     # screen-print, dtf, embroidery
 ### Pipeline Docs
 
 **Current:**
+
 ```yaml
-pipeline: quoting          # enum → verticals.json
-pipelineType: vertical     # enum → workflows.json
+pipeline: quoting # enum → verticals.json
+pipelineType: vertical # enum → workflows.json
 products: [quotes]
 tools: []
 stage: shaping
 ```
 
 **New:**
+
 ```yaml
-pipelineName: quoting      # free text label (human-readable)
-pipelineId: "20260208-quoting"  # unique ID (optional for legacy docs)
-pipelineType: vertical     # enum → config/pipeline-types.json
-products: [quotes]         # enum → config/products.json
-tools: []                  # enum → config/tools.json
-stage: shape               # enum → config/stages.json (short names)
+pipelineName: quoting # free text label (human-readable)
+pipelineId: '20260208-quoting' # unique ID (optional for legacy docs)
+pipelineType: vertical # enum → config/pipeline-types.json
+products: [quotes] # enum → config/products.json
+tools: [] # enum → config/tools.json
+stage: shape # enum → config/stages.json (short names)
 ```
 
 **Migration**: ~60+ pipeline docs need `pipeline` → `pipelineName` rename and stage slug updates. Mechanical, scriptable.
@@ -590,24 +609,31 @@ stage: shape               # enum → config/stages.json (short names)
 ## Implementation Streams
 
 ### Stream A: Config Foundation (#190) — MERGED
+
 Config centralization done. Canonical slug migration, products.json, tools.json created.
 
 ### Stream B: KB Taxonomy Restructure (#206) — MERGED
+
 Products, tools, strategy collections. Pipeline docs renamed from sessions. Route restructure.
 
 ### Stream C: Shaping Skills Suite (#199) — MERGED
+
 Shaping skill (R × S), breadboarding upgrade (vertical slicing), breadboard reflection, ripple hook.
 
 ### Stream D: Pipeline Architecture (#192) — NEXT
+
 Pipeline entity design, config updates (stage slugs, pipeline-types.json, eliminate verticals.json), `work` command updates (define/start/build/end), stage gates, merge detection, wrap-up automation.
 
 ### Stream E: Research Skills (#201) — AFTER D
+
 Research agent/skills for the pipeline research stage. Multiple research modalities with sub-agents.
 
 ### Stream F: Pipeline Extensibility (#214) — BACKLOG
+
 Cron-triggered agents, headless sessions, interview queuing, auto flag propagation.
 
 ### Sequencing
+
 ```
 DONE:    Stream A (config) + Stream B (KB) + Stream C (shaping)
 NEXT:    Stream D (pipeline architecture)

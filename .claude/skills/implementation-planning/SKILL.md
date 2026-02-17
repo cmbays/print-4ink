@@ -24,6 +24,7 @@ The manifest is the contract between planning and execution. `work build` parses
 ### Step 1: Gather Context
 
 Read these docs in order:
+
 1. `CLAUDE.md` — project standards, tech stack, quality checklist
 2. `docs/PRD.md` — feature scope and acceptance criteria
 3. `docs/breadboards/<vertical>-breadboard.md` — affordance maps, component boundaries, build order
@@ -41,6 +42,7 @@ Group work into waves following these principles:
 - **Parallel sessions per wave**: No hard limit on worktrees — size waves based on logical dependencies, not worktree count.
 
 Dependency rules:
+
 - Schemas before UI components
 - Shared components before vertical-specific ones
 - Data layer before presentation layer
@@ -49,6 +51,7 @@ Dependency rules:
 ### Step 3: Write Session Prompts
 
 Each session in the manifest gets a prompt that tells Claude:
+
 1. What to build (specific components, pages, features)
 2. What docs to read first
 3. What skills/agents to use
@@ -73,14 +76,20 @@ Use this structure for the implementation plan:
 ---
 
 ## Wave 0: Foundation
+
 ### Task 0.1: <name>
+
 **Files:** ...
 **Steps:** ...
 
 ## Wave 1: <name>
+
 ### Task 1.1: <name> (Session A)
+
 ...
+
 ### Task 1.2: <name> (Session B — parallel with 1.1)
+
 ...
 ```
 
@@ -91,7 +100,7 @@ Use this YAML schema:
 ```yaml
 vertical: <slug>
 waves:
-  - name: "Wave Name"
+  - name: 'Wave Name'
     serial: true|false
     sessions:
       - topic: <kebab-case-topic>
@@ -103,6 +112,7 @@ waves:
 ```
 
 Field reference:
+
 - `vertical`: Must match a valid vertical slug from content.config.ts
 - `waves[].name`: Human-readable wave name
 - `waves[].serial`: If true, sessions run one at a time (default: false)
@@ -114,6 +124,7 @@ Field reference:
 ### Step 6: Validate
 
 Before committing:
+
 1. Verify all topics are unique across all waves
 2. Verify all `dependsOn` references point to real topics
 3. Verify wave 0 is serial if it's foundation work

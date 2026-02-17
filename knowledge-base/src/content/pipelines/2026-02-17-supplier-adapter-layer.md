@@ -1,16 +1,16 @@
 ---
-title: "Supplier Adapter Layer — Issue #159"
-subtitle: "CanonicalStyle schema, MockAdapter, InMemoryCacheStore, registry factory"
+title: 'Supplier Adapter Layer — Issue #159'
+subtitle: 'CanonicalStyle schema, MockAdapter, InMemoryCacheStore, registry factory'
 date: 2026-02-17
 phase: 1
-pipelineName: "Supplier Adapter Layer"
+pipelineName: 'Supplier Adapter Layer'
 pipelineType: horizontal
 products: []
 tools: []
 stage: build
 tags: [feature, build, decision]
-sessionId: "0a1b62cb-84e6-46ff-b178-9021bb5a09ae"
-branch: "session/0217-supplier-adapter"
+sessionId: '0a1b62cb-84e6-46ff-b178-9021bb5a09ae'
+branch: 'session/0217-supplier-adapter'
 status: complete
 ---
 
@@ -22,13 +22,13 @@ Built `lib/suppliers/` — a new layer for external garment catalog data, sittin
 
 ## What was built
 
-| File | Purpose |
-|------|---------|
-| `lib/suppliers/types.ts` | `CanonicalStyle` schema, `SupplierAdapter` type, `CacheStore` type, all sub-schemas |
-| `lib/suppliers/cache/in-memory.ts` | `InMemoryCacheStore` with lazy TTL expiry |
-| `lib/suppliers/adapters/mock.ts` | `MockAdapter` wrapping `garmentCatalog` through the adapter interface |
-| `lib/suppliers/registry.ts` | `getSupplierAdapter()` singleton factory, fail-closed |
-| `lib/suppliers/__tests__/` | 57 new tests (10 cache, 26 adapter, 6 registry, 15 schema) |
+| File                               | Purpose                                                                             |
+| ---------------------------------- | ----------------------------------------------------------------------------------- |
+| `lib/suppliers/types.ts`           | `CanonicalStyle` schema, `SupplierAdapter` type, `CacheStore` type, all sub-schemas |
+| `lib/suppliers/cache/in-memory.ts` | `InMemoryCacheStore` with lazy TTL expiry                                           |
+| `lib/suppliers/adapters/mock.ts`   | `MockAdapter` wrapping `garmentCatalog` through the adapter interface               |
+| `lib/suppliers/registry.ts`        | `getSupplierAdapter()` singleton factory, fail-closed                               |
+| `lib/suppliers/__tests__/`         | 57 new tests (10 cache, 26 adapter, 6 registry, 15 schema)                          |
 
 **Total tests**: 1084 (was 1027 before this session)
 
@@ -54,9 +54,9 @@ Built `lib/suppliers/` — a new layer for external garment catalog data, sittin
 
 ## Env vars
 
-| Variable | Phase 1 | Phase 2 |
-|----------|---------|---------|
-| `SUPPLIER_ADAPTER` | `mock` | `ss-activewear` |
+| Variable           | Phase 1 | Phase 2         |
+| ------------------ | ------- | --------------- |
+| `SUPPLIER_ADAPTER` | `mock`  | `ss-activewear` |
 
 ## Lessons learned
 

@@ -1,6 +1,6 @@
 ---
-title: "Mobile Optimization Sprint 3+4 — Shared Components, Form Layouts, Detail Views"
-subtitle: "Built reusable mobile components and adapted all detail views for mobile with parallel agent execution"
+title: 'Mobile Optimization Sprint 3+4 — Shared Components, Form Layouts, Detail Views'
+subtitle: 'Built reusable mobile components and adapted all detail views for mobile with parallel agent execution'
 date: 2026-02-14
 phase: 1
 pipelineName: mobile-optimization
@@ -10,8 +10,8 @@ domains: [garments, pricing]
 tools: []
 stage: build
 tags: [feature, build]
-sessionId: "72f6597a-7b9e-4ce1-8393-ee8ff78c2b34"
-branch: "session/0214-mobile-sprint-3-4"
+sessionId: '72f6597a-7b9e-4ce1-8393-ee8ff78c2b34'
+branch: 'session/0214-mobile-sprint-3-4'
 status: complete
 ---
 
@@ -59,27 +59,31 @@ Three specialized review agents (code quality, silent failure, design system) fo
 
 ### Filed Issues (6 remaining items)
 
-| Issue | Description |
-|-------|-------------|
-| #151 | Unit tests for mobile shared components |
-| #152 | Integrate MobileFilterSheet into list views |
-| #153 | Extract hardcoded toast messages to constants |
-| #154 | Fix pre-existing lint errors (garments/page.tsx, PowerModeGrid) |
-| #155 | Customer detail tab grouping for 9-tab bar |
-| #156 | Mobile scroll-to-error on form validation |
+| Issue | Description                                                     |
+| ----- | --------------------------------------------------------------- |
+| #151  | Unit tests for mobile shared components                         |
+| #152  | Integrate MobileFilterSheet into list views                     |
+| #153  | Extract hardcoded toast messages to constants                   |
+| #154  | Fix pre-existing lint errors (garments/page.tsx, PowerModeGrid) |
+| #155  | Customer detail tab grouping for 9-tab bar                      |
+| #156  | Mobile scroll-to-error on form validation                       |
 
 ## Architecture Decisions
 
 ### CSS-first responsive vs JS-based
+
 Maintained the CSS-first pattern (`md:hidden` / `hidden md:block`) for all show/hide responsive behavior. FullScreenModal is the sole exception — it needs `useIsMobile()` because it conditionally renders entirely different component trees (Dialog vs Sheet), which can't be achieved with CSS display toggling.
 
 ### BottomActionBar z-index positioning
+
 Placed at z-40 (between content z-10 and navigation z-50). The `bottom` offset calculation uses `calc(var(--mobile-nav-height) + env(safe-area-inset-bottom))` to sit precisely above the BottomTabBar on notched devices.
 
 ### Status/lane-aware action bars
+
 Rather than generic "show all actions" bars, each entity's BottomActionBar renders contextually appropriate actions. This follows the "progressive disclosure" UX principle — don't show actions that aren't applicable to the current state.
 
 ### hasActions guard pattern
+
 Invoice detail computes individual action booleans (`canEdit`, `canSend`, etc.) then derives `showBottomBar = hasActions` from their disjunction. This prevents rendering an empty bar if a future status has no applicable actions, and is more maintainable than status-exclusion lists.
 
 ## Technical Details
@@ -95,11 +99,11 @@ Invoice detail computes individual action booleans (`canEdit`, `canSend`, etc.) 
 
 With this PR, all 25 tasks from `docs/plans/2026-02-14-mobile-optimization-implementation.md` are complete:
 
-| Sprint | Tasks | PR | Focus |
-|--------|-------|----|-------|
-| Sprint 1 | 1-9 | #101 | Navigation shell (BottomTabBar, MobileDrawer, tokens) |
-| Sprint 2 | 10-16 | #114 | High-value screens (dashboard, list views, Kanban) |
-| Sprint 3+4 | 17-25 | #148 | Shared components, forms, detail views |
+| Sprint     | Tasks | PR   | Focus                                                 |
+| ---------- | ----- | ---- | ----------------------------------------------------- |
+| Sprint 1   | 1-9   | #101 | Navigation shell (BottomTabBar, MobileDrawer, tokens) |
+| Sprint 2   | 10-16 | #114 | High-value screens (dashboard, list views, Kanban)    |
+| Sprint 3+4 | 17-25 | #148 | Shared components, forms, detail views                |
 
 The mobile optimization build phase is complete. Remaining polish items (#151-#156) are tracked as GitHub issues for future sprints.
 

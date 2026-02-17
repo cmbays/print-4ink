@@ -1,4 +1,4 @@
-import type { AgentManifestEntry } from "@domain/entities/review-pipeline";
+import type { AgentManifestEntry } from '@domain/entities/review-pipeline'
 
 // ---------------------------------------------------------------------------
 // Shared manifest merge utilities
@@ -9,11 +9,11 @@ import type { AgentManifestEntry } from "@domain/entities/review-pipeline";
 
 /** Deduplicated union of two string arrays, preserving insertion order. */
 export function unionStrings(a: string[], b: string[]): string[] {
-  const set = new Set(a);
+  const set = new Set(a)
   for (const item of b) {
-    set.add(item);
+    set.add(item)
   }
-  return [...set];
+  return [...set]
 }
 
 /**
@@ -27,11 +27,11 @@ export function unionStrings(a: string[], b: string[]): string[] {
  */
 export function mergeManifestEntry(
   existing: AgentManifestEntry,
-  incoming: AgentManifestEntry,
+  incoming: AgentManifestEntry
 ): AgentManifestEntry {
   const mergedReason = existing.reason.includes(incoming.reason)
     ? existing.reason
-    : `${existing.reason}; ${incoming.reason}`;
+    : `${existing.reason}; ${incoming.reason}`
 
   return {
     agentId: existing.agentId,
@@ -40,7 +40,7 @@ export function mergeManifestEntry(
     rules: unionStrings(existing.rules, incoming.rules),
     reason: mergedReason,
     triggeredBy: existing.triggeredBy,
-  };
+  }
 }
 
 /**
@@ -52,27 +52,27 @@ export function mergeManifestEntry(
  */
 export function deduplicateManifest(
   entries: AgentManifestEntry[],
-  opts?: { triggeredByHighestPriority?: boolean },
+  opts?: { triggeredByHighestPriority?: boolean }
 ): AgentManifestEntry[] {
-  const map = new Map<string, AgentManifestEntry>();
+  const map = new Map<string, AgentManifestEntry>()
 
   for (const entry of entries) {
-    const existing = map.get(entry.agentId);
+    const existing = map.get(entry.agentId)
     if (!existing) {
-      map.set(entry.agentId, { ...entry, scope: [...entry.scope] });
-      continue;
+      map.set(entry.agentId, { ...entry, scope: [...entry.scope] })
+      continue
     }
 
-    const merged = mergeManifestEntry(existing, entry);
+    const merged = mergeManifestEntry(existing, entry)
 
     if (opts?.triggeredByHighestPriority && entry.priority > existing.priority) {
-      merged.triggeredBy = entry.triggeredBy;
+      merged.triggeredBy = entry.triggeredBy
     }
 
-    map.set(entry.agentId, merged);
+    map.set(entry.agentId, merged)
   }
 
-  return [...map.values()];
+  return [...map.values()]
 }
 
 /**
@@ -82,19 +82,19 @@ export function deduplicateManifest(
  */
 export function mergeIntoManifest(
   base: AgentManifestEntry[],
-  additions: AgentManifestEntry[],
+  additions: AgentManifestEntry[]
 ): AgentManifestEntry[] {
-  const result = base.map((e) => ({ ...e }));
+  const result = base.map((e) => ({ ...e }))
 
   for (const incoming of additions) {
-    const idx = result.findIndex((e) => e.agentId === incoming.agentId);
+    const idx = result.findIndex((e) => e.agentId === incoming.agentId)
 
     if (idx >= 0) {
-      result[idx] = mergeManifestEntry(result[idx], incoming);
+      result[idx] = mergeManifestEntry(result[idx], incoming)
     } else {
-      result.push(incoming);
+      result.push(incoming)
     }
   }
 
-  return result;
+  return result
 }

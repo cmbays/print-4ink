@@ -1,6 +1,6 @@
 ---
-title: "Customer Management — Build Playbook"
-description: "Step-by-step instructions for running parallel Claude Code sessions with GitButler to build the Customer Management vertical"
+title: 'Customer Management — Build Playbook'
+description: 'Step-by-step instructions for running parallel Claude Code sessions with GitButler to build the Customer Management vertical'
 category: strategy
 status: active
 phase: 1
@@ -45,24 +45,24 @@ Wave 3:  [Session 5: Quality Gate] ── merge PR ─── DONE
 
 This is why the sessions are split the way they are — **zero file overlaps** between Wave 2 sessions:
 
-| File | Session 1 | Session 2 | Session 3 | Session 4 |
-|------|:---------:|:---------:|:---------:|:---------:|
-| `lib/schemas/*.ts` | WRITE | read | read | read |
-| `lib/constants.ts` | WRITE | read | read | read |
-| `lib/mock-data.ts` | WRITE | read | read | read |
-| `lib/schemas/__tests__/*.ts` | WRITE | — | — | — |
-| `components/features/LifecycleBadge.tsx` | CREATE | read | read | read |
-| `components/features/HealthBadge.tsx` | CREATE | read | read | — |
-| `components/features/TypeTagBadges.tsx` | CREATE | read | read | — |
-| `components/features/CustomerQuickStats.tsx` | CREATE | read | read | — |
-| `components/features/AddCustomerModal.tsx` | — | WRITE | — | — |
-| `components/features/ArtworkGallery.tsx` | — | — | CREATE | — |
-| `components/features/NotesPanel.tsx` | — | — | CREATE | — |
-| `components/features/CustomerCombobox.tsx` | — | — | — | WRITE |
-| `app/(dashboard)/customers/page.tsx` | — | CREATE | — | — |
-| `app/(dashboard)/customers/_components/*` | — | CREATE | — | — |
-| `app/(dashboard)/customers/[id]/page.tsx` | — | — | CREATE | — |
-| `app/(dashboard)/customers/[id]/_components/*` | — | — | CREATE | — |
+| File                                           | Session 1 | Session 2 | Session 3 | Session 4 |
+| ---------------------------------------------- | :-------: | :-------: | :-------: | :-------: |
+| `lib/schemas/*.ts`                             |   WRITE   |   read    |   read    |   read    |
+| `lib/constants.ts`                             |   WRITE   |   read    |   read    |   read    |
+| `lib/mock-data.ts`                             |   WRITE   |   read    |   read    |   read    |
+| `lib/schemas/__tests__/*.ts`                   |   WRITE   |     —     |     —     |     —     |
+| `components/features/LifecycleBadge.tsx`       |  CREATE   |   read    |   read    |   read    |
+| `components/features/HealthBadge.tsx`          |  CREATE   |   read    |   read    |     —     |
+| `components/features/TypeTagBadges.tsx`        |  CREATE   |   read    |   read    |     —     |
+| `components/features/CustomerQuickStats.tsx`   |  CREATE   |   read    |   read    |     —     |
+| `components/features/AddCustomerModal.tsx`     |     —     |   WRITE   |     —     |     —     |
+| `components/features/ArtworkGallery.tsx`       |     —     |     —     |  CREATE   |     —     |
+| `components/features/NotesPanel.tsx`           |     —     |     —     |  CREATE   |     —     |
+| `components/features/CustomerCombobox.tsx`     |     —     |     —     |     —     |   WRITE   |
+| `app/(dashboard)/customers/page.tsx`           |     —     |  CREATE   |     —     |     —     |
+| `app/(dashboard)/customers/_components/*`      |     —     |  CREATE   |     —     |     —     |
+| `app/(dashboard)/customers/[id]/page.tsx`      |     —     |     —     |  CREATE   |     —     |
+| `app/(dashboard)/customers/[id]/_components/*` |     —     |     —     |  CREATE   |     —     |
 
 **WRITE** = modifies existing file (owns it). **CREATE** = new file. **read** = imports only (no ownership).
 
@@ -171,20 +171,20 @@ Session 1 (Foundation) hit context limits because a single agent tried to: read 
 
 ### Subagents (`Task` tool) vs Teams (`TeamCreate`)
 
-| | Subagents | Teams |
-|---|---|---|
-| **Best for** | Discrete, independent chunks that return results | Longer-running parallel work on multi-file features |
-| **Coordination** | Orchestrator sequences everything | Agents message each other, shared task list |
-| **Context** | Each gets own window, result flows back | Each gets own window, persistent until shutdown |
-| **Overhead** | Low — fire and get result | Higher — setup, messaging, shutdown protocol |
-| **Sweet spot** | "Write this one component given these inputs" | "Build this whole feature area with 3+ files" |
+|                  | Subagents                                        | Teams                                               |
+| ---------------- | ------------------------------------------------ | --------------------------------------------------- |
+| **Best for**     | Discrete, independent chunks that return results | Longer-running parallel work on multi-file features |
+| **Coordination** | Orchestrator sequences everything                | Agents message each other, shared task list         |
+| **Context**      | Each gets own window, result flows back          | Each gets own window, persistent until shutdown     |
+| **Overhead**     | Low — fire and get result                        | Higher — setup, messaging, shutdown protocol        |
+| **Sweet spot**   | "Write this one component given these inputs"    | "Build this whole feature area with 3+ files"       |
 
-| Session | Strategy | Rationale |
-|---------|----------|-----------|
-| 2 (Customer List) | **Subagents** | 4 independent components, orchestrator integrates into page shell |
-| 3 (Customer Detail) | **Team** | 7 tabs + 4 modals across 12+ files — teammates build feature areas in parallel |
-| 4 (Quoting Fix) | **Neither** | Single file, low complexity, no delegation needed |
-| 5 (Quality Gate) | **Subagents** | Parallel read-only audits, orchestrator aggregates findings + fixes |
+| Session             | Strategy      | Rationale                                                                      |
+| ------------------- | ------------- | ------------------------------------------------------------------------------ |
+| 2 (Customer List)   | **Subagents** | 4 independent components, orchestrator integrates into page shell              |
+| 3 (Customer Detail) | **Team**      | 7 tabs + 4 modals across 12+ files — teammates build feature areas in parallel |
+| 4 (Quoting Fix)     | **Neither**   | Single file, low complexity, no delegation needed                              |
+| 5 (Quality Gate)    | **Subagents** | Parallel read-only audits, orchestrator aggregates findings + fixes            |
 
 ---
 
@@ -202,7 +202,7 @@ Open 3 separate terminal tabs/windows. In each, run `claude` and paste the corre
 
 ### Session 2: Customer List Page (Subagent Strategy)
 
-````
+```
 You are the ORCHESTRATOR for the Customer List page (/customers). Do NOT build all components yourself — use the Task tool to delegate component building to subagents. You coordinate, integrate, verify, and commit.
 
 ## Why Subagents
@@ -263,13 +263,13 @@ ALL must pass. Fix small issues yourself.
 - Push: `but push session/0210-customer-list`
 - Open PR targeting `main`: "feat: Customer List page — smart views, search, filters, stats"
 - Let the human know you're done.
-````
+```
 
 ---
 
 ### Session 3: Customer Detail Page (Team Strategy)
 
-````
+```
 You are the TEAM LEAD for the Customer Detail page (/customers/[id]). This is the largest feature — a header, 7 tabs, and 4 modals across 12+ files. You will use TeamCreate to spawn teammates who build feature areas in parallel, while you build the page shell and coordinate.
 
 ## Why a Team (not subagents)
@@ -345,7 +345,7 @@ Send shutdown_request to all teammates. Then TeamDelete.
 - Push: `but push session/0210-customer-detail`
 - Open PR targeting `main`: "feat: Customer Detail page — header, 7 tabs, artwork gallery, notes, contacts"
 - Let the human know you're done.
-````
+```
 
 ---
 
@@ -417,7 +417,7 @@ Run: `npx tsc --noEmit && npm run lint && npm run build`
 
 ### Prompt to Paste
 
-````
+```
 You are the ORCHESTRATOR for the Customer Management quality gate audit. Use the Task tool to run audit checks in parallel via subagents, then aggregate findings and fix issues yourself.
 
 ## Why Subagents
@@ -465,19 +465,19 @@ ALL must pass.
 - Open PR: "fix: Customer Management quality gate — audit fixes and polish"
 - Include audit report in PR description.
 - Let the human know you're done.
-````
+```
 
 ---
 
 ## Quick Reference Card
 
-| Wave | Session | Branch Name | Strategy | Trigger | Complexity |
-|------|---------|-------------|----------|---------|------------|
-| 1 | Foundation | `session/0210-customer-foundation` | Subagents | Start now | High |
-| 2 | Customer List | `session/0210-customer-list` | Subagents (4) | After Wave 1 merges | High |
-| 2 | Customer Detail | `session/0210-customer-detail` | **Team** (3 mates) | After Wave 1 merges | Very High |
-| 2 | Quoting Fix | `session/0210-quoting-interconnection` | Direct (no delegation) | After Wave 1 merges | Low |
-| 3 | Quality Gate | `session/0210-customer-quality-gate` | Subagents (4 audits) | After Wave 2 merges | Medium |
+| Wave | Session         | Branch Name                            | Strategy               | Trigger             | Complexity |
+| ---- | --------------- | -------------------------------------- | ---------------------- | ------------------- | ---------- |
+| 1    | Foundation      | `session/0210-customer-foundation`     | Subagents              | Start now           | High       |
+| 2    | Customer List   | `session/0210-customer-list`           | Subagents (4)          | After Wave 1 merges | High       |
+| 2    | Customer Detail | `session/0210-customer-detail`         | **Team** (3 mates)     | After Wave 1 merges | Very High  |
+| 2    | Quoting Fix     | `session/0210-quoting-interconnection` | Direct (no delegation) | After Wave 1 merges | Low        |
+| 3    | Quality Gate    | `session/0210-customer-quality-gate`   | Subagents (4 audits)   | After Wave 2 merges | Medium     |
 
 ## Merge Checklist
 

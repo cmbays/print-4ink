@@ -1,12 +1,8 @@
-import { Sidebar } from "@shared/ui/layouts/sidebar";
-import { MobileShell } from "@shared/ui/layouts/mobile-shell";
-import { TooltipProviderWrapper } from "@shared/ui/layouts/tooltip-provider-wrapper";
+import { Sidebar } from '@shared/ui/layouts/sidebar'
+import { MobileShell } from '@shared/ui/layouts/mobile-shell'
+import { TooltipProviderWrapper } from '@shared/ui/layouts/tooltip-provider-wrapper'
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <TooltipProviderWrapper>
       <div className="flex h-screen">
@@ -17,11 +13,9 @@ export default function DashboardLayout({
 
         {/* Mobile shell manages all client state (drawer, header, tab bar) */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <MobileShell>
-            {children}
-          </MobileShell>
+          <MobileShell>{children}</MobileShell>
         </div>
       </div>
     </TooltipProviderWrapper>
-  );
+  )
 }

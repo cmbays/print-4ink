@@ -17,6 +17,7 @@
 ### Task 0.1: Symlink CLAUDE.md to Worktrees Parent
 
 **Files:**
+
 - Create: `~/Github/print-4ink-worktrees/CLAUDE.md` (symlink)
 
 **Step 1: Create symlink**
@@ -43,6 +44,7 @@ The worktrees parent is not a git repo, so no gitignore needed. The symlink live
 ### Task 0.2: Fix Permissions (colon→space patterns)
 
 **Files:**
+
 - Modify: `~/.claude/settings.json`
 
 **Step 1: Read current settings**
@@ -52,6 +54,7 @@ Read `~/.claude/settings.json`. The `permissions.allow` array has patterns using
 **Step 2: Replace the full permissions.allow array**
 
 Replace the `"allow"` array with corrected patterns. Changes:
+
 - `Bash(gh pr:*)` → `Bash(gh pr *)` (and similar for all `gh` subcommands)
 - `Bash(npm run lint:*)` → `Bash(npm run lint *)` (and all npm run variants)
 - `Bash(npm install:*)` → `Bash(npm install *)`
@@ -80,12 +83,14 @@ Replace the `"allow"` array with corrected patterns. Changes:
 - Add: `Bash(mkdir *)`, `Bash(cp *)`, `Bash(mv *)`
 
 Also fix `permissions.ask` — remove dbt-specific uv patterns. Add:
+
 - `Bash(npm install *)` in ask (new deps should be approved)
 - `Bash(git push *)` in ask (pushes should be reviewed)
 
 **Step 3: Verify**
 
 Start a new Claude session and test that previously-prompted operations no longer prompt:
+
 ```bash
 gh pr list --limit 5
 npm run lint
@@ -101,6 +106,7 @@ This is a user config file, not in the repo. No git commit needed.
 ### Task 0.3: Create Session Registry
 
 **Files:**
+
 - Create: `~/Github/print-4ink-worktrees/.session-registry.json`
 
 **Step 1: Create initial registry file**
@@ -168,6 +174,7 @@ zellij --version
 **Step 4: Add Zellij completions** (if not already present)
 
 Check `~/.oh-my-zsh/completions/_zellij` exists. If not:
+
 ```bash
 mkdir -p ~/.oh-my-zsh/completions
 zellij setup --generate-completion zsh > ~/.oh-my-zsh/completions/_zellij
@@ -183,6 +190,7 @@ zellij setup --generate-completion zsh > ~/.oh-my-zsh/completions/_zellij
 ### Task 1.1: Rewrite `work.sh` — Core + Zellij (Session A)
 
 **Files:**
+
 - Modify: `scripts/work.sh` (complete rewrite)
 
 **Context:** Read the current `scripts/work.sh` (495 lines, tmux-based). The rewrite replaces tmux with Zellij while preserving the worktree creation logic. Key changes: Zellij sessions/tabs replace tmux sessions/windows; `command` + `args` in KDL replaces `send-keys`; session registry integration.
@@ -261,6 +269,7 @@ git commit -m "feat(devx): rewrite work.sh for Zellij + session registry"
 ### Task 1.2: Session Registry CRUD Functions (Session B)
 
 **Files:**
+
 - Create: `scripts/lib/registry.sh`
 - Modify: `scripts/work.sh` (source the lib)
 
@@ -374,6 +383,7 @@ git commit -m "feat(devx): add session registry CRUD library"
 ### Task 1.3: Session Management Commands (Session C)
 
 **Files:**
+
 - Modify: `scripts/work.sh` (add resume, fork, sessions, status commands)
 
 **Dependencies:** Task 1.2 (registry.sh must exist)
@@ -497,6 +507,7 @@ git commit -m "feat(devx): add work resume, fork, sessions, status commands"
 ### Task 2.1: Phase Command Engine + `work build` (Session A)
 
 **Files:**
+
 - Modify: `scripts/work.sh` (add `_work_phase` and `_work_build`)
 - Create: `scripts/lib/kdl-generator.sh` (generates Zellij KDL from YAML manifest)
 - Create: `scripts/templates/wave-layout.kdl.tmpl` (KDL template)
@@ -508,6 +519,7 @@ Read the design doc section 4 for the full `work build` flow. The KDL generator 
 The YAML manifest is parsed with `yq` (install: `brew install yq`). Each session entry produces a Zellij tab in the KDL.
 
 **Prompt templates per phase** (stored in `scripts/prompts/`):
+
 - `research.md` — Agent team prompt for vertical research
 - `interview.md` — Requirements interrogator prompt
 - `breadboard.md` — Breadboarding skill prompt
@@ -519,6 +531,7 @@ The YAML manifest is parsed with `yq` (install: `brew install yq`). Each session
 Each prompt template includes: what to read first (KB docs, breadboard, ROADMAP), what skills to use, what to produce (KB doc, artifacts), and the session protocol.
 
 **Commit:**
+
 ```bash
 git add scripts/work.sh scripts/lib/kdl-generator.sh scripts/templates/ scripts/prompts/
 git commit -m "feat(devx): add phase command engine, work build, KDL generator"
@@ -529,6 +542,7 @@ git commit -m "feat(devx): add phase command engine, work build, KDL generator"
 ### Task 2.2: `build-session-protocol` Skill (Session B)
 
 **Files:**
+
 - Create: `.claude/skills/build-session-protocol/SKILL.md`
 - Create: `.claude/skills/build-session-protocol/templates/merge-checklist.md`
 
@@ -537,6 +551,7 @@ git commit -m "feat(devx): add phase command engine, work build, KDL generator"
 Read existing skills for format reference: `.claude/skills/quality-gate/SKILL.md` and `.claude/skills/screen-builder/SKILL.md`.
 
 The `SKILL.md` should define:
+
 - **Trigger:** Loaded automatically by build sessions via phase prompt
 - **Process:**
   1. Complete the build task as described in the prompt
@@ -557,6 +572,7 @@ The `SKILL.md` should define:
   - Always apply labels from PM label schema when creating issues
 
 **Commit:**
+
 ```bash
 git add .claude/skills/build-session-protocol/
 git commit -m "feat(devx): add build-session-protocol skill"
@@ -567,6 +583,7 @@ git commit -m "feat(devx): add build-session-protocol skill"
 ### Task 2.3: `implementation-planning` Skill (Session C)
 
 **Files:**
+
 - Create: `.claude/skills/implementation-planning/SKILL.md`
 - Create: `.claude/skills/implementation-planning/templates/execution-manifest.yaml`
 - Create: `.claude/skills/implementation-planning/templates/impl-plan-template.md`
@@ -574,6 +591,7 @@ git commit -m "feat(devx): add build-session-protocol skill"
 **Context:** This skill produces both a human-readable implementation plan AND a machine-readable YAML execution manifest. The manifest is consumed by `work build`.
 
 Read the design doc section 4 for the YAML manifest format. The skill should:
+
 - Read the breadboard doc and interview doc for the vertical
 - Design waves with proper dependency ordering
 - Determine which sessions can be parallel vs. serial
@@ -582,6 +600,7 @@ Read the design doc section 4 for the YAML manifest format. The skill should:
 - Register the plan in the KB
 
 **Commit:**
+
 ```bash
 git add .claude/skills/implementation-planning/
 git commit -m "feat(devx): add implementation-planning skill with YAML manifest"
@@ -592,12 +611,14 @@ git commit -m "feat(devx): add implementation-planning skill with YAML manifest"
 ### Task 2.4: `gary-tracker` Skill + Interview Automation (Session D)
 
 **Files:**
+
 - Create: `.claude/skills/gary-tracker/SKILL.md`
 - Create: `.claude/skills/gary-tracker/templates/gary-question-block.html`
 
 **Context:** During interview sessions, when the user says "I don't know", "need to ask Gary", "that's a Gary question", or similar, Claude should automatically insert a Gary question block into the KB doc. Read the existing Gary question format in KB docs (see `knowledge-base/src/content/sessions/` for examples with `gary-question` HTML blocks).
 
 The skill should:
+
 - Define trigger phrases that indicate a Gary question
 - Provide the HTML block template with proper attributes
 - Auto-increment question IDs within the vertical
@@ -606,6 +627,7 @@ The skill should:
 Also wire the `requirements-interrogator` agent into the interview phase prompt (in `scripts/prompts/interview.md`).
 
 **Commit:**
+
 ```bash
 git add .claude/skills/gary-tracker/
 git commit -m "feat(devx): add gary-tracker skill for auto-tagging interview questions"
@@ -621,6 +643,7 @@ git commit -m "feat(devx): add gary-tracker skill for auto-tagging interview que
 ### Task 3.1: Ada — Secretary Agent + Memory (Session A)
 
 **Files:**
+
 - Create: `.claude/agents/secretary.md`
 - Create: `.claude/skills/one-on-one/SKILL.md`
 - Create: `.claude/skills/one-on-one/templates/1on1-template.md`
@@ -628,6 +651,7 @@ git commit -m "feat(devx): add gary-tracker skill for auto-tagging interview que
 **Context:** Ada is a Claude agent with a persistent personality. Read the design doc section 7 for her full spec. She needs:
 
 **Agent definition (`.claude/agents/secretary.md`):**
+
 - System prompt that establishes her character: warm, direct, invested, witty
 - Instructions to read her memory files on startup
 - Instructions to read session registry, ROADMAP.md, PROGRESS.md, recent KB docs
@@ -635,6 +659,7 @@ git commit -m "feat(devx): add gary-tracker skill for auto-tagging interview que
 - Preloaded skills: `one-on-one`, `cool-down`
 
 **1:1 Skill (`.claude/skills/one-on-one/SKILL.md`):**
+
 - 6-step structured check-in:
   1. Pulse check — her read on project state
   2. Since last time — what happened (reads registry, PRs, KB)
@@ -645,12 +670,14 @@ git commit -m "feat(devx): add gary-tracker skill for auto-tagging interview que
 - After each 1:1, updates `personality.md`, `project-pulse.md`, `1on1-log.md`
 
 **Memory files** (created on first run, updated by Ada):
+
 - These live in Ada's auto-memory directory. The agent definition should reference them.
 - Initial `personality.md`: Seed with Ada's founding narrative — she's the first team member of Screen Print Pro's development team, she's watched the project grow from a blank Next.js scaffold, she cares about craft and hates when corners are cut.
 - Initial `project-pulse.md`: Current project state (Phase 1 frontend, 5+ verticals built, devx vertical in progress)
 - Initial `1on1-log.md`: Empty, first entry created after first 1:1
 
 **Commit:**
+
 ```bash
 git add .claude/agents/secretary.md .claude/skills/one-on-one/
 git commit -m "feat(devx): add Ada secretary agent with 1:1 skill and memory"
@@ -661,6 +688,7 @@ git commit -m "feat(devx): add Ada secretary agent with 1:1 skill and memory"
 ### Task 3.2: `work next` + `work status` Enhancement (Session B)
 
 **Files:**
+
 - Create: `scripts/prompts/next.md` (prompt template for work next)
 - Modify: `scripts/work.sh` (implement `_work_next`)
 
@@ -675,6 +703,7 @@ git commit -m "feat(devx): add Ada secretary agent with 1:1 skill and memory"
 Implementation: `_work_next` runs `claude -p "$(cat scripts/prompts/next.md)"` in print mode. The prompt template includes instructions to read the above files and format the recommendation.
 
 **Commit:**
+
 ```bash
 git add scripts/prompts/next.md scripts/work.sh
 git commit -m "feat(devx): add work next command with project state analysis"
@@ -685,12 +714,14 @@ git commit -m "feat(devx): add work next command with project state analysis"
 ### Task 3.3: `learnings-synthesis` Skill (Session C)
 
 **Files:**
+
 - Create: `.claude/skills/learnings-synthesis/SKILL.md`
 - Create: `.claude/skills/learnings-synthesis/templates/learnings-template.md`
 
 **Context:** This skill is used in the learnings phase (`work learnings <vertical>`). It reads all prior KB docs for a vertical and extracts cross-cutting patterns.
 
 Process:
+
 1. Read all KB docs matching the vertical slug in `knowledge-base/src/content/sessions/`
 2. Read the session registry entries for the vertical
 3. Read git log for all branches related to the vertical
@@ -701,6 +732,7 @@ Process:
 8. Produce KB doc: `{vertical}-learnings.md`
 
 **Commit:**
+
 ```bash
 git add .claude/skills/learnings-synthesis/
 git commit -m "feat(devx): add learnings-synthesis skill"
@@ -716,6 +748,7 @@ git commit -m "feat(devx): add learnings-synthesis skill"
 ### Task 4.1: Remaining Phase Prompts + Wiring (Session A)
 
 **Files:**
+
 - Create: `scripts/prompts/research.md`
 - Create: `scripts/prompts/interview.md`
 - Create: `scripts/prompts/breadboard.md`
@@ -728,6 +761,7 @@ git commit -m "feat(devx): add learnings-synthesis skill"
 **Context:** Each prompt template is a markdown file that gets interpolated by `_work_phase`. Variables like `{VERTICAL}`, `{PRIOR_KB_DOCS}`, `{BREADBOARD_PATH}` get replaced by the shell function.
 
 Each prompt should:
+
 1. Tell Claude what phase it's in and what skills to load
 2. Tell it what docs to read first (prior KB docs, ROADMAP, BRIEFs)
 3. Tell it what to produce (KB doc, artifacts)
@@ -737,6 +771,7 @@ Each prompt should:
 Also update `_work_phase` in `work.sh` to resolve the right prompt template and interpolate variables.
 
 **Commit:**
+
 ```bash
 git add scripts/prompts/ scripts/work.sh
 git commit -m "feat(devx): add all phase prompt templates and wiring"
@@ -747,12 +782,14 @@ git commit -m "feat(devx): add all phase prompt templates and wiring"
 ### Task 4.2: Domain-Specific Review Agents (Session B)
 
 **Files:**
+
 - Create: `.claude/agents/finance-sme.md`
 - Create: `.claude/agents/build-reviewer.md`
 
 **Context:** These agents are spawned as sub-agents during the self-review step of the build session protocol.
 
 **finance-sme agent:**
+
 - Scans for financial calculations (invoicing, quoting, pricing)
 - Verifies all monetary arithmetic uses `big.js` via `lib/helpers/money.ts`
 - Checks for floating-point operations on money values
@@ -760,6 +797,7 @@ git commit -m "feat(devx): add all phase prompt templates and wiring"
 - References the lessons-learned entry about IEEE 754 errors
 
 **build-reviewer agent:**
+
 - General code quality review
 - Checks for DRY violations, unused imports, `any` types
 - Verifies Tailwind usage (no hardcoded px, uses design tokens)
@@ -767,6 +805,7 @@ git commit -m "feat(devx): add all phase prompt templates and wiring"
 - Verifies Zod-first types (no separate interfaces)
 
 **Commit:**
+
 ```bash
 git add .claude/agents/finance-sme.md .claude/agents/build-reviewer.md
 git commit -m "feat(devx): add finance-sme and build-reviewer agents"
@@ -802,6 +841,7 @@ Document issues found. Create GitHub Issues for bugs with `vertical/devx` label.
 ### Task 5.2: DevX Review + Learnings KB Docs
 
 **Files:**
+
 - Create: `knowledge-base/src/content/sessions/2026-02-XX-devx-review.md`
 - Create: `knowledge-base/src/content/sessions/2026-02-XX-devx-learnings.md`
 
@@ -812,6 +852,7 @@ Run the review and learnings phases on the devx vertical itself:
 3. Verify KB docs are created and build validates: `cd knowledge-base && npm run build`
 
 **Commit:**
+
 ```bash
 git add knowledge-base/src/content/sessions/
 git commit -m "docs(devx): add review and learnings KB docs"
@@ -835,6 +876,7 @@ git commit -m "docs(devx): add review and learnings KB docs"
 ### Testing Shell Functions
 
 Shell functions don't have traditional unit tests. Test each command manually after implementation:
+
 1. Run the command with valid args — verify expected output
 2. Run with missing args — verify error message
 3. Run with invalid args — verify graceful failure

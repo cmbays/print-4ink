@@ -1,16 +1,16 @@
 ---
-title: "DAL Migration — Dashboard & Jobs Route Group"
-subtitle: "Wave 2.1: Migrate mock-data imports to DAL in dashboard page and all jobs routes"
+title: 'DAL Migration — Dashboard & Jobs Route Group'
+subtitle: 'Wave 2.1: Migrate mock-data imports to DAL in dashboard page and all jobs routes'
 date: 2026-02-17
 phase: 1
-pipelineName: "Jobs"
+pipelineName: 'Jobs'
 pipelineType: vertical
 products: []
 tools: []
 stage: build
 tags: [build, decision]
-sessionId: "84c8dfef-25b4-44d1-a0f5-7d5b7e2d6cce"
-branch: "session/0217-dal-migrate-dashboard-jobs"
+sessionId: '84c8dfef-25b4-44d1-a0f5-7d5b7e2d6cce'
+branch: 'session/0217-dal-migrate-dashboard-jobs'
 status: complete
 ---
 
@@ -22,16 +22,16 @@ Wave 2.1 of the DAL consumer migration. Converted the Dashboard page and all fou
 
 ## Files Migrated
 
-| File | Pattern | Change |
-|------|---------|--------|
-| `app/(dashboard)/page.tsx` | Pattern 1 | Async SC; moved module-level computations inside component |
-| `app/(dashboard)/jobs/_components/JobsDataTable.tsx` | Pattern 4 | Added `customers: Customer[]` prop, removed direct mock-data import |
-| `app/(dashboard)/jobs/page.tsx` | Pattern 3 | SC shell; split into server page + `JobsList.tsx` client component |
-| `app/(dashboard)/jobs/_components/JobsList.tsx` | Pattern 3 | New client component extracted from old page |
-| `app/(dashboard)/jobs/board/page.tsx` | Pattern 3 | SC shell; split into server page + `ProductionBoard.tsx` client component |
-| `app/(dashboard)/jobs/board/_components/ProductionBoard.tsx` | Pattern 3 | New client component extracted from old board page |
-| `app/(dashboard)/jobs/[id]/page.tsx` | Pattern 3 | SC shell with server-side pre-computation of derived data |
-| `app/(dashboard)/jobs/[id]/_components/JobDetail.tsx` | Pattern 3 | New client component with all state mutations |
+| File                                                         | Pattern   | Change                                                                    |
+| ------------------------------------------------------------ | --------- | ------------------------------------------------------------------------- |
+| `app/(dashboard)/page.tsx`                                   | Pattern 1 | Async SC; moved module-level computations inside component                |
+| `app/(dashboard)/jobs/_components/JobsDataTable.tsx`         | Pattern 4 | Added `customers: Customer[]` prop, removed direct mock-data import       |
+| `app/(dashboard)/jobs/page.tsx`                              | Pattern 3 | SC shell; split into server page + `JobsList.tsx` client component        |
+| `app/(dashboard)/jobs/_components/JobsList.tsx`              | Pattern 3 | New client component extracted from old page                              |
+| `app/(dashboard)/jobs/board/page.tsx`                        | Pattern 3 | SC shell; split into server page + `ProductionBoard.tsx` client component |
+| `app/(dashboard)/jobs/board/_components/ProductionBoard.tsx` | Pattern 3 | New client component extracted from old board page                        |
+| `app/(dashboard)/jobs/[id]/page.tsx`                         | Pattern 3 | SC shell with server-side pre-computation of derived data                 |
+| `app/(dashboard)/jobs/[id]/_components/JobDetail.tsx`        | Pattern 3 | New client component with all state mutations                             |
 
 ## Key Decisions
 

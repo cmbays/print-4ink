@@ -19,25 +19,26 @@
 
 ## Standard Invoice Line Item Categories
 
-| Category | Description | Typical Pricing |
-|----------|-------------|-----------------|
-| Garment Cost | Wholesale with 150-200% markup | $5 wholesale = $7.50-$10 retail |
-| Print Cost | Per piece, per color, per location | $1.80-$5.00/piece |
-| Screen Setup Fee | One-time per screen (per color, per location) | $10-$30/screen; often waived on reorders |
-| Film/Transparency | Cost of film positives | $12-$15 per spot color |
-| Pantone Match | Custom color mixing | $10-$15 per spot color |
-| Art/Design | Custom artwork creation or modification | $25 (simple text) to $65/hr (custom) |
-| Color Change Fee | Switching ink colors mid-run | $10-$15 per change |
-| Rush Fee | Expedited turnaround (tiered) | 10-50% of print subtotal |
-| Shipping | Freight or carrier charges | Actual cost + $6/box handling |
-| Minimum Order | Small order surcharge | Flat fee or higher per-piece pricing |
-| Specialty Ink | Puff, metallic, discharge | $0.50-$2.00/piece additional |
-| Dark Garment | Underbasing for dark shirts | $0.50+/piece |
-| Sample/Pre-prod | Test prints before full run | $150 minimum |
+| Category          | Description                                   | Typical Pricing                          |
+| ----------------- | --------------------------------------------- | ---------------------------------------- |
+| Garment Cost      | Wholesale with 150-200% markup                | $5 wholesale = $7.50-$10 retail          |
+| Print Cost        | Per piece, per color, per location            | $1.80-$5.00/piece                        |
+| Screen Setup Fee  | One-time per screen (per color, per location) | $10-$30/screen; often waived on reorders |
+| Film/Transparency | Cost of film positives                        | $12-$15 per spot color                   |
+| Pantone Match     | Custom color mixing                           | $10-$15 per spot color                   |
+| Art/Design        | Custom artwork creation or modification       | $25 (simple text) to $65/hr (custom)     |
+| Color Change Fee  | Switching ink colors mid-run                  | $10-$15 per change                       |
+| Rush Fee          | Expedited turnaround (tiered)                 | 10-50% of print subtotal                 |
+| Shipping          | Freight or carrier charges                    | Actual cost + $6/box handling            |
+| Minimum Order     | Small order surcharge                         | Flat fee or higher per-piece pricing     |
+| Specialty Ink     | Puff, metallic, discharge                     | $0.50-$2.00/piece additional             |
+| Dark Garment      | Underbasing for dark shirts                   | $0.50+/piece                             |
+| Sample/Pre-prod   | Test prints before full run                   | $150 minimum                             |
 
 ## Quantity Break Points
 
 Standard pricing tiers:
+
 - Break 1: 12-23 pieces (highest per-piece cost)
 - Break 2: 24-35 pieces
 - Break 3: 36-47 pieces
@@ -47,25 +48,26 @@ Standard pricing tiers:
 
 ## Rush Fee Tiers (Real Example)
 
-| Tier | Turnaround | Surcharge |
-|------|-----------|-----------|
-| Rush | 5-7 days | +10% |
-| Extra Rush | 3-5 days | +25% |
-| Super Rush | 2 days | +35% |
-| Super Duper Rush | 24 hours | +50% |
+| Tier             | Turnaround | Surcharge |
+| ---------------- | ---------- | --------- |
+| Rush             | 5-7 days   | +10%      |
+| Extra Rush       | 3-5 days   | +25%      |
+| Super Rush       | 2 days     | +35%      |
+| Super Duper Rush | 24 hours   | +50%      |
 
 ## Payment Terms by Customer Type
 
-| Term | Who Gets It | Details |
-|------|-------------|---------|
-| 100% Upfront | New/unknown customers, small orders | Full payment before production |
-| 50% Deposit + Balance | Standard for most jobs | Deposit before ordering blanks; balance before pickup/shipment |
-| COD | Walk-in customers, pickups | Payment at time of pickup |
-| Net 15 | Established customers with approved credit | 15 days after invoice date |
-| Net 30 | Large/corporate, government, schools | Requires credit application; 1.5%/month late fee standard |
-| Net 60 | Rare; large corporate only | High risk; not recommended for small shops |
+| Term                  | Who Gets It                                | Details                                                        |
+| --------------------- | ------------------------------------------ | -------------------------------------------------------------- |
+| 100% Upfront          | New/unknown customers, small orders        | Full payment before production                                 |
+| 50% Deposit + Balance | Standard for most jobs                     | Deposit before ordering blanks; balance before pickup/shipment |
+| COD                   | Walk-in customers, pickups                 | Payment at time of pickup                                      |
+| Net 15                | Established customers with approved credit | 15 days after invoice date                                     |
+| Net 30                | Large/corporate, government, schools       | Requires credit application; 1.5%/month late fee standard      |
+| Net 60                | Rare; large corporate only                 | High risk; not recommended for small shops                     |
 
 ### Key Insights
+
 - Net 30 NOT recommended for new/small shops — you front all material costs
 - Credit applications required before extending Net terms
 - Late payment penalties of 1.5%/month (18% annually) are standard
@@ -73,15 +75,15 @@ Standard pricing tiers:
 
 ## Payment Methods
 
-| Method | Pros | Cons |
-|--------|------|------|
-| Credit/Debit Card | Immediate, traceable | 2.5-3.5% processing fees |
-| Square | Payment links, QR codes, terminal | Processing fees |
-| Stripe | Built into most software | Processing fees |
-| PayPal/Venmo/Zelle | Familiar to customers | Harder to track |
-| Check | No processing fees | Slow, can bounce |
-| Cash | No fees, immediate | No paper trail |
-| ACH/Bank Transfer | Lower fees than cards | Slower processing |
+| Method             | Pros                              | Cons                     |
+| ------------------ | --------------------------------- | ------------------------ |
+| Credit/Debit Card  | Immediate, traceable              | 2.5-3.5% processing fees |
+| Square             | Payment links, QR codes, terminal | Processing fees          |
+| Stripe             | Built into most software          | Processing fees          |
+| PayPal/Venmo/Zelle | Familiar to customers             | Harder to track          |
+| Check              | No processing fees                | Slow, can bounce         |
+| Cash               | No fees, immediate                | No paper trail           |
+| ACH/Bank Transfer  | Lower fees than cards             | Slower processing        |
 
 ## Recurring & Repeat Customers
 
@@ -101,13 +103,13 @@ Standard pricing tiers:
 
 ## Spoilage Standards
 
-| Scenario | Acceptable Rate |
-|----------|----------------|
-| Standard items, standard decoration | 2% |
-| Jobs of 100+ pieces | Up to 3% |
-| Jobs under 100 pieces | Up to 10% |
-| Internal target for quality shops | Under 2% |
-| Minimum spoilage | 1 piece OR 1.5% (whichever greater) |
+| Scenario                            | Acceptable Rate                     |
+| ----------------------------------- | ----------------------------------- |
+| Standard items, standard decoration | 2%                                  |
+| Jobs of 100+ pieces                 | Up to 3%                            |
+| Jobs under 100 pieces               | Up to 10%                           |
+| Internal target for quality shops   | Under 2%                            |
+| Minimum spoilage                    | 1 piece OR 1.5% (whichever greater) |
 
 ## Credit Memo Triggers
 
@@ -118,6 +120,7 @@ Standard pricing tiers:
 5. **Returns** — sizing issues or order changes
 
 ### Reprint Procedure
+
 1. Customer sends photos of defective items
 2. Shop evaluates whether within spoilage allowance
 3. Shop sends shipping label for return of misprinted garments

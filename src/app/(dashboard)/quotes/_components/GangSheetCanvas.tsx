@@ -1,29 +1,29 @@
-"use client";
+'use client'
 
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@shared/lib/cn";
-import type { CanvasLayout, CanvasDesign } from "@domain/entities/dtf-sheet-calculation";
+import { useEffect, useRef, useState } from 'react'
+import { cn } from '@shared/lib/cn'
+import type { CanvasLayout, CanvasDesign } from '@domain/entities/dtf-sheet-calculation'
 
 // ---------------------------------------------------------------------------
 // Design color palette — muted fills cycling by design type (label)
 // ---------------------------------------------------------------------------
 
 const DESIGN_COLORS = [
-  { fill: "var(--action)", fillOpacity: 0.10, stroke: "var(--action)", strokeOpacity: 0.40 },
-  { fill: "var(--success)", fillOpacity: 0.10, stroke: "var(--success)", strokeOpacity: 0.40 },
-  { fill: "var(--warning)", fillOpacity: 0.10, stroke: "var(--warning)", strokeOpacity: 0.40 },
-  { fill: "var(--error)", fillOpacity: 0.10, stroke: "var(--error)", strokeOpacity: 0.40 },
-  { fill: "var(--action)", fillOpacity: 0.06, stroke: "var(--action)", strokeOpacity: 0.25 },
-] as const;
+  { fill: 'var(--action)', fillOpacity: 0.1, stroke: 'var(--action)', strokeOpacity: 0.4 },
+  { fill: 'var(--success)', fillOpacity: 0.1, stroke: 'var(--success)', strokeOpacity: 0.4 },
+  { fill: 'var(--warning)', fillOpacity: 0.1, stroke: 'var(--warning)', strokeOpacity: 0.4 },
+  { fill: 'var(--error)', fillOpacity: 0.1, stroke: 'var(--error)', strokeOpacity: 0.4 },
+  { fill: 'var(--action)', fillOpacity: 0.06, stroke: 'var(--action)', strokeOpacity: 0.25 },
+] as const
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface GangSheetCanvasProps {
-  canvasLayout: CanvasLayout[];
-  activeSheetIndex: number;
-  setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
+type GangSheetCanvasProps = {
+  canvasLayout: CanvasLayout[]
+  activeSheetIndex: number
+  setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 // ---------------------------------------------------------------------------
@@ -32,15 +32,15 @@ interface GangSheetCanvasProps {
 
 /** Build a stable label → color index map so the same design type always gets the same color. */
 function buildColorMap(designs: CanvasDesign[]): Map<string, number> {
-  const map = new Map<string, number>();
-  let idx = 0;
+  const map = new Map<string, number>()
+  let idx = 0
   for (const d of designs) {
     if (!map.has(d.label)) {
-      map.set(d.label, idx % DESIGN_COLORS.length);
-      idx++;
+      map.set(d.label, idx % DESIGN_COLORS.length)
+      idx++
     }
   }
-  return map;
+  return map
 }
 
 /** Find a representative horizontal spacing gap for indicator rendering. */
@@ -48,34 +48,34 @@ function findSpacingGap(
   designs: CanvasDesign[],
   margins: number
 ): { x1: number; x2: number; y: number } | null {
-  if (designs.length < 2) return null;
+  if (designs.length < 2) return null
 
   // Find two designs on the same shelf (same y) with a gap between them
-  const byY = new Map<number, CanvasDesign[]>();
+  const byY = new Map<number, CanvasDesign[]>()
   for (const d of designs) {
-    const key = d.y;
-    const group = byY.get(key) ?? [];
-    group.push(d);
-    byY.set(key, group);
+    const key = d.y
+    const group = byY.get(key) ?? []
+    group.push(d)
+    byY.set(key, group)
   }
 
   for (const [, group] of byY) {
-    if (group.length < 2) continue;
-    const sorted = [...group].sort((a, b) => a.x - b.x);
-    const d1 = sorted[0];
-    const d2 = sorted[1];
-    const gapStart = d1.x + d1.width;
-    const gapEnd = d2.x;
+    if (group.length < 2) continue
+    const sorted = [...group].sort((a, b) => a.x - b.x)
+    const d1 = sorted[0]
+    const d2 = sorted[1]
+    const gapStart = d1.x + d1.width
+    const gapEnd = d2.x
     if (gapEnd - gapStart >= margins * 0.5) {
       return {
         x1: gapStart,
         x2: gapEnd,
         y: d1.y + Math.max(d1.height, d2.height) / 2,
-      };
+      }
     }
   }
 
-  return null;
+  return null
 }
 
 // ---------------------------------------------------------------------------
@@ -87,38 +87,38 @@ export function GangSheetCanvas({
   activeSheetIndex,
   setActiveSheetIndex,
 }: GangSheetCanvasProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState(0)
 
   // N52 — scaleToViewport: ResizeObserver tracks container width
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    const el = containerRef.current
+    if (!el) return
 
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        setContainerWidth(entry.contentRect.width);
+        setContainerWidth(entry.contentRect.width)
       }
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
-  const layout = canvasLayout[activeSheetIndex];
-  if (!layout) return null;
+  const layout = canvasLayout[activeSheetIndex]
+  if (!layout) return null
 
-  const { sheetWidth, sheetHeight, designs, margins } = layout;
-  const colorMap = buildColorMap(designs);
+  const { sheetWidth, sheetHeight, designs, margins } = layout
+  const colorMap = buildColorMap(designs)
 
   // pxPerInch for adaptive rendering decisions (label visibility)
-  const pxPerInch = containerWidth > 0 ? containerWidth / sheetWidth : 30;
-  const minLabelPx = 40; // minimum px width to show label text
+  const pxPerInch = containerWidth > 0 ? containerWidth / sheetWidth : 30
+  const minLabelPx = 40 // minimum px width to show label text
 
   // Stroke width scales inversely with container size for consistent visual weight
-  const strokeW = Math.max(0.03, 0.5 / pxPerInch);
+  const strokeW = Math.max(0.03, 0.5 / pxPerInch)
 
   // Spacing indicator
-  const spacingGap = findSpacingGap(designs, margins);
+  const spacingGap = findSpacingGap(designs, margins)
 
   return (
     <div className="rounded-lg border border-border bg-background p-4 space-y-3">
@@ -140,11 +140,11 @@ export function GangSheetCanvas({
                 aria-controls="gang-sheet-canvas"
                 onClick={() => setActiveSheetIndex(i)}
                 className={cn(
-                  "rounded px-2.5 py-1 text-xs font-medium transition-colors",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+                  'rounded px-2.5 py-1 text-xs font-medium transition-colors',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
                   i === activeSheetIndex
-                    ? "bg-elevated text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? 'bg-elevated text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 Sheet {i + 1}
@@ -152,9 +152,7 @@ export function GangSheetCanvas({
             ))}
           </div>
         ) : (
-          <span className="text-xs font-medium text-muted-foreground">
-            Sheet 1
-          </span>
+          <span className="text-xs font-medium text-muted-foreground">Sheet 1</span>
         )}
 
         {/* Sheet dimensions */}
@@ -171,7 +169,7 @@ export function GangSheetCanvas({
             className="w-full"
             preserveAspectRatio="xMidYMin meet"
             role="img"
-            aria-label={`Gang sheet layout: ${designs.length} design${designs.length !== 1 ? "s" : ""} on ${sheetWidth}" × ${sheetHeight}" sheet`}
+            aria-label={`Gang sheet layout: ${designs.length} design${designs.length !== 1 ? 's' : ''} on ${sheetWidth}" × ${sheetHeight}" sheet`}
           >
             {/* U91 — Sheet boundary */}
             <rect
@@ -217,15 +215,18 @@ export function GangSheetCanvas({
 
             {/* U89 — Design rectangles */}
             {designs.map((d, i) => {
-              const ci = colorMap.get(d.label) ?? 0;
-              const color = DESIGN_COLORS[ci];
-              const designPxWidth = d.width * pxPerInch;
-              const showLabel = designPxWidth >= minLabelPx;
+              const ci = colorMap.get(d.label) ?? 0
+              const color = DESIGN_COLORS[ci]
+              const designPxWidth = d.width * pxPerInch
+              const showLabel = designPxWidth >= minLabelPx
 
               return (
                 <g
                   key={`${d.id}-${i}`}
-                  style={{ opacity: 0, animation: `canvas-fade-in 0.3s ease-out ${i * 0.05}s forwards` }}
+                  style={{
+                    opacity: 0,
+                    animation: `canvas-fade-in 0.3s ease-out ${i * 0.05}s forwards`,
+                  }}
                 >
                   <rect
                     x={d.x}
@@ -251,9 +252,7 @@ export function GangSheetCanvas({
                         fontFamily="Inter, system-ui, sans-serif"
                         fontWeight={500}
                       >
-                        {d.label.length > 12
-                          ? d.label.slice(0, 11) + "\u2026"
-                          : d.label}
+                        {d.label.length > 12 ? d.label.slice(0, 11) + '\u2026' : d.label}
                       </text>
                       <text
                         x={d.x + d.width / 2}
@@ -269,7 +268,7 @@ export function GangSheetCanvas({
                     </>
                   )}
                 </g>
-              );
+              )
             })}
 
             {/* U90 — Spacing indicators */}
@@ -330,8 +329,8 @@ export function GangSheetCanvas({
       {colorMap.size > 1 && (
         <div className="flex flex-wrap items-center gap-3 pt-1">
           {Array.from(colorMap.entries()).map(([label, ci]) => {
-            const color = DESIGN_COLORS[ci];
-            const count = designs.filter((d) => d.label === label).length;
+            const color = DESIGN_COLORS[ci]
+            const count = designs.filter((d) => d.label === label).length
             return (
               <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <span
@@ -345,10 +344,10 @@ export function GangSheetCanvas({
                   {label} <span className="text-foreground font-medium">&times;{count}</span>
                 </span>
               </div>
-            );
+            )
           })}
         </div>
       )}
     </div>
-  );
+  )
 }

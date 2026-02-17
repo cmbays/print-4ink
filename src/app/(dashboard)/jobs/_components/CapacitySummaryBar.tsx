@@ -1,30 +1,30 @@
-import { Zap, Package, Layers } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { LANE_LABELS, LANE_COLORS } from "@domain/constants";
-import type { CapacitySummary } from "@domain/rules/job.rules";
-import type { Lane } from "@domain/entities/job";
+import { Zap, Package, Layers } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { LANE_LABELS, LANE_COLORS } from '@domain/constants'
+import type { CapacitySummary } from '@domain/rules/job.rules'
+import type { Lane } from '@domain/entities/job'
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface CapacitySummaryBarProps {
-  summary: CapacitySummary;
+type CapacitySummaryBarProps = {
+  summary: CapacitySummary
 }
 
 // ---------------------------------------------------------------------------
 // Helper
 // ---------------------------------------------------------------------------
 
-const ACTIVE_LANES: Lane[] = ["ready", "in_progress", "review", "blocked"];
+const ACTIVE_LANES: Lane[] = ['ready', 'in_progress', 'review', 'blocked']
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
-  const { rushQuantity, totalQuantity, totalRevenue, cardsByLane } = summary;
+  const { rushQuantity, totalQuantity, totalRevenue, cardsByLane } = summary
 
   return (
     <div className="flex flex-wrap items-center gap-4 rounded-lg bg-elevated border border-border/50 px-4 py-2.5">
@@ -41,9 +41,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
       {/* Total quantity */}
       <div className="flex items-center gap-1.5">
         <Package className="size-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">
-          {totalQuantity.toLocaleString()}
-        </span>
+        <span className="text-xs text-muted-foreground">{totalQuantity.toLocaleString()}</span>
       </div>
 
       {/* Separator */}
@@ -55,16 +53,11 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
         {ACTIVE_LANES.map((lane) => (
           <div key={lane} className="flex items-center gap-1">
             <span
-              className={cn(
-                "text-[10px] font-medium uppercase tracking-wider",
-                LANE_COLORS[lane],
-              )}
+              className={cn('text-[10px] font-medium uppercase tracking-wider', LANE_COLORS[lane])}
             >
               {LANE_LABELS[lane]}
             </span>
-            <span className="text-xs font-medium text-foreground">
-              {cardsByLane[lane]}
-            </span>
+            <span className="text-xs font-medium text-foreground">{cardsByLane[lane]}</span>
           </div>
         ))}
       </div>
@@ -73,11 +66,7 @@ export function CapacitySummaryBar({ summary }: CapacitySummaryBarProps) {
       <div className="flex-1" />
 
       {/* Total revenue */}
-      <MoneyAmount
-        value={totalRevenue}
-        format="compact"
-        className="text-sm font-semibold"
-      />
+      <MoneyAmount value={totalRevenue} format="compact" className="text-sm font-semibold" />
     </div>
-  );
+  )
 }

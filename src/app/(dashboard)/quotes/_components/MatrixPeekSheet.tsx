@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useMemo } from "react";
+import { useMemo } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,80 +8,71 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@shared/ui/primitives/sheet";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Button } from "@shared/ui/primitives/button";
-import { Separator } from "@shared/ui/primitives/separator";
-import { ExternalLink, Package, Palette, Pencil } from "lucide-react";
-import Link from "next/link";
-import { MarginLegend } from "@/components/features/MarginLegend";
+} from '@shared/ui/primitives/sheet'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Button } from '@shared/ui/primitives/button'
+import { Separator } from '@shared/ui/primitives/separator'
+import { ExternalLink, Package, Palette, Pencil } from 'lucide-react'
+import Link from 'next/link'
+import { MarginLegend } from '@/components/features/MarginLegend'
 import {
   buildFullMatrixData,
   formatCurrency,
   findQuantityTierIndex,
-} from "@domain/services/pricing.service";
-import {
-  allScreenPrintTemplates,
-  tagTemplateMappings,
-} from "@/lib/mock-data-pricing";
-import type { Customer } from "@domain/entities/customer";
-import type { QuoteLineItem } from "@domain/entities/quote";
-import type { PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
-import { cn } from "@shared/lib/cn";
+} from '@domain/services/pricing.service'
+import { allScreenPrintTemplates, tagTemplateMappings } from '@/lib/mock-data-pricing'
+import type { Customer } from '@domain/entities/customer'
+import type { QuoteLineItem } from '@domain/entities/quote'
+import type { PricingTemplate, MarginIndicator } from '@domain/entities/price-matrix'
+import { cn } from '@shared/lib/cn'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-const DEFAULT_GARMENT_COST = 3.5;
+const DEFAULT_GARMENT_COST = 3.5
 
 const MARGIN_COLORS: Record<MarginIndicator, string> = {
-  healthy: "bg-success",
-  caution: "bg-warning",
-  unprofitable: "bg-error",
-};
+  healthy: 'bg-success',
+  caution: 'bg-warning',
+  unprofitable: 'bg-error',
+}
 
 /** Resolve which SP template applies to a customer based on their typeTags. */
 function resolveTemplate(customer: Customer): PricingTemplate | null {
   // Check each customer tag against mappings
   for (const tag of customer.typeTags) {
-    const mapping = tagTemplateMappings.find(
-      (m) => m.customerTypeTag === tag
-    );
+    const mapping = tagTemplateMappings.find((m) => m.customerTypeTag === tag)
     if (mapping?.screenPrintTemplateId) {
-      const template = allScreenPrintTemplates.find(
-        (t) => t.id === mapping.screenPrintTemplateId
-      );
-      if (template) return template;
+      const template = allScreenPrintTemplates.find((t) => t.id === mapping.screenPrintTemplateId)
+      if (template) return template
     }
   }
   // Fallback: default template
-  return allScreenPrintTemplates.find((t) => t.isDefault) ?? null;
+  return allScreenPrintTemplates.find((t) => t.isDefault) ?? null
 }
 
 /** Get total qty from sizes record. */
 function getTotalQty(sizes: Record<string, number>): number {
-  return Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
+  return Object.values(sizes).reduce((sum, qty) => sum + qty, 0)
 }
 
 /** Get total color count from print location details. */
-function getMaxColorCount(
-  lineItem: QuoteLineItem
-): number {
-  if (lineItem.printLocationDetails.length === 0) return 1;
-  return Math.max(...lineItem.printLocationDetails.map((d) => d.colorCount));
+function getMaxColorCount(lineItem: QuoteLineItem): number {
+  if (lineItem.printLocationDetails.length === 0) return 1
+  return Math.max(...lineItem.printLocationDetails.map((d) => d.colorCount))
 }
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface MatrixPeekSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  customer: Customer;
-  lineItem: QuoteLineItem;
-  onOverride: () => void;
+type MatrixPeekSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  customer: Customer
+  lineItem: QuoteLineItem
+  onOverride: () => void
 }
 
 // ---------------------------------------------------------------------------
@@ -95,20 +86,20 @@ export function MatrixPeekSheet({
   lineItem,
   onOverride,
 }: MatrixPeekSheetProps) {
-  const template = useMemo(() => resolveTemplate(customer), [customer]);
+  const template = useMemo(() => resolveTemplate(customer), [customer])
   const matrixData = useMemo(
     () => (template ? buildFullMatrixData(template, DEFAULT_GARMENT_COST) : null),
     [template]
-  );
+  )
 
   // Find the highlighted cell
-  const totalQty = getTotalQty(lineItem.sizes);
-  const colorCount = getMaxColorCount(lineItem);
+  const totalQty = getTotalQty(lineItem.sizes)
+  const colorCount = getMaxColorCount(lineItem)
   const highlightTierIdx = template
     ? findQuantityTierIndex(template.matrix.quantityTiers, totalQty)
-    : -1;
-  const maxColors = template?.matrix?.maxColors ?? 8;
-  const highlightColorIdx = Math.min(colorCount, maxColors) - 1; // 0-indexed
+    : -1
+  const maxColors = template?.matrix?.maxColors ?? 8
+  const highlightColorIdx = Math.min(colorCount, maxColors) - 1 // 0-indexed
 
   if (!template || !matrixData) {
     return (
@@ -116,19 +107,17 @@ export function MatrixPeekSheet({
         <SheetContent className="sm:max-w-2xl overflow-y-auto">
           <SheetHeader>
             <SheetTitle>Pricing Matrix</SheetTitle>
-            <SheetDescription>
-              No pricing template found for this customer.
-            </SheetDescription>
+            <SheetDescription>No pricing template found for this customer.</SheetDescription>
           </SheetHeader>
         </SheetContent>
       </Sheet>
-    );
+    )
   }
 
   const handleOverride = () => {
-    onOverride();
-    onOpenChange(false);
-  };
+    onOverride()
+    onOpenChange(false)
+  }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -159,25 +148,18 @@ export function MatrixPeekSheet({
               {customer.pricingTier}
             </Badge>
           </div>
-          {customer.discountPercentage != null &&
-            customer.discountPercentage > 0 && (
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Discount</span>
-                <span className="font-medium text-success">
-                  {customer.discountPercentage}%
-                </span>
-              </div>
-            )}
+          {customer.discountPercentage != null && customer.discountPercentage > 0 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Discount</span>
+              <span className="font-medium text-success">{customer.discountPercentage}%</span>
+            </div>
+          )}
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Tags</span>
             <div className="flex gap-1">
               {customer.typeTags.length > 0 ? (
                 customer.typeTags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="ghost"
-                    className="text-xs bg-muted/50"
-                  >
+                  <Badge key={tag} variant="ghost" className="text-xs bg-muted/50">
                     {tag}
                   </Badge>
                 ))
@@ -190,16 +172,22 @@ export function MatrixPeekSheet({
 
         {/* Current line item context */}
         <div className="mt-3 rounded-lg border border-action/30 bg-action/5 p-3">
-          <p className="text-xs text-muted-foreground mb-1">
-            Current line item
-          </p>
+          <p className="text-xs text-muted-foreground mb-1">Current line item</p>
           <p className="text-sm font-medium text-foreground">
-            <span className="inline-flex items-center gap-1"><Package className="size-3" />{totalQty}</span>{" × "}<span className="inline-flex items-center gap-1"><Palette className="size-3" />{colorCount}</span>
-            {" → "}
+            <span className="inline-flex items-center gap-1">
+              <Package className="size-3" />
+              {totalQty}
+            </span>
+            {' × '}
+            <span className="inline-flex items-center gap-1">
+              <Palette className="size-3" />
+              {colorCount}
+            </span>
+            {' → '}
             <span className="text-action">
               {highlightTierIdx >= 0
                 ? template.matrix.quantityTiers[highlightTierIdx].label
-                : "N/A"}{" "}
+                : 'N/A'}{' '}
               tier
             </span>
           </p>
@@ -219,10 +207,8 @@ export function MatrixPeekSheet({
                   <th
                     key={i}
                     className={cn(
-                      "px-2 py-1.5 text-center font-medium",
-                      i === highlightColorIdx
-                        ? "text-action"
-                        : "text-muted-foreground"
+                      'px-2 py-1.5 text-center font-medium',
+                      i === highlightColorIdx ? 'text-action' : 'text-muted-foreground'
                     )}
                   >
                     {i + 1}C
@@ -235,42 +221,37 @@ export function MatrixPeekSheet({
                 <tr key={tierIdx}>
                   <td
                     className={cn(
-                      "sticky left-0 bg-card px-2 py-1.5 font-medium whitespace-nowrap",
-                      tierIdx === highlightTierIdx
-                        ? "text-action"
-                        : "text-foreground"
+                      'sticky left-0 bg-card px-2 py-1.5 font-medium whitespace-nowrap',
+                      tierIdx === highlightTierIdx ? 'text-action' : 'text-foreground'
                     )}
                   >
                     {row.tierLabel}
                   </td>
                   {row.cells.map((cell, colIdx) => {
                     const isHighlighted =
-                      tierIdx === highlightTierIdx &&
-                      colIdx === highlightColorIdx;
+                      tierIdx === highlightTierIdx && colIdx === highlightColorIdx
 
                     return (
                       <td
                         key={colIdx}
                         className={cn(
-                          "px-2 py-1.5 text-center tabular-nums",
+                          'px-2 py-1.5 text-center tabular-nums',
                           isHighlighted &&
-                            "ring-2 ring-action rounded bg-action/10 font-semibold text-action"
+                            'ring-2 ring-action rounded bg-action/10 font-semibold text-action'
                         )}
                       >
                         <div className="flex items-center justify-center gap-1">
-                          <span>
-                            {formatCurrency(cell.price)}
-                          </span>
+                          <span>{formatCurrency(cell.price)}</span>
                           <span
                             className={cn(
-                              "inline-block size-1.5 rounded-full shrink-0",
+                              'inline-block size-1.5 rounded-full shrink-0',
                               MARGIN_COLORS[cell.margin.indicator]
                             )}
                             title={`${Math.round(cell.margin.percentage)}% margin`}
                           />
                         </div>
                       </td>
-                    );
+                    )
                   })}
                 </tr>
               ))}
@@ -297,5 +278,5 @@ export function MatrixPeekSheet({
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

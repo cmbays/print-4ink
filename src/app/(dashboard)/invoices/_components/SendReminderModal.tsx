@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { Send } from "lucide-react";
-import { toast } from "sonner";
+import { Send } from 'lucide-react'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -9,17 +9,17 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import { computeIsOverdue, computeDaysOverdue } from "@domain/rules/invoice.rules";
-import { formatCurrency } from "@domain/lib/money";
-import type { Invoice } from "@domain/entities/invoice";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import { computeIsOverdue, computeDaysOverdue } from '@domain/rules/invoice.rules'
+import { formatCurrency } from '@domain/lib/money'
+import type { Invoice } from '@domain/entities/invoice'
 
-interface SendReminderModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  invoice: Invoice;
-  customerEmail: string;
+type SendReminderModalProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  invoice: Invoice
+  customerEmail: string
 }
 
 export function SendReminderModal({
@@ -28,20 +28,20 @@ export function SendReminderModal({
   invoice,
   customerEmail,
 }: SendReminderModalProps) {
-  const isOverdue = computeIsOverdue(invoice);
-  const daysOverdue = isOverdue ? computeDaysOverdue(invoice.dueDate) : 0;
+  const isOverdue = computeIsOverdue(invoice)
+  const daysOverdue = isOverdue ? computeDaysOverdue(invoice.dueDate) : 0
 
   const subject = isOverdue
     ? `Overdue: Invoice ${invoice.invoiceNumber} — ${formatCurrency(invoice.balanceDue)} past due`
-    : `Payment Reminder: Invoice ${invoice.invoiceNumber}`;
+    : `Payment Reminder: Invoice ${invoice.invoiceNumber}`
 
   const body = isOverdue
-    ? `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} was due ${daysOverdue} ${daysOverdue === 1 ? "day" : "days"} ago.\n\nPlease arrange payment at your earliest convenience.\n\nThank you,\n4Ink Screen Printing`
-    : `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} is due on ${new Date(invoice.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}.\n\nPlease let us know if you have any questions.\n\nThank you,\n4Ink Screen Printing`;
+    ? `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} was due ${daysOverdue} ${daysOverdue === 1 ? 'day' : 'days'} ago.\n\nPlease arrange payment at your earliest convenience.\n\nThank you,\n4Ink Screen Printing`
+    : `Hi,\n\nThis is a friendly reminder that invoice ${invoice.invoiceNumber} for ${formatCurrency(invoice.balanceDue)} is due on ${new Date(invoice.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}.\n\nPlease let us know if you have any questions.\n\nThank you,\n4Ink Screen Printing`
 
   function handleSend() {
-    toast.success(`Reminder sent to ${customerEmail}`);
-    onOpenChange(false);
+    toast.success(`Reminder sent to ${customerEmail}`)
+    onOpenChange(false)
   }
 
   return (
@@ -79,7 +79,7 @@ export function SendReminderModal({
 
           {isOverdue && (
             <p className="text-xs text-error font-medium">
-              This invoice is {daysOverdue} {daysOverdue === 1 ? "day" : "days"} overdue
+              This invoice is {daysOverdue} {daysOverdue === 1 ? 'day' : 'days'} overdue
             </p>
           )}
         </div>
@@ -95,5 +95,5 @@ export function SendReminderModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

@@ -1,77 +1,67 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import Link from "next/link";
-import {
-  Palette,
-  ArrowUpDown,
-  ArrowRight,
-  Trophy,
-  Sun,
-} from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Button } from "@shared/ui/primitives/button";
-import type { Artwork } from "@domain/entities/artwork";
-import { ARTWORK_TAG_LABELS } from "@domain/constants";
+import { useState, useMemo } from 'react'
+import Link from 'next/link'
+import { Palette, ArrowUpDown, ArrowRight, Trophy, Sun } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Button } from '@shared/ui/primitives/button'
+import type { Artwork } from '@domain/entities/artwork'
+import { ARTWORK_TAG_LABELS } from '@domain/constants'
 
-type SortMode = "smart" | "a-z" | "newest";
+type SortMode = 'smart' | 'a-z' | 'newest'
 
-interface ArtworkGalleryProps {
-  artworks: Artwork[];
-  customerId: string;
+type ArtworkGalleryProps = {
+  artworks: Artwork[]
+  customerId: string
 }
 
 const SORT_LABELS: Record<SortMode, string> = {
-  smart: "Smart",
-  "a-z": "A-Z",
-  newest: "Newest",
-};
+  smart: 'Smart',
+  'a-z': 'A-Z',
+  newest: 'Newest',
+}
 
 // Gradient palette for placeholder thumbnails
 const GRADIENTS = [
-  "from-action/40 to-action/10",
-  "from-success/40 to-success/10",
-  "from-warning/40 to-warning/10",
-  "from-error/40 to-error/10",
-  "from-action/30 to-success/20",
-  "from-warning/30 to-error/20",
-];
+  'from-action/40 to-action/10',
+  'from-success/40 to-success/10',
+  'from-warning/40 to-warning/10',
+  'from-error/40 to-error/10',
+  'from-action/30 to-success/20',
+  'from-warning/30 to-error/20',
+]
 
 function getGradient(index: number): string {
-  return GRADIENTS[index % GRADIENTS.length];
+  return GRADIENTS[index % GRADIENTS.length]
 }
 
 function sortArtworks(artworks: Artwork[], mode: SortMode): Artwork[] {
-  const sorted = [...artworks];
+  const sorted = [...artworks]
   switch (mode) {
-    case "smart":
+    case 'smart':
       return sorted.sort((a, b) => {
         // Most recently used first, then by createdAt
-        const aDate = a.lastUsedAt ?? a.createdAt;
-        const bDate = b.lastUsedAt ?? b.createdAt;
-        return new Date(bDate).getTime() - new Date(aDate).getTime();
-      });
-    case "a-z":
-      return sorted.sort((a, b) => a.name.localeCompare(b.name));
-    case "newest":
+        const aDate = a.lastUsedAt ?? a.createdAt
+        const bDate = b.lastUsedAt ?? b.createdAt
+        return new Date(bDate).getTime() - new Date(aDate).getTime()
+      })
+    case 'a-z':
+      return sorted.sort((a, b) => a.name.localeCompare(b.name))
+    case 'newest':
       return sorted.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
   }
 }
 
 export function ArtworkGallery({ artworks, customerId }: ArtworkGalleryProps) {
-  const [sortMode, setSortMode] = useState<SortMode>("smart");
+  const [sortMode, setSortMode] = useState<SortMode>('smart')
 
-  const sortedArtworks = useMemo(
-    () => sortArtworks(artworks, sortMode),
-    [artworks, sortMode]
-  );
+  const sortedArtworks = useMemo(() => sortArtworks(artworks, sortMode), [artworks, sortMode])
 
   // First artwork is marked "Top seller" for mock purposes
-  const topSellerId = artworks.length > 0 ? artworks[0].id : null;
+  const topSellerId = artworks.length > 0 ? artworks[0].id : null
 
   if (artworks.length === 0) {
     return (
@@ -79,28 +69,26 @@ export function ArtworkGallery({ artworks, customerId }: ArtworkGalleryProps) {
         <div className="rounded-full bg-surface p-4 mb-4">
           <Palette className="h-8 w-8 text-muted-foreground" />
         </div>
-        <p className="text-sm font-medium text-foreground mb-1">
-          No artwork on file
-        </p>
+        <p className="text-sm font-medium text-foreground mb-1">No artwork on file</p>
         <p className="text-xs text-muted-foreground">
           Artwork will appear here once uploaded for this customer.
         </p>
       </div>
-    );
+    )
   }
 
   const cycleSortMode = () => {
-    const modes: SortMode[] = ["smart", "a-z", "newest"];
-    const currentIndex = modes.indexOf(sortMode);
-    setSortMode(modes[(currentIndex + 1) % modes.length]);
-  };
+    const modes: SortMode[] = ['smart', 'a-z', 'newest']
+    const currentIndex = modes.indexOf(sortMode)
+    setSortMode(modes[(currentIndex + 1) % modes.length])
+  }
 
   return (
     <div className="space-y-4">
       {/* Sort toggle */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-muted-foreground">
-          {artworks.length} artwork{artworks.length !== 1 ? "s" : ""}
+          {artworks.length} artwork{artworks.length !== 1 ? 's' : ''}
         </p>
         <Button
           variant="ghost"
@@ -117,25 +105,20 @@ export function ArtworkGallery({ artworks, customerId }: ArtworkGalleryProps) {
       {/* Artwork grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         {sortedArtworks.map((artwork, index) => {
-          const isTopSeller = artwork.id === topSellerId;
-          const isInSeason = artwork.tags.includes("seasonal");
+          const isTopSeller = artwork.id === topSellerId
+          const isInSeason = artwork.tags.includes('seasonal')
 
           return (
             <div
               key={artwork.id}
               className={cn(
-                "group relative rounded-lg border border-border bg-elevated overflow-hidden",
-                "transition-all duration-200",
-                "hover:scale-[1.02] hover:border-action/40 hover:shadow-md hover:shadow-action/5"
+                'group relative rounded-lg border border-border bg-elevated overflow-hidden',
+                'transition-all duration-200',
+                'hover:scale-[1.02] hover:border-action/40 hover:shadow-md hover:shadow-action/5'
               )}
             >
               {/* Placeholder thumbnail */}
-              <div
-                className={cn(
-                  "relative aspect-square bg-gradient-to-br",
-                  getGradient(index)
-                )}
-              >
+              <div className={cn('relative aspect-square bg-gradient-to-br', getGradient(index))}>
                 <div className="absolute inset-0 flex items-center justify-center p-3">
                   <p className="text-xs font-medium text-foreground/70 text-center line-clamp-2">
                     {artwork.name}
@@ -168,11 +151,9 @@ export function ArtworkGallery({ artworks, customerId }: ArtworkGalleryProps) {
               {/* Card content */}
               <div className="p-3 space-y-2">
                 <div>
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {artwork.name}
-                  </p>
+                  <p className="text-sm font-medium text-foreground truncate">{artwork.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {artwork.colorCount} color{artwork.colorCount !== 1 ? "s" : ""}
+                    {artwork.colorCount} color{artwork.colorCount !== 1 ? 's' : ''}
                   </p>
                 </div>
 
@@ -208,9 +189,9 @@ export function ArtworkGallery({ artworks, customerId }: ArtworkGalleryProps) {
                 </Button>
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }

@@ -1,6 +1,6 @@
 ---
-title: "Skills Implementation"
-subtitle: "Built two project-specific Claude Code skills -- screen-builder and quality-gate -- encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens."
+title: 'Skills Implementation'
+subtitle: 'Built two project-specific Claude Code skills -- screen-builder and quality-gate -- encoding design system, quality checklist, and domain knowledge into repeatable workflows for all 10 remaining screens.'
 date: 2026-02-07
 phase: 1
 pipelineName: devx
@@ -9,8 +9,8 @@ products: []
 tools: [skills-framework]
 stage: build
 tags: [feature, build]
-sessionId: "58358bf9-61aa-4451-a184-c3d91d1871bd"
-branch: "main"
+sessionId: '58358bf9-61aa-4451-a184-c3d91d1871bd'
+branch: 'main'
 status: complete
 ---
 
@@ -73,11 +73,11 @@ Audit completed screens against 10 quality categories. Produces structured pass/
 
 An X post argued that **skills are folders, not markdown files**. The SKILL.md is just the README -- the folder is the actual product. Inside: scripts for deterministic work, templates for consistent output, LLM instructions for creative/judgment work. The key insight is **deterministic + non-deterministic layering**:
 
-| Layer | What Provides It | Example |
-|-------|------------------|---------|
-| Deterministic | Templates, checklists, reference docs | Quality checklist, screen templates, design tokens |
-| Non-deterministic | AI judgment within constraints | Layout decisions, component composition, UX tradeoffs |
-| Reproducible | Consistent directory structure | Same workflow, same quality gates, every time |
+| Layer             | What Provides It                      | Example                                               |
+| ----------------- | ------------------------------------- | ----------------------------------------------------- |
+| Deterministic     | Templates, checklists, reference docs | Quality checklist, screen templates, design tokens    |
+| Non-deterministic | AI judgment within constraints        | Layout decisions, component composition, UX tradeoffs |
+| Reproducible      | Consistent directory structure        | Same workflow, same quality gates, every time         |
 
 ## What We Didn't Build
 
@@ -89,28 +89,28 @@ An X post argued that **skills are folders, not markdown files**. The SKILL.md i
 
 ## Projected ROI
 
-| Skill | Applies To | Estimated Impact |
-|-------|------------|------------------|
+| Skill          | Applies To                       | Estimated Impact                                                  |
+| -------------- | -------------------------------- | ----------------------------------------------------------------- |
 | screen-builder | 9 remaining screens (Steps 2-10) | 30-50% time savings per screen via templates + preflight workflow |
-| quality-gate | Every screen before marking done | 100% checklist coverage, fewer review cycles |
+| quality-gate   | Every screen before marking done | 100% checklist coverage, fewer review cycles                      |
 
 ## Design Token Fix
 
 CodeRabbit flagged `shadow-cyan-400` in template code as a hardcoded Tailwind palette color violating our design token guidelines. Replaced all occurrences with `shadow-action`.
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| `shadow-cyan-400` | Guaranteed Tailwind utility | Hardcoded -- won't update if action color changes. Violates our own "no colors outside design tokens" rule. |
-| `shadow-action` | Semantic, future-proof, consistent with `text-action`/`bg-action` | None -- Tailwind v4 auto-generates `shadow-*` for any `--color-*` in `@theme inline` |
+| Approach          | Pros                                                              | Cons                                                                                                        |
+| ----------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `shadow-cyan-400` | Guaranteed Tailwind utility                                       | Hardcoded -- won't update if action color changes. Violates our own "no colors outside design tokens" rule. |
+| `shadow-action`   | Semantic, future-proof, consistent with `text-action`/`bg-action` | None -- Tailwind v4 auto-generates `shadow-*` for any `--color-*` in `@theme inline`                        |
 
 Fixed in 4 files: `FRONTEND_GUIDELINES.md`, `interactive-states.md`, `design-tokens-quick-ref.md`, `form-screen.tsx`. The root cause was FRONTEND_GUIDELINES.md -- all other files copied the pattern from there.
 
 ## Other Changes
 
-| File | Change |
-|------|--------|
-| `CLAUDE.md` | Added "Project Skills" section documenting both skills |
-| `progress.txt` | Added skills to "What's Built" and session log |
+| File                | Change                                                                                             |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| `CLAUDE.md`         | Added "Project Skills" section documenting both skills                                             |
+| `progress.txt`      | Added skills to "What's Built" and session log                                                     |
 | `eslint.config.mjs` | Excluded `.claude/skills/**/templates/**` from linting (templates have intentional unused imports) |
 
 ## Verification

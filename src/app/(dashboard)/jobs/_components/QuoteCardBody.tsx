@@ -1,42 +1,42 @@
-import { Package, Palette, MapPin, Calendar } from "lucide-react";
-import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { cn } from "@shared/lib/cn";
-import { Badge } from "@shared/ui/primitives/badge";
-import { StatusBadge } from "@/components/features/StatusBadge";
-import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
-import { formatShortDate } from "@shared/lib/format";
-import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { CARD_TYPE_BORDER_COLORS } from "@domain/constants";
-import type { QuoteCard } from "@domain/entities/board-card";
+import { Package, Palette, MapPin, Calendar } from 'lucide-react'
+import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { cn } from '@shared/lib/cn'
+import { Badge } from '@shared/ui/primitives/badge'
+import { StatusBadge } from '@/components/features/StatusBadge'
+import { ServiceTypeBadge } from '@/components/features/ServiceTypeBadge'
+import { formatShortDate } from '@shared/lib/format'
+import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { CARD_TYPE_BORDER_COLORS } from '@domain/constants'
+import type { QuoteCard } from '@domain/entities/board-card'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function truncate(text: string, max: number): string {
-  return text.length > max ? text.slice(0, max).trimEnd() + "\u2026" : text;
+  return text.length > max ? text.slice(0, max).trimEnd() + '\u2026' : text
 }
 
 /** Shared container classes for quote cards (desktop & mobile). */
 export function quoteCardContainerClass(className?: string) {
   return cn(
-    "group relative rounded-lg bg-elevated border border-border px-3 py-2",
-    "border-l-2",
+    'group relative rounded-lg bg-elevated border border-border px-3 py-2',
+    'border-l-2',
     CARD_TYPE_BORDER_COLORS.quote,
-    "cursor-pointer select-none",
-    "hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-    "transition-all duration-150",
-    className,
-  );
+    'cursor-pointer select-none',
+    'hover:-translate-y-0.5 hover:shadow-lg hover:bg-surface',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    'transition-all duration-150',
+    className
+  )
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-interface QuoteCardBodyProps {
-  card: QuoteCard;
+type QuoteCardBodyProps = {
+  card: QuoteCard
 }
 
 /**
@@ -51,9 +51,7 @@ export function QuoteCardBody({ card }: QuoteCardBodyProps) {
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <p className="text-sm font-semibold text-foreground truncate">
-              {card.customerName}
-            </p>
+            <p className="text-sm font-semibold text-foreground truncate">{card.customerName}</p>
             {card.isNew && (
               <Badge
                 variant="ghost"
@@ -63,17 +61,12 @@ export function QuoteCardBody({ card }: QuoteCardBodyProps) {
               </Badge>
             )}
           </div>
-          <p className="text-xs text-muted-foreground truncate">
-            {truncate(card.description, 60)}
-          </p>
+          <p className="text-xs text-muted-foreground truncate">{truncate(card.description, 60)}</p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <StatusBadge status={card.quoteStatus} variant="quote" />
           {card.serviceType ? (
-            <ServiceTypeBadge
-              serviceType={card.serviceType}
-              variant="icon-only"
-            />
+            <ServiceTypeBadge serviceType={card.serviceType} variant="icon-only" />
           ) : (
             <ENTITY_ICONS.quote className="size-4 text-muted-foreground" />
           )}
@@ -111,11 +104,15 @@ export function QuoteCardBody({ card }: QuoteCardBodyProps) {
               </span>
             )}
             {card.total != null && (
-              <MoneyAmount value={card.total} format="compact" className="font-medium text-foreground" />
+              <MoneyAmount
+                value={card.total}
+                format="compact"
+                className="font-medium text-foreground"
+              />
             )}
           </div>
         </div>
       )}
     </>
-  );
+  )
 }

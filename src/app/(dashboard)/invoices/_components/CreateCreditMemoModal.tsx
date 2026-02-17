@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import { CreditCard, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { useState, useMemo } from 'react'
+import { CreditCard, AlertTriangle } from 'lucide-react'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -10,37 +10,37 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@shared/ui/primitives/dialog";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { Checkbox } from "@shared/ui/primitives/checkbox";
+} from '@shared/ui/primitives/dialog'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { Checkbox } from '@shared/ui/primitives/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { CREDIT_MEMO_REASON_LABELS } from "@domain/constants";
-import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
-import { creditMemoReasonEnum } from "@domain/entities/credit-memo";
-import type { CreditMemoReason, CreditMemo } from "@domain/entities/credit-memo";
-import type { Invoice } from "@domain/entities/invoice";
+} from '@shared/ui/primitives/select'
+import { CREDIT_MEMO_REASON_LABELS } from '@domain/constants'
+import { money, round2, toNumber, formatCurrency } from '@domain/lib/money'
+import { creditMemoReasonEnum } from '@domain/entities/credit-memo'
+import type { CreditMemoReason, CreditMemo } from '@domain/entities/credit-memo'
+import type { Invoice } from '@domain/entities/invoice'
 
-interface CreateCreditMemoModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  invoice: Invoice;
-  existingCreditMemos: CreditMemo[];
+type CreateCreditMemoModalProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  invoice: Invoice
+  existingCreditMemos: CreditMemo[]
 }
 
-interface LineItemCredit {
-  id: string;
-  description: string;
-  maxCredit: number;
-  creditAmount: string;
-  selected: boolean;
+type LineItemCredit = {
+  id: string
+  description: string
+  maxCredit: number
+  creditAmount: string
+  selected: boolean
 }
 
 export function CreateCreditMemoModal({
@@ -49,7 +49,7 @@ export function CreateCreditMemoModal({
   invoice,
   existingCreditMemos,
 }: CreateCreditMemoModalProps) {
-  const [reason, setReason] = useState<CreditMemoReason | "">("");
+  const [reason, setReason] = useState<CreditMemoReason | ''>('')
   const [lineItems, setLineItems] = useState<LineItemCredit[]>(() =>
     invoice.lineItems.map((item) => ({
       id: item.id,
@@ -58,7 +58,7 @@ export function CreateCreditMemoModal({
       creditAmount: item.lineTotal.toFixed(2),
       selected: false,
     }))
-  );
+  )
 
   // State resets naturally: parent must conditionally render
   // this component ({showCM && <CreateCreditMemoModal />})
@@ -66,16 +66,11 @@ export function CreateCreditMemoModal({
 
   const existingCreditTotal = useMemo(
     () =>
-      toNumber(
-        existingCreditMemos.reduce(
-          (sum, cm) => sum.plus(money(cm.totalCredit)),
-          money(0),
-        ),
-      ),
+      toNumber(existingCreditMemos.reduce((sum, cm) => sum.plus(money(cm.totalCredit)), money(0))),
     [existingCreditMemos]
-  );
+  )
 
-  const maxAllowedCredit = toNumber(money(invoice.total).minus(money(existingCreditTotal)));
+  const maxAllowedCredit = toNumber(money(invoice.total).minus(money(existingCreditTotal)))
 
   const totalCredit = useMemo(
     () =>
@@ -83,43 +78,38 @@ export function CreateCreditMemoModal({
         round2(
           lineItems
             .filter((item) => item.selected)
-            .reduce(
-              (sum, item) => sum.plus(money(parseFloat(item.creditAmount) || 0)),
-              money(0),
-            ),
-        ),
+            .reduce((sum, item) => sum.plus(money(parseFloat(item.creditAmount) || 0)), money(0))
+        )
       ),
     [lineItems]
-  );
+  )
 
-  const isOverLimit = money(totalCredit).gt(money(maxAllowedCredit));
-  const hasSelectedItems = lineItems.some((item) => item.selected);
-  const isValid = reason !== "" && hasSelectedItems && totalCredit > 0 && !isOverLimit;
+  const isOverLimit = money(totalCredit).gt(money(maxAllowedCredit))
+  const hasSelectedItems = lineItems.some((item) => item.selected)
+  const isValid = reason !== '' && hasSelectedItems && totalCredit > 0 && !isOverLimit
 
   function toggleItem(id: string) {
     setLineItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item
-      )
-    );
+      prev.map((item) => (item.id === id ? { ...item, selected: !item.selected } : item))
+    )
   }
 
   function updateCreditAmount(id: string, value: string) {
     setLineItems((prev) =>
       prev.map((item) => {
-        if (item.id !== id) return item;
-        const parsed = parseFloat(value);
-        const clamped = isNaN(parsed) ? value : String(Math.min(parsed, item.maxCredit));
-        return { ...item, creditAmount: clamped };
+        if (item.id !== id) return item
+        const parsed = parseFloat(value)
+        const clamped = isNaN(parsed) ? value : String(Math.min(parsed, item.maxCredit))
+        return { ...item, creditAmount: clamped }
       })
-    );
+    )
   }
 
   function handleSubmit() {
     toast.success(
       `Credit memo for ${formatCurrency(totalCredit)} created on ${invoice.invoiceNumber}`
-    );
-    onOpenChange(false);
+    )
+    onOpenChange(false)
   }
 
   return (
@@ -130,18 +120,13 @@ export function CreateCreditMemoModal({
             <CreditCard className="size-5 text-action" />
             Create Credit Memo
           </DialogTitle>
-          <DialogDescription>
-            Issue a credit against {invoice.invoiceNumber}
-          </DialogDescription>
+          <DialogDescription>Issue a credit against {invoice.invoiceNumber}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="credit-reason">Reason</Label>
-            <Select
-              value={reason}
-              onValueChange={(v) => setReason(v as CreditMemoReason)}
-            >
+            <Select value={reason} onValueChange={(v) => setReason(v as CreditMemoReason)}>
               <SelectTrigger className="w-full" id="credit-reason">
                 <SelectValue placeholder="Select reason" />
               </SelectTrigger>
@@ -159,19 +144,14 @@ export function CreateCreditMemoModal({
             <Label>Line Items</Label>
             <div className="rounded-md border border-border divide-y divide-border">
               {lineItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-2 px-4 py-2"
-                >
+                <div key={item.id} className="flex items-center gap-2 px-4 py-2">
                   <Checkbox
                     checked={item.selected}
                     onCheckedChange={() => toggleItem(item.id)}
                     aria-label={`Select ${item.description}`}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground truncate">
-                      {item.description}
-                    </p>
+                    <p className="text-sm text-foreground truncate">{item.description}</p>
                     <p className="text-xs text-muted-foreground">
                       Max: {formatCurrency(item.maxCredit)}
                     </p>
@@ -198,9 +178,7 @@ export function CreateCreditMemoModal({
           </div>
 
           <div className="flex items-center justify-between rounded-md border border-border bg-elevated px-4 py-2">
-            <span className="text-sm font-medium text-muted-foreground">
-              Total Credit
-            </span>
+            <span className="text-sm font-medium text-muted-foreground">Total Credit</span>
             <span className="text-sm font-mono font-medium text-foreground">
               {formatCurrency(totalCredit)}
             </span>
@@ -208,17 +186,20 @@ export function CreateCreditMemoModal({
 
           {existingCreditTotal > 0 && (
             <p className="text-xs text-muted-foreground">
-              Existing credits: {formatCurrency(existingCreditTotal)} &mdash;
-              Maximum remaining: {formatCurrency(maxAllowedCredit)}
+              Existing credits: {formatCurrency(existingCreditTotal)} &mdash; Maximum remaining:{' '}
+              {formatCurrency(maxAllowedCredit)}
             </p>
           )}
 
           {isOverLimit && (
-            <div className="flex items-start gap-2 rounded-md border border-error/30 bg-error/10 p-3" role="alert">
+            <div
+              className="flex items-start gap-2 rounded-md border border-error/30 bg-error/10 p-3"
+              role="alert"
+            >
               <AlertTriangle className="size-4 mt-0.5 text-error shrink-0" />
               <p className="text-sm text-error">
-                Total credit ({formatCurrency(totalCredit)}) exceeds the maximum
-                allowed ({formatCurrency(maxAllowedCredit)})
+                Total credit ({formatCurrency(totalCredit)}) exceeds the maximum allowed (
+                {formatCurrency(maxAllowedCredit)})
               </p>
             </div>
           )}
@@ -235,5 +216,5 @@ export function CreateCreditMemoModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

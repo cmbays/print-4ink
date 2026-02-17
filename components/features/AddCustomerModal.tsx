@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import * as React from "react";
+import * as React from 'react'
 
-import { Button } from "@shared/ui/primitives/button";
+import { Button } from '@shared/ui/primitives/button'
 import {
   Dialog,
   DialogContent,
@@ -10,38 +10,38 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@shared/ui/primitives/dialog";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { cn } from "@shared/lib/cn";
-import { CUSTOMER_TYPE_TAG_LABELS } from "@domain/constants";
-import type { CustomerTypeTag } from "@domain/entities/customer";
+} from '@shared/ui/primitives/dialog'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { cn } from '@shared/lib/cn'
+import { CUSTOMER_TYPE_TAG_LABELS } from '@domain/constants'
+import type { CustomerTypeTag } from '@domain/entities/customer'
 
-interface NewCustomerData {
-  id: string;
-  company: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  typeTags: CustomerTypeTag[];
-  lifecycleStage: "prospect" | "new";
+type NewCustomerData = {
+  id: string
+  company: string
+  name: string
+  email?: string
+  phone?: string
+  typeTags: CustomerTypeTag[]
+  lifecycleStage: 'prospect' | 'new'
 }
 
-export interface AddCustomerModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSave: (customer: NewCustomerData) => void;
-  onSaveAndView?: (customer: NewCustomerData) => void;
-  lifecycleStage?: "prospect" | "new";
+export type AddCustomerModalProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onSave: (customer: NewCustomerData) => void
+  onSaveAndView?: (customer: NewCustomerData) => void
+  lifecycleStage?: 'prospect' | 'new'
 }
 
 const TYPE_TAG_OPTIONS: CustomerTypeTag[] = [
-  "retail",
-  "sports-school",
-  "corporate",
-  "storefront-merch",
-  "wholesale",
-];
+  'retail',
+  'sports-school',
+  'corporate',
+  'storefront-merch',
+  'wholesale',
+]
 
 export function AddCustomerModal({
   open,
@@ -50,55 +50,53 @@ export function AddCustomerModal({
   onSaveAndView,
   lifecycleStage,
 }: AddCustomerModalProps) {
-  const [company, setCompany] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [typeTags, setTypeTags] = React.useState<CustomerTypeTag[]>([]);
+  const [company, setCompany] = React.useState('')
+  const [name, setName] = React.useState('')
+  const [email, setEmail] = React.useState('')
+  const [phone, setPhone] = React.useState('')
+  const [typeTags, setTypeTags] = React.useState<CustomerTypeTag[]>([])
   const [errors, setErrors] = React.useState<{
-    company?: string;
-    name?: string;
-    contact?: string;
-    email?: string;
-  }>({});
+    company?: string
+    name?: string
+    contact?: string
+    email?: string
+  }>({})
 
   function reset() {
-    setCompany("");
-    setName("");
-    setEmail("");
-    setPhone("");
-    setTypeTags([]);
-    setErrors({});
+    setCompany('')
+    setName('')
+    setEmail('')
+    setPhone('')
+    setTypeTags([])
+    setErrors({})
   }
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      reset();
+      reset()
     }
-    onOpenChange(nextOpen);
+    onOpenChange(nextOpen)
   }
 
   function toggleTypeTag(tag: CustomerTypeTag) {
-    setTypeTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    setTypeTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
   function validate(): boolean {
-    const next: { company?: string; name?: string; contact?: string; email?: string } = {};
+    const next: { company?: string; name?: string; contact?: string; email?: string } = {}
     if (!company.trim()) {
-      next.company = "Company is required";
+      next.company = 'Company is required'
     }
     if (!name.trim()) {
-      next.name = "Contact name is required";
+      next.name = 'Contact name is required'
     }
     if (!email.trim() && !phone.trim()) {
-      next.contact = "Email or phone is required";
+      next.contact = 'Email or phone is required'
     } else if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      next.email = "Invalid email format";
+      next.email = 'Invalid email format'
     }
-    setErrors(next);
-    return Object.keys(next).length === 0;
+    setErrors(next)
+    return Object.keys(next).length === 0
   }
 
   function getFormData(): NewCustomerData {
@@ -109,22 +107,22 @@ export function AddCustomerModal({
       email: email.trim() || undefined,
       phone: phone.trim() || undefined,
       typeTags,
-      lifecycleStage: lifecycleStage ?? ("new" as const),
-    };
+      lifecycleStage: lifecycleStage ?? ('new' as const),
+    }
   }
 
   function handleSave() {
-    if (!validate()) return;
-    onSave(getFormData());
-    reset();
-    onOpenChange(false);
+    if (!validate()) return
+    onSave(getFormData())
+    reset()
+    onOpenChange(false)
   }
 
   function handleSaveAndView() {
-    if (!validate()) return;
-    onSaveAndView?.(getFormData());
-    reset();
-    onOpenChange(false);
+    if (!validate()) return
+    onSaveAndView?.(getFormData())
+    reset()
+    onOpenChange(false)
   }
 
   return (
@@ -132,9 +130,7 @@ export function AddCustomerModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Customer</DialogTitle>
-          <DialogDescription>
-            Create a new customer record.
-          </DialogDescription>
+          <DialogDescription>Create a new customer record.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-2">
           {/* Company (required, first) */}
@@ -147,14 +143,12 @@ export function AddCustomerModal({
               placeholder="Company name"
               value={company}
               onChange={(e) => {
-                setCompany(e.target.value);
-                if (errors.company) setErrors((prev) => ({ ...prev, company: undefined }));
+                setCompany(e.target.value)
+                if (errors.company) setErrors((prev) => ({ ...prev, company: undefined }))
               }}
               aria-invalid={!!errors.company}
             />
-            {errors.company && (
-              <p className="text-sm text-destructive">{errors.company}</p>
-            )}
+            {errors.company && <p className="text-sm text-destructive">{errors.company}</p>}
           </div>
 
           {/* Contact Name (required) */}
@@ -167,14 +161,12 @@ export function AddCustomerModal({
               placeholder="Contact name"
               value={name}
               onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+                setName(e.target.value)
+                if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }))
               }}
               aria-invalid={!!errors.name}
             />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
           </div>
 
           {/* Email */}
@@ -186,15 +178,13 @@ export function AddCustomerModal({
               placeholder="customer@example.com"
               value={email}
               onChange={(e) => {
-                setEmail(e.target.value);
-                if (errors.contact) setErrors((prev) => ({ ...prev, contact: undefined }));
-                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+                setEmail(e.target.value)
+                if (errors.contact) setErrors((prev) => ({ ...prev, contact: undefined }))
+                if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }))
               }}
               aria-invalid={!!errors.contact || !!errors.email}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
             {errors.contact && !errors.email && (
               <p className="text-sm text-destructive">{errors.contact}</p>
             )}
@@ -209,8 +199,8 @@ export function AddCustomerModal({
               placeholder="(555) 123-4567"
               value={phone}
               onChange={(e) => {
-                setPhone(e.target.value);
-                if (errors.contact) setErrors((prev) => ({ ...prev, contact: undefined }));
+                setPhone(e.target.value)
+                if (errors.contact) setErrors((prev) => ({ ...prev, contact: undefined }))
               }}
               aria-invalid={!!errors.contact}
             />
@@ -226,22 +216,22 @@ export function AddCustomerModal({
             <Label>Customer Type</Label>
             <div className="flex flex-wrap gap-2">
               {TYPE_TAG_OPTIONS.map((tagOption) => {
-                const isActive = typeTags.includes(tagOption);
+                const isActive = typeTags.includes(tagOption)
                 return (
                   <button
                     key={tagOption}
                     type="button"
                     onClick={() => toggleTypeTag(tagOption)}
                     className={cn(
-                      "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                      'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                       isActive
-                        ? "bg-action/10 text-action border border-action/20"
-                        : "bg-muted text-muted-foreground border border-transparent hover:border-border"
+                        ? 'bg-action/10 text-action border border-action/20'
+                        : 'bg-muted text-muted-foreground border border-transparent hover:border-border'
                     )}
                   >
                     {CUSTOMER_TYPE_TAG_LABELS[tagOption]}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -259,5 +249,5 @@ export function AddCustomerModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

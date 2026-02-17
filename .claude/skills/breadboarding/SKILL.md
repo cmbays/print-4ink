@@ -40,8 +40,8 @@ Read these before starting:
 
 ### Outputs
 
-| File | Contents |
-|---|---|
+| File                                     | Contents                                                     |
+| ---------------------------------------- | ------------------------------------------------------------ |
 | `docs/breadboards/{topic}-breadboard.md` | Affordance tables, wiring, Mermaid diagrams, vertical slices |
 
 ### Handoff to Implementation Planning
@@ -63,11 +63,11 @@ The breadboard structure scales — Phase 2 adds N-rows and S-rows without chang
 
 ### Decision Points
 
-| Decision | Interactive | Auto |
-|---|---|---|
-| Place validation | Human reviews places list | Agent applies blocking test, proceeds |
-| Affordance completeness | Human spots missing interactions | Agent traces all R through wiring |
-| Slice grouping | Human validates demo-ability | Agent applies slice rules, proceeds |
+| Decision                | Interactive                      | Auto                                  |
+| ----------------------- | -------------------------------- | ------------------------------------- |
+| Place validation        | Human reviews places list        | Agent applies blocking test, proceeds |
+| Affordance completeness | Human spots missing interactions | Agent traces all R through wiring     |
+| Slice grouping          | Human validates demo-ability     | Agent applies slice rules, proceeds   |
 
 All decisions logged in breadboard document.
 
@@ -82,10 +82,12 @@ Breadboarding serves two functions:
 You don't understand how an existing system works in its concrete details. You have a workflow you're trying to understand — explaining how something happens or why something doesn't happen.
 
 **Input:**
+
 - Code repo(s) to analyze
 - Workflow description (always from the perspective of an operator trying to make an effect happen — through UI or as a caller)
 
 **Output:**
+
 - UI Affordances table
 - Code Affordances table
 - (Optional) Mermaid visualization
@@ -97,11 +99,13 @@ You don't understand how an existing system works in its concrete details. You h
 You have a new system sketched as an assembly of parts (mechanisms) per shaping. You need to detail out the concrete mechanism and show how those parts interact as a system.
 
 **Input:**
+
 - Parts list (mechanisms from shaping)
 - The R (requirement/outcome) the parts are meant to achieve
 - Existing system (optional) — if the new parts must interoperate with existing code
 
 **Output:**
+
 - UI Affordances table
 - Code Affordances table
 - (Optional) Mermaid visualization
@@ -116,19 +120,19 @@ Hand-drawn or whiteboard breadboards use a visual stacking format rather than ta
 
 **Visual conventions:**
 
-| Element | How it appears |
-|---------|---------------|
-| **Place** | Colored block (often pink/purple) at the **top** of a vertical stack |
-| **Affordances in a place** | Blocks stacked **underneath** the place block — containment is shown by vertical position in the stack |
-| **Code affordances** | Typically float **between** place stacks, not inside them |
-| **Place loader** | A code affordance positioned at the **top-left** of the place block — describes the data/inputs needed to render that place |
-| **Wires Out** | Solid arrows between blocks |
-| **Returns To** | Dashed arrows between blocks |
-| **Conditionals** | Indented blocks within a stack, often a different color (e.g., green), showing if/else branches |
-| **Place references** | `_` prefix on a place name within a stack (same as `_PlaceName` convention) |
-| **Uncertain/tentative** | `?` prefix or `~` prefix on an affordance name, or dashed borders — indicates the affordance is speculative |
-| **Containing box** | A large boundary drawn around multiple stacks — groups affordances by system or responsibility boundary (e.g., "HireEZ" box) |
-| **Notes/annotations** | Freeform text near elements — context, open questions, or rationale |
+| Element                    | How it appears                                                                                                               |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Place**                  | Colored block (often pink/purple) at the **top** of a vertical stack                                                         |
+| **Affordances in a place** | Blocks stacked **underneath** the place block — containment is shown by vertical position in the stack                       |
+| **Code affordances**       | Typically float **between** place stacks, not inside them                                                                    |
+| **Place loader**           | A code affordance positioned at the **top-left** of the place block — describes the data/inputs needed to render that place  |
+| **Wires Out**              | Solid arrows between blocks                                                                                                  |
+| **Returns To**             | Dashed arrows between blocks                                                                                                 |
+| **Conditionals**           | Indented blocks within a stack, often a different color (e.g., green), showing if/else branches                              |
+| **Place references**       | `_` prefix on a place name within a stack (same as `_PlaceName` convention)                                                  |
+| **Uncertain/tentative**    | `?` prefix or `~` prefix on an affordance name, or dashed borders — indicates the affordance is speculative                  |
+| **Containing box**         | A large boundary drawn around multiple stacks — groups affordances by system or responsibility boundary (e.g., "HireEZ" box) |
+| **Notes/annotations**      | Freeform text near elements — context, open questions, or rationale                                                          |
 
 **How to read a whiteboard breadboard:**
 
@@ -149,6 +153,7 @@ Hand-drawn or whiteboard breadboards use a visual stacking format rather than ta
 ### Places
 
 A Place is a **bounded context of interaction**. While you're in a Place:
+
 - You have a specific set of affordances available to you
 - You **cannot** interact with affordances outside that boundary
 - You must take an action to leave
@@ -159,30 +164,30 @@ A Place is a **bounded context of interaction**. While you're in a Place:
 
 The simplest test for whether something is a different Place: **Can you interact with what's behind?**
 
-| Answer | Meaning |
-|--------|---------|
-| **No** | You're in a different Place |
+| Answer  | Meaning                              |
+| ------- | ------------------------------------ |
+| **No**  | You're in a different Place          |
 | **Yes** | Same Place, with local state changes |
 
 #### Examples
 
-| UI Element | Blocking? | Place? | Why |
-|------------|-----------|--------|-----|
-| Modal | Yes | Yes | Can't interact with page behind |
-| Confirmation popover | Yes | Yes | Must respond before returning (limit case of modal) |
-| Edit mode (whole screen transforms) | Yes | Yes | All affordances changed |
-| Checkbox reveals extra fields | No | No | Surroundings unchanged |
-| Dropdown menu | No | No | Can click away, non-blocking |
-| Tooltip | No | No | Informational, non-blocking |
+| UI Element                          | Blocking? | Place? | Why                                                 |
+| ----------------------------------- | --------- | ------ | --------------------------------------------------- |
+| Modal                               | Yes       | Yes    | Can't interact with page behind                     |
+| Confirmation popover                | Yes       | Yes    | Must respond before returning (limit case of modal) |
+| Edit mode (whole screen transforms) | Yes       | Yes    | All affordances changed                             |
+| Checkbox reveals extra fields       | No        | No     | Surroundings unchanged                              |
+| Dropdown menu                       | No        | No     | Can click away, non-blocking                        |
+| Tooltip                             | No        | No     | Informational, non-blocking                         |
 
 #### Local State vs Place Navigation
 
-When a control changes state, ask: did *everything* change, or just a subset while the surroundings stayed the same?
+When a control changes state, ask: did _everything_ change, or just a subset while the surroundings stayed the same?
 
-| Type | What happens | How to model |
-|------|--------------|--------------|
-| **Local state** | Subset of UI changes, surroundings unchanged | Same Place, conditional N → dependent Us |
-| **Place navigation** | Entire screen transforms, or blocking overlay | Different Places |
+| Type                 | What happens                                  | How to model                             |
+| -------------------- | --------------------------------------------- | ---------------------------------------- |
+| **Local state**      | Subset of UI changes, surroundings unchanged  | Same Place, conditional N → dependent Us |
+| **Place navigation** | Entire screen transforms, or blocking overlay | Different Places                         |
 
 #### Mode-Based Places
 
@@ -198,6 +203,7 @@ The state flag (e.g., `editMode$`) that switches between them is a **navigation 
 #### Three Questions for Any Control
 
 For any UI affordance, ask:
+
 1. Where did I come from to see this?
 2. Where am I now?
 3. Where do I go if I act on it?
@@ -206,12 +212,12 @@ If the answer to #3 is "everything changes" or "I can't interact with what's beh
 
 #### Labeling Conventions
 
-| Pattern | Use |
-|---------|-----|
-| `PLACE: Page Name` | Standard page/route |
+| Pattern                   | Use                          |
+| ------------------------- | ---------------------------- |
+| `PLACE: Page Name`        | Standard page/route          |
 | `PLACE: Page Name (Mode)` | Mode-based variant of a page |
-| `PLACE: Modal Name` | Modal dialog |
-| `PLACE: Backend` | API/database boundary |
+| `PLACE: Modal Name`       | Modal dialog                 |
+| `PLACE: Backend`          | API/database boundary        |
 
 When spanning multiple systems, label with the system: `PLACE: Checkout Page (frontend)`, `PLACE: Payment API (backend)`.
 
@@ -219,15 +225,16 @@ When spanning multiple systems, label with the system: `PLACE: Checkout Page (fr
 
 Places are first-class elements in the data model. Each Place gets an ID:
 
-| # | Place | Description |
-|---|-------|-------------|
-| P1 | CMS Page (Read Mode) | View-only state |
-| P2 | CMS Page (Edit Mode) | Editing state with page-level controls |
+| #    | Place                 | Description                               |
+| ---- | --------------------- | ----------------------------------------- |
+| P1   | CMS Page (Read Mode)  | View-only state                           |
+| P2   | CMS Page (Edit Mode)  | Editing state with page-level controls    |
 | P2.1 | widget-grid (letters) | Subplace: letter editing widget within P2 |
-| P3 | Letter Form Modal | Form for adding/editing letters |
-| P4 | Backend | API resolvers and database |
+| P3   | Letter Form Modal     | Form for adding/editing letters           |
+| P4   | Backend               | API resolvers and database                |
 
 Place IDs enable:
+
 - **Explicit navigation wiring** — wire `→ P2` instead of to an affordance inside
 - **Containment tracking** — each affordance declares which Place it belongs to
 - **Consistent Mermaid subgraphs** — subgraph ID matches Place ID
@@ -260,12 +267,13 @@ U_LB --> letterBrowser
 
 In affordance tables, list the reference as a UI affordance:
 
-| # | Affordance | Control | Wires Out |
-|---|------------|---------|-----------|
-| U1 | Edit button | click | → N1 |
-| _letter-browser | Widget reference | — | → P3 |
+| #                | Affordance       | Control | Wires Out |
+| ---------------- | ---------------- | ------- | --------- |
+| U1               | Edit button      | click   | → N1      |
+| \_letter-browser | Widget reference | —       | → P3      |
 
 Style place references with a dashed border to distinguish them:
+
 ```text
 classDef placeRef fill:#ffb6c1,stroke:#d87093,stroke-width:2px,stroke-dasharray:5 5
 class U_LB placeRef
@@ -302,15 +310,16 @@ U_P3 --> P3
 
 In affordance tables for P4, the reference shows inheritance:
 
-| # | Affordance | Control | Wires Out | Notes |
-|---|------------|---------|-----------|-------|
-| _letter-browser (Read) | Inherits all of P3 | — | → P3 | |
-| U3 | Add button | click | → N3 | NEW |
-| U4 | Edit button | click | → N4 | NEW |
+| #                       | Affordance         | Control | Wires Out | Notes |
+| ----------------------- | ------------------ | ------- | --------- | ----- |
+| \_letter-browser (Read) | Inherits all of P3 | —       | → P3      |       |
+| U3                      | Add button         | click   | → N3      | NEW   |
+| U4                      | Edit button        | click   | → N4      | NEW   |
 
 ### Subplaces
 
 A **subplace** is a defined subset of a Place — a contained area that groups related affordances. Use subplaces when:
+
 - A Place contains multiple distinct widgets or sections
 - You're detailing one part of a larger Place
 - You want to show what's in scope vs out of scope
@@ -359,10 +368,10 @@ This tells readers: "we're zooming in on P2.1, but P2 contains more that we're n
 
 These are two different relationships in the data model:
 
-| Relationship | Meaning | Where Captured |
-|--------------|---------|----------------|
-| **Containment** | Affordance belongs to / lives in a Place | **Place column** (set membership) |
-| **Wiring** | Affordance triggers / calls something | **Wires Out column** (control flow) |
+| Relationship    | Meaning                                  | Where Captured                      |
+| --------------- | ---------------------------------------- | ----------------------------------- |
+| **Containment** | Affordance belongs to / lives in a Place | **Place column** (set membership)   |
+| **Wiring**      | Affordance triggers / calls something    | **Wires Out column** (control flow) |
 
 **Containment** is set membership: `U1 ∈ P1` means U1 is a member of Place P1. Every affordance belongs to exactly one Place.
 
@@ -383,6 +392,7 @@ N1 Wires Out: → U3          (wiring to affordance inside P2)
 This makes navigation explicit in the tables. The Place is the destination; specific affordances inside become available once you arrive.
 
 In Mermaid, this becomes:
+
 ```text
 N1 --> P2
 ```
@@ -390,19 +400,24 @@ N1 --> P2
 The subgraph ID matches the Place ID, so the wire connects to the Place boundary.
 
 ### Affordances
+
 Things you can act upon:
+
 - **UI affordances (U)**: inputs, buttons, displayed elements, scroll regions
 - **Code affordances (N)**: methods, subscriptions, data stores, framework mechanisms
 
 ### Wiring
+
 How affordances connect to each other:
 
 **Wires Out** — What an affordance triggers or calls (control flow):
+
 - Call wires: one affordance calls another
 - Write wires: code writes to a data store
 - Navigation wires: routing to a different place
 
 **Returns To** — Where an affordance's output flows (data flow):
+
 - Return wires: function returns value to its caller
 - Read wires: data store is read by another affordance
 
@@ -416,50 +431,50 @@ The tables are the truth. Every breadboard produces these:
 
 ### Places Table
 
-| # | Place | Description |
-|---|-------|-------------|
-| P1 | Search Page | Main search interface |
-| P2 | Detail Page | Individual result view |
+| #   | Place       | Description            |
+| --- | ----------- | ---------------------- |
+| P1  | Search Page | Main search interface  |
+| P2  | Detail Page | Individual result view |
 
 ### UI Affordances Table
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| U1 | P1 | search-detail | search input | type | → N1 | — |
-| U2 | P1 | search-detail | loading spinner | render | — | — |
-| U3 | P1 | search-detail | results list | render | — | — |
-| U4 | P1 | search-detail | result row | click | → P2 | — |
+| #   | Place | Component     | Affordance      | Control | Wires Out | Returns To |
+| --- | ----- | ------------- | --------------- | ------- | --------- | ---------- |
+| U1  | P1    | search-detail | search input    | type    | → N1      | —          |
+| U2  | P1    | search-detail | loading spinner | render  | —         | —          |
+| U3  | P1    | search-detail | results list    | render  | —         | —          |
+| U4  | P1    | search-detail | result row      | click   | → P2      | —          |
 
 ### Code Affordances Table
 
-| # | Place | Component | Affordance | Control | Wires Out | Returns To |
-|---|-------|-----------|------------|---------|-----------|------------|
-| N1 | P1 | search-detail | `activeQuery.next()` | call | → N2 | — |
-| N2 | P1 | search-detail | `activeQuery` subscription | observe | → N3 | — |
-| N3 | P1 | search-detail | `performSearch()` | call | → N4, → N5, → N6 | — |
-| N4 | P1 | search.service | `searchOneCategory()` | call | → N7 | → N3 |
-| N5 | P1 | search-detail | `loading` | write | store | → U2 |
-| N6 | P1 | search-detail | `results` | write | store | → U3 |
-| N7 | P1 | typesense.service | `rawSearch()` | call | — | → N4 |
+| #   | Place | Component         | Affordance                 | Control | Wires Out        | Returns To |
+| --- | ----- | ----------------- | -------------------------- | ------- | ---------------- | ---------- |
+| N1  | P1    | search-detail     | `activeQuery.next()`       | call    | → N2             | —          |
+| N2  | P1    | search-detail     | `activeQuery` subscription | observe | → N3             | —          |
+| N3  | P1    | search-detail     | `performSearch()`          | call    | → N4, → N5, → N6 | —          |
+| N4  | P1    | search.service    | `searchOneCategory()`      | call    | → N7             | → N3       |
+| N5  | P1    | search-detail     | `loading`                  | write   | store            | → U2       |
+| N6  | P1    | search-detail     | `results`                  | write   | store            | → U3       |
+| N7  | P1    | typesense.service | `rawSearch()`              | call    | —                | → N4       |
 
 ### Data Stores Table
 
-| # | Place | Store | Description |
-|---|-------|-------|-------------|
-| S1 | P1 | `results` | Array of search results |
-| S2 | P1 | `loading` | Boolean loading state |
+| #   | Place | Store     | Description             |
+| --- | ----- | --------- | ----------------------- |
+| S1  | P1    | `results` | Array of search results |
+| S2  | P1    | `loading` | Boolean loading state   |
 
 ### Column Definitions
 
-| Column | Description |
-|--------|-------------|
-| **#** | Unique ID (P1, P2... for Places; U1, U2... for UI; N1, N2... for Code; S1, S2... for Stores) |
-| **Place** | Which Place this affordance belongs to (containment) |
-| **Component** | Which component/service owns this |
-| **Affordance** | The specific thing you can act upon |
-| **Control** | The triggering event: click, type, call, observe, write, render |
-| **Wires Out** | What this triggers: `→ N4`, `→ P2` (control flow, including navigation) |
-| **Returns To** | Where output flows: `→ N3` or `→ U2, U3` (data flow) |
+| Column         | Description                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| **#**          | Unique ID (P1, P2... for Places; U1, U2... for UI; N1, N2... for Code; S1, S2... for Stores) |
+| **Place**      | Which Place this affordance belongs to (containment)                                         |
+| **Component**  | Which component/service owns this                                                            |
+| **Affordance** | The specific thing you can act upon                                                          |
+| **Control**    | The triggering event: click, type, call, observe, write, render                              |
+| **Wires Out**  | What this triggers: `→ N4`, `→ P2` (control flow, including navigation)                      |
+| **Returns To** | Where output flows: `→ N3` or `→ U2, U3` (data flow)                                         |
 
 ---
 
@@ -472,6 +487,7 @@ See **Example A** below for a complete worked example.
 **Step 1: Identify the flow to analyze**
 
 Pick a specific user journey. Always frame it as an operator trying to do something:
+
 - "Land on /search, type query, scroll for more, click result"
 - "Call the payment API with a card token, expect a charge to be created"
 
@@ -486,6 +502,7 @@ Starting from the entry point (route, API endpoint), trace through the code to f
 **Step 4: For each component, list its affordances**
 
 Read the code. Identify:
+
 - UI: What can the user see and interact with?
 - Code: What methods, subscriptions, stores are involved?
 
@@ -504,6 +521,7 @@ For each affordance, what does it trigger? Read the code — what does this meth
 **Step 8: Fill in Returns To**
 
 For each affordance, where does its output flow?
+
 - Functions that return values → list the callers that receive the return
 - Data stores → list the affordances that read from them
 - No meaningful output → use `—`
@@ -533,6 +551,7 @@ Take each mechanism/part identified in shaping and write it down. In the Screen 
 **Step 2: Translate parts into affordances**
 
 For each part, identify:
+
 - What UI affordances does this part require?
 - What Code affordances implement this part?
 
@@ -543,6 +562,7 @@ For each UI affordance, check: what Code affordance provides its data or control
 **Step 4: Classify places as existing or new**
 
 For each UI affordance, determine whether it lives in:
+
 - An existing place being modified
 - A new place being created
 
@@ -553,6 +573,7 @@ Fill in Wires Out and Returns To for each affordance. Trace through the intended
 **Step 6: Connect to existing system (if applicable)**
 
 If there's an existing codebase:
+
 - Identify the existing affordances the new ones must connect to
 - Add those existing affordances to your tables
 - Wire the new affordances to them
@@ -589,11 +610,11 @@ When mapping existing code, never invent abstractions. Every name must point to 
 
 An affordance is something you can **act upon** that has meaningful identity in the system. Several things look like affordances but are actually just implementation mechanisms:
 
-| Type | Example | Why it's not an affordance |
-|------|---------|---------------------------|
-| Visual containers | `modal-frame wrapper` | You can't act on a wrapper — it's just a Place boundary |
-| Internal transforms | `letterDataTransform()` | Implementation detail of the caller — not separately actionable |
-| Navigation mechanisms | `modalService.open()` | Just the "how" of getting to a Place — wire to the destination directly |
+| Type                  | Example                 | Why it's not an affordance                                              |
+| --------------------- | ----------------------- | ----------------------------------------------------------------------- |
+| Visual containers     | `modal-frame wrapper`   | You can't act on a wrapper — it's just a Place boundary                 |
+| Internal transforms   | `letterDataTransform()` | Implementation detail of the caller — not separately actionable         |
+| Navigation mechanisms | `modalService.open()`   | Just the "how" of getting to a Place — wire to the destination directly |
 
 **These aren't always obvious on first draft.** When reviewing your affordance tables, double-check each Code affordance and ask:
 
@@ -620,10 +641,10 @@ The handler navigates to P3. The callback writes to the store. The modal IS P3. 
 
 A breadboard captures two distinct flows:
 
-| Flow | What it tracks | Wiring |
-|------|----------------|--------|
+| Flow           | What it tracks               | Wiring             |
+| -------------- | ---------------------------- | ------------------ |
 | **Navigation** | Movement from Place to Place | Wires Out → Places |
-| **Data** | How state populates displays | Returns To → Us |
+| **Data**       | How state populates displays | Returns To → Us    |
 
 These are orthogonal. You can have navigation without data changes, and data changes without navigation.
 
@@ -643,6 +664,7 @@ N4 -.-> U6 (query result feeds the display)
 ```
 
 If a display U has no data source wiring into it, either:
+
 1. The source is missing from the breadboard
 2. The U isn't real
 
@@ -651,6 +673,7 @@ This is easy to miss when focused on navigation. Always ask: "This U shows data 
 ### Every N must connect
 
 If a Code affordance has no Wires Out AND no Returns To, something is wrong:
+
 - Handlers → should have Wires Out (what they call or write)
 - Queries → should have Returns To (who receives their return value)
 - Data stores → should have Returns To (which affordances read them)
@@ -674,6 +697,7 @@ S15 -.->|back button / init| N40["N40: activeQuery$"]
 ```
 
 Common external stores to model:
+
 - `Browser URL` — query params, hash fragments
 - `localStorage` / `sessionStorage` — persisted client state
 - `Clipboard` — copy/paste operations
@@ -692,9 +716,10 @@ Routing is a generic mechanism every page uses. Instead of drawing all navigatio
 
 ### Place stores where they enable behavior, not where they're written
 
-A data store belongs in the Place where its data is *consumed* to enable some effect — not where it's produced. Writes from other Places are "reaching into" that Place's state.
+A data store belongs in the Place where its data is _consumed_ to enable some effect — not where it's produced. Writes from other Places are "reaching into" that Place's state.
 
 To determine where a store belongs:
+
 1. **Trace read/write relationships** — Who writes? Who reads?
 2. **The readers determine placement** — that's where behavior is enabled
 3. **If only one Place reads**, the store goes inside that Place
@@ -721,33 +746,33 @@ This section provides a complete reference of everything that can appear in a br
 
 ### Elements
 
-| Element | ID Pattern | What It Is | What Qualifies |
-|---------|------------|------------|----------------|
-| **Place** | P1, P2, P3... | A bounded context of interaction | Blocking test: can't interact with what's behind |
-| **Subplace** | P2.1, P2.2... | A defined subset within a Place | Groups related affordances within a larger Place |
-| **Place Reference** | _PlaceName | UI affordance pointing to a detached place | Complex nested place defined separately |
-| **UI Affordance** | U1, U2, U3... | Something the user can see or interact with | Inputs, buttons, displays, scroll regions |
-| **Code Affordance** | N1, N2, N3... | Something in code you can act upon | Methods, subscriptions, handlers, framework mechanisms |
-| **Data Store** | S1, S2, S3... | State that persists and is read/written | Properties, arrays, observables that hold data |
-| **Chunk** | — | A collapsed subsystem | One wire in, one wire out, many internals |
-| **Placeholder** | — | Out-of-scope content marker | Shows context without detailing |
+| Element             | ID Pattern    | What It Is                                  | What Qualifies                                         |
+| ------------------- | ------------- | ------------------------------------------- | ------------------------------------------------------ |
+| **Place**           | P1, P2, P3... | A bounded context of interaction            | Blocking test: can't interact with what's behind       |
+| **Subplace**        | P2.1, P2.2... | A defined subset within a Place             | Groups related affordances within a larger Place       |
+| **Place Reference** | \_PlaceName   | UI affordance pointing to a detached place  | Complex nested place defined separately                |
+| **UI Affordance**   | U1, U2, U3... | Something the user can see or interact with | Inputs, buttons, displays, scroll regions              |
+| **Code Affordance** | N1, N2, N3... | Something in code you can act upon          | Methods, subscriptions, handlers, framework mechanisms |
+| **Data Store**      | S1, S2, S3... | State that persists and is read/written     | Properties, arrays, observables that hold data         |
+| **Chunk**           | —             | A collapsed subsystem                       | One wire in, one wire out, many internals              |
+| **Placeholder**     | —             | Out-of-scope content marker                 | Shows context without detailing                        |
 
 ### Relationships
 
-| Relationship | Syntax | Meaning | Example |
-|--------------|--------|---------|---------|
-| **Containment** | Place column | Affordance belongs to Place | `U3` in Place `P2.1` |
-| **Wires Out** | `→ X` | Control flow: triggers/calls | `→ N4`, `→ P2` |
-| **Returns To** | `→ X` (in Returns To column) | Data flow: output goes to | `→ U6`, `→ N3` |
-| **Abbreviated flow** | `\|label\|` | Intermediate steps omitted | `S4 -.-> \|view query\| U6` |
-| **Parent-child** | Hierarchical ID | Subplace belongs to Place | P2.1 is child of P2 |
+| Relationship         | Syntax                       | Meaning                      | Example                     |
+| -------------------- | ---------------------------- | ---------------------------- | --------------------------- |
+| **Containment**      | Place column                 | Affordance belongs to Place  | `U3` in Place `P2.1`        |
+| **Wires Out**        | `→ X`                        | Control flow: triggers/calls | `→ N4`, `→ P2`              |
+| **Returns To**       | `→ X` (in Returns To column) | Data flow: output goes to    | `→ U6`, `→ N3`              |
+| **Abbreviated flow** | `\|label\|`                  | Intermediate steps omitted   | `S4 -.-> \|view query\| U6` |
+| **Parent-child**     | Hierarchical ID              | Subplace belongs to Place    | P2.1 is child of P2         |
 
 ### Containment vs Wiring
 
-| Relationship | Meaning | Where Captured |
-|--------------|---------|----------------|
-| **Containment** | Affordance belongs to / lives in a Place | Place column (set membership) |
-| **Wiring** | Affordance triggers / calls something | Wires Out column (control flow) |
+| Relationship    | Meaning                                  | Where Captured                  |
+| --------------- | ---------------------------------------- | ------------------------------- |
+| **Containment** | Affordance belongs to / lives in a Place | Place column (set membership)   |
+| **Wiring**      | Affordance triggers / calls something    | Wires Out column (control flow) |
 
 Containment is set membership: `U1 ∈ P1` means U1 is a member of Place P1.
 Wiring is control flow: `U1 → N1` means U1 triggers N1.
@@ -755,27 +780,32 @@ Wiring is control flow: `U1 → N1` means U1 triggers N1.
 ### What Qualifies as Each Element
 
 **Place (P):**
+
 - Passes the blocking test — can't interact with what's behind
 - Examples: modal, edit mode (whole screen transforms), route/page
 - Not: dropdown, tooltip, checkbox revealing fields
 
-**Place Reference (_PlaceName):**
+**Place Reference (\_PlaceName):**
+
 - A UI affordance that represents a detached place
 - Use when a nested place has many affordances and would clutter the parent
 - Examples: `_letter-browser`, `_user-profile-widget`
 - Wires to the full place definition: `_letter-browser --> P3`
 
 **UI Affordance (U):**
+
 - User can see it or interact with it
 - Examples: button, input, list, spinner, displayed text
 - Not: wrapper elements, layout containers
 
 **Code Affordance (N):**
+
 - Has meaningful identity — you can point to it in code
 - Examples: `handleSubmit()`, `query$ subscription`, `detectChanges()`
 - Not: internal transforms, navigation mechanisms (see below)
 
 **Data Store (S):**
+
 - State that is written and read
 - Examples: `results` array, `loading` boolean, `changedPosts` list
 - External stores: `Browser URL`, `localStorage`, `Clipboard` — represent state outside the app boundary
@@ -783,13 +813,13 @@ Wiring is control flow: `U1 → N1` means U1 triggers N1.
 
 ### Verification Checks
 
-| Check | Question | If No... |
-|-------|----------|----------|
-| **Every U that displays data** | Does it have an incoming wire (via Wires Out or Returns To)? | Add the data source |
-| **Every N** | Does it have Wires Out or Returns To (or both)? | Investigate — may be dead code or missing wiring |
-| **Every S** | Does something read from it (Returns To)? | Investigate — may be unused |
-| **Navigation mechanisms** | Is this N just the "how" of getting somewhere? | Wire directly to Place instead |
-| **N with side effects** | Does this N affect external state (URL, storage, clipboard)? | Add a store for the external state |
+| Check                          | Question                                                     | If No...                                         |
+| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------ |
+| **Every U that displays data** | Does it have an incoming wire (via Wires Out or Returns To)? | Add the data source                              |
+| **Every N**                    | Does it have Wires Out or Returns To (or both)?              | Investigate — may be dead code or missing wiring |
+| **Every S**                    | Does something read from it (Returns To)?                    | Investigate — may be unused                      |
+| **Navigation mechanisms**      | Is this N just the "how" of getting somewhere?               | Wire directly to Place instead                   |
+| **N with side effects**        | Does this N affect external state (URL, storage, clipboard)? | Add a store for the external state               |
 
 ---
 
@@ -860,9 +890,9 @@ class dynamicForm chunk
 
 ### Chunk Color Convention
 
-| Type | Color | Hex |
-|------|-------|-----|
-| Chunk node (main diagram) | Light blue | `#b3e5fc` |
+| Type                             | Color              | Hex                                   |
+| -------------------------------- | ------------------ | ------------------------------------- |
+| Chunk node (main diagram)        | Light blue         | `#b3e5fc`                             |
 | Boundary markers (chunk diagram) | Light blue, dashed | `#b3e5fc` with `stroke-dasharray:5 5` |
 
 ### Benefits
@@ -899,11 +929,11 @@ flowchart TB
 
 ### Line Conventions
 
-| Line Style | Mermaid Syntax | Use |
-|------------|----------------|-----|
-| Solid (`-->`) | `A --> B` | Wires Out: calls, triggers, writes |
-| Dashed (`-.->`) | `A -.-> B` | Returns To: return values, data store reads |
-| Labeled `...` | `A -.->|...| B` | Abbreviated flow: intermediate steps omitted |
+| Line Style      | Mermaid Syntax | Use                                         |
+| --------------- | -------------- | ------------------------------------------- | --- | -------------------------------------------- |
+| Solid (`-->`)   | `A --> B`      | Wires Out: calls, triggers, writes          |
+| Dashed (`-.->`) | `A -.-> B`     | Returns To: return values, data store reads |
+| Labeled `...`   | `A -.->        | ...                                         | B`  | Abbreviated flow: intermediate steps omitted |
 
 #### Abbreviating Out-of-Scope Flows
 
@@ -914,29 +944,30 @@ S4 -.->|...| U6
 ```
 
 This says "data flows from S4 to U6, with intermediate steps omitted." Use this when:
+
 - The flow exists but its internals are out of scope
 - You need to show where data originates without detailing the query chain
 - The breadboard focuses on one workflow (e.g., editing) but needs to acknowledge another (e.g., viewing)
 
 ### ID Prefixes
 
-| Prefix | Type | Example |
-|--------|------|---------|
-| **P** | Places | P1, P2, P3 |
-| **U** | UI affordances | U1, U2, U3 |
-| **N** | Code affordances | N1, N2, N3 |
-| **S** | Data stores | S1, S2, S3 |
+| Prefix | Type             | Example    |
+| ------ | ---------------- | ---------- |
+| **P**  | Places           | P1, P2, P3 |
+| **U**  | UI affordances   | U1, U2, U3 |
+| **N**  | Code affordances | N1, N2, N3 |
+| **S**  | Data stores      | S1, S2, S3 |
 
 ### Color Conventions
 
-| Type | Color | Hex |
-|------|-------|-----|
-| Places (subgraphs) | White/transparent | — |
-| UI affordances | Pink | `#ffb6c1` |
-| Code affordances | Grey | `#d3d3d3` |
-| Data stores | Lavender | `#e6e6fa` |
-| Chunks | Light blue | `#b3e5fc` |
-| Place references | Pink, dashed border | `#ffb6c1` |
+| Type               | Color               | Hex       |
+| ------------------ | ------------------- | --------- |
+| Places (subgraphs) | White/transparent   | —         |
+| UI affordances     | Pink                | `#ffb6c1` |
+| Code affordances   | Grey                | `#d3d3d3` |
+| Data stores        | Lavender            | `#e6e6fa` |
+| Chunks             | Light blue          | `#b3e5fc` |
+| Place references   | Pink, dashed border | `#ffb6c1` |
 
 ```text
 classDef ui fill:#ffb6c1,stroke:#d87093,color:#000
@@ -966,12 +997,12 @@ end
 N1 --> P2
 ```
 
-| Type | ID Pattern | Label Pattern | Purpose |
-|------|------------|---------------|---------|
-| Place | `P1`, `P2`... | `P1: Page Name` | A bounded context the user visits |
-| Trigger | — | `TRIGGER: Name` | An event that kicks off a flow (not navigable) |
-| Component | — | `COMPONENT: Name` | Reusable UI+logic that appears in multiple places |
-| System | — | `SYSTEM: Name` | When spanning multiple applications |
+| Type      | ID Pattern    | Label Pattern     | Purpose                                           |
+| --------- | ------------- | ----------------- | ------------------------------------------------- |
+| Place     | `P1`, `P2`... | `P1: Page Name`   | A bounded context the user visits                 |
+| Trigger   | —             | `TRIGGER: Name`   | An event that kicks off a flow (not navigable)    |
+| Component | —             | `COMPONENT: Name` | Reusable UI+logic that appears in multiple places |
+| System    | —             | `SYSTEM: Name`    | When spanning multiple applications               |
 
 **Key point:** The subgraph ID (`P1`, `P2`) must match the Place ID from the Places table. This allows navigation wires like `N1 --> P2` to connect to the Place boundary.
 
@@ -997,6 +1028,7 @@ flowchart TB
 ### Workflow Step Annotations (Optional)
 
 When breadboarding a specific workflow, you can optionally add numbered step markers to help readers follow the sequence visually. This is useful when:
+
 - The diagram is complex and the workflow path isn't obvious
 - You want to guide someone through a specific user journey
 - The breadboard will be used as a walkthrough or teaching tool
@@ -1006,11 +1038,11 @@ When breadboarding a specific workflow, you can optionally add numbered step mar
 Add a Workflow Guide table before the diagram:
 
 ```markdown
-| Step | Action | Where to look |
-|------|--------|---------------|
-| **1** | Click "Edit" button | U1 → N1 → S1 |
-| **2** | Edit mode activates | S1 → N2 → U3 |
-| **3** | Click "Add" | U3 → N3 → N8 |
+| Step  | Action              | Where to look |
+| ----- | ------------------- | ------------- |
+| **1** | Click "Edit" button | U1 → N1 → S1  |
+| **2** | Edit mode activates | S1 → N2 → U3  |
+| **3** | Click "Add"         | U3 → N3 → N8  |
 ```
 
 Add step marker nodes in the Mermaid diagram using stadium-shaped nodes:
@@ -1033,6 +1065,7 @@ flowchart TB
 ```
 
 **Formatting notes:**
+
 - Use `"1 - ACTION"` format (number, space, hyphen, space, action)
 - Avoid `"1. ACTION"` — the period triggers Mermaid's markdown list parser
 - Avoid `"1) ACTION"` — parentheses can also cause parsing issues
@@ -1046,10 +1079,12 @@ flowchart TB
 Slicing takes a breadboard and groups its affordances into **vertical implementation slices**. See **Example B** below for a complete slicing example.
 
 **Input:**
+
 - Breadboard (affordance tables with wiring)
 - Shape (R + mechanisms) — guides what demos matter
 
 **Output:**
+
 - Breadboard with affordances assigned to slices V1–V9 (max 9 slices)
 
 ### What is a Vertical Slice?
@@ -1066,6 +1101,7 @@ The opposite is a horizontal slice — doing work on one layer (e.g., "set up al
 - "Database Schema" (no demo possible)
 
 **Demo-able means:**
+
 - Has an entry point (UI interaction or trigger)
 - Has an observable output (UI renders, effect occurs)
 - Shows meaningful progress toward the R
@@ -1093,6 +1129,7 @@ This is normal. The breadboard shows the complete system; slicing shows the orde
 Look at your breadboard and shape. Ask: "What's the smallest subset that demonstrates the core mechanism working?"
 
 Usually this is:
+
 - The core data fetch
 - Basic rendering
 - No search, no pagination, no state persistence yet
@@ -1102,6 +1139,7 @@ This becomes V1.
 **Step 2: Layer additional capabilities as slices**
 
 Look at the mechanisms in your shape. Each slice should demonstrate a mechanism working:
+
 - V2: Search input (demonstrates the search mechanism)
 - V3: Pagination/infinite scroll (demonstrates the pagination mechanism)
 - V4: URL state persistence (demonstrates the state preservation mechanism)
@@ -1113,11 +1151,11 @@ Look at the mechanisms in your shape. Each slice should demonstrate a mechanism 
 
 Go through every affordance and assign it to the slice where it's first needed to demo that slice's mechanism:
 
-| Slice | Mechanism | Affordances |
-|-------|-----------|-------------|
-| V1 | Core display | U2, U3, N3, N4, N5, N6, N7 |
-| V2 | Search | U1, N1, N2 |
-| V3 | Pagination | U10, N11, N12, N13 |
+| Slice | Mechanism    | Affordances                |
+| ----- | ------------ | -------------------------- |
+| V1    | Core display | U2, U3, N3, N4, N5, N6, N7 |
+| V2    | Search       | U1, N1, N2                 |
+| V3    | Pagination   | U10, N11, N12, N13         |
 
 Some affordances may have Wires Out to later slices — that's fine. They're implemented in their assigned slice; the wires just don't do anything yet.
 
@@ -1127,15 +1165,16 @@ For each slice, extract just the affordances being added:
 
 **V2: Search Works**
 
-| # | Component | Affordance | Control | Wires Out | Returns To |
-|---|-----------|------------|---------|-----------|------------|
-| U1 | search-detail | search input | type | → N1 | — |
-| N1 | search-detail | `activeQuery.next()` | call | → N2 | — |
-| N2 | search-detail | `activeQuery` subscription | observe | → N3 | — |
+| #   | Component     | Affordance                 | Control | Wires Out | Returns To |
+| --- | ------------- | -------------------------- | ------- | --------- | ---------- |
+| U1  | search-detail | search input               | type    | → N1      | —          |
+| N1  | search-detail | `activeQuery.next()`       | call    | → N2      | —          |
+| N2  | search-detail | `activeQuery` subscription | observe | → N3      | —          |
 
 **Step 5: Write a demo statement for each slice**
 
 Each slice needs a concrete demo that shows its mechanism working toward the R:
+
 - V1: "Widget shows real data from the API"
 - V2: "Type 'dharma', results filter live"
 - V3: "Scroll down, more items load"
@@ -1146,11 +1185,11 @@ The demo should be something you can show a stakeholder that demonstrates progre
 
 Show the complete breadboard in every slice diagram, but use styling to distinguish scope:
 
-| Category | Style | Description |
-|----------|-------|-------------|
-| **This slice** | Bright color | Affordances being added |
-| **Already built** | Solid grey | Previous slices |
-| **Future** | Transparent, dashed border | Not yet built |
+| Category          | Style                      | Description             |
+| ----------------- | -------------------------- | ----------------------- |
+| **This slice**    | Bright color               | Affordances being added |
+| **Already built** | Solid grey                 | Previous slices         |
+| **Future**        | Transparent, dashed border | Not yet built           |
 
 ```mermaid
 flowchart TB
@@ -1177,18 +1216,19 @@ flowchart TB
 ```
 
 This lets stakeholders see:
+
 - What's being built now (highlighted)
 - What already exists (grey)
 - What's coming later (faded)
 
 ### Slice Summary Format
 
-| # | Slice | Mechanism | Demo |
-|---|-------|-----------|------|
-| V1 | Widget with real data | F1, F4, F6 | "Widget shows letters from API" |
-| V2 | Search works | F3 | "Type to filter results" |
-| V3 | Infinite scroll | F5 | "Scroll down, more load" |
-| V4 | URL state | F2 | "Refresh preserves search" |
+| #   | Slice                 | Mechanism  | Demo                            |
+| --- | --------------------- | ---------- | ------------------------------- |
+| V1  | Widget with real data | F1, F4, F6 | "Widget shows letters from API" |
+| V2  | Search works          | F3         | "Type to filter results"        |
+| V3  | Infinite scroll       | F5         | "Scroll down, more load"        |
+| V4  | URL state             | F2         | "Refresh preserves search"      |
 
 The Mechanism column references parts from the shape, showing which mechanisms each slice demonstrates.
 
@@ -1206,17 +1246,17 @@ design waves (groups of parallel sessions) and generate execution manifests.
 
 After the main breadboard, include a table tracking Phase 2 code affordances:
 
-| ID | Place | Affordance | Replaces | Description |
-|----|-------|------------|----------|-------------|
-| N- | | | N- (Phase 1) | |
+| ID  | Place | Affordance | Replaces     | Description |
+| --- | ----- | ---------- | ------------ | ----------- |
+| N-  |       |            | N- (Phase 1) |             |
 
 ### Scope Coverage Verification
 
 Verify every requirement from the shaping doc has corresponding affordances:
 
-| Req | Requirement | Affordances | Covered? |
-|-----|-------------|-------------|----------|
-| R0 | {from shaping} | U-, N-, S- | Yes/No |
+| Req | Requirement    | Affordances | Covered? |
+| --- | -------------- | ----------- | -------- |
+| R0  | {from shaping} | U-, N-, S-  | Yes/No   |
 
 ### Quality Gate
 
@@ -1233,6 +1273,7 @@ Before marking a breadboard complete:
 - [ ] Mermaid diagram matches tables (tables are truth)
 
 ---
+
 ---
 
 # Examples
@@ -1249,47 +1290,47 @@ Workflow to understand: "How is `admin_organisation_countries` modified and read
 
 **UI Affordances**
 
-| # | Component | Affordance | Control | Wires Out | Returns To |
-|---|-----------|------------|---------|-----------|------------|
-| U1 | SSO Admin | `role_profiles` checkboxes | render | — | — |
-| U2 | SSO Admin | "Country Admin" checkbox | click | toggles selection | — |
-| U3 | SSO Admin | `admin_countries` filter_horizontal | render | — | — |
-| U4 | SSO Admin | Available countries list | render | — | — |
-| U5 | SSO Admin | Selected countries list | render | — | — |
-| U6 | SSO Admin | Add → / Remove ← | click | modifies selection | — |
-| U7 | SSO Admin | Save button | click | → N3 | — |
-| U20 | DWConnect | "Country admins" section | render | — | — |
-| U21 | (unknown) | System email "From" field | render | — | — |
+| #   | Component | Affordance                          | Control | Wires Out          | Returns To |
+| --- | --------- | ----------------------------------- | ------- | ------------------ | ---------- |
+| U1  | SSO Admin | `role_profiles` checkboxes          | render  | —                  | —          |
+| U2  | SSO Admin | "Country Admin" checkbox            | click   | toggles selection  | —          |
+| U3  | SSO Admin | `admin_countries` filter_horizontal | render  | —                  | —          |
+| U4  | SSO Admin | Available countries list            | render  | —                  | —          |
+| U5  | SSO Admin | Selected countries list             | render  | —                  | —          |
+| U6  | SSO Admin | Add → / Remove ←                    | click   | modifies selection | —          |
+| U7  | SSO Admin | Save button                         | click   | → N3               | —          |
+| U20 | DWConnect | "Country admins" section            | render  | —                  | —          |
+| U21 | (unknown) | System email "From" field           | render  | —                  | —          |
 
 **Code Affordances**
 
-| # | Component | Affordance | Control | Wires Out | Returns To |
-|---|-----------|------------|---------|-----------|------------|
-| N1 | sso/accounts/admin | `get_fieldsets()` | call | → U3 (conditional) | — |
-| N2 | sso/accounts/models | `get_administrable_user_countries()` | call | — | → U4 |
-| N3 | sso/accounts/admin | `save_form()` | call | → N4, → N5 | — |
-| N4 | Django Admin | Form M2M save | call | → S2 | — |
-| N5 | sso/forms/mixins | `_update_user_m2m()` | call | → S1, → N6 | — |
-| N6 | sso/signals | `user_m2m_field_updated` signal | signal | → N10 | — |
-| N7 | CLI/Scheduler | `manage.py dwbn_cleanup` | invoke | → N15 | — |
-| N10 | sso-dwbn-theme | `dwbn_user_m2m_field_updated()` | receive | → N11 | — |
-| N11 | sso-dwbn-theme | `dwbn_user_m2m_field_updated_task()` | call | → N12 | — |
-| N12 | sso-dwbn-theme | Country Admin added AND zero admin countries? | conditional | → N20 | — |
-| N15 | sso-dwbn-theme | `admin_changes()` | call | → N16 | — |
-| N16 | sso-dwbn-theme | For each Country Admin: home center country missing? | loop | → N20 | — |
-| N20 | sso-dwbn-theme | Get home center's country | call | → N21 | — |
-| N21 | sso-dwbn-theme | `admin_organisation_countries.add()` | call | → S2 | — |
-| N22 | sso-dwbn-theme | `update_last_modified()` | call | — | — |
-| N30 | dwconnect2-backend | `findCenterAdmins()` | call | — | → U20 |
-| N31 | sso/api | `get_object_data()` | call | — | → external |
+| #   | Component           | Affordance                                           | Control     | Wires Out          | Returns To |
+| --- | ------------------- | ---------------------------------------------------- | ----------- | ------------------ | ---------- |
+| N1  | sso/accounts/admin  | `get_fieldsets()`                                    | call        | → U3 (conditional) | —          |
+| N2  | sso/accounts/models | `get_administrable_user_countries()`                 | call        | —                  | → U4       |
+| N3  | sso/accounts/admin  | `save_form()`                                        | call        | → N4, → N5         | —          |
+| N4  | Django Admin        | Form M2M save                                        | call        | → S2               | —          |
+| N5  | sso/forms/mixins    | `_update_user_m2m()`                                 | call        | → S1, → N6         | —          |
+| N6  | sso/signals         | `user_m2m_field_updated` signal                      | signal      | → N10              | —          |
+| N7  | CLI/Scheduler       | `manage.py dwbn_cleanup`                             | invoke      | → N15              | —          |
+| N10 | sso-dwbn-theme      | `dwbn_user_m2m_field_updated()`                      | receive     | → N11              | —          |
+| N11 | sso-dwbn-theme      | `dwbn_user_m2m_field_updated_task()`                 | call        | → N12              | —          |
+| N12 | sso-dwbn-theme      | Country Admin added AND zero admin countries?        | conditional | → N20              | —          |
+| N15 | sso-dwbn-theme      | `admin_changes()`                                    | call        | → N16              | —          |
+| N16 | sso-dwbn-theme      | For each Country Admin: home center country missing? | loop        | → N20              | —          |
+| N20 | sso-dwbn-theme      | Get home center's country                            | call        | → N21              | —          |
+| N21 | sso-dwbn-theme      | `admin_organisation_countries.add()`                 | call        | → S2               | —          |
+| N22 | sso-dwbn-theme      | `update_last_modified()`                             | call        | —                  | —          |
+| N30 | dwconnect2-backend  | `findCenterAdmins()`                                 | call        | —                  | → U20      |
+| N31 | sso/api             | `get_object_data()`                                  | call        | —                  | → external |
 
 **Data Stores**
 
-| # | Store | Description |
-|---|-------|-------------|
-| S1 | `role_profiles` | M2M: which role profiles a user has |
-| S2 | `admin_organisation_countries` | M2M: which countries a user administers |
-| S3 | `organisations` | User's home center(s) |
+| #   | Store                          | Description                             |
+| --- | ------------------------------ | --------------------------------------- |
+| S1  | `role_profiles`                | M2M: which role profiles a user has     |
+| S2  | `admin_organisation_countries` | M2M: which countries a user administers |
+| S3  | `organisations`                | User's home center(s)                   |
 
 **Mermaid Diagram**
 
@@ -1412,59 +1453,59 @@ This section shows what comes FROM shaping — the requirements, existing patter
 
 **The R (Requirements)**
 
-| ID | Requirement |
-|----|-------------|
-| R0 | Make content searchable from the index page |
-| R2 | Navigate back to pagination state when returning from detail |
-| R3 | Navigate back to search state when returning from detail |
-| R4 | Search/pagination state survives page refresh |
-| R5 | Browser back button restores previous search/pagination state |
-| R9 | Search should debounce input (not fire on every keystroke) |
-| R10 | Search should require minimum 3 characters |
-| R11 | Loading and empty states should provide user feedback |
+| ID  | Requirement                                                   |
+| --- | ------------------------------------------------------------- |
+| R0  | Make content searchable from the index page                   |
+| R2  | Navigate back to pagination state when returning from detail  |
+| R3  | Navigate back to search state when returning from detail      |
+| R4  | Search/pagination state survives page refresh                 |
+| R5  | Browser back button restores previous search/pagination state |
+| R9  | Search should debounce input (not fire on every keystroke)    |
+| R10 | Search should require minimum 3 characters                    |
+| R11 | Loading and empty states should provide user feedback         |
 
 **Existing System with Reusable Patterns (S-CUR)**
 
 The app already has a global search page that implements most of these Rs. During shaping, it was documented at the parts/mechanism level:
 
-| Part | Mechanism |
-|------|-----------|
-| **S-CUR1** | **URL state & initialization** |
-| S-CUR1.1 | Router queryParams observable provides `{q, category}` |
-| S-CUR1.2 | `initializeState(params)` sets query and category from URL |
-| S-CUR1.3 | On page load, triggers initial search from URL state |
-| **S-CUR2** | **Search input** |
-| S-CUR2.1 | Search input binds to `activeQuery` BehaviorSubject |
-| S-CUR2.2 | `activeQuery` subscription with 90ms debounce |
-| S-CUR2.3 | Min 3 chars triggers `performNewSearch()` |
-| **S-CUR3** | **Data fetching** |
-| S-CUR3.1 | `performNewSearch()` sets loading state, calls search service |
-| S-CUR3.2 | Search service builds Typesense filter, calls `rawSearch()` |
-| S-CUR3.3 | `rawSearch()` queries Typesense, returns `{found, hits}` |
-| S-CUR3.4 | Results written to `detailResult` data store |
-| **S-CUR4** | **Pagination** |
-| S-CUR4.1 | Scroll-to-bottom triggers `appendNextPage()` via intercomService |
-| S-CUR4.2 | `appendNextPage()` increments page, calls search |
-| S-CUR4.3 | New hits concatenated to existing hits |
-| S-CUR4.4 | `sendMessage()` re-arms scroll detection |
-| **S-CUR5** | **Rendering** |
-| S-CUR5.1 | `cdr.detectChanges()` triggers template re-evaluation |
-| S-CUR5.2 | Loading spinner, "no results", result count based on store |
-| S-CUR5.3 | `*ngFor` renders tiles for each hit |
-| S-CUR5.4 | Tile click navigates to detail page |
+| Part       | Mechanism                                                        |
+| ---------- | ---------------------------------------------------------------- |
+| **S-CUR1** | **URL state & initialization**                                   |
+| S-CUR1.1   | Router queryParams observable provides `{q, category}`           |
+| S-CUR1.2   | `initializeState(params)` sets query and category from URL       |
+| S-CUR1.3   | On page load, triggers initial search from URL state             |
+| **S-CUR2** | **Search input**                                                 |
+| S-CUR2.1   | Search input binds to `activeQuery` BehaviorSubject              |
+| S-CUR2.2   | `activeQuery` subscription with 90ms debounce                    |
+| S-CUR2.3   | Min 3 chars triggers `performNewSearch()`                        |
+| **S-CUR3** | **Data fetching**                                                |
+| S-CUR3.1   | `performNewSearch()` sets loading state, calls search service    |
+| S-CUR3.2   | Search service builds Typesense filter, calls `rawSearch()`      |
+| S-CUR3.3   | `rawSearch()` queries Typesense, returns `{found, hits}`         |
+| S-CUR3.4   | Results written to `detailResult` data store                     |
+| **S-CUR4** | **Pagination**                                                   |
+| S-CUR4.1   | Scroll-to-bottom triggers `appendNextPage()` via intercomService |
+| S-CUR4.2   | `appendNextPage()` increments page, calls search                 |
+| S-CUR4.3   | New hits concatenated to existing hits                           |
+| S-CUR4.4   | `sendMessage()` re-arms scroll detection                         |
+| **S-CUR5** | **Rendering**                                                    |
+| S-CUR5.1   | `cdr.detectChanges()` triggers template re-evaluation            |
+| S-CUR5.2   | Loading spinner, "no results", result count based on store       |
+| S-CUR5.3   | `*ngFor` renders tiles for each hit                              |
+| S-CUR5.4   | Tile click navigates to detail page                              |
 
 **Sketched Solution: Parts that Adapt S-CUR**
 
 The new solution's parts explicitly reference which S-CUR patterns they adapt:
 
-| Part | Mechanism | Adapts |
-|------|-----------|--------|
-| F1 | Create widget (component, def, register) | — |
-| F2 | URL state & initialization (read `?q=`, restore on load) | S-CUR1 |
-| F3 | Search input (debounce, min 3 chars, triggers search) | S-CUR2 |
-| F4 | Data fetching (`rawSearch()` with filter) | S-CUR3 |
-| F5 | Pagination (scroll-to-bottom, append pages, re-arm) | S-CUR4 |
-| F6 | Rendering (loading, empty, results list, rows) | S-CUR5 |
+| Part | Mechanism                                                | Adapts |
+| ---- | -------------------------------------------------------- | ------ |
+| F1   | Create widget (component, def, register)                 | —      |
+| F2   | URL state & initialization (read `?q=`, restore on load) | S-CUR1 |
+| F3   | Search input (debounce, min 3 chars, triggers search)    | S-CUR2 |
+| F4   | Data fetching (`rawSearch()` with filter)                | S-CUR3 |
+| F5   | Pagination (scroll-to-bottom, append pages, re-arm)      | S-CUR4 |
+| F6   | Rendering (loading, empty, results list, rows)           | S-CUR5 |
 
 ---
 
@@ -1474,45 +1515,45 @@ This is where breadboarding happens. The shaped parts become concrete affordance
 
 **UI Affordances**
 
-| # | Component | Affordance | Control | Wires Out | Returns To |
-|---|-----------|------------|---------|-----------|------------|
-| U1 | letter-browser | search input | type | → N1 | — |
-| U2 | letter-browser | loading spinner | render | — | — |
-| U3 | letter-browser | no results msg | render | — | — |
-| U4 | letter-browser | result count | render | — | — |
-| U5 | letter-browser | results list | render | → U6, U7, U8, U9 | — |
-| U6 | letter-row | row click | click | → LD | — |
-| U7 | letter-row | date | render | — | — |
-| U8 | letter-row | subject | render | — | — |
-| U9 | letter-row | teaser | render | — | — |
-| U10 | letter-browser | scroll | scroll | → N11 | — |
-| U11 | browser | back button | click | → N9 | — |
-| U12 | letter-browser | "See all X results" | click | → LP | — |
-| LD | — | Letter Detail | place | — | — |
-| LP | — | Full Page | place | — | — |
+| #   | Component      | Affordance          | Control | Wires Out        | Returns To |
+| --- | -------------- | ------------------- | ------- | ---------------- | ---------- |
+| U1  | letter-browser | search input        | type    | → N1             | —          |
+| U2  | letter-browser | loading spinner     | render  | —                | —          |
+| U3  | letter-browser | no results msg      | render  | —                | —          |
+| U4  | letter-browser | result count        | render  | —                | —          |
+| U5  | letter-browser | results list        | render  | → U6, U7, U8, U9 | —          |
+| U6  | letter-row     | row click           | click   | → LD             | —          |
+| U7  | letter-row     | date                | render  | —                | —          |
+| U8  | letter-row     | subject             | render  | —                | —          |
+| U9  | letter-row     | teaser              | render  | —                | —          |
+| U10 | letter-browser | scroll              | scroll  | → N11            | —          |
+| U11 | browser        | back button         | click   | → N9             | —          |
+| U12 | letter-browser | "See all X results" | click   | → LP             | —          |
+| LD  | —              | Letter Detail       | place   | —                | —          |
+| LP  | —              | Full Page           | place   | —                | —          |
 
 **Code Affordances**
 
-| # | Component | Affordance | Control | Wires Out | Returns To |
-|---|-----------|------------|---------|-----------|------------|
-| N1 | letter-browser | `activeQuery.next()` | call | → N2 | → U12 |
-| N2 | letter-browser | `activeQuery` subscription | observe | → N3 | — |
-| N3 | letter-browser | `performSearch()` | call | → N4, → N6, → N7, → N8 | — |
-| N4 | typesense.service | `rawSearch()` | call | — | → N3, → N12 |
-| N5 | letter-browser | `parentId` (config) | config | — | → N4 |
-| N6 | letter-browser | `loading` store | write | — | → N8 |
-| N7 | letter-browser | `detailResult` store | write | — | → N8, → N16 |
-| N8 | letter-browser | `detectChanges()` | call | → U2, → U3, → U4, → U5 | — |
-| N9 | browser | URL `?q=` | read | → N10 | — |
-| N10 | letter-browser | `initializeState()` | call | → N1, → N3 | — |
-| N11 | intercom.service | scroll subject | observe | → N12 | — |
-| N12 | letter-browser | `appendNextPage()` | call | → N4, → N7, → N8, → N13, → N14 | — |
-| N13 | intercom.service | `sendMessage()` | call | → N11 | — |
-| N14 | router | `navigate()` | call | — | → N9 |
-| N15 | letter-browser | if `!compact` subscribe | conditional | → N11 | — |
-| N16 | letter-browser | if truncated show link | conditional | → U12 | — |
-| N17 | letter-browser | `compact` (config) | config | — | → N4, → N15, → N16 |
-| N18 | letter-browser | `fullPageRoute` (config) | config | — | → U12 |
+| #   | Component         | Affordance                 | Control     | Wires Out                      | Returns To         |
+| --- | ----------------- | -------------------------- | ----------- | ------------------------------ | ------------------ |
+| N1  | letter-browser    | `activeQuery.next()`       | call        | → N2                           | → U12              |
+| N2  | letter-browser    | `activeQuery` subscription | observe     | → N3                           | —                  |
+| N3  | letter-browser    | `performSearch()`          | call        | → N4, → N6, → N7, → N8         | —                  |
+| N4  | typesense.service | `rawSearch()`              | call        | —                              | → N3, → N12        |
+| N5  | letter-browser    | `parentId` (config)        | config      | —                              | → N4               |
+| N6  | letter-browser    | `loading` store            | write       | —                              | → N8               |
+| N7  | letter-browser    | `detailResult` store       | write       | —                              | → N8, → N16        |
+| N8  | letter-browser    | `detectChanges()`          | call        | → U2, → U3, → U4, → U5         | —                  |
+| N9  | browser           | URL `?q=`                  | read        | → N10                          | —                  |
+| N10 | letter-browser    | `initializeState()`        | call        | → N1, → N3                     | —                  |
+| N11 | intercom.service  | scroll subject             | observe     | → N12                          | —                  |
+| N12 | letter-browser    | `appendNextPage()`         | call        | → N4, → N7, → N8, → N13, → N14 | —                  |
+| N13 | intercom.service  | `sendMessage()`            | call        | → N11                          | —                  |
+| N14 | router            | `navigate()`               | call        | —                              | → N9               |
+| N15 | letter-browser    | if `!compact` subscribe    | conditional | → N11                          | —                  |
+| N16 | letter-browser    | if truncated show link     | conditional | → U12                          | —                  |
+| N17 | letter-browser    | `compact` (config)         | config      | —                              | → N4, → N15, → N16 |
+| N18 | letter-browser    | `fullPageRoute` (config)   | config      | —                              | → U12              |
 
 **Mermaid Diagram**
 
@@ -1635,13 +1676,13 @@ With the full breadboard complete, slice it into vertical increments. Each slice
 
 **Slice Summary**
 
-| # | Slice | Mechanism | Affordances | Demo |
-|---|-------|-----------|-------------|------|
-| V1 | Widget with real data | F1, F4, F6 | U2-U9, N3-N8, LD | "Widget shows real data" |
-| V2 | Search works | F3 | U1, N1, N2 | "Type 'dharma', results filter" |
-| V3 | Infinite scroll | F5 | U10, N11-N13 | "Scroll down, more load" |
-| V4 | URL state | F2 | U11, N9, N10, N14 | "Refresh preserves search" |
-| V5 | Compact mode | — | U12, N15-N18, LP | "Shows 'See all' link" |
+| #   | Slice                 | Mechanism  | Affordances       | Demo                            |
+| --- | --------------------- | ---------- | ----------------- | ------------------------------- |
+| V1  | Widget with real data | F1, F4, F6 | U2-U9, N3-N8, LD  | "Widget shows real data"        |
+| V2  | Search works          | F3         | U1, N1, N2        | "Type 'dharma', results filter" |
+| V3  | Infinite scroll       | F5         | U10, N11-N13      | "Scroll down, more load"        |
+| V4  | URL state             | F2         | U11, N9, N10, N14 | "Refresh preserves search"      |
+| V5  | Compact mode          | —          | U12, N15-N18, LP  | "Shows 'See all' link"          |
 
 **Slice Diagram**
 

@@ -1,6 +1,6 @@
 ---
-title: "Mobile Optimization Vertical — Kickoff"
-subtitle: "Registered mobile-optimization as a new vertical and laid the foundation for systematic mobile improvement"
+title: 'Mobile Optimization Vertical — Kickoff'
+subtitle: 'Registered mobile-optimization as a new vertical and laid the foundation for systematic mobile improvement'
 date: 2026-02-14
 phase: 1
 pipelineName: mobile-optimization
@@ -10,8 +10,8 @@ domains: [garments, pricing]
 tools: []
 stage: research
 tags: [plan, build]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0214-mobile-vertical"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0214-mobile-vertical'
 status: complete
 ---
 
@@ -34,7 +34,7 @@ Added `mobile-optimization` slug to all 6 locations where verticals are register
 
 ### Design Decisions
 
-- **Not a main app sidebar item**: Mobile Optimization improves *existing* screens rather than adding a new app section. No new routes needed in the main Next.js app.
+- **Not a main app sidebar item**: Mobile Optimization improves _existing_ screens rather than adding a new app section. No new routes needed in the main Next.js app.
 - **Placed before `meta`**: The `meta` vertical is a catch-all, so `mobile-optimization` sits just before it in all lists.
 - **Sidebar abbreviation**: Used "Mobile Opt." in the KB sidebar to fit the narrow 260px sidebar width.
 

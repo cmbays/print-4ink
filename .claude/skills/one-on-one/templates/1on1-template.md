@@ -25,9 +25,9 @@
 
 ## Gary Sync
 
-| ID | Question | Vertical | Blocking? |
-|----|----------|----------|-----------|
-| {id} | {question} | {vertical} | {yes/no} |
+| ID   | Question   | Vertical   | Blocking? |
+| ---- | ---------- | ---------- | --------- |
+| {id} | {question} | {vertical} | {yes/no}  |
 
 ## Story Beat
 
@@ -35,4 +35,4 @@
 
 ---
 
-*Next check-in suggested: {date or trigger}*
+_Next check-in suggested: {date or trigger}_

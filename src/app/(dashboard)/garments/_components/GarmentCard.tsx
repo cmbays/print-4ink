@@ -1,24 +1,24 @@
-"use client";
+'use client'
 
-import { useMemo } from "react";
-import { cn } from "@shared/lib/cn";
-import { GarmentImage } from "@/components/features/GarmentImage";
-import { FavoriteStar } from "@/components/features/FavoriteStar";
-import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
-import { Badge } from "@shared/ui/primitives/badge";
-import { formatCurrency } from "@domain/lib/money";
-import { getColorById } from "@domain/rules/garment.rules";
-import { getColorsMutable } from "@infra/repositories/colors";
-import type { GarmentCatalog } from "@domain/entities/garment";
-import type { Color } from "@domain/entities/color";
+import { useMemo } from 'react'
+import { cn } from '@shared/lib/cn'
+import { GarmentImage } from '@/components/features/GarmentImage'
+import { FavoriteStar } from '@/components/features/FavoriteStar'
+import { ColorSwatchPicker } from '@/components/features/ColorSwatchPicker'
+import { Badge } from '@shared/ui/primitives/badge'
+import { formatCurrency } from '@domain/lib/money'
+import { getColorById } from '@domain/rules/garment.rules'
+import { getColorsMutable } from '@infra/repositories/colors'
+import type { GarmentCatalog } from '@domain/entities/garment'
+import type { Color } from '@domain/entities/color'
 
-interface GarmentCardProps {
-  garment: GarmentCatalog;
-  showPrice: boolean;
-  favoriteColorIds: string[];
-  onToggleFavorite: (garmentId: string) => void;
-  onBrandClick?: (brandName: string) => void;
-  onClick: (garmentId: string) => void;
+type GarmentCardProps = {
+  garment: GarmentCatalog
+  showPrice: boolean
+  favoriteColorIds: string[]
+  onToggleFavorite: (garmentId: string) => void
+  onBrandClick?: (brandName: string) => void
+  onClick: (garmentId: string) => void
 }
 
 export function GarmentCard({
@@ -30,23 +30,20 @@ export function GarmentCard({
   onClick,
 }: GarmentCardProps) {
   // All Color objects for this garment's palette
-  const garmentColors = useMemo(
-    () => {
-      const allColors = getColorsMutable();
-      return garment.availableColors
-        .map((id) => getColorById(id, allColors))
-        .filter((c): c is Color => c != null);
-    },
-    [garment.availableColors]
-  );
+  const garmentColors = useMemo(() => {
+    const allColors = getColorsMutable()
+    return garment.availableColors
+      .map((id) => getColorById(id, allColors))
+      .filter((c): c is Color => c != null)
+  }, [garment.availableColors])
 
   // Only favorite colors that this garment actually has
   const favoriteSwatchColors = useMemo(() => {
-    const favSet = new Set(favoriteColorIds);
-    return garmentColors.filter((c) => favSet.has(c.id));
-  }, [garmentColors, favoriteColorIds]);
+    const favSet = new Set(favoriteColorIds)
+    return garmentColors.filter((c) => favSet.has(c.id))
+  }, [garmentColors, favoriteColorIds])
 
-  const totalColorCount = garmentColors.length;
+  const totalColorCount = garmentColors.length
 
   return (
     <div
@@ -54,17 +51,17 @@ export function GarmentCard({
       tabIndex={0}
       onClick={() => onClick(garment.id)}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick(garment.id);
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick(garment.id)
         }
       }}
       className={cn(
-        "flex flex-col gap-2 rounded-lg border border-border bg-elevated p-3",
-        "cursor-pointer transition-colors hover:bg-surface",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        "motion-reduce:transition-none",
-        !garment.isEnabled && "opacity-50",
+        'flex flex-col gap-2 rounded-lg border border-border bg-elevated p-3',
+        'cursor-pointer transition-colors hover:bg-surface',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'motion-reduce:transition-none',
+        !garment.isEnabled && 'opacity-50'
       )}
     >
       {/* Image */}
@@ -79,22 +76,20 @@ export function GarmentCard({
             type="button"
             className="hover:text-action hover:underline focus-visible:outline-none focus-visible:text-action"
             onClick={(e) => {
-              e.stopPropagation();
-              onBrandClick(garment.brand);
+              e.stopPropagation()
+              onBrandClick(garment.brand)
             }}
           >
             {garment.brand}
           </button>
         ) : (
           garment.brand
-        )}
-        {" "}· {garment.sku}
+        )}{' '}
+        · {garment.sku}
       </p>
 
       {/* Name */}
-      <p className="text-sm font-medium text-foreground line-clamp-2">
-        {garment.name}
-      </p>
+      <p className="text-sm font-medium text-foreground line-clamp-2">{garment.name}</p>
 
       {/* Favorite color swatches + count badge */}
       <div className="flex items-center gap-2">
@@ -109,7 +104,7 @@ export function GarmentCard({
           <span className="text-xs text-muted-foreground">No favorites</span>
         )}
         <span className="ml-auto whitespace-nowrap text-xs text-muted-foreground">
-          {totalColorCount} {totalColorCount === 1 ? "color" : "colors"}
+          {totalColorCount} {totalColorCount === 1 ? 'color' : 'colors'}
         </span>
       </div>
 
@@ -133,5 +128,5 @@ export function GarmentCard({
         />
       </div>
     </div>
-  );
+  )
 }

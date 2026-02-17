@@ -1,69 +1,66 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import { Plus, MessageSquare } from "lucide-react";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
+import { useState, useMemo } from 'react'
+import { Plus, MessageSquare } from 'lucide-react'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
-import { NoteItem } from "./NoteItem";
-import type { JobNote, JobNoteType } from "@domain/entities/job";
+} from '@shared/ui/primitives/select'
+import { Tabs, TabsList, TabsTrigger } from '@shared/ui/primitives/tabs'
+import { NoteItem } from './NoteItem'
+import type { JobNote, JobNoteType } from '@domain/entities/job'
 
-interface NotesFeedProps {
-  notes: JobNote[];
-  onAddNote: (type: JobNoteType, content: string) => void;
+type NotesFeedProps = {
+  notes: JobNote[]
+  onAddNote: (type: JobNoteType, content: string) => void
 }
 
-type NoteFilterValue = "all" | JobNoteType;
+type NoteFilterValue = 'all' | JobNoteType
 
 const NOTE_FILTER_TABS: ReadonlyArray<{ value: NoteFilterValue; label: string }> = [
-  { value: "all", label: "All" },
-  { value: "internal", label: "Internal" },
-  { value: "customer", label: "Customer" },
-  { value: "system", label: "System" },
-];
+  { value: 'all', label: 'All' },
+  { value: 'internal', label: 'Internal' },
+  { value: 'customer', label: 'Customer' },
+  { value: 'system', label: 'System' },
+]
 
 export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
-  const [activeFilter, setActiveFilter] = useState<NoteFilterValue>("all");
-  const [newNoteContent, setNewNoteContent] = useState("");
-  const [newNoteType, setNewNoteType] = useState<JobNoteType>("internal");
+  const [activeFilter, setActiveFilter] = useState<NoteFilterValue>('all')
+  const [newNoteContent, setNewNoteContent] = useState('')
+  const [newNoteType, setNewNoteType] = useState<JobNoteType>('internal')
 
   // Filter and sort notes chronologically (newest first)
   const filteredNotes = useMemo(() => {
     const sorted = [...notes].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-    if (activeFilter === "all") return sorted;
-    return sorted.filter((n) => n.type === activeFilter);
-  }, [notes, activeFilter]);
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    if (activeFilter === 'all') return sorted
+    return sorted.filter((n) => n.type === activeFilter)
+  }, [notes, activeFilter])
 
   function handleAddNote() {
-    const content = newNoteContent.trim();
-    if (!content) return;
-    onAddNote(newNoteType, content);
-    setNewNoteContent("");
+    const content = newNoteContent.trim()
+    if (!content) return
+    onAddNote(newNoteType, content)
+    setNewNoteContent('')
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleAddNote();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleAddNote()
     }
   }
 
   return (
     <section className="rounded-lg border border-border bg-card">
       <div className="border-b border-border px-4 py-3">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-          Notes
-        </h2>
+        <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">Notes</h2>
       </div>
 
       {/* Filter tabs */}
@@ -71,11 +68,7 @@ export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
         <Tabs value={activeFilter} onValueChange={(v) => setActiveFilter(v as NoteFilterValue)}>
           <TabsList variant="line" className="h-8">
             {NOTE_FILTER_TABS.map((tab) => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="text-xs px-2 py-1"
-              >
+              <TabsTrigger key={tab.value} value={tab.value} className="text-xs px-2 py-1">
                 {tab.label}
               </TabsTrigger>
             ))}
@@ -85,10 +78,7 @@ export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
 
       {/* Quick-add form */}
       <div className="flex items-center gap-2 border-b border-border/50 px-4 py-3">
-        <Select
-          value={newNoteType}
-          onValueChange={(v) => setNewNoteType(v as JobNoteType)}
-        >
+        <Select value={newNoteType} onValueChange={(v) => setNewNoteType(v as JobNoteType)}>
           <SelectTrigger size="sm" className="w-28 shrink-0">
             <SelectValue />
           </SelectTrigger>
@@ -127,12 +117,10 @@ export function NotesFeed({ notes, onAddNote }: NotesFeedProps) {
         <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
           <MessageSquare className="size-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
-            {activeFilter === "all"
-              ? "No notes yet."
-              : `No ${activeFilter} notes.`}
+            {activeFilter === 'all' ? 'No notes yet.' : `No ${activeFilter} notes.`}
           </p>
         </div>
       )}
     </section>
-  );
+  )
 }

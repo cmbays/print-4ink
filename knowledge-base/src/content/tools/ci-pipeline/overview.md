@@ -1,6 +1,6 @@
 ---
-title: "CI Pipeline"
-subtitle: "GitHub Actions CI running tsc, lint, test, and build on push/PR to main"
+title: 'CI Pipeline'
+subtitle: 'GitHub Actions CI running tsc, lint, test, and build on push/PR to main'
 tool: ci-pipeline
 docType: overview
 lastUpdated: 2026-02-15
@@ -9,7 +9,7 @@ status: draft
 
 ## Overview
 
-*To be written. This is a placeholder created during the KB taxonomy restructure.*
+_To be written. This is a placeholder created during the KB taxonomy restructure._
 
 ## Key Commands
 

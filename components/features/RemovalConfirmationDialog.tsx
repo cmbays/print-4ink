@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import type React from "react";
-import { useState, useMemo } from "react";
-import { ChevronDown, AlertTriangle } from "lucide-react";
+import type React from 'react'
+import { useState, useMemo } from 'react'
+import { ChevronDown, AlertTriangle } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,32 +12,32 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@shared/ui/primitives/alert-dialog";
+} from '@shared/ui/primitives/alert-dialog'
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@shared/ui/primitives/collapsible";
-import { Checkbox } from "@shared/ui/primitives/checkbox";
-import { Button } from "@shared/ui/primitives/button";
-import { cn } from "@shared/lib/cn";
-import type { Color } from "@domain/entities/color";
-import type { ImpactPreview } from "@domain/rules/customer.rules";
+} from '@shared/ui/primitives/collapsible'
+import { Checkbox } from '@shared/ui/primitives/checkbox'
+import { Button } from '@shared/ui/primitives/button'
+import { cn } from '@shared/lib/cn'
+import type { Color } from '@domain/entities/color'
+import type { ImpactPreview } from '@domain/rules/customer.rules'
 
 // ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
-interface RemovalConfirmationDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  color: Color;
-  level: "global" | "brand";
-  levelLabel?: string;
-  impact: ImpactPreview;
-  onRemoveAll: () => void;
-  onRemoveLevelOnly: () => void;
-  onRemoveSelected: (brandNames: string[], customerCompanies: string[]) => void;
+type RemovalConfirmationDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  color: Color
+  level: 'global' | 'brand'
+  levelLabel?: string
+  impact: ImpactPreview
+  onRemoveAll: () => void
+  onRemoveLevelOnly: () => void
+  onRemoveSelected: (brandNames: string[], customerCompanies: string[]) => void
 }
 
 // ---------------------------------------------------------------------------
@@ -55,67 +55,60 @@ export function RemovalConfirmationDialog({
   onRemoveLevelOnly,
   onRemoveSelected,
 }: RemovalConfirmationDialogProps) {
-  const [customizeOpen, setCustomizeOpen] = useState(false);
-  const [selectedBrands, setSelectedBrands] = useState<Set<string>>(new Set());
-  const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set());
+  const [customizeOpen, setCustomizeOpen] = useState(false)
+  const [selectedBrands, setSelectedBrands] = useState<Set<string>>(new Set())
+  const [selectedCustomers, setSelectedCustomers] = useState<Set<string>>(new Set())
 
-  const totalImpact = impact.supplierCount + impact.customerCount;
-  const totalSelected = selectedBrands.size + selectedCustomers.size;
+  const totalImpact = impact.supplierCount + impact.customerCount
+  const totalSelected = selectedBrands.size + selectedCustomers.size
 
-  const displayLevel = levelLabel ?? level;
+  const displayLevel = levelLabel ?? level
 
   // Build impact message
   const impactMessage = useMemo(() => {
-    const parts: string[] = [];
+    const parts: string[] = []
     if (impact.supplierCount > 0) {
-      parts.push(
-        `${impact.supplierCount} ${impact.supplierCount === 1 ? "brand" : "brands"}`
-      );
+      parts.push(`${impact.supplierCount} ${impact.supplierCount === 1 ? 'brand' : 'brands'}`)
     }
     if (impact.customerCount > 0) {
-      parts.push(
-        `${impact.customerCount} ${impact.customerCount === 1 ? "customer" : "customers"}`
-      );
+      parts.push(`${impact.customerCount} ${impact.customerCount === 1 ? 'customer' : 'customers'}`)
     }
-    return parts.join(" and ");
-  }, [impact.supplierCount, impact.customerCount]);
+    return parts.join(' and ')
+  }, [impact.supplierCount, impact.customerCount])
 
   // Shared className for checkbox labels
   const checkboxLabelCn = cn(
-    "flex items-center gap-2 rounded px-1.5 py-1 text-sm",
-    "min-h-(--mobile-touch-target) md:min-h-0",
-    "cursor-pointer hover:bg-elevated transition-colors"
-  );
+    'flex items-center gap-2 rounded px-1.5 py-1 text-sm',
+    'min-h-(--mobile-touch-target) md:min-h-0',
+    'cursor-pointer hover:bg-elevated transition-colors'
+  )
 
   // -- Handlers ---------------------------------------------------------------
 
-  function toggleSetItem<T>(
-    setter: React.Dispatch<React.SetStateAction<Set<T>>>,
-    item: T
-  ) {
+  function toggleSetItem<T>(setter: React.Dispatch<React.SetStateAction<Set<T>>>, item: T) {
     setter((prev) => {
-      const next = new Set(prev);
+      const next = new Set(prev)
       if (next.has(item)) {
-        next.delete(item);
+        next.delete(item)
       } else {
-        next.add(item);
+        next.add(item)
       }
-      return next;
-    });
+      return next
+    })
   }
 
   function handleApplySelected() {
-    onRemoveSelected([...selectedBrands], [...selectedCustomers]);
-    onOpenChange(false);
+    onRemoveSelected([...selectedBrands], [...selectedCustomers])
+    onOpenChange(false)
   }
 
   function handleRemoveAll() {
-    onRemoveAll();
+    onRemoveAll()
     // AlertDialogAction auto-closes — no manual onOpenChange(false) needed
   }
 
   function handleRemoveLevelOnly() {
-    onRemoveLevelOnly();
+    onRemoveLevelOnly()
     // AlertDialogAction auto-closes — no manual onOpenChange(false) needed
   }
 
@@ -132,22 +125,15 @@ export function RemovalConfirmationDialog({
               style={{ backgroundColor: color.hex }}
               aria-hidden="true"
             />
-            <AlertDialogTitle className="text-base">
-              Remove {color.name}?
-            </AlertDialogTitle>
+            <AlertDialogTitle className="text-base">Remove {color.name}?</AlertDialogTitle>
           </div>
 
           {/* U66: Impact count message */}
           <AlertDialogDescription className="flex items-start gap-2">
-            <AlertTriangle
-              size={16}
-              className="mt-0.5 shrink-0 text-warning"
-              aria-hidden="true"
-            />
+            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-warning" aria-hidden="true" />
             <span>
-              {impactMessage}{" "}
-              {totalImpact === 1 ? "has" : "have"} this color. Choose how to
-              handle removal.
+              {impactMessage} {totalImpact === 1 ? 'has' : 'have'} this color. Choose how to handle
+              removal.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -162,10 +148,7 @@ export function RemovalConfirmationDialog({
             >
               <ChevronDown
                 size={14}
-                className={cn(
-                  "transition-transform",
-                  customizeOpen && "rotate-180"
-                )}
+                className={cn('transition-transform', customizeOpen && 'rotate-180')}
                 aria-hidden="true"
               />
               Customize selections
@@ -199,9 +182,7 @@ export function RemovalConfirmationDialog({
               {/* Customers */}
               {impact.customers.length > 0 && (
                 <div className="space-y-1.5">
-                  {impact.suppliers.length > 0 && (
-                    <div className="my-1.5 border-t border-border" />
-                  )}
+                  {impact.suppliers.length > 0 && <div className="my-1.5 border-t border-border" />}
                   <p className="text-xs font-medium text-muted-foreground">
                     Customers ({impact.customers.length})
                   </p>
@@ -220,11 +201,7 @@ export function RemovalConfirmationDialog({
               {/* U72: Apply to selected button */}
               {totalSelected > 0 && (
                 <div className="pt-2">
-                  <Button
-                    size="sm"
-                    className="w-full"
-                    onClick={handleApplySelected}
-                  >
+                  <Button size="sm" className="w-full" onClick={handleApplySelected}>
                     Apply to selected ({totalSelected})
                   </Button>
                 </div>
@@ -236,18 +213,12 @@ export function RemovalConfirmationDialog({
         {/* Action buttons */}
         <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
           {/* U67: Remove everywhere */}
-          <AlertDialogAction
-            variant="destructive"
-            onClick={handleRemoveAll}
-          >
+          <AlertDialogAction variant="destructive" onClick={handleRemoveAll}>
             Remove everywhere
           </AlertDialogAction>
 
           {/* U68: Remove from level only */}
-          <AlertDialogAction
-            variant="outline"
-            onClick={handleRemoveLevelOnly}
-          >
+          <AlertDialogAction variant="outline" onClick={handleRemoveLevelOnly}>
             Remove from {displayLevel} only
           </AlertDialogAction>
 
@@ -256,5 +227,5 @@ export function RemovalConfirmationDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

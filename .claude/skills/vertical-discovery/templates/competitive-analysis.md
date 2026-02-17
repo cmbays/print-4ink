@@ -1,6 +1,6 @@
 ---
-title: "[COMPETITOR] [VERTICAL] Analysis"
-description: "Feature list, UI patterns, workflow analysis from [COMPETITOR] web research, Playwright exploration, and user interview"
+title: '[COMPETITOR] [VERTICAL] Analysis'
+description: 'Feature list, UI patterns, workflow analysis from [COMPETITOR] web research, Playwright exploration, and user interview'
 category: competitive-analysis
 status: draft
 phase: 1
@@ -18,10 +18,10 @@ last-verified: [DATE]
 
 ## Terminology: Internal vs External [VERTICAL]
 
-| Term | Definition | Phase |
-|------|-----------|-------|
+| Term                    | Definition                                          | Phase                      |
+| ----------------------- | --------------------------------------------------- | -------------------------- |
 | **Internal [VERTICAL]** | Shop operator performs [TASK] using internal tools. | **Phase 1** (building now) |
-| **External [VERTICAL]** | Customer self-service for [TASK]. | **Phase 2** |
+| **External [VERTICAL]** | Customer self-service for [TASK].                   | **Phase 2**                |
 
 ---
 
@@ -68,6 +68,7 @@ Step 2: [STEP]
 ```
 
 **Metrics**:
+
 - Estimated clicks: [X]
 - Measured time: ~[X] minutes
 - Number of screen transitions: [X]
@@ -78,6 +79,7 @@ Step 2: [STEP]
 **Estimated from user interview**: [X] minutes
 
 **Metrics**:
+
 - Estimated clicks: [X]
 - Estimated time: [X] minutes
 - Multiplier: ~[X]x per additional item
@@ -87,24 +89,28 @@ Step 2: [STEP]
 ## UI Pattern Observations
 
 ### Design Language
+
 - [OBSERVATIONS]
 
 ### Navigation Pattern
+
 - [OBSERVATIONS]
 
 ### Data Sources
+
 - [OBSERVATIONS]
 
 ---
 
 ## Friction Points Observed
 
-| # | Friction Point | Severity | Frequency | Impact | Notes |
-|---|---|---|---|---|---|
-| 1 | | Critical/High/Medium/Low | Every time / Sometimes / Rarely | | |
-| 2 | | | | | |
+| #   | Friction Point | Severity                 | Frequency                       | Impact | Notes |
+| --- | -------------- | ------------------------ | ------------------------------- | ------ | ----- |
+| 1   |                | Critical/High/Medium/Low | Every time / Sometimes / Rarely |        |       |
+| 2   |                |                          |                                 |        |       |
 
 **Severity Guide**:
+
 - **Critical**: Blocks workflow or causes data loss
 - **High**: Adds significant time or causes rework
 - **Medium**: Annoying but workable
@@ -122,10 +128,12 @@ Step 2: [STEP]
 ## Click/Time Analysis
 
 ### Simple [TASK]
+
 - [COMPETITOR]: ~[X] clicks, ~[X] minutes
 - Screen Print Pro Target: [X] clicks ([X]% reduction), [X] minutes ([X]% faster)
 
 ### Complex [TASK]
+
 - [COMPETITOR]: ~[X] clicks, ~[X] minutes
 - Screen Print Pro Target: [X] clicks ([X]% reduction), [X] minutes ([X]% faster)
 
@@ -141,8 +149,8 @@ Step 2: [STEP]
 ## Competitive Landscape
 
 | Competitor | Pricing | Strengths | Weaknesses |
-|---|---|---|---|
-| | | | |
+| ---------- | ------- | --------- | ---------- |
+|            |         |           |            |
 
 ---
 

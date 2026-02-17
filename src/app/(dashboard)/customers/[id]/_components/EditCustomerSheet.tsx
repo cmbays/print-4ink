@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,65 +8,62 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@shared/ui/primitives/sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { Checkbox } from "@shared/ui/primitives/checkbox";
+} from '@shared/ui/primitives/sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { Checkbox } from '@shared/ui/primitives/checkbox'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
+} from '@shared/ui/primitives/select'
 import {
   LIFECYCLE_STAGE_LABELS,
   CUSTOMER_TYPE_TAG_LABELS,
   PAYMENT_TERMS_LABELS,
   PRICING_TIER_LABELS,
-} from "@domain/constants";
-import type { Customer, LifecycleStage, CustomerTypeTag, PaymentTerms, PricingTier } from "@domain/entities/customer";
-import { lifecycleStageEnum, customerTypeTagEnum, paymentTermsEnum, pricingTierEnum } from "@domain/entities/customer";
+} from '@domain/constants'
+import type {
+  Customer,
+  LifecycleStage,
+  CustomerTypeTag,
+  PaymentTerms,
+  PricingTier,
+} from '@domain/entities/customer'
+import {
+  lifecycleStageEnum,
+  customerTypeTagEnum,
+  paymentTermsEnum,
+  pricingTierEnum,
+} from '@domain/entities/customer'
 
-interface EditCustomerSheetProps {
-  customer: Customer;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+type EditCustomerSheetProps = {
+  customer: Customer
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
-export function EditCustomerSheet({
-  customer,
-  open,
-  onOpenChange,
-}: EditCustomerSheetProps) {
-  const [company, setCompany] = useState(customer.company);
-  const [lifecycleStage, setLifecycleStage] = useState<LifecycleStage>(
-    customer.lifecycleStage
-  );
-  const [typeTags, setTypeTags] = useState<CustomerTypeTag[]>(
-    customer.typeTags
-  );
-  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms>(
-    customer.paymentTerms
-  );
-  const [pricingTier, setPricingTier] = useState<PricingTier>(
-    customer.pricingTier
-  );
+export function EditCustomerSheet({ customer, open, onOpenChange }: EditCustomerSheetProps) {
+  const [company, setCompany] = useState(customer.company)
+  const [lifecycleStage, setLifecycleStage] = useState<LifecycleStage>(customer.lifecycleStage)
+  const [typeTags, setTypeTags] = useState<CustomerTypeTag[]>(customer.typeTags)
+  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms>(customer.paymentTerms)
+  const [pricingTier, setPricingTier] = useState<PricingTier>(customer.pricingTier)
   const [discountPercentage, setDiscountPercentage] = useState(
-    customer.discountPercentage?.toString() ?? ""
-  );
-  const [taxExempt, setTaxExempt] = useState(customer.taxExempt);
+    customer.discountPercentage?.toString() ?? ''
+  )
+  const [taxExempt, setTaxExempt] = useState(customer.taxExempt)
 
   function handleToggleTypeTag(tag: CustomerTypeTag) {
-    setTypeTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
+    setTypeTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
   }
 
   function handleSave() {
     // Phase 1: No actual save
-    console.log("Changes saved", {
+    console.log('Changes saved', {
       company,
       lifecycleStage,
       typeTags,
@@ -74,8 +71,8 @@ export function EditCustomerSheet({
       pricingTier,
       discountPercentage: discountPercentage ? Number(discountPercentage) : undefined,
       taxExempt,
-    });
-    onOpenChange(false);
+    })
+    onOpenChange(false)
   }
 
   return (
@@ -83,9 +80,7 @@ export function EditCustomerSheet({
       <SheetContent side="right" className="overflow-y-auto sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Edit Customer</SheetTitle>
-          <SheetDescription>
-            Update customer information for {customer.company}.
-          </SheetDescription>
+          <SheetDescription>Update customer information for {customer.company}.</SheetDescription>
         </SheetHeader>
 
         <div className="px-4 space-y-6">
@@ -131,10 +126,7 @@ export function EditCustomerSheet({
               <Label>Type Tags</Label>
               <div className="grid grid-cols-2 gap-2">
                 {customerTypeTagEnum.options.map((tag) => (
-                  <label
-                    key={tag}
-                    className="flex items-center gap-2 text-sm cursor-pointer"
-                  >
+                  <label key={tag} className="flex items-center gap-2 text-sm cursor-pointer">
                     <Checkbox
                       checked={typeTags.includes(tag)}
                       onCheckedChange={() => handleToggleTypeTag(tag)}
@@ -172,10 +164,7 @@ export function EditCustomerSheet({
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-pricing-tier">Pricing Tier</Label>
-              <Select
-                value={pricingTier}
-                onValueChange={(v) => setPricingTier(v as PricingTier)}
-              >
+              <Select value={pricingTier} onValueChange={(v) => setPricingTier(v as PricingTier)}>
                 <SelectTrigger className="w-full" aria-label="Pricing tier">
                   <SelectValue />
                 </SelectTrigger>
@@ -219,5 +208,5 @@ export function EditCustomerSheet({
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

@@ -1,6 +1,6 @@
 ---
-title: "Mobile Optimization — Research & Discovery"
-subtitle: "Competitive analysis, journey mapping, and scope definition for the mobile optimization vertical"
+title: 'Mobile Optimization — Research & Discovery'
+subtitle: 'Competitive analysis, journey mapping, and scope definition for the mobile optimization vertical'
 date: 2026-02-14
 phase: 1
 pipelineName: mobile-optimization
@@ -10,8 +10,8 @@ domains: [garments, pricing]
 tools: []
 stage: research
 tags: [research, plan]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0214-mobile-vertical"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0214-mobile-vertical'
 status: complete
 ---
 
@@ -22,15 +22,19 @@ Completed full vertical discovery for mobile optimization using a 4-agent parall
 ## Key Findings
 
 ### The Market Gap is Massive
+
 No screen print management tool has a good mobile experience. Printavo (market leader) has a native app that **doesn't reliably load**. All other competitors (InkSoft, DecoNetwork, ShopVOX, Teesom, YoPrint) are web-only with no mobile-specific optimization.
 
 ### Adjacent Industries Are Years Ahead
+
 Jobber (field service management) demonstrates that complex B2B management tools can have excellent mobile apps. Their patterns (bottom tabs, push notifications, on-site quoting, photo capture) should be adapted for screen printing.
 
 ### The PWA Path is Right
+
 DHH's framework: responsive web → PWA → native (when scale justifies). Apple enabled web push for iOS in 2023, removing the last major PWA barrier. PWAs offer 40-60% lower development costs than native.
 
 ### Users Want Speed, Not Features
+
 7 of 9 daily mobile touches are quick status checks (< 30 seconds). The mobile experience must optimize for information retrieval speed, not feature completeness.
 
 ## Deliverables
@@ -59,6 +63,7 @@ DHH's framework: responsive web → PWA → native (when scale justifies). Apple
 ## Research Methodology
 
 Used a 4-agent parallel research team:
+
 - **Mobile UX Researcher**: Industry best practices for B2B management apps on mobile
 - **Competitor Analyst**: Screen print software competitive landscape for mobile
 - **App Auditor**: Systematic audit of all 19 Screen Print Pro pages for mobile readiness

@@ -1,16 +1,21 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import { Check, ChevronsUpDown, Plus, User, Building2, Mail, Phone, ExternalLink } from "lucide-react";
-
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import { Badge } from "@shared/ui/primitives/badge";
+import * as React from 'react'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@shared/ui/primitives/popover";
+  Check,
+  ChevronsUpDown,
+  Plus,
+  User,
+  Building2,
+  Mail,
+  Phone,
+  ExternalLink,
+} from 'lucide-react'
+
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Popover, PopoverContent, PopoverTrigger } from '@shared/ui/primitives/popover'
 import {
   Command,
   CommandEmpty,
@@ -19,31 +24,31 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@shared/ui/primitives/command";
+} from '@shared/ui/primitives/command'
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   CONTACT_ROLE_LABELS,
   LIFECYCLE_STAGE_LABELS,
-} from "@domain/constants";
-import { LifecycleBadge } from "@/components/features/LifecycleBadge";
-import { TypeTagBadges } from "@/components/features/TypeTagBadges";
-import type { Customer } from "@domain/entities/customer";
-import type { ContactRole } from "@domain/entities/contact";
+} from '@domain/constants'
+import { LifecycleBadge } from '@/components/features/LifecycleBadge'
+import { TypeTagBadges } from '@/components/features/TypeTagBadges'
+import type { Customer } from '@domain/entities/customer'
+import type { ContactRole } from '@domain/entities/contact'
 
 /** Subset of Customer fields needed by the combobox */
 export type CustomerOption = Pick<
   Customer,
-  "id" | "name" | "company" | "email" | "phone" | "tag" | "lifecycleStage" | "typeTags"
+  'id' | 'name' | 'company' | 'email' | 'phone' | 'tag' | 'lifecycleStage' | 'typeTags'
 > & {
-  contactRole?: ContactRole;
-};
+  contactRole?: ContactRole
+}
 
 export type CustomerComboboxProps = {
-  customers: CustomerOption[];
-  selectedCustomerId?: string;
-  onSelect: (customerId: string) => void;
-  onAddNew?: () => void;
-};
+  customers: CustomerOption[]
+  selectedCustomerId?: string
+  onSelect: (customerId: string) => void
+  onAddNew?: () => void
+}
 
 export function CustomerCombobox({
   customers,
@@ -51,9 +56,9 @@ export function CustomerCombobox({
   onSelect,
   onAddNew,
 }: CustomerComboboxProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
 
-  const selectedCustomer = customers.find((c) => c.id === selectedCustomerId);
+  const selectedCustomer = customers.find((c) => c.id === selectedCustomerId)
 
   return (
     <div className="space-y-2">
@@ -67,9 +72,7 @@ export function CustomerCombobox({
             className="w-full justify-between"
           >
             <span className="truncate">
-              {selectedCustomer
-                ? selectedCustomer.name
-                : "Select customer..."}
+              {selectedCustomer ? selectedCustomer.name : 'Select customer...'}
             </span>
             <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
@@ -77,17 +80,17 @@ export function CustomerCombobox({
         <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
           <Command
             filter={(value, search) => {
-              const customer = customers.find((c) => c.id === value);
-              if (!customer) return 0;
+              const customer = customers.find((c) => c.id === value)
+              if (!customer) return 0
               const lifecycleLabel = customer.lifecycleStage
                 ? LIFECYCLE_STAGE_LABELS[customer.lifecycleStage]
-                : "";
+                : ''
               const typeTagLabels = (customer.typeTags || [])
                 .map((t) => CUSTOMER_TYPE_TAG_LABELS[t])
-                .join(" ");
+                .join(' ')
               const haystack =
-                `${customer.name} ${customer.company} ${lifecycleLabel} ${typeTagLabels}`.toLowerCase();
-              return haystack.includes(search.toLowerCase()) ? 1 : 0;
+                `${customer.name} ${customer.company} ${lifecycleLabel} ${typeTagLabels}`.toLowerCase()
+              return haystack.includes(search.toLowerCase()) ? 1 : 0
             }}
           >
             <CommandInput placeholder="Search customers..." />
@@ -99,16 +102,14 @@ export function CustomerCombobox({
                     key={customer.id}
                     value={customer.id}
                     onSelect={(currentValue) => {
-                      onSelect(currentValue);
-                      setOpen(false);
+                      onSelect(currentValue)
+                      setOpen(false)
                     }}
                   >
                     <Check
                       className={cn(
-                        "mr-2 size-4",
-                        selectedCustomerId === customer.id
-                          ? "opacity-100"
-                          : "opacity-0"
+                        'mr-2 size-4',
+                        selectedCustomerId === customer.id ? 'opacity-100' : 'opacity-0'
                       )}
                     />
                     <span className="truncate">
@@ -130,8 +131,8 @@ export function CustomerCombobox({
                   <CommandGroup>
                     <CommandItem
                       onSelect={() => {
-                        onAddNew();
-                        setOpen(false);
+                        onAddNew()
+                        setOpen(false)
                       }}
                     >
                       <Plus className="mr-2 size-4" />
@@ -197,5 +198,5 @@ export function CustomerCombobox({
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,38 +1,34 @@
-import { cn } from "@shared/lib/cn";
-import { formatCurrency, formatCurrencyCompact } from "@domain/lib/money";
+import { cn } from '@shared/lib/cn'
+import { formatCurrency, formatCurrencyCompact } from '@domain/lib/money'
 
-interface MoneyAmountProps {
+type MoneyAmountProps = {
   /** Numeric amount (or pre-formatted string — dollar sign is split off automatically) */
-  value: number | string;
+  value: number | string
   /** "standard" = 2 decimals, "compact" = 0 decimals */
-  format?: "standard" | "compact";
-  className?: string;
+  format?: 'standard' | 'compact'
+  className?: string
 }
 
 /**
  * Renders a currency amount with a green dollar sign and white number.
  * Design standard: dollar sign uses `text-success`, amount uses inherited text color.
  */
-export function MoneyAmount({
-  value,
-  format = "standard",
-  className,
-}: MoneyAmountProps) {
+export function MoneyAmount({ value, format = 'standard', className }: MoneyAmountProps) {
   const formatted =
-    typeof value === "string"
+    typeof value === 'string'
       ? value
-      : format === "compact"
+      : format === 'compact'
         ? formatCurrencyCompact(value)
-        : formatCurrency(value);
+        : formatCurrency(value)
 
   // Split "$1,234.56" into ["$", "1,234.56"]
-  const match = formatted.match(/^(\$)(.*)/);
-  if (!match) return <span className={cn("tabular-nums", className)}>{formatted}</span>;
+  const match = formatted.match(/^(\$)(.*)/)
+  if (!match) return <span className={cn('tabular-nums', className)}>{formatted}</span>
 
   return (
-    <span className={cn("tabular-nums", className)}>
+    <span className={cn('tabular-nums', className)}>
       <span className="text-success">$</span>
       {match[2]}
     </span>
-  );
+  )
 }

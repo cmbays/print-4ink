@@ -1,6 +1,6 @@
 ---
-title: "Fix: Board Drag-and-Drop Crash"
-subtitle: "DragOverlay outside TooltipProvider caused fatal runtime error on card drag"
+title: 'Fix: Board Drag-and-Drop Crash'
+subtitle: 'DragOverlay outside TooltipProvider caused fatal runtime error on card drag'
 date: 2026-02-13
 phase: 1
 pipelineName: jobs
@@ -9,9 +9,9 @@ products: [jobs]
 tools: []
 stage: build
 tags: [feature, learning]
-sessionId: "fix: kanban card dragging"
-branch: "session/0213-fix-drag-tooltip"
-pr: "https://github.com/cmbays/print-4ink/pull/79"
+sessionId: 'fix: kanban card dragging'
+branch: 'session/0213-fix-drag-tooltip'
+pr: 'https://github.com/cmbays/print-4ink/pull/79'
 status: complete
 ---
 
@@ -32,11 +32,11 @@ The `<DragOverlay>` component was a **sibling** of `<TooltipProvider>`, not a ch
 
 ```tsx
 <DndContext>
-  <TooltipProvider>
-    {/* board lanes with cards */}
-  </TooltipProvider>          {/* closed here */}
-  <DragOverlay>               {/* outside provider */}
-    <JobBoardCard />          {/* contains <Tooltip> -> crash */}
+  <TooltipProvider>{/* board lanes with cards */}</TooltipProvider> {/* closed here */}
+  <DragOverlay>
+    {' '}
+    {/* outside provider */}
+    <JobBoardCard /> {/* contains <Tooltip> -> crash */}
   </DragOverlay>
 </DndContext>
 ```
@@ -51,7 +51,9 @@ Moved `</TooltipProvider>` closing tag to wrap both board sections AND the `Drag
 <DndContext>
   <TooltipProvider>
     {/* board lanes with cards */}
-    <DragOverlay>             {/* now inside provider */}
+    <DragOverlay>
+      {' '}
+      {/* now inside provider */}
       {renderDragOverlay()}
     </DragOverlay>
   </TooltipProvider>

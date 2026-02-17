@@ -1,6 +1,6 @@
 ---
-title: "Customer Management Feedback"
-subtitle: "8 feedback items from 4Ink owner review. Layout consistency, inline column filters, timeline interactivity, workflow improvements, and code quality refinements."
+title: 'Customer Management Feedback'
+subtitle: '8 feedback items from 4Ink owner review. Layout consistency, inline column filters, timeline interactivity, workflow improvements, and code quality refinements.'
 date: 2026-02-10
 phase: 1
 pipelineName: customer-management
@@ -9,33 +9,33 @@ products: [customers, quotes, jobs]
 tools: []
 stage: review
 tags: [feature, build]
-sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
-branch: "session/0210-customer-feedback"
+sessionId: '0ba68ef8-1b02-40be-a039-2c63d6d15cd1'
+branch: 'session/0210-customer-feedback'
 status: complete
 ---
 
 ## Summary
 
-| Stat | Value |
-|------|-------|
-| Feedback Items | 8 |
-| Files Changed | 10 |
-| PRs Merged | 3 |
+| Stat           | Value |
+| -------------- | ----- |
+| Feedback Items | 8     |
+| Files Changed  | 10    |
+| PRs Merged     | 3     |
 
 The 4Ink owner reviewed both the Customer List and Customer Detail pages. Feedback centered on layout consistency between Quotes and Customers pages, too much visual noise from filter chips, missing column interactivity, and workflow gaps in customer creation and timeline navigation.
 
 ## Feedback Items
 
-| # | Feedback | Solution |
-|---|----------|----------|
-| 1 | Quotes search bar misaligned with Customers layout | Moved search left, added clear X button, matches Customers pattern |
-| 2 | Filter chips too noisy — want filtering inside column headers | Created `ColumnHeaderMenu` component with sort + inline filter dropdown |
-| 3 | Type, Lifecycle, Health columns should be sortable | Added sort by Type (first tag alphabetical), Lifecycle/Health (ordinal) |
-| 4 | Health column needs its own filter | Added `?health=` URL param with inline filter dropdown |
-| 5 | "Add Customer" should have a "Save & View Details" option | New button in AddCustomerModal, navigates to detail page using generated UUID |
-| 6 | Activity timeline items should be clickable | Quote icons link to `/quotes/:id`, note icons switch to Notes tab |
-| 7 | Customer Quotes table — Date should come before Status | Reordered: `Quote # \| Date \| Status \| Total` |
-| 8 | Contact "Other" role needs custom description field | Text input appears when role === "other" |
+| #   | Feedback                                                      | Solution                                                                      |
+| --- | ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 1   | Quotes search bar misaligned with Customers layout            | Moved search left, added clear X button, matches Customers pattern            |
+| 2   | Filter chips too noisy — want filtering inside column headers | Created `ColumnHeaderMenu` component with sort + inline filter dropdown       |
+| 3   | Type, Lifecycle, Health columns should be sortable            | Added sort by Type (first tag alphabetical), Lifecycle/Health (ordinal)       |
+| 4   | Health column needs its own filter                            | Added `?health=` URL param with inline filter dropdown                        |
+| 5   | "Add Customer" should have a "Save & View Details" option     | New button in AddCustomerModal, navigates to detail page using generated UUID |
+| 6   | Activity timeline items should be clickable                   | Quote icons link to `/quotes/:id`, note icons switch to Notes tab             |
+| 7   | Customer Quotes table — Date should come before Status        | Reordered: `Quote # \| Date \| Status \| Total`                               |
+| 8   | Contact "Other" role needs custom description field           | Text input appears when role === "other"                                      |
 
 ## New Component: ColumnHeaderMenu
 

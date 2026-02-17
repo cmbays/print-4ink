@@ -30,5 +30,5 @@ export default function QuoteDetailLoading() {
         <div className="h-4 w-full animate-pulse rounded bg-muted" />
       </div>
     </div>
-  );
+  )
 }

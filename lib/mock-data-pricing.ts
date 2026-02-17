@@ -1,28 +1,28 @@
-import type { PricingTemplate } from "@domain/entities/price-matrix";
-import type { DTFPricingTemplate } from "@domain/entities/dtf-pricing";
-import type { TagTemplateMapping } from "@domain/entities/tag-template-mapping";
+import type { PricingTemplate } from '@domain/entities/price-matrix'
+import type { DTFPricingTemplate } from '@domain/entities/dtf-pricing'
+import type { TagTemplateMapping } from '@domain/entities/tag-template-mapping'
 
 // ---------------------------------------------------------------------------
 // Template IDs (stable — referenced by tag mappings and quote line items)
 // ---------------------------------------------------------------------------
 
 export const SP_TEMPLATE_IDS = {
-  standard: "aa1b2c3d-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
-  contract: "ab2c3d4e-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
-  schoolsNonProfit: "ac3d4e5f-a7b8-4c9d-ae1f-2a3b4c5d6e7f",
-} as const;
+  standard: 'aa1b2c3d-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
+  contract: 'ab2c3d4e-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
+  schoolsNonProfit: 'ac3d4e5f-a7b8-4c9d-ae1f-2a3b4c5d6e7f',
+} as const
 
 export const DTF_TEMPLATE_IDS = {
-  retail: "ad4e5f6a-b8c9-4d0e-8f1a-2b3c4d5e6f7a",
-  contract: "ae5f6a7b-c9d0-4e1f-9a2b-3c4d5e6f7a8b",
-} as const;
+  retail: 'ad4e5f6a-b8c9-4d0e-8f1a-2b3c4d5e6f7a',
+  contract: 'ae5f6a7b-c9d0-4e1f-9a2b-3c4d5e6f7a8b',
+} as const
 
 // ---------------------------------------------------------------------------
 // Shared timestamp for mock data consistency
 // ---------------------------------------------------------------------------
 
-const MOCK_CREATED = "2025-01-15T09:00:00.000Z";
-const MOCK_UPDATED = "2025-02-01T14:30:00.000Z";
+const MOCK_CREATED = '2025-01-15T09:00:00.000Z'
+const MOCK_UPDATED = '2025-02-01T14:30:00.000Z'
 
 // ---------------------------------------------------------------------------
 // Screen Print — Standard Template
@@ -30,20 +30,20 @@ const MOCK_UPDATED = "2025-02-01T14:30:00.000Z";
 
 export const spStandardTemplate: PricingTemplate = {
   id: SP_TEMPLATE_IDS.standard,
-  name: "Standard Screen Print",
-  serviceType: "screen-print",
-  pricingTier: "standard",
+  name: 'Standard Screen Print',
+  serviceType: 'screen-print',
+  pricingTier: 'standard',
   isDefault: true,
   isIndustryDefault: true,
   createdAt: MOCK_CREATED,
   updatedAt: MOCK_UPDATED,
   matrix: {
     quantityTiers: [
-      { minQty: 12, maxQty: 23, label: "12–23" },
-      { minQty: 24, maxQty: 47, label: "24–47" },
-      { minQty: 48, maxQty: 71, label: "48–71" },
-      { minQty: 72, maxQty: 143, label: "72–143" },
-      { minQty: 144, maxQty: null, label: "144+" },
+      { minQty: 12, maxQty: 23, label: '12–23' },
+      { minQty: 24, maxQty: 47, label: '24–47' },
+      { minQty: 48, maxQty: 71, label: '48–71' },
+      { minQty: 72, maxQty: 143, label: '72–143' },
+      { minQty: 144, maxQty: null, label: '144+' },
     ],
     basePriceByTier: [14.0, 11.0, 8.5, 7.0, 5.5],
     priceOverrides: {},
@@ -59,18 +59,18 @@ export const spStandardTemplate: PricingTemplate = {
       { colors: 8, ratePerHit: 1.5 },
     ],
     locationUpcharges: [
-      { location: "front", upcharge: 0 },
-      { location: "back", upcharge: 2.0 },
-      { location: "left-sleeve", upcharge: 1.5 },
-      { location: "right-sleeve", upcharge: 1.5 },
-      { location: "pocket", upcharge: 1.0 },
+      { location: 'front', upcharge: 0 },
+      { location: 'back', upcharge: 2.0 },
+      { location: 'left-sleeve', upcharge: 1.5 },
+      { location: 'right-sleeve', upcharge: 1.5 },
+      { location: 'pocket', upcharge: 1.0 },
     ],
     garmentTypePricing: [
-      { garmentCategory: "t-shirts", baseMarkup: 0 },
-      { garmentCategory: "fleece", baseMarkup: 35 },
-      { garmentCategory: "outerwear", baseMarkup: 50 },
-      { garmentCategory: "headwear", baseMarkup: 25 },
-      { garmentCategory: "pants", baseMarkup: 30 },
+      { garmentCategory: 't-shirts', baseMarkup: 0 },
+      { garmentCategory: 'fleece', baseMarkup: 35 },
+      { garmentCategory: 'outerwear', baseMarkup: 50 },
+      { garmentCategory: 'headwear', baseMarkup: 25 },
+      { garmentCategory: 'pants', baseMarkup: 30 },
     ],
     setupFeeConfig: {
       perScreenFee: 25,
@@ -80,12 +80,12 @@ export const spStandardTemplate: PricingTemplate = {
     },
   },
   costConfig: {
-    garmentCostSource: "catalog",
+    garmentCostSource: 'catalog',
     inkCostPerHit: 0.35,
     shopOverheadRate: 15,
     laborRate: 25,
   },
-};
+}
 
 // ---------------------------------------------------------------------------
 // Screen Print — Contract Template (10–15% lower than standard)
@@ -93,20 +93,20 @@ export const spStandardTemplate: PricingTemplate = {
 
 export const spContractTemplate: PricingTemplate = {
   id: SP_TEMPLATE_IDS.contract,
-  name: "Contract Screen Print",
-  serviceType: "screen-print",
-  pricingTier: "contract",
+  name: 'Contract Screen Print',
+  serviceType: 'screen-print',
+  pricingTier: 'contract',
   isDefault: false,
   isIndustryDefault: false,
   createdAt: MOCK_CREATED,
   updatedAt: MOCK_UPDATED,
   matrix: {
     quantityTiers: [
-      { minQty: 12, maxQty: 23, label: "12–23" },
-      { minQty: 24, maxQty: 47, label: "24–47" },
-      { minQty: 48, maxQty: 71, label: "48–71" },
-      { minQty: 72, maxQty: 143, label: "72–143" },
-      { minQty: 144, maxQty: null, label: "144+" },
+      { minQty: 12, maxQty: 23, label: '12–23' },
+      { minQty: 24, maxQty: 47, label: '24–47' },
+      { minQty: 48, maxQty: 71, label: '48–71' },
+      { minQty: 72, maxQty: 143, label: '72–143' },
+      { minQty: 144, maxQty: null, label: '144+' },
     ],
     // ~12% lower across the board
     basePriceByTier: [12.25, 9.5, 7.25, 6.0, 4.75],
@@ -123,18 +123,18 @@ export const spContractTemplate: PricingTemplate = {
       { colors: 8, ratePerHit: 1.3 },
     ],
     locationUpcharges: [
-      { location: "front", upcharge: 0 },
-      { location: "back", upcharge: 1.75 },
-      { location: "left-sleeve", upcharge: 1.25 },
-      { location: "right-sleeve", upcharge: 1.25 },
-      { location: "pocket", upcharge: 0.85 },
+      { location: 'front', upcharge: 0 },
+      { location: 'back', upcharge: 1.75 },
+      { location: 'left-sleeve', upcharge: 1.25 },
+      { location: 'right-sleeve', upcharge: 1.25 },
+      { location: 'pocket', upcharge: 0.85 },
     ],
     garmentTypePricing: [
-      { garmentCategory: "t-shirts", baseMarkup: 0 },
-      { garmentCategory: "fleece", baseMarkup: 35 },
-      { garmentCategory: "outerwear", baseMarkup: 50 },
-      { garmentCategory: "headwear", baseMarkup: 25 },
-      { garmentCategory: "pants", baseMarkup: 30 },
+      { garmentCategory: 't-shirts', baseMarkup: 0 },
+      { garmentCategory: 'fleece', baseMarkup: 35 },
+      { garmentCategory: 'outerwear', baseMarkup: 50 },
+      { garmentCategory: 'headwear', baseMarkup: 25 },
+      { garmentCategory: 'pants', baseMarkup: 30 },
     ],
     setupFeeConfig: {
       perScreenFee: 20,
@@ -144,12 +144,12 @@ export const spContractTemplate: PricingTemplate = {
     },
   },
   costConfig: {
-    garmentCostSource: "catalog",
+    garmentCostSource: 'catalog',
     inkCostPerHit: 0.35,
     shopOverheadRate: 15,
     laborRate: 25,
   },
-};
+}
 
 // ---------------------------------------------------------------------------
 // Screen Print — Schools/Non-Profit Template (~8–12% lower than standard)
@@ -157,20 +157,20 @@ export const spContractTemplate: PricingTemplate = {
 
 export const spSchoolsTemplate: PricingTemplate = {
   id: SP_TEMPLATE_IDS.schoolsNonProfit,
-  name: "Schools & Non-Profit Screen Print",
-  serviceType: "screen-print",
-  pricingTier: "schools",
+  name: 'Schools & Non-Profit Screen Print',
+  serviceType: 'screen-print',
+  pricingTier: 'schools',
   isDefault: false,
   isIndustryDefault: false,
   createdAt: MOCK_CREATED,
   updatedAt: MOCK_UPDATED,
   matrix: {
     quantityTiers: [
-      { minQty: 12, maxQty: 23, label: "12–23" },
-      { minQty: 24, maxQty: 47, label: "24–47" },
-      { minQty: 48, maxQty: 71, label: "48–71" },
-      { minQty: 72, maxQty: 143, label: "72–143" },
-      { minQty: 144, maxQty: null, label: "144+" },
+      { minQty: 12, maxQty: 23, label: '12–23' },
+      { minQty: 24, maxQty: 47, label: '24–47' },
+      { minQty: 48, maxQty: 71, label: '48–71' },
+      { minQty: 72, maxQty: 143, label: '72–143' },
+      { minQty: 144, maxQty: null, label: '144+' },
     ],
     // ~10% lower than standard
     basePriceByTier: [12.75, 10.0, 7.75, 6.35, 5.0],
@@ -187,18 +187,18 @@ export const spSchoolsTemplate: PricingTemplate = {
       { colors: 8, ratePerHit: 1.35 },
     ],
     locationUpcharges: [
-      { location: "front", upcharge: 0 },
-      { location: "back", upcharge: 1.75 },
-      { location: "left-sleeve", upcharge: 1.35 },
-      { location: "right-sleeve", upcharge: 1.35 },
-      { location: "pocket", upcharge: 0.9 },
+      { location: 'front', upcharge: 0 },
+      { location: 'back', upcharge: 1.75 },
+      { location: 'left-sleeve', upcharge: 1.35 },
+      { location: 'right-sleeve', upcharge: 1.35 },
+      { location: 'pocket', upcharge: 0.9 },
     ],
     garmentTypePricing: [
-      { garmentCategory: "t-shirts", baseMarkup: 0 },
-      { garmentCategory: "fleece", baseMarkup: 35 },
-      { garmentCategory: "outerwear", baseMarkup: 50 },
-      { garmentCategory: "headwear", baseMarkup: 25 },
-      { garmentCategory: "pants", baseMarkup: 30 },
+      { garmentCategory: 't-shirts', baseMarkup: 0 },
+      { garmentCategory: 'fleece', baseMarkup: 35 },
+      { garmentCategory: 'outerwear', baseMarkup: 50 },
+      { garmentCategory: 'headwear', baseMarkup: 25 },
+      { garmentCategory: 'pants', baseMarkup: 30 },
     ],
     setupFeeConfig: {
       perScreenFee: 20,
@@ -208,12 +208,12 @@ export const spSchoolsTemplate: PricingTemplate = {
     },
   },
   costConfig: {
-    garmentCostSource: "catalog",
+    garmentCostSource: 'catalog',
     inkCostPerHit: 0.35,
     shopOverheadRate: 15,
     laborRate: 25,
   },
-};
+}
 
 // ---------------------------------------------------------------------------
 // DTF — Retail Template (4Ink actual prices)
@@ -221,8 +221,8 @@ export const spSchoolsTemplate: PricingTemplate = {
 
 export const dtfRetailTemplate: DTFPricingTemplate = {
   id: DTF_TEMPLATE_IDS.retail,
-  name: "DTF Retail",
-  serviceType: "dtf",
+  name: 'DTF Retail',
+  serviceType: 'dtf',
   isDefault: true,
   isIndustryDefault: false,
   createdAt: MOCK_CREATED,
@@ -239,22 +239,22 @@ export const dtfRetailTemplate: DTFPricingTemplate = {
     { width: 22, length: 240, retailPrice: 138 },
   ],
   rushFees: [
-    { turnaround: "standard", percentageUpcharge: 0 },
-    { turnaround: "2-day", percentageUpcharge: 25 },
-    { turnaround: "next-day", percentageUpcharge: 50 },
-    { turnaround: "same-day", percentageUpcharge: 75, flatFee: 15 },
+    { turnaround: 'standard', percentageUpcharge: 0 },
+    { turnaround: '2-day', percentageUpcharge: 25 },
+    { turnaround: 'next-day', percentageUpcharge: 50 },
+    { turnaround: 'same-day', percentageUpcharge: 75, flatFee: 15 },
   ],
   filmTypes: [
-    { type: "standard", multiplier: 1.0 },
-    { type: "glossy", multiplier: 1.1 },
-    { type: "metallic", multiplier: 1.3 },
-    { type: "glow", multiplier: 1.5 },
+    { type: 'standard', multiplier: 1.0 },
+    { type: 'glossy', multiplier: 1.1 },
+    { type: 'metallic', multiplier: 1.3 },
+    { type: 'glow', multiplier: 1.5 },
   ],
   customerTierDiscounts: [
-    { tier: "standard", discountPercent: 0 },
-    { tier: "preferred", discountPercent: 5 },
-    { tier: "contract", discountPercent: 15 },
-    { tier: "wholesale", discountPercent: 20 },
+    { tier: 'standard', discountPercent: 0 },
+    { tier: 'preferred', discountPercent: 5 },
+    { tier: 'contract', discountPercent: 15 },
+    { tier: 'wholesale', discountPercent: 20 },
   ],
   costConfig: {
     filmCostPerSqFt: 0.45,
@@ -263,7 +263,7 @@ export const dtfRetailTemplate: DTFPricingTemplate = {
     laborRatePerHour: 22,
     equipmentOverheadPerSqFt: 0.2,
   },
-};
+}
 
 // ---------------------------------------------------------------------------
 // DTF — Contract Template (~15% lower than retail)
@@ -271,8 +271,8 @@ export const dtfRetailTemplate: DTFPricingTemplate = {
 
 export const dtfContractTemplate: DTFPricingTemplate = {
   id: DTF_TEMPLATE_IDS.contract,
-  name: "DTF Contract",
-  serviceType: "dtf",
+  name: 'DTF Contract',
+  serviceType: 'dtf',
   isDefault: false,
   isIndustryDefault: false,
   createdAt: MOCK_CREATED,
@@ -289,22 +289,22 @@ export const dtfContractTemplate: DTFPricingTemplate = {
     { width: 22, length: 240, retailPrice: 138, contractPrice: 117.3 },
   ],
   rushFees: [
-    { turnaround: "standard", percentageUpcharge: 0 },
-    { turnaround: "2-day", percentageUpcharge: 25 },
-    { turnaround: "next-day", percentageUpcharge: 50 },
-    { turnaround: "same-day", percentageUpcharge: 75, flatFee: 15 },
+    { turnaround: 'standard', percentageUpcharge: 0 },
+    { turnaround: '2-day', percentageUpcharge: 25 },
+    { turnaround: 'next-day', percentageUpcharge: 50 },
+    { turnaround: 'same-day', percentageUpcharge: 75, flatFee: 15 },
   ],
   filmTypes: [
-    { type: "standard", multiplier: 1.0 },
-    { type: "glossy", multiplier: 1.1 },
-    { type: "metallic", multiplier: 1.3 },
-    { type: "glow", multiplier: 1.5 },
+    { type: 'standard', multiplier: 1.0 },
+    { type: 'glossy', multiplier: 1.1 },
+    { type: 'metallic', multiplier: 1.3 },
+    { type: 'glow', multiplier: 1.5 },
   ],
   customerTierDiscounts: [
-    { tier: "standard", discountPercent: 0 },
-    { tier: "preferred", discountPercent: 5 },
-    { tier: "contract", discountPercent: 15 },
-    { tier: "wholesale", discountPercent: 20 },
+    { tier: 'standard', discountPercent: 0 },
+    { tier: 'preferred', discountPercent: 5 },
+    { tier: 'contract', discountPercent: 15 },
+    { tier: 'wholesale', discountPercent: 20 },
   ],
   costConfig: {
     filmCostPerSqFt: 0.45,
@@ -313,7 +313,7 @@ export const dtfContractTemplate: DTFPricingTemplate = {
     laborRatePerHour: 22,
     equipmentOverheadPerSqFt: 0.2,
   },
-};
+}
 
 // ---------------------------------------------------------------------------
 // Convenience arrays
@@ -323,12 +323,9 @@ export const allScreenPrintTemplates: PricingTemplate[] = [
   spStandardTemplate,
   spContractTemplate,
   spSchoolsTemplate,
-];
+]
 
-export const allDTFTemplates: DTFPricingTemplate[] = [
-  dtfRetailTemplate,
-  dtfContractTemplate,
-];
+export const allDTFTemplates: DTFPricingTemplate[] = [dtfRetailTemplate, dtfContractTemplate]
 
 // ---------------------------------------------------------------------------
 // Tag → Template Mappings
@@ -336,28 +333,28 @@ export const allDTFTemplates: DTFPricingTemplate[] = [
 
 export const tagTemplateMappings: TagTemplateMapping[] = [
   {
-    customerTypeTag: "retail",
+    customerTypeTag: 'retail',
     screenPrintTemplateId: SP_TEMPLATE_IDS.standard,
     dtfTemplateId: DTF_TEMPLATE_IDS.retail,
   },
   {
-    customerTypeTag: "sports-school",
+    customerTypeTag: 'sports-school',
     screenPrintTemplateId: SP_TEMPLATE_IDS.schoolsNonProfit,
     dtfTemplateId: DTF_TEMPLATE_IDS.contract,
   },
   {
-    customerTypeTag: "corporate",
+    customerTypeTag: 'corporate',
     screenPrintTemplateId: SP_TEMPLATE_IDS.standard,
     dtfTemplateId: DTF_TEMPLATE_IDS.retail,
   },
   {
-    customerTypeTag: "storefront-merch",
+    customerTypeTag: 'storefront-merch',
     screenPrintTemplateId: SP_TEMPLATE_IDS.standard,
     dtfTemplateId: DTF_TEMPLATE_IDS.retail,
   },
   {
-    customerTypeTag: "wholesale",
+    customerTypeTag: 'wholesale',
     screenPrintTemplateId: SP_TEMPLATE_IDS.contract,
     dtfTemplateId: DTF_TEMPLATE_IDS.contract,
   },
-];
+]

@@ -1,6 +1,6 @@
 ---
-title: "TECH_STACK"
-description: "Every dependency mapped to its domain purpose, with decision context, forbidden packages, and version policy."
+title: 'TECH_STACK'
+description: 'Every dependency mapped to its domain purpose, with decision context, forbidden packages, and version policy.'
 category: canonical
 status: active
 phase: all
@@ -17,11 +17,11 @@ depends_on: []
 
 ## Core Framework
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **Next.js** | 16.1.6 | App Router, file-based routing, server components, Turbopack dev server |
-| **React** | 19.2.3 | UI rendering. Server components by default; `"use client"` only when needed. |
-| **TypeScript** | ^5 | Type safety. No `any` types — use Zod inference. |
+| Tool           | Version | Purpose                                                                      |
+| -------------- | ------- | ---------------------------------------------------------------------------- |
+| **Next.js**    | 16.1.6  | App Router, file-based routing, server components, Turbopack dev server      |
+| **React**      | 19.2.3  | UI rendering. Server components by default; `"use client"` only when needed. |
+| **TypeScript** | ^5      | Type safety. No `any` types — use Zod inference.                             |
 
 **Why Next.js**: App Router gives us file-based routing with layouts, server components for zero-JS pages, and Turbopack for fast dev. We use the `(dashboard)` route group for the main shell.
 
@@ -31,13 +31,13 @@ depends_on: []
 
 ## Styling
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **Tailwind CSS** | ^4 | Utility-first styling. All design tokens live in `globals.css` via `@theme inline`. |
-| **tailwind-merge** | ^3.4.0 | Merge conflicting Tailwind classes in `cn()` utility |
-| **clsx** | ^2.1.1 | Conditional class joining (used inside `cn()`) |
-| **class-variance-authority** | ^0.7.1 | Variant-based component styling (shadcn/ui uses this) |
-| **tw-animate-css** | ^1.4.0 | Animation utilities for Tailwind |
+| Tool                         | Version | Purpose                                                                             |
+| ---------------------------- | ------- | ----------------------------------------------------------------------------------- |
+| **Tailwind CSS**             | ^4      | Utility-first styling. All design tokens live in `globals.css` via `@theme inline`. |
+| **tailwind-merge**           | ^3.4.0  | Merge conflicting Tailwind classes in `cn()` utility                                |
+| **clsx**                     | ^2.1.1  | Conditional class joining (used inside `cn()`)                                      |
+| **class-variance-authority** | ^0.7.1  | Variant-based component styling (shadcn/ui uses this)                               |
+| **tw-animate-css**           | ^1.4.0  | Animation utilities for Tailwind                                                    |
 
 **Why Tailwind v4**: New `@theme inline` CSS-first config replaces `tailwind.config.ts`. Design tokens defined in CSS, not JS. Simpler, faster.
 
@@ -47,14 +47,14 @@ depends_on: []
 
 ## UI Components
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **shadcn/ui** | 3.8.4 (dev) | Radix-based primitives. Copy-paste components in `components/ui/`. |
-| **radix-ui** | ^1.4.3 | Underlying primitives for shadcn/ui (dialog, dropdown, etc.) |
-| **cmdk** | ^1.1.1 | Command palette / combobox primitive. Used by shadcn/ui Command component. |
-| **next-themes** | ^0.4.6 | Theme management (dark/light mode). Provides `useTheme` hook for Sonner toaster theming. |
-| **sonner** | ^2.0.7 | Toast notification library. Wraps in shadcn/ui `<Toaster>` component. |
-| **Lucide React** | ^0.563.0 | Icon library. Consistent naming, tree-shakeable. |
+| Tool             | Version     | Purpose                                                                                  |
+| ---------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| **shadcn/ui**    | 3.8.4 (dev) | Radix-based primitives. Copy-paste components in `components/ui/`.                       |
+| **radix-ui**     | ^1.4.3      | Underlying primitives for shadcn/ui (dialog, dropdown, etc.)                             |
+| **cmdk**         | ^1.1.1      | Command palette / combobox primitive. Used by shadcn/ui Command component.               |
+| **next-themes**  | ^0.4.6      | Theme management (dark/light mode). Provides `useTheme` hook for Sonner toaster theming. |
+| **sonner**       | ^2.0.7      | Toast notification library. Wraps in shadcn/ui `<Toaster>` component.                    |
+| **Lucide React** | ^0.563.0    | Icon library. Consistent naming, tree-shakeable.                                         |
 
 **Installed shadcn/ui components**: accordion, avatar, badge, breadcrumb, button, card, checkbox, collapsible, command, dialog, dropdown-menu, form, input, label, popover, scroll-area, select, separator, sheet, table, tabs, textarea, tooltip
 
@@ -66,11 +66,11 @@ depends_on: []
 
 ## Forms & Validation
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **Zod** | ^4.3.6 | Schema-first validation. Define schema, derive types via `z.infer<>`. |
-| **React Hook Form** | ^7.71.1 | Form state management, validation integration |
-| **@hookform/resolvers** | ^5.2.2 | Connects Zod schemas to React Hook Form |
+| Tool                    | Version | Purpose                                                               |
+| ----------------------- | ------- | --------------------------------------------------------------------- |
+| **Zod**                 | ^4.3.6  | Schema-first validation. Define schema, derive types via `z.infer<>`. |
+| **React Hook Form**     | ^7.71.1 | Form state management, validation integration                         |
+| **@hookform/resolvers** | ^5.2.2  | Connects Zod schemas to React Hook Form                               |
 
 **Why Zod-first**: Schemas are the single source of truth. Types are derived, never hand-written. Schemas live in `lib/schemas/`. This pattern carries forward to Phase 3 backend.
 
@@ -80,10 +80,10 @@ depends_on: []
 
 ## Financial Arithmetic
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **big.js** | ^7.0.1 | Arbitrary-precision decimal arithmetic for all monetary calculations |
-| **@types/big.js** | ^6.2.2 | TypeScript type definitions for big.js |
+| Tool              | Version | Purpose                                                              |
+| ----------------- | ------- | -------------------------------------------------------------------- |
+| **big.js**        | ^7.0.1  | Arbitrary-precision decimal arithmetic for all monetary calculations |
+| **@types/big.js** | ^6.2.2  | TypeScript type definitions for big.js                               |
 
 **Why big.js**: JavaScript's IEEE 754 floating-point causes silent errors in financial math (`0.1 + 0.2 ≠ 0.3`). big.js provides exact decimal arithmetic in 6KB — the smallest of the three libraries by the same author (big.js < bignumber.js < decimal.js). It covers exactly what we need: add, subtract, multiply, divide, compare.
 
@@ -95,8 +95,8 @@ depends_on: []
 
 ## Tables
 
-| Tool | Version | Purpose |
-|------|---------|---------|
+| Tool               | Version | Purpose                                            |
+| ------------------ | ------- | -------------------------------------------------- |
 | **TanStack Table** | ^8.21.3 | Headless table with sorting, filtering, pagination |
 
 **Domain purpose**: Job queue lists, quote lists, customer lists, screen inventory — any tabular data with sortable columns.
@@ -109,11 +109,11 @@ depends_on: []
 
 ## Drag & Drop
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **@dnd-kit/core** | ^6.3.1 | Core drag-and-drop engine |
-| **@dnd-kit/sortable** | ^10.0.0 | Sortable list/grid primitives |
-| **@dnd-kit/utilities** | ^3.2.2 | CSS transform utilities |
+| Tool                   | Version | Purpose                       |
+| ---------------------- | ------- | ----------------------------- |
+| **@dnd-kit/core**      | ^6.3.1  | Core drag-and-drop engine     |
+| **@dnd-kit/sortable**  | ^10.0.0 | Sortable list/grid primitives |
+| **@dnd-kit/utilities** | ^3.2.2  | CSS transform utilities       |
 
 **Domain purpose**: Kanban production board — dragging jobs between columns (design, approval, burning, press, finishing, shipped).
 
@@ -125,8 +125,8 @@ depends_on: []
 
 ## Animation
 
-| Tool | Version | Purpose |
-|------|---------|---------|
+| Tool              | Version  | Purpose                                               |
+| ----------------- | -------- | ----------------------------------------------------- |
 | **Framer Motion** | ^12.33.0 | Spring-based transitions, layout animations, gestures |
 
 **Domain purpose**: Page transitions, card enter/exit animations, Kanban column transitions, toast notifications.
@@ -139,9 +139,9 @@ depends_on: []
 
 ## Testing
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **Vitest** | ^4.0.18 | Unit test runner. Schema validation tests in Phase 1, expanding in Phase 3. |
+| Tool                 | Version | Purpose                                                                       |
+| -------------------- | ------- | ----------------------------------------------------------------------------- |
+| **Vitest**           | ^4.0.18 | Unit test runner. Schema validation tests in Phase 1, expanding in Phase 3.   |
 | **@playwright/test** | ^1.58.2 | E2E browser testing. Cross-browser integration tests for critical user flows. |
 
 **Why Vitest**: Fast, native TypeScript support, Vite-based (shares config patterns with Next.js ecosystem). Tests live in `__tests__/` directories next to source files.
@@ -154,11 +154,11 @@ depends_on: []
 
 ## Dev Tooling
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **ESLint** | ^9 | Linting with Next.js config |
-| **eslint-config-next** | 16.1.6 | Next.js-specific lint rules |
-| **@tailwindcss/postcss** | ^4 | PostCSS plugin for Tailwind v4 |
+| Tool                     | Version | Purpose                        |
+| ------------------------ | ------- | ------------------------------ |
+| **ESLint**               | ^9      | Linting with Next.js config    |
+| **eslint-config-next**   | 16.1.6  | Next.js-specific lint rules    |
+| **@tailwindcss/postcss** | ^4      | PostCSS plugin for Tailwind v4 |
 
 ---
 
@@ -171,53 +171,53 @@ These tools are **recommended for Phase 2** based on research across 4 parallel 
 
 ### Database + Auth + Storage: Supabase
 
-| Tool | Purpose | Why This |
-|------|---------|----------|
-| **Supabase** (PostgreSQL) | Database, auth, file storage, realtime | All-in-one platform. $0 dev, $25/mo prod. Native RLS for multi-user. |
-| **@supabase/ssr** | Server-side auth for Next.js App Router | Cookie-based sessions, middleware token refresh. |
+| Tool                      | Purpose                                 | Why This                                                             |
+| ------------------------- | --------------------------------------- | -------------------------------------------------------------------- |
+| **Supabase** (PostgreSQL) | Database, auth, file storage, realtime  | All-in-one platform. $0 dev, $25/mo prod. Native RLS for multi-user. |
+| **@supabase/ssr**         | Server-side auth for Next.js App Router | Cookie-based sessions, middleware token refresh.                     |
 
 **Why Supabase over alternatives**: Vercel Postgres lacks auth/storage/realtime. PlanetScale is MySQL ($39/mo min). Clerk + Vercel Blob = same cost but 3 vendors, 3 dashboards. Supabase gives database + auth + storage + realtime in one SDK at the same price point.
 
 ### ORM: Drizzle
 
-| Tool | Purpose | Why This |
-|------|---------|----------|
+| Tool            | Purpose                              | Why This                                                                                                                                             |
+| --------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **drizzle-orm** | TypeScript-native ORM for PostgreSQL | Schema defined in TS (matches Zod-first approach), tiny bundle (~50KB vs Prisma's ~2MB), `drizzle-zod` generates Zod schemas from table definitions. |
-| **drizzle-kit** | Schema migrations | `drizzle-kit generate` + `drizzle-kit migrate`. Code-first schema management. |
+| **drizzle-kit** | Schema migrations                    | `drizzle-kit generate` + `drizzle-kit migrate`. Code-first schema management.                                                                        |
 
 **Why Drizzle over Prisma**: TypeScript-native (no DSL file), Zod integration via `drizzle-zod`, no binary engine, smaller bundle. Full SQL control with composable queries.
 
 ### Rate Limiting + Cache: Upstash Redis
 
-| Tool | Purpose | Why This |
-|------|---------|----------|
-| **@upstash/redis** | Distributed cache and state | Serverless-native (HTTP-based, no persistent connections). Free tier: 10K commands/day. |
-| **@upstash/ratelimit** | API rate limiting | In-memory rate limiting fails on Vercel serverless (cold starts, multiple instances). Upstash provides distributed rate state. |
+| Tool                   | Purpose                     | Why This                                                                                                                       |
+| ---------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **@upstash/redis**     | Distributed cache and state | Serverless-native (HTTP-based, no persistent connections). Free tier: 10K commands/day.                                        |
+| **@upstash/ratelimit** | API rate limiting           | In-memory rate limiting fails on Vercel serverless (cold starts, multiple instances). Upstash provides distributed rate state. |
 
 **Why Upstash**: Required for Vercel serverless — in-memory caching resets on cold starts and isn't shared across instances. Also backs the SupplierAdapter cache layer.
 
 ### External API: S&S Activewear REST V2
 
-| Integration | Purpose | Why This |
-|-------------|---------|----------|
-| **S&S Activewear API** | Real garment catalog, images, pricing, inventory | Only major distributor with modern REST/JSON API. S&S acquired alphabroder (Oct 2024) — 2 of 3 major distributors under one API. |
-| **PromoStandards** (future) | Multi-supplier integration | Industry standard (SOAP/XML). All 3 distributors support it. PSRESTful provides REST proxy. |
+| Integration                 | Purpose                                          | Why This                                                                                                                         |
+| --------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| **S&S Activewear API**      | Real garment catalog, images, pricing, inventory | Only major distributor with modern REST/JSON API. S&S acquired alphabroder (Oct 2024) — 2 of 3 major distributors under one API. |
+| **PromoStandards** (future) | Multi-supplier integration                       | Industry standard (SOAP/XML). All 3 distributors support it. PSRESTful provides REST proxy.                                      |
 
 ### Data Architecture: DAL Pattern
 
-| Pattern | Purpose |
-|---------|---------|
-| **Data Access Layer** (`lib/dal/`) | Single boundary between components and data. Enables mock → Supabase migration with zero component changes. |
-| **SupplierAdapter interface** | Per-supplier adapters (MockAdapter → SSActivewearAdapter → PromoStandardsAdapter) normalized to canonical schema. |
+| Pattern                            | Purpose                                                                                                           |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Data Access Layer** (`lib/dal/`) | Single boundary between components and data. Enables mock → Supabase migration with zero component changes.       |
+| **SupplierAdapter interface**      | Per-supplier adapters (MockAdapter → SSActivewearAdapter → PromoStandardsAdapter) normalized to canonical schema. |
 
 ### What We Explicitly Won't Add
 
-| Tool | Reason |
-|------|--------|
-| **tRPC** | DAL + Zod already provides type safety. Overkill for single-user app. |
-| **GraphQL** | Adds complexity with no benefit for single-client app. |
+| Tool                                      | Reason                                                                          |
+| ----------------------------------------- | ------------------------------------------------------------------------------- |
+| **tRPC**                                  | DAL + Zod already provides type safety. Overkill for single-user app.           |
+| **GraphQL**                               | Adds complexity with no benefit for single-client app.                          |
 | **Separate API server** (Express/Fastify) | Next.js Server Components + Server Actions + Route Handlers cover all patterns. |
-| **Global state** (Redux/Zustand) | Still not needed. URL params + React state + Server Components. |
+| **Global state** (Redux/Zustand)          | Still not needed. URL params + React state + Server Components.                 |
 
 ---
 
@@ -225,16 +225,16 @@ These tools are **recommended for Phase 2** based on research across 4 parallel 
 
 These packages must NOT be added without discussion:
 
-| Package | Reason |
-|---------|--------|
-| Redux, Zustand, Jotai, Recoil | No global state — use URL params + React state |
-| Axios, ky, got | No HTTP clients in Phase 1 — mock data only |
-| styled-components, Emotion, CSS Modules | Tailwind utilities only |
-| Material UI, Chakra UI, Ant Design | shadcn/ui only |
-| moment.js, date-fns, dayjs | Use native `Intl.DateTimeFormat` or simple string formatting until needed |
-| lodash | Use native JS methods. Only add specific lodash functions if truly needed. |
-| Prisma | Drizzle recommended instead (TypeScript-native, Zod integration, smaller bundle) |
-| NextAuth, Clerk | Supabase Auth recommended instead (bundled with DB, native RLS) |
+| Package                                 | Reason                                                                           |
+| --------------------------------------- | -------------------------------------------------------------------------------- |
+| Redux, Zustand, Jotai, Recoil           | No global state — use URL params + React state                                   |
+| Axios, ky, got                          | No HTTP clients in Phase 1 — mock data only                                      |
+| styled-components, Emotion, CSS Modules | Tailwind utilities only                                                          |
+| Material UI, Chakra UI, Ant Design      | shadcn/ui only                                                                   |
+| moment.js, date-fns, dayjs              | Use native `Intl.DateTimeFormat` or simple string formatting until needed        |
+| lodash                                  | Use native JS methods. Only add specific lodash functions if truly needed.       |
+| Prisma                                  | Drizzle recommended instead (TypeScript-native, Zod integration, smaller bundle) |
+| NextAuth, Clerk                         | Supabase Auth recommended instead (bundled with DB, native RLS)                  |
 
 ---
 

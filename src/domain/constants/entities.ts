@@ -5,31 +5,31 @@
 
 export type EntityStyle = {
   /** Tailwind text-color class, e.g. "text-purple" */
-  color: string;
+  color: string
   /** Tailwind border-l color for board card accent */
-  borderColor: string;
-  label: string;
-};
+  borderColor: string
+  label: string
+}
 
 export const ENTITY_STYLES = {
   job: {
-    color: "text-purple",
-    borderColor: "border-l-purple",
-    label: "Jobs",
+    color: 'text-purple',
+    borderColor: 'border-l-purple',
+    label: 'Jobs',
   },
   quote: {
-    color: "text-magenta",
-    borderColor: "border-l-magenta",
-    label: "Quotes",
+    color: 'text-magenta',
+    borderColor: 'border-l-magenta',
+    label: 'Quotes',
   },
   invoice: {
-    color: "text-success",
-    borderColor: "border-l-success",
-    label: "Invoices",
+    color: 'text-success',
+    borderColor: 'border-l-success',
+    label: 'Invoices',
   },
   scratch_note: {
-    color: "text-magenta",
-    borderColor: "border-l-magenta",
-    label: "Scratch Notes",
+    color: 'text-magenta',
+    borderColor: 'border-l-magenta',
+    label: 'Scratch Notes',
   },
-} as const satisfies Record<string, EntityStyle>;
+} as const satisfies Record<string, EntityStyle>

@@ -1,6 +1,6 @@
 ---
-title: "Jobs Vertical — Competitive Analysis Synthesis"
-description: "Combined competitive analysis of Printavo and PrintLife production workflows, synthesized with Playwright exploration and user interview findings"
+title: 'Jobs Vertical — Competitive Analysis Synthesis'
+description: 'Combined competitive analysis of Printavo and PrintLife production workflows, synthesized with Playwright exploration and user interview findings'
 category: competitive-analysis
 status: complete
 phase: 1
@@ -25,36 +25,36 @@ depends-on:
 
 ### Architecture Philosophy
 
-| Dimension | Printavo | PrintLife | Screen Print Pro (Our Plan) |
-|-----------|----------|-----------|---------------------------|
-| **Core model** | Status-based pipeline | 4-lane Kanban | Universal-lane board with service type awareness |
-| **Default view** | Calendar (monthly) | Invoice Dashboard (Kanban) | Production Board (2-week horizon) |
-| **Quote ↔ Job** | Separate entities (Quote → Invoice) | Quote = Invoice (conflated) | Separate entities with manual conversion gate |
-| **Workflow engine** | Status changes + automations | Stage transitions (manual) | Lane transitions + task checklists driving state |
-| **Customization** | Fully customizable statuses (13 default) | Fixed 4-lane structure | Universal lanes with configurable service type flows |
-| **Dates** | Dual (Production Due + Customer Due) | Single delivery date | Dual dates + start date for "Today" filtering |
-| **Production tracking** | Calendar + Power Scheduler (Premium) | Kanban lanes | Board + capacity-aware planning tools |
-| **Service types** | Types of Work (Premium only) | Screen printing focused | Color-coded service types on every card |
-| **Capacity** | None | None | Conservative overbooking warnings + what-if tool |
+| Dimension               | Printavo                                 | PrintLife                   | Screen Print Pro (Our Plan)                          |
+| ----------------------- | ---------------------------------------- | --------------------------- | ---------------------------------------------------- |
+| **Core model**          | Status-based pipeline                    | 4-lane Kanban               | Universal-lane board with service type awareness     |
+| **Default view**        | Calendar (monthly)                       | Invoice Dashboard (Kanban)  | Production Board (2-week horizon)                    |
+| **Quote ↔ Job**         | Separate entities (Quote → Invoice)      | Quote = Invoice (conflated) | Separate entities with manual conversion gate        |
+| **Workflow engine**     | Status changes + automations             | Stage transitions (manual)  | Lane transitions + task checklists driving state     |
+| **Customization**       | Fully customizable statuses (13 default) | Fixed 4-lane structure      | Universal lanes with configurable service type flows |
+| **Dates**               | Dual (Production Due + Customer Due)     | Single delivery date        | Dual dates + start date for "Today" filtering        |
+| **Production tracking** | Calendar + Power Scheduler (Premium)     | Kanban lanes                | Board + capacity-aware planning tools                |
+| **Service types**       | Types of Work (Premium only)             | Screen printing focused     | Color-coded service types on every card              |
+| **Capacity**            | None                                     | None                        | Conservative overbooking warnings + what-if tool     |
 
 ### Feature Matrix
 
-| Feature | Printavo | PrintLife | SPP Target |
-|---------|:---:|:---:|:---:|
-| Kanban-style board | Power Scheduler only ($399) | Yes (4 lanes) | Yes (universal lanes) |
-| Drag-and-drop | Calendar only | Unknown (likely no) | Yes |
-| Status customization | Full (name, color, order) | Fixed stages | Universal lanes + sub-stage indicators |
-| Automations | 13 pre-configured, trigger/action | Auto-email on mockup submit | Task completion → state change |
-| Preset task lists | Yes (auto-applied via automation) | No | Yes (canonical tasks per service type) |
-| Dual dates | Yes | No | Yes + start date |
-| Service type visibility | Types of Work (Premium) | Not explicit | Color + icon on every card |
-| Quality gates | No explicit QC step | No | Review lane + QC checklist |
-| Capacity awareness | None | None | What-if date picker, load indicators |
-| Blocked items tracking | No dedicated concept | No | Blocked lane with external dependency tracking |
-| Quick capture | No (full quote form required) | No | Scratch notes → create quote |
-| Production analytics | None (financial only) | Basic | Inferred throughput, daily output, trends |
-| Screen room tracking | None | None | Future vertical (not Jobs scope) |
-| Multi-user assignment | Single owner field | Single user only | Assignee with icon (future-proofed) |
+| Feature                 |             Printavo              |          PrintLife          |                   SPP Target                   |
+| ----------------------- | :-------------------------------: | :-------------------------: | :--------------------------------------------: |
+| Kanban-style board      |    Power Scheduler only ($399)    |        Yes (4 lanes)        |             Yes (universal lanes)              |
+| Drag-and-drop           |           Calendar only           |     Unknown (likely no)     |                      Yes                       |
+| Status customization    |     Full (name, color, order)     |        Fixed stages         |     Universal lanes + sub-stage indicators     |
+| Automations             | 13 pre-configured, trigger/action | Auto-email on mockup submit |         Task completion → state change         |
+| Preset task lists       | Yes (auto-applied via automation) |             No              |     Yes (canonical tasks per service type)     |
+| Dual dates              |                Yes                |             No              |                Yes + start date                |
+| Service type visibility |      Types of Work (Premium)      |        Not explicit         |           Color + icon on every card           |
+| Quality gates           |        No explicit QC step        |             No              |           Review lane + QC checklist           |
+| Capacity awareness      |               None                |            None             |      What-if date picker, load indicators      |
+| Blocked items tracking  |       No dedicated concept        |             No              | Blocked lane with external dependency tracking |
+| Quick capture           |   No (full quote form required)   |             No              |          Scratch notes → create quote          |
+| Production analytics    |       None (financial only)       |            Basic            |   Inferred throughput, daily output, trends    |
+| Screen room tracking    |               None                |            None             |        Future vertical (not Jobs scope)        |
+| Multi-user assignment   |        Single owner field         |      Single user only       |      Assignee with icon (future-proofed)       |
 
 ---
 
@@ -103,25 +103,25 @@ depends-on:
 
 ### From Printavo — Adopt These Patterns
 
-| Pattern | Why It Works | Our Adaptation |
-|---------|-------------|----------------|
-| **Dual dates** (Production + Customer) | Separates internal scheduling from customer commitment | Adopt directly + add start date |
-| **Automation chains** (trigger → actions) | Eliminates manual busywork at status transitions | Task completion drives state changes instead of status-triggered chains |
-| **Preset task lists** | Ensures no step gets skipped | Canonical tasks per service type, auto-applied on lane entry |
-| **Color-coded statuses** | Instant visual scan | Color-code by service type (more useful than by status) |
-| **Line Item Groups + Imprints** | Flexible data model for multi-decoration jobs | Adopt for job detail view |
-| **Production Notes vs Customer Notes** | Internal/external separation | Adopt — notes feed with visibility flags |
-| **"Getting Started" onboarding** | Guides new users through setup | Adopt for first-time board experience |
+| Pattern                                   | Why It Works                                           | Our Adaptation                                                          |
+| ----------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **Dual dates** (Production + Customer)    | Separates internal scheduling from customer commitment | Adopt directly + add start date                                         |
+| **Automation chains** (trigger → actions) | Eliminates manual busywork at status transitions       | Task completion drives state changes instead of status-triggered chains |
+| **Preset task lists**                     | Ensures no step gets skipped                           | Canonical tasks per service type, auto-applied on lane entry            |
+| **Color-coded statuses**                  | Instant visual scan                                    | Color-code by service type (more useful than by status)                 |
+| **Line Item Groups + Imprints**           | Flexible data model for multi-decoration jobs          | Adopt for job detail view                                               |
+| **Production Notes vs Customer Notes**    | Internal/external separation                           | Adopt — notes feed with visibility flags                                |
+| **"Getting Started" onboarding**          | Guides new users through setup                         | Adopt for first-time board experience                                   |
 
 ### From PrintLife — Adopt These Patterns
 
-| Pattern | Why It Works | Our Adaptation |
-|---------|-------------|----------------|
-| **Kanban dashboard as primary view** | Production-first thinking | Board is our primary view, not calendar |
-| **Substage tabs within lanes** | Granularity without complexity | Sub-stage indicators within universal lanes |
-| **Auto-email on mockup submission** | Removes manual follow-up | Expand to configurable notifications at any transition |
-| **Delivery-date organization** | Simple, effective prioritization | Due date + risk indicator on every card |
-| **4-lane left-to-right flow** | Matches physical production flow | Adapt to universal lanes (Ready → In Progress → Review → Blocked → Done) |
+| Pattern                              | Why It Works                     | Our Adaptation                                                           |
+| ------------------------------------ | -------------------------------- | ------------------------------------------------------------------------ |
+| **Kanban dashboard as primary view** | Production-first thinking        | Board is our primary view, not calendar                                  |
+| **Substage tabs within lanes**       | Granularity without complexity   | Sub-stage indicators within universal lanes                              |
+| **Auto-email on mockup submission**  | Removes manual follow-up         | Expand to configurable notifications at any transition                   |
+| **Delivery-date organization**       | Simple, effective prioritization | Due date + risk indicator on every card                                  |
+| **4-lane left-to-right flow**        | Matches physical production flow | Adapt to universal lanes (Ready → In Progress → Review → Blocked → Done) |
 
 ---
 
@@ -191,14 +191,17 @@ BoardConfig
 ## 6. Sources
 
 ### Playwright Exploration (25 screenshots)
+
 - PrintLife: 7 screenshots (`printlife-01` through `printlife-07`)
 - Printavo: 18 screenshots (`printavo-01` through `printavo-18`)
 - Detailed notes: `discovery-screenshots/NOTES.md`
 
 ### Web Research Reports
+
 - `docs/competitive-analysis/printavo-jobs-exploration.md` (497 lines)
 - `docs/competitive-analysis/printlife-jobs-exploration.md` (469 lines)
 
 ### User Interview
+
 - 12-question structured interview with 4Ink owner (2026-02-12)
 - Key themes: capacity awareness, universal board, quality gates, quick capture, service type visibility

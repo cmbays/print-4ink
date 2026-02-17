@@ -29,19 +29,20 @@
 
 **Line Item Mapping:**
 
-| Quote Field | Invoice Field |
-|-------------|--------------|
-| `quoteSchema.id` | `invoiceSchema.quoteId` |
-| `quoteSchema.customerId` | `invoiceSchema.customerId` |
-| `quoteSchema.quoteNumber` | reference number |
-| `quoteSchema.lineItems[]` | `invoiceSchema.lineItems[]` (snapshot) |
-| `quoteSchema.setupFees` | `invoiceSchema.lineItems[]` (type=setup) |
+| Quote Field               | Invoice Field                              |
+| ------------------------- | ------------------------------------------ |
+| `quoteSchema.id`          | `invoiceSchema.quoteId`                    |
+| `quoteSchema.customerId`  | `invoiceSchema.customerId`                 |
+| `quoteSchema.quoteNumber` | reference number                           |
+| `quoteSchema.lineItems[]` | `invoiceSchema.lineItems[]` (snapshot)     |
+| `quoteSchema.setupFees`   | `invoiceSchema.lineItems[]` (type=setup)   |
 | `quoteSchema.discounts[]` | `invoiceSchema.discounts[]` (carried over) |
-| `quoteSchema.shipping` | `invoiceSchema.shipping` (may update) |
-| `quoteSchema.tax` | `invoiceSchema.taxAmount` (recalculated) |
-| `quoteSchema.total` | `invoiceSchema.pricingSnapshot.quoteTotal` |
+| `quoteSchema.shipping`    | `invoiceSchema.shipping` (may update)      |
+| `quoteSchema.tax`         | `invoiceSchema.taxAmount` (recalculated)   |
+| `quoteSchema.total`       | `invoiceSchema.pricingSnapshot.quoteTotal` |
 
 **Conversion Rules:**
+
 - Only accepted quotes can generate invoices
 - Invoice prices are LOCKED from the quote (never recalculated from current price matrix)
 - A quote can generate one invoice (deposit + final tracked as partial payments on single invoice)
@@ -51,18 +52,19 @@
 
 ### Customers → Invoicing
 
-| Customer Field | Invoice Usage |
-|----------------|-------------|
-| `paymentTerms` | Determines `invoice.dueDate` calculation |
-| `pricingTier` | Determines default deposit % and discount rules |
-| `discountPercentage` | Auto-applied discount line on conversion |
-| `taxExempt` | If true, tax = 0 |
-| `taxExemptCertExpiry` | Validate cert is current before zeroing tax |
-| `billingAddress` | Pre-fills invoice billing address |
-| `shippingAddresses[]` | Pre-fills shipping address |
-| `contacts[role=billing]` | Invoice recipient |
+| Customer Field           | Invoice Usage                                   |
+| ------------------------ | ----------------------------------------------- |
+| `paymentTerms`           | Determines `invoice.dueDate` calculation        |
+| `pricingTier`            | Determines default deposit % and discount rules |
+| `discountPercentage`     | Auto-applied discount line on conversion        |
+| `taxExempt`              | If true, tax = 0                                |
+| `taxExemptCertExpiry`    | Validate cert is current before zeroing tax     |
+| `billingAddress`         | Pre-fills invoice billing address               |
+| `shippingAddresses[]`    | Pre-fills shipping address                      |
+| `contacts[role=billing]` | Invoice recipient                               |
 
 **New Fields Needed on Customer:**
+
 - `defaultDepositPercent` — smart default for deposit requests
 - `contractDepositAmount` — override for contract customers
 - `creditLimit` — maximum outstanding AR balance
@@ -71,30 +73,30 @@
 
 ### Artwork → Invoicing
 
-| Artwork Event | Invoice Line Item |
-|--------------|------------------|
-| New artwork creation | "Artwork Setup — [name]" (flat fee, ~$40) |
-| Artwork revision | "Artwork Revision — [name]" (hourly, ~$65/hr) |
-| Complex custom art | "Custom Artwork — [name]" (quoted rate) |
-| Camera-ready art | No charge (customer provided) |
+| Artwork Event        | Invoice Line Item                             |
+| -------------------- | --------------------------------------------- |
+| New artwork creation | "Artwork Setup — [name]" (flat fee, ~$40)     |
+| Artwork revision     | "Artwork Revision — [name]" (hourly, ~$65/hr) |
+| Complex custom art   | "Custom Artwork — [name]" (quoted rate)       |
+| Camera-ready art     | No charge (customer provided)                 |
 
 ### Screen Room → Invoicing
 
-| Screen Event | Invoice Line | Typical Rate |
-|-------------|-------------|-------------|
-| New screen burn | "Screen Setup — [mesh] mesh" | $15-35/screen |
-| Screen reclaim | "Screen Reclaim" | $5-10/screen |
-| Color change | "Color Change" | $5/screen/color |
-| Re-burn (after revision) | "Screen Re-burn" | $15-25/screen |
+| Screen Event             | Invoice Line                 | Typical Rate    |
+| ------------------------ | ---------------------------- | --------------- |
+| New screen burn          | "Screen Setup — [mesh] mesh" | $15-35/screen   |
+| Screen reclaim           | "Screen Reclaim"             | $5-10/screen    |
+| Color change             | "Color Change"               | $5/screen/color |
+| Re-burn (after revision) | "Screen Re-burn"             | $15-25/screen   |
 
 ### Production/Kanban → Invoice Triggers
 
-| Production State | Invoice Action |
-|-----------------|---------------|
-| design | Prompt: "Create invoice?" (with deposit request) |
-| approval → shipped | No automatic invoice action |
-| shipped | Prompt: "Job shipped — collect remaining balance?" |
-| shipped + unpaid | Flag on dashboard as needing attention |
+| Production State   | Invoice Action                                     |
+| ------------------ | -------------------------------------------------- |
+| design             | Prompt: "Create invoice?" (with deposit request)   |
+| approval → shipped | No automatic invoice action                        |
+| shipped            | Prompt: "Job shipped — collect remaining balance?" |
+| shipped + unpaid   | Flag on dashboard as needing attention             |
 
 ---
 
@@ -116,33 +118,33 @@ margin: 49% (est)    actual: 42%         actual: 42%
 
 ### Reporting → Invoicing
 
-| Invoice Data | Report Output |
-|-------------|--------------|
-| total, amountPaid | AR Aging (0-30, 31-60, 61-90, 90+) |
-| payments[].paymentDate | Payment Velocity (avg days by customer) |
-| customerId + total | Customer Lifetime Value |
+| Invoice Data            | Report Output                                  |
+| ----------------------- | ---------------------------------------------- |
+| total, amountPaid       | AR Aging (0-30, 31-60, 61-90, 90+)             |
+| payments[].paymentDate  | Payment Velocity (avg days by customer)        |
+| customerId + total      | Customer Lifetime Value                        |
 | lineItems + job.costing | Job Profitability (quoted vs actual vs billed) |
-| total by month | Revenue Trends |
-| discounts[].amount | Discount Impact (margin erosion) |
-| status == "overdue" | Collections Dashboard |
+| total by month          | Revenue Trends                                 |
+| discounts[].amount      | Discount Impact (margin erosion)               |
+| status == "overdue"     | Collections Dashboard                          |
 
 ### Shipping → Invoicing
 
-| Shipping Event | Invoice Impact |
-|---------------|---------------|
-| Method selected | Add/update shipping line item |
-| Tracking assigned | Attach to invoice for customer reference |
-| Delivery confirmed | Start payment terms countdown |
-| Split shipment | May need separate tracking |
+| Shipping Event     | Invoice Impact                           |
+| ------------------ | ---------------------------------------- |
+| Method selected    | Add/update shipping line item            |
+| Tracking assigned  | Attach to invoice for customer reference |
+| Delivery confirmed | Start payment terms countdown            |
+| Split shipment     | May need separate tracking               |
 
 ### Inventory → Invoicing
 
-| Inventory Data | Invoice Impact |
-|---------------|---------------|
-| garment.basePrice | COGS on job costing |
-| sizes[].priceAdjustment | Size upcharge flows to invoice |
-| Spoilage/waste | Absorbed cost (affects margin, not invoice) |
-| Customer-supplied garments | Remove garment cost from invoice |
+| Inventory Data             | Invoice Impact                              |
+| -------------------------- | ------------------------------------------- |
+| garment.basePrice          | COGS on job costing                         |
+| sizes[].priceAdjustment    | Size upcharge flows to invoice              |
+| Spoilage/waste             | Absorbed cost (affects margin, not invoice) |
+| Customer-supplied garments | Remove garment cost from invoice            |
 
 ---
 

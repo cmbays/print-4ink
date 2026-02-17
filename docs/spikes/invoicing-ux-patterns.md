@@ -9,6 +9,7 @@
 ## Information Architecture
 
 ### Sidebar Position
+
 Add "Invoices" between Quotes and Customers (natural workflow order):
 
 ```
@@ -23,12 +24,12 @@ Garments     /garments
 
 ### Route Map
 
-| Screen | Route | Description |
-|--------|-------|-------------|
-| Invoices List | `/invoices` | Filterable table with KPI stats bar |
-| Invoice Detail | `/invoices/[id]` | Full view with payment ledger |
-| New Invoice | `/invoices/new` | Create (standalone or from quote via `?quoteId=`) |
-| Edit Invoice | `/invoices/[id]/edit` | Edit draft invoice only |
+| Screen         | Route                 | Description                                       |
+| -------------- | --------------------- | ------------------------------------------------- |
+| Invoices List  | `/invoices`           | Filterable table with KPI stats bar               |
+| Invoice Detail | `/invoices/[id]`      | Full view with payment ledger                     |
+| New Invoice    | `/invoices/new`       | Create (standalone or from quote via `?quoteId=`) |
+| Edit Invoice   | `/invoices/[id]/edit` | Edit draft invoice only                           |
 
 ### Cross-Links
 
@@ -51,36 +52,37 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 
 **Stats Bar (4 KPI Cards):**
 
-| Metric | Icon | Purpose |
-|--------|------|---------|
-| Total Outstanding | `DollarSign` | Sum of all unpaid invoices |
-| Overdue | `AlertTriangle` | Count and total past due |
-| Paid This Month | `TrendingUp` | Revenue collected this month |
-| Avg Days to Pay | `Clock` | DSO metric |
+| Metric            | Icon            | Purpose                      |
+| ----------------- | --------------- | ---------------------------- |
+| Total Outstanding | `DollarSign`    | Sum of all unpaid invoices   |
+| Overdue           | `AlertTriangle` | Count and total past due     |
+| Paid This Month   | `TrendingUp`    | Revenue collected this month |
+| Avg Days to Pay   | `Clock`         | DSO metric                   |
 
 **Smart View Tabs:**
 
-| Tab | Filter |
-|-----|--------|
-| All | No filter |
-| Draft | status === "draft" |
+| Tab         | Filter                  |
+| ----------- | ----------------------- |
+| All         | No filter               |
+| Draft       | status === "draft"      |
 | Outstanding | sent but not fully paid |
-| Overdue | past dueDate + unpaid |
-| Paid | status === "paid" |
+| Overdue     | past dueDate + unpaid   |
+| Paid        | status === "paid"       |
 
 **Data Table Columns:**
 
-| Column | Sortable | Notes |
-|--------|----------|-------|
-| Invoice # | Yes | Clickable, action color |
-| Customer | Yes | Links to customer detail |
-| Status | Yes | StatusBadge with filter |
-| Amount | Yes | Right-aligned, tabular-nums |
-| Due Date | Yes | Relative ("Due in 5 days", "3 days overdue") |
-| Balance Due | Yes | Remaining after partial payments |
-| Date Created | Yes | Default sort: newest first |
+| Column       | Sortable | Notes                                        |
+| ------------ | -------- | -------------------------------------------- |
+| Invoice #    | Yes      | Clickable, action color                      |
+| Customer     | Yes      | Links to customer detail                     |
+| Status       | Yes      | StatusBadge with filter                      |
+| Amount       | Yes      | Right-aligned, tabular-nums                  |
+| Due Date     | Yes      | Relative ("Due in 5 days", "3 days overdue") |
+| Balance Due  | Yes      | Remaining after partial payments             |
+| Date Created | Yes      | Default sort: newest first                   |
 
 **Batch Operations** (toolbar when rows selected):
+
 - Send Selected
 - Mark as Paid
 - Send Reminder
@@ -90,6 +92,7 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 **Pattern**: Mirrors QuoteDetailView
 
 **Layout:**
+
 1. Sticky header: invoice # + status badge + action buttons
 2. Customer info card with billing contact
 3. Source info: linked quote #, linked job # (clickable)
@@ -101,23 +104,25 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 
 **Actions by Status:**
 
-| Status | Available Actions |
-|--------|------------------|
-| Draft | Edit, Send, Delete |
-| Sent/Open | Record Payment, Send Reminder, Void, Duplicate |
-| Overdue | Record Payment, Send Reminder (escalated), Void |
-| Paid | View Receipt, Duplicate |
-| Void | Duplicate, Delete |
+| Status    | Available Actions                               |
+| --------- | ----------------------------------------------- |
+| Draft     | Edit, Send, Delete                              |
+| Sent/Open | Record Payment, Send Reminder, Void, Duplicate  |
+| Overdue   | Record Payment, Send Reminder (escalated), Void |
+| Paid      | View Receipt, Duplicate                         |
+| Void      | Duplicate, Delete                               |
 
 ### Screen 3: New Invoice (`/invoices/new`)
 
 **Pattern**: Mirrors QuoteForm with collapsible sections + sticky summary bar
 
 **Two Entry Points:**
+
 1. From scratch: sidebar/list "New Invoice" button
 2. From accepted quote: `/invoices/new?quoteId=xxx` (auto-populates everything)
 
 **Sections:**
+
 1. Customer (auto-populated if from quote)
 2. Line Items (from quote, editable, configurable itemization level)
 3. Pricing (auto-calculated, can add extra charges)
@@ -130,14 +135,14 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 
 ## Status Badge Design
 
-| Status | Style | Token |
-|--------|-------|-------|
-| Draft | `bg-muted text-muted-foreground` | Neutral, low emphasis |
-| Sent / Open | `bg-action/10 text-action border border-action/20` | Niji blue |
-| Partially Paid | `bg-warning/10 text-warning border border-warning/20` | Gold |
-| Paid | `bg-success/10 text-success border border-success/20` | Green |
-| Overdue | `bg-error/10 text-error border border-error/20` | Red |
-| Void | `bg-muted text-muted-foreground` | Struck through, dimmed |
+| Status         | Style                                                 | Token                  |
+| -------------- | ----------------------------------------------------- | ---------------------- |
+| Draft          | `bg-muted text-muted-foreground`                      | Neutral, low emphasis  |
+| Sent / Open    | `bg-action/10 text-action border border-action/20`    | Niji blue              |
+| Partially Paid | `bg-warning/10 text-warning border border-warning/20` | Gold                   |
+| Paid           | `bg-success/10 text-success border border-success/20` | Green                  |
+| Overdue        | `bg-error/10 text-error border border-error/20`       | Red                    |
+| Void           | `bg-muted text-muted-foreground`                      | Struck through, dimmed |
 
 ---
 
@@ -145,45 +150,48 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 
 ### Existing Components to Reuse
 
-| Component | Location | Reuse For |
-|-----------|----------|-----------|
-| `StatusBadge` | `components/features/StatusBadge.tsx` | Extend for InvoiceStatus |
-| `ColumnHeaderMenu` | `components/features/ColumnHeaderMenu.tsx` | Table column sorting/filtering |
-| `CustomerCombobox` | `components/features/CustomerCombobox.tsx` | Customer selection |
-| `CollapsibleSection` | `quotes/_components/CollapsibleSection.tsx` | Form sections |
-| `LineItemRow` | `quotes/_components/LineItemRow.tsx` | Invoice line items |
-| `PricingSummary` | `quotes/_components/PricingSummary.tsx` | Pricing section |
-| `DiscountRow` | `quotes/_components/DiscountRow.tsx` | Discount display |
-| `ArtworkPreview` | `quotes/_components/ArtworkPreview.tsx` | Line item artwork |
-| `EmailPreviewModal` | `quotes/_components/EmailPreviewModal.tsx` | Email preview |
+| Component            | Location                                    | Reuse For                      |
+| -------------------- | ------------------------------------------- | ------------------------------ |
+| `StatusBadge`        | `components/features/StatusBadge.tsx`       | Extend for InvoiceStatus       |
+| `ColumnHeaderMenu`   | `components/features/ColumnHeaderMenu.tsx`  | Table column sorting/filtering |
+| `CustomerCombobox`   | `components/features/CustomerCombobox.tsx`  | Customer selection             |
+| `CollapsibleSection` | `quotes/_components/CollapsibleSection.tsx` | Form sections                  |
+| `LineItemRow`        | `quotes/_components/LineItemRow.tsx`        | Invoice line items             |
+| `PricingSummary`     | `quotes/_components/PricingSummary.tsx`     | Pricing section                |
+| `DiscountRow`        | `quotes/_components/DiscountRow.tsx`        | Discount display               |
+| `ArtworkPreview`     | `quotes/_components/ArtworkPreview.tsx`     | Line item artwork              |
+| `EmailPreviewModal`  | `quotes/_components/EmailPreviewModal.tsx`  | Email preview                  |
 
 ### New Components Needed
 
-| Component | Purpose |
-|-----------|---------|
-| `InvoiceStatsBar` | 4 KPI cards for list page |
-| `PaymentLedger` | Table of payments on invoice detail |
-| `RecordPaymentSheet` | Slide-out form for recording payments |
-| `InvoiceActions` | Context-aware action buttons per status |
-| `PaymentReminderTimeline` | Timeline of sent/scheduled reminders |
-| `OverdueBadge` | Badge with days overdue + pulse animation |
+| Component                 | Purpose                                   |
+| ------------------------- | ----------------------------------------- |
+| `InvoiceStatsBar`         | 4 KPI cards for list page                 |
+| `PaymentLedger`           | Table of payments on invoice detail       |
+| `RecordPaymentSheet`      | Slide-out form for recording payments     |
+| `InvoiceActions`          | Context-aware action buttons per status   |
+| `PaymentReminderTimeline` | Timeline of sent/scheduled reminders      |
+| `OverdueBadge`            | Badge with days overdue + pulse animation |
 
 ---
 
 ## Design System Alignment
 
 ### "Linear Calm" Layer
+
 - Status transitions: subtle opacity fades (200ms ease)
 - Payment recording: smooth number counter animation for balance update
 - Table row hover: `bg-muted/50`
 
 ### "Raycast Polish" Layer
+
 - Real-time total calculation as line items edited
 - Sticky summary bar on form (customer, total, status)
 - Glass effect (`backdrop-blur-sm`) on sticky elements
 - Toast notifications: "Invoice INV-1024 sent", "Payment recorded"
 
 ### "Neobrutalist Delight" Layer
+
 - Primary CTAs: `shadow-brutal shadow-action/30` with press animation
 - Status badge transitions: scale up briefly (1.05x) then settle
 - Overdue status: subtle pulse animation on badge
@@ -193,12 +201,14 @@ Customer Detail → Invoices tab → /invoices/[invoiceId]
 ## Payment Recording UX
 
 **RecordPaymentSheet Fields:**
+
 - Amount (pre-filled with balance due)
 - Date (default: today)
 - Method (dropdown: Check, Cash, Square, Venmo, Zelle, Credit Card, ACH, Other)
 - Reference/Note (optional — check number, transaction ID)
 
 **Payment Ledger Display:**
+
 ```
 Payment History
 ───────────────────────────────────────────
@@ -211,6 +221,7 @@ Balance Due:       $0.00
 ```
 
 **Auto-transitions:**
+
 - First payment < total → status becomes "partial"
 - Total payments >= total → status becomes "paid"
 
@@ -218,13 +229,13 @@ Balance Due:       $0.00
 
 ## Payment Reminder Cadence
 
-| Timing | Message Tone | Trigger |
-|--------|-------------|---------|
-| 3 days before due | Friendly reminder | Automatic |
-| On due date | Payment due today | Automatic |
-| 3 days overdue | Gentle follow-up | Automatic |
-| 7 days overdue | Second reminder | Automatic |
-| 14+ days overdue | Final notice | Manual trigger |
+| Timing            | Message Tone      | Trigger        |
+| ----------------- | ----------------- | -------------- |
+| 3 days before due | Friendly reminder | Automatic      |
+| On due date       | Payment due today | Automatic      |
+| 3 days overdue    | Gentle follow-up  | Automatic      |
+| 7 days overdue    | Second reminder   | Automatic      |
+| 14+ days overdue  | Final notice      | Manual trigger |
 
 (Phase 1: show timeline on detail page. Actual sending in Phase 3.)
 
@@ -233,6 +244,7 @@ Balance Due:       $0.00
 ## User Journeys
 
 ### Journey: Create Invoice from Accepted Quote
+
 1. Chris sees quote with "Accepted" status
 2. Opens quote detail → clicks "Create Invoice"
 3. Navigates to `/invoices/new?quoteId=xxx`
@@ -244,6 +256,7 @@ Balance Due:       $0.00
 9. Toast: "Invoice INV-1024 sent to River City Brewing Co."
 
 ### Journey: Record a Payment
+
 1. Chris finds invoice in list (or via search)
 2. Opens invoice detail
 3. Clicks "Record Payment"
@@ -255,6 +268,7 @@ Balance Due:       $0.00
 9. Toast: "Payment of $487.50 recorded"
 
 ### Journey: Follow Up on Overdue
+
 1. Dashboard shows "2 Overdue Invoices"
 2. Chris clicks overdue invoice
 3. Detail shows overdue badge, days count, reminder history

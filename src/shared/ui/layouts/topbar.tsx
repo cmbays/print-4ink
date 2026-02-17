@@ -4,11 +4,11 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@shared/ui/primitives/breadcrumb";
-import type { BreadcrumbSegment } from "@shared/lib/breadcrumbs";
+} from '@shared/ui/primitives/breadcrumb'
+import type { BreadcrumbSegment } from '@shared/lib/breadcrumbs'
 
-interface TopbarProps {
-  breadcrumbs?: BreadcrumbSegment[];
+type TopbarProps = {
+  breadcrumbs?: BreadcrumbSegment[]
 }
 
 export function Topbar({ breadcrumbs }: TopbarProps) {
@@ -24,9 +24,7 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 {crumb.href ? (
-                  <BreadcrumbLink href={crumb.href}>
-                    {crumb.label}
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
                 ) : (
                   <span className="text-foreground">{crumb.label}</span>
                 )}
@@ -36,5 +34,5 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
         </BreadcrumbList>
       </Breadcrumb>
     </header>
-  );
+  )
 }

@@ -18,25 +18,25 @@
 
 All upstream files are in [rjs/shaping-skills](https://github.com/rjs/shaping-skills) on `main`:
 
-| Upstream File | Size | Our Deliverable |
-|---|---|---|
-| `shaping/SKILL.md` | 23KB | → `.claude/skills/shaping/SKILL.md` |
-| `breadboarding/skill.md` | 61KB | → `.claude/skills/breadboarding/SKILL.md` |
-| `breadboard-reflection/skill.md` | 6KB | → `.claude/skills/breadboard-reflection/SKILL.md` |
-| `hooks/shaping-ripple.sh` | 589B | → `.claude/hooks/shaping-ripple.sh` |
+| Upstream File                    | Size | Our Deliverable                                   |
+| -------------------------------- | ---- | ------------------------------------------------- |
+| `shaping/SKILL.md`               | 23KB | → `.claude/skills/shaping/SKILL.md`               |
+| `breadboarding/skill.md`         | 61KB | → `.claude/skills/breadboarding/SKILL.md`         |
+| `breadboard-reflection/skill.md` | 6KB  | → `.claude/skills/breadboard-reflection/SKILL.md` |
+| `hooks/shaping-ripple.sh`        | 589B | → `.claude/hooks/shaping-ripple.sh`               |
 
 ### Our Existing Files to Read First
 
-| File | Why |
-|---|---|
-| `docs/plans/2026-02-15-shaping-skills-suite-design.md` | Full design doc — decisions, scope, separation of concerns |
-| `.claude/skills/breadboarding/SKILL.md` | Current breadboarding skill — understand what we have |
-| `.claude/skills/breadboarding/reference/concepts.md` | Current concepts reference |
-| `.claude/skills/breadboarding/templates/breadboard-template.md` | Current template |
-| `.claude/skills/implementation-planning/SKILL.md` | Impl-planning skill — understand handoff boundary |
-| `.claude/skills/cool-down/SKILL.md` | Recent skill example — convention reference |
-| `CLAUDE.md` | Project rules, skills table, orchestration patterns |
-| `docs/AGENTS.md` | Agent registry, calling conventions |
+| File                                                            | Why                                                        |
+| --------------------------------------------------------------- | ---------------------------------------------------------- |
+| `docs/plans/2026-02-15-shaping-skills-suite-design.md`          | Full design doc — decisions, scope, separation of concerns |
+| `.claude/skills/breadboarding/SKILL.md`                         | Current breadboarding skill — understand what we have      |
+| `.claude/skills/breadboarding/reference/concepts.md`            | Current concepts reference                                 |
+| `.claude/skills/breadboarding/templates/breadboard-template.md` | Current template                                           |
+| `.claude/skills/implementation-planning/SKILL.md`               | Impl-planning skill — understand handoff boundary          |
+| `.claude/skills/cool-down/SKILL.md`                             | Recent skill example — convention reference                |
+| `CLAUDE.md`                                                     | Project rules, skills table, orchestration patterns        |
+| `docs/AGENTS.md`                                                | Agent registry, calling conventions                        |
 
 ### Worktree
 
@@ -49,6 +49,7 @@ Branch: `session/0215-shaping-skill`
 ## Task 1: Create Shaping Skill — SKILL.md
 
 **Files:**
+
 - Create: `.claude/skills/shaping/SKILL.md`
 
 **Step 1: Fetch upstream shaping skill**
@@ -83,7 +84,7 @@ prerequisites:
 
 Add these sections at the top of the skill, before the upstream content:
 
-```markdown
+````markdown
 # Shaping
 
 Iterative R × S methodology for defining problems and exploring solutions. Adapted from
@@ -96,6 +97,7 @@ Shaping is one step in the Shaping phase of the pipeline:
 ```text
 Interview → **Shaping (R×S)** → Breadboarding → BB Reflection → Impl Planning
 ```
+````
 
 ### Inputs
 
@@ -110,11 +112,11 @@ Read these before starting (do NOT skip any):
 
 Produce these artifacts in `docs/shaping/{topic}/`:
 
-| File | Contents |
-|---|---|
-| `frame.md` | Source material, Problem statement, Outcome definition |
-| `shaping.md` | Requirements (R), Shapes (A/B/C...), Fit checks, Decision log |
-| `spike-{name}.md` | Investigation docs for flagged unknowns (one per spike) |
+| File              | Contents                                                      |
+| ----------------- | ------------------------------------------------------------- |
+| `frame.md`        | Source material, Problem statement, Outcome definition        |
+| `shaping.md`      | Requirements (R), Shapes (A/B/C...), Fit checks, Decision log |
+| `spike-{name}.md` | Investigation docs for flagged unknowns (one per spike)       |
 
 ### Handoff to Breadboarding
 
@@ -128,14 +130,15 @@ to the `/breadboarding` skill. The breadboarding agent reads:
 
 At each decision point, behavior depends on pipeline mode:
 
-| Decision | Interactive | Auto |
-|---|---|---|
-| Requirement status (Must-have/Nice-to-have/Out) | Human negotiates | Agent proposes based on interview, proceeds |
-| Shape selection | Human picks from fit check | Agent selects highest-fit shape, logs reasoning |
-| Spike need | Human decides | Agent spikes all flagged unknowns (⚠️) |
+| Decision                                        | Interactive                | Auto                                            |
+| ----------------------------------------------- | -------------------------- | ----------------------------------------------- |
+| Requirement status (Must-have/Nice-to-have/Out) | Human negotiates           | Agent proposes based on interview, proceeds     |
+| Shape selection                                 | Human picks from fit check | Agent selects highest-fit shape, logs reasoning |
+| Spike need                                      | Human decides              | Agent spikes all flagged unknowns (⚠️)          |
 
 All decisions logged in the Decision Points Log table in the shaping doc.
-```
+
+````
 
 **Upstream Methodology** (copy from upstream, with these modifications):
 
@@ -149,22 +152,24 @@ All decisions logged in the Decision Points Log table in the shaping doc.
 
    ```text
    Shaping → [handoff] → Breadboarding (with slicing)
-   ```
+````
 
-   | Phase | Purpose | Output |
-   |-------|---------|--------|
-   | **Shaping** | Explore problem and solution space, select and detail a shape | Shaping doc with R, shapes, fit checks. Selected shape with parts table. |
+| Phase       | Purpose                                                       | Output                                                                   |
+| ----------- | ------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Shaping** | Explore problem and solution space, select and detail a shape | Shaping doc with R, shapes, fit checks. Selected shape with parts table. |
 
-   ### Handoff to Breadboarding
+### Handoff to Breadboarding
 
-   Shaping is complete when:
-   - A shape is selected (passes fit check, feels right)
-   - All flagged unknowns (⚠️) are resolved or explicitly spiked
-   - The parts table describes concrete mechanisms
+Shaping is complete when:
 
-   The selected shape's parts become the input to the `/breadboarding` skill,
-   which maps them into concrete affordances, wiring, and vertical slices.
-   ```
+- A shape is selected (passes fit check, feels right)
+- All flagged unknowns (⚠️) are resolved or explicitly spiked
+- The parts table describes concrete mechanisms
+
+The selected shape's parts become the input to the `/breadboarding` skill,
+which maps them into concrete affordances, wiring, and vertical slices.
+
+````
 
 3. **Remove**: The "Slicing" section (lives in breadboarding skill), the "Breadboards" section (just add a one-line reference: "Use the `/breadboarding` skill to map the system into concrete affordances."), Slice plans references.
 
@@ -190,7 +195,7 @@ grep -c "Multi-Level Consistency" .claude/skills/shaping/SKILL.md
 grep -c "## Pipeline Context" .claude/skills/shaping/SKILL.md
 grep -c "## Decision Points" .claude/skills/shaping/SKILL.md
 grep -c "docs/shaping/" .claude/skills/shaping/SKILL.md
-```
+````
 
 **Step 4: Commit**
 
@@ -205,6 +210,7 @@ git push
 ## Task 2: Create Shaping Skill — Templates
 
 **Files:**
+
 - Create: `.claude/skills/shaping/templates/frame-template.md`
 - Create: `.claude/skills/shaping/templates/shaping-template.md`
 
@@ -228,8 +234,9 @@ shaping: true
 ## Source
 
 > [Paste verbatim source material here — user requests, interview quotes, emails,
-> slack messages, stakeholder feedback. Preserve exact wording. Multiple sources
-> can be added as they arrive.]
+>
+> > slack messages, stakeholder feedback. Preserve exact wording. Multiple sources
+> > can be added as they arrive.]
 
 ---
 
@@ -275,10 +282,10 @@ shaping: true
 
 ## Requirements (R)
 
-| ID | Requirement | Status |
-|----|-------------|--------|
-| R0 | {Core goal — one sentence} | Core goal |
-| R1 | | Undecided |
+| ID  | Requirement                | Status    |
+| --- | -------------------------- | --------- |
+| R0  | {Core goal — one sentence} | Core goal |
+| R1  |                            | Undecided |
 
 **Status values:** Core goal, Undecided, Leaning yes, Leaning no, Must-have, Nice-to-have, Out
 
@@ -289,46 +296,47 @@ shaping: true
 
 ## Shape A: {Title}
 
-| Part | Mechanism | Flag |
-|------|-----------|:----:|
-| **A1** | {mechanism description} | |
-| **A2** | {mechanism description} | ⚠️ |
+| Part   | Mechanism               | Flag |
+| ------ | ----------------------- | :--: |
+| **A1** | {mechanism description} |      |
+| **A2** | {mechanism description} |  ⚠️  |
 
 ---
 
 ## Shape B: {Title}
 
-| Part | Mechanism | Flag |
-|------|-----------|:----:|
-| **B1** | {mechanism description} | |
+| Part   | Mechanism               | Flag |
+| ------ | ----------------------- | :--: |
+| **B1** | {mechanism description} |      |
 
 ---
 
 ## Fit Check
 
-| Req | Requirement | Status | A | B |
-|-----|-------------|--------|---|---|
-| R0 | {full text} | Core goal | ✅ | ✅ |
-| R1 | {full text} | Undecided | ❌ | ✅ |
+| Req | Requirement | Status    | A   | B   |
+| --- | ----------- | --------- | --- | --- |
+| R0  | {full text} | Core goal | ✅  | ✅  |
+| R1  | {full text} | Undecided | ❌  | ✅  |
 
 **Notes:**
+
 - A fails R1: {brief explanation}
 
 ---
 
 ## Spikes
 
-| Spike | Status | File |
-|-------|--------|------|
+| Spike   | Status             | File              |
+| ------- | ------------------ | ----------------- |
 | {topic} | Pending / Complete | `spike-{name}.md` |
 
 ---
 
 ## Decision Points Log
 
-| # | Decision | Mode | Reasoning | Date |
-|---|----------|------|-----------|------|
-| 1 | | human / agent | | |
+| #   | Decision | Mode          | Reasoning | Date |
+| --- | -------- | ------------- | --------- | ---- |
+| 1   |          | human / agent |           |      |
 
 ---
 
@@ -366,6 +374,7 @@ git push
 ## Task 3: Create Shaping Skill — Reference
 
 **Files:**
+
 - Create: `.claude/skills/shaping/reference/concepts.md`
 
 **Step 1: Write concepts quick reference**
@@ -380,24 +389,24 @@ Contents:
 
 ## Notation
 
-| Level | Notation | Meaning | Relationship |
-|-------|----------|---------|--------------|
-| Requirements | R0, R1, R2... | Problem constraints | Members of set R |
-| Shapes | A, B, C... | Solution options | Pick one from S |
-| Components | C1, C2, C3... | Parts of a shape | Combine within shape |
+| Level        | Notation      | Meaning                   | Relationship           |
+| ------------ | ------------- | ------------------------- | ---------------------- |
+| Requirements | R0, R1, R2... | Problem constraints       | Members of set R       |
+| Shapes       | A, B, C...    | Solution options          | Pick one from S        |
+| Components   | C1, C2, C3... | Parts of a shape          | Combine within shape   |
 | Alternatives | C3-A, C3-B... | Approaches to a component | Pick one per component |
 
 ## Requirement Status Values
 
-| Status | Meaning |
-|--------|---------|
-| Core goal | The fundamental problem being solved |
-| Undecided | Not yet classified |
-| Leaning yes | Probably must-have, needs confirmation |
-| Leaning no | Probably out, needs confirmation |
-| Must-have | Required for the shape to succeed |
-| Nice-to-have | Valuable but can be cut |
-| Out | Explicitly excluded from scope |
+| Status       | Meaning                                |
+| ------------ | -------------------------------------- |
+| Core goal    | The fundamental problem being solved   |
+| Undecided    | Not yet classified                     |
+| Leaning yes  | Probably must-have, needs confirmation |
+| Leaning no   | Probably out, needs confirmation       |
+| Must-have    | Required for the shape to succeed      |
+| Nice-to-have | Valuable but can be cut                |
+| Out          | Explicitly excluded from scope         |
 
 ## Fit Check Rules
 
@@ -449,6 +458,7 @@ git push
 ## Task 4: Upgrade Breadboarding Skill — SKILL.md
 
 **Files:**
+
 - Modify: `.claude/skills/breadboarding/SKILL.md` (replace contents)
 
 This is the largest task. We're replacing our ~250-line SKILL.md with the upstream ~61KB base plus our additions.
@@ -484,7 +494,7 @@ prerequisites:
 
 **Pipeline Integration Layer** (add after frontmatter, before upstream):
 
-```markdown
+````markdown
 # Breadboarding
 
 Transform shaped parts or existing systems into affordance tables with wiring and
@@ -498,6 +508,7 @@ Breadboarding follows shaping in the pipeline:
 ```text
 Interview → Shaping (R×S) → **Breadboarding** → BB Reflection → Impl Planning
 ```
+````
 
 ### Inputs
 
@@ -512,8 +523,8 @@ Read these before starting:
 
 ### Outputs
 
-| File | Contents |
-|---|---|
+| File                                     | Contents                                                     |
+| ---------------------------------------- | ------------------------------------------------------------ |
 | `docs/breadboards/{topic}-breadboard.md` | Affordance tables, wiring, Mermaid diagrams, vertical slices |
 
 ### Handoff to Implementation Planning
@@ -535,14 +546,15 @@ The breadboard structure scales — Phase 2 adds N-rows and S-rows without chang
 
 ### Decision Points
 
-| Decision | Interactive | Auto |
-|---|---|---|
-| Place validation | Human reviews places list | Agent applies blocking test, proceeds |
-| Affordance completeness | Human spots missing interactions | Agent traces all R through wiring |
-| Slice grouping | Human validates demo-ability | Agent applies slice rules, proceeds |
+| Decision                | Interactive                      | Auto                                  |
+| ----------------------- | -------------------------------- | ------------------------------------- |
+| Place validation        | Human reviews places list        | Agent applies blocking test, proceeds |
+| Affordance completeness | Human spots missing interactions | Agent traces all R through wiring     |
+| Slice grouping          | Human validates demo-ability     | Agent applies slice rules, proceeds   |
 
 All decisions logged in breadboard document.
-```
+
+````
 
 **Upstream Content** (copy from upstream with these modifications):
 
@@ -557,7 +569,7 @@ All decisions logged in breadboard document.
    The slice summary table and per-slice affordance tables are the primary input
    to the implementation-planning skill. The impl-planning agent uses slices to
    design waves (groups of parallel sessions) and generate execution manifests.
-   ```
+````
 
 **Our Additions** (add after upstream content, before Examples):
 
@@ -568,17 +580,17 @@ All decisions logged in breadboard document.
 
 After the main breadboard, include a table tracking Phase 2 code affordances:
 
-| ID | Place | Affordance | Replaces | Description |
-|----|-------|------------|----------|-------------|
-| N- | | | N- (Phase 1) | |
+| ID  | Place | Affordance | Replaces     | Description |
+| --- | ----- | ---------- | ------------ | ----------- |
+| N-  |       |            | N- (Phase 1) |             |
 
 ### Scope Coverage Verification
 
 Verify every requirement from the shaping doc has corresponding affordances:
 
-| Req | Requirement | Affordances | Covered? |
-|-----|-------------|-------------|----------|
-| R0 | {from shaping} | U-, N-, S- | Yes/No |
+| Req | Requirement    | Affordances | Covered? |
+| --- | -------------- | ----------- | -------- |
+| R0  | {from shaping} | U-, N-, S-  | Yes/No   |
 
 ### Quality Gate
 
@@ -632,6 +644,7 @@ git push
 ## Task 5: Update Breadboarding Templates and Reference
 
 **Files:**
+
 - Modify: `.claude/skills/breadboarding/templates/breadboard-template.md`
 - Modify: `.claude/skills/breadboarding/reference/concepts.md`
 
@@ -649,6 +662,7 @@ Update the template to match the upstream table format (adds Component column, u
 **Step 2: Update concepts reference**
 
 Add these concepts that were missing:
+
 - Place references (`_PlaceName` notation)
 - Modes as places (read/edit as separate places)
 - Subplaces (P2.1 notation — we had this but lightly)
@@ -686,6 +700,7 @@ git push
 ## Task 6: Create Breadboard Reflection Skill
 
 **Files:**
+
 - Create: `.claude/skills/breadboard-reflection/SKILL.md`
 
 **Step 1: Fetch upstream breadboard-reflection**
@@ -718,7 +733,7 @@ prerequisites:
 
 **Pipeline Integration Layer:**
 
-```markdown
+````markdown
 # Breadboard Reflection
 
 Find design smells in breadboards and fix them. Adapted from
@@ -731,6 +746,7 @@ Reflection follows breadboarding as a QA gate:
 ```text
 Shaping → Breadboarding → **BB Reflection** → Impl Planning
 ```
+````
 
 ### Inputs
 
@@ -745,17 +761,18 @@ Shaping → Breadboarding → **BB Reflection** → Impl Planning
 
 ### Decision Points
 
-| Decision | Interactive | Auto |
-|---|---|---|
+| Decision            | Interactive                | Auto                            |
+| ------------------- | -------------------------- | ------------------------------- |
 | Which smells to fix | Human reviews, prioritizes | Agent fixes all detected smells |
-| Affordance splits | Human validates naming | Agent applies naming test rules |
-| Wiring corrections | Human reviews changes | Agent traces and fixes |
+| Affordance splits   | Human validates naming     | Agent applies naming test rules |
+| Wiring corrections  | Human reviews changes      | Agent traces and fixes          |
 
 ### Phase Awareness
 
 - **Phase 1**: Smells detectable from breadboard + requirements alone (incoherent wiring, missing paths, diagram-only nodes, naming resistance)
 - **Phase 2**: Additional smells requiring code comparison (stale affordances, wrong causality, implementation mismatch)
-```
+
+````
 
 **Upstream Content** (copy from upstream with these modifications):
 
@@ -788,7 +805,7 @@ Shaping → Breadboarding → **BB Reflection** → Impl Planning
    - [ ] Every Wires Out target exists in the tables
    - [ ] Every Returns To source has a corresponding Wires Out
    - [ ] Tables and diagrams are consistent (tables win if conflict)
-   ```
+````
 
 **Step 3: Verify**
 
@@ -817,6 +834,7 @@ git push
 ## Task 7: Create Shaping Ripple Hook
 
 **Files:**
+
 - Create: `.claude/hooks/shaping-ripple.sh`
 - Modify: `.claude/settings.json` (if hook config lives there, otherwise check `.claude/settings.local.json`)
 
@@ -897,15 +915,16 @@ git push
 ## Task 8: Update CLAUDE.md
 
 **Files:**
+
 - Modify: `CLAUDE.md`
 
 **Step 1: Update Skills table**
 
 In the `### Skills` table under "Agent & Skill Infrastructure", add/update:
 
-| Skill | Trigger | Purpose |
-|---|---|---|
-| `shaping` | After interview, before breadboarding | R × S methodology — requirements, shapes, fit checks, spikes |
+| Skill                   | Trigger                                   | Purpose                                                                     |
+| ----------------------- | ----------------------------------------- | --------------------------------------------------------------------------- |
+| `shaping`               | After interview, before breadboarding     | R × S methodology — requirements, shapes, fit checks, spikes                |
 | `breadboard-reflection` | After breadboarding, before impl-planning | QA audit of breadboards — smell detection, naming test, wiring verification |
 
 The `breadboarding` entry already exists — update its purpose to:
@@ -969,11 +988,13 @@ git push
 ## Task 9: Update AGENTS.md
 
 **Files:**
+
 - Modify: `docs/AGENTS.md`
 
 **Step 1: Add shaping to agent preloaded skills**
 
 Check which agents should preload the shaping skill. At minimum:
+
 - Any future "shaping agent" should preload `shaping`
 - The `frontend-builder` agent already preloads `breadboarding` — no change needed there
 - Document that `breadboard-reflection` is a standalone skill (no agent preloads it; it's invoked explicitly)
@@ -995,6 +1016,7 @@ git push
 ## Task 10: Create KB Session Doc
 
 **Files:**
+
 - Create: `knowledge-base/src/content/sessions/2026-02-15-shaping-skills-suite.md`
 
 **Step 1: Write session doc**
@@ -1097,18 +1119,18 @@ EOF
 
 ## Summary
 
-| Task | Deliverable | Commits |
-|---|---|---|
-| 1 | Shaping SKILL.md | 1 |
-| 2 | Shaping templates | 1 |
-| 3 | Shaping reference | 1 |
-| 4 | Breadboarding SKILL.md upgrade | 1 |
-| 5 | Breadboarding templates + reference | 1 |
-| 6 | BB Reflection SKILL.md | 1 |
-| 7 | Ripple hook | 1 |
-| 8 | CLAUDE.md updates | 1 |
-| 9 | AGENTS.md updates | 1 |
-| 10 | KB session doc | 1 |
-| 11 | PR | — |
+| Task | Deliverable                         | Commits |
+| ---- | ----------------------------------- | ------- |
+| 1    | Shaping SKILL.md                    | 1       |
+| 2    | Shaping templates                   | 1       |
+| 3    | Shaping reference                   | 1       |
+| 4    | Breadboarding SKILL.md upgrade      | 1       |
+| 5    | Breadboarding templates + reference | 1       |
+| 6    | BB Reflection SKILL.md              | 1       |
+| 7    | Ripple hook                         | 1       |
+| 8    | CLAUDE.md updates                   | 1       |
+| 9    | AGENTS.md updates                   | 1       |
+| 10   | KB session doc                      | 1       |
+| 11   | PR                                  | —       |
 
 **Total: 10 commits, 1 PR**

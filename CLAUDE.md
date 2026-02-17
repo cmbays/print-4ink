@@ -1,6 +1,6 @@
 ---
-title: "CLAUDE.md"
-description: "AI operating rules, design system, coding standards, and canonical doc registry. Loaded every session."
+title: 'CLAUDE.md'
+description: 'AI operating rules, design system, coding standards, and canonical doc registry. Loaded every session.'
 category: canonical
 status: active
 phase: all
@@ -97,11 +97,12 @@ Every Claude session that will modify code MUST create its own worktree.
 
 These files cause merge conflicts in concurrent sessions. They are NEVER committed on feature branches.
 
-| Hot File | Update Rule |
-|----------|-------------|
+| Hot File               | Update Rule                             |
+| ---------------------- | --------------------------------------- |
 | `knowledge-base/dist/` | Build output — gitignored, never commit |
 
 **What sessions CAN commit on their feature branch:**
+
 - All source code changes
 - New `knowledge-base/src/content/pipelines/YYYY-MM-DD-*.md` pipeline doc (unique filename, no conflicts)
 - New docs (breadboards, spikes, strategy)
@@ -168,18 +169,18 @@ agent-outputs/              # Structured output from agent runs (audit trail)
 
 Colors are defined as CSS custom properties in `app/globals.css` and exposed via `@theme inline` for Tailwind. Use the **Tailwind class** column, not raw CSS variables.
 
-| Tailwind Class | CSS Variable | Value | Use |
-|----------------|-------------|-------|-----|
-| `bg-background` | `--background` | `#141515` | Main background |
-| `bg-elevated` | `--elevated` | `#1c1d1e` | Cards, panels |
-| `bg-surface` | `--surface` | `#232425` | Interactive surfaces |
-| `text-foreground` | `--foreground` | `rgba(255,255,255,0.87)` | High-emphasis text |
-| `text-muted-foreground` | `--muted-foreground` | `rgba(255,255,255,0.60)` | Medium-emphasis text, hints |
-| `text-action` | `--action` | `#2ab9ff` (Niji blue) | Primary CTAs, active states |
-| `text-success` | `--success` | `#54ca74` (Niji green) | Completions |
-| `text-error` / `text-destructive` | `--error` / `--destructive` | `#d23e08` (Niji red) | Failures |
-| `text-warning` | `--warning` | `#ffc663` (Niji gold) | Cautions |
-| `border-border` | `--border` | `rgba(255,255,255,0.12)` | Subtle borders |
+| Tailwind Class                    | CSS Variable                | Value                    | Use                         |
+| --------------------------------- | --------------------------- | ------------------------ | --------------------------- |
+| `bg-background`                   | `--background`              | `#141515`                | Main background             |
+| `bg-elevated`                     | `--elevated`                | `#1c1d1e`                | Cards, panels               |
+| `bg-surface`                      | `--surface`                 | `#232425`                | Interactive surfaces        |
+| `text-foreground`                 | `--foreground`              | `rgba(255,255,255,0.87)` | High-emphasis text          |
+| `text-muted-foreground`           | `--muted-foreground`        | `rgba(255,255,255,0.60)` | Medium-emphasis text, hints |
+| `text-action`                     | `--action`                  | `#2ab9ff` (Niji blue)    | Primary CTAs, active states |
+| `text-success`                    | `--success`                 | `#54ca74` (Niji green)   | Completions                 |
+| `text-error` / `text-destructive` | `--error` / `--destructive` | `#d23e08` (Niji red)     | Failures                    |
+| `text-warning`                    | `--warning`                 | `#ffc663` (Niji gold)    | Cautions                    |
+| `border-border`                   | `--border`                  | `rgba(255,255,255,0.12)` | Subtle borders              |
 
 > **Note:** There is no separate "text-secondary" or "text-muted" token. `text-foreground` (87% opacity) is high emphasis, `text-muted-foreground` (60% opacity) covers both medium emphasis and hint text. Do NOT use `text-text-muted` or `text-text-secondary` — these classes do not exist.
 
@@ -192,11 +193,11 @@ Colors are defined as CSS custom properties in `app/globals.css` and exposed via
 
 ### z-index Scale
 
-| z-index | Usage | Notes |
-|---------|-------|-------|
-| `z-10` | Sticky headers, inline overlays | Within content flow |
-| `z-40` | BottomActionBar, FAB | Above content, below navigation |
-| `z-50` | BottomTabBar, Sheet/Dialog overlays | Navigation + modal layer (shadcn default) |
+| z-index | Usage                               | Notes                                     |
+| ------- | ----------------------------------- | ----------------------------------------- |
+| `z-10`  | Sticky headers, inline overlays     | Within content flow                       |
+| `z-40`  | BottomActionBar, FAB                | Above content, below navigation           |
+| `z-50`  | BottomTabBar, Sheet/Dialog overlays | Navigation + modal layer (shadcn default) |
 
 Sheet and Dialog components from shadcn/ui use z-50 with a backdrop overlay that covers the full viewport. Do not create new z-index values without checking this scale.
 
@@ -334,12 +335,13 @@ git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink push origi
 
 Two systems. One principle: **rules vs. rationale. Never duplicate across both.**
 
-| System | Contains | When to use |
-|--------|----------|-------------|
-| **Root docs** (`CLAUDE.md`, `docs/TECH_STACK.md`, `docs/ARCHITECTURE.md`, etc.) | **Rules** — operational constraints loaded every session. What to do, where things go, what not to do. | Constrain behavior. Agents check these before acting. |
-| **Knowledge Base** (`knowledge-base/src/content/`) | **Rationale** — decision history, strategy, session narrative. Why things are the way they are. | Explain decisions. Humans browse; agents research when needed. |
+| System                                                                          | Contains                                                                                               | When to use                                                    |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| **Root docs** (`CLAUDE.md`, `docs/TECH_STACK.md`, `docs/ARCHITECTURE.md`, etc.) | **Rules** — operational constraints loaded every session. What to do, where things go, what not to do. | Constrain behavior. Agents check these before acting.          |
+| **Knowledge Base** (`knowledge-base/src/content/`)                              | **Rationale** — decision history, strategy, session narrative. Why things are the way they are.        | Explain decisions. Humans browse; agents research when needed. |
 
 **Rules:**
+
 - **Decision test**: "Is this a constraint on behavior?" → root doc. "Is this context that explains a decision?" → KB strategy entry.
 - **Never duplicate**: if a rule exists in a root doc, link to it from the KB — don't restate it. If reasoning lives in the KB, reference it from the root doc — don't inline it.
 - **Root docs stay terse**: they load into every session. Rule-dense, not narrative.
@@ -350,21 +352,22 @@ Two systems. One principle: **rules vs. rationale. Never duplicate across both.*
 
 These documents define the project. Reference them, keep them current, and never contradict them.
 
-| Document | Purpose | Update When |
-|----------|---------|-------------|
-| `CLAUDE.md` | AI operating rules, loaded every session | Any pattern/rule changes |
-| `docs/ROADMAP.md` | Vision, phases, bets, forward planning | Cycle transitions, betting decisions |
-| `docs/AGENTS.md` | Agent registry, orchestration, calling conventions | Adding/retiring agents |
-| `docs/TECH_STACK.md` | Tool choices, versions, decision context | Adding/removing/upgrading deps |
-| `docs/PRD.md` | Features, scope, acceptance criteria | Scope changes or new features |
-| `docs/APP_FLOW.md` | Screens, routes, navigation paths | Adding/changing pages or flows |
-| `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps | Completing steps or re-prioritizing |
-| `PROGRESS.md` | Generated progress report — live GitHub data | Regenerated: `work progress` |
-| `docs/HISTORY.md` | Archived session logs and feature details | When archiving completed work |
-| `docs/PM.md` | PM workflows, labels, templates, dependencies, agent conventions | PM infrastructure changes |
-| `docs/HOW_WE_WORK.md` | Methodology, Shape Up philosophy, PM tools, automation trajectory | Process or tooling changes |
+| Document                      | Purpose                                                           | Update When                          |
+| ----------------------------- | ----------------------------------------------------------------- | ------------------------------------ |
+| `CLAUDE.md`                   | AI operating rules, loaded every session                          | Any pattern/rule changes             |
+| `docs/ROADMAP.md`             | Vision, phases, bets, forward planning                            | Cycle transitions, betting decisions |
+| `docs/AGENTS.md`              | Agent registry, orchestration, calling conventions                | Adding/retiring agents               |
+| `docs/TECH_STACK.md`          | Tool choices, versions, decision context                          | Adding/removing/upgrading deps       |
+| `docs/PRD.md`                 | Features, scope, acceptance criteria                              | Scope changes or new features        |
+| `docs/APP_FLOW.md`            | Screens, routes, navigation paths                                 | Adding/changing pages or flows       |
+| `docs/IMPLEMENTATION_PLAN.md` | Sequenced build steps                                             | Completing steps or re-prioritizing  |
+| `PROGRESS.md`                 | Generated progress report — live GitHub data                      | Regenerated: `work progress`         |
+| `docs/HISTORY.md`             | Archived session logs and feature details                         | When archiving completed work        |
+| `docs/PM.md`                  | PM workflows, labels, templates, dependencies, agent conventions  | PM infrastructure changes            |
+| `docs/HOW_WE_WORK.md`         | Methodology, Shape Up philosophy, PM tools, automation trajectory | Process or tooling changes           |
 
 **Rules:**
+
 - Before starting any work, read `ROADMAP.md` for strategic context and current bets.
 - Before adding a dependency, check `TECH_STACK.md`. If it's not listed, ask first.
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
@@ -391,36 +394,36 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 ### Agents
 
-| Agent | Use When | Preloaded Skills |
-|-------|----------|------------------|
-| `frontend-builder` | Building screens or components | breadboarding, screen-builder, quality-gate |
-| `requirements-interrogator` | Before building complex features | pre-build-interrogator |
-| `design-auditor` | Design review checkpoints | design-audit |
-| `feature-strategist` | Competitive analysis, feature planning | feature-strategy |
-| `doc-sync` | Syncing docs with code changes | doc-sync |
-| `secretary` (Ada) | Project pulse, 1:1 check-ins, strategic advice | one-on-one, cool-down |
-| `finance-sme` | Self-review of financial calculations | — |
-| `build-reviewer` | Self-review of code quality | — |
+| Agent                       | Use When                                       | Preloaded Skills                            |
+| --------------------------- | ---------------------------------------------- | ------------------------------------------- |
+| `frontend-builder`          | Building screens or components                 | breadboarding, screen-builder, quality-gate |
+| `requirements-interrogator` | Before building complex features               | pre-build-interrogator                      |
+| `design-auditor`            | Design review checkpoints                      | design-audit                                |
+| `feature-strategist`        | Competitive analysis, feature planning         | feature-strategy                            |
+| `doc-sync`                  | Syncing docs with code changes                 | doc-sync                                    |
+| `secretary` (Ada)           | Project pulse, 1:1 check-ins, strategic advice | one-on-one, cool-down                       |
+| `finance-sme`               | Self-review of financial calculations          | —                                           |
+| `build-reviewer`            | Self-review of code quality                    | —                                           |
 
 **Calling convention**: "Use the [agent-name] agent to [task]" — e.g., "Use the frontend-builder agent to build PageHeader"
 
 ### Skills
 
-| Skill | Trigger | Purpose |
-|-------|---------|---------|
-| `vertical-discovery` | Start of each new vertical | 7-step competitor research + user interview + journey design methodology |
-| `shaping` | After interview, before breadboarding | R x S methodology — requirements, shapes, fit checks, spikes |
-| `breadboarding` | After shaping, before impl-planning | Map shaped parts or existing systems into affordances, wiring, and vertical slices |
-| `breadboard-reflection` | After breadboarding, before impl-planning | QA audit of breadboards — smell detection, naming test, wiring verification |
-| `screen-builder` | Starting Steps 1-10 | Build screens with design system + quality checklist + templates |
-| `quality-gate` | After completing a screen | Audit against 10-category quality checklist with pass/fail report |
-| `pre-build-interrogator` | Before complex features | Exhaustive questioning to eliminate assumptions |
-| `design-audit` | Design review checkpoints | 15-dimension audit against design system |
-| `feature-strategy` | Feature planning | Product strategy frameworks and feature plan templates |
-| `doc-sync` | After completing steps | Drift detection and doc synchronization |
-| `cool-down` | Between build cycles, after demos | Retrospective synthesis and forward planning (Shape Up) |
-| `build-session-protocol` | Build sessions | Completion protocol — Phase 2 auto-invokes review orchestration |
-| `review-orchestration` | Phase 2 of build sessions (auto-invoked) | Automated quality gate — classifies PR, dispatches review agents, aggregates findings, gates merge |
+| Skill                    | Trigger                                   | Purpose                                                                                            |
+| ------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `vertical-discovery`     | Start of each new vertical                | 7-step competitor research + user interview + journey design methodology                           |
+| `shaping`                | After interview, before breadboarding     | R x S methodology — requirements, shapes, fit checks, spikes                                       |
+| `breadboarding`          | After shaping, before impl-planning       | Map shaped parts or existing systems into affordances, wiring, and vertical slices                 |
+| `breadboard-reflection`  | After breadboarding, before impl-planning | QA audit of breadboards — smell detection, naming test, wiring verification                        |
+| `screen-builder`         | Starting Steps 1-10                       | Build screens with design system + quality checklist + templates                                   |
+| `quality-gate`           | After completing a screen                 | Audit against 10-category quality checklist with pass/fail report                                  |
+| `pre-build-interrogator` | Before complex features                   | Exhaustive questioning to eliminate assumptions                                                    |
+| `design-audit`           | Design review checkpoints                 | 15-dimension audit against design system                                                           |
+| `feature-strategy`       | Feature planning                          | Product strategy frameworks and feature plan templates                                             |
+| `doc-sync`               | After completing steps                    | Drift detection and doc synchronization                                                            |
+| `cool-down`              | Between build cycles, after demos         | Retrospective synthesis and forward planning (Shape Up)                                            |
+| `build-session-protocol` | Build sessions                            | Completion protocol — Phase 2 auto-invokes review orchestration                                    |
+| `review-orchestration`   | Phase 2 of build sessions (auto-invoked)  | Automated quality gate — classifies PR, dispatches review agents, aggregates findings, gates merge |
 
 ### Orchestration Patterns
 
@@ -443,21 +446,20 @@ Create `knowledge-base/src/content/pipelines/YYYY-MM-DD-kebab-topic.md` with YAM
 
 ```yaml
 ---
-title: "Document Title"
-subtitle: "Short description"
+title: 'Document Title'
+subtitle: 'Short description'
 date: YYYY-MM-DD
 phase: 1
-pipelineName: "Human Readable Pipeline Name"
+pipelineName: 'Human Readable Pipeline Name'
 pipelineType: vertical
 products: []
 tools: []
 stage: STAGE_SLUG
 tags: [feature, build]
-sessionId: "UUID"
-branch: "session/MMDD-topic"
+sessionId: 'UUID'
+branch: 'session/MMDD-topic'
 status: complete
 ---
-
 ## Body Content
 
 Write Markdown content here. Standard Markdown: headers, lists, tables, code blocks.
@@ -472,6 +474,7 @@ npm run kb:preview   # Preview production build locally
 ```
 
 Or from within `knowledge-base/`:
+
 ```bash
 npm run dev          # Astro dev server
 npm run build        # Production build
@@ -499,8 +502,14 @@ All frontmatter is validated by Zod at build time (`knowledge-base/src/content.c
 ### Gary Questions
 
 Embed in any session Markdown file:
+
 ```html
-<div class="gary-question" data-question-id="PIPELINE-q1" data-pipeline="PIPELINE_SLUG" data-status="unanswered">
+<div
+  class="gary-question"
+  data-question-id="PIPELINE-q1"
+  data-pipeline="PIPELINE_SLUG"
+  data-status="unanswered"
+>
   <p class="gary-question-text">Your question here?</p>
   <p class="gary-question-context">Why this matters</p>
   <div class="gary-answer" data-answered-date=""></div>

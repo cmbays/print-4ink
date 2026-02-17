@@ -1,16 +1,16 @@
 ---
-title: "DAL Migration — Quotes Route Group"
-subtitle: "Wave 2: Replace all mock-data imports in the Quotes vertical with DAL calls"
+title: 'DAL Migration — Quotes Route Group'
+subtitle: 'Wave 2: Replace all mock-data imports in the Quotes vertical with DAL calls'
 date: 2026-02-17
 phase: 1
-pipelineName: "Quotes"
+pipelineName: 'Quotes'
 pipelineType: vertical
 products: []
 tools: []
 stage: build
 tags: [build]
-sessionId: "49069648-2de5-4610-a3ee-325b98c05b7c"
-branch: "session/0217-dal-migrate-quotes"
+sessionId: '49069648-2de5-4610-a3ee-325b98c05b7c'
+branch: 'session/0217-dal-migrate-quotes'
 status: complete
 ---
 
@@ -24,22 +24,22 @@ Quotes route group were replaced with DAL calls following the patterns establish
 
 ### Server Pages (Pattern 1 & 3)
 
-| File | Change |
-|------|--------|
-| `quotes/page.tsx` | Made async; `Promise.all([getQuotes(), getCustomers()])` |
-| `quotes/new/page.tsx` | Parallel fetch for all 5 QuoteForm dependencies; `getQuoteById()` for duplicate flow |
-| `quotes/[id]/page.tsx` | DAL for quote, customer, artworks, garmentCatalog, colors |
-| `quotes/[id]/edit/page.tsx` | DAL for quote + all 5 QuoteForm dependencies |
+| File                        | Change                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| `quotes/page.tsx`           | Made async; `Promise.all([getQuotes(), getCustomers()])`                             |
+| `quotes/new/page.tsx`       | Parallel fetch for all 5 QuoteForm dependencies; `getQuoteById()` for duplicate flow |
+| `quotes/[id]/page.tsx`      | DAL for quote, customer, artworks, garmentCatalog, colors                            |
+| `quotes/[id]/edit/page.tsx` | DAL for quote + all 5 QuoteForm dependencies                                         |
 
 ### Client Components (Pattern 4 — prop threading)
 
-| Component | Removed Import | Props Added |
-|-----------|---------------|-------------|
-| `QuoteForm.tsx` | `customers`, `colors`, `garmentCatalog`, `artworks` | 4 domain arrays + `dtfSheetTiers` |
-| `QuotesDataTable.tsx` | `quotes`, `customers` | `quotes: Quote[]`, `customers: Customer[]` |
-| `QuoteDetailView.tsx` | `garmentCatalog`, `colors` | `garmentCatalog: GarmentCatalog[]`, `colors: Color[]` |
-| `QuoteReviewSheet.tsx` | (intermediary) | `garmentCatalog`, `colors` passed through |
-| `DtfTabContent.tsx` | `dtfSheetTiers` | `dtfSheetTiers: DTFSheetTier[]` |
+| Component              | Removed Import                                      | Props Added                                           |
+| ---------------------- | --------------------------------------------------- | ----------------------------------------------------- |
+| `QuoteForm.tsx`        | `customers`, `colors`, `garmentCatalog`, `artworks` | 4 domain arrays + `dtfSheetTiers`                     |
+| `QuotesDataTable.tsx`  | `quotes`, `customers`                               | `quotes: Quote[]`, `customers: Customer[]`            |
+| `QuoteDetailView.tsx`  | `garmentCatalog`, `colors`                          | `garmentCatalog: GarmentCatalog[]`, `colors: Color[]` |
+| `QuoteReviewSheet.tsx` | (intermediary)                                      | `garmentCatalog`, `colors` passed through             |
+| `DtfTabContent.tsx`    | `dtfSheetTiers`                                     | `dtfSheetTiers: DTFSheetTier[]`                       |
 
 ## Key Decisions
 

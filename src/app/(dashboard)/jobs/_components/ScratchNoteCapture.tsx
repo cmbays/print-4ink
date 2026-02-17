@@ -1,31 +1,28 @@
-"use client";
+'use client'
 
-import { useState, useRef, useEffect } from "react";
-import { Input } from "@shared/ui/primitives/input";
+import { useState, useRef, useEffect } from 'react'
+import { Input } from '@shared/ui/primitives/input'
 
-interface ScratchNoteCaptureProps {
-  onSubmit: (content: string) => void;
-  onCancel: () => void;
+type ScratchNoteCaptureProps = {
+  onSubmit: (content: string) => void
+  onCancel: () => void
 }
 
-export function ScratchNoteCapture({
-  onSubmit,
-  onCancel,
-}: ScratchNoteCaptureProps) {
-  const [value, setValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+export function ScratchNoteCapture({ onSubmit, onCancel }: ScratchNoteCaptureProps) {
+  const [value, setValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    inputRef.current?.focus()
+  }, [])
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" && value.trim()) {
-      e.preventDefault();
-      onSubmit(value.trim());
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      onCancel();
+    if (e.key === 'Enter' && value.trim()) {
+      e.preventDefault()
+      onSubmit(value.trim())
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      onCancel()
     }
   }
 
@@ -42,5 +39,5 @@ export function ScratchNoteCapture({
         className="h-8 border-none bg-transparent text-sm shadow-none focus-visible:ring-0"
       />
     </div>
-  );
+  )
 }

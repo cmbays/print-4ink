@@ -11,6 +11,7 @@ The DTF Gang Sheet Builder is a new vertical for Screen Print Pro. 4Ink runs DTF
 ## Goal
 
 Resolve these unknowns:
+
 1. How does the current DTF workflow function end-to-end?
 2. How should the gang sheet builder integrate with the existing quoting system?
 3. What is the visual builder's scope for the Feb 21 demo?
@@ -84,15 +85,16 @@ Resolve these unknowns:
 
 From industry sources (Ninja Transfers, BestPriceDTF):
 
-| Parameter | Minimum | Recommended | Notes |
-|-----------|---------|-------------|-------|
-| Between designs | 1/2" (12.7mm) | 1" (25.4mm) | Prevents cutting issues |
-| Design to sheet edge | 1/2" (12.7mm) | 1" (25.4mm) | Edge margin for handling |
-| Max gap between designs | — | 2" (50.8mm) | Anything more is wasted material |
-| Between design elements | 1-2mm | 3-5mm | Within a single design |
-| Minimum DPI | 150 | 300 | 300 DPI is production standard |
+| Parameter               | Minimum       | Recommended | Notes                            |
+| ----------------------- | ------------- | ----------- | -------------------------------- |
+| Between designs         | 1/2" (12.7mm) | 1" (25.4mm) | Prevents cutting issues          |
+| Design to sheet edge    | 1/2" (12.7mm) | 1" (25.4mm) | Edge margin for handling         |
+| Max gap between designs | —             | 2" (50.8mm) | Anything more is wasted material |
+| Between design elements | 1-2mm         | 3-5mm       | Within a single design           |
+| Minimum DPI             | 150           | 300         | 300 DPI is production standard   |
 
 Additional nesting best practices:
+
 - Rotate designs to fit like puzzle pieces
 - Fill gaps between larger designs with smaller ones
 - Group similar-sized designs together
@@ -103,15 +105,15 @@ Additional nesting best practices:
 
 From screenprinting.com industry guide:
 
-| Placement | Standard Size | Distance from Collar | Notes |
-|-----------|--------------|---------------------|-------|
-| Center Chest | 6"-10" wide, 6"-8" tall | 3" below collar (t-shirts) | Most common placement |
-| Left Chest | 2.5"-5" wide and tall | 3.5" from center of shirt | Keep under 4", most prefer 3"-3.5" |
-| Full Front | 12" wide, 10"-14" tall | Varies | Large format |
-| Oversized Front | 12"-15" wide, 14"-16" tall | Varies | Trend placement |
-| Back Collar | 1"-3" wide and tall | At collar | Small logo/tag prints |
-| Upper Back | 10"-14" wide, 1"-6" tall | Below collar area | Yoke area |
-| Sleeve | Max 3" wide | From top of sleeve | Don't exceed platen width |
+| Placement       | Standard Size              | Distance from Collar       | Notes                              |
+| --------------- | -------------------------- | -------------------------- | ---------------------------------- |
+| Center Chest    | 6"-10" wide, 6"-8" tall    | 3" below collar (t-shirts) | Most common placement              |
+| Left Chest      | 2.5"-5" wide and tall      | 3.5" from center of shirt  | Keep under 4", most prefer 3"-3.5" |
+| Full Front      | 12" wide, 10"-14" tall     | Varies                     | Large format                       |
+| Oversized Front | 12"-15" wide, 14"-16" tall | Varies                     | Trend placement                    |
+| Back Collar     | 1"-3" wide and tall        | At collar                  | Small logo/tag prints              |
+| Upper Back      | 10"-14" wide, 1"-6" tall   | Below collar area          | Yoke area                          |
+| Sleeve          | Max 3" wide                | From top of sleeve         | Don't exceed platen width          |
 
 Key rule: T-shirts = 3" down from collar for centered images. Hoodies/sweatshirts = 3.5"-5" from neckline (adjust for hood drop).
 
@@ -119,47 +121,47 @@ Key rule: T-shirts = 3" down from collar for centered images. Hoodies/sweatshirt
 
 ### Quote Builder — Service Type Navigation
 
-| UI Element | Code Mechanism | Wiring |
-|-----------|----------------|--------|
-| Service type selector (initial) | Checkbox group on quote creation | Enables/disables tabs |
-| Service type tabs (top bar) | Tab component with state preservation | Routes to service type editing panel |
-| Completion checkmark per tab | Status badge derived from validation | Blocks quote finalization if incomplete |
-| Add service type button | Adds tab to existing draft | Enables new service type panel |
-| Auto-save indicator | Debounced state persistence | Saves to local state (Phase 1) / DB (Phase 2+) |
+| UI Element                      | Code Mechanism                        | Wiring                                         |
+| ------------------------------- | ------------------------------------- | ---------------------------------------------- |
+| Service type selector (initial) | Checkbox group on quote creation      | Enables/disables tabs                          |
+| Service type tabs (top bar)     | Tab component with state preservation | Routes to service type editing panel           |
+| Completion checkmark per tab    | Status badge derived from validation  | Blocks quote finalization if incomplete        |
+| Add service type button         | Adds tab to existing draft            | Enables new service type panel                 |
+| Auto-save indicator             | Debounced state persistence           | Saves to local state (Phase 1) / DB (Phase 2+) |
 
 ### DTF Film-Only Quote Step
 
-| UI Element | Code Mechanism | Wiring |
-|-----------|----------------|--------|
-| Artwork picker | Customer artwork library filtered by DTF | Returns selected artwork with metadata |
-| Size template selector | Dropdown per artwork (saved sizes + custom) | Sets dimensions for line item |
-| Quantity input | Number input per line item | Feeds into sheet calculation |
-| Line item list | Dynamic list (add/remove/reorder) | Aggregates all designs for sheet calculation |
-| "Calculate Layout" button | Triggers bin-packing + cost optimization | Generates sheet layout(s) |
-| Split/Combine toggle | Radio group | Controls whether line items share sheets |
-| Visual sheet canvas | Read-only SVG/Canvas rendering | Shows design positions on 22"-wide sheet(s) |
-| Sheet size indicator | Derived from auto-calculation | Shows tier selected and price |
-| Space utilization % | Calculated from design area vs sheet area | Shown as efficiency indicator |
-| Discount controls | Same pattern as existing quote discounts | Applied at service type level |
-| Service type subtotal | Calculated from sheet tier prices + discounts | Feeds into quote total |
+| UI Element                | Code Mechanism                                | Wiring                                       |
+| ------------------------- | --------------------------------------------- | -------------------------------------------- |
+| Artwork picker            | Customer artwork library filtered by DTF      | Returns selected artwork with metadata       |
+| Size template selector    | Dropdown per artwork (saved sizes + custom)   | Sets dimensions for line item                |
+| Quantity input            | Number input per line item                    | Feeds into sheet calculation                 |
+| Line item list            | Dynamic list (add/remove/reorder)             | Aggregates all designs for sheet calculation |
+| "Calculate Layout" button | Triggers bin-packing + cost optimization      | Generates sheet layout(s)                    |
+| Split/Combine toggle      | Radio group                                   | Controls whether line items share sheets     |
+| Visual sheet canvas       | Read-only SVG/Canvas rendering                | Shows design positions on 22"-wide sheet(s)  |
+| Sheet size indicator      | Derived from auto-calculation                 | Shows tier selected and price                |
+| Space utilization %       | Calculated from design area vs sheet area     | Shown as efficiency indicator                |
+| Discount controls         | Same pattern as existing quote discounts      | Applied at service type level                |
+| Service type subtotal     | Calculated from sheet tier prices + discounts | Feeds into quote total                       |
 
 ### Gang Sheet Visual Layout
 
-| UI Element | Code Mechanism | Wiring |
-|-----------|----------------|--------|
-| Sheet canvas (22" width, variable height) | SVG or Canvas element, scaled to viewport | Renders design positions from layout algorithm |
-| Design thumbnails on canvas | Positioned rectangles with image preview | Shows actual arrangement |
-| Spacing indicators | Visual guides showing gaps between designs | Validates against DTF standards |
-| Sheet boundary | Border with edge margin visualization | Shows usable area vs margins |
-| Multi-sheet pagination | Sheet tabs or vertical scroll | When designs span multiple sheets |
+| UI Element                                | Code Mechanism                             | Wiring                                         |
+| ----------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
+| Sheet canvas (22" width, variable height) | SVG or Canvas element, scaled to viewport  | Renders design positions from layout algorithm |
+| Design thumbnails on canvas               | Positioned rectangles with image preview   | Shows actual arrangement                       |
+| Spacing indicators                        | Visual guides showing gaps between designs | Validates against DTF standards                |
+| Sheet boundary                            | Border with edge margin visualization      | Shows usable area vs margins                   |
+| Multi-sheet pagination                    | Sheet tabs or vertical scroll              | When designs span multiple sheets              |
 
 ### Production — Sibling Jobs
 
-| UI Element | Code Mechanism | Wiring |
-|-----------|----------------|--------|
-| Sibling job indicator on job card | Badge/link showing related jobs | Links to sibling job detail |
-| Shipping gate warning | Alert when trying to ship incomplete siblings | Blocks transition to Done |
-| Review phase aggregation | All siblings visible in Review lane together | Visual grouping on Kanban |
+| UI Element                        | Code Mechanism                                | Wiring                      |
+| --------------------------------- | --------------------------------------------- | --------------------------- |
+| Sibling job indicator on job card | Badge/link showing related jobs               | Links to sibling job detail |
+| Shipping gate warning             | Alert when trying to ship incomplete siblings | Blocks transition to Done   |
+| Review phase aggregation          | All siblings visible in Review lane together  | Visual grouping on Kanban   |
 
 ## Findings
 
@@ -185,16 +187,19 @@ Key rule: T-shirts = 3" down from collar for centered images. Hoodies/sweatshirt
 ### Build Order for Demo (Feb 21)
 
 **Wave 1: Foundation** (can be parallel)
+
 - Service type tab navigation in quote builder
 - Artwork model update (DTF size templates, screen print positioning)
 - DTF production step simplification on job cards
 
 **Wave 2: DTF Core** (depends on Wave 1)
+
 - DTF line item builder (image + size + quantity)
 - Sheet tier cost optimization algorithm
 - Bin-packing / auto-arrangement algorithm with DTF spacing rules
 
 **Wave 3: Visual + Integration** (depends on Wave 2)
+
 - Read-only visual sheet canvas
 - Sibling job creation from multi-service-type quotes
 - Invoicing alignment verification

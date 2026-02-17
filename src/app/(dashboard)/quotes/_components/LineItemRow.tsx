@@ -1,18 +1,14 @@
-"use client";
+'use client'
 
-import { useMemo, useState } from "react";
-import { Trash2, ChevronDown, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@shared/lib/cn";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
-import { Checkbox } from "@shared/ui/primitives/checkbox";
-import { Badge } from "@shared/ui/primitives/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@shared/ui/primitives/popover";
+import { useMemo, useState } from 'react'
+import { Trash2, ChevronDown, Check, ChevronsUpDown } from 'lucide-react'
+import { cn } from '@shared/lib/cn'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
+import { Checkbox } from '@shared/ui/primitives/checkbox'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Popover, PopoverContent, PopoverTrigger } from '@shared/ui/primitives/popover'
 import {
   Command,
   CommandEmpty,
@@ -20,93 +16,96 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@shared/ui/primitives/command";
+} from '@shared/ui/primitives/command'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { ColorSwatchPicker } from '@/components/features/ColorSwatchPicker'
+import { ArtworkAssignmentPicker } from './ArtworkAssignmentPicker'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@shared/ui/primitives/tooltip";
-import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
-import { ArtworkAssignmentPicker } from "./ArtworkAssignmentPicker";
-import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
-import type { GarmentCatalog, GarmentCategory } from "@domain/entities/garment";
-import type { Color } from "@domain/entities/color";
-import type { Artwork } from "@domain/entities/artwork";
-import type { ServiceType } from "@domain/entities/quote";
-import { money, toNumber, formatCurrency } from "@domain/lib/money";
+  SERVICE_TYPE_LABELS,
+  SERVICE_TYPE_COLORS,
+  GARMENT_CATEGORY_LABELS,
+} from '@domain/constants'
+import type { GarmentCatalog, GarmentCategory } from '@domain/entities/garment'
+import type { Color } from '@domain/entities/color'
+import type { Artwork } from '@domain/entities/artwork'
+import type { ServiceType } from '@domain/entities/quote'
+import { money, toNumber, formatCurrency } from '@domain/lib/money'
 
-export interface PrintLocationDetail {
-  location: string;
-  colorCount: number;
-  setupFee: number;
-  artworkId?: string;
+export type PrintLocationDetail = {
+  location: string
+  colorCount: number
+  setupFee: number
+  artworkId?: string
 }
 
-export interface LineItemData {
-  id: string;
-  garmentId: string;
-  colorId: string;
-  sizes: Record<string, number>;
-  serviceType: ServiceType;
-  printLocationDetails: PrintLocationDetail[];
+export type LineItemData = {
+  id: string
+  garmentId: string
+  colorId: string
+  sizes: Record<string, number>
+  serviceType: ServiceType
+  printLocationDetails: PrintLocationDetail[]
 }
 
-export { SCREEN_PRINT_QUOTE_SETUP, EMBROIDERY_LINE_ITEM_SETUP, DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee };
-
-interface LineItemRowProps {
-  index: number;
-  data: LineItemData;
-  onChange: (index: number, data: LineItemData) => void;
-  onRemove: (index: number) => void;
-  canRemove: boolean;
-  garmentCatalog: GarmentCatalog[];
-  colors: Color[];
-  quoteArtworks: Artwork[];
-  errors?: Record<string, string>;
+export {
+  SCREEN_PRINT_QUOTE_SETUP,
+  EMBROIDERY_LINE_ITEM_SETUP,
+  DECORATION_COST_PER_COLOR,
+  LOCATION_FEE_PER_UNIT,
+  calculateGarmentCost,
+  calculateDecorationCost,
+  calculateLineItemSetupFee,
+  calculateQuoteSetupFee,
 }
 
-const PRINT_LOCATIONS = [
-  "Front",
-  "Back",
-  "Left Sleeve",
-  "Right Sleeve",
-  "Neck Label",
-];
+type LineItemRowProps = {
+  index: number
+  data: LineItemData
+  onChange: (index: number, data: LineItemData) => void
+  onRemove: (index: number) => void
+  canRemove: boolean
+  garmentCatalog: GarmentCatalog[]
+  colors: Color[]
+  quoteArtworks: Artwork[]
+  errors?: Record<string, string>
+}
 
-const SERVICE_TYPES: ServiceType[] = ["screen-print", "dtf", "embroidery"];
+const PRINT_LOCATIONS = ['Front', 'Back', 'Left Sleeve', 'Right Sleeve', 'Neck Label']
+
+const SERVICE_TYPES: ServiceType[] = ['screen-print', 'dtf', 'embroidery']
 
 const ALL_GARMENT_CATEGORIES: GarmentCategory[] = [
-  "t-shirts",
-  "fleece",
-  "outerwear",
-  "pants",
-  "headwear",
-];
+  't-shirts',
+  'fleece',
+  'outerwear',
+  'pants',
+  'headwear',
+]
 
 // Phase 1: Only T-Shirts is selectable
-const ENABLED_CATEGORIES: Set<GarmentCategory> = new Set(["t-shirts"]);
+const ENABLED_CATEGORIES: Set<GarmentCategory> = new Set(['t-shirts'])
 
 // Setup fees: screen-print = flat $40/quote, embroidery = $20/line item, DTF = none
-const SCREEN_PRINT_QUOTE_SETUP = 40;
-const EMBROIDERY_LINE_ITEM_SETUP = 20;
+const SCREEN_PRINT_QUOTE_SETUP = 40
+const EMBROIDERY_LINE_ITEM_SETUP = 20
 
 // Decoration cost per color per unit
 const DECORATION_COST_PER_COLOR: Record<ServiceType, number> = {
-  "screen-print": 0.5,
+  'screen-print': 0.5,
   dtf: 0.75,
   embroidery: 1.0,
-};
+}
 
 // Per-location flat fee per unit
 const LOCATION_FEE_PER_UNIT: Record<ServiceType, number> = {
-  "screen-print": 0.25,
+  'screen-print': 0.25,
   dtf: 0.5,
   embroidery: 0.75,
-};
+}
 
 function calculateGarmentCost(garment: GarmentCatalog | undefined, totalQty: number): number {
-  if (!garment) return 0;
-  return toNumber(money(garment.basePrice).times(totalQty));
+  if (!garment) return 0
+  return toNumber(money(garment.basePrice).times(totalQty))
 }
 
 function calculateDecorationCost(
@@ -114,26 +113,28 @@ function calculateDecorationCost(
   printLocationDetails: PrintLocationDetail[],
   totalQty: number
 ): number {
-  const colorCostPerUnit = toNumber(printLocationDetails.reduce(
-    (sum, d) => sum.plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType])),
-    money(0)
-  ));
+  const colorCostPerUnit = toNumber(
+    printLocationDetails.reduce(
+      (sum, d) => sum.plus(money(d.colorCount).times(DECORATION_COST_PER_COLOR[serviceType])),
+      money(0)
+    )
+  )
   const locationCostPerUnit = toNumber(
     money(printLocationDetails.length).times(LOCATION_FEE_PER_UNIT[serviceType])
-  );
-  return toNumber(money(colorCostPerUnit).plus(locationCostPerUnit).times(totalQty));
+  )
+  return toNumber(money(colorCostPerUnit).plus(locationCostPerUnit).times(totalQty))
 }
 
 // Per line item setup fee (embroidery only)
 function calculateLineItemSetupFee(serviceType: ServiceType): number {
-  return serviceType === "embroidery" ? EMBROIDERY_LINE_ITEM_SETUP : 0;
+  return serviceType === 'embroidery' ? EMBROIDERY_LINE_ITEM_SETUP : 0
 }
 
 // Quote-level flat setup fee ($40 if any line item is screen-print)
 function calculateQuoteSetupFee(lineItems: { serviceType: ServiceType }[]): number {
-  return lineItems.some((item) => item.serviceType === "screen-print")
+  return lineItems.some((item) => item.serviceType === 'screen-print')
     ? SCREEN_PRINT_QUOTE_SETUP
-    : 0;
+    : 0
 }
 
 export function LineItemRow({
@@ -147,133 +148,112 @@ export function LineItemRow({
   quoteArtworks,
   errors,
 }: LineItemRowProps) {
-  const [garmentOpen, setGarmentOpen] = useState(false);
-  const [colorOpen, setColorOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<GarmentCategory>("t-shirts");
+  const [garmentOpen, setGarmentOpen] = useState(false)
+  const [colorOpen, setColorOpen] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<GarmentCategory>('t-shirts')
 
-  const selectedGarment = garmentCatalog.find((g) => g.id === data.garmentId);
+  const selectedGarment = garmentCatalog.find((g) => g.id === data.garmentId)
 
   const filteredGarmentCatalog = useMemo(
     () => garmentCatalog.filter((g) => g.baseCategory === selectedCategory),
     [garmentCatalog, selectedCategory]
-  );
-  const selectedColor = colors.find((c) => c.id === data.colorId);
+  )
+  const selectedColor = colors.find((c) => c.id === data.colorId)
 
   const availableSizes = useMemo(() => {
-    if (!selectedGarment) return [];
-    return [...selectedGarment.availableSizes].sort(
-      (a, b) => a.order - b.order
-    );
-  }, [selectedGarment]);
+    if (!selectedGarment) return []
+    return [...selectedGarment.availableSizes].sort((a, b) => a.order - b.order)
+  }, [selectedGarment])
 
   const availableColors = useMemo(() => {
-    if (!selectedGarment) return colors;
-    return colors.filter((c) =>
-      selectedGarment.availableColors.includes(c.id)
-    );
-  }, [selectedGarment, colors]);
+    if (!selectedGarment) return colors
+    return colors.filter((c) => selectedGarment.availableColors.includes(c.id))
+  }, [selectedGarment, colors])
 
   const totalQty = useMemo(
     () => Object.values(data.sizes).reduce((sum, qty) => sum + qty, 0),
     [data.sizes]
-  );
+  )
 
   const garmentCost = useMemo(
     () => calculateGarmentCost(selectedGarment, totalQty),
     [selectedGarment, totalQty]
-  );
+  )
 
   const decorationCost = useMemo(
     () => calculateDecorationCost(data.serviceType, data.printLocationDetails, totalQty),
     [data.serviceType, data.printLocationDetails, totalQty]
-  );
+  )
 
-  const setupFee = useMemo(
-    () => calculateLineItemSetupFee(data.serviceType),
-    [data.serviceType]
-  );
+  const setupFee = useMemo(() => calculateLineItemSetupFee(data.serviceType), [data.serviceType])
 
-  const lineTotal = toNumber(money(garmentCost).plus(decorationCost));
+  const lineTotal = toNumber(money(garmentCost).plus(decorationCost))
 
   function updateField(partial: Partial<LineItemData>) {
-    onChange(index, { ...data, ...partial });
+    onChange(index, { ...data, ...partial })
   }
 
   function handleGarmentSelect(garmentId: string) {
-    const garment = garmentCatalog.find((g) => g.id === garmentId);
-    const resetSizes: Record<string, number> = {};
+    const garment = garmentCatalog.find((g) => g.id === garmentId)
+    const resetSizes: Record<string, number> = {}
     if (garment) {
       garment.availableSizes.forEach((s) => {
-        resetSizes[s.name] = 0;
-      });
+        resetSizes[s.name] = 0
+      })
     }
     const colorStillAvailable =
-      garment && data.colorId
-        ? garment.availableColors.includes(data.colorId)
-        : false;
+      garment && data.colorId ? garment.availableColors.includes(data.colorId) : false
     updateField({
       garmentId,
       sizes: resetSizes,
-      colorId: colorStillAvailable ? data.colorId : "",
-    });
-    setGarmentOpen(false);
+      colorId: colorStillAvailable ? data.colorId : '',
+    })
+    setGarmentOpen(false)
   }
 
   function handleSizeChange(sizeName: string, value: string) {
-    const qty = parseInt(value, 10);
+    const qty = parseInt(value, 10)
     updateField({
       sizes: {
         ...data.sizes,
         [sizeName]: isNaN(qty) ? 0 : Math.max(0, qty),
       },
-    });
+    })
   }
 
   function handleLocationToggle(location: string) {
-    const existing = data.printLocationDetails.find(
-      (d) => d.location === location
-    );
+    const existing = data.printLocationDetails.find((d) => d.location === location)
     if (existing) {
       updateField({
-        printLocationDetails: data.printLocationDetails.filter(
-          (d) => d.location !== location
-        ),
-      });
+        printLocationDetails: data.printLocationDetails.filter((d) => d.location !== location),
+      })
     } else {
       updateField({
         printLocationDetails: [
           ...data.printLocationDetails,
           { location, colorCount: 0, setupFee: 0 },
         ],
-      });
+      })
     }
   }
 
-  function handleLocationDetailChange(
-    location: string,
-    partial: Partial<PrintLocationDetail>
-  ) {
+  function handleLocationDetailChange(location: string, partial: Partial<PrintLocationDetail>) {
     updateField({
       printLocationDetails: data.printLocationDetails.map((d) =>
         d.location === location ? { ...d, ...partial } : d
       ),
-    });
+    })
   }
 
-  const activeLocations = data.printLocationDetails.map((d) => d.location);
+  const activeLocations = data.printLocationDetails.map((d) => d.location)
 
   return (
     <div className="rounded-lg border border-border bg-elevated p-4">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h4 className="text-sm font-medium text-foreground">
-            Line Item {index + 1}
-          </h4>
-          <Badge
-            variant="ghost"
-            className={cn("text-xs", SERVICE_TYPE_COLORS[data.serviceType])}
-          >
+          <h4 className="text-sm font-medium text-foreground">Line Item {index + 1}</h4>
+          <Badge variant="ghost" className={cn('text-xs', SERVICE_TYPE_COLORS[data.serviceType])}>
             {SERVICE_TYPE_LABELS[data.serviceType]}
           </Badge>
         </div>
@@ -300,12 +280,11 @@ export function LineItemRow({
               <Button
                 key={type}
                 type="button"
-                variant={data.serviceType === type ? "default" : "outline"}
+                variant={data.serviceType === type ? 'default' : 'outline'}
                 size="sm"
                 className={cn(
-                  "h-7 text-xs",
-                  data.serviceType === type &&
-                    "bg-action text-primary-foreground"
+                  'h-7 text-xs',
+                  data.serviceType === type && 'bg-action text-primary-foreground'
                 )}
                 onClick={() => updateField({ serviceType: type })}
               >
@@ -320,27 +299,27 @@ export function LineItemRow({
           <Label className="text-sm text-muted-foreground">Garment Type</Label>
           <div className="flex gap-1">
             {ALL_GARMENT_CATEGORIES.map((cat) => {
-              const enabled = ENABLED_CATEGORIES.has(cat);
-              const isSelected = selectedCategory === cat;
+              const enabled = ENABLED_CATEGORIES.has(cat)
+              const isSelected = selectedCategory === cat
               const btn = (
                 <Button
                   key={cat}
                   type="button"
-                  variant={isSelected ? "default" : "outline"}
+                  variant={isSelected ? 'default' : 'outline'}
                   size="sm"
                   disabled={!enabled}
                   className={cn(
-                    "h-7 text-xs",
-                    isSelected && "bg-action text-primary-foreground",
-                    !enabled && "opacity-40 cursor-not-allowed"
+                    'h-7 text-xs',
+                    isSelected && 'bg-action text-primary-foreground',
+                    !enabled && 'opacity-40 cursor-not-allowed'
                   )}
                   onClick={() => {
-                    if (enabled) setSelectedCategory(cat);
+                    if (enabled) setSelectedCategory(cat)
                   }}
                 >
                   {GARMENT_CATEGORY_LABELS[cat]}
                 </Button>
-              );
+              )
               if (!enabled) {
                 return (
                   <Tooltip key={cat} delayDuration={200}>
@@ -351,9 +330,9 @@ export function LineItemRow({
                       <p className="text-xs">Coming soon</p>
                     </TooltipContent>
                   </Tooltip>
-                );
+                )
               }
-              return btn;
+              return btn
             })}
           </div>
         </div>
@@ -368,30 +347,23 @@ export function LineItemRow({
                 role="combobox"
                 aria-expanded={garmentOpen}
                 aria-label="Select garment"
-                className={cn(
-                  "w-full justify-between",
-                  errors?.garmentId && "border-error"
-                )}
+                className={cn('w-full justify-between', errors?.garmentId && 'border-error')}
               >
                 <span className="truncate">
                   {selectedGarment
                     ? `${selectedGarment.brand} ${selectedGarment.sku} — ${selectedGarment.name}`
-                    : "Search garments..."}
+                    : 'Search garments...'}
                 </span>
                 <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent
-              className="w-[--radix-popover-trigger-width] p-0"
-              align="start"
-            >
+            <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
               <Command
                 filter={(value, search) => {
-                  const garment = filteredGarmentCatalog.find((g) => g.id === value);
-                  if (!garment) return 0;
-                  const haystack =
-                    `${garment.brand} ${garment.sku} ${garment.name}`.toLowerCase();
-                  return haystack.includes(search.toLowerCase()) ? 1 : 0;
+                  const garment = filteredGarmentCatalog.find((g) => g.id === value)
+                  if (!garment) return 0
+                  const haystack = `${garment.brand} ${garment.sku} ${garment.name}`.toLowerCase()
+                  return haystack.includes(search.toLowerCase()) ? 1 : 0
                 }}
               >
                 <CommandInput placeholder="Search garments..." />
@@ -406,18 +378,13 @@ export function LineItemRow({
                       >
                         <Check
                           className={cn(
-                            "mr-2 size-4",
-                            data.garmentId === garment.id
-                              ? "opacity-100"
-                              : "opacity-0"
+                            'mr-2 size-4',
+                            data.garmentId === garment.id ? 'opacity-100' : 'opacity-0'
                           )}
                         />
                         <span className="truncate">
                           {garment.brand} {garment.sku}
-                          <span className="text-muted-foreground">
-                            {" "}
-                            — {garment.name}
-                          </span>
+                          <span className="text-muted-foreground"> — {garment.name}</span>
                         </span>
                         <span className="ml-auto text-xs text-muted-foreground">
                           {formatCurrency(garment.basePrice)}
@@ -430,7 +397,9 @@ export function LineItemRow({
             </PopoverContent>
           </Popover>
           {errors?.garmentId && (
-            <p className="text-xs text-error" role="alert">{errors.garmentId}</p>
+            <p className="text-xs text-error" role="alert">
+              {errors.garmentId}
+            </p>
           )}
         </div>
 
@@ -444,10 +413,7 @@ export function LineItemRow({
                 role="combobox"
                 aria-expanded={colorOpen}
                 aria-label="Select color"
-                className={cn(
-                  "w-full justify-start gap-2",
-                  errors?.colorId && "border-error"
-                )}
+                className={cn('w-full justify-start gap-2', errors?.colorId && 'border-error')}
               >
                 {selectedColor ? (
                   <>
@@ -469,14 +435,16 @@ export function LineItemRow({
                 colors={availableColors}
                 selectedColorId={data.colorId || undefined}
                 onSelect={(colorId) => {
-                  updateField({ colorId });
-                  setColorOpen(false);
+                  updateField({ colorId })
+                  setColorOpen(false)
                 }}
               />
             </PopoverContent>
           </Popover>
           {errors?.colorId && (
-            <p className="text-xs text-error" role="alert">{errors.colorId}</p>
+            <p className="text-xs text-error" role="alert">
+              {errors.colorId}
+            </p>
           )}
         </div>
 
@@ -492,13 +460,11 @@ export function LineItemRow({
             <div className="flex flex-wrap gap-2">
               {availableSizes.map((size) => (
                 <div key={size.name} className="flex flex-col items-center gap-1">
-                  <Label className="text-xs text-muted-foreground">
-                    {size.name}
-                  </Label>
+                  <Label className="text-xs text-muted-foreground">{size.name}</Label>
                   <Input
                     type="number"
                     min={0}
-                    value={data.sizes[size.name] || ""}
+                    value={data.sizes[size.name] || ''}
                     onChange={(e) => handleSizeChange(size.name, e.target.value)}
                     className="h-8 w-14 text-center text-sm"
                     placeholder="0"
@@ -508,21 +474,19 @@ export function LineItemRow({
               ))}
             </div>
             {errors?.sizes && (
-              <p className="text-xs text-error" role="alert">{errors.sizes}</p>
+              <p className="text-xs text-error" role="alert">
+                {errors.sizes}
+              </p>
             )}
           </div>
         )}
 
         {/* Print Locations with per-location details */}
         <div className="space-y-2">
-          <Label className="text-sm text-muted-foreground">
-            Print Locations
-          </Label>
+          <Label className="text-sm text-muted-foreground">Print Locations</Label>
           {PRINT_LOCATIONS.map((location) => {
-            const isActive = activeLocations.includes(location);
-            const detail = data.printLocationDetails.find(
-              (d) => d.location === location
-            );
+            const isActive = activeLocations.includes(location)
+            const detail = data.printLocationDetails.find((d) => d.location === location)
 
             return (
               <div key={location} className="space-y-1">
@@ -542,22 +506,22 @@ export function LineItemRow({
                       onSelect={(artworkId) => {
                         const artwork = artworkId
                           ? quoteArtworks.find((a) => a.id === artworkId)
-                          : undefined;
+                          : undefined
                         handleLocationDetailChange(location, {
                           artworkId,
                           colorCount: artwork?.colorCount ?? 0,
-                        });
+                        })
                       }}
                     />
                     <span className="text-xs text-muted-foreground">
                       {detail.colorCount > 0
-                        ? `${detail.colorCount} color${detail.colorCount !== 1 ? "s" : ""}`
-                        : "—"}
+                        ? `${detail.colorCount} color${detail.colorCount !== 1 ? 's' : ''}`
+                        : '—'}
                     </span>
                   </div>
                 )}
               </div>
-            );
+            )
           })}
         </div>
 
@@ -565,14 +529,18 @@ export function LineItemRow({
         <div className="space-y-1 rounded-md bg-surface px-3 py-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              Garments: {selectedGarment ? formatCurrency(selectedGarment.basePrice) : "$0.00"} x {totalQty}
+              Garments: {selectedGarment ? formatCurrency(selectedGarment.basePrice) : '$0.00'} x{' '}
+              {totalQty}
             </span>
             <span className="text-foreground">{formatCurrency(garmentCost)}</span>
           </div>
           {data.printLocationDetails.length > 0 && (
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">
-                Decoration: {data.printLocationDetails.length} location{data.printLocationDetails.length !== 1 ? "s" : ""}, {data.printLocationDetails.reduce((s, d) => s + d.colorCount, 0)} color{data.printLocationDetails.reduce((s, d) => s + d.colorCount, 0) !== 1 ? "s" : ""}
+                Decoration: {data.printLocationDetails.length} location
+                {data.printLocationDetails.length !== 1 ? 's' : ''},{' '}
+                {data.printLocationDetails.reduce((s, d) => s + d.colorCount, 0)} color
+                {data.printLocationDetails.reduce((s, d) => s + d.colorCount, 0) !== 1 ? 's' : ''}
               </span>
               <span className="text-foreground">{formatCurrency(decorationCost)}</span>
             </div>
@@ -585,10 +553,12 @@ export function LineItemRow({
           )}
           <div className="flex items-center justify-between border-t border-border pt-1 mt-1">
             <span className="text-sm font-semibold text-foreground">Line Total</span>
-            <span className="text-sm font-semibold text-foreground">{formatCurrency(lineTotal)}</span>
+            <span className="text-sm font-semibold text-foreground">
+              {formatCurrency(lineTotal)}
+            </span>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

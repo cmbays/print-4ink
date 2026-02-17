@@ -3,27 +3,27 @@ import type {
   PRClassification,
   AgentManifestEntry,
   GapLogEntry,
-} from "@domain/entities/review-pipeline";
-import { mergeIntoManifest } from "./manifest-utils";
+} from '@domain/entities/review-pipeline'
+import { mergeIntoManifest } from './manifest-utils'
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 /** Result returned by a GapAnalyzer callback. */
-export interface GapAnalysisResult {
+export type GapAnalysisResult = {
   /** Agents the analyzer wants to add to the manifest. */
-  additionalAgents: AgentManifestEntry[];
+  additionalAgents: AgentManifestEntry[]
   /** Concerns and recommendations logged during analysis. */
-  gaps: GapLogEntry[];
+  gaps: GapLogEntry[]
 }
 
 /** Result returned by gapDetect. */
-export interface GapDetectResult {
+export type GapDetectResult = {
   /** The (possibly amended) agent manifest. */
-  manifest: AgentManifestEntry[];
+  manifest: AgentManifestEntry[]
   /** Gap log entries from the analyzer. */
-  gaps: GapLogEntry[];
+  gaps: GapLogEntry[]
 }
 
 /**
@@ -35,8 +35,8 @@ export interface GapDetectResult {
 export type GapAnalyzer = (
   facts: PRFacts,
   classification: PRClassification,
-  manifest: AgentManifestEntry[],
-) => Promise<GapAnalysisResult>;
+  manifest: AgentManifestEntry[]
+) => Promise<GapAnalysisResult>
 
 // ---------------------------------------------------------------------------
 // Stage 4: Gap Detect
@@ -53,22 +53,22 @@ export async function gapDetect(
   facts: PRFacts,
   classification: PRClassification,
   manifest: AgentManifestEntry[],
-  analyzer?: GapAnalyzer,
+  analyzer?: GapAnalyzer
 ): Promise<GapDetectResult> {
   // 1. No analyzer → passthrough
   if (!analyzer) {
-    return { manifest, gaps: [] };
+    return { manifest, gaps: [] }
   }
 
   // 2. Call analyzer
-  const analysis = await analyzer(facts, classification, manifest);
+  const analysis = await analyzer(facts, classification, manifest)
 
   // 3. Merge additional agents into manifest (dedup by agentId)
-  const merged = mergeIntoManifest(manifest, analysis.additionalAgents);
+  const merged = mergeIntoManifest(manifest, analysis.additionalAgents)
 
   // 4. Return merged manifest + gaps
   return {
     manifest: merged,
     gaps: analysis.gaps,
-  };
+  }
 }

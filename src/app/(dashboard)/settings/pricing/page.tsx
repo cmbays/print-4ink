@@ -1,40 +1,40 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { cn } from "@shared/lib/cn";
-import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
-import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
-import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Badge } from "@shared/ui/primitives/badge";
-import { Plus, Tag, Search } from "lucide-react";
-import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
-import { SERVICE_TYPE_COLORS } from "@domain/constants";
-import { SetupWizard } from "./_components/SetupWizard";
-import { TagTemplateMapper } from "./_components/TagTemplateMapper";
+import { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { cn } from '@shared/lib/cn'
+import { Topbar } from '@shared/ui/layouts/topbar'
+import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
+import { PricingTemplateCard } from '@/components/features/PricingTemplateCard'
+import { Tabs, TabsList, TabsTrigger } from '@shared/ui/primitives/tabs'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Badge } from '@shared/ui/primitives/badge'
+import { Plus, Tag, Search } from 'lucide-react'
+import { SERVICE_TYPE_ICONS } from '@/components/features/ServiceTypeBadge'
+import { SERVICE_TYPE_COLORS } from '@domain/constants'
+import { SetupWizard } from './_components/SetupWizard'
+import { TagTemplateMapper } from './_components/TagTemplateMapper'
 import {
   allScreenPrintTemplates,
   allDTFTemplates,
   tagTemplateMappings,
-} from "@/lib/mock-data-pricing";
-import type { TagTemplateMapping } from "@domain/entities/tag-template-mapping";
-import { customers } from "@/lib/mock-data";
+} from '@/lib/mock-data-pricing'
+import type { TagTemplateMapping } from '@domain/entities/tag-template-mapping'
+import { customers } from '@/lib/mock-data'
 import {
   calculateTemplateHealth,
   calculateDTFTemplateHealth,
-} from "@domain/services/pricing.service";
-import type { PricingTemplate } from "@domain/entities/price-matrix";
-import type { DTFPricingTemplate } from "@domain/entities/dtf-pricing";
-import type { MarginIndicator } from "@domain/entities/price-matrix";
+} from '@domain/services/pricing.service'
+import type { PricingTemplate } from '@domain/entities/price-matrix'
+import type { DTFPricingTemplate } from '@domain/entities/dtf-pricing'
+import type { MarginIndicator } from '@domain/entities/price-matrix'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-type ServiceTypeTab = "screen-print" | "dtf";
+type ServiceTypeTab = 'screen-print' | 'dtf'
 
 function countCustomersUsingTemplate(
   templateId: string,
@@ -44,68 +44,56 @@ function countCustomersUsingTemplate(
   // Count customers whose type tags map to this template
   const mappedTags = currentMappings
     .filter((m) =>
-      serviceType === "screen-print"
+      serviceType === 'screen-print'
         ? m.screenPrintTemplateId === templateId
         : m.dtfTemplateId === templateId
     )
-    .map((m) => m.customerTypeTag);
+    .map((m) => m.customerTypeTag)
 
-  return customers.filter((c) =>
-    c.typeTags.some((tag) => mappedTags.includes(tag))
-  ).length;
+  return customers.filter((c) => c.typeTags.some((tag) => mappedTags.includes(tag))).length
 }
 
 // Default garment base cost for margin calculations (avg t-shirt cost)
-const DEFAULT_GARMENT_COST = 3.5;
+const DEFAULT_GARMENT_COST = 3.5
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export default function PricingHubPage() {
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState<ServiceTypeTab>("screen-print");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [tagMapperOpen, setTagMapperOpen] = useState(false);
-  const [mappings, setMappings] = useState<TagTemplateMapping[]>(tagTemplateMappings);
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState<ServiceTypeTab>('screen-print')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [wizardOpen, setWizardOpen] = useState(false)
+  const [tagMapperOpen, setTagMapperOpen] = useState(false)
+  const [mappings, setMappings] = useState<TagTemplateMapping[]>(tagTemplateMappings)
 
   // Mutable template state (for Phase 1 client-side operations)
-  const [spTemplates, setSpTemplates] = useState<PricingTemplate[]>(
-    allScreenPrintTemplates
-  );
-  const [dtfTemplates, setDtfTemplates] = useState<DTFPricingTemplate[]>(
-    allDTFTemplates
-  );
+  const [spTemplates, setSpTemplates] = useState<PricingTemplate[]>(allScreenPrintTemplates)
+  const [dtfTemplates, setDtfTemplates] = useState<DTFPricingTemplate[]>(allDTFTemplates)
 
   // Filter templates by search
   const filteredSPTemplates = useMemo(
-    () =>
-      spTemplates.filter((t) =>
-        t.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
+    () => spTemplates.filter((t) => t.name.toLowerCase().includes(searchQuery.toLowerCase())),
     [spTemplates, searchQuery]
-  );
+  )
 
   const filteredDTFTemplates = useMemo(
-    () =>
-      dtfTemplates.filter((t) =>
-        t.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
+    () => dtfTemplates.filter((t) => t.name.toLowerCase().includes(searchQuery.toLowerCase())),
     [dtfTemplates, searchQuery]
-  );
+  )
 
   // Template actions
   const handleEditSP = (id: string) => {
-    router.push(`/settings/pricing/screen-print/${id}`);
-  };
+    router.push(`/settings/pricing/screen-print/${id}`)
+  }
 
   const handleEditDTF = (id: string) => {
-    router.push(`/settings/pricing/dtf/${id}`);
-  };
+    router.push(`/settings/pricing/dtf/${id}`)
+  }
 
   const handleDuplicateSP = (template: PricingTemplate) => {
-    const newId = crypto.randomUUID();
+    const newId = crypto.randomUUID()
     const duplicate: PricingTemplate = {
       ...template,
       id: newId,
@@ -114,12 +102,12 @@ export default function PricingHubPage() {
       isIndustryDefault: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
-    setSpTemplates((prev) => [...prev, duplicate]);
-  };
+    }
+    setSpTemplates((prev) => [...prev, duplicate])
+  }
 
   const handleDuplicateDTF = (template: DTFPricingTemplate) => {
-    const newId = crypto.randomUUID();
+    const newId = crypto.randomUUID()
     const duplicate: DTFPricingTemplate = {
       ...template,
       id: newId,
@@ -128,88 +116,79 @@ export default function PricingHubPage() {
       isIndustryDefault: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
-    setDtfTemplates((prev) => [...prev, duplicate]);
-  };
+    }
+    setDtfTemplates((prev) => [...prev, duplicate])
+  }
 
   const handleDeleteSP = (id: string) => {
-    setSpTemplates((prev) => prev.filter((t) => t.id !== id));
-  };
+    setSpTemplates((prev) => prev.filter((t) => t.id !== id))
+  }
 
   const handleDeleteDTF = (id: string) => {
-    setDtfTemplates((prev) => prev.filter((t) => t.id !== id));
-  };
+    setDtfTemplates((prev) => prev.filter((t) => t.id !== id))
+  }
 
   const handleSetDefaultSP = (id: string) => {
-    setSpTemplates((prev) =>
-      prev.map((t) => ({ ...t, isDefault: t.id === id }))
-    );
-  };
+    setSpTemplates((prev) => prev.map((t) => ({ ...t, isDefault: t.id === id })))
+  }
 
   const handleSetDefaultDTF = (id: string) => {
-    setDtfTemplates((prev) =>
-      prev.map((t) => ({ ...t, isDefault: t.id === id }))
-    );
-  };
+    setDtfTemplates((prev) => prev.map((t) => ({ ...t, isDefault: t.id === id })))
+  }
 
   const handleWizardSave = (template: PricingTemplate | DTFPricingTemplate) => {
-    if (template.serviceType === "screen-print") {
-      setSpTemplates((prev) => [...prev, template as PricingTemplate]);
+    if (template.serviceType === 'screen-print') {
+      setSpTemplates((prev) => [...prev, template as PricingTemplate])
     } else {
-      setDtfTemplates((prev) => [...prev, template as DTFPricingTemplate]);
+      setDtfTemplates((prev) => [...prev, template as DTFPricingTemplate])
     }
-  };
+  }
 
   // Health indicators (memoized)
   const spHealthMap = useMemo(() => {
-    const map = new Map<string, MarginIndicator>();
+    const map = new Map<string, MarginIndicator>()
     spTemplates.forEach((t) => {
-      map.set(t.id, calculateTemplateHealth(t, DEFAULT_GARMENT_COST));
-    });
-    return map;
-  }, [spTemplates]);
+      map.set(t.id, calculateTemplateHealth(t, DEFAULT_GARMENT_COST))
+    })
+    return map
+  }, [spTemplates])
 
   const dtfHealthMap = useMemo(() => {
-    const map = new Map<string, MarginIndicator>();
+    const map = new Map<string, MarginIndicator>()
     dtfTemplates.forEach((t) => {
-      map.set(t.id, calculateDTFTemplateHealth(t));
-    });
-    return map;
-  }, [dtfTemplates]);
+      map.set(t.id, calculateDTFTemplateHealth(t))
+    })
+    return map
+  }, [dtfTemplates])
 
   // Customer counts per template (memoized)
   const spCustomerCountMap = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, number>()
     spTemplates.forEach((t) => {
-      map.set(t.id, countCustomersUsingTemplate(t.id, "screen-print", mappings));
-    });
-    return map;
-  }, [spTemplates, mappings]);
+      map.set(t.id, countCustomersUsingTemplate(t.id, 'screen-print', mappings))
+    })
+    return map
+  }, [spTemplates, mappings])
 
   const dtfCustomerCountMap = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, number>()
     dtfTemplates.forEach((t) => {
-      map.set(t.id, countCustomersUsingTemplate(t.id, "dtf", mappings));
-    });
-    return map;
-  }, [dtfTemplates, mappings]);
+      map.set(t.id, countCustomersUsingTemplate(t.id, 'dtf', mappings))
+    })
+    return map
+  }, [dtfTemplates, mappings])
 
   // Total template count per tab
-  const spCount = spTemplates.length;
-  const dtfCount = dtfTemplates.length;
+  const spCount = spTemplates.length
+  const dtfCount = dtfTemplates.length
 
   // Canonical service type icons
-  const SPIcon = SERVICE_TYPE_ICONS["screen-print"];
-  const DTFIcon = SERVICE_TYPE_ICONS["dtf"];
+  const SPIcon = SERVICE_TYPE_ICONS['screen-print']
+  const DTFIcon = SERVICE_TYPE_ICONS['dtf']
 
   return (
     <>
-      <Topbar
-        breadcrumbs={buildBreadcrumbs(
-          CRUMBS.settings,
-          { label: "Pricing" },
-        )}
-      />
+      <Topbar breadcrumbs={buildBreadcrumbs(CRUMBS.settings, { label: 'Pricing' })} />
 
       <div className="flex flex-col gap-6 p-6">
         {/* Page header */}
@@ -243,28 +222,26 @@ export default function PricingHubPage() {
 
         {/* Tabs + Search row */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <Tabs
-            value={activeTab}
-            onValueChange={(v) => setActiveTab(v as ServiceTypeTab)}
-          >
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ServiceTypeTab)}>
             <TabsList>
               <TabsTrigger value="screen-print" className="gap-1.5">
-                <SPIcon className={cn("size-3.5", activeTab === "screen-print" && SERVICE_TYPE_COLORS["screen-print"])} />
+                <SPIcon
+                  className={cn(
+                    'size-3.5',
+                    activeTab === 'screen-print' && SERVICE_TYPE_COLORS['screen-print']
+                  )}
+                />
                 Screen Print
-                <Badge
-                  variant="secondary"
-                  className="ml-1 h-5 min-w-5 px-1 text-[10px]"
-                >
+                <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1 text-[10px]">
                   {spCount}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="dtf" className="gap-1.5">
-                <DTFIcon className={cn("size-3.5", activeTab === "dtf" && SERVICE_TYPE_COLORS["dtf"])} />
+                <DTFIcon
+                  className={cn('size-3.5', activeTab === 'dtf' && SERVICE_TYPE_COLORS['dtf'])}
+                />
                 DTF
-                <Badge
-                  variant="secondary"
-                  className="ml-1 h-5 min-w-5 px-1 text-[10px]"
-                >
+                <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1 text-[10px]">
                   {dtfCount}
                 </Badge>
               </TabsTrigger>
@@ -283,13 +260,13 @@ export default function PricingHubPage() {
         </div>
 
         {/* Template grid */}
-        {activeTab === "screen-print" && (
+        {activeTab === 'screen-print' && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredSPTemplates.map((template) => (
               <PricingTemplateCard
                 key={template.id}
                 template={template}
-                healthIndicator={spHealthMap.get(template.id) ?? "caution"}
+                healthIndicator={spHealthMap.get(template.id) ?? 'caution'}
                 customersUsing={spCustomerCountMap.get(template.id) ?? 0}
                 onEdit={() => handleEditSP(template.id)}
                 onDuplicate={() => handleDuplicateSP(template)}
@@ -301,16 +278,10 @@ export default function PricingHubPage() {
               <div className="col-span-full flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
                 <SPIcon className="size-12 text-action/30" />
                 <p className="text-sm text-muted-foreground">
-                  {searchQuery
-                    ? "No templates match your search"
-                    : "No screen print templates yet"}
+                  {searchQuery ? 'No templates match your search' : 'No screen print templates yet'}
                 </p>
                 {!searchQuery && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setWizardOpen(true)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
                     <Plus className="size-4" />
                     Create Template
                   </Button>
@@ -320,16 +291,16 @@ export default function PricingHubPage() {
           </div>
         )}
 
-        {activeTab === "dtf" && (
+        {activeTab === 'dtf' && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredDTFTemplates.map((template) => (
               <PricingTemplateCard
                 key={template.id}
                 template={{
                   ...template,
-                  pricingTier: template.isDefault ? "default" : "custom",
+                  pricingTier: template.isDefault ? 'default' : 'custom',
                 }}
-                healthIndicator={dtfHealthMap.get(template.id) ?? "caution"}
+                healthIndicator={dtfHealthMap.get(template.id) ?? 'caution'}
                 customersUsing={dtfCustomerCountMap.get(template.id) ?? 0}
                 onEdit={() => handleEditDTF(template.id)}
                 onDuplicate={() => handleDuplicateDTF(template)}
@@ -341,16 +312,10 @@ export default function PricingHubPage() {
               <div className="col-span-full flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border py-12 text-center">
                 <DTFIcon className="size-12 text-brown/30" />
                 <p className="text-sm text-muted-foreground">
-                  {searchQuery
-                    ? "No templates match your search"
-                    : "No DTF templates yet"}
+                  {searchQuery ? 'No templates match your search' : 'No DTF templates yet'}
                 </p>
                 {!searchQuery && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setWizardOpen(true)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
                     <Plus className="size-4" />
                     Create Template
                   </Button>
@@ -361,11 +326,7 @@ export default function PricingHubPage() {
         )}
       </div>
 
-      <SetupWizard
-        open={wizardOpen}
-        onOpenChange={setWizardOpen}
-        onSave={handleWizardSave}
-      />
+      <SetupWizard open={wizardOpen} onOpenChange={setWizardOpen} onSave={handleWizardSave} />
 
       <TagTemplateMapper
         open={tagMapperOpen}
@@ -376,5 +337,5 @@ export default function PricingHubPage() {
         onSave={setMappings}
       />
     </>
-  );
+  )
 }

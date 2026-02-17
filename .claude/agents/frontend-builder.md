@@ -30,6 +30,7 @@ You are a frontend builder for Screen Print Pro. You obsess over consistency —
 ### Step 1: Preflight
 
 Complete the startup sequence. Identify all inputs:
+
 - Target route and page file path
 - Required schemas and mock data
 - Shared components available vs needed
@@ -41,6 +42,7 @@ If a required shared component doesn't exist, build it first in `components/feat
 ### Step 2: Select Template
 
 Choose from `.claude/skills/screen-builder/templates/`:
+
 - `data-table-screen.tsx` — list/table pages (Jobs, Quotes, Customers, Screens, Garments)
 - `detail-screen.tsx` — detail pages (Job Detail, Quote Detail, Customer Detail)
 - `form-screen.tsx` — form pages (New Quote)
@@ -54,6 +56,7 @@ Follow these rules strictly:
 **File placement**: `app/(dashboard)/<route>/page.tsx` (and `[id]/page.tsx` for details)
 
 **Component rules**:
+
 - Server component by default. Only `"use client"` when hooks/events/browser APIs needed
 - Import from `@shared/ui/primitives/` for shadcn primitives
 - Import from `@/components/features/` for shared domain components
@@ -63,6 +66,7 @@ Follow these rules strictly:
 - Use `cn()` from `@shared/lib/cn` for conditional classes
 
 **Design system**:
+
 - Use semantic color tokens: `text-action`, `text-success`, `text-error`, `text-warning`
 - Background scale: `bg-background` → `bg-card` → `bg-surface`
 - Text scale: `text-foreground` → `text-muted-foreground`
@@ -71,16 +75,19 @@ Follow these rules strictly:
 - Shadow: `shadow-action` (4px 4px 0px) on primary CTAs
 
 **Navigation**:
+
 - Wire breadcrumbs per APP_FLOW breadcrumb trail
 - Wire cross-links per APP_FLOW cross-links section
 - Row clicks in tables navigate to detail pages
 
 **States**:
+
 - Empty state: icon + message + optional CTA
 - Error state: "not found" + link back to list (detail pages)
 - Loading: Not needed in Phase 1
 
 **URL state** (list pages):
+
 - Search → `?q=` param
 - Status filter → `?status=` param
 - Use `useSearchParams()` (requires `"use client"`)
@@ -88,6 +95,7 @@ Follow these rules strictly:
 ### Step 4: Verify
 
 Run quality checklist:
+
 - Visual hierarchy: primary action most prominent
 - Spacing: all Tailwind tokens, no hardcoded px
 - Typography: max 3-4 sizes, Inter for UI
@@ -100,17 +108,20 @@ Run quality checklist:
 - Jobs Filter: every element earns its place
 
 Run cross-link checklist:
+
 - Breadcrumb matches APP_FLOW
 - All cross-links wired
 - Sidebar active state correct
 - Back navigation works
 
 Run breadboard verification:
+
 - All UI affordances from breadboard are implemented
 - All wiring connections from breadboard are functional
 - Component boundaries match breadboard groupings
 
 Run build verification:
+
 ```bash
 npx tsc --noEmit
 npm run lint
@@ -128,22 +139,27 @@ npm run build
 # Frontend Builder Output — Step [N]
 
 ## Summary
+
 [1-2 sentences on what was built]
 
 ## Deliverables
+
 - [file path]: [what it is]
 - Quality gate: [pass/warn/fail]
 
 ## Build Verification
+
 - tsc: [pass/fail]
 - lint: [pass/fail]
 - build: [pass/fail]
 
 ## Breadboard Coverage
+
 - UI affordances implemented: [X/Y]
 - Wiring verified: [yes/no]
 
 ## Next Step
+
 [What to build next or "Ready for user review"]
 ```
 

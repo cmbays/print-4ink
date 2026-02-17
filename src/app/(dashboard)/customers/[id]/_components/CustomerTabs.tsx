@@ -1,65 +1,65 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@shared/ui/primitives/tabs";
+import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@shared/ui/primitives/tabs'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@shared/ui/primitives/dropdown-menu";
-import { cn } from "@shared/lib/cn";
-import { ActivityTimeline } from "./ActivityTimeline";
-import { CustomerQuotesTable } from "./CustomerQuotesTable";
-import { CustomerJobsTable } from "./CustomerJobsTable";
-import { ArtworkGallery } from "@/components/features/ArtworkGallery";
-import { ContactHierarchy } from "./ContactHierarchy";
-import { CustomerDetailsPanel } from "./CustomerDetailsPanel";
-import { CustomerScreensTab } from "./CustomerScreensTab";
-import { CustomerPreferencesTab } from "./CustomerPreferencesTab";
-import { NotesPanel } from "@/components/features/NotesPanel";
-import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
-import type { Customer } from "@domain/entities/customer";
-import type { Quote } from "@domain/entities/quote";
-import type { Job } from "@domain/entities/job";
-import type { Artwork } from "@domain/entities/artwork";
-import type { Invoice } from "@domain/entities/invoice";
-import type { Note } from "@domain/entities/note";
-import type { Color } from "@domain/entities/color";
-import type { GarmentCatalog } from "@domain/entities/garment";
-import { CustomerInvoicesTable } from "./CustomerInvoicesTable";
+} from '@shared/ui/primitives/dropdown-menu'
+import { cn } from '@shared/lib/cn'
+import { ActivityTimeline } from './ActivityTimeline'
+import { CustomerQuotesTable } from './CustomerQuotesTable'
+import { CustomerJobsTable } from './CustomerJobsTable'
+import { ArtworkGallery } from '@/components/features/ArtworkGallery'
+import { ContactHierarchy } from './ContactHierarchy'
+import { CustomerDetailsPanel } from './CustomerDetailsPanel'
+import { CustomerScreensTab } from './CustomerScreensTab'
+import { CustomerPreferencesTab } from './CustomerPreferencesTab'
+import { NotesPanel } from '@/components/features/NotesPanel'
+import { deriveScreensFromJobs } from '@domain/rules/screen.rules'
+import type { Customer } from '@domain/entities/customer'
+import type { Quote } from '@domain/entities/quote'
+import type { Job } from '@domain/entities/job'
+import type { Artwork } from '@domain/entities/artwork'
+import type { Invoice } from '@domain/entities/invoice'
+import type { Note } from '@domain/entities/note'
+import type { Color } from '@domain/entities/color'
+import type { GarmentCatalog } from '@domain/entities/garment'
+import { CustomerInvoicesTable } from './CustomerInvoicesTable'
 
-interface CustomerTabsProps {
-  customer: Customer;
-  customers: Customer[];
-  quotes: Quote[];
-  jobs: Job[];
-  invoices: Invoice[];
-  artworks: Artwork[];
-  notes: Note[];
-  colors: Color[];
-  garmentCatalog: GarmentCatalog[];
+type CustomerTabsProps = {
+  customer: Customer
+  customers: Customer[]
+  quotes: Quote[]
+  jobs: Job[]
+  invoices: Invoice[]
+  artworks: Artwork[]
+  notes: Note[]
+  colors: Color[]
+  garmentCatalog: GarmentCatalog[]
 }
 
 // Primary tabs shown directly on mobile
-const PRIMARY_TABS = ["activity", "quotes", "jobs", "invoices", "notes"] as const;
+const PRIMARY_TABS = ['activity', 'quotes', 'jobs', 'invoices', 'notes'] as const
 
 // Secondary tabs behind "More" dropdown on mobile
-const SECONDARY_TABS = ["artwork", "screens", "preferences", "contacts", "details"] as const;
+const SECONDARY_TABS = ['artwork', 'screens', 'preferences', 'contacts', 'details'] as const
 
 const TAB_LABELS: Record<string, string> = {
-  activity: "Activity",
-  quotes: "Quotes",
-  jobs: "Jobs",
-  invoices: "Invoices",
-  notes: "Notes",
-  artwork: "Artwork",
-  screens: "Screens",
-  preferences: "Preferences",
-  contacts: "Contacts",
-  details: "Details",
-};
+  activity: 'Activity',
+  quotes: 'Quotes',
+  jobs: 'Jobs',
+  invoices: 'Invoices',
+  notes: 'Notes',
+  artwork: 'Artwork',
+  screens: 'Screens',
+  preferences: 'Preferences',
+  contacts: 'Contacts',
+  details: 'Details',
+}
 
 export function CustomerTabs({
   customer,
@@ -72,51 +72,77 @@ export function CustomerTabs({
   colors,
   garmentCatalog,
 }: CustomerTabsProps) {
-  const defaultTab = customer.lifecycleStage === "prospect" ? "notes" : "activity";
-  const [activeTab, setActiveTab] = useState(defaultTab);
-  const screens = deriveScreensFromJobs(customer.id, jobs);
+  const defaultTab = customer.lifecycleStage === 'prospect' ? 'notes' : 'activity'
+  const [activeTab, setActiveTab] = useState(defaultTab)
+  const screens = deriveScreensFromJobs(customer.id, jobs)
 
-  const isSecondaryActive = (SECONDARY_TABS as readonly string[]).includes(activeTab);
+  const isSecondaryActive = (SECONDARY_TABS as readonly string[]).includes(activeTab)
 
   /** Returns null for 0 counts to keep labels clean ("Quotes" not "Quotes (0)") */
   function getTabCount(tab: string): number | null {
     switch (tab) {
-      case "quotes": return quotes.length > 0 ? quotes.length : null;
-      case "jobs": return jobs.length > 0 ? jobs.length : null;
-      case "invoices": return invoices.length > 0 ? invoices.length : null;
-      case "artwork": return artworks.length > 0 ? artworks.length : null;
-      case "screens": return screens.length > 0 ? screens.length : null;
-      case "contacts": return customer.contacts.length > 0 ? customer.contacts.length : null;
-      case "notes": return notes.length > 0 ? notes.length : null;
-      default: return null;
+      case 'quotes':
+        return quotes.length > 0 ? quotes.length : null
+      case 'jobs':
+        return jobs.length > 0 ? jobs.length : null
+      case 'invoices':
+        return invoices.length > 0 ? invoices.length : null
+      case 'artwork':
+        return artworks.length > 0 ? artworks.length : null
+      case 'screens':
+        return screens.length > 0 ? screens.length : null
+      case 'contacts':
+        return customer.contacts.length > 0 ? customer.contacts.length : null
+      case 'notes':
+        return notes.length > 0 ? notes.length : null
+      default:
+        return null
     }
   }
 
   function tabLabel(tab: string): string {
-    const count = getTabCount(tab);
-    return count ? `${TAB_LABELS[tab]} (${count})` : TAB_LABELS[tab];
+    const count = getTabCount(tab)
+    return count ? `${TAB_LABELS[tab]} (${count})` : TAB_LABELS[tab]
   }
 
-  const triggerClass = "shrink-0 min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3";
+  const triggerClass =
+    'shrink-0 min-h-(--mobile-touch-target) md:min-h-0 px-2 text-xs md:text-sm md:px-3'
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
       {/* Desktop: all 10 tabs visible */}
       <div className="hidden md:block overflow-x-auto scrollbar-none">
-        <TabsList
-          variant="line"
-          className="w-full justify-start gap-0 border-b border-border pb-0"
-        >
-          <TabsTrigger value="activity" className={triggerClass}>Activity</TabsTrigger>
-          <TabsTrigger value="quotes" className={triggerClass}>{tabLabel("quotes")}</TabsTrigger>
-          <TabsTrigger value="jobs" className={triggerClass}>{tabLabel("jobs")}</TabsTrigger>
-          <TabsTrigger value="invoices" className={triggerClass}>{tabLabel("invoices")}</TabsTrigger>
-          <TabsTrigger value="artwork" className={triggerClass}>{tabLabel("artwork")}</TabsTrigger>
-          <TabsTrigger value="screens" className={triggerClass}>{tabLabel("screens")}</TabsTrigger>
-          <TabsTrigger value="preferences" className={triggerClass}>Preferences</TabsTrigger>
-          <TabsTrigger value="contacts" className={triggerClass}>{tabLabel("contacts")}</TabsTrigger>
-          <TabsTrigger value="details" className={triggerClass}>Details</TabsTrigger>
-          <TabsTrigger value="notes" className={triggerClass}>{tabLabel("notes")}</TabsTrigger>
+        <TabsList variant="line" className="w-full justify-start gap-0 border-b border-border pb-0">
+          <TabsTrigger value="activity" className={triggerClass}>
+            Activity
+          </TabsTrigger>
+          <TabsTrigger value="quotes" className={triggerClass}>
+            {tabLabel('quotes')}
+          </TabsTrigger>
+          <TabsTrigger value="jobs" className={triggerClass}>
+            {tabLabel('jobs')}
+          </TabsTrigger>
+          <TabsTrigger value="invoices" className={triggerClass}>
+            {tabLabel('invoices')}
+          </TabsTrigger>
+          <TabsTrigger value="artwork" className={triggerClass}>
+            {tabLabel('artwork')}
+          </TabsTrigger>
+          <TabsTrigger value="screens" className={triggerClass}>
+            {tabLabel('screens')}
+          </TabsTrigger>
+          <TabsTrigger value="preferences" className={triggerClass}>
+            Preferences
+          </TabsTrigger>
+          <TabsTrigger value="contacts" className={triggerClass}>
+            {tabLabel('contacts')}
+          </TabsTrigger>
+          <TabsTrigger value="details" className={triggerClass}>
+            Details
+          </TabsTrigger>
+          <TabsTrigger value="notes" className={triggerClass}>
+            {tabLabel('notes')}
+          </TabsTrigger>
         </TabsList>
       </div>
 
@@ -136,16 +162,16 @@ export function CustomerTabs({
           <DropdownMenu>
             <DropdownMenuTrigger
               className={cn(
-                "inline-flex items-center gap-0.5 whitespace-nowrap border-b-2 px-2 text-xs transition-colors active:scale-95",
-                "min-h-(--mobile-touch-target)",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                'inline-flex items-center gap-0.5 whitespace-nowrap border-b-2 px-2 text-xs transition-colors active:scale-95',
+                'min-h-(--mobile-touch-target)',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 isSecondaryActive
-                  ? "border-action text-action font-medium"
-                  : "border-transparent text-muted-foreground hover:text-foreground",
+                  ? 'border-action text-action font-medium'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               )}
               aria-label="More tabs"
             >
-              {isSecondaryActive ? TAB_LABELS[activeTab] : "More"}
+              {isSecondaryActive ? TAB_LABELS[activeTab] : 'More'}
               <ChevronDown className="size-3" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -154,8 +180,8 @@ export function CustomerTabs({
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={cn(
-                    "min-h-(--mobile-touch-target)",
-                    activeTab === tab && "text-action font-medium",
+                    'min-h-(--mobile-touch-target)',
+                    activeTab === tab && 'text-action font-medium'
                   )}
                 >
                   {tabLabel(tab)}
@@ -167,12 +193,7 @@ export function CustomerTabs({
       </div>
 
       <TabsContent value="activity" className="mt-4">
-        <ActivityTimeline
-          quotes={quotes}
-          jobs={jobs}
-          notes={notes}
-          onSwitchTab={setActiveTab}
-        />
+        <ActivityTimeline quotes={quotes} jobs={jobs} notes={notes} onSwitchTab={setActiveTab} />
       </TabsContent>
 
       <TabsContent value="quotes" className="mt-4">
@@ -188,10 +209,7 @@ export function CustomerTabs({
       </TabsContent>
 
       <TabsContent value="artwork" className="mt-4">
-        <ArtworkGallery
-          artworks={artworks}
-          customerId={customer.id}
-        />
+        <ArtworkGallery artworks={artworks} customerId={customer.id} />
       </TabsContent>
 
       <TabsContent value="screens" className="mt-4">
@@ -216,12 +234,8 @@ export function CustomerTabs({
       </TabsContent>
 
       <TabsContent value="notes" className="mt-4">
-        <NotesPanel
-          notes={notes}
-          entityType="customer"
-          entityId={customer.id}
-        />
+        <NotesPanel notes={notes} entityType="customer" entityId={customer.id} />
       </TabsContent>
     </Tabs>
-  );
+  )
 }

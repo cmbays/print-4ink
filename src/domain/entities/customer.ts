@@ -1,50 +1,30 @@
-import { z } from "zod";
-import { contactSchema } from "./contact";
-import { groupSchema } from "./group";
-import { addressSchema } from "./address";
+import { z } from 'zod'
+import { contactSchema } from './contact'
+import { groupSchema } from './group'
+import { addressSchema } from './address'
 
 // Legacy enum — kept for backwards compatibility with quoting code.
 // Migration scope (Step 13): customerTagEnum is read by:
 //   - CustomerCombobox.tsx (customer.tag for badge display)
 //   - QuoteDetailView.tsx (customer.tag for badge display)
 // After migration, replace with lifecycleStage reads.
-export const customerTagEnum = z.enum(["new", "repeat", "contract"]);
+export const customerTagEnum = z.enum(['new', 'repeat', 'contract'])
 
-export const lifecycleStageEnum = z.enum([
-  "prospect",
-  "new",
-  "repeat",
-  "contract",
-]);
+export const lifecycleStageEnum = z.enum(['prospect', 'new', 'repeat', 'contract'])
 
-export const healthStatusEnum = z.enum([
-  "active",
-  "potentially-churning",
-  "churned",
-]);
+export const healthStatusEnum = z.enum(['active', 'potentially-churning', 'churned'])
 
 export const customerTypeTagEnum = z.enum([
-  "retail",
-  "sports-school",
-  "corporate",
-  "storefront-merch",
-  "wholesale",
-]);
+  'retail',
+  'sports-school',
+  'corporate',
+  'storefront-merch',
+  'wholesale',
+])
 
-export const paymentTermsEnum = z.enum([
-  "cod",
-  "upfront",
-  "net-15",
-  "net-30",
-  "net-60",
-]);
+export const paymentTermsEnum = z.enum(['cod', 'upfront', 'net-15', 'net-30', 'net-60'])
 
-export const pricingTierEnum = z.enum([
-  "standard",
-  "preferred",
-  "contract",
-  "wholesale",
-]);
+export const pricingTierEnum = z.enum(['standard', 'preferred', 'contract', 'wholesale'])
 
 export const customerSchema = z.object({
   id: z.string().uuid(),
@@ -67,11 +47,11 @@ export const customerSchema = z.object({
   email: z.string().email(),
   phone: z.string(),
   address: z.string(),
-  tag: customerTagEnum.default("new"),
+  tag: customerTagEnum.default('new'),
 
   // Lifecycle & classification
-  lifecycleStage: lifecycleStageEnum.default("prospect"),
-  healthStatus: healthStatusEnum.default("active"),
+  lifecycleStage: lifecycleStageEnum.default('prospect'),
+  healthStatus: healthStatusEnum.default('active'),
   isArchived: z.boolean().default(false),
   typeTags: z.array(customerTypeTagEnum).default([]),
 
@@ -84,8 +64,8 @@ export const customerSchema = z.object({
   shippingAddresses: z.array(addressSchema).default([]),
 
   // Financial
-  paymentTerms: paymentTermsEnum.default("upfront"),
-  pricingTier: pricingTierEnum.default("standard"),
+  paymentTerms: paymentTermsEnum.default('upfront'),
+  pricingTier: pricingTierEnum.default('standard'),
   discountPercentage: z.number().min(0).max(100).optional(),
   taxExempt: z.boolean().default(false),
   taxExemptCertExpiry: z.string().datetime().optional(),
@@ -105,12 +85,12 @@ export const customerSchema = z.object({
   // Metadata
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
-});
+})
 
-export type CustomerTag = z.infer<typeof customerTagEnum>;
-export type LifecycleStage = z.infer<typeof lifecycleStageEnum>;
-export type HealthStatus = z.infer<typeof healthStatusEnum>;
-export type CustomerTypeTag = z.infer<typeof customerTypeTagEnum>;
-export type PaymentTerms = z.infer<typeof paymentTermsEnum>;
-export type PricingTier = z.infer<typeof pricingTierEnum>;
-export type Customer = z.infer<typeof customerSchema>;
+export type CustomerTag = z.infer<typeof customerTagEnum>
+export type LifecycleStage = z.infer<typeof lifecycleStageEnum>
+export type HealthStatus = z.infer<typeof healthStatusEnum>
+export type CustomerTypeTag = z.infer<typeof customerTypeTagEnum>
+export type PaymentTerms = z.infer<typeof paymentTermsEnum>
+export type PricingTier = z.infer<typeof pricingTierEnum>
+export type Customer = z.infer<typeof customerSchema>

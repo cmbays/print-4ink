@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { DollarSign, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from 'react'
+import { DollarSign, AlertTriangle } from 'lucide-react'
+import { toast } from 'sonner'
 import {
   Sheet,
   SheetContent,
@@ -10,55 +10,52 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@shared/ui/primitives/sheet";
-import { Button } from "@shared/ui/primitives/button";
-import { Input } from "@shared/ui/primitives/input";
-import { Label } from "@shared/ui/primitives/label";
+} from '@shared/ui/primitives/sheet'
+import { Button } from '@shared/ui/primitives/button'
+import { Input } from '@shared/ui/primitives/input'
+import { Label } from '@shared/ui/primitives/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shared/ui/primitives/select";
-import { PAYMENT_METHOD_LABELS } from "@domain/constants";
-import { money, formatCurrency } from "@domain/lib/money";
-import { paymentMethodEnum } from "@domain/entities/invoice";
-import type { Invoice, PaymentMethod } from "@domain/entities/invoice";
+} from '@shared/ui/primitives/select'
+import { PAYMENT_METHOD_LABELS } from '@domain/constants'
+import { money, formatCurrency } from '@domain/lib/money'
+import { paymentMethodEnum } from '@domain/entities/invoice'
+import type { Invoice, PaymentMethod } from '@domain/entities/invoice'
 
-interface RecordPaymentSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  invoice: Invoice;
+type RecordPaymentSheetProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  invoice: Invoice
 }
 
-export function RecordPaymentSheet({
-  open,
-  onOpenChange,
-  invoice,
-}: RecordPaymentSheetProps) {
-  const [amount, setAmount] = useState(invoice.balanceDue.toString());
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [method, setMethod] = useState<PaymentMethod | "">("");
-  const [reference, setReference] = useState("");
+export function RecordPaymentSheet({ open, onOpenChange, invoice }: RecordPaymentSheetProps) {
+  const [amount, setAmount] = useState(invoice.balanceDue.toString())
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const [method, setMethod] = useState<PaymentMethod | ''>('')
+  const [reference, setReference] = useState('')
 
   // State resets naturally: parent must conditionally render
   // this component ({showPayment && <RecordPaymentSheet />})
   // so it unmounts on close and remounts fresh on open.
 
-  const isTerminal = invoice.status === "void" || invoice.status === "paid";
-  const parsedAmount = parseFloat(amount) || 0;
-  const isOverpayment = money(parsedAmount).gt(money(invoice.balanceDue));
-  const isValid = parsedAmount > 0 && money(parsedAmount).lte(money(invoice.balanceDue)) && method !== "" && date !== "";
+  const isTerminal = invoice.status === 'void' || invoice.status === 'paid'
+  const parsedAmount = parseFloat(amount) || 0
+  const isOverpayment = money(parsedAmount).gt(money(invoice.balanceDue))
+  const isValid =
+    parsedAmount > 0 &&
+    money(parsedAmount).lte(money(invoice.balanceDue)) &&
+    method !== '' &&
+    date !== ''
 
-  const nextStatus =
-    money(parsedAmount).gte(money(invoice.balanceDue)) ? "Paid" : "Partial";
+  const nextStatus = money(parsedAmount).gte(money(invoice.balanceDue)) ? 'Paid' : 'Partial'
 
   function handleSubmit() {
-    toast.success(
-      `Payment of ${formatCurrency(parsedAmount)} recorded on ${invoice.invoiceNumber}`
-    );
-    onOpenChange(false);
+    toast.success(`Payment of ${formatCurrency(parsedAmount)} recorded on ${invoice.invoiceNumber}`)
+    onOpenChange(false)
   }
 
   return (
@@ -70,7 +67,7 @@ export function RecordPaymentSheet({
             Record Payment
           </SheetTitle>
           <SheetDescription>
-            {invoice.invoiceNumber} &mdash; Balance due:{" "}
+            {invoice.invoiceNumber} &mdash; Balance due:{' '}
             <span className="font-mono font-medium text-foreground">
               {formatCurrency(invoice.balanceDue)}
             </span>
@@ -79,11 +76,13 @@ export function RecordPaymentSheet({
 
         <div className="flex-1 space-y-4 px-4">
           {isTerminal && (
-            <div className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3" role="alert">
+            <div
+              className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3"
+              role="alert"
+            >
               <AlertTriangle className="size-4 mt-0.5 text-warning shrink-0" />
               <p className="text-sm text-warning">
-                This invoice is{" "}
-                <span className="font-medium">{invoice.status}</span> and cannot
+                This invoice is <span className="font-medium">{invoice.status}</span> and cannot
                 accept payments.
               </p>
             </div>
@@ -109,8 +108,7 @@ export function RecordPaymentSheet({
             </div>
             {isOverpayment && (
               <p className="text-xs text-error">
-                Amount exceeds balance due of{" "}
-                {formatCurrency(invoice.balanceDue)}
+                Amount exceeds balance due of {formatCurrency(invoice.balanceDue)}
               </p>
             )}
           </div>
@@ -148,10 +146,7 @@ export function RecordPaymentSheet({
 
           <div className="space-y-2">
             <Label htmlFor="payment-reference">
-              Reference{" "}
-              <span className="text-muted-foreground font-normal">
-                (optional)
-              </span>
+              Reference <span className="text-muted-foreground font-normal">(optional)</span>
             </Label>
             <Input
               id="payment-reference"
@@ -164,28 +159,22 @@ export function RecordPaymentSheet({
 
           {!isTerminal && parsedAmount > 0 && !isOverpayment && (
             <p className="text-xs text-muted-foreground">
-              Recording this payment will change status to{" "}
+              Recording this payment will change status to{' '}
               <span className="font-medium text-foreground">{nextStatus}</span>
             </p>
           )}
         </div>
 
         <SheetFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!isValid || isTerminal}
-          >
+          <Button onClick={handleSubmit} disabled={!isValid || isTerminal}>
             <DollarSign className="size-4" />
             Record Payment
           </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

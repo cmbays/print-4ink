@@ -20,6 +20,7 @@ All sessions in this wave run one at a time. Establishes schemas, types, constan
 ### Task 0.1: DTF Schemas, Constants & Mock Data
 
 **Files to create/modify:**
+
 - `lib/schemas/dtf-line-item.ts` — NEW: Zod schema for DTF line items
 - `lib/dtf/dtf-constants.ts` — NEW: DTF_SIZE_PRESETS, DTF_TASK_TEMPLATE, DTF_SHEET_WIDTH
 - `lib/mock-data.ts` — MODIFY: add DTF sheet tier mock data (consumes `dtfSheetTierSchema`)
@@ -32,6 +33,7 @@ All sessions in this wave run one at a time. Establishes schemas, types, constan
 3. **Read** `lib/schemas/quote.ts` — understand existing `serviceTypeEnum`, `quoteLineItemSchema`
 
 4. **Create `lib/schemas/dtf-line-item.ts`:**
+
    ```
    dtfLineItemSchema = z.object({
      id: z.string().uuid(),
@@ -42,9 +44,11 @@ All sessions in this wave run one at a time. Establishes schemas, types, constan
      quantity: z.number().int().positive(),
    })
    ```
+
    Export type `DtfLineItem = z.infer<typeof dtfLineItemSchema>`
 
 5. **Create `lib/schemas/dtf-sheet-calculation.ts`:**
+
    ```
    sheetCalculationSchema — matches S22 shape:
    {
@@ -90,6 +94,7 @@ Modifies QuoteForm.tsx — the most-modified file. Must run alone to avoid merge
 ### Task 1.1: Service Type Tab Bar + QuoteForm State Lift
 
 **Files to create/modify:**
+
 - `app/(dashboard)/quotes/_components/ServiceTypeTabBar.tsx` — NEW
 - `app/(dashboard)/quotes/_components/QuoteForm.tsx` — MODIFY: add tab state, wrap SP content, lift DTF state
 - `components/ui/tabs.tsx` — verify shadcn tabs component exists (install if needed)
@@ -141,6 +146,7 @@ Three independent sessions. V2 and V5 touch different areas of the codebase. V3-
 ### Task 2.1: DTF Line Items + Size Presets (V2)
 
 **Files to create/modify:**
+
 - `app/(dashboard)/quotes/_components/DtfTabContent.tsx` — NEW
 - `app/(dashboard)/quotes/_components/DtfLineItemRow.tsx` — NEW
 - `app/(dashboard)/quotes/_components/QuoteForm.tsx` — MODIFY: wire DtfTabContent into DTF tab slot
@@ -183,6 +189,7 @@ Three independent sessions. V2 and V5 touch different areas of the codebase. V3-
 ### Task 2.2: DTF Production Steps (V5)
 
 **Files to create/modify:**
+
 - `lib/dtf/dtf-constants.ts` — already has DTF_TASK_TEMPLATE from Wave 0
 - Job card component(s) — MODIFY: conditional task rendering based on serviceType
 
@@ -210,6 +217,7 @@ Three independent sessions. V2 and V5 touch different areas of the codebase. V3-
 ### Task 2.3: Sheet Calculation Algorithm (V3-algo)
 
 **Files to create/modify:**
+
 - `lib/dtf/shelf-pack.ts` — NEW: N48 shelfPack algorithm
 - `lib/dtf/cost-optimize.ts` — NEW: N49 optimizeCost algorithm
 - `lib/dtf/__tests__/shelf-pack.test.ts` — NEW: unit tests
@@ -223,9 +231,20 @@ Three independent sessions. V2 and V5 touch different areas of the codebase. V3-
 4. **Read** `lib/dtf/dtf-constants.ts` for DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN
 
 5. **Create `lib/dtf/shelf-pack.ts`** (N48):
+
    ```typescript
-   interface PackedDesign { id: string; x: number; y: number; width: number; height: number; label: string; }
-   interface PackedSheet { designs: PackedDesign[]; usedHeight: number; }
+   interface PackedDesign {
+     id: string
+     x: number
+     y: number
+     width: number
+     height: number
+     label: string
+   }
+   interface PackedSheet {
+     designs: PackedDesign[]
+     usedHeight: number
+   }
 
    export function shelfPack(
      designs: Array<{ id: string; width: number; height: number; quantity: number; label: string }>,
@@ -233,6 +252,7 @@ Three independent sessions. V2 and V5 touch different areas of the codebase. V3-
      margin: number = 1
    ): PackedSheet[]
    ```
+
    Algorithm:
    a. Expand designs by quantity (Tiger x50 → 50 individual placements)
    b. Sort by height descending (tallest first for better packing)
@@ -243,16 +263,27 @@ Three independent sessions. V2 and V5 touch different areas of the codebase. V3-
    g. Return array of PackedSheet with positioned designs
 
 6. **Create `lib/dtf/cost-optimize.ts`** (N49):
+
    ```typescript
-   interface OptimizedSheet { tier: DTFSheetTier; designs: PackedDesign[]; utilization: number; cost: number; }
-   interface SheetCalculationResult { sheets: OptimizedSheet[]; totalCost: number; totalSheets: number; }
+   interface OptimizedSheet {
+     tier: DTFSheetTier
+     designs: PackedDesign[]
+     utilization: number
+     cost: number
+   }
+   interface SheetCalculationResult {
+     sheets: OptimizedSheet[]
+     totalCost: number
+     totalSheets: number
+   }
 
    export function optimizeCost(
      packedSheets: PackedSheet[],
      tiers: DTFSheetTier[],
-     splitMode: "combine" | "split"
+     splitMode: 'combine' | 'split'
    ): SheetCalculationResult
    ```
+
    Algorithm:
    a. Sort tiers by length ascending
    b. For each packed sheet, find smallest tier where `tier.length >= usedHeight`
@@ -292,6 +323,7 @@ Two sessions that wire Wave 2 outputs into the QuoteForm.
 **Depends on:** Task 2.1 (DtfTabContent exists), Task 2.3 (algorithms exist)
 
 **Files to create/modify:**
+
 - `app/(dashboard)/quotes/_components/SheetCalculationPanel.tsx` — NEW
 - `app/(dashboard)/quotes/_components/DtfTabContent.tsx` — MODIFY: wire in SheetCalculationPanel
 
@@ -332,6 +364,7 @@ Two sessions that wire Wave 2 outputs into the QuoteForm.
 **Depends on:** Task 1.1 (tab state in QuoteForm), Task 2.1 (DTF line items)
 
 **Files to modify:**
+
 - `app/(dashboard)/quotes/_components/QuoteForm.tsx` — MODIFY: save handler, validation
 
 **Steps:**
@@ -371,6 +404,7 @@ Two sessions that wire Wave 2 outputs into the QuoteForm.
 **Depends on:** Task 3.1 (SheetCalculationPanel produces canvasLayout)
 
 **Files to create/modify:**
+
 - `app/(dashboard)/quotes/_components/GangSheetCanvas.tsx` — NEW
 - `app/(dashboard)/quotes/_components/DtfTabContent.tsx` — MODIFY: wire in canvas
 
@@ -424,13 +458,13 @@ Two sessions that wire Wave 2 outputs into the QuoteForm.
 
 ## Summary
 
-| Wave | Tasks | Sessions | Dependencies |
-|------|-------|----------|--------------|
-| 0 | 0.1: Schemas & constants | 1 (serial) | None |
-| 1 | 1.1: Tab bar + state lift | 1 (serial) | Wave 0 |
-| 2 | 2.1: Line items, 2.2: Prod steps, 2.3: Algorithm | 3 (parallel) | Wave 1 |
-| 3 | 3.1: Calc UI, 3.2: Save/validate | 2 (parallel) | Wave 2 |
-| 4 | 4.1: Canvas | 1 (serial) | Wave 3 |
+| Wave | Tasks                                            | Sessions     | Dependencies |
+| ---- | ------------------------------------------------ | ------------ | ------------ |
+| 0    | 0.1: Schemas & constants                         | 1 (serial)   | None         |
+| 1    | 1.1: Tab bar + state lift                        | 1 (serial)   | Wave 0       |
+| 2    | 2.1: Line items, 2.2: Prod steps, 2.3: Algorithm | 3 (parallel) | Wave 1       |
+| 3    | 3.1: Calc UI, 3.2: Save/validate                 | 2 (parallel) | Wave 2       |
+| 4    | 4.1: Canvas                                      | 1 (serial)   | Wave 3       |
 
 **Total sessions:** 8
 **Critical path:** 0.1 → 1.1 → 2.1 → 3.1 → 4.1 (5 sessions)
