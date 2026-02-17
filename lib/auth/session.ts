@@ -67,8 +67,8 @@ const MOCK_SESSION: Session = {
  *
  * const cookieStore = await cookies();
  * const supabase = createServerClient(
- *   process.env.NEXT_PUBLIC_SUPABASE_URL!,
- *   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+ *   process.env.NEXT_PUBLIC_SUPABASE_URL ?? (() => { throw new Error('NEXT_PUBLIC_SUPABASE_URL is not set'); })(),
+ *   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? (() => { throw new Error('NEXT_PUBLIC_SUPABASE_ANON_KEY is not set'); })(),
  *   { cookies: { getAll: () => cookieStore.getAll() } },
  * );
  *
@@ -94,18 +94,20 @@ const MOCK_SESSION: Session = {
  */
 export const verifySession = cache(async (): Promise<Session | null> => {
   // Development: skip cookie check to keep DX frictionless
-  if (process.env.NODE_ENV !== 'production') {
-    return MOCK_SESSION;
+  // Use === 'development' (not !== 'production') so test environments
+  // also exercise the real cookie path.
+  if (process.env.NODE_ENV === 'development') {
+    return { ...MOCK_SESSION };
   }
 
-  // Production — Phase 1: validate demo-access cookie
+  // Production — Phase 1: validate demo-access cookie value
   // Production — Phase 2: replace with Supabase Auth.getUser() (see JSDoc above)
   const cookieStore = await cookies();
   const demoAccess = cookieStore.get('demo-access')?.value;
 
-  if (!demoAccess) {
+  if (demoAccess !== 'true') {
     return null;
   }
 
-  return MOCK_SESSION;
+  return { ...MOCK_SESSION };
 });
