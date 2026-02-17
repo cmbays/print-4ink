@@ -1,4 +1,4 @@
-import { DalError } from '@/lib/dal/_shared/errors';
+import { DalError } from '@infra/repositories/_shared/errors';
 import { InMemoryCacheStore } from './cache/in-memory';
 import { MockAdapter } from './adapters/mock';
 import { supplierNameSchema } from './types';

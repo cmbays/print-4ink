@@ -1,5 +1,5 @@
 import { quotes } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Quote } from '@/lib/schemas/quote';
 
 export async function getQuotes(): Promise<Quote[]> {

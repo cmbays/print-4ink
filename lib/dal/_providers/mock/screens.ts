@@ -1,5 +1,5 @@
 import { screens } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Screen } from '@/lib/schemas/screen';
 
 export async function getScreens(): Promise<Screen[]> {

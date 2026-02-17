@@ -1,5 +1,5 @@
 import { invoices, payments, creditMemos } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Invoice, Payment } from '@/lib/schemas/invoice';
 import type { CreditMemo } from '@/lib/schemas/credit-memo';
 

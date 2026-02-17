@@ -1,5 +1,5 @@
 import { colors } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Color } from '@/lib/schemas/color';
 
 export async function getColors(): Promise<Color[]> {

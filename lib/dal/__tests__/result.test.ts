@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { ok, err, isOk, isErr } from '../_shared/result';
-import type { Result } from '../_shared/result';
+import { ok, err, isOk, isErr } from '@infra/repositories/_shared/result';
+import type { Result } from '@infra/repositories/_shared/result';
 
 describe('ok()', () => {
   it('creates a success result', () => {

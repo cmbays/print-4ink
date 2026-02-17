@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { getProviderName } from '../_providers';
-import { DalError } from '../_shared/errors';
+import { DalError } from '@infra/repositories/_shared/errors';
 
 describe('getProviderName()', () => {
   const originalDataProvider = process.env.DATA_PROVIDER;

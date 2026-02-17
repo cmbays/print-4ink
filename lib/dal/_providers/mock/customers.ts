@@ -1,5 +1,5 @@
 import { customers, contacts, customerNotes, quotes, jobs, invoices, artworks } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Customer } from '@/lib/schemas/customer';
 import type { Contact } from '@/lib/schemas/contact';
 import type { Note } from '@/lib/schemas/note';

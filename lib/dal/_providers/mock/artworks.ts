@@ -1,5 +1,5 @@
 import { artworks } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Artwork } from '@/lib/schemas/artwork';
 
 export async function getArtworks(): Promise<Artwork[]> {

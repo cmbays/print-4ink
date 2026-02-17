@@ -1,5 +1,5 @@
 import { garmentCatalog } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { GarmentCatalog } from '@/lib/schemas/garment';
 
 export async function getGarmentCatalog(): Promise<GarmentCatalog[]> {

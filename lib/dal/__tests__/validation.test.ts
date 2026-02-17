@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateUUID } from '../_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 
 describe('validateUUID()', () => {
   it('returns the UUID for a valid v4 UUID', () => {

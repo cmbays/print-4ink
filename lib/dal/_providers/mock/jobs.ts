@@ -1,5 +1,5 @@
 import { jobs, quoteCards, scratchNotes } from '@/lib/mock-data';
-import { validateUUID } from '@/lib/dal/_shared/validation';
+import { validateUUID } from '@infra/repositories/_shared/validation';
 import type { Job, JobTask, JobNote } from '@/lib/schemas/job';
 import type { QuoteCard } from '@/lib/schemas/board-card';
 import type { ScratchNote } from '@/lib/schemas/scratch-note';

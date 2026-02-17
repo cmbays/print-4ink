@@ -1,4 +1,4 @@
-import { DalError } from '../_shared/errors';
+import { DalError } from '@infra/repositories/_shared/errors';
 
 const VALID_PROVIDERS = ['mock', 'supabase'] as const;
 export type ProviderName = (typeof VALID_PROVIDERS)[number];
