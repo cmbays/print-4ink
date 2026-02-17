@@ -49,7 +49,8 @@ export const prFactsSchema = z.object({
   totalAdditions: z.number().int().nonnegative(),
   totalDeletions: z.number().int().nonnegative(),
   commits: z.array(commitInfoSchema),
-  domains: z.array(z.string().min(1)),
+  /** Raw unified diff output from `git diff base...head`. Optional for dry-run classification. */
+  diffContent: z.string().optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -59,6 +60,8 @@ export const prFactsSchema = z.object({
 export const prClassificationSchema = z.object({
   type: prTypeEnum,
   riskLevel: reviewRiskLevelEnum,
+  /** Numeric risk score (0-100) from which `riskLevel` is derived via threshold logic. */
+  riskScore: z.number().int().min(0).max(100),
   domains: z.array(z.string().min(1)),
   scope: prScopeEnum,
   filesChanged: z.number().int().nonnegative(),
@@ -71,10 +74,13 @@ export const prClassificationSchema = z.object({
 
 export const agentManifestEntrySchema = z.object({
   agentId: z.string().min(1),
+  /** File paths (repo-relative) this agent should review. Populated from the intersection of triggered domain files and the PR's changed files. */
   scope: z.array(z.string().min(1)),
   priority: z.number().int().min(0).max(100),
   rules: z.array(z.string().min(1)),
   reason: z.string().min(1),
+  /** ID of the composition policy that triggered this entry, or `"gap-detect"` for gap-triggered entries. */
+  triggeredBy: z.string().min(1),
 });
 
 // ---------------------------------------------------------------------------
@@ -106,6 +112,20 @@ export const reviewFindingSchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
+// Stage 5b: Agent Result (per-agent execution wrapper)
+// ---------------------------------------------------------------------------
+
+export const agentResultStatusEnum = z.enum(["success", "timeout", "error"]);
+
+export const agentResultSchema = z.object({
+  agentId: z.string().min(1),
+  status: agentResultStatusEnum,
+  findings: z.array(reviewFindingSchema),
+  durationMs: z.number().int().nonnegative(),
+  error: z.string().optional(),
+});
+
+// ---------------------------------------------------------------------------
 // Stage 6: Aggregate — Review Report + Gate Decision
 // ---------------------------------------------------------------------------
 
@@ -116,12 +136,20 @@ export const severityMetricsSchema = z.object({
   info: z.number().int().nonnegative(),
 });
 
+/**
+ * Aggregate review report. Deduplication key: `(ruleId, file, line)`.
+ * Findings with identical keys from different agents are merged; the
+ * `deduplicated` counter records how many were collapsed.
+ */
 export const reviewReportSchema = z.object({
+  agentResults: z.array(agentResultSchema),
   findings: z.array(reviewFindingSchema),
   gaps: z.array(gapLogEntrySchema),
   metrics: severityMetricsSchema,
   agentsDispatched: z.number().int().nonnegative(),
   agentsCompleted: z.number().int().nonnegative(),
+  /** Number of duplicate findings merged during aggregation. */
+  deduplicated: z.number().int().nonnegative(),
   timestamp: z.string().datetime(),
 });
 
@@ -145,6 +173,8 @@ export type PRClassification = z.infer<typeof prClassificationSchema>;
 export type AgentManifestEntry = z.infer<typeof agentManifestEntrySchema>;
 export type GapLogEntry = z.infer<typeof gapLogEntrySchema>;
 export type ReviewFinding = z.infer<typeof reviewFindingSchema>;
+export type AgentResultStatus = z.infer<typeof agentResultStatusEnum>;
+export type AgentResult = z.infer<typeof agentResultSchema>;
 export type SeverityMetrics = z.infer<typeof severityMetricsSchema>;
 export type ReviewReport = z.infer<typeof reviewReportSchema>;
 export type GateDecision = z.infer<typeof gateDecisionSchema>;
