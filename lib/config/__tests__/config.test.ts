@@ -384,12 +384,12 @@ describe("pipeline-fields structural invariants", () => {
     }
   });
 
-  it("updatable fields are exactly: auto, issue, products, tools, type", () => {
+  it("updatable fields are exactly: auto, domains, issue, products, tools, type", () => {
     const updatable = Object.entries(pipelineFields)
       .filter(([, f]) => f.updatable)
       .map(([name]) => name)
       .sort();
-    expect(updatable).toEqual(["auto", "issue", "products", "tools", "type"]);
+    expect(updatable).toEqual(["auto", "domains", "issue", "products", "tools", "type"]);
   });
 
   it("non-updatable fields are exactly the expected set", () => {

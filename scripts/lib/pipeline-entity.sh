@@ -106,10 +106,10 @@ _pipeline_first_stage() {
 # ── Create ────────────────────────────────────────────────────────────────────
 
 # Create a new pipeline entity and register it
-# Usage: _pipeline_create <name> <type> [--products p1,p2] [--tools t1,t2] [--id YYYYMMDD-topic]
+# Usage: _pipeline_create <name> <type> [--products p1,p2] [--tools t1,t2] [--domains d1,d2] [--id YYYYMMDD-topic]
 # Returns: pipeline ID on stdout
 _pipeline_create() {
-    local name="" type="" products="[]" tools="[]" custom_id=""
+    local name="" type="" products="[]" tools="[]" domains="[]" custom_id=""
 
     # Parse args
     while [[ $# -gt 0 ]]; do
@@ -119,6 +119,9 @@ _pipeline_create() {
                 shift 2 ;;
             --tools)
                 tools=$(echo "$2" | tr ',' '\n' | jq -R . | jq -s .)
+                shift 2 ;;
+            --domains)
+                domains=$(echo "$2" | tr ',' '\n' | jq -R . | jq -s .)
                 shift 2 ;;
             --id)
                 custom_id="$2"; shift 2 ;;
@@ -133,7 +136,7 @@ _pipeline_create() {
     done
 
     if [[ -z "$name" || -z "$type" ]]; then
-        echo "Usage: _pipeline_create <name> <type> [--products p1,p2] [--tools t1,t2] [--id ID]" >&2
+        echo "Usage: _pipeline_create <name> <type> [--products p1,p2] [--tools t1,t2] [--domains d1,d2] [--id ID]" >&2
         return 1
     fi
 
@@ -167,6 +170,7 @@ _pipeline_create() {
         --arg type "$type" \
         --argjson products "$products" \
         --argjson tools "$tools" \
+        --argjson domains "$domains" \
         --arg stage "$first_stage" \
         --arg created "$now" \
         '{
@@ -175,6 +179,7 @@ _pipeline_create() {
             type: $type,
             products: $products,
             tools: $tools,
+            domains: $domains,
             stage: $stage,
             state: "ready",
             issue: null,
