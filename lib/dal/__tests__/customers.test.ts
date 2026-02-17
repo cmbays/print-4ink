@@ -68,6 +68,22 @@ describe('getCustomerById()', () => {
     expect(a).not.toBe(b);
     expect(a).toEqual(b);
   });
+
+  it('mutations to returned data do not affect source', async () => {
+    const customers = await getCustomers();
+    const original = customers[0];
+    const originalCompany = original.company;
+    const originalContactsLen = original.contacts.length;
+
+    // Mutate top-level and nested properties
+    original.company = 'MUTATED';
+    original.contacts.push({ id: 'fake', name: 'Fake', role: 'test', email: '', phone: '' } as never);
+
+    // Re-fetch — source must be unaffected
+    const fresh = await getCustomers();
+    expect(fresh[0].company).toBe(originalCompany);
+    expect(fresh[0].contacts).toHaveLength(originalContactsLen);
+  });
 });
 
 describe('getCustomerQuotes()', () => {

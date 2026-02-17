@@ -9,23 +9,23 @@ import type { Invoice } from '@/lib/schemas/invoice';
 import type { Artwork } from '@/lib/schemas/artwork';
 
 export async function getCustomers(): Promise<Customer[]> {
-  return customers.map((c) => ({ ...c }));
+  return customers.map((c) => structuredClone(c));
 }
 
 export async function getCustomerById(id: string): Promise<Customer | null> {
   if (!validateUUID(id)) return null;
   const customer = customers.find((c) => c.id === id);
-  return customer ? { ...customer } : null;
+  return customer ? structuredClone(customer) : null;
 }
 
 export async function getCustomerQuotes(customerId: string): Promise<Quote[]> {
   if (!validateUUID(customerId)) return [];
-  return quotes.filter((q) => q.customerId === customerId).map((q) => ({ ...q }));
+  return quotes.filter((q) => q.customerId === customerId).map((q) => structuredClone(q));
 }
 
 export async function getCustomerJobs(customerId: string): Promise<Job[]> {
   if (!validateUUID(customerId)) return [];
-  return jobs.filter((j) => j.customerId === customerId).map((j) => ({ ...j }));
+  return jobs.filter((j) => j.customerId === customerId).map((j) => structuredClone(j));
 }
 
 export async function getCustomerContacts(customerId: string): Promise<Contact[]> {
@@ -34,22 +34,22 @@ export async function getCustomerContacts(customerId: string): Promise<Contact[]
   if (!customer) return [];
   return contacts
     .filter((c) => customer.contacts.some((ec) => ec.id === c.id))
-    .map((c) => ({ ...c }));
+    .map((c) => structuredClone(c));
 }
 
 export async function getCustomerNotes(customerId: string): Promise<Note[]> {
   if (!validateUUID(customerId)) return [];
   return customerNotes
     .filter((n) => n.entityType === 'customer' && n.entityId === customerId)
-    .map((n) => ({ ...n }));
+    .map((n) => structuredClone(n));
 }
 
 export async function getCustomerArtworks(customerId: string): Promise<Artwork[]> {
   if (!validateUUID(customerId)) return [];
-  return artworks.filter((a) => a.customerId === customerId).map((a) => ({ ...a }));
+  return artworks.filter((a) => a.customerId === customerId).map((a) => structuredClone(a));
 }
 
 export async function getCustomerInvoices(customerId: string): Promise<Invoice[]> {
   if (!validateUUID(customerId)) return [];
-  return invoices.filter((inv) => inv.customerId === customerId).map((inv) => ({ ...inv }));
+  return invoices.filter((inv) => inv.customerId === customerId).map((inv) => structuredClone(inv));
 }

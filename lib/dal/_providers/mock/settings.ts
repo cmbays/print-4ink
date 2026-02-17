@@ -10,21 +10,22 @@ import type { BrandPreference, DisplayPreference, PropagationConfig } from '@/li
 import type { DTFSheetTier } from '@/lib/schemas/dtf-pricing';
 
 export async function getMockupTemplates(): Promise<MockupTemplate[]> {
-  return mockupTemplates.map((t) => ({ ...t }));
+  return mockupTemplates.map((t) => structuredClone(t));
 }
 
 export async function getBrandPreferences(): Promise<BrandPreference[]> {
-  return brandPreferences.map((bp) => ({ ...bp }));
+  return brandPreferences.map((bp) => structuredClone(bp));
 }
 
+// DisplayPreference is a string literal union — primitives are inherently copied.
 export async function getDisplayPreference(): Promise<DisplayPreference> {
   return displayPreference;
 }
 
 export async function getAutoPropagationConfig(): Promise<PropagationConfig> {
-  return { ...autoPropagationConfig };
+  return structuredClone(autoPropagationConfig);
 }
 
 export async function getDtfSheetTiers(): Promise<DTFSheetTier[]> {
-  return dtfSheetTiers.map((t) => ({ ...t }));
+  return dtfSheetTiers.map((t) => structuredClone(t));
 }
