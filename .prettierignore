@@ -10,6 +10,3 @@ knowledge-base/node_modules/
 # Static assets
 public/
 
-# Auto-generated
-for_human/index.html
-for_human/README.md
