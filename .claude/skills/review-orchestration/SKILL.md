@@ -40,8 +40,12 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Produce an immutable `PRFacts` object from the current git diff.
 
 **Instructions**:
-1. Run `git diff HEAD~1 --stat` to get file list and line counts
-2. Run `git diff HEAD~1 --name-only` to get the changed files
+1. Determine the comparison base:
+   - Run `git rev-parse --verify HEAD~1` — if it succeeds, use `HEAD~1`
+   - Otherwise (first commit, orphan branch): fall back to `git merge-base HEAD origin/main`
+   - Store the result as `$BASE`
+2. Run `git diff $BASE --stat` to get file list and line counts
+3. Run `git diff $BASE --name-only` to get the changed files
 3. Run `git log --oneline -5` to capture commit metadata
 4. Produce a `PRFacts` object conforming to `prFactsSchema` from `lib/schemas/review-pipeline.ts`:
    - `filesChanged`: array of changed file paths
@@ -173,7 +177,7 @@ Return [] if no findings. Return only the JSON array — no markdown, no prose.
 
 **Instructions**:
 1. Merge all `ReviewFinding[]` arrays from Stage 5 into one flat array
-2. Dedupe: if two findings have the same `file` + `line` + `category`, keep the one with higher severity
+2. Dedupe: if two findings have the same `file` + `line` + `category`, keep the one with higher severity. For file-level findings where `line` is `null`, deduplicate when `file` + `category` match (treat `null` as a comparable value, not as distinct)
 3. Sort by severity: `critical` → `major` → `warning` → `info`
 4. Count by severity: `criticalCount`, `majorCount`, `warningCount`, `infoCount`
 5. Compute gate decision (evaluate conditions in priority order — first match wins):
