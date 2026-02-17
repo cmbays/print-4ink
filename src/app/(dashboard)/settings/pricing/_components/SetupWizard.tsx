@@ -41,7 +41,7 @@ import {
   calculateDTFPrice,
   formatCurrency,
   formatPercent,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import { spStandardTemplate, dtfRetailTemplate } from "@/lib/mock-data-pricing";
 import type { PricingTemplate, QuantityTier, ScreenPrintMatrix, CostConfig } from "@domain/entities/price-matrix";
 import type { DTFPricingTemplate, DTFSheetTier, DTFRushFee, DTFFilmTypeConfig, DTFCustomerTierDiscount, DTFCostConfig } from "@domain/entities/dtf-pricing";

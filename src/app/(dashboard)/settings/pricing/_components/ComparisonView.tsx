@@ -18,7 +18,7 @@ import {
   calculateDiff,
   formatCurrency,
   formatPercent,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import { cn } from "@/lib/utils";
 import type { PricingTemplate } from "@domain/entities/price-matrix";
 import {

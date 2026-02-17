@@ -25,7 +25,7 @@ import { customers } from "@/lib/mock-data";
 import {
   calculateTemplateHealth,
   calculateDTFTemplateHealth,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import type { PricingTemplate } from "@domain/entities/price-matrix";
 import type { DTFPricingTemplate } from "@domain/entities/dtf-pricing";
 import type { MarginIndicator } from "@domain/entities/price-matrix";

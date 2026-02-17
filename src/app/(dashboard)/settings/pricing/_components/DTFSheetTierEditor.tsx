@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { MarginIndicator } from "@/components/features/MarginIndicator";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
-import { calculateDTFTierMargin, formatCurrency } from "@/lib/pricing-engine";
+import { calculateDTFTierMargin, formatCurrency } from "@domain/services/pricing.service";
 import type { DTFSheetTier, DTFCostConfig } from "@domain/entities/dtf-pricing";
 
 interface DTFSheetTierEditorProps {

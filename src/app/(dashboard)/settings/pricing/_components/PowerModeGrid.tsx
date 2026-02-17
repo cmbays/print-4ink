@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import {
   buildFullMatrixData,
   formatCurrency,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import type {
   PricingTemplate,
   MarginIndicator,

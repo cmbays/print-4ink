@@ -19,7 +19,7 @@ import {
   buildFullMatrixData,
   formatCurrency,
   findQuantityTierIndex,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import {
   allScreenPrintTemplates,
   tagTemplateMappings,

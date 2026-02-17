@@ -26,7 +26,7 @@ import {
   formatCurrency,
   formatPercent,
   getMarginIndicator,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import { money, round2, toNumber } from "@/lib/helpers/money";
 import type { CostConfig, PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
 

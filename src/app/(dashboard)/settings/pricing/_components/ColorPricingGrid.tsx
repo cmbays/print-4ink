@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
 import { cn } from "@/lib/utils";
-import { buildFullMatrixData, formatCurrency } from "@/lib/pricing-engine";
+import { buildFullMatrixData, formatCurrency } from "@domain/services/pricing.service";
 import type { PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
 import type { GarmentCategory } from "@domain/entities/garment";
 
