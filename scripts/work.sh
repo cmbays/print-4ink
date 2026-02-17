@@ -18,9 +18,9 @@ PRINT4INK_REPO="$HOME/Github/print-4ink"
 PRINT4INK_ROOT="$PRINT4INK_REPO"
 PRINT4INK_WORKTREES="$HOME/Github/print-4ink-worktrees"
 PRINT4INK_GH_REPO="cmbays/print-4ink"  # GitHub owner/repo for gh CLI
-PRINT4INK_MAX_WORKTREES=15
+PRINT4INK_MAX_WORKTREES=25
 PRINT4INK_PORT_MIN=3001
-PRINT4INK_PORT_MAX=3015
+PRINT4INK_PORT_MAX=3025
 
 # ── Source Libraries ────────────────────────────────────────────────────────
 # Resolve script directory (works when sourced from both Zsh and Bash)

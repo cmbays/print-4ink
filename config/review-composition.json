@@ -1,0 +1,23 @@
+[
+  {
+    "id": "universal-build-reviewer",
+    "trigger": { "type": "always" },
+    "dispatch": "build-reviewer",
+    "priority": 50,
+    "description": "Always dispatch the build reviewer for universal code quality checks including DRY, modularity, type safety, naming, and design token compliance"
+  },
+  {
+    "id": "financial-domain-reviewer",
+    "trigger": { "type": "domain", "domains": ["financial", "dtf-optimization"] },
+    "dispatch": "finance-sme",
+    "priority": 80,
+    "description": "Dispatch the financial safety reviewer when PR touches monetary calculations, pricing logic, invoice-related code, or DTF cost optimization"
+  },
+  {
+    "id": "design-domain-reviewer",
+    "trigger": { "type": "domain", "domains": ["ui-components", "design-system"] },
+    "dispatch": "design-auditor",
+    "priority": 70,
+    "description": "Dispatch the design system auditor when PR touches UI components, layout changes, or design system primitives"
+  }
+]

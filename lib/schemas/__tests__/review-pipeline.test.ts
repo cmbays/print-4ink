@@ -10,6 +10,8 @@ import {
   agentManifestEntrySchema,
   gapLogEntrySchema,
   reviewFindingSchema,
+  agentResultStatusEnum,
+  agentResultSchema,
   severityMetricsSchema,
   reviewReportSchema,
   gateDecisionSchema,
@@ -169,14 +171,12 @@ describe("prFactsSchema", () => {
         author: "cmbays",
       },
     ],
-    domains: ["schemas"],
   };
 
   it("accepts valid PR facts", () => {
     const result = prFactsSchema.parse(validFacts);
     expect(result.branch).toBe("session/0216-review-schemas");
     expect(result.files).toHaveLength(1);
-    expect(result.domains).toEqual(["schemas"]);
   });
 
   it("accepts optional prNumber", () => {
@@ -200,6 +200,30 @@ describe("prFactsSchema", () => {
       prFactsSchema.parse({ ...validFacts, totalAdditions: -1 }),
     ).toThrow();
   });
+
+  it("accepts optional diffContent", () => {
+    const result = prFactsSchema.parse({
+      ...validFacts,
+      diffContent: "diff --git a/foo.ts b/foo.ts\n+added line",
+    });
+    expect(result.diffContent).toContain("diff --git");
+  });
+
+  it("omits diffContent when not provided", () => {
+    const result = prFactsSchema.parse(validFacts);
+    expect(result.diffContent).toBeUndefined();
+  });
+
+  it("rejects empty diffContent", () => {
+    expect(() =>
+      prFactsSchema.parse({ ...validFacts, diffContent: "" }),
+    ).toThrow();
+  });
+
+  it("does not accept a domains field", () => {
+    const result = prFactsSchema.parse({ ...validFacts, domains: ["schemas"] });
+    expect((result as Record<string, unknown>).domains).toBeUndefined();
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -210,6 +234,7 @@ describe("prClassificationSchema", () => {
   const validClassification = {
     type: "feature" as const,
     riskLevel: "medium" as const,
+    riskScore: 45,
     domains: ["schemas", "testing"],
     scope: "medium" as const,
     filesChanged: 4,
@@ -220,6 +245,7 @@ describe("prClassificationSchema", () => {
     const result = prClassificationSchema.parse(validClassification);
     expect(result.type).toBe("feature");
     expect(result.riskLevel).toBe("medium");
+    expect(result.riskScore).toBe(45);
     expect(result.scope).toBe("medium");
   });
 
@@ -277,6 +303,49 @@ describe("prClassificationSchema", () => {
       }),
     ).toThrow();
   });
+
+  it("accepts riskScore 0", () => {
+    const result = prClassificationSchema.parse({
+      ...validClassification,
+      riskScore: 0,
+    });
+    expect(result.riskScore).toBe(0);
+  });
+
+  it("accepts riskScore 100", () => {
+    const result = prClassificationSchema.parse({
+      ...validClassification,
+      riskScore: 100,
+    });
+    expect(result.riskScore).toBe(100);
+  });
+
+  it("rejects riskScore above 100", () => {
+    expect(() =>
+      prClassificationSchema.parse({
+        ...validClassification,
+        riskScore: 101,
+      }),
+    ).toThrow();
+  });
+
+  it("rejects riskScore below 0", () => {
+    expect(() =>
+      prClassificationSchema.parse({
+        ...validClassification,
+        riskScore: -1,
+      }),
+    ).toThrow();
+  });
+
+  it("rejects non-integer riskScore", () => {
+    expect(() =>
+      prClassificationSchema.parse({
+        ...validClassification,
+        riskScore: 45.5,
+      }),
+    ).toThrow();
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -290,12 +359,14 @@ describe("agentManifestEntrySchema", () => {
     priority: 50,
     rules: ["br-type-safety-01", "br-dry-01"],
     reason: "Universal policy: always dispatch build-reviewer",
+    triggeredBy: "policy-always-build-reviewer",
   };
 
   it("accepts a valid manifest entry", () => {
     const result = agentManifestEntrySchema.parse(validEntry);
     expect(result.agentId).toBe("build-reviewer");
     expect(result.rules).toHaveLength(2);
+    expect(result.triggeredBy).toBe("policy-always-build-reviewer");
   });
 
   it("accepts priority 0", () => {
@@ -335,6 +406,20 @@ describe("agentManifestEntrySchema", () => {
   it("rejects empty reason", () => {
     expect(() =>
       agentManifestEntrySchema.parse({ ...validEntry, reason: "" }),
+    ).toThrow();
+  });
+
+  it("accepts gap-detect as triggeredBy", () => {
+    const result = agentManifestEntrySchema.parse({
+      ...validEntry,
+      triggeredBy: "gap-detect",
+    });
+    expect(result.triggeredBy).toBe("gap-detect");
+  });
+
+  it("rejects empty triggeredBy", () => {
+    expect(() =>
+      agentManifestEntrySchema.parse({ ...validEntry, triggeredBy: "" }),
     ).toThrow();
   });
 });
@@ -488,6 +573,142 @@ describe("reviewFindingSchema", () => {
 });
 
 // ---------------------------------------------------------------------------
+// Stage 5b: agentResultSchema
+// ---------------------------------------------------------------------------
+
+describe("agentResultStatusEnum", () => {
+  it.each(["success", "timeout", "error"])("accepts '%s'", (val) => {
+    expect(agentResultStatusEnum.parse(val)).toBe(val);
+  });
+
+  it("rejects invalid status", () => {
+    expect(() => agentResultStatusEnum.parse("pending")).toThrow();
+  });
+});
+
+describe("agentResultSchema", () => {
+  const validResult = {
+    agentId: "build-reviewer",
+    status: "success" as const,
+    findings: [
+      {
+        ruleId: "br-type-safety-01",
+        agent: "build-reviewer",
+        severity: "major" as const,
+        file: "lib/helpers/money.ts",
+        line: 42,
+        message: "Explicit any type found",
+        category: "type-safety",
+      },
+    ],
+    durationMs: 1500,
+  };
+
+  it("accepts a valid agent result", () => {
+    const result = agentResultSchema.parse(validResult);
+    expect(result.agentId).toBe("build-reviewer");
+    expect(result.status).toBe("success");
+    expect(result.findings).toHaveLength(1);
+    expect(result.durationMs).toBe(1500);
+  });
+
+  it("accepts timeout status with error message", () => {
+    const result = agentResultSchema.parse({
+      ...validResult,
+      status: "timeout",
+      findings: [],
+      error: "Agent exceeded 30s timeout",
+    });
+    expect(result.status).toBe("timeout");
+    expect(result.error).toBe("Agent exceeded 30s timeout");
+  });
+
+  it("accepts error status with error message", () => {
+    const result = agentResultSchema.parse({
+      ...validResult,
+      status: "error",
+      findings: [],
+      error: "Agent crashed unexpectedly",
+    });
+    expect(result.status).toBe("error");
+    expect(result.error).toBe("Agent crashed unexpectedly");
+  });
+
+  it("rejects success status with error message", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "success",
+        error: "should not be here",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects timeout status without error message", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "timeout",
+        findings: [],
+      }),
+    ).toThrow();
+  });
+
+  it("rejects error status without error message", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "error",
+        findings: [],
+      }),
+    ).toThrow();
+  });
+
+  it("accepts empty findings array", () => {
+    const result = agentResultSchema.parse({
+      ...validResult,
+      findings: [],
+    });
+    expect(result.findings).toEqual([]);
+  });
+
+  it("accepts durationMs of 0", () => {
+    const result = agentResultSchema.parse({
+      ...validResult,
+      durationMs: 0,
+    });
+    expect(result.durationMs).toBe(0);
+  });
+
+  it("rejects negative durationMs", () => {
+    expect(() =>
+      agentResultSchema.parse({ ...validResult, durationMs: -1 }),
+    ).toThrow();
+  });
+
+  it("rejects empty agentId", () => {
+    expect(() =>
+      agentResultSchema.parse({ ...validResult, agentId: "" }),
+    ).toThrow();
+  });
+
+  it("error field is optional for success", () => {
+    const result = agentResultSchema.parse(validResult);
+    expect(result.error).toBeUndefined();
+  });
+
+  it("rejects empty error string", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "error",
+        error: "",
+      }),
+    ).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Stage 6: severityMetricsSchema, reviewReportSchema, gateDecisionSchema
 // ---------------------------------------------------------------------------
 
@@ -508,38 +729,51 @@ describe("severityMetricsSchema", () => {
 });
 
 describe("reviewReportSchema", () => {
+  const validFinding = {
+    ruleId: "br-type-safety-01",
+    agent: "build-reviewer",
+    severity: "major" as const,
+    file: "lib/helpers/money.ts",
+    line: 42,
+    message: "Explicit any type found",
+    category: "type-safety",
+  };
+
   const validReport = {
-    findings: [
+    agentResults: [
       {
-        ruleId: "br-type-safety-01",
-        agent: "build-reviewer",
-        severity: "major" as const,
-        file: "lib/helpers/money.ts",
-        line: 42,
-        message: "Explicit any type found",
-        category: "type-safety",
+        agentId: "build-reviewer",
+        status: "success" as const,
+        findings: [validFinding],
+        durationMs: 1200,
       },
     ],
+    findings: [validFinding],
     gaps: [],
     metrics: { critical: 0, major: 1, warning: 0, info: 0 },
     agentsDispatched: 2,
     agentsCompleted: 2,
+    deduplicated: 0,
     timestamp: "2026-02-16T10:00:00Z",
   };
 
   it("accepts a valid report", () => {
     const result = reviewReportSchema.parse(validReport);
     expect(result.findings).toHaveLength(1);
+    expect(result.agentResults).toHaveLength(1);
     expect(result.agentsDispatched).toBe(2);
+    expect(result.deduplicated).toBe(0);
   });
 
-  it("accepts empty findings and gaps", () => {
+  it("accepts empty findings, agentResults, and gaps", () => {
     const result = reviewReportSchema.parse({
       ...validReport,
+      agentResults: [],
       findings: [],
       gaps: [],
     });
     expect(result.findings).toEqual([]);
+    expect(result.agentResults).toEqual([]);
     expect(result.gaps).toEqual([]);
   });
 
@@ -553,6 +787,48 @@ describe("reviewReportSchema", () => {
     expect(() =>
       reviewReportSchema.parse({ ...validReport, agentsDispatched: -1 }),
     ).toThrow();
+  });
+
+  it("accepts deduplicated count > 0", () => {
+    const result = reviewReportSchema.parse({
+      ...validReport,
+      deduplicated: 3,
+    });
+    expect(result.deduplicated).toBe(3);
+  });
+
+  it("rejects negative deduplicated", () => {
+    expect(() =>
+      reviewReportSchema.parse({ ...validReport, deduplicated: -1 }),
+    ).toThrow();
+  });
+
+  it("rejects agentsCompleted exceeding agentsDispatched", () => {
+    expect(() =>
+      reviewReportSchema.parse({
+        ...validReport,
+        agentsDispatched: 2,
+        agentsCompleted: 3,
+      }),
+    ).toThrow();
+  });
+
+  it("accepts agentsCompleted equal to agentsDispatched", () => {
+    const result = reviewReportSchema.parse({
+      ...validReport,
+      agentsDispatched: 3,
+      agentsCompleted: 3,
+    });
+    expect(result.agentsCompleted).toBe(3);
+  });
+
+  it("accepts agentsCompleted less than agentsDispatched", () => {
+    const result = reviewReportSchema.parse({
+      ...validReport,
+      agentsDispatched: 3,
+      agentsCompleted: 1,
+    });
+    expect(result.agentsCompleted).toBe(1);
   });
 });
 
