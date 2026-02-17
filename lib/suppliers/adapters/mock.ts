@@ -68,6 +68,8 @@ export class MockAdapter implements SupplierAdapter {
     return results.filter((s): s is CanonicalStyle => s !== null);
   }
 
+  // Mock data is in-process — no cache needed. Real adapters (e.g. SSActivewearAdapter) should
+  // cache searchCatalog results with CACHE_TTL.catalog to avoid N+1 HTTP calls per request.
   async searchCatalog(params: CatalogSearchInput): Promise<CatalogSearchResult> {
     const { brand, category, query, limit, offset } =
       catalogSearchParamsSchema.parse(params);
