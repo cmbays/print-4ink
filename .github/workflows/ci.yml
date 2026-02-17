@@ -35,6 +35,14 @@ jobs:
           fi
           exit $FAIL
 
+      - name: Issue template sync check — templates must match config files
+        run: |
+          node scripts/sync-issue-templates.js
+          git diff --exit-code .github/ISSUE_TEMPLATE/ || {
+            echo "::error::Issue templates are out of sync with config/products.json + config/tools.json. Run 'npm run sync:templates' locally and commit the result."
+            exit 1
+          }
+
       - name: Type check
         run: npx tsc --noEmit
 
