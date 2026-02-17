@@ -18,12 +18,12 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 |-------|----------|-------------------|------------------|--------|
 | `frontend-builder` | Building screens or components | "Use frontend-builder agent to build PageHeader" | breadboarding, screen-builder, quality-gate | Screen/component files |
 | `requirements-interrogator` | Before building complex features | "Ask requirements-interrogator about Kanban workflow" | pre-build-interrogator | Spike doc in `docs/spikes/` |
-| `design-auditor` | Design review checkpoint | "Have design-auditor review the jobs screen" | design-audit | Audit report in `agent-outputs/` |
+| `design-auditor` | Design review checkpoint | "Have design-auditor review the jobs screen" | design-audit | `ReviewFinding[]` JSON |
 | `feature-strategist` | Competitive analysis, feature planning | "Use feature-strategist for quote system analysis" | feature-strategy | Feature plan in `docs/` |
 | `doc-sync` | Sync docs with code changes | "Have doc-sync check APP_FLOW against built screens" | doc-sync | Updated canonical docs |
 | `secretary` (Ada) | Project pulse, 1:1 check-ins, strategic advice | "Start a 1:1 with Ada" | one-on-one, cool-down | Memory updates, recommendations |
-| `finance-sme` | Self-review of financial code | "Have finance-sme review the invoice diff" | — | Audit report (pass/fail) |
-| `build-reviewer` | Self-review of code quality | "Have build-reviewer check the jobs diff" | — | Audit report (pass/needs_fixes/fail) |
+| `finance-sme` | Dispatched by review orchestration (financial domain) | Auto-dispatched by `review-orchestration` skill | — | `ReviewFinding[]` JSON |
+| `build-reviewer` | Dispatched by review orchestration (universal) | Auto-dispatched by `review-orchestration` skill | — | `ReviewFinding[]` JSON |
 
 ## Agent Details
 
@@ -64,7 +64,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Tools**: Read, Grep, Glob (read-only)
 **Preloaded skills**: design-audit
 **Reads**: All screens, design system docs, FRONTEND_GUIDELINES
-**Writes**: Audit reports in `agent-outputs/`
+**Writes**: Structured `ReviewFinding[]` JSON when dispatched by `review-orchestration`; audit reports in `agent-outputs/` when invoked directly
 **Never touches**: Code (read-only)
 
 **When to use**:
@@ -125,7 +125,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Tools**: Read, Grep, Glob (read-only)
 **Preloaded skills**: none
 **Reads**: Changed files touching schemas, pricing, invoicing, quoting
-**Writes**: Audit report (structured markdown)
+**Writes**: Structured `ReviewFinding[]` JSON when dispatched by `review-orchestration`; audit reports in `agent-outputs/` when invoked directly
 **Never touches**: Code (read-only)
 
 **When to use**:
@@ -140,7 +140,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Tools**: Read, Grep, Glob (read-only)
 **Preloaded skills**: none
 **Reads**: Changed files, CLAUDE.md standards, existing component patterns
-**Writes**: Audit report (structured markdown)
+**Writes**: Structured `ReviewFinding[]` JSON when dispatched by `review-orchestration`; audit reports in `agent-outputs/` when invoked directly
 **Never touches**: Code (read-only)
 
 **When to use**:
@@ -198,6 +198,21 @@ feature-strategist → feature plan → user approval → update IMPLEMENTATION_
 
 **Use for**: When analyzing Print Life screenshots, planning Phase 2 features
 
+### Pattern 6: Build Session Auto-Review (Every Build PR)
+
+```text
+build-session-protocol Phase 2 → review-orchestration skill → [build-reviewer + finance-sme + design-auditor in parallel] → gate decision → Phase 3
+```
+
+**Use for**: All build sessions. `build-session-protocol` Phase 2 invokes `review-orchestration` automatically — no manual agent selection required.
+
+**Gate outcomes**:
+- `fail` / `needs_fixes` → fix findings, re-run review-orchestration
+- `pass_with_warnings` → file warnings as GitHub Issues, proceed to PR
+- `pass` → proceed directly to PR
+
+Review agents (`build-reviewer`, `finance-sme`, `design-auditor`) now output structured `ReviewFinding[]` JSON consumed by the aggregation stage. The set of dispatched agents is determined by composition policies in `config/review-composition.json`, not manual selection.
+
 ## Skill Registry
 
 Skills live in `.claude/skills/` and are either preloaded by agents or invoked explicitly.
@@ -216,7 +231,8 @@ Skills live in `.claude/skills/` and are either preloaded by agents or invoked e
 | `doc-sync` | After completing steps | Drift detection and doc synchronization | `doc-sync` |
 | `one-on-one` | 1:1 check-ins | Structured check-in protocol | `secretary` |
 | `cool-down` | Between build cycles, after demos | Retrospective synthesis and forward planning (Shape Up) | `secretary` |
-| `build-session-protocol` | Build sessions | Self-review protocol with finance-sme + build-reviewer | — (invoked explicitly) |
+| `build-session-protocol` | Build sessions | Completion protocol — Phase 2 auto-invokes `review-orchestration` | — (invoked explicitly) |
+| `review-orchestration` | Phase 2 of every build session (auto-invoked) | 6-stage automated quality gate: normalize → classify → compose → gap-detect → dispatch → aggregate | — (invoked by build-session-protocol) |
 | `implementation-planning` | After breadboard, before build | Sequenced build step generation | — (invoked explicitly) |
 | `gary-tracker` | Questions for the user | Track and surface unanswered questions | — (invoked explicitly) |
 | `learnings-synthesis` | After sessions | Extract and document lessons learned | — (invoked explicitly) |

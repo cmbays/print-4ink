@@ -16,3 +16,8 @@ export async function getAvailableBrands(): Promise<string[]> {
   const brands = new Set(garmentCatalog.map((g) => g.brand));
   return Array.from(brands).sort();
 }
+
+/** Phase 1 only: returns the raw mutable garment catalog array. */
+export function getGarmentCatalogMutable(): GarmentCatalog[] {
+  return garmentCatalog;
+}

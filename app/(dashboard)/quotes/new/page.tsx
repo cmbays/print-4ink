@@ -7,7 +7,7 @@ import { getCustomers } from "@/lib/dal/customers";
 import { getColors } from "@/lib/dal/colors";
 import { getGarmentCatalog } from "@/lib/dal/garments";
 import { getArtworks } from "@/lib/dal/artworks";
-import { getDtfSheetTiers } from "@/lib/dal/settings";
+
 
 export default async function NewQuotePage({
   searchParams,
@@ -16,12 +16,11 @@ export default async function NewQuotePage({
 }) {
   const { duplicate, customer: customerParam } = await searchParams;
 
-  const [customers, colors, garmentCatalog, artworks, dtfSheetTiers] = await Promise.all([
+  const [customers, colors, garmentCatalog, artworks] = await Promise.all([
     getCustomers(),
     getColors(),
     getGarmentCatalog(),
     getArtworks(),
-    getDtfSheetTiers(),
   ]);
 
   let initialData: QuoteFormInitialData | undefined;
@@ -75,7 +74,6 @@ export default async function NewQuotePage({
           colors={colors}
           garmentCatalog={garmentCatalog}
           artworks={artworks}
-          dtfSheetTiers={dtfSheetTiers}
           initialData={initialData}
         />
       </div>

@@ -5,11 +5,13 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
+import { getDtfSheetTiersSync } from "@/lib/dal/settings";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import { GangSheetCanvas } from "./GangSheetCanvas";
 import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
-import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
+
+const DTF_SHEET_TIERS = getDtfSheetTiersSync();
 
 type DtfTabContentProps = {
   lineItems: DtfLineItem[];
@@ -22,7 +24,6 @@ type DtfTabContentProps = {
   setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>;
   setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>;
   setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>;
-  dtfSheetTiers: DTFSheetTier[];
 };
 
 // Default to Small preset resolved dimensions
@@ -39,7 +40,6 @@ export function DtfTabContent({
   setActiveSheetIndex,
   setSheetCalculation,
   setCanvasLayout,
-  dtfSheetTiers,
 }: DtfTabContentProps) {
   // N43 — addDtfLineItem
   const handleAddLineItem = useCallback(() => {
@@ -111,7 +111,7 @@ export function DtfTabContent({
         setSplitMode={setSplitMode}
         setCanvasLayout={setCanvasLayout}
         setActiveSheetIndex={setActiveSheetIndex}
-        tiers={dtfSheetTiers}
+        tiers={DTF_SHEET_TIERS}
       />
 
       {/* U88-U92 — Gang Sheet Canvas (Wave 4) */}

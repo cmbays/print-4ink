@@ -27,7 +27,7 @@ import { ServiceTypeTabBar } from "./ServiceTypeTabBar";
 import { DtfTabContent } from "./DtfTabContent";
 import type { Color } from "@/lib/schemas/color";
 import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
+
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
@@ -56,7 +56,6 @@ type QuoteFormProps = {
   colors: Color[];
   garmentCatalog: GarmentCatalog[];
   artworks: Artwork[];
-  dtfSheetTiers: DTFSheetTier[];
   initialData?: QuoteFormInitialData;
   quoteId?: string;
 };
@@ -72,7 +71,7 @@ function createEmptyLineItem(): LineItemData {
   };
 }
 
-export function QuoteForm({ mode, customers: initialCustomers, colors, garmentCatalog, artworks, dtfSheetTiers, initialData, quoteId }: QuoteFormProps) {
+export function QuoteForm({ mode, customers: initialCustomers, colors, garmentCatalog, artworks, initialData, quoteId }: QuoteFormProps) {
   const router = useRouter();
 
   // Customer state — local copy + any newly-added customers within this form session
@@ -1063,7 +1062,6 @@ export function QuoteForm({ mode, customers: initialCustomers, colors, garmentCa
               setActiveSheetIndex={setActiveSheetIndex}
               setSheetCalculation={setSheetCalculation}
               setCanvasLayout={setCanvasLayout}
-              dtfSheetTiers={dtfSheetTiers}
             />
           </div>
         )}

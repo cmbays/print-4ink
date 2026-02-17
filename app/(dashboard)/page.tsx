@@ -8,7 +8,8 @@ import {
   LANE_LABELS,
   PRIORITY_LABELS,
 } from "@/lib/constants";
-import { jobs, customers } from "@/lib/mock-data";
+import { getJobs } from "@/lib/dal/jobs";
+import { getCustomers } from "@/lib/dal/customers";
 import { money, toNumber } from "@/lib/helpers/money";
 import {
   AlertTriangle,
@@ -20,40 +21,42 @@ import {
 } from "lucide-react";
 import type { Lane } from "@/lib/schemas/job";
 
-function getCustomerName(customerId: string) {
-  return customers.find((c) => c.id === customerId)?.company ?? "Unknown";
-}
+export default async function DashboardPage() {
+  const [jobs, customers] = await Promise.all([getJobs(), getCustomers()]);
 
-const blockedJobs = jobs.filter((j) => j.lane === "blocked");
-const inProgressJobs = jobs.filter(
-  (j) => j.lane === "in_progress" || j.lane === "review"
-);
-const completedJobs = jobs.filter((j) => j.lane === "done");
+  function getCustomerName(customerId: string) {
+    return customers.find((c) => c.id === customerId)?.company ?? "Unknown";
+  }
 
-// Coming up this week — jobs due within the next 7 days (server-computed)
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-const weekFromToday = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-const comingUpJobs = jobs
-  .filter((j) => {
-    if (j.lane === "done" || j.isArchived) return false;
-    const due = new Date(j.dueDate);
-    return due >= today && due <= weekFromToday;
-  })
-  .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+  const blockedJobs = jobs.filter((j) => j.lane === "blocked");
+  const inProgressJobs = jobs.filter(
+    (j) => j.lane === "in_progress" || j.lane === "review"
+  );
+  const completedJobs = jobs.filter((j) => j.lane === "done");
 
-// Capacity summary (server-computed)
-const capacitySummary = {
-  totalQuantity: jobs.filter((j) => j.lane !== "done").reduce((sum, j) => sum + j.quantity, 0),
-  rushQuantity: jobs.filter((j) => j.lane !== "done" && j.priority === "rush").reduce((sum, j) => sum + j.quantity, 0),
-  totalRevenue: toNumber(jobs.reduce((sum, j) => sum.plus(money(j.orderTotal)), money(0))),
-  cardsByLane: (["ready", "in_progress", "review", "blocked", "done"] as Lane[]).reduce(
-    (acc, lane) => ({ ...acc, [lane]: jobs.filter((j) => j.lane === lane).length }),
-    {} as Record<Lane, number>
-  ),
-};
+  // Coming up this week — jobs due within the next 7 days (server-computed)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const weekFromToday = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const comingUpJobs = jobs
+    .filter((j) => {
+      if (j.lane === "done" || j.isArchived) return false;
+      const due = new Date(j.dueDate);
+      return due >= today && due <= weekFromToday;
+    })
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
-export default function DashboardPage() {
+  // Capacity summary (server-computed)
+  const capacitySummary = {
+    totalQuantity: jobs.filter((j) => j.lane !== "done").reduce((sum, j) => sum + j.quantity, 0),
+    rushQuantity: jobs.filter((j) => j.lane !== "done" && j.priority === "rush").reduce((sum, j) => sum + j.quantity, 0),
+    totalRevenue: toNumber(jobs.reduce((sum, j) => sum.plus(money(j.orderTotal)), money(0))),
+    cardsByLane: (["ready", "in_progress", "review", "blocked", "done"] as Lane[]).reduce(
+      (acc, lane) => ({ ...acc, [lane]: jobs.filter((j) => j.lane === lane).length }),
+      {} as Record<Lane, number>
+    ),
+  };
+
   return (
     <>
     <Topbar />
