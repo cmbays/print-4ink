@@ -14,7 +14,7 @@ const eslintConfig = defineConfig([
         destructuredArrayIgnorePattern: "^_",
       }],
       // Pages must use <Topbar breadcrumbs={buildBreadcrumbs(...)}> — not raw Breadcrumb
-      // Mock-data modules must only be accessed through the DAL (lib/dal/)
+      // Mock-data modules must only be accessed through infrastructure/repositories/_providers/mock/
       // Interface declarations drift from Zod schemas — use type aliases or z.infer<>
       "no-restricted-imports": ["error", {
         paths: [
@@ -48,11 +48,19 @@ const eslintConfig = defineConfig([
       "no-restricted-imports": "off",
     },
   },
-  // DAL providers are the canonical consumers of mock-data modules
+  // DAL providers are the canonical consumers of mock-data modules (old path — keep for legacy lib/dal/ during migration)
   {
     files: ["lib/dal/**"],
     rules: {
       "no-restricted-imports": "off",
+      "no-restricted-syntax": "off",
+    },
+  },
+  // Infrastructure mock providers are the canonical consumers of mock-data (new path post Phase 1)
+  {
+    files: ["src/infrastructure/repositories/_providers/mock/**"],
+    rules: {
+      "no-restricted-syntax": "off",
     },
   },
   // MockAdapter is the supplier-layer equivalent of dal/_providers/mock — allowed to read mock-data directly
