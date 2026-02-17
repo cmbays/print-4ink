@@ -1,0 +1,107 @@
+[
+  {
+    "pattern": "lib/schemas/**",
+    "domain": "schemas",
+    "description": "Zod schema definitions — single source of truth for all types in the application"
+  },
+  {
+    "pattern": "lib/helpers/money.ts",
+    "domain": "financial",
+    "description": "Financial arithmetic helpers using big.js for IEEE 754-safe monetary calculations"
+  },
+  {
+    "pattern": "components/features/**/Quote*",
+    "domain": "financial",
+    "description": "Quote-related components involving pricing calculations and line item arithmetic"
+  },
+  {
+    "pattern": "components/features/**/Invoice*",
+    "domain": "financial",
+    "description": "Invoice-related components involving totals, tax calculations, and payment amounts"
+  },
+  {
+    "pattern": "app/**/quote*/**",
+    "domain": "financial",
+    "description": "Quote pages and routes that display or manipulate pricing and cost data"
+  },
+  {
+    "pattern": "app/**/invoice*/**",
+    "domain": "financial",
+    "description": "Invoice pages and routes that display or manipulate monetary amounts"
+  },
+  {
+    "pattern": "components/features/**",
+    "domain": "ui-components",
+    "description": "Domain-specific feature components like QuoteCalculator, KanbanBoard, and job cards"
+  },
+  {
+    "pattern": "components/layout/**",
+    "domain": "ui-components",
+    "description": "Shell components including Sidebar, Topbar, and navigation layout elements"
+  },
+  {
+    "pattern": "app/(dashboard)/**",
+    "domain": "ui-components",
+    "description": "Dashboard route group pages and layouts with interactive UI elements"
+  },
+  {
+    "pattern": "app/globals.css",
+    "domain": "design-system",
+    "description": "Global CSS with Tailwind directives, design tokens, and CSS custom properties"
+  },
+  {
+    "pattern": "components/ui/**",
+    "domain": "design-system",
+    "description": "shadcn/ui primitive components — auto-generated Radix-based building blocks"
+  },
+  {
+    "pattern": "config/**",
+    "domain": "infrastructure",
+    "description": "Pipeline configuration, stage definitions, product types, and tool registries"
+  },
+  {
+    "pattern": "scripts/**",
+    "domain": "infrastructure",
+    "description": "Shell scripts for session orchestration, worktree management, and automation"
+  },
+  {
+    "pattern": ".claude/**",
+    "domain": "infrastructure",
+    "description": "Claude agent definitions, skill definitions, and AI orchestration configuration"
+  },
+  {
+    "pattern": ".github/**",
+    "domain": "infrastructure",
+    "description": "GitHub Actions workflows, PR templates, and CI/CD pipeline configuration"
+  },
+  {
+    "pattern": "**/__tests__/**",
+    "domain": "testing",
+    "description": "Test files including unit tests, schema validation tests, and test fixtures"
+  },
+  {
+    "pattern": "**/*.test.ts",
+    "domain": "testing",
+    "description": "Vitest test files co-located with their source modules"
+  },
+  {
+    "pattern": "**/*.test.tsx",
+    "domain": "testing",
+    "description": "Vitest test files for React components co-located with their source"
+  },
+  {
+    "pattern": "lib/mock-data.ts",
+    "domain": "data-layer",
+    "description": "Realistic sample data for Phase 1 mockup — used across all screens and components"
+  },
+  {
+    "pattern": "knowledge-base/**",
+    "domain": "documentation",
+    "description": "Astro knowledge base with session docs, pipeline visualization, and search"
+  },
+  {
+    "pattern": "docs/**",
+    "domain": "documentation",
+    "description": "Canonical project documentation including roadmap, PRD, and implementation plans"
+  }
+]
