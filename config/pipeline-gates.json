@@ -1,41 +1,49 @@
 {
   "stages": {
     "research": {
+      "description": "Validate research artifacts exist before advancing to interview",
       "artifacts": ["research-findings.md"],
       "gate": "artifact-exists",
       "next": "interview"
     },
     "interview": {
+      "description": "Require human confirmation that stakeholder input is sufficient",
       "artifacts": ["interview-notes.md"],
       "gate": "human-confirms",
       "next": "shape"
     },
     "shape": {
+      "description": "Validate shaping artifacts (frame and shaping docs) exist before breadboarding",
       "artifacts": ["frame.md", "shaping.md"],
       "gate": "artifact-exists",
       "next": "breadboard"
     },
     "breadboard": {
+      "description": "Validate breadboard and reflection artifacts exist before planning",
       "artifacts": ["breadboard.md", "reflection.md"],
       "gate": "artifact-exists",
       "next": "plan"
     },
     "plan": {
+      "description": "Require human approval of execution manifest before build begins",
       "artifacts": ["manifest.yaml"],
       "gate": "human-approves-manifest",
       "next": "build"
     },
     "build": {
+      "description": "Passthrough gate for build-to-review transition (no artifacts required yet)",
       "artifacts": [],
       "gate": "artifact-exists",
       "next": "review"
     },
     "review": {
+      "description": "Require human confirmation that code review and QA are complete",
       "artifacts": [],
       "gate": "human-confirms",
       "next": "wrap-up"
     },
     "wrap-up": {
+      "description": "Validate wrap-up documentation exists before pipeline completion",
       "artifacts": ["wrap-up.md"],
       "gate": "artifact-exists",
       "next": null
