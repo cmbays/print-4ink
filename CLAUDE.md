@@ -4,8 +4,8 @@ description: "AI operating rules, design system, coding standards, and canonical
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-15
-last_verified: 2026-02-15
+last_updated: 2026-02-17
+last_verified: 2026-02-17
 depends_on: []
 ---
 
@@ -329,6 +329,22 @@ git -C ~/Github/print-4ink fetch origin && git -C ~/Github/print-4ink push origi
 - No `className` string concatenation — use `cn()` from `@/lib/utils`
 - No pushing directly to main — always branch + PR
 - No pushing directly to `production` — only merge from `main` via PR or fast-forward
+
+## Documentation Model
+
+Two systems. One principle: **rules vs. rationale. Never duplicate across both.**
+
+| System | Contains | When to use |
+|--------|----------|-------------|
+| **Root docs** (`CLAUDE.md`, `docs/TECH_STACK.md`, `docs/ARCHITECTURE.md`, etc.) | **Rules** — operational constraints loaded every session. What to do, where things go, what not to do. | Constrain behavior. Agents check these before acting. |
+| **Knowledge Base** (`knowledge-base/src/content/`) | **Rationale** — decision history, strategy, session narrative. Why things are the way they are. | Explain decisions. Humans browse; agents research when needed. |
+
+**Rules:**
+- **Decision test**: "Is this a constraint on behavior?" → root doc. "Is this context that explains a decision?" → KB strategy entry.
+- **Never duplicate**: if a rule exists in a root doc, link to it from the KB — don't restate it. If reasoning lives in the KB, reference it from the root doc — don't inline it.
+- **Root docs stay terse**: they load into every session. Rule-dense, not narrative.
+- **KB strategy entries** explain architectural decisions, technology rationale, and process philosophy. They live in `knowledge-base/src/content/strategy/`.
+- **KB pipeline entries** record what happened in a build session (the what + outcome). They live in `knowledge-base/src/content/pipelines/`.
 
 ## Canonical Documents
 
