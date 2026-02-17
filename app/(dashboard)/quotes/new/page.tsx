@@ -1,8 +1,13 @@
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
 import { QuoteForm } from "../_components/QuoteForm";
-import { quotes } from "@/lib/mock-data";
-import type { LineItemData } from "../_components/LineItemRow";
+import type { QuoteFormInitialData } from "../_components/QuoteForm";
+import { getQuoteById } from "@/lib/dal/quotes";
+import { getCustomers } from "@/lib/dal/customers";
+import { getColors } from "@/lib/dal/colors";
+import { getGarmentCatalog } from "@/lib/dal/garments";
+import { getArtworks } from "@/lib/dal/artworks";
+
 
 export default async function NewQuotePage({
   searchParams,
@@ -11,15 +16,14 @@ export default async function NewQuotePage({
 }) {
   const { duplicate, customer: customerParam } = await searchParams;
 
-  let initialData: {
-    customerId?: string;
-    lineItems?: LineItemData[];
-    discounts?: { label: string; amount: number; type: "manual" | "contract" | "volume" }[];
-    shipping?: number;
-    artworkIds?: string[];
-    internalNotes?: string;
-    customerNotes?: string;
-  } | undefined;
+  const [customers, colors, garmentCatalog, artworks] = await Promise.all([
+    getCustomers(),
+    getColors(),
+    getGarmentCatalog(),
+    getArtworks(),
+  ]);
+
+  let initialData: QuoteFormInitialData | undefined;
 
   let isDuplicate = false;
 
@@ -29,7 +33,7 @@ export default async function NewQuotePage({
   }
 
   if (duplicate) {
-    const sourceQuote = quotes.find((q) => q.id === duplicate);
+    const sourceQuote = await getQuoteById(duplicate);
     if (sourceQuote) {
       isDuplicate = true;
       initialData = {
@@ -63,7 +67,15 @@ export default async function NewQuotePage({
         <h1 className="text-2xl font-semibold tracking-tight">
           {isDuplicate ? "Copy as New" : "New Quote"}
         </h1>
-        <QuoteForm key={duplicate || "new"} mode="create" initialData={initialData} />
+        <QuoteForm
+          key={duplicate || "new"}
+          mode="create"
+          customers={customers}
+          colors={colors}
+          garmentCatalog={garmentCatalog}
+          artworks={artworks}
+          initialData={initialData}
+        />
       </div>
     </>
   );
