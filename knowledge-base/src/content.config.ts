@@ -1,10 +1,10 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import stagesConfig from '../../config/stages.json';
 import tagsConfig from '../../config/tags.json';
 import productsConfig from '../../config/products.json';
 import toolsConfig from '../../config/tools.json';
+import domainsConfig from '../../config/domains.json';
 import pipelineTypesConfig from '../../config/pipeline-types.json';
 import { pipelineStageSlugs } from './lib/utils';
 
@@ -12,6 +12,7 @@ import { pipelineStageSlugs } from './lib/utils';
 const tags = tagsConfig.map((t) => t.slug) as [string, ...string[]];
 const products = productsConfig.map((p) => p.slug) as [string, ...string[]];
 const tools = toolsConfig.map((t) => t.slug) as [string, ...string[]];
+const domains = domainsConfig.map((d) => d.slug) as [string, ...string[]];
 const pipelineTypes = pipelineTypesConfig.map((w) => w.slug) as [string, ...string[]];
 const stageSlugs = pipelineStageSlugs as [string, ...string[]];
 
@@ -26,6 +27,7 @@ const pipelines = defineCollection({
     pipelineName: z.string(),
     pipelineId: z.string().optional(),
     pipelineType: z.enum(pipelineTypes),
+    domain: z.enum(domains).optional(),
     products: z.array(z.enum(products)).optional().default([]),
     tools: z.array(z.enum(tools)).optional().default([]),
     stage: z.enum(stageSlugs),
