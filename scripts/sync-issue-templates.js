@@ -43,12 +43,7 @@ const products = readConfig('config/products.json');
 const domains = readConfig('config/domains.json');
 const tools = readConfig('config/tools.json');
 
-// Build label list: Products (excluding domain slugs) → Domains → Tools.
-// products.json still contains some domain-only slugs (garments, screens,
-// pricing) that will be removed in issue #321. Skip them here to avoid
-// duplication with the domains list.
-const domainSlugs = new Set(domains.map((d) => d.slug));
-
+// Build label list: Products → Domains → Tools.
 function validateEntry(entry, relPath) {
   if (!entry.label || typeof entry.label !== 'string') {
     console.error(
@@ -61,7 +56,7 @@ function validateEntry(entry, relPath) {
 const labels = [];
 for (const entry of products) {
   validateEntry(entry, 'config/products.json');
-  if (!domainSlugs.has(entry.slug)) labels.push(`Product: ${entry.label}`);
+  labels.push(`Product: ${entry.label}`);
 }
 for (const entry of domains) {
   validateEntry(entry, 'config/domains.json');
