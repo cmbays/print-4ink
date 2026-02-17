@@ -114,6 +114,26 @@
       "emptyText": "none"
     }
   },
+  "domains": {
+    "jsonType": "array",
+    "description": "Linked domain slugs",
+    "updatable": true,
+    "required": false,
+    "default": [],
+    "flag": "--domains",
+    "inputFormat": "csv",
+    "validate": {
+      "source": "config/domains.json",
+      "match": "slug"
+    },
+    "display": {
+      "section": "config",
+      "label": "Domains",
+      "order": 5,
+      "format": "csv",
+      "emptyText": "none"
+    }
+  },
   "stage": {
     "jsonType": "string",
     "description": "Current pipeline stage (set by lifecycle commands)",
@@ -148,7 +168,7 @@
     "display": {
       "section": "config",
       "label": "Base Branch",
-      "order": 5,
+      "order": 6,
       "format": "raw",
       "emptyText": "none"
     }
