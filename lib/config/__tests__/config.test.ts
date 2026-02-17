@@ -1,3 +1,7 @@
+// Tests the runtime config gateway (parseConfig, slug tuples, label lookups).
+// The config/schemas/__tests__/config-validation.test.ts file tests schemas
+// directly against raw JSON without the runtime layer.
+
 import { describe, it, expect, vi } from "vitest";
 import {
   domains,
@@ -29,7 +33,7 @@ import {
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
   configEntryBase,
-} from "../schemas";
+} from "@/config/schemas";
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -122,25 +126,25 @@ describe("structural invariants", () => {
   });
 
   it("configEntryBase rejects invalid slugs", () => {
-    expect(() => configEntryBase.parse({ slug: "", label: "X" })).toThrow();
-    expect(() => configEntryBase.parse({ slug: "123", label: "X" })).toThrow();
-    expect(() => configEntryBase.parse({ slug: "A-Bad", label: "X" })).toThrow();
-    expect(() => configEntryBase.parse({ slug: "good-slug", label: "X" })).not.toThrow();
+    expect(() => configEntryBase.parse({ slug: "", label: "X", description: "D" })).toThrow();
+    expect(() => configEntryBase.parse({ slug: "123", label: "X", description: "D" })).toThrow();
+    expect(() => configEntryBase.parse({ slug: "A-Bad", label: "X", description: "D" })).toThrow();
+    expect(() => configEntryBase.parse({ slug: "good-slug", label: "X", description: "D" })).not.toThrow();
   });
 
   it("configEntryBase rejects empty labels", () => {
-    expect(() => configEntryBase.parse({ slug: "valid", label: "" })).toThrow();
+    expect(() => configEntryBase.parse({ slug: "valid", label: "", description: "D" })).toThrow();
   });
 
   it("productsConfigSchema rejects entries without route", () => {
     expect(() =>
-      productsConfigSchema.parse([{ slug: "test", label: "Test" }]),
+      productsConfigSchema.parse([{ slug: "test", label: "Test", description: "D" }]),
     ).toThrow();
   });
 
   it("tagsConfigSchema rejects entries without color", () => {
     expect(() =>
-      tagsConfigSchema.parse([{ slug: "test", label: "Test" }]),
+      tagsConfigSchema.parse([{ slug: "test", label: "Test", description: "D" }]),
     ).toThrow();
   });
 
@@ -154,7 +158,7 @@ describe("structural invariants", () => {
 
   it("stagesConfigSchema rejects invalid core type", () => {
     expect(() =>
-      stagesConfigSchema.parse([{ slug: "test", label: "Test", core: "yes" }]),
+      stagesConfigSchema.parse([{ slug: "test", label: "Test", description: "D", core: "yes" }]),
     ).toThrow();
   });
 

@@ -7,7 +7,7 @@ import {
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
-} from "./schemas";
+} from "@/config/schemas";
 
 import rawDomains from "../../config/domains.json";
 import rawProducts from "../../config/products.json";
@@ -108,10 +108,11 @@ export type {
   ConfigEntry,
   ProductEntry,
   StageEntry,
+  ToolEntry,
   TagEntry,
   PipelineTypeEntry,
   PipelineGatesConfig,
-} from "./schemas";
+} from "@/config/schemas";
 
 export {
   configEntryBase,
@@ -122,4 +123,4 @@ export {
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
-} from "./schemas";
+} from "@/config/schemas";
