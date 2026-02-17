@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Heart, Package, Shirt, Palette } from "lucide-react";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
 import { InheritanceToggle } from "@/components/features/InheritanceToggle";
@@ -11,13 +11,8 @@ import {
   resolveEffectiveFavorites,
   getInheritanceChain,
 } from "@/lib/helpers/color-preferences";
-import { getAvailableBrands } from "@/lib/helpers/garment-helpers";
-import {
-  colors as catalogColors,
-  garmentCatalog,
-  customers,
-} from "@/lib/mock-data";
 import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@/lib/schemas/garment";
 import type { InheritanceMode } from "@/lib/schemas/color-preferences";
 import type { Customer } from "@/lib/schemas/customer";
 
@@ -27,13 +22,10 @@ import type { Customer } from "@/lib/schemas/customer";
 
 interface CustomerPreferencesTabProps {
   customer: Customer;
+  customers: Customer[];
+  colors: Color[];
+  garmentCatalog: GarmentCatalog[];
 }
-
-// ---------------------------------------------------------------------------
-// Module-level constant — garment catalog brands are static in Phase 1
-// ---------------------------------------------------------------------------
-
-const AVAILABLE_BRANDS = getAvailableBrands();
 
 // ---------------------------------------------------------------------------
 // Component
@@ -41,7 +33,15 @@ const AVAILABLE_BRANDS = getAvailableBrands();
 
 export function CustomerPreferencesTab({
   customer,
+  customers,
+  colors: catalogColors,
+  garmentCatalog,
 }: CustomerPreferencesTabProps) {
+  // Derive available brands from catalog prop
+  const availableBrands = useMemo(() => {
+    const brands = new Set(garmentCatalog.map((g) => g.brand));
+    return Array.from(brands).sort();
+  }, [garmentCatalog]);
   // Version counter to force re-render after mock data mutations (Phase 1).
   // Will be removed in Phase 3 when real API calls replace in-place mutations.
   const [version, setVersion] = useState(0);
@@ -182,13 +182,13 @@ export function CustomerPreferencesTab({
           Favorite Brands
         </h3>
 
-        {AVAILABLE_BRANDS.length === 0 ? (
+        {availableBrands.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No brands available in catalog.
           </p>
         ) : (
           <div className="flex flex-wrap gap-2" role="group" aria-label="Brand favorites">
-            {AVAILABLE_BRANDS.map((brand) => {
+            {availableBrands.map((brand) => {
               const isFav = customer.favoriteBrandNames.includes(brand);
               return (
                 <button

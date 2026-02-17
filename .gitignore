@@ -61,6 +61,7 @@ quality-gate/
 # Per-worktree session files (never committed)
 .session-context.md
 .session-prompt.md
+.session-launch.sh
 
 # Generated progress report (compiled artifact, not source of truth)
 PROGRESS.md

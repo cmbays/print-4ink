@@ -171,23 +171,7 @@ _work_start() {
     echo "  Monitor:  work status $pipeline_id"
 
     # ── Launch via Zellij ─────────────────────────────────────────────
-    if [[ -n "${ZELLIJ:-}" ]]; then
-        # Inside Zellij — open a new tab in current session
-        zellij action new-tab --layout "$LAYOUT_FILE" --name "${p_name}-prebuild"
-        echo "  Zellij: tab '${p_name}-prebuild' opened"
-
-        (sleep 5 && rm -f "$LAYOUT_FILE" 2>/dev/null) &
-        disown
-    else
-        # Outside Zellij — create a new Zellij session (blocks until session ends)
-        echo "  Launching Zellij session '${p_name}-prebuild'..."
-        echo ""
-
-        zellij --new-session-with-layout "$LAYOUT_FILE" --session "${p_name}-prebuild"
-
-        # Cleanup after Zellij session ends
-        rm -f "$LAYOUT_FILE" 2>/dev/null
-    fi
+    _kdl_launch_layout "$LAYOUT_FILE" "${p_name}-prebuild"
 }
 
 # ── Build Start Prompt ────────────────────────────────────────────────────────

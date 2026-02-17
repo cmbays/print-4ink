@@ -1,6 +1,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { customers, quotes, jobs, invoices, artworks, customerNotes } from "@/lib/mock-data";
+import {
+  getCustomers,
+  getCustomerById,
+  getCustomerQuotes,
+  getCustomerJobs,
+  getCustomerInvoices,
+  getCustomerArtworks,
+  getCustomerNotes,
+} from "@/lib/dal/customers";
+import { getColors } from "@/lib/dal/colors";
+import { getGarmentCatalog } from "@/lib/dal/garments";
 import { money, round2, toNumber } from "@/lib/helpers/money";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
@@ -14,7 +24,7 @@ export default async function CustomerDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const customer = customers.find((c) => c.id === id);
+  const customer = await getCustomerById(id);
 
   if (!customer) {
     return (
@@ -37,13 +47,17 @@ export default async function CustomerDetailPage({
     );
   }
 
-  const customerQuotes = quotes.filter((q) => q.customerId === id);
-  const customerJobs = jobs.filter((j) => j.customerId === id);
-  const customerInvoices = invoices.filter((inv) => inv.customerId === id);
-  const customerArtworks = artworks.filter((a) => a.customerId === id);
-  const notes = customerNotes.filter(
-    (n) => n.entityType === "customer" && n.entityId === id
-  );
+  const [customerQuotes, customerJobs, customerInvoices, customerArtworks, notes, allCustomers, colors, garmentCatalog] =
+    await Promise.all([
+      getCustomerQuotes(id),
+      getCustomerJobs(id),
+      getCustomerInvoices(id),
+      getCustomerArtworks(id),
+      getCustomerNotes(id),
+      getCustomers(),
+      getColors(),
+      getGarmentCatalog(),
+    ]);
 
   // Compute stats for the header
   const lifetimeRevenue = toNumber(
@@ -62,7 +76,7 @@ export default async function CustomerDetailPage({
           .sort()
           .reverse()[0] ?? null
       : null;
-  const referralCount = customers.filter(
+  const referralCount = allCustomers.filter(
     (c) => c.referredByCustomerId === id
   ).length;
 
@@ -84,12 +98,14 @@ export default async function CustomerDetailPage({
       {/* Tabs */}
       <CustomerTabs
         customer={customer}
-        customers={customers}
+        customers={allCustomers}
         quotes={customerQuotes}
         jobs={customerJobs}
         invoices={customerInvoices}
         artworks={customerArtworks}
         notes={notes}
+        colors={colors}
+        garmentCatalog={garmentCatalog}
       />
       </div>
     </>
