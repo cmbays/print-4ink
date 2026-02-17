@@ -11,7 +11,7 @@ import { shelfPack } from "@domain/services/dtf.service";
 import { optimizeCost } from "@domain/rules/dtf.rules";
 import { isValidDtfLineItem } from "@domain/rules/dtf.rules";
 import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from "@domain/rules/dtf.rules";
-import { formatCurrency } from "@shared/lib/money";
+import { formatCurrency } from "@domain/lib/money";
 import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type {
   OptimizedSheet,

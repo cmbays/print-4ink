@@ -17,7 +17,7 @@ import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
 import { cn } from "@shared/lib/cn";
-import { money, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 import { getColorById } from "@domain/rules/garment.rules";
 import { resolveEffectiveFavorites } from "@domain/rules/customer.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
@@ -92,6 +92,8 @@ export function GarmentDetailDrawer({
       setFavoriteVersion((v) => v + 1);
       // Also select the toggled color for display (U14)
       setSelectedColorId(colorId);
+    } else {
+      console.warn(`[GarmentDetailDrawer] Color ${colorId} not found in catalog — stale garment palette reference`);
     }
   }
 

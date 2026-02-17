@@ -9,7 +9,7 @@ import {
   INVOICE_STATUS_LABELS,
 } from "@domain/constants";
 import { formatDate } from "@shared/lib/format";
-import { formatCurrency } from "@shared/lib/money";
+import { formatCurrency } from "@domain/lib/money";
 import type { Invoice } from "@domain/entities/invoice";
 
 interface CustomerInvoicesTableProps {

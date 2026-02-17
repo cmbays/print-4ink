@@ -5,7 +5,7 @@ import { Label } from "@shared/ui/primitives/label";
 import { Switch } from "@shared/ui/primitives/switch";
 import { DEPOSIT_DEFAULTS_BY_TIER } from "@domain/constants";
 import { calculateSmartDeposit } from "@domain/rules/invoice.rules";
-import { money, toNumber } from "@shared/lib/money";
+import { money, toNumber } from "@domain/lib/money";
 import type { PricingTier } from "@domain/entities/customer";
 
 interface DepositSectionProps {

@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@shared/ui/primitives/select";
 import { PAYMENT_METHOD_LABELS } from "@domain/constants";
-import { money, formatCurrency } from "@shared/lib/money";
+import { money, formatCurrency } from "@domain/lib/money";
 import { paymentMethodEnum } from "@domain/entities/invoice";
 import type { Invoice, PaymentMethod } from "@domain/entities/invoice";
 

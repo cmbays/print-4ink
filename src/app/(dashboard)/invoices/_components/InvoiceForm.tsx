@@ -36,7 +36,7 @@ import {
   calculateDueDate,
   convertQuoteToInvoiceLineItems,
 } from "@domain/rules/invoice.rules";
-import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
 import { scrollToFirstError } from "@shared/lib/scroll-to-error";
 import type { Customer, PaymentTerms, PricingTier } from "@domain/entities/customer";
 import type { Invoice } from "@domain/entities/invoice";

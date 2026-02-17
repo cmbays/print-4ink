@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@shared/ui/primitives/select";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
-import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
 import type { InvoiceLineItemType } from "@domain/entities/invoice";
 
 const LINE_ITEM_TYPES: InvoiceLineItemType[] = [

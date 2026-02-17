@@ -30,7 +30,7 @@ import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@domain/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import { cn } from "@shared/lib/cn";
-import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
 
 type QuoteDetailViewProps = {
   quote: Quote;

@@ -205,7 +205,8 @@ export function BrandDetailDrawer({
           // Open RemovalConfirmationDialog — don't remove yet
           const color = catalogColors.find((c) => c.id === colorId);
           if (!color) {
-            // Catalog color missing — remove directly rather than showing broken dialog
+            // Catalog color missing — remove stale reference directly rather than showing broken dialog
+            console.warn(`[BrandDetailDrawer] Color ${colorId} not found in catalog — removing stale brand preference reference`);
             applyBrandRemoval(colorId);
             return;
           }

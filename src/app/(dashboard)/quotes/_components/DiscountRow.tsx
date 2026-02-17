@@ -5,7 +5,7 @@ import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import { Badge } from "@shared/ui/primitives/badge";
 import { cn } from "@shared/lib/cn";
-import { formatCurrency } from "@shared/lib/money";
+import { formatCurrency } from "@domain/lib/money";
 
 interface DiscountRowProps {
   label: string;

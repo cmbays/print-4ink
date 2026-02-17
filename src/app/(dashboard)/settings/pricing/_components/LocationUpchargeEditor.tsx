@@ -3,7 +3,7 @@
 import { Input } from "@shared/ui/primitives/input";
 import { Badge } from "@shared/ui/primitives/badge";
 import { formatCurrency } from "@domain/services/pricing.service";
-import { money, round2, toNumber } from "@shared/lib/money";
+import { money, round2, toNumber } from "@domain/lib/money";
 import type { LocationUpcharge } from "@domain/entities/price-matrix";
 
 const LOCATION_LABELS: Record<string, string> = {

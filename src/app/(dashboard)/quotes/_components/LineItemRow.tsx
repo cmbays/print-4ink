@@ -33,7 +33,7 @@ import type { GarmentCatalog, GarmentCategory } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 import type { Artwork } from "@domain/entities/artwork";
 import type { ServiceType } from "@domain/entities/quote";
-import { money, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 
 export interface PrintLocationDetail {
   location: string;

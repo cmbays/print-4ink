@@ -33,7 +33,7 @@ import {
 } from "@domain/constants";
 import { computeIsOverdue, isValidStatusTransition } from "@domain/rules/invoice.rules";
 import { formatDate } from "@shared/lib/format";
-import { money, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 import { toast } from "sonner";
 import type { Invoice, Payment } from "@domain/entities/invoice";
 import type { Customer } from "@domain/entities/customer";

@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@shared/ui/primitives/select";
 import { CREDIT_MEMO_REASON_LABELS } from "@domain/constants";
-import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
+import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
 import { creditMemoReasonEnum } from "@domain/entities/credit-memo";
 import type { CreditMemoReason, CreditMemo } from "@domain/entities/credit-memo";
 import type { Invoice } from "@domain/entities/invoice";

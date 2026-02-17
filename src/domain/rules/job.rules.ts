@@ -1,7 +1,7 @@
 import type { BoardCard } from "@domain/entities/board-card";
 import type { JobTask, Lane, RiskLevel } from "@domain/entities/job";
 import type { ServiceType } from "@domain/entities/quote";
-import { money, toNumber } from "@shared/lib/money";
+import { money, toNumber } from "@domain/lib/money";
 
 // ---------------------------------------------------------------------------
 // Capacity summary

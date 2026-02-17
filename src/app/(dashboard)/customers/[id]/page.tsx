@@ -11,7 +11,7 @@ import {
 } from "@infra/repositories/customers";
 import { getColors } from "@infra/repositories/colors";
 import { getGarmentCatalog } from "@infra/repositories/garments";
-import { money, round2, toNumber } from "@shared/lib/money";
+import { money, round2, toNumber } from "@domain/lib/money";
 import { Button } from "@shared/ui/primitives/button";
 import { Topbar } from "@shared/ui/layouts/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
