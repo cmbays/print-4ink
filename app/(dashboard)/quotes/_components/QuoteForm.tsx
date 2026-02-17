@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef, useEffect, Fragment } from "react";
+import { useState, useMemo, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Plus, Save, Send, StickyNote, ImageIcon, User, ShoppingBag, DollarSign, Tag, Monitor } from "lucide-react";
@@ -340,14 +340,6 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
     setActiveServiceTab(type);
   }, []);
 
-  // Clear DTF validation error when line items change
-  useEffect(() => {
-    setErrors((prev) => {
-      if (!prev.dtfTab) return prev;
-      const { dtfTab: _, ...rest } = prev;
-      return rest;
-    });
-  }, [dtfLineItems]);
 
   // N42 — addServiceType
   const handleAddServiceType = useCallback((type: ServiceType) => {
@@ -1053,7 +1045,7 @@ export function QuoteForm({ mode, initialData, quoteId }: QuoteFormProps) {
         {/* DTF Tab Content (P2.4) — Wave 2: DTF line items + size presets */}
         {activeServiceTab === "dtf" && (
           <div id="tabpanel-dtf" role="tabpanel">
-            {errors.dtfTab && (
+            {errors.dtfTab && dtfLineItems.length === 0 && (
               <p className="text-xs text-error" role="alert">{errors.dtfTab}</p>
             )}
             <DtfTabContent
