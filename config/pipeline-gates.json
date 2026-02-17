@@ -31,7 +31,7 @@
       "next": "build"
     },
     "build": {
-      "description": "Validate build outputs exist before entering review",
+      "description": "Passthrough gate for build-to-review transition (no artifacts required yet)",
       "artifacts": [],
       "gate": "artifact-exists",
       "next": "review"
