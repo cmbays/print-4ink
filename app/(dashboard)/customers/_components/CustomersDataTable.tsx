@@ -36,7 +36,7 @@ import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import { quotes } from "@/lib/mock-data";
+import type { Quote } from "@/lib/schemas/quote";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   LIFECYCLE_STAGE_LABELS,
@@ -50,13 +50,14 @@ import type { Customer, CustomerTypeTag, LifecycleStage, HealthStatus } from "@/
 
 interface CustomersDataTableProps {
   customers: Customer[];
+  quotes: Quote[];
 }
 
 // ---------------------------------------------------------------------------
 // Revenue computation (Phase 1 — sum accepted quote totals per customer)
 // ---------------------------------------------------------------------------
 
-function getCustomerRevenue(customerId: string): number {
+function getCustomerRevenue(customerId: string, quotes: Quote[]): number {
   return quotes
     .filter((q) => q.customerId === customerId && q.status === "accepted")
     .reduce((sum, q) => sum + q.total, 0);
@@ -132,7 +133,7 @@ const ALL_HEALTH_STATUSES: HealthStatus[] = [
 // Component
 // ---------------------------------------------------------------------------
 
-export function CustomersDataTable({ customers }: CustomersDataTableProps) {
+export function CustomersDataTable({ customers, quotes }: CustomersDataTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -276,10 +277,10 @@ export function CustomersDataTable({ customers }: CustomersDataTableProps) {
   const revenueMap = useMemo(() => {
     const map = new Map<string, number>();
     for (const c of customers) {
-      map.set(c.id, getCustomerRevenue(c.id));
+      map.set(c.id, getCustomerRevenue(c.id, quotes));
     }
     return map;
-  }, [customers]);
+  }, [customers, quotes]);
 
   // ---- Filter + sort pipeline -----------------------------------------------
 

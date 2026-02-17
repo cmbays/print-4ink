@@ -2,11 +2,11 @@
 
 import type { ReactNode } from "react";
 import type { Customer } from "@/lib/schemas/customer";
-import { quotes } from "@/lib/mock-data";
+import type { Quote } from "@/lib/schemas/quote";
 import { Users, UserCheck, DollarSign, UserPlus } from "lucide-react";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 
-function computeRevenueYTD(): number {
+function computeRevenueYTD(quotes: Quote[]): number {
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   return quotes
@@ -25,10 +25,12 @@ const stats = [
 
 interface CustomerListStatsBarProps {
   customers: Customer[];
+  quotes: Quote[];
 }
 
 export function CustomerListStatsBar({
   customers,
+  quotes,
 }: CustomerListStatsBarProps) {
   const activeCustomers = customers.filter((c) => !c.isArchived);
   const total = activeCustomers.length;
@@ -38,7 +40,7 @@ export function CustomerListStatsBar({
   const prospects = activeCustomers.filter(
     (c) => c.lifecycleStage === "prospect"
   ).length;
-  const revenueYTD = computeRevenueYTD();
+  const revenueYTD = computeRevenueYTD(quotes);
 
   const values: Record<(typeof stats)[number]["key"], ReactNode> = {
     total: String(total),
