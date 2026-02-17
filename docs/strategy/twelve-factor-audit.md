@@ -9,20 +9,20 @@
 
 ## Summary Scorecard
 
-| Factor | Status | Summary |
-|--------|--------|---------|
-| I. Codebase | PASS | Single repo, multi-environment via Vercel two-branch model |
-| II. Dependencies | PASS | `package-lock.json` committed; clean deps/devDeps split |
-| III. Config | PARTIAL | `DATA_PROVIDER` and `DEMO_ACCESS_CODE` env-gated; one hardcoded URL in mock UI; no `.env.example` |
-| IV. Backing Services | PARTIAL | `CacheStore` interface is swappable; `InMemoryCacheStore` is process-local and will break on Vercel multi-instance |
-| V. Build, Release, Run | PASS | CI builds artifact; Vercel separates build from deploy; `ignoreCommand` scopes deploys correctly |
-| VI. Processes | PARTIAL | Server components are stateless; `_adapter` singleton in `lib/suppliers/registry.ts` is module-level mutable state |
-| VII. Port Binding | PASS | Next.js binds to `PORT`; `work.sh` assigns per-worktree ports; Vercel manages production |
-| VIII. Concurrency | PARTIAL | App is stateless by design; `InMemoryCacheStore` and `_adapter` singleton are not safe under concurrent Vercel instances |
-| IX. Disposability | PASS | Stateless server components, Turbopack fast startup; no long-lived connections in Phase 1 |
-| X. Dev/Prod Parity | PARTIAL | Mock provider diverges from Supabase behavior; dev skips cookie check entirely; no migration tooling yet |
-| XI. Logs | FAIL | Unstructured `console.log`/`console.warn` scattered across UI code; no log aggregation or structured output |
-| XII. Admin Processes | FAIL | No migration scripts, no seed scripts, no admin CLI; all tooling is dev-session-level shell scripts |
+| Factor                 | Status  | Summary                                                                                                                  |
+| ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
+| I. Codebase            | PASS    | Single repo, multi-environment via Vercel two-branch model                                                               |
+| II. Dependencies       | PASS    | `package-lock.json` committed; clean deps/devDeps split                                                                  |
+| III. Config            | PARTIAL | `DATA_PROVIDER` and `DEMO_ACCESS_CODE` env-gated; one hardcoded URL in mock UI; no `.env.example`                        |
+| IV. Backing Services   | PARTIAL | `CacheStore` interface is swappable; `InMemoryCacheStore` is process-local and will break on Vercel multi-instance       |
+| V. Build, Release, Run | PASS    | CI builds artifact; Vercel separates build from deploy; `ignoreCommand` scopes deploys correctly                         |
+| VI. Processes          | PARTIAL | Server components are stateless; `_adapter` singleton in `lib/suppliers/registry.ts` is module-level mutable state       |
+| VII. Port Binding      | PASS    | Next.js binds to `PORT`; `work.sh` assigns per-worktree ports; Vercel manages production                                 |
+| VIII. Concurrency      | PARTIAL | App is stateless by design; `InMemoryCacheStore` and `_adapter` singleton are not safe under concurrent Vercel instances |
+| IX. Disposability      | PASS    | Stateless server components, Turbopack fast startup; no long-lived connections in Phase 1                                |
+| X. Dev/Prod Parity     | PARTIAL | Mock provider diverges from Supabase behavior; dev skips cookie check entirely; no migration tooling yet                 |
+| XI. Logs               | FAIL    | Unstructured `console.log`/`console.warn` scattered across UI code; no log aggregation or structured output              |
+| XII. Admin Processes   | FAIL    | No migration scripts, no seed scripts, no admin CLI; all tooling is dev-session-level shell scripts                      |
 
 ---
 
@@ -554,21 +554,21 @@ Configure PgBouncer before Phase 2 load testing, not before initial development.
 
 ## Priority Actions
 
-| Priority | Factor | Action | When |
-|----------|--------|--------|------|
-| P0 | III | Create `.env.example` with all env vars (current + Phase 2) | Before Phase 2 starts |
-| P0 | IV/VI/VIII | Replace `InMemoryCacheStore` with Upstash Redis `CacheStore` | Before S&S API activation |
-| P0 | X | Install Supabase CLI, create `supabase/config.toml` for local dev | Before Phase 2 schema work |
-| P0 | XII | Add `npm run db:migrate` with Drizzle Kit; write migration runbook | Phase 2 Day 1 |
-| P1 | XI | Add `src/shared/lib/logger.ts` structured logger; instrument `DalError` | Before Phase 2 backend wiring |
-| P1 | XI | Replace `console.log` form stubs with proper error shapes | Before Gary Phase 2 demo |
-| P1 | III | Add startup env validation module (`src/config/env.ts`) | Phase 2 Day 1 |
-| P2 | IV | Route all repository files through `DATA_PROVIDER` router (not just customers) | Phase 2 sprint 1 |
-| P2 | X | Remove `NODE_ENV === 'development'` auth bypass once Supabase Auth is wired | Phase 2 auth sprint |
-| P2 | IX | Configure Supabase PgBouncer (Transaction mode) for serverless | Before Phase 2 load test |
-| P2 | XII | Add `npm run db:seed` script to transform mock data into Supabase INSERT statements | Phase 2 sprint 1 |
-| P3 | III | Replace hardcoded `app.4ink.com` URL in `EmailPreviewModal.tsx` | When email sending is built |
-| P3 | II | Add `engines: { "node": "20.x" }` to `package.json` | Next dependency update cycle |
+| Priority | Factor     | Action                                                                              | When                          |
+| -------- | ---------- | ----------------------------------------------------------------------------------- | ----------------------------- |
+| P0       | III        | Create `.env.example` with all env vars (current + Phase 2)                         | Before Phase 2 starts         |
+| P0       | IV/VI/VIII | Replace `InMemoryCacheStore` with Upstash Redis `CacheStore`                        | Before S&S API activation     |
+| P0       | X          | Install Supabase CLI, create `supabase/config.toml` for local dev                   | Before Phase 2 schema work    |
+| P0       | XII        | Add `npm run db:migrate` with Drizzle Kit; write migration runbook                  | Phase 2 Day 1                 |
+| P1       | XI         | Add `src/shared/lib/logger.ts` structured logger; instrument `DalError`             | Before Phase 2 backend wiring |
+| P1       | XI         | Replace `console.log` form stubs with proper error shapes                           | Before Gary Phase 2 demo      |
+| P1       | III        | Add startup env validation module (`src/config/env.ts`)                             | Phase 2 Day 1                 |
+| P2       | IV         | Route all repository files through `DATA_PROVIDER` router (not just customers)      | Phase 2 sprint 1              |
+| P2       | X          | Remove `NODE_ENV === 'development'` auth bypass once Supabase Auth is wired         | Phase 2 auth sprint           |
+| P2       | IX         | Configure Supabase PgBouncer (Transaction mode) for serverless                      | Before Phase 2 load test      |
+| P2       | XII        | Add `npm run db:seed` script to transform mock data into Supabase INSERT statements | Phase 2 sprint 1              |
+| P3       | III        | Replace hardcoded `app.4ink.com` URL in `EmailPreviewModal.tsx`                     | When email sending is built   |
+| P3       | II         | Add `engines: { "node": "20.x" }` to `package.json`                                 | Next dependency update cycle  |
 
 ---
 
@@ -576,31 +576,31 @@ Configure PgBouncer before Phase 2 load testing, not before initial development.
 
 Key files examined for this audit:
 
-| File | Factors Assessed |
-|------|-----------------|
-| `/Users/cmbays/Github/print-4ink/package.json` | II, V |
-| `/Users/cmbays/Github/print-4ink/package-lock.json` | II |
-| `/Users/cmbays/Github/print-4ink/vercel.json` | I, V |
-| `/Users/cmbays/Github/print-4ink/.github/workflows/ci.yml` | V, X |
-| `/Users/cmbays/Github/print-4ink/next.config.ts` | V, IX |
-| `/Users/cmbays/Github/print-4ink/tsconfig.json` | II |
-| `/Users/cmbays/Github/print-4ink/.gitignore` | II, III |
-| `/Users/cmbays/Github/print-4ink/middleware.ts` | III, X |
-| `/Users/cmbays/Github/print-4ink/src/infrastructure/auth/session.ts` | III, VI, X |
-| `/Users/cmbays/Github/print-4ink/src/infrastructure/bootstrap.ts` | IV |
-| `/Users/cmbays/Github/print-4ink/src/infrastructure/repositories/_providers/index.ts` | III, IV |
-| `/Users/cmbays/Github/print-4ink/src/infrastructure/repositories/_providers/mock/customers.ts` | IV, VI |
-| `/Users/cmbays/Github/print-4ink/src/infrastructure/repositories/_shared/errors.ts` | XI |
-| `/Users/cmbays/Github/print-4ink/src/domain/ports/customer.repository.ts` | IV |
-| `/Users/cmbays/Github/print-4ink/src/app/api/demo-login/route.ts` | III |
-| `/Users/cmbays/Github/print-4ink/src/app/(dashboard)/quotes/_components/EmailPreviewModal.tsx` | III |
-| `/Users/cmbays/Github/print-4ink/src/app/layout.tsx` | VI, IX |
-| `/Users/cmbays/Github/print-4ink/lib/suppliers/types.ts` | IV, VIII |
-| `/Users/cmbays/Github/print-4ink/lib/suppliers/registry.ts` | VI, VIII |
-| `/Users/cmbays/Github/print-4ink/lib/suppliers/cache/in-memory.ts` | IV, VI, VIII |
-| `/Users/cmbays/Github/print-4ink/lib/config/index.ts` | XI |
-| `/Users/cmbays/Github/print-4ink/scripts/work.sh` | VII, XII |
-| `/Users/cmbays/Github/print-4ink/eslint.config.mjs` | II |
-| `/Users/cmbays/Github/print-4ink/vitest.config.ts` | II, V |
-| `/Users/cmbays/Github/print-4ink/docs/strategy/auth-session-design.md` | III, X |
-| `/Users/cmbays/Github/print-4ink/docs/TECH_STACK.md` | IV, VIII |
+| File                                                                                           | Factors Assessed |
+| ---------------------------------------------------------------------------------------------- | ---------------- |
+| `/Users/cmbays/Github/print-4ink/package.json`                                                 | II, V            |
+| `/Users/cmbays/Github/print-4ink/package-lock.json`                                            | II               |
+| `/Users/cmbays/Github/print-4ink/vercel.json`                                                  | I, V             |
+| `/Users/cmbays/Github/print-4ink/.github/workflows/ci.yml`                                     | V, X             |
+| `/Users/cmbays/Github/print-4ink/next.config.ts`                                               | V, IX            |
+| `/Users/cmbays/Github/print-4ink/tsconfig.json`                                                | II               |
+| `/Users/cmbays/Github/print-4ink/.gitignore`                                                   | II, III          |
+| `/Users/cmbays/Github/print-4ink/middleware.ts`                                                | III, X           |
+| `/Users/cmbays/Github/print-4ink/src/infrastructure/auth/session.ts`                           | III, VI, X       |
+| `/Users/cmbays/Github/print-4ink/src/infrastructure/bootstrap.ts`                              | IV               |
+| `/Users/cmbays/Github/print-4ink/src/infrastructure/repositories/_providers/index.ts`          | III, IV          |
+| `/Users/cmbays/Github/print-4ink/src/infrastructure/repositories/_providers/mock/customers.ts` | IV, VI           |
+| `/Users/cmbays/Github/print-4ink/src/infrastructure/repositories/_shared/errors.ts`            | XI               |
+| `/Users/cmbays/Github/print-4ink/src/domain/ports/customer.repository.ts`                      | IV               |
+| `/Users/cmbays/Github/print-4ink/src/app/api/demo-login/route.ts`                              | III              |
+| `/Users/cmbays/Github/print-4ink/src/app/(dashboard)/quotes/_components/EmailPreviewModal.tsx` | III              |
+| `/Users/cmbays/Github/print-4ink/src/app/layout.tsx`                                           | VI, IX           |
+| `/Users/cmbays/Github/print-4ink/lib/suppliers/types.ts`                                       | IV, VIII         |
+| `/Users/cmbays/Github/print-4ink/lib/suppliers/registry.ts`                                    | VI, VIII         |
+| `/Users/cmbays/Github/print-4ink/lib/suppliers/cache/in-memory.ts`                             | IV, VI, VIII     |
+| `/Users/cmbays/Github/print-4ink/lib/config/index.ts`                                          | XI               |
+| `/Users/cmbays/Github/print-4ink/scripts/work.sh`                                              | VII, XII         |
+| `/Users/cmbays/Github/print-4ink/eslint.config.mjs`                                            | II               |
+| `/Users/cmbays/Github/print-4ink/vitest.config.ts`                                             | II, V            |
+| `/Users/cmbays/Github/print-4ink/docs/strategy/auth-session-design.md`                         | III, X           |
+| `/Users/cmbays/Github/print-4ink/docs/TECH_STACK.md`                                           | IV, VIII         |

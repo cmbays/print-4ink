@@ -68,6 +68,7 @@ The `invoiceSchema` imports `big.js` directly and uses it inside a `.refine()` t
 **`src/domain/constants/index.ts` — severity: low**
 
 This constants file mixes two categories of data:
+
 - Business constants (`DEPOSIT_DEFAULTS_BY_TIER`, `TAX_RATE`, `CONTRACT_DISCOUNT_RATE`, `CANONICAL_TASKS`)
 - UI mapping constants (29 Tailwind utility class strings: `text-action`, `bg-success/10`, `border border-action/20`, etc.)
 
@@ -205,7 +206,7 @@ The `screens` repository has no port interface at all. `getScreensByJobId` exist
 
 ```ts
 export type ICustomerRepository = {
-  getAll(): Promise<Customer[]>         // returns full Customer with contacts, groups, addresses
+  getAll(): Promise<Customer[]> // returns full Customer with contacts, groups, addresses
   getById(id: string): Promise<Customer | null>
   getQuotes(customerId: string): Promise<Quote[]>
   getJobs(customerId: string): Promise<Job[]>
@@ -266,6 +267,7 @@ This is the central DIP failure. The composition root (`src/infrastructure/boots
 But `src/domain/ports/` was created in Phase 3 — 4 interfaces exist there now. The bootstrap file was not updated when the ports were added. The ports exist as type aliases but are not referenced anywhere in the infrastructure layer. The Supabase implementations cannot be wired in because there is no factory or constructor that accepts an `ICustomerRepository` — callers import concrete functions.
 
 The correct DIP structure requires:
+
 ```
 app layer → calls bootstrap.ts exported names
 bootstrap.ts → constructs concrete objects satisfying port interfaces
@@ -273,6 +275,7 @@ concrete objects → implement port interfaces
 ```
 
 Currently, the actual structure is:
+
 ```
 app layer → imports directly from @infra/repositories/{domain}
 @infra/repositories/{domain} → re-exports from _providers/mock/{domain}
@@ -288,7 +291,7 @@ The app layer (Next.js pages and `_components`) imports directly from concrete r
 import { getCustomers } from '@infra/repositories/customers'
 
 // src/app/(dashboard)/settings/pricing/page.tsx
-import { customers } from '@/lib/mock-data'  // bypasses even the repository layer
+import { customers } from '@/lib/mock-data' // bypasses even the repository layer
 ```
 
 Notably, `src/app/(dashboard)/settings/pricing/page.tsx` imports directly from `@/lib/mock-data` (the raw mock fixture), bypassing both the repository and any future Supabase wiring.
@@ -304,6 +307,7 @@ Notably, `src/app/(dashboard)/settings/pricing/page.tsx` imports directly from `
 ### Recommended Actions
 
 1. Update `src/infrastructure/bootstrap.ts` to use the port interfaces as the exported type for each repository:
+
    ```ts
    import type { ICustomerRepository } from '@domain/ports'
    import * as customerMock from './_providers/mock/customers'
@@ -314,6 +318,7 @@ Notably, `src/app/(dashboard)/settings/pricing/page.tsx` imports directly from `
      ...
    }
    ```
+
    This makes the type constraint compile-time enforced.
 
 2. Add an ESLint boundary rule (`eslint-plugin-boundaries` or `@typescript-eslint/no-restricted-imports`) preventing `src/app/` from importing `@infra/repositories/*` directly. All app-layer data access should go through `@infra/bootstrap`.
@@ -326,21 +331,21 @@ Notably, `src/app/(dashboard)/settings/pricing/page.tsx` imports directly from `
 
 ## Priority Refactor Queue
 
-| Priority | File | Violation | Effort |
-|----------|------|-----------|--------|
-| High | `src/infrastructure/bootstrap.ts` | DIP: port interfaces exist but are never referenced; composition root does not enforce port types | S (2–3 hours) |
-| High | `src/app/**` (80 import sites) | DIP: app layer imports directly from `@infra/repositories/` bypassing bootstrap | M (ESLint rule + search/replace) |
-| High | `src/app/**` (20 import sites using `*Mutable`) | LSP: mutable functions break Phase 2 substitutability; no port equivalent | M (requires Phase 2 plan) |
-| High | `src/domain/ports/` (5 missing ports) | ISP + LSP: `artworks`, `colors`, `garments`, `screens`, `settings` have no port interfaces | M (define interfaces; low risk) |
-| Medium | `src/domain/services/pricing.service.ts` | SRP + OCP: SP and DTF pricing bundled; `formatCurrency` duplicated; `calculateDiff` hardcoded | M (split file; redirect callers) |
-| Medium | `src/domain/rules/customer.rules.ts` | SRP: pure query functions and mutable side-effect functions in one file | S (split file) |
-| Medium | `src/domain/ports/customer.repository.ts` | ISP: `getAll()` over-fetches; `getContacts/Notes/Artworks/Invoices` duplicate cross-domain queries | S (add `getList()` projection method) |
-| Medium | `src/domain/rules/dtf.rules.ts` | SRP: constants, factory, validation, and algorithm in one file | S (move constants to `constants/dtf.ts`) |
-| Low | `src/domain/entities/invoice.ts:2,139` | SRP: `big.js` import in entity for `.refine()` invariant | S (extract to `invoice.rules.ts`) |
-| Low | `src/domain/constants/index.ts` | SRP: Tailwind UI strings mixed with business constants | S (move to `src/shared/constants/`) |
-| Low | `src/domain/services/pricing.service.ts:519` | OCP: `3.5` magic number for default garment cost in `calculateDiff` | XS (extract constant) |
-| Low | `src/domain/rules/invoice.rules.ts:127` | OCP: `calculateDueDate` `switch` not extensible to new payment terms | S (replace with data-driven map) |
-| Low | `src/domain/ports/invoice.repository.ts` | ISP: `getByQuoteId` is single-caller; should not be on shared interface | XS (extract to standalone function) |
+| Priority | File                                            | Violation                                                                                          | Effort                                   |
+| -------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| High     | `src/infrastructure/bootstrap.ts`               | DIP: port interfaces exist but are never referenced; composition root does not enforce port types  | S (2–3 hours)                            |
+| High     | `src/app/**` (80 import sites)                  | DIP: app layer imports directly from `@infra/repositories/` bypassing bootstrap                    | M (ESLint rule + search/replace)         |
+| High     | `src/app/**` (20 import sites using `*Mutable`) | LSP: mutable functions break Phase 2 substitutability; no port equivalent                          | M (requires Phase 2 plan)                |
+| High     | `src/domain/ports/` (5 missing ports)           | ISP + LSP: `artworks`, `colors`, `garments`, `screens`, `settings` have no port interfaces         | M (define interfaces; low risk)          |
+| Medium   | `src/domain/services/pricing.service.ts`        | SRP + OCP: SP and DTF pricing bundled; `formatCurrency` duplicated; `calculateDiff` hardcoded      | M (split file; redirect callers)         |
+| Medium   | `src/domain/rules/customer.rules.ts`            | SRP: pure query functions and mutable side-effect functions in one file                            | S (split file)                           |
+| Medium   | `src/domain/ports/customer.repository.ts`       | ISP: `getAll()` over-fetches; `getContacts/Notes/Artworks/Invoices` duplicate cross-domain queries | S (add `getList()` projection method)    |
+| Medium   | `src/domain/rules/dtf.rules.ts`                 | SRP: constants, factory, validation, and algorithm in one file                                     | S (move constants to `constants/dtf.ts`) |
+| Low      | `src/domain/entities/invoice.ts:2,139`          | SRP: `big.js` import in entity for `.refine()` invariant                                           | S (extract to `invoice.rules.ts`)        |
+| Low      | `src/domain/constants/index.ts`                 | SRP: Tailwind UI strings mixed with business constants                                             | S (move to `src/shared/constants/`)      |
+| Low      | `src/domain/services/pricing.service.ts:519`    | OCP: `3.5` magic number for default garment cost in `calculateDiff`                                | XS (extract constant)                    |
+| Low      | `src/domain/rules/invoice.rules.ts:127`         | OCP: `calculateDueDate` `switch` not extensible to new payment terms                               | S (replace with data-driven map)         |
+| Low      | `src/domain/ports/invoice.repository.ts`        | ISP: `getByQuoteId` is single-caller; should not be on shared interface                            | XS (extract to standalone function)      |
 
 ---
 
