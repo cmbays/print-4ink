@@ -6,7 +6,7 @@ phase: 1
 pipelineName: "Developer Experience Infrastructure"
 pipelineType: horizontal
 products: []
-tools: ["claude-code", "github-actions"]
+tools: ["agent-system", "ci-pipeline"]
 stage: wrap-up
 tags: [feature, build, decision]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"

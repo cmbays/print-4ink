@@ -5,7 +5,8 @@ date: 2026-02-12
 phase: 1
 pipelineName: price-matrix
 pipelineType: vertical
-products: [pricing, quotes]
+products: [quotes]
+domains: [pricing]
 tools: []
 stage: build
 tags: [feature, build, learning]

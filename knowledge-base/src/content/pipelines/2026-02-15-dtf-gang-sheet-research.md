@@ -5,7 +5,8 @@ date: 2026-02-15
 phase: 1
 pipelineName: dtf-gang-sheet
 pipelineType: vertical
-products: [quotes, pricing]
+products: [quotes]
+domains: [pricing]
 tools: []
 stage: research
 tags: [research]

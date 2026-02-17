@@ -6,7 +6,7 @@ phase: 1
 pipelineName: "Review Orchestration Engine"
 pipelineType: horizontal
 products: []
-tools: ["claude-code"]
+tools: ["agent-system"]
 stage: wrap-up
 tags: [feature, decision, learning]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"

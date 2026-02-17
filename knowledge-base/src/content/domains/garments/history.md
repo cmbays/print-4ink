@@ -1,7 +1,7 @@
 ---
-title: "Pricing — History"
-subtitle: "Build history and changelog for the Pricing product"
-product: pricing
+title: "Garments — History"
+subtitle: "Build history and changelog for the Garments product"
+domain: garments
 docType: history
 lastUpdated: 2026-02-15
 status: draft

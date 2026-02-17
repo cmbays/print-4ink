@@ -1,7 +1,7 @@
 ---
-title: "Pricing"
-subtitle: "Price matrix configuration, markup rules, and quantity break calculations"
-product: pricing
+title: "Screens"
+subtitle: "Screen room management, mesh tracking, burn status, and job linking"
+domain: screens
 docType: overview
 lastUpdated: 2026-02-15
 status: draft
@@ -17,4 +17,4 @@ Phase 1 mockup complete with mock data.
 
 ## Key Routes
 
-- `/settings/pricing`
+- `/screens`
