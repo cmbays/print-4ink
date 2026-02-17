@@ -109,6 +109,9 @@ export const catalogSearchParamsSchema = z.object({
 
 export type CatalogSearchParams = z.infer<typeof catalogSearchParamsSchema>;
 
+// Input type — limit/offset are optional (schema applies defaults in .parse())
+export type CatalogSearchInput = z.input<typeof catalogSearchParamsSchema>;
+
 export const catalogSearchResultSchema = z.object({
   styles:  z.array(canonicalStyleSchema),
   total:   z.number().int().nonnegative(),
@@ -132,7 +135,7 @@ export type SupplierAdapter = {
 
   getStyle(styleId: string): Promise<CanonicalStyle | null>;
   getStylesBatch(styleIds: string[]): Promise<CanonicalStyle[]>;
-  searchCatalog(params: CatalogSearchParams): Promise<CatalogSearchResult>;
+  searchCatalog(params: CatalogSearchInput): Promise<CatalogSearchResult>;
   getInventory(skuIds: string[]): Promise<Record<string, number>>;
   getBrands(): Promise<string[]>;
   getCategories(): Promise<string[]>;

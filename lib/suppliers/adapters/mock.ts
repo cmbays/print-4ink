@@ -5,7 +5,7 @@ import type {
   SupplierName,
   CanonicalStyle,
   CacheStore,
-  CatalogSearchParams,
+  CatalogSearchInput,
   CatalogSearchResult,
   HealthStatus,
 } from '../types';
@@ -68,7 +68,7 @@ export class MockAdapter implements SupplierAdapter {
     return results.filter((s): s is CanonicalStyle => s !== null);
   }
 
-  async searchCatalog(params: CatalogSearchParams): Promise<CatalogSearchResult> {
+  async searchCatalog(params: CatalogSearchInput): Promise<CatalogSearchResult> {
     const { brand, category, query, limit, offset } =
       catalogSearchParamsSchema.parse(params);
 
