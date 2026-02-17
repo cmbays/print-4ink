@@ -2,6 +2,7 @@
 import { garmentCatalog } from '@/lib/mock-data';
 import type {
   SupplierAdapter,
+  SupplierName,
   CanonicalStyle,
   CacheStore,
   CatalogSearchParams,
@@ -16,7 +17,7 @@ const CACHE_TTL = {
 };
 
 export class MockAdapter implements SupplierAdapter {
-  readonly supplierName = 'mock' as const;
+  readonly supplierName: SupplierName = 'mock';
 
   constructor(private readonly cache: CacheStore) {}
 
@@ -45,7 +46,7 @@ export class MockAdapter implements SupplierAdapter {
         casePrice:  null,
       },
       gtin:     null,
-      supplier: 'mock',
+      supplier: this.supplierName,
     };
   }
 
@@ -101,7 +102,7 @@ export class MockAdapter implements SupplierAdapter {
 
   async getCategories(): Promise<string[]> {
     const cats = new Set(garmentCatalog.map((g) => g.baseCategory));
-    return Array.from(cats);
+    return Array.from(cats).sort();
   }
 
   async healthCheck(): Promise<HealthStatus> {

@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MockAdapter } from '../adapters/mock';
 import { InMemoryCacheStore } from '../cache/in-memory';
-import type { SupplierAdapter } from '../types';
 
 describe('MockAdapter', () => {
-  let adapter: SupplierAdapter;
+  let adapter: MockAdapter;
 
   beforeEach(() => {
     adapter = new MockAdapter(new InMemoryCacheStore());
@@ -23,7 +22,7 @@ describe('MockAdapter', () => {
 
     it('returns CanonicalStyle for known ID', async () => {
       // Use the FIRST garment's actual ID from garmentCatalog
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const firstId = allStyles.styles[0].supplierId;
       const style = await adapter.getStyle(firstId);
       expect(style).not.toBeNull();
@@ -36,7 +35,7 @@ describe('MockAdapter', () => {
     });
 
     it('returned CanonicalStyle has null hex codes (mock data has none)', async () => {
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const firstId = allStyles.styles[0].supplierId;
       const style = await adapter.getStyle(firstId);
       expect(style?.colors[0].hex1).toBeNull();
@@ -44,14 +43,14 @@ describe('MockAdapter', () => {
     });
 
     it('returned CanonicalStyle has empty images array (mock has none)', async () => {
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const firstId = allStyles.styles[0].supplierId;
       const style = await adapter.getStyle(firstId);
       expect(style?.colors[0].images).toEqual([]);
     });
 
     it('returned CanonicalStyle has valid pricing', async () => {
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const firstId = allStyles.styles[0].supplierId;
       const style = await adapter.getStyle(firstId);
       expect(typeof style?.pricing.piecePrice).toBe('number');
@@ -60,7 +59,7 @@ describe('MockAdapter', () => {
     });
 
     it('returned CanonicalStyle has null GTIN (mock has none)', async () => {
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const firstId = allStyles.styles[0].supplierId;
       const style = await adapter.getStyle(firstId);
       expect(style?.gtin).toBeNull();
@@ -69,14 +68,14 @@ describe('MockAdapter', () => {
 
   describe('getStylesBatch()', () => {
     it('returns array of CanonicalStyles for known IDs', async () => {
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const ids = allStyles.styles.slice(0, 2).map(s => s.supplierId);
       const styles = await adapter.getStylesBatch(ids);
       expect(styles.length).toBe(2);
     });
 
     it('silently drops unknown IDs', async () => {
-      const allStyles = await (adapter as MockAdapter).searchCatalog({});
+      const allStyles = await (adapter).searchCatalog({});
       const ids = allStyles.styles.slice(0, 2).map(s => s.supplierId);
       const styles = await adapter.getStylesBatch([ids[0], 'nonexistent', ids[1]]);
       expect(styles.length).toBe(2);
