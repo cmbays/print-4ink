@@ -173,6 +173,10 @@ describe('MockAdapter', () => {
       const cats = await adapter.getCategories();
       expect(cats.length).toBe(new Set(cats).size);
     });
+    it('returns sorted categories', async () => {
+      const cats = await adapter.getCategories();
+      expect(cats).toEqual([...cats].sort());
+    });
   });
 
   describe('healthCheck()', () => {
