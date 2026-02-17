@@ -14,7 +14,7 @@ import { getColorsMutable } from "@infra/repositories/colors";
 import { getCustomersMutable } from "@infra/repositories/customers";
 import { getBrandPreferencesMutable } from "@infra/repositories/settings";
 import { useColorFilter } from "@/lib/hooks/useColorFilter";
-import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
+import { PRICE_STORAGE_KEY } from "@shared/constants/garment-catalog";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { Job } from "@domain/entities/job";
 import type { Customer } from "@domain/entities/customer";

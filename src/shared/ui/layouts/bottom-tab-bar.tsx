@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { MoreHorizontal } from "lucide-react";
 import { cn } from "@shared/lib/cn";
-import { PRIMARY_NAV, type NavItem } from "@/lib/constants/navigation";
+import { PRIMARY_NAV, type NavItem } from "@shared/constants/navigation";
 
 const tabs: (NavItem | { label: string; href: "#more"; icon: typeof MoreHorizontal })[] = [
   ...PRIMARY_NAV,

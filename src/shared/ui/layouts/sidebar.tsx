@@ -1,7 +1,7 @@
 "use client";
 
 import { Layers } from "lucide-react";
-import { PRIMARY_NAV, SECONDARY_NAV, type NavItem } from "@/lib/constants/navigation";
+import { PRIMARY_NAV, SECONDARY_NAV, type NavItem } from "@shared/constants/navigation";
 import { SidebarNavLink } from "./SidebarNavLink";
 
 // Desktop sidebar uses a different display order than mobile bottom nav.

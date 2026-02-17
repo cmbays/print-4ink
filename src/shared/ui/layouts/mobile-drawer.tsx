@@ -8,7 +8,7 @@ import {
   SheetTitle,
 } from "@shared/ui/primitives/sheet";
 import { Layers } from "lucide-react";
-import { SECONDARY_NAV } from "@/lib/constants/navigation";
+import { SECONDARY_NAV } from "@shared/constants/navigation";
 
 interface MobileDrawerProps {
   open: boolean;

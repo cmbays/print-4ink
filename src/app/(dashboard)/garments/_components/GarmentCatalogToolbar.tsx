@@ -27,7 +27,7 @@ import { getColorById } from "@domain/rules/garment.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
 import { garmentCategoryEnum } from "@domain/entities/garment";
 import { GARMENT_CATEGORY_LABELS } from "@domain/constants";
-import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
+import { PRICE_STORAGE_KEY } from "@shared/constants/garment-catalog";
 
 // ---------------------------------------------------------------------------
 // Constants — derived from canonical Zod enum + label map
