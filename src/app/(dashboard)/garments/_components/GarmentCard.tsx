@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { cn } from '@shared/lib/cn'
-import { GarmentImage } from '@features/garments/components/GarmentImage'
+import { GarmentImage } from '@shared/ui/organisms/GarmentImage'
 import { FavoriteStar } from '@shared/ui/organisms/FavoriteStar'
 import { ColorSwatchPicker } from '@shared/ui/organisms/ColorSwatchPicker'
 import { Badge } from '@shared/ui/primitives/badge'

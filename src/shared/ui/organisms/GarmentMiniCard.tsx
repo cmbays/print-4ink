@@ -1,7 +1,7 @@
 'use client'
 
 import { Heart, Shirt } from 'lucide-react'
-import { GarmentImage } from '@features/garments/components/GarmentImage'
+import { GarmentImage } from '@shared/ui/organisms/GarmentImage'
 import { cn } from '@shared/lib/cn'
 import type { GarmentCatalog } from '@domain/entities/garment'
 

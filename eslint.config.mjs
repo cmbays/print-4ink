@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from 'eslint/config'
 import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
+import importPlugin from 'eslint-plugin-import'
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -65,6 +66,7 @@ const eslintConfig = defineConfig([
     files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
     rules: {
       'no-restricted-imports': 'off',
+      'import/no-restricted-paths': 'off',
     },
   },
   // MockAdapter is the supplier-layer equivalent of _providers/mock — allowed to import from _providers
@@ -72,6 +74,55 @@ const eslintConfig = defineConfig([
     files: ['lib/suppliers/**', 'src/infrastructure/adapters/**'],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  // Clean Architecture layer boundaries (import/no-restricted-paths)
+  // Dependency rule: domain ← shared ← features ← app (outer layers may import inner, never reverse)
+  // Scoped to non-test source files only (test files may cross layer boundaries for fixtures).
+  {
+    files: ['src/**/*.ts', 'src/**/*.tsx'],
+    ignores: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
+    plugins: { import: importPlugin },
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            // shared/ is reusable infrastructure — must not depend on features/ or infra/
+            {
+              target: './src/shared',
+              from: './src/features',
+              message:
+                'src/shared/ cannot import from src/features/ — shared must be reusable across all feature domains.',
+            },
+            {
+              target: './src/shared',
+              from: './src/infrastructure',
+              message:
+                'src/shared/ cannot import from src/infrastructure/ — shared must not depend on implementation details.',
+            },
+            // domain/ is the innermost ring — pure business logic, no outer-layer dependencies
+            {
+              target: './src/domain',
+              from: './src/features',
+              message:
+                'src/domain/ cannot import from src/features/ — domain is the innermost ring.',
+            },
+            {
+              target: './src/domain',
+              from: './src/infrastructure',
+              message:
+                'src/domain/ cannot import from src/infrastructure/ — domain is the innermost ring.',
+            },
+            {
+              target: './src/domain',
+              from: './src/shared',
+              message:
+                'src/domain/ cannot import from src/shared/ — domain is the innermost ring.',
+            },
+          ],
+        },
+      ],
     },
   },
   // Override default ignores of eslint-config-next.
