@@ -11,7 +11,7 @@ depends_on: []
 
 # Screen Print Pro — Architecture
 
-> **Status**: Post-Phase-3 Clean Architecture migration. Phase 4 (features + config/tools split) is next.
+> **Status**: Phase 4 Clean Architecture migration complete (2026-02-17). All layers in place, ESLint boundaries enforced.
 > See `docs/strategy/solid-audit.md` and `docs/strategy/twelve-factor-audit.md` for audit findings.
 
 ## Layer Structure
@@ -64,33 +64,39 @@ infrastructure/ → shared/
 
 ## Shared Layer (`src/shared/`)
 
-| Directory        | Contains                                                      |
-| ---------------- | ------------------------------------------------------------- |
-| `ui/primitives/` | shadcn/ui Radix wrappers                                      |
-| `ui/layouts/`    | Sidebar, Topbar, BottomTabBar, MobileShell                    |
-| `hooks/`         | `useIsMobile`, `useDebounce`, `useGridKeyboardNav`            |
-| `lib/`           | `cn()`, formatters, `money.ts`, `logger.ts`, `breadcrumbs.ts` |
-| `providers/`     | `TooltipProviderWrapper`, future ThemeProvider                |
+| Directory        | Contains                                                                     |
+| ---------------- | ---------------------------------------------------------------------------- |
+| `ui/primitives/` | shadcn/ui Radix wrappers                                                     |
+| `ui/organisms/`  | Cross-domain feature components (MoneyAmount, StatusBadge, GarmentMiniCard…) |
+| `ui/layouts/`    | Sidebar, Topbar, BottomTabBar, MobileShell                                   |
+| `hooks/`         | `useIsMobile`, `useDebounce`, `useGridKeyboardNav`                           |
+| `lib/`           | `cn()`, formatters, `money.ts`, `logger.ts`, `breadcrumbs.ts`, `swatch.ts`   |
+| `constants/`     | `entity-icons.ts`, shared cross-domain constants                             |
+| `providers/`     | `TooltipProviderWrapper`, future ThemeProvider                               |
 
 ## Import Rules (Enforced by ESLint)
 
-```javascript
-// eslint.config.mjs — no-restricted-paths zones
-{
-  // Rule 1: No dev tooling imports in src/
-  target: './src', from: './tools',
-  // Rule 2: No infrastructure imports in domain/ (dependency inversion)
-  target: './src/domain', from: './src/infrastructure',
-  // Rule 3: No mock-data direct imports outside infrastructure/
-  target: ['./src/app', './src/domain', './src/features', './src/shared'],
-  from: './src/infrastructure/repositories/_providers/mock',
-}
-```
+`eslint.config.mjs` enforces boundaries via two rule sets:
+
+**`no-restricted-imports` (paths + patterns):**
+
+- `@shared/ui/primitives/breadcrumb` — use `<Topbar breadcrumbs={buildBreadcrumbs(…)}>` instead
+- `@infra/repositories/_providers/*` — import from `@infra/repositories/{domain}` only
+
+**`import/no-restricted-paths` (zones, non-test files only):**
+
+| Target        | Cannot import from    | Reason                                             |
+| ------------- | --------------------- | -------------------------------------------------- |
+| `src/shared/` | `src/features/`       | Shared must be reusable across all feature domains |
+| `src/shared/` | `src/infrastructure/` | Shared must not depend on implementation details   |
+| `src/domain/` | `src/features/`       | Domain is the innermost ring                       |
+| `src/domain/` | `src/infrastructure/` | Domain is the innermost ring                       |
+| `src/domain/` | `src/shared/`         | Domain is the innermost ring                       |
 
 **Never:**
 
 - Import from `@infra/repositories/_providers/mock` in app, features, domain, or shared
-- Import from `src/tools/` in any `src/` file
+- Import from `src/features/` in `src/shared/` (organisms must be domain-agnostic)
 - Import from `src/infrastructure/` in `src/domain/`
 
 ## Path Aliases (`tsconfig.json`)
@@ -161,17 +167,18 @@ See `docs/strategy/twelve-factor-audit.md` for full scorecard. Key enforced rule
 - Never use `console.log`/`console.warn`/`console.error` directly in production code
 - Bind domain context: `logger.child({ domain: 'quotes' })`
 
-## Phase 4 Target (`src/features/`)
+## Feature Layer (`src/features/`)
 
-Each feature slice will contain:
+Each feature slice contains domain-specific UI and hooks. Completed in Phase 4:
 
 ```
 src/features/{domain}/
-  components/    # Domain-specific UI components
-  hooks/         # Domain-specific hooks
-  use-cases/     # Orchestrates domain services + repositories
-  dtos/          # Input/output Zod schemas for use cases
-  tests/         # Feature-specific tests
+  components/    # Domain-specific UI components (moved from components/features/)
+  hooks/         # Domain-specific hooks (e.g., useColorFilter in garments/)
 ```
 
-After Phase 4, `src/app/` pages import from `@features/{domain}` use-cases only — not directly from `@infra/repositories/*`.
+**Cross-domain components** (3+ consumers across domains) live in `src/shared/ui/organisms/` instead.
+
+**Placement rule:** 3+ consumers spanning multiple feature domains → `src/shared/ui/organisms/`. 1–2 consumers in one domain → `src/features/{domain}/components/`.
+
+**Future (post-Phase-4):** Add `use-cases/` and `dtos/` per slice to fully decouple app/ from `@infra/repositories/*`. Until then, `src/app/` pages continue to import directly from `@infra/repositories/{domain}`.
