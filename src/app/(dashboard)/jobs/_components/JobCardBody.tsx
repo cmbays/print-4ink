@@ -1,10 +1,10 @@
 import { Package, Palette, MapPin, Calendar, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@shared/lib/cn";
+import { Badge } from "@shared/ui/primitives/badge";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { GarmentMockupThumbnail } from "@/components/features/mockup";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
-import { formatShortDate } from "@/lib/helpers/format";
+import { formatShortDate } from "@shared/lib/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import {
   RISK_COLORS,

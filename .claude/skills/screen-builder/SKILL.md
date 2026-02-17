@@ -48,7 +48,7 @@ Follow these rules strictly:
 - Import from `@/lib/schemas/` for types (use `z.infer<typeof schema>`)
 - Import from `@/lib/mock-data` for data
 - Import from `@/lib/constants` for label/color mappings
-- Use `cn()` from `@/lib/utils` for conditional classes — never concatenate className strings
+- Use `cn()` from `@shared/lib/cn` for conditional classes — never concatenate className strings
 
 **Design system** (reference `.claude/skills/screen-builder/reference/design-tokens-quick-ref.md`):
 - Page header: `text-2xl font-semibold tracking-tight` + subtitle in `text-sm text-muted-foreground`

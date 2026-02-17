@@ -9,18 +9,20 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@shared/ui/primitives/sheet";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Badge } from "@shared/ui/primitives/badge";
+import { ScrollArea } from "@shared/ui/primitives/scroll-area";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
-import { cn } from "@/lib/utils";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { cn } from "@shared/lib/cn";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 import { getColorById } from "@domain/rules/garment.rules";
 import { resolveEffectiveFavorites } from "@domain/rules/customer.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
+import { getCustomersMutable } from "@infra/repositories/customers";
+import { getBrandPreferencesMutable } from "@infra/repositories/settings";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 
@@ -70,7 +72,7 @@ export function GarmentDetailDrawer({
   // resolveEffectiveFavorites reads from mutable catalog arrays.
   // In Phase 3 this becomes a proper data fetch.
   const favoriteColorIds = useMemo(
-    () => new Set(resolveEffectiveFavorites(favoriteContext.context, favoriteContext.contextId)),
+    () => new Set(resolveEffectiveFavorites(favoriteContext.context, favoriteContext.contextId, getColorsMutable(), getCustomersMutable(), getBrandPreferencesMutable())),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [favoriteVersion, favoriteContext.context, favoriteContext.contextId],
   );
@@ -90,12 +92,14 @@ export function GarmentDetailDrawer({
       setFavoriteVersion((v) => v + 1);
       // Also select the toggled color for display (U14)
       setSelectedColorId(colorId);
+    } else {
+      console.warn(`[GarmentDetailDrawer] Color ${colorId} not found in catalog — stale garment palette reference`);
     }
   }
 
   // Resolve selected color object
   const selectedColor = selectedColorId
-    ? getColorById(selectedColorId)
+    ? getColorById(selectedColorId, getColorsMutable())
     : null;
 
   return (

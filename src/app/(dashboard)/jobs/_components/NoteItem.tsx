@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { formatDate } from "@/lib/helpers/format";
+import { cn } from "@shared/lib/cn";
+import { formatDate } from "@shared/lib/format";
 import type { JobNote, JobNoteType } from "@domain/entities/job";
 
 const NOTE_TYPE_STYLES: Record<

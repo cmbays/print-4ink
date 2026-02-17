@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { DollarSign, ShoppingBag, TrendingUp, Clock, Users } from "lucide-react";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 

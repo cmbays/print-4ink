@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Monitor } from "lucide-react";
 import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
+import { getJobsMutable } from "@infra/repositories/jobs";
 import { ScreenRecordRow } from "./ScreenRecordRow";
 import { ReclaimScreenDialog } from "./ReclaimScreenDialog";
 import type { CustomerScreen } from "@domain/entities/customer-screen";
@@ -12,7 +13,7 @@ interface CustomerScreensTabProps {
 }
 
 export function CustomerScreensTab({ customerId }: CustomerScreensTabProps) {
-  const allScreens = deriveScreensFromJobs(customerId);
+  const allScreens = deriveScreensFromJobs(customerId, getJobsMutable());
   const [reclaimedIds, setReclaimedIds] = useState<Set<string>>(new Set());
   const [reclaimTarget, setReclaimTarget] = useState<CustomerScreen | null>(null);
 

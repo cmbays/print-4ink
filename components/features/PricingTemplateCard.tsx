@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { MarginIndicator as MarginIndicatorType } from "@domain/entities/price-matrix";
 import { MarginIndicator } from "./MarginIndicator";
 import { ServiceTypeBadge } from "./ServiceTypeBadge";
@@ -10,15 +10,15 @@ import {
   CardHeader,
   CardTitle,
   CardAction,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from "@shared/ui/primitives/card";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@shared/ui/primitives/dropdown-menu";
 import {
   Copy,
   Trash2,
@@ -28,7 +28,7 @@ import {
   Pencil,
   Users,
 } from "lucide-react";
-import { formatRelativeTime } from "@/lib/helpers/format";
+import { formatRelativeTime } from "@shared/lib/format";
 
 // ---------------------------------------------------------------------------
 // Types

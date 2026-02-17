@@ -16,10 +16,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@shared/ui/primitives/button";
+import { Label } from "@shared/ui/primitives/label";
+import { Input } from "@shared/ui/primitives/input";
+import { Textarea } from "@shared/ui/primitives/textarea";
 import {
   CustomerCombobox,
   type CustomerOption,
@@ -36,8 +36,8 @@ import {
   calculateDueDate,
   convertQuoteToInvoiceLineItems,
 } from "@domain/rules/invoice.rules";
-import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
-import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
+import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
+import { scrollToFirstError } from "@shared/lib/scroll-to-error";
 import type { Customer, PaymentTerms, PricingTier } from "@domain/entities/customer";
 import type { Invoice } from "@domain/entities/invoice";
 import type { Quote } from "@domain/entities/quote";

@@ -1,16 +1,16 @@
-import { jobs, screens } from "@/lib/mock-data";
 import type { CustomerScreen } from "@domain/entities/customer-screen";
 import type { Screen } from "@domain/entities/screen";
+import type { Job } from "@domain/entities/job";
 
-export function getScreensByJobId(jobId: string): Screen[] {
+export function getScreensByJobId(jobId: string, screens: Screen[]): Screen[] {
   return screens.filter((s) => s.jobId === jobId);
 }
 
-export function getActiveCustomerScreens(customerId: string): CustomerScreen[] {
-  return deriveScreensFromJobs(customerId);
+export function getActiveCustomerScreens(customerId: string, jobs: Job[]): CustomerScreen[] {
+  return deriveScreensFromJobs(customerId, jobs);
 }
 
-export function deriveScreensFromJobs(customerId: string): CustomerScreen[] {
+export function deriveScreensFromJobs(customerId: string, jobs: Job[]): CustomerScreen[] {
   const customerJobs = jobs.filter(
     (j) => j.customerId === customerId && j.lane === "done"
   );

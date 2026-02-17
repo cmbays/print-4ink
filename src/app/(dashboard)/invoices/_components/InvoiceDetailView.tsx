@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { ChevronDown, FileText, Hammer, ScrollText, CreditCard, Bell, Send, Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
+import { Separator } from "@shared/ui/primitives/separator";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@shared/ui/primitives/collapsible";
 import {
   Table,
   TableBody,
@@ -17,23 +17,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import { InvoiceActions } from "./InvoiceActions";
 import { PaymentLedger } from "./PaymentLedger";
 import { ReminderTimeline } from "./ReminderTimeline";
 import { ChangeDiffPanel } from "./ChangeDiffPanel";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   INVOICE_LINE_ITEM_TYPE_LABELS,
   PAYMENT_TERMS_LABELS,
   CREDIT_MEMO_REASON_LABELS,
 } from "@domain/constants";
 import { computeIsOverdue, isValidStatusTransition } from "@domain/rules/invoice.rules";
-import { formatDate } from "@/lib/helpers/format";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { formatDate } from "@shared/lib/format";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 import { toast } from "sonner";
 import type { Invoice, Payment } from "@domain/entities/invoice";
 import type { Customer } from "@domain/entities/customer";

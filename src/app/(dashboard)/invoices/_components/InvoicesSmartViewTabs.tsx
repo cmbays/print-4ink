@@ -3,7 +3,7 @@
 import { useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // ---------------------------------------------------------------------------
 // Tab definitions

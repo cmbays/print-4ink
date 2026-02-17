@@ -3,30 +3,31 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Search, LayoutGrid, List, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { cn } from "@shared/lib/cn";
+import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+} from "@shared/ui/primitives/select";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Button } from "@shared/ui/primitives/button";
+import { Label } from "@shared/ui/primitives/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import { ColorFilterGrid } from "./ColorFilterGrid";
 import { getColorById } from "@domain/rules/garment.rules";
+import { getColorsMutable } from "@infra/repositories/colors";
 import { garmentCategoryEnum } from "@domain/entities/garment";
 import { GARMENT_CATEGORY_LABELS } from "@domain/constants";
-import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
+import { PRICE_STORAGE_KEY } from "@shared/constants/garment-catalog";
 
 // ---------------------------------------------------------------------------
 // Constants — derived from canonical Zod enum + label map
@@ -116,10 +117,12 @@ export function GarmentCatalogToolbar({
 
   // --- Resolved color objects for pills ---
   const selectedColors = useMemo(
-    () =>
-      selectedColorIds
-        .map((id) => getColorById(id))
-        .filter((c) => c != null),
+    () => {
+      const allColors = getColorsMutable();
+      return selectedColorIds
+        .map((id) => getColorById(id, allColors))
+        .filter((c) => c != null);
+    },
     [selectedColorIds],
   );
 

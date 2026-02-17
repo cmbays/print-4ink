@@ -53,3 +53,6 @@ export async function getCustomerInvoices(customerId: string): Promise<Invoice[]
   if (!validateUUID(customerId)) return [];
   return invoices.filter((inv) => inv.customerId === customerId).map((inv) => structuredClone(inv));
 }
+
+/** Phase 1 only: returns raw mutable arrays for in-place mock data mutations. */
+export function getCustomersMutable(): Customer[] { return customers; }

@@ -9,8 +9,8 @@ import {
 } from "lucide-react";
 import { ENTITY_STYLES } from "@domain/constants/entities";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
 import type { Job } from "@domain/entities/job";
 
 interface QuickActionsBarProps {

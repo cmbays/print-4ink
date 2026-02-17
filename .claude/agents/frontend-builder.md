@@ -55,12 +55,12 @@ Follow these rules strictly:
 
 **Component rules**:
 - Server component by default. Only `"use client"` when hooks/events/browser APIs needed
-- Import from `@/components/ui/` for shadcn primitives
+- Import from `@shared/ui/primitives/` for shadcn primitives
 - Import from `@/components/features/` for shared domain components
 - Import from `@/lib/schemas/` for types via `z.infer<typeof schema>`
 - Import from `@/lib/mock-data` for data
 - Import from `@/lib/constants` for label/color mappings
-- Use `cn()` from `@/lib/utils` for conditional classes
+- Use `cn()` from `@shared/lib/cn` for conditional classes
 
 **Design system**:
 - Use semantic color tokens: `text-action`, `text-success`, `text-error`, `text-warning`

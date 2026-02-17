@@ -11,10 +11,10 @@ import {
 } from "@infra/repositories/customers";
 import { getColors } from "@infra/repositories/colors";
 import { getGarmentCatalog } from "@infra/repositories/garments";
-import { money, round2, toNumber } from "@/lib/helpers/money";
-import { Button } from "@/components/ui/button";
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { money, round2, toNumber } from "@domain/lib/money";
+import { Button } from "@shared/ui/primitives/button";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { CustomerDetailHeader } from "./_components/CustomerDetailHeader";
 import { CustomerTabs } from "./_components/CustomerTabs";
 

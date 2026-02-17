@@ -2,20 +2,21 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { Palette, Search, LayoutGrid, List } from "lucide-react";
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import {
   FavoritesColorSection,
   ColorSwatch,
 } from "@/components/features/FavoritesColorSection";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Input } from "@shared/ui/primitives/input";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Label } from "@shared/ui/primitives/label";
+import { Button } from "@shared/ui/primitives/button";
+import { cn } from "@shared/lib/cn";
 import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
 import { getColorsMutable } from "@infra/repositories/colors";
-import { getAutoPropagationConfigMutable } from "@infra/repositories/settings";
+import { getAutoPropagationConfigMutable, getBrandPreferencesMutable } from "@infra/repositories/settings";
+import { getCustomersMutable } from "@infra/repositories/customers";
 import {
   propagateAddition,
   getImpactPreview,
@@ -27,7 +28,7 @@ import { displayPreferenceSchema } from "@domain/entities/color-preferences";
 import type { Color } from "@domain/entities/color";
 import type { ImpactPreview } from "@domain/rules/customer.rules";
 import type { DisplayPreference } from "@domain/entities/color-preferences";
-import { useDebounce } from "@/lib/hooks/useDebounce";
+import { useDebounce } from "@shared/hooks/useDebounce";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -143,11 +144,11 @@ export function SettingsColorsClient({
         // N4 addition path: toggle + propagate if enabled
         applyGlobalToggle(colorId, true);
         if (autoPropagate) {
-          propagateAddition("global", colorId);
+          propagateAddition("global", colorId, getBrandPreferencesMutable(), getCustomersMutable(), getAutoPropagationConfigMutable());
         }
       } else {
         // N4 removal path: check impact before removing
-        const impact = getImpactPreview("global", colorId);
+        const impact = getImpactPreview("global", colorId, getCustomersMutable(), getBrandPreferencesMutable());
         if (impact.supplierCount > 0 || impact.customerCount > 0) {
           // Open RemovalConfirmationDialog — don't toggle yet
           setPendingRemoval({ colorId, color, impact });
@@ -164,7 +165,7 @@ export function SettingsColorsClient({
   const handleRemoveAll = useCallback(() => {
     if (!pendingRemoval) return;
     applyGlobalToggle(pendingRemoval.colorId, false);
-    removeFromAll("global", pendingRemoval.colorId);
+    removeFromAll("global", pendingRemoval.colorId, getBrandPreferencesMutable(), getCustomersMutable());
     setPendingRemoval(null);
   }, [pendingRemoval, applyGlobalToggle]);
 
@@ -179,7 +180,7 @@ export function SettingsColorsClient({
     (brandNames: string[], customerCompanies: string[]) => {
       if (!pendingRemoval) return;
       applyGlobalToggle(pendingRemoval.colorId, false);
-      removeFromSelected("global", pendingRemoval.colorId, brandNames, customerCompanies);
+      removeFromSelected("global", pendingRemoval.colorId, brandNames, customerCompanies, getBrandPreferencesMutable(), getCustomersMutable());
       setPendingRemoval(null);
     },
     [pendingRemoval, applyGlobalToggle]

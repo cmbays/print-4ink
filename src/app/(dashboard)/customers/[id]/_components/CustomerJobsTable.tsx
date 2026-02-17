@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   LANE_LABELS,
   LANE_COLORS,
   PRIORITY_LABELS,
   PRIORITY_COLORS,
 } from "@domain/constants";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import type { Job } from "@domain/entities/job";
 
 interface CustomerJobsTableProps {

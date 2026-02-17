@@ -5,7 +5,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@shared/ui/primitives/collapsible";
 interface CollapsibleSectionProps {
   title: string;
   icon?: React.ReactNode;

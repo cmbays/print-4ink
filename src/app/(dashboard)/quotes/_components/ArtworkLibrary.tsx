@@ -3,10 +3,10 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import { Search, Upload, Check, ImageIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { Input } from "@shared/ui/primitives/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Badge } from "@shared/ui/primitives/badge";
+import { cn } from "@shared/lib/cn";
 import type { Artwork } from "@domain/entities/artwork";
 import type { CustomerTag } from "@domain/entities/customer";
 import { ARTWORK_TAG_LABELS } from "@domain/constants";

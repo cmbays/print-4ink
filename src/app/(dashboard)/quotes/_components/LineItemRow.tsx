@@ -2,17 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { Trash2, ChevronDown, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@shared/ui/primitives/popover";
 import {
   Command,
   CommandEmpty,
@@ -20,12 +20,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@shared/ui/primitives/command";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { ArtworkAssignmentPicker } from "./ArtworkAssignmentPicker";
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
@@ -33,7 +33,7 @@ import type { GarmentCatalog, GarmentCategory } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 import type { Artwork } from "@domain/entities/artwork";
 import type { ServiceType } from "@domain/entities/quote";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 
 export interface PrintLocationDetail {
   location: string;

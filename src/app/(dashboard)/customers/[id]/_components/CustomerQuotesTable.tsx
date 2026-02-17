@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { Copy } from "lucide-react";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 
 import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_COLORS,
 } from "@domain/constants";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import type { Quote } from "@domain/entities/quote";
 
 interface CustomerQuotesTableProps {

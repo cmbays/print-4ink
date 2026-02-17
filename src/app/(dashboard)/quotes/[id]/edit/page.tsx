@@ -1,10 +1,10 @@
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { QuoteForm } from "../../_components/QuoteForm";
 import type { QuoteFormInitialData } from "../../_components/QuoteForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { getQuoteById } from "@infra/repositories/quotes";
 import { getCustomers } from "@infra/repositories/customers";
 import { getColors } from "@infra/repositories/colors";

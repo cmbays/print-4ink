@@ -3,9 +3,9 @@
 import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@shared/ui/primitives/button";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
 import {
   Dialog,
   DialogContent,
@@ -13,16 +13,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@shared/ui/primitives/dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { WithTooltip } from "@/components/ui/with-tooltip";
+} from "@shared/ui/primitives/popover";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
+import { Separator } from "@shared/ui/primitives/separator";
+import { WithTooltip } from "@shared/ui/primitives/with-tooltip";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -50,9 +50,9 @@ import {
 } from "lucide-react";
 import { allScreenPrintTemplates } from "@/lib/mock-data-pricing";
 import { calculateTemplateHealth } from "@domain/services/pricing.service";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { MarginLegend } from "@/components/features/MarginLegend";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import type {
   PricingTemplate,
   CostConfig,

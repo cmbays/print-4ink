@@ -1,18 +1,18 @@
 "use client";
 
 import { Send, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@shared/ui/primitives/button";
+import { Separator } from "@shared/ui/primitives/separator";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
+} from "@shared/ui/primitives/sheet";
 import { InvoicePricingSummary } from "./InvoicePricingSummary";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@domain/lib/money";
 import type { InvoiceLineItemData } from "./InvoiceLineItemRow";
 
 interface ReviewSendSheetProps {

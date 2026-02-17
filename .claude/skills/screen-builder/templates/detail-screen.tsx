@@ -15,8 +15,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from "@shared/ui/primitives/card";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,11 +24,11 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@shared/ui/primitives/breadcrumb";
 // import { StatusBadge } from "@/components/features/status-badge";
 // import { PriorityBadge } from "@/components/features/priority-badge";
 import { ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // Import mock data + constants
 // import { jobs, customers } from "@/lib/mock-data";

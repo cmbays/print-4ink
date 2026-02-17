@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { RISK_COLORS, RISK_LABELS } from "@domain/constants";
 import type { RiskLevel } from "@domain/entities/job";
 

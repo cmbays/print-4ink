@@ -7,8 +7,8 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@shared/ui/primitives/sheet";
+import { ScrollArea } from "@shared/ui/primitives/scroll-area";
 import { QuoteDetailView } from "./QuoteDetailView";
 import type { Quote } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";

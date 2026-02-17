@@ -3,4 +3,5 @@
 export {
   getArtworks,
   getArtworkById,
+  getArtworksMutable,
 } from '@infra/repositories/_providers/mock/artworks';

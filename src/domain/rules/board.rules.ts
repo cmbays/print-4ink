@@ -3,8 +3,12 @@ import type { Lane } from "@domain/entities/job";
 import type { BoardCard } from "@domain/entities/board-card";
 import type { JobCard, ScratchNoteCard } from "@domain/entities/board-card";
 import type { Job } from "@domain/entities/job";
+import type { Customer } from "@domain/entities/customer";
+import type { Invoice } from "@domain/entities/invoice";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { Color } from "@domain/entities/color";
+import type { Artwork } from "@domain/entities/artwork";
 import { computeTaskProgress } from "@domain/rules/job.rules";
-import { customers, invoices, garmentCatalog, colors as allColors, artworks as allArtworks } from "@/lib/mock-data";
 
 /** Drag IDs are "job:{uuid}", "quote:{quoteId}", "scratch:{uuid}" */
 export function parseDragId(dragId: string): { cardType: string; cardId: string } | null {
@@ -54,7 +58,14 @@ export function getCardSortDate(card: BoardCard): string {
 // Projection: Job → JobCard view model
 // ---------------------------------------------------------------------------
 
-export function projectJobToCard(job: Job): JobCard {
+export function projectJobToCard(
+  job: Job,
+  customers: Customer[],
+  invoices: Invoice[],
+  garmentCatalog: GarmentCatalog[],
+  colors: Color[],
+  artworks: Artwork[],
+): JobCard {
   const customer = customers.find((c) => c.id === job.customerId);
   const progress = computeTaskProgress(job.tasks);
   const invoice = job.invoiceId
@@ -94,12 +105,12 @@ export function projectJobToCard(job: Job): JobCard {
     })(),
     garmentColorHex: (() => {
       const colorId = job.garmentDetails[0]?.colorId;
-      const color = allColors.find((c) => c.id === colorId);
+      const color = colors.find((c) => c.id === colorId);
       return color?.hex;
     })(),
     primaryArtworkUrl: (() => {
       const artworkId = job.artworkIds?.[0];
-      const artwork = allArtworks.find((a) => a.id === artworkId);
+      const artwork = artworks.find((a) => a.id === artworkId);
       return artwork?.thumbnailUrl;
     })(),
   };

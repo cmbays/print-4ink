@@ -1,5 +1,5 @@
 import { Zap, Package, Layers } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { LANE_LABELS, LANE_COLORS } from "@domain/constants";
 import type { CapacitySummary } from "@domain/rules/job.rules";

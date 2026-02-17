@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Pencil, Copy, Send, Receipt, Hammer } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import type { Quote } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";

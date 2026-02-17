@@ -6,7 +6,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import { JobCardBody, jobCardContainerClass } from "./JobCardBody";
 import type { JobCard } from "@domain/entities/board-card";
 

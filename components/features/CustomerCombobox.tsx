@@ -3,14 +3,14 @@
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus, User, Building2, Mail, Phone, ExternalLink } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@shared/ui/primitives/popover";
 import {
   Command,
   CommandEmpty,
@@ -19,7 +19,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command";
+} from "@shared/ui/primitives/command";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   CONTACT_ROLE_LABELS,

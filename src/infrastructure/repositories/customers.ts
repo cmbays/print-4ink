@@ -9,4 +9,5 @@ export {
   getCustomerNotes,
   getCustomerArtworks,
   getCustomerInvoices,
+  getCustomersMutable,
 } from '@infra/repositories/_providers/mock/customers';

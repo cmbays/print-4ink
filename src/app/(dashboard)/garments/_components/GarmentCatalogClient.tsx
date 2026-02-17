@@ -3,15 +3,18 @@
 import { useState, useMemo, useSyncExternalStore, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Package } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { GarmentCatalogToolbar } from "./GarmentCatalogToolbar";
 import { GarmentCard } from "./GarmentCard";
 import { GarmentTableRow } from "./GarmentTableRow";
 import { GarmentDetailDrawer } from "./GarmentDetailDrawer";
 import { BrandDetailDrawer } from "./BrandDetailDrawer";
 import { resolveEffectiveFavorites } from "@domain/rules/customer.rules";
+import { getColorsMutable } from "@infra/repositories/colors";
+import { getCustomersMutable } from "@infra/repositories/customers";
+import { getBrandPreferencesMutable } from "@infra/repositories/settings";
 import { useColorFilter } from "@/lib/hooks/useColorFilter";
-import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
+import { PRICE_STORAGE_KEY } from "@shared/constants/garment-catalog";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { Job } from "@domain/entities/job";
 import type { Customer } from "@domain/entities/customer";
@@ -54,7 +57,7 @@ export function GarmentCatalogClient({
 
   // Resolved global favorites — single source of truth passed as props (fix #4)
   const globalFavoriteColorIds = useMemo(
-    () => resolveEffectiveFavorites("global"),
+    () => resolveEffectiveFavorites("global", undefined, getColorsMutable(), getCustomersMutable(), getBrandPreferencesMutable()),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [favoriteVersion],
   );

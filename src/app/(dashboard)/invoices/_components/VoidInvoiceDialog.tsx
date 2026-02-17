@@ -12,9 +12,9 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+} from "@shared/ui/primitives/alert-dialog";
+import { Textarea } from "@shared/ui/primitives/textarea";
+import { Label } from "@shared/ui/primitives/label";
 
 interface VoidInvoiceDialogProps {
   open: boolean;

@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRightLeft, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { Button } from "@shared/ui/primitives/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@shared/ui/primitives/tabs";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 
 import { GarmentMockupCard, MockupFilterProvider } from "@/components/features/mockup";
 import type { ArtworkPlacement } from "@/components/features/mockup";

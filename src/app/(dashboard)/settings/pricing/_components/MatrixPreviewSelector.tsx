@@ -6,9 +6,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/select";
+import { Button } from "@shared/ui/primitives/button";
+import { cn } from "@shared/lib/cn";
 import type { GarmentCategory } from "@domain/entities/garment";
 import type { LocationUpcharge, GarmentTypePricing } from "@domain/entities/price-matrix";
 import { Shirt, MapPin } from "lucide-react";

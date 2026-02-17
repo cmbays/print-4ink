@@ -2,18 +2,18 @@
 
 import { useState, useRef, useMemo } from "react";
 import { Search, Check, Star } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@shared/ui/primitives/input";
+import { ScrollArea } from "@shared/ui/primitives/scroll-area";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/tooltip";
+import { cn } from "@shared/lib/cn";
 import { swatchTextStyle } from "@/lib/helpers/swatch";
 import type { Color } from "@domain/entities/color";
 import { getColorsMutable } from "@infra/repositories/colors";
-import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
+import { useGridKeyboardNav } from "@shared/hooks/useGridKeyboardNav";
 
 type ColorSwatchPickerProps = {
   colors: Color[];

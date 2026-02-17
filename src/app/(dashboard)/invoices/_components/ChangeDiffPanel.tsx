@@ -5,9 +5,9 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+} from "@shared/ui/primitives/collapsible";
+import { cn } from "@shared/lib/cn";
+import { money, toNumber, formatCurrency } from "@domain/lib/money";
 import type { PricingSnapshot } from "@domain/entities/invoice";
 
 interface ChangeDiffPanelProps {

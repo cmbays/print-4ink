@@ -1,5 +1,5 @@
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { QuoteForm } from "../_components/QuoteForm";
 import type { QuoteFormInitialData } from "../_components/QuoteForm";
 import { getQuoteById } from "@infra/repositories/quotes";

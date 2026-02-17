@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { Input } from "@shared/ui/primitives/input";
+import { Button } from "@shared/ui/primitives/button";
+import { Label } from "@shared/ui/primitives/label";
+import { cn } from "@shared/lib/cn";
 import { formatCurrency } from "@domain/services/pricing.service";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@domain/lib/money";
 import type { QuantityTier } from "@domain/entities/price-matrix";
 import { Plus, Trash2, AlertTriangle } from "lucide-react";
 

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs } from "@shared/lib/breadcrumbs";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import { getScreens } from "@infra/repositories/screens";
 import { getJobs } from "@infra/repositories/jobs";
 import { BURN_STATUS_LABELS } from "@domain/constants";

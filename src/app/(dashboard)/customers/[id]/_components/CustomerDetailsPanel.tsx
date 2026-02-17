@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, Building2, CreditCard, Calendar, UserPlus } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@shared/ui/primitives/badge";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { HealthBadge } from "@/components/features/HealthBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";

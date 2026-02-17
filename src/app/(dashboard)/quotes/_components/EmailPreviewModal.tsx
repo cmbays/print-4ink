@@ -2,7 +2,7 @@
 
 import { Mail } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import {
   Dialog,
   DialogContent,
@@ -10,10 +10,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@shared/ui/primitives/dialog";
 import type { Quote } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@domain/lib/money";
 
 interface EmailPreviewModalProps {
   open: boolean;

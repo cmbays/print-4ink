@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { StickyNote, Pin, PinOff, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@shared/ui/primitives/button";
+import { Textarea } from "@shared/ui/primitives/textarea";
+import { Badge } from "@shared/ui/primitives/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/select";
+import { cn } from "@shared/lib/cn";
 import { NOTE_CHANNEL_LABELS } from "@domain/constants";
 import type { Note, NoteChannel, NoteEntityType } from "@domain/entities/note";
 

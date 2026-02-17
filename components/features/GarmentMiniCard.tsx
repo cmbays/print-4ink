@@ -2,7 +2,7 @@
 
 import { Heart, Shirt } from "lucide-react";
 import { GarmentImage } from "@/components/features/GarmentImage";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { GarmentCatalog } from "@domain/entities/garment";
 
 interface GarmentMiniCardProps {

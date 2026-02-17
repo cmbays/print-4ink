@@ -7,10 +7,10 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Button } from "@shared/ui/primitives/button";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   buildFullMatrixData,
   formatCurrency,
@@ -21,7 +21,7 @@ import type {
   MarginBreakdown,
 } from "@domain/entities/price-matrix";
 import type { GarmentCategory } from "@domain/entities/garment";
-import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
+import { useSpreadsheetEditor } from "@shared/hooks/useSpreadsheetEditor";
 import { X } from "lucide-react";
 
 const dotColors: Record<MarginIndicator, string> = {

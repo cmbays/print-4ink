@@ -11,14 +11,14 @@ import {
 } from "lucide-react";
 
 import { z } from "zod";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
+} from "@shared/ui/primitives/tooltip";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Table,
   TableBody,
@@ -26,13 +26,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { computeIsOverdue } from "@domain/rules/invoice.rules";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { ENTITY_STYLES } from "@domain/constants/entities";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";

@@ -1,4 +1,4 @@
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@domain/lib/money";
 import { DEPOSIT_DEFAULTS_BY_TIER } from "@domain/constants";
 import type { InvoiceStatus } from "@domain/entities/invoice";
 import type { Quote } from "@domain/entities/quote";

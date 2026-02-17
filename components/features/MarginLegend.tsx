@@ -2,8 +2,8 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/tooltip";
+import { cn } from "@shared/lib/cn";
 
 const items = [
   { color: "bg-success", label: "Healthy", threshold: "\u226530%", tooltip: "Margin is 30% or above \u2014 price comfortably covers costs" },

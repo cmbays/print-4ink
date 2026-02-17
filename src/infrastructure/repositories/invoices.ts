@@ -6,4 +6,5 @@ export {
   getInvoicePayments,
   getInvoiceCreditMemos,
   getQuoteInvoice,
+  getInvoicesMutable,
 } from '@infra/repositories/_providers/mock/invoices';

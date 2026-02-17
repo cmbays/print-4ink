@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { Badge } from "@shared/ui/primitives/badge";
+import { cn } from "@shared/lib/cn";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   CUSTOMER_TYPE_TAG_COLORS,

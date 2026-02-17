@@ -17,9 +17,9 @@ import {
 import { z } from "zod";
 import { ENTITY_STYLES } from "@domain/constants/entities";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Table,
   TableBody,
@@ -27,13 +27,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@shared/ui/primitives/dropdown-menu";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { LaneBadge } from "@/components/features/LaneBadge";
@@ -42,7 +42,7 @@ import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { computeTaskProgress } from "@domain/rules/job.rules";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import {
   LANE_LABELS,
   RISK_LABELS,

@@ -3,18 +3,18 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Filter, X, LayoutGrid } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { cn } from "@shared/lib/cn";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Label } from "@shared/ui/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import {
   RISK_LABELS,
   SERVICE_TYPE_LABELS,

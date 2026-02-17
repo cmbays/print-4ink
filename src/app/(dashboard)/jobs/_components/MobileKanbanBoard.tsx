@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, AlertTriangle, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { MobileLaneTabBar } from "./MobileLaneTabBar";
 import { BlockReasonSheet } from "@/components/features/BlockReasonSheet";
 import { JobCardBody, jobCardContainerClass } from "./JobCardBody";
 import { QuoteCardBody, quoteCardContainerClass } from "./QuoteCardBody";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import type {
   JobCard,
   QuoteCard,

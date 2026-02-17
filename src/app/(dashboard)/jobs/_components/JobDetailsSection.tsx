@@ -1,9 +1,12 @@
 import { Package, MapPin, Shirt, CheckCircle2, XCircle, Printer } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@shared/lib/cn";
+import { Badge } from "@shared/ui/primitives/badge";
 import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@domain/constants";
 import { getGarmentById, getColorById } from "@domain/rules/garment.rules";
 import { getScreensByJobId } from "@domain/rules/screen.rules";
+import { getGarmentCatalogMutable } from "@infra/repositories/garments";
+import { getColorsMutable } from "@infra/repositories/colors";
+import { getScreensMutable } from "@infra/repositories/screens";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import type { Job } from "@domain/entities/job";
 
@@ -12,7 +15,10 @@ interface JobDetailsSectionProps {
 }
 
 export function JobDetailsSection({ job }: JobDetailsSectionProps) {
-  const jobScreens = getScreensByJobId(job.id);
+  const allScreens = getScreensMutable();
+  const allGarments = getGarmentCatalogMutable();
+  const allColors = getColorsMutable();
+  const jobScreens = getScreensByJobId(job.id, allScreens);
 
   return (
     <section className="rounded-lg border border-border bg-card">
@@ -42,8 +48,8 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
             <Shirt className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <div className="space-y-2">
               {job.garmentDetails.map((gd) => {
-                const garment = getGarmentById(gd.garmentId);
-                const color = getColorById(gd.colorId);
+                const garment = getGarmentById(gd.garmentId, allGarments);
+                const color = getColorById(gd.colorId, allColors);
                 return (
                   <div key={`${gd.garmentId}:${gd.colorId}`} className="flex items-start gap-3">
                     {garment && (

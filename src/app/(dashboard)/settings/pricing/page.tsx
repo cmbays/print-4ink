@@ -2,14 +2,14 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { cn } from "@shared/lib/cn";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Badge } from "@shared/ui/primitives/badge";
 import { Plus, Tag, Search } from "lucide-react";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
 import { SERVICE_TYPE_COLORS } from "@domain/constants";

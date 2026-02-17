@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
-import { formatDate } from "@/lib/helpers/format";
+import { cn } from "@shared/lib/cn";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
+import { formatDate } from "@shared/lib/format";
 import type { JobTask } from "@domain/entities/job";
 
 interface TaskItemProps {

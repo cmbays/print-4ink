@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Topbar } from "@/components/layout/topbar";
+import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
+import { Topbar } from "@shared/ui/layouts/topbar";
 import { CapacitySummary } from "@/components/features/CapacitySummary";
 import {
   LANE_LABELS,
@@ -10,7 +10,7 @@ import {
 } from "@domain/constants";
 import { getJobs } from "@infra/repositories/jobs";
 import { getCustomers } from "@infra/repositories/customers";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber } from "@domain/lib/money";
 import {
   AlertTriangle,
   Calendar,

@@ -8,18 +8,18 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+} from "@shared/ui/primitives/dialog";
+import { Button } from "@shared/ui/primitives/button";
+import { Badge } from "@shared/ui/primitives/badge";
+import { ScrollArea } from "@shared/ui/primitives/scroll-area";
+import { Separator } from "@shared/ui/primitives/separator";
 import {
   buildFullMatrixData,
   calculateDiff,
   formatCurrency,
   formatPercent,
 } from "@domain/services/pricing.service";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { PricingTemplate } from "@domain/entities/price-matrix";
 import {
   ArrowDownRight,

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Pencil, Send, Ban, CreditCard, Bell, FileText, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { toast } from "sonner";
 import { isValidStatusTransition } from "@domain/rules/invoice.rules";
 import type { Invoice } from "@domain/entities/invoice";

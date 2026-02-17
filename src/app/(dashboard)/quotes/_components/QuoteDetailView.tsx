@@ -1,36 +1,36 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+import { Separator } from "@shared/ui/primitives/separator";
+import { Badge } from "@shared/ui/primitives/badge";
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { DiscountRow } from "./DiscountRow";
 import { QuoteActions } from "./QuoteActions";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
 import { normalizePosition } from "@domain/constants/print-zones";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { Copy, DollarSign, Hammer, Info, Pencil, Receipt, Send } from "lucide-react";
 import { toast } from "sonner";
 import { MatrixPeekSheet } from "./MatrixPeekSheet";
-import { BottomActionBar } from "@/components/layout/bottom-action-bar";
+import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 import type { Quote, QuoteLineItem } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";
 import type { Artwork } from "@domain/entities/artwork";
 import type { Color } from "@domain/entities/color";
 import type { GarmentCatalog } from "@domain/entities/garment";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@domain/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
-import { cn } from "@/lib/utils";
-import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { cn } from "@shared/lib/cn";
+import { money, round2, toNumber, formatCurrency } from "@domain/lib/money";
 
 type QuoteDetailViewProps = {
   quote: Quote;

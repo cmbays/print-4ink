@@ -6,12 +6,12 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/tooltip";
+import { cn } from "@shared/lib/cn";
 import { swatchTextStyle } from "@/lib/helpers/swatch";
 import { getColorsMutable } from "@infra/repositories/colors";
 import type { Color } from "@domain/entities/color";
-import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
+import { useGridKeyboardNav } from "@shared/hooks/useGridKeyboardNav";
 
 const catalogColors = getColorsMutable();
 

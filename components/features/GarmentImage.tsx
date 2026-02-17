@@ -1,5 +1,5 @@
 import { Shirt } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 interface GarmentImageProps {
   brand: string;

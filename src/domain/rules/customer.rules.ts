@@ -1,16 +1,12 @@
-import {
-  colors,
-  customers,
-  brandPreferences,
-  autoPropagationConfig,
-} from "@/lib/mock-data";
-import type { BrandPreference } from "@domain/entities/color-preferences";
+import type { Color } from "@domain/entities/color";
+import type { Customer } from "@domain/entities/customer";
+import type { BrandPreference, PropagationConfig } from "@domain/entities/color-preferences";
 
 // ---------------------------------------------------------------------------
 // Shared: global favorites derived from catalog
 // ---------------------------------------------------------------------------
 
-function getGlobalFavoriteIds(): string[] {
+function getGlobalFavoriteIds(colors: Color[]): string[] {
   return colors.filter((c) => c.isFavorite === true).map((c) => c.id);
 }
 
@@ -23,9 +19,12 @@ type EntityType = "global" | "brand" | "customer";
 
 export function resolveEffectiveFavorites(
   entityType: EntityType,
-  entityId?: string
+  entityId: string | undefined,
+  colors: Color[],
+  customers: Customer[],
+  brandPreferences: BrandPreference[],
 ): string[] {
-  const globalFavorites = getGlobalFavoriteIds();
+  const globalFavorites = getGlobalFavoriteIds(colors);
 
   switch (entityType) {
     case "global":
@@ -51,7 +50,7 @@ export function resolveEffectiveFavorites(
 
     default: {
       const _exhaustive: never = entityType;
-      return _exhaustive;
+      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`);
     }
   }
 }
@@ -69,9 +68,12 @@ export type InheritanceChain = {
 
 export function getInheritanceChain(
   entityType: EntityType,
-  entityId?: string
+  entityId: string | undefined,
+  colors: Color[],
+  customers: Customer[],
+  brandPreferences: BrandPreference[],
 ): InheritanceChain {
-  const globalDefaults = getGlobalFavoriteIds();
+  const globalDefaults = getGlobalFavoriteIds(colors);
 
   switch (entityType) {
     case "global":
@@ -105,7 +107,7 @@ export function getInheritanceChain(
 
     default: {
       const _exhaustive: never = entityType;
-      return _exhaustive;
+      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`);
     }
   }
 }
@@ -113,13 +115,15 @@ export function getInheritanceChain(
 // ---------------------------------------------------------------------------
 // N22: propagateAddition
 // If autoPropagate is enabled, find inheriting children and append colorId
-// PHASE 1: Mutates mock-data arrays in-place. In Phase 3 this becomes an API
-// call that writes to the database — no shared-reference mutation.
+// PHASE 1: Mutates arrays in-place. In Phase 3 this becomes an API call.
 // ---------------------------------------------------------------------------
 
 export function propagateAddition(
   level: "global" | "brand",
-  colorId: string
+  colorId: string,
+  brandPreferences: BrandPreference[],
+  customers: Customer[],
+  autoPropagationConfig: PropagationConfig,
 ): void {
   if (!autoPropagationConfig.autoPropagate) return;
 
@@ -152,8 +156,6 @@ export function propagateAddition(
 
   if (level === "brand") {
     // PHASE 1 STUB: Brand→customer propagation not wired until V4/V5.
-    // Callers should check the brand-level propagation is a no-op in Phase 1.
-    // This will be expanded when brand→customer hierarchy is wired.
     console.warn(
       "[color-preferences] propagateAddition: brand-level propagation is a Phase 1 stub (no-op)"
     );
@@ -176,7 +178,9 @@ export type ImpactPreview = {
 
 export function getImpactPreview(
   level: "global" | "brand",
-  colorId: string
+  colorId: string,
+  customers: Customer[],
+  brandPreferences: BrandPreference[],
 ): ImpactPreview {
   const affectedSuppliers: string[] = [];
   const affectedCustomers: string[] = [];
@@ -235,12 +239,14 @@ function stripColorFromBrand(brand: BrandPreference, colorId: string): void {
 // ---------------------------------------------------------------------------
 // N16: removeFromAll
 // Remove color from all entities at and below the specified level.
-// PHASE 1: Mutates mock-data in-place.
+// PHASE 1: Mutates arrays in-place.
 // ---------------------------------------------------------------------------
 
 export function removeFromAll(
   level: "global" | "brand",
-  colorId: string
+  colorId: string,
+  brandPreferences: BrandPreference[],
+  customers: Customer[],
 ): void {
   if (level === "global") {
     // Remove from all brands that explicitly have this color
@@ -264,7 +270,7 @@ export function removeFromAll(
 
   if (level === "brand") {
     // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
-    // When customer-brand hierarchy is wired, iterate linked customers here
+    console.warn("[customer.rules] removeFromAll: brand-level cascade is a Phase 1 stub (no-op) — implement in V5");
   }
 }
 
@@ -277,7 +283,7 @@ export function removeFromAll(
 
 export function removeFromLevelOnly(
   level: "global" | "brand",
-  colorId: string
+  colorId: string,
 ): void {
   void level;
   void colorId;
@@ -290,14 +296,16 @@ export function removeFromLevelOnly(
 // ---------------------------------------------------------------------------
 // N18: removeFromSelected
 // Remove from selected entities only. Caller also removes from its own level.
-// PHASE 1: Mutates mock-data in-place.
+// PHASE 1: Mutates arrays in-place.
 // ---------------------------------------------------------------------------
 
 export function removeFromSelected(
   level: "global" | "brand",
   colorId: string,
   brandNames: string[],
-  customerCompanies: string[]
+  customerCompanies: string[],
+  brandPreferences: BrandPreference[],
+  customers: Customer[],
 ): void {
   if (level === "global") {
     // Remove from selected brands
@@ -322,6 +330,7 @@ export function removeFromSelected(
 
   if (level === "brand") {
     // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
+    console.warn("[customer.rules] removeFromSelected: brand-level cascade is a Phase 1 stub (no-op) — implement in V5");
   }
 }
 
@@ -330,7 +339,8 @@ export function removeFromSelected(
 // ---------------------------------------------------------------------------
 
 export function getBrandPreference(
-  brandName: string
+  brandName: string,
+  brandPreferences: BrandPreference[],
 ): BrandPreference | undefined {
   return brandPreferences.find((b) => b.brandName === brandName);
 }

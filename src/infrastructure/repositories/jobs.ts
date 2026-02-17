@@ -9,4 +9,6 @@ export {
   getJobNotes,
   getQuoteCards,
   getScratchNotes,
+  getJobsMutable,
+  getQuoteCardsMutable,
 } from '@infra/repositories/_providers/mock/jobs';

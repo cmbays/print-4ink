@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/ui/primitives/button";
 import { DtfLineItemRow } from "./DtfLineItemRow";
 import { DTF_SIZE_PRESETS } from "@domain/rules/dtf.rules";
 import { getDtfSheetTiersSync } from "@infra/repositories/settings";

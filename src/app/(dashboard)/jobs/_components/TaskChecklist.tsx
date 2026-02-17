@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CheckCircle2, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
 import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { TaskItem } from "./TaskItem";
 import { AddCustomTaskInput } from "./AddCustomTaskInput";

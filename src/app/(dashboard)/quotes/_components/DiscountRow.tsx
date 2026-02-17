@@ -1,11 +1,11 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/helpers/money";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Badge } from "@shared/ui/primitives/badge";
+import { cn } from "@shared/lib/cn";
+import { formatCurrency } from "@domain/lib/money";
 
 interface DiscountRowProps {
   label: string;

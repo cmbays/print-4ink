@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import { formatCurrency, formatCurrencyCompact } from "@/lib/helpers/money";
+import { cn } from "@shared/lib/cn";
+import { formatCurrency, formatCurrencyCompact } from "@domain/lib/money";
 
 interface MoneyAmountProps {
   /** Numeric amount (or pre-formatted string — dollar sign is split off automatically) */

@@ -9,8 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/dropdown-menu";
+import { cn } from "@shared/lib/cn";
 
 type SortDir = "asc" | "desc";
 

@@ -128,6 +128,6 @@ EOF
 
 - Read existing code before writing new code — understand patterns in use
 - Check `components/ui/` for shadcn primitives before creating custom components
-- Use `cn()` from `@/lib/utils` for all className composition
+- Use `cn()` from `@shared/lib/cn` for all className composition
 - Keep PRs focused — one logical change per PR
 - If you discover work outside your task's scope, file a GitHub Issue instead of doing it

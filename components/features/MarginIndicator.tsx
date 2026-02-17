@@ -1,12 +1,12 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { MarginIndicator as MarginIndicatorType } from "@domain/entities/price-matrix";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/ui/primitives/tooltip";
 
 interface MarginIndicatorProps {
   percentage: number;

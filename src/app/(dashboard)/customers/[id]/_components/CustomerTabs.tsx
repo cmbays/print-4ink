@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@shared/ui/primitives/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/dropdown-menu";
+import { cn } from "@shared/lib/cn";
 import { ActivityTimeline } from "./ActivityTimeline";
 import { CustomerQuotesTable } from "./CustomerQuotesTable";
 import { CustomerJobsTable } from "./CustomerJobsTable";
@@ -74,7 +74,7 @@ export function CustomerTabs({
 }: CustomerTabsProps) {
   const defaultTab = customer.lifecycleStage === "prospect" ? "notes" : "activity";
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const screens = deriveScreensFromJobs(customer.id);
+  const screens = deriveScreensFromJobs(customer.id, jobs);
 
   const isSecondaryActive = (SECONDARY_TABS as readonly string[]).includes(activeTab);
 

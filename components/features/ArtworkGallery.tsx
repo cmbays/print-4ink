@@ -9,9 +9,9 @@ import {
   Trophy,
   Sun,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { cn } from "@shared/lib/cn";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Button } from "@shared/ui/primitives/button";
 import type { Artwork } from "@domain/entities/artwork";
 import { ARTWORK_TAG_LABELS } from "@domain/constants";
 

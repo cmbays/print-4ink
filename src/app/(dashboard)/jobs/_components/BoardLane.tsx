@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { ChevronDown, ChevronRight, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
 import { LANE_LABELS, LANE_COLORS } from "@domain/constants";
 import type { Lane } from "@domain/entities/job";
 import type { BoardCard } from "@domain/entities/board-card";

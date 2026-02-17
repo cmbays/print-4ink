@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { BottomSheet } from "@shared/ui/primitives/bottom-sheet";
+import { Button } from "@shared/ui/primitives/button";
+import { Textarea } from "@shared/ui/primitives/textarea";
+import { Switch } from "@shared/ui/primitives/switch";
+import { Label } from "@shared/ui/primitives/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@shared/ui/primitives/select";
 import { Send, ShieldAlert, ShieldCheck } from "lucide-react";
 
 const channels = [

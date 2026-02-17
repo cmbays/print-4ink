@@ -8,26 +8,26 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@/components/ui/sheet";
+} from "@shared/ui/primitives/sheet";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@shared/ui/primitives/select";
+import { Button } from "@shared/ui/primitives/button";
+import { Input } from "@shared/ui/primitives/input";
+import { Label } from "@shared/ui/primitives/label";
 import { Save, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   calculateCellMargin,
   formatCurrency,
   formatPercent,
   getMarginIndicator,
 } from "@domain/services/pricing.service";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@domain/lib/money";
 import type { CostConfig, PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
 
 // ---------------------------------------------------------------------------

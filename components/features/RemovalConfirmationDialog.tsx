@@ -12,15 +12,15 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from "@shared/ui/primitives/alert-dialog";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+} from "@shared/ui/primitives/collapsible";
+import { Checkbox } from "@shared/ui/primitives/checkbox";
+import { Button } from "@shared/ui/primitives/button";
+import { cn } from "@shared/lib/cn";
 import type { Color } from "@domain/entities/color";
 import type { ImpactPreview } from "@domain/rules/customer.rules";
 

@@ -17,9 +17,9 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+} from "@shared/ui/primitives/card";
+import { Badge } from "@shared/ui/primitives/badge";
+import { Input } from "@shared/ui/primitives/input";
 import {
   Table,
   TableBody,
@@ -27,14 +27,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@shared/ui/primitives/table";
 // import { PageHeader } from "@/components/features/page-header";
 // import { StatusBadge } from "@/components/features/status-badge";
 // import { PriorityBadge } from "@/components/features/priority-badge";
 // import { EmptyState } from "@/components/features/empty-state";
 // import { DataTable } from "@/components/features/data-table";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // Import mock data + constants for this domain
 // import { jobs } from "@/lib/mock-data";

@@ -4,9 +4,9 @@ import { ArrowLeft } from "lucide-react";
 import { getInvoiceById } from "@infra/repositories/invoices";
 import { getCustomers } from "@infra/repositories/customers";
 import { getQuoteById } from "@infra/repositories/quotes";
-import { Button } from "@/components/ui/button";
-import { Topbar } from "@/components/layout/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { Button } from "@shared/ui/primitives/button";
+import { Topbar } from "@shared/ui/layouts/topbar";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { InvoiceForm } from "@/src/app/(dashboard)/invoices/_components/InvoiceForm";
 
 export default async function EditInvoicePage({

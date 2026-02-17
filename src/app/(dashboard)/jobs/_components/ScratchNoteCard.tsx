@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { StickyNote, Plus, X, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { cn } from "@shared/lib/cn";
+import { Button } from "@shared/ui/primitives/button";
 import { CARD_TYPE_BORDER_COLORS } from "@domain/constants";
-import { formatRelativeTime } from "@/lib/helpers/format";
+import { formatRelativeTime } from "@shared/lib/format";
 import type { ScratchNoteCard as ScratchNoteCardType } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
