@@ -46,12 +46,13 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
    - Store the result as `$BASE`
 2. Run `git diff $BASE --stat` to get file list and line counts
 3. Run `git diff $BASE --name-only` to get the changed files
-3. Run `git log --oneline -5` to capture commit metadata
-4. Produce a `PRFacts` object conforming to `prFactsSchema` from `lib/schemas/review-pipeline.ts`:
-   - `filesChanged`: array of changed file paths
-   - `linesAdded`, `linesRemoved`: totals from git stat
-   - `commitMessages`: last 5 commit messages
+4. Run `git log --oneline -5` to capture commit metadata
+5. Produce a `PRFacts` object conforming to `prFactsSchema` from `lib/schemas/review-pipeline.ts`:
    - `branch`: current branch name from `git branch --show-current`
+   - `baseBranch`: `"main"` (or `"HEAD~1"` for local-only runs)
+   - `files`: array of `fileChangeSchema` objects (`path`, `additions`, `deletions`, `status`)
+   - `totalAdditions`, `totalDeletions`: totals from git stat
+   - `commits`: array of `commitInfoSchema` objects (`sha`, `message`, `author`)
 
 **Output**: `PRFacts` (immutable — stages 2-6 read but never mutate it)
 
@@ -63,15 +64,19 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 
 **Instructions**:
 1. Load `config/review-domains.json` (via `lib/review/load-config.ts`)
-2. For each file in `PRFacts.filesChanged`, match against glob patterns in the domain config
+2. For each file in `PRFacts.files`, match against glob patterns in the domain config
 3. Collect the unique set of matched domains
 4. Compute risk score: base 10 + 5 per additional domain + 1 per 50 lines changed
-5. Infer PR type: `feature` | `fix` | `refactor` | `config` based on commit messages and file patterns
-6. Produce `PRClassification` conforming to `prClassificationSchema`:
+5. Infer PR type: `feature` | `bugfix` | `refactor` | `docs` | `test` | `chore` | `mixed` based on commit messages and file patterns
+6. Derive `riskLevel` from `riskScore`: `low` (<20), `medium` (20-39), `high` (40-69), `critical` (≥70)
+7. Produce `PRClassification` conforming to `prClassificationSchema`:
    - `domains`: array of matched domain strings
-   - `riskScore`: numeric score
-   - `prType`: inferred type
-   - `scope`: `narrow` (1-2 domains) | `wide` (3+ domains) | `cross-cutting` (touches `design-system` + any other)
+   - `riskScore`: numeric score (0-100)
+   - `riskLevel`: derived risk level (reviewRiskLevelEnum)
+   - `type`: inferred PR type (prTypeEnum)
+   - `scope`: `small` | `medium` | `large` (prScopeEnum)
+   - `filesChanged`: count of files in `PRFacts.files`
+   - `linesChanged`: `PRFacts.totalAdditions + PRFacts.totalDeletions`
 
 **Output**: `PRClassification`
 
@@ -86,16 +91,18 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 2. For each composition policy:
    - If `trigger.type === "always"` → include the agent
    - If `trigger.type === "domain"` → include the agent if any `trigger.domains` intersect `PRClassification.domains`
-   - If `trigger.type === "risk"` → include the agent if `PRClassification.riskScore >= trigger.minRisk`
+   - If `trigger.type === "risk"` → include the agent if `PRClassification.riskLevel` meets or exceeds `trigger.riskLevel` (order: `low` < `medium` < `high` < `critical`)
 3. Sort dispatched agents by priority (highest first)
 4. For each dispatched agent, include scope context:
    - Which files they should focus on (filtered by their capabilities)
    - Which domains triggered their inclusion
-5. Produce `AgentManifest[]` conforming to `agentManifestSchema`:
+5. Produce `AgentManifest[]` conforming to `agentManifestEntrySchema`:
    - `agentId`: agent ID from registry
    - `reason`: why this agent was dispatched
-   - `focusFiles`: files relevant to this agent's capabilities
+   - `scope`: files relevant to this agent's capabilities
    - `priority`: numeric priority from composition policy
+   - `rules`: array of rule IDs from `config/review-rules.json` this agent should check
+   - `triggeredBy`: ID of the composition policy that triggered this entry
 
 **Output**: `AgentManifest[]`
 
@@ -106,7 +113,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 **Goal**: Identify concerns in the diff that the config-based classifier may have missed. Amend the manifest if needed.
 
 **Instructions** (you are the LLM performing this step — no sub-agent spawned):
-1. Read the full diff: `git diff HEAD~1`
+1. Read the full diff using the same base established in Stage 1: `git diff $BASE` (where `$BASE` is `HEAD~1` or the merge-base fallback determined in Stage 1)
 2. Review the diff against the current `AgentManifest[]`
 3. Ask yourself: "Are there patterns in this diff that none of the dispatched agents are specialized to catch?"
 4. Examples of gaps to look for:
@@ -120,8 +127,10 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 6. Produce amended `AgentManifest[]` and `GapLog[]`:
    - Each `GapLogEntry` conforming to `gapLogEntrySchema`:
      - `concern`: what was found
-     - `location`: file + approximate line
      - `recommendation`: which new rule or agent would catch this in future
+     - `confidence`: 0.0–1.0 float indicating how certain you are this is a real gap
+     - `suggestedRule`: (optional) rule ID that should be added to `config/review-rules.json`
+     - `suggestedAgent`: (optional) agent ID that should cover this concern
 
 **Output**: Amended `AgentManifest[]` + `GapLog[]`
 
@@ -135,7 +144,7 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 1. For each agent in the amended `AgentManifest[]`, spawn a Task with:
    - `subagent_type`: the agent ID (e.g., `"build-reviewer"`, `"finance-sme"`, `"design-auditor"`)
    - `prompt`: structured prompt including:
-     - List of files to review (`focusFiles` from manifest)
+     - List of files to review (`scope` from manifest)
      - The diff output for those files
      - Instruction to output structured JSON conforming to `ReviewFinding[]`
      - Reference to `config/review-rules.json` for the rule IDs to check against
@@ -148,20 +157,22 @@ Run all 6 stages in sequence. Each stage's output is the next stage's input. Do 
 You are the [agent name] agent performing a structured code review.
 
 Review the following changed files for issues:
-[focusFiles list]
+[scope list]
 
 Git diff:
-[filtered diff for focusFiles]
+[filtered diff for scope]
 
-Output ONLY a JSON array of findings conforming to this schema:
+Output ONLY a JSON array of findings conforming to reviewFindingSchema:
 {
-  "id": "<rule-id from config/review-rules.json or generated>",
+  "ruleId": "<rule-id from config/review-rules.json>",
+  "agent": "<your agent ID>",
   "severity": "critical" | "major" | "warning" | "info",
   "category": "<category string>",
   "file": "<relative file path>",
-  "line": <line number or null>,
+  "line": <line number — omit this field entirely for file-level findings>,
   "message": "<clear description of the finding>",
-  "recommendation": "<how to fix it>"
+  "fix": "<how to fix it>",
+  "dismissible": false
 }
 
 Return [] if no findings. Return only the JSON array — no markdown, no prose.
@@ -177,19 +188,26 @@ Return [] if no findings. Return only the JSON array — no markdown, no prose.
 
 **Instructions**:
 1. Merge all `ReviewFinding[]` arrays from Stage 5 into one flat array
-2. Dedupe: if two findings have the same `file` + `line` + `category`, keep the one with higher severity. For file-level findings where `line` is `null`, deduplicate when `file` + `category` match (treat `null` as a comparable value, not as distinct)
+2. Dedupe: if two findings have the same `ruleId` + `file` + `line`, keep the one with higher severity. For file-level findings where `line` is absent/omitted, deduplicate when `ruleId` + `file` match and both have no `line` field
 3. Sort by severity: `critical` → `major` → `warning` → `info`
-4. Count by severity: `criticalCount`, `majorCount`, `warningCount`, `infoCount`
+4. Build `metrics` (severityMetricsSchema): `{ critical, major, warning, info }` counts
 5. Compute gate decision (evaluate conditions in priority order — first match wins):
-   - `criticalCount > 0` → `fail`
-   - `majorCount > 0` → `needs_fixes`
-   - `warningCount > 0` → `pass_with_warnings`
+   - `metrics.critical > 0` → `fail`
+   - `metrics.major > 0` → `needs_fixes`
+   - `metrics.warning > 0` → `pass_with_warnings`
    - else → `pass`
 6. Produce `ReviewReport` conforming to `reviewReportSchema`:
-   - `gateDecision`: computed above
-   - `findings`: sorted finding array
-   - `agentsDispatched`: list of agent IDs that ran
-   - `gapLog`: `GapLog[]` from Stage 4
+   - `agentResults`: per-agent result objects from Stage 5
+   - `findings`: sorted, deduplicated finding array
+   - `gaps`: `GapLogEntry[]` from Stage 4
+   - `metrics`: severity counts object
+   - `agentsDispatched`: count of agents dispatched
+   - `agentsCompleted`: count of agents that returned results
+   - `deduplicated`: count of findings merged
+   - `timestamp`: ISO timestamp
+7. Produce `GateDecision` conforming to `gateDecisionSchema`:
+   - `decision`: gate value from step 5
+   - `metrics`: same severity counts object
    - `summary`: human-readable one-liner ("3 critical, 2 major, 1 warning — FAIL")
 
 **Output**: `ReviewReport` + `GateDecision`
@@ -219,7 +237,7 @@ After Stage 6, act on the gate decision:
 
 1. Proceed to Phase 3 (PR creation)
 2. For each warning finding, create a GitHub Issue with labels:
-   - `type/tech-debt`, `source/review`, `priority/low`
+   - `vertical/<name>`, `type/tech-debt`, `source/review`, `priority/low` or `priority/medium`
 3. Include warning count and issue links in the PR body
 
 ### `pass` — No findings
@@ -255,7 +273,7 @@ After the PR is merged (or during wrap-up), for each `GapLogEntry`:
 1. Create a GitHub Issue with:
    - Title: `review: add rule for [concern]`
    - Labels: `type/tooling`, `vertical/devx`, `priority/low`
-   - Body: gap entry's `concern`, `location`, and `recommendation` fields
+   - Body: gap entry's `concern`, `recommendation`, and `confidence` fields (plus `suggestedRule`/`suggestedAgent` if present)
 2. These issues feed back into `config/review-rules.json` and `config/review-domains.json` updates
 
 This closes the feedback loop — the system self-improves as gaps are found and codified.

@@ -6,7 +6,7 @@ phase: 1
 pipelineName: "Review Orchestration Engine"
 pipelineType: horizontal
 products: []
-tools: ["claude-code"]
+tools: ["skills-framework", "agent-system"]
 stage: wrap-up
 tags: [feature, decision, learning]
 sessionId: "0ba68ef8-1b02-40be-a039-2c63d6d15cd1"
@@ -55,7 +55,7 @@ Extracts the raw facts from git: which files changed, how many lines, what the c
 
 ```
 Input:  git state
-Output: PRFacts { filesChanged, linesAdded, linesRemoved, commitMessages, branch }
+Output: PRFacts { branch, baseBranch, files, totalAdditions, totalDeletions, commits }
 ```
 
 **Why immutable?** Following the Rule Engine pattern (Drools/OPA): data (facts) is separated from logic (rules) from execution (actions). Stages cannot corrupt the input.
@@ -70,21 +70,21 @@ Runs deterministic glob-to-domain matching against `config/review-domains.json`.
 
 ```
 Input:  PRFacts
-Output: PRClassification { domains, riskScore, prType, scope }
+Output: PRClassification { domains, riskScore, riskLevel, type, scope, filesChanged, linesChanged }
 ```
 
 **Example mappings** (from `config/review-domains.json`):
-- `lib/schemas/**` → `financial`
-- `lib/helpers/money*` → `financial`
+- `lib/schemas/**` → `schemas`
+- `lib/helpers/money.ts` → `financial`
 - `components/features/**` → `ui-components`
 - `app/globals.css` → `design-system`
-- `config/**` → `config`
+- `config/**` → `infrastructure`
 
-**Risk score** = base 10 + 5 per domain + 1 per 50 lines changed. A PR touching 3 domains with 200 lines changed scores ~35.
+**Risk score** = base 10 + 5 per additional domain (first domain free) + 1 per 50 lines changed. A PR touching 3 domains with 200 lines changed scores 24 (10 + 5×2 + 4).
 
-**PR type** inferred from commit message prefixes (`feat` → `feature`, `fix` → `fix`, `refactor` → `refactor`).
+**PR type** inferred from commit message prefixes (`feat` → `feature`, `fix` → `bugfix`, `refactor` → `refactor`, `docs` → `docs`, `test` → `test`, `chore` → `chore`). When commits mix types, resolves to `mixed`.
 
-**Scope** classifies breadth: `narrow` (1-2 domains), `wide` (3+ domains), `cross-cutting` (touches `design-system` + any other).
+**Scope** classifies size: `small` (few files, low lines), `medium`, `large` (many files or high line count).
 
 ---
 
@@ -94,13 +94,13 @@ Evaluates composition policies from `config/review-composition.json`. Pure funct
 
 ```
 Input:  PRClassification
-Output: AgentManifest[] { agentId, reason, focusFiles, priority }
+Output: AgentManifestEntry[] { agentId, reason, scope, priority, rules, triggeredBy }
 ```
 
 **Three trigger types:**
 - `always` — dispatch regardless of what changed (currently: `build-reviewer`)
 - `domain` — dispatch when matched domains overlap policy's domain list
-- `risk` — dispatch when `riskScore >= trigger.minRisk`
+- `risk` — dispatch when `PRClassification.riskLevel` meets or exceeds `trigger.riskLevel` (enum order: `low` < `medium` < `high` < `critical`)
 
 **Current composition policies:**
 
@@ -145,7 +145,7 @@ Output: ReviewFinding[] from each agent (merged flat)
 ```
 
 Each agent receives:
-1. List of files to focus on (`focusFiles` from manifest)
+1. List of files to review (`scope` from manifest)
 2. Git diff filtered to those files
 3. Instruction to output `ReviewFinding[]` JSON only — no prose, no markdown tables
 4. Reference to `config/review-rules.json` for rule IDs to check against
@@ -153,17 +153,19 @@ Each agent receives:
 **Finding schema** (uniform across all agents):
 ```json
 {
-  "id": "rule-id-from-config",
+  "ruleId": "rule-id-from-config",
+  "agent": "build-reviewer | finance-sme | design-auditor",
   "severity": "critical | major | warning | info",
   "category": "type-safety | financial-arithmetic | design-system | ...",
   "file": "relative/path/to/file.ts",
   "line": 42,
   "message": "What is wrong",
-  "recommendation": "How to fix it"
+  "fix": "How to fix it",
+  "dismissible": false
 }
 ```
 
-`line` may be `null` for file-level findings (e.g., "this file is missing tests").
+For file-level findings (e.g., "this file is missing tests"), omit the `line` field entirely — do not set it to `null`. The schema uses `.optional()`, not `.nullable()`.
 
 **Failure handling:** If an agent returns invalid JSON or times out, a `GapLogEntry` is created with `concern: "agent-dispatch-failure"` and the pipeline continues.
 
@@ -178,15 +180,15 @@ Input:  ReviewFinding[] (all agents)
 Output: ReviewReport + GateDecision
 ```
 
-**Deduplication:** Same `file` + `line` + `category` → keep higher severity. For `line: null` findings, same `file` + `category` → keep higher severity.
+**Deduplication:** Same `ruleId` + `file` + `line` → keep higher severity. For file-level findings where `line` is absent, same `ruleId` + `file` (both with no `line` field) → keep higher severity.
 
 **Gate decision** (conditions evaluated top-to-bottom, first match wins):
 
 | Condition | Decision | What happens |
 |-----------|----------|-------------|
-| `criticalCount > 0` | `fail` | Must fix, re-run from Stage 1 |
-| `majorCount > 0` | `needs_fixes` | Should fix, re-run from Stage 1 |
-| `warningCount > 0` | `pass_with_warnings` | File as GitHub Issues, proceed |
+| `metrics.critical > 0` | `fail` | Must fix, re-run from Stage 1 |
+| `metrics.major > 0` | `needs_fixes` | Should fix, re-run from Stage 1 |
+| `metrics.warning > 0` | `pass_with_warnings` | File as GitHub Issues, proceed |
 | otherwise | `pass` | Proceed immediately |
 
 **Metric-based, not rule-based** (SonarQube pattern). Adding new rules to config automatically makes the gate stricter without changing any gate logic code.
@@ -251,7 +253,7 @@ Or after a fix cycle:
 
 **PR**: Adds a new entry to `config/review-composition.json`
 
-**Stage 2**: domains = `["config"]`, riskScore = 11 (base 10 + 1 per 10 lines)
+**Stage 2**: domains = `["config"]`, riskScore = 10 (base 10, single domain, <50 lines changed)
 
 **Stage 3**: Only `build-reviewer` dispatched (universal policy; no `domain`-triggered agents match `config`)
 
@@ -271,7 +273,7 @@ Or after a fix cycle:
 
 **Stage 3**: `build-reviewer` (universal) + `finance-sme` (financial domain) + `design-auditor` (ui-components domain)
 
-**Stage 4**: LLM scans diff. Notices a `+` operator on a `subtotal` variable in `QuoteRow.tsx` — this file matched `ui-components` in Stage 2, but `finance-sme`'s `focusFiles` will include it because Stage 3 set `focusFiles` based on capabilities. No manifest amendment needed, no gap logged.
+**Stage 4**: LLM scans diff. Notices a `+` operator on a `subtotal` variable in `QuoteRow.tsx` — this file matched `ui-components` in Stage 2, but `finance-sme`'s `scope` will include it because Stage 3 set `scope` based on capabilities. No manifest amendment needed, no gap logged.
 
 **Stage 5**: Three agents run in parallel.
 - `finance-sme` finds: `+` operator on `subtotal` (critical, `fin-bigjs-01`)
@@ -300,8 +302,9 @@ Or after a fix cycle:
 ```json
 {
   "concern": "Monetary arithmetic operators found in lib/helpers/dtf-waste-calc.ts not covered by finance-sme",
-  "location": "lib/helpers/dtf-waste-calc.ts:18",
-  "recommendation": "Add glob 'lib/helpers/dtf-*' to financial domain in config/review-domains.json"
+  "recommendation": "Add glob 'lib/helpers/dtf-*' to financial domain in config/review-domains.json",
+  "confidence": 0.95,
+  "suggestedAgent": "finance-sme"
 }
 ```
 `finance-sme` added to manifest with `reason: "gap-detect"`.
@@ -341,7 +344,7 @@ Maps file glob patterns to domain names. Used in Stage 2 classification.
 
 ```json
 {
-  "glob": "lib/schemas/**",
+  "pattern": "lib/schemas/**",
   "domain": "financial",
   "description": "Zod schemas often define monetary field shapes"
 }
@@ -373,11 +376,13 @@ To dispatch a new agent for a domain: add a policy entry referencing the agent's
 {
   "id": "fin-bigjs-01",
   "name": "Financial arithmetic uses big.js",
+  "concern": "Monetary arithmetic without big.js causes silent IEEE 754 rounding errors",
   "severity": "critical",
   "agent": "finance-sme",
   "category": "financial-arithmetic",
-  "description": "IEEE 754 causes silent rounding errors",
-  "detection": "Arithmetic operators on monetary variables",
+  "scope": "local",
+  "description": "IEEE 754 causes silent rounding errors in JavaScript floating-point arithmetic",
+  "detection": "Arithmetic operators (+, -, *, /) on monetary variables outside big.js wrapper",
   "recommendation": "Use money(), round2(), toNumber() from lib/helpers/money.ts"
 }
 ```
@@ -418,22 +423,22 @@ The gate is metric-based — you can't change "thresholds" without changing the 
 
 | Schema | Fields |
 |--------|--------|
-| `reviewRuleSchema` | id, name, severity, agent, category, description, detection, recommendation |
-| `compositionPolicySchema` | id, trigger (type, domains?, minRisk?), dispatch, priority, description |
+| `reviewRuleSchema` | id, name, concern, severity, agent, category, scope, description, detection, recommendation, goodExample? |
+| `compositionPolicySchema` | id, trigger (type, domains?, riskLevel?, pattern?), dispatch, priority, description |
 | `agentRegistryEntrySchema` | id, name, tools, capabilities, description, outputFormat |
-| `domainMappingSchema` | glob, domain, description |
+| `domainMappingSchema` | pattern, domain, description |
 
 ### Pipeline schemas (`lib/schemas/review-pipeline.ts`)
 
 | Schema | Stage | Key fields |
 |--------|-------|-----------|
-| `prFactsSchema` | 1 output | filesChanged, linesAdded, linesRemoved, commitMessages, branch |
-| `prClassificationSchema` | 2 output | domains, riskScore, prType, scope |
-| `agentManifestSchema` | 3/4 output | agentId, reason, focusFiles, priority |
-| `gapLogEntrySchema` | 4 output | concern, location, recommendation |
-| `reviewFindingSchema` | 5 output | id, severity, category, file, line, message, recommendation |
-| `reviewReportSchema` | 6 output | gateDecision, findings, agentsDispatched, gapLog, summary |
-| `gateDecisionSchema` | 6 output | decision, criticalCount, majorCount, warningCount, infoCount |
+| `prFactsSchema` | 1 output | branch, baseBranch, files, totalAdditions, totalDeletions, commits |
+| `prClassificationSchema` | 2 output | domains, riskScore, riskLevel, type, scope, filesChanged, linesChanged |
+| `agentManifestEntrySchema` | 3/4 output | agentId, reason, scope, priority, rules, triggeredBy |
+| `gapLogEntrySchema` | 4 output | concern, recommendation, confidence, suggestedRule?, suggestedAgent? |
+| `reviewFindingSchema` | 5 output | ruleId, agent, severity, category, file, line?, message, fix?, dismissible |
+| `reviewReportSchema` | 6 output | agentResults, findings, gaps, metrics, agentsDispatched, agentsCompleted, deduplicated, timestamp |
+| `gateDecisionSchema` | 6 output | decision, metrics {critical, major, warning, info}, summary |
 
 ---
 
@@ -441,7 +446,7 @@ The gate is metric-based — you can't change "thresholds" without changing the 
 
 | Agent | Capabilities | Triggered When | Output |
 |-------|-------------|----------------|--------|
-| `build-reviewer` | type-safety, dry, tailwind, naming, patterns, accessibility, schema-consistency | Always (universal) | `ReviewFinding[]` JSON |
+| `build-reviewer` | type-safety, dry, modularity, tailwind, naming, patterns, accessibility, schema-consistency | Always (universal) | `ReviewFinding[]` JSON |
 | `finance-sme` | big-js, money-arithmetic, rounding, currency, financial-invariants | `financial`, `dtf-optimization` domains | `ReviewFinding[]` JSON |
 | `design-auditor` | design-system, visual-hierarchy, mobile-responsive, accessibility, color-tokens, spacing | `ui-components`, `design-system` domains | `ReviewFinding[]` JSON |
 

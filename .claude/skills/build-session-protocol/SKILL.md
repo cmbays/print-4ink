@@ -46,9 +46,9 @@ After implementation is complete, run automated review orchestration:
 
 ### Phase 3: Create PR
 
-11. Stage and commit changes with a descriptive message
-12. Push the branch to origin
-13. Create a PR using the merge checklist template:
+10. Stage and commit changes with a descriptive message
+11. Push the branch to origin
+12. Create a PR using the merge checklist template:
 
 ```bash
 gh pr create --title "<type>(<vertical>): <description>" --body "$(cat <<'EOF'
@@ -94,9 +94,9 @@ EOF
 
 ### Phase 4: CodeRabbit Review
 
-14. Wait for CodeRabbit automated review (triggers on PR creation)
-15. Address all critical and major CodeRabbit comments
-16. For remaining items (minor, style, suggestions):
+13. Wait for CodeRabbit automated review (triggers on PR creation)
+14. Address all critical and major CodeRabbit comments
+15. For remaining items (minor, style, suggestions):
     - Create GitHub Issues with labels:
       - `vertical/<name>` — which vertical
       - `type/tech-debt` — deferred review item
@@ -105,14 +105,14 @@ EOF
 
 ### Phase 5: Final Check
 
-17. Run a quick spot-check re-review via sub-agent on the final diff
-18. Verify all tests still pass after addressing review comments
-19. Update the PR description with final status
+16. Run a quick spot-check re-review via sub-agent on the final diff
+17. Verify all tests still pass after addressing review comments
+18. Update the PR description with final status
 
 ### Phase 6: Ready for Merge
 
-20. Post a comment on the PR: "Ready for merge. All critical/major review items addressed. Deferred items filed as GitHub Issues."
-21. Notify the user that the PR is ready
+19. Post a comment on the PR: "Ready for merge. All critical/major review items addressed. Deferred items filed as GitHub Issues."
+20. Notify the user that the PR is ready
 
 ## Rules
 
