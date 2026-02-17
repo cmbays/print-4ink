@@ -9,7 +9,7 @@ pipelinesLaunched: []
 tags: [decision, plan]
 sessionId: "22f17289-2a33-40f1-94b0-f6039c0eb1b7"
 branch: "session/0216-ddd-domains-labels"
-status: in-progress
+status: complete
 ---
 
 ## Context
