@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
-import { dtfSizePresetEnum, type DtfLineItem, type DtfSizePreset } from "@/lib/schemas/dtf-line-item";
+import { dtfSizePresetEnum, type DtfLineItem, type DtfSizePreset } from "@domain/entities/dtf-line-item";
 
 interface DtfLineItemRowProps {
   item: DtfLineItem;

@@ -8,8 +8,8 @@ import { DTF_SIZE_PRESETS } from "@/lib/dtf/dtf-constants";
 import { getDtfSheetTiersSync } from "@infra/repositories/settings";
 import { SheetCalculationPanel } from "./SheetCalculationPanel";
 import { GangSheetCanvas } from "./GangSheetCanvas";
-import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
-import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
+import type { DtfLineItem } from "@domain/entities/dtf-line-item";
+import type { SheetCalculation, CanvasLayout } from "@domain/entities/dtf-sheet-calculation";
 
 const DTF_SHEET_TIERS = getDtfSheetTiersSync();
 

@@ -7,7 +7,7 @@ import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { formatShortDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { CARD_TYPE_BORDER_COLORS } from "@/lib/constants";
-import type { QuoteCard } from "@/lib/schemas/board-card";
+import type { QuoteCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -12,7 +12,7 @@ import {
   QUOTE_STATUS_COLORS,
 } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers/format";
-import type { Quote } from "@/lib/schemas/quote";
+import type { Quote } from "@domain/entities/quote";
 
 interface CustomerQuotesTableProps {
   quotes: Quote[];

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/pricing-engine";
 import { money, round2, toNumber } from "@/lib/helpers/money";
-import type { QuantityTier } from "@/lib/schemas/price-matrix";
+import type { QuantityTier } from "@domain/entities/price-matrix";
 import { Plus, Trash2, AlertTriangle } from "lucide-react";
 
 // ---------------------------------------------------------------------------

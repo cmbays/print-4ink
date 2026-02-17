@@ -5,9 +5,9 @@ import {
   autoPropagationConfig,
   dtfSheetTiers,
 } from '@/lib/mock-data';
-import type { MockupTemplate } from '@/lib/schemas/mockup-template';
-import type { BrandPreference, DisplayPreference, PropagationConfig } from '@/lib/schemas/color-preferences';
-import type { DTFSheetTier } from '@/lib/schemas/dtf-pricing';
+import type { MockupTemplate } from '@domain/entities/mockup-template';
+import type { BrandPreference, DisplayPreference, PropagationConfig } from '@domain/entities/color-preferences';
+import type { DTFSheetTier } from '@domain/entities/dtf-pricing';
 
 export async function getMockupTemplates(): Promise<MockupTemplate[]> {
   return mockupTemplates.map((t) => structuredClone(t));

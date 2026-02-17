@@ -1,6 +1,6 @@
 import { screens } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Screen } from '@/lib/schemas/screen';
+import type { Screen } from '@domain/entities/screen';
 
 export async function getScreens(): Promise<Screen[]> {
   return screens.map((s) => structuredClone(s));

@@ -6,8 +6,8 @@ import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@/lib/constants";
-import type { Job } from "@/lib/schemas/job";
-import type { InvoiceStatus } from "@/lib/schemas/invoice";
+import type { Job } from "@domain/entities/job";
+import type { InvoiceStatus } from "@domain/entities/invoice";
 
 interface LinkedEntitiesSectionProps {
   job: Job;

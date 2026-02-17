@@ -24,9 +24,9 @@ import {
 } from "@/components/ui/select";
 import { CREDIT_MEMO_REASON_LABELS } from "@/lib/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
-import { creditMemoReasonEnum } from "@/lib/schemas/credit-memo";
-import type { CreditMemoReason, CreditMemo } from "@/lib/schemas/credit-memo";
-import type { Invoice } from "@/lib/schemas/invoice";
+import { creditMemoReasonEnum } from "@domain/entities/credit-memo";
+import type { CreditMemoReason, CreditMemo } from "@domain/entities/credit-memo";
+import type { Invoice } from "@domain/entities/invoice";
 
 interface CreateCreditMemoModalProps {
   open: boolean;

@@ -6,11 +6,11 @@
  * arithmetic uses big.js to avoid IEEE 754 floating-point errors.
  */
 
-import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
+import type { DTFSheetTier } from "@domain/entities/dtf-pricing";
 import type {
   OptimizedSheet,
   SheetCalculation,
-} from "@/lib/schemas/dtf-sheet-calculation";
+} from "@domain/entities/dtf-sheet-calculation";
 import type { PackedSheet } from "./shelf-pack";
 import { money, round2, toNumber } from "@/lib/helpers/money";
 

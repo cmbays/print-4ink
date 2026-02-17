@@ -36,8 +36,8 @@ import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { formatDate } from "@/lib/helpers/format";
-import type { Quote, QuoteStatus } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Quote, QuoteStatus } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Derived table rows

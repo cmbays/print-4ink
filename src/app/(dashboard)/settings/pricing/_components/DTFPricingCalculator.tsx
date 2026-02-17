@@ -20,8 +20,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { MarginIndicator } from "@/components/features/MarginIndicator";
 import { calculateDTFPrice, formatCurrency, formatPercent } from "@/lib/pricing-engine";
-import type { DTFPricingTemplate, DTFRushTurnaround, DTFFilmType } from "@/lib/schemas/dtf-pricing";
-import type { PricingTier } from "@/lib/schemas/customer";
+import type { DTFPricingTemplate, DTFRushTurnaround, DTFFilmType } from "@domain/entities/dtf-pricing";
+import type { PricingTier } from "@domain/entities/customer";
 
 interface DTFPricingCalculatorProps {
   template: DTFPricingTemplate;

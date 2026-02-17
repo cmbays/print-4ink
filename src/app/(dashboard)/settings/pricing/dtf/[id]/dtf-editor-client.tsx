@@ -48,7 +48,7 @@ import type {
   DTFPricingTemplate,
   DTFSheetTier,
   DTFCostConfig,
-} from "@/lib/schemas/dtf-pricing";
+} from "@domain/entities/dtf-pricing";
 
 // ---------------------------------------------------------------------------
 // Label maps

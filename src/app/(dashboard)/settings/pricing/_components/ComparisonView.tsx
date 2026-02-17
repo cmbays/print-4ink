@@ -20,7 +20,7 @@ import {
   formatPercent,
 } from "@/lib/pricing-engine";
 import { cn } from "@/lib/utils";
-import type { PricingTemplate } from "@/lib/schemas/price-matrix";
+import type { PricingTemplate } from "@domain/entities/price-matrix";
 import {
   ArrowDownRight,
   ArrowUpRight,

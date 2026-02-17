@@ -27,8 +27,8 @@ import {
 } from "@/lib/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { TypeTagBadges } from "@/components/features/TypeTagBadges";
-import type { Customer } from "@/lib/schemas/customer";
-import type { ContactRole } from "@/lib/schemas/contact";
+import type { Customer } from "@domain/entities/customer";
+import type { ContactRole } from "@domain/entities/contact";
 
 /** Subset of Customer fields needed by the combobox */
 export type CustomerOption = Pick<

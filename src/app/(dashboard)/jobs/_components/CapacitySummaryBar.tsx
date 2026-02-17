@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { LANE_LABELS, LANE_COLORS } from "@/lib/constants";
 import type { CapacitySummary } from "@/lib/helpers/job-utils";
-import type { Lane } from "@/lib/schemas/job";
+import type { Lane } from "@domain/entities/job";
 
 // ---------------------------------------------------------------------------
 // Props

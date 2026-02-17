@@ -6,7 +6,7 @@ import {
   type ReviewFinding,
   type AgentResult,
   type GapLogEntry,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 
 // ---------------------------------------------------------------------------
 // Helpers

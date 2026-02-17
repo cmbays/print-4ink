@@ -8,7 +8,7 @@ import {
   gateDecisionSchema,
   type ReviewReport,
   type GateDecision,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 import { z } from "zod";
 import { normalize } from "./normalize";
 import { classify } from "./classify";

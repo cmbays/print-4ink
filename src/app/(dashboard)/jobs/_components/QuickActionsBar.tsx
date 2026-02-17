@@ -10,7 +10,7 @@ import {
 import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { Job } from "@/lib/schemas/job";
+import type { Job } from "@domain/entities/job";
 
 interface QuickActionsBarProps {
   job: Job;

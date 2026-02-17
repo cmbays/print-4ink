@@ -30,9 +30,9 @@ import type { ImpactPreview } from "@/lib/helpers/color-preferences";
 import { getColorsMutable } from "@infra/repositories/colors";
 import { getGarmentCatalogMutable } from "@infra/repositories/garments";
 import { getBrandPreferencesMutable } from "@infra/repositories/settings";
-import type { Color } from "@/lib/schemas/color";
-import { brandPreferenceSchema } from "@/lib/schemas/color-preferences";
-import type { InheritanceMode } from "@/lib/schemas/color-preferences";
+import type { Color } from "@domain/entities/color";
+import { brandPreferenceSchema } from "@domain/entities/color-preferences";
+import type { InheritanceMode } from "@domain/entities/color-preferences";
 
 const catalogColors = getColorsMutable();
 const garmentCatalog = getGarmentCatalogMutable();

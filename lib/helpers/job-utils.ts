@@ -1,6 +1,6 @@
-import type { BoardCard } from "@/lib/schemas/board-card";
-import type { JobTask, Lane, RiskLevel } from "@/lib/schemas/job";
-import type { ServiceType } from "@/lib/schemas/quote";
+import type { BoardCard } from "@domain/entities/board-card";
+import type { JobTask, Lane, RiskLevel } from "@domain/entities/job";
+import type { ServiceType } from "@domain/entities/quote";
 import { money, toNumber } from "@/lib/helpers/money";
 
 // ---------------------------------------------------------------------------

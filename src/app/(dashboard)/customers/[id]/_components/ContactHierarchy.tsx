@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/collapsible";
 import { AddContactSheet } from "./AddContactSheet";
 import { AddGroupSheet } from "./AddGroupSheet";
-import type { Customer } from "@/lib/schemas/customer";
-import type { Contact } from "@/lib/schemas/contact";
-import type { ContactRole } from "@/lib/schemas/contact";
+import type { Customer } from "@domain/entities/customer";
+import type { Contact } from "@domain/entities/contact";
+import type { ContactRole } from "@domain/entities/contact";
 import { CONTACT_ROLE_LABELS } from "@/lib/constants";
 
 interface ContactHierarchyProps {

@@ -5,8 +5,8 @@ import { Pencil, Send, Ban, CreditCard, Bell, FileText, Copy } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { isValidStatusTransition } from "@/lib/helpers/invoice-utils";
-import type { Invoice } from "@/lib/schemas/invoice";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Invoice } from "@domain/entities/invoice";
+import type { Customer } from "@domain/entities/customer";
 
 interface InvoiceActionsProps {
   invoice: Invoice;

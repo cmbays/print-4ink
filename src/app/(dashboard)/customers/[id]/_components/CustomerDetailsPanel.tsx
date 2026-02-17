@@ -10,8 +10,8 @@ import {
   PAYMENT_TERMS_LABELS,
   PRICING_TIER_LABELS,
 } from "@/lib/constants";
-import type { Customer } from "@/lib/schemas/customer";
-import type { Address } from "@/lib/schemas/address";
+import type { Customer } from "@domain/entities/customer";
+import type { Address } from "@domain/entities/address";
 
 interface CustomerDetailsPanelProps {
   customer: Customer;

@@ -20,14 +20,14 @@ import { CustomerScreensTab } from "./CustomerScreensTab";
 import { CustomerPreferencesTab } from "./CustomerPreferencesTab";
 import { NotesPanel } from "@/components/features/NotesPanel";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
-import type { Customer } from "@/lib/schemas/customer";
-import type { Quote } from "@/lib/schemas/quote";
-import type { Job } from "@/lib/schemas/job";
-import type { Artwork } from "@/lib/schemas/artwork";
-import type { Invoice } from "@/lib/schemas/invoice";
-import type { Note } from "@/lib/schemas/note";
-import type { Color } from "@/lib/schemas/color";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { Customer } from "@domain/entities/customer";
+import type { Quote } from "@domain/entities/quote";
+import type { Job } from "@domain/entities/job";
+import type { Artwork } from "@domain/entities/artwork";
+import type { Invoice } from "@domain/entities/invoice";
+import type { Note } from "@domain/entities/note";
+import type { Color } from "@domain/entities/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
 import { CustomerInvoicesTable } from "./CustomerInvoicesTable";
 
 interface CustomerTabsProps {

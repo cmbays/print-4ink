@@ -25,18 +25,18 @@ import { ArtworkUploadModal } from "./ArtworkUploadModal";
 import { QuoteReviewSheet } from "./QuoteReviewSheet";
 import { ServiceTypeTabBar } from "./ServiceTypeTabBar";
 import { DtfTabContent } from "./DtfTabContent";
-import type { Color } from "@/lib/schemas/color";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { Color } from "@domain/entities/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
 
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
-import type { Discount, ServiceType } from "@/lib/schemas/quote";
-import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
-import type { SheetCalculation, CanvasLayout } from "@/lib/schemas/dtf-sheet-calculation";
-import type { Artwork, ArtworkTag } from "@/lib/schemas/artwork";
-import type { Customer, CustomerTag, CustomerTypeTag } from "@/lib/schemas/customer";
+import type { Discount, ServiceType } from "@domain/entities/quote";
+import type { DtfLineItem } from "@domain/entities/dtf-line-item";
+import type { SheetCalculation, CanvasLayout } from "@domain/entities/dtf-sheet-calculation";
+import type { Artwork, ArtworkTag } from "@domain/entities/artwork";
+import type { Customer, CustomerTag, CustomerTypeTag } from "@domain/entities/customer";
 import { cn } from "@/lib/utils";
 import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
 

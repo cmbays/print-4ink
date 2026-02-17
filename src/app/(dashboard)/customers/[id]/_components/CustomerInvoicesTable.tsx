@@ -10,7 +10,7 @@ import {
 } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers/format";
 import { formatCurrency } from "@/lib/helpers/money";
-import type { Invoice } from "@/lib/schemas/invoice";
+import type { Invoice } from "@domain/entities/invoice";
 
 interface CustomerInvoicesTableProps {
   invoices: Invoice[];

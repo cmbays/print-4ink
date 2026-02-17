@@ -5,15 +5,15 @@ import type {
   MarginIndicator,
   QuantityTier,
   ScreenPrintMatrix,
-} from "@/lib/schemas/price-matrix";
+} from "@domain/entities/price-matrix";
 import type {
   DTFPricingTemplate,
   DTFCostConfig,
   DTFRushTurnaround,
   DTFFilmType,
-} from "@/lib/schemas/dtf-pricing";
-import type { PricingTier } from "@/lib/schemas/customer";
-import type { GarmentCategory } from "@/lib/schemas/garment";
+} from "@domain/entities/dtf-pricing";
+import type { PricingTier } from "@domain/entities/customer";
+import type { GarmentCategory } from "@domain/entities/garment";
 import { money as bigMoney, round2, toNumber } from "@/lib/helpers/money";
 
 // Local wrapper: pricing-engine uses money() → number throughout.

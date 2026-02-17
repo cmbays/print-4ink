@@ -1,4 +1,4 @@
-import type { AgentManifestEntry } from "@/lib/schemas/review-pipeline";
+import type { AgentManifestEntry } from "@domain/entities/review-pipeline";
 
 // ---------------------------------------------------------------------------
 // Shared manifest merge utilities

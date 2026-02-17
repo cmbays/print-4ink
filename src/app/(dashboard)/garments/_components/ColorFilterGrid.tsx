@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
 import { getColorsMutable } from "@infra/repositories/colors";
-import type { Color } from "@/lib/schemas/color";
+import type { Color } from "@domain/entities/color";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 
 const catalogColors = getColorsMutable();

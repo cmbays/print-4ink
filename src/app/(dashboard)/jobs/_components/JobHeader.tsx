@@ -8,7 +8,7 @@ import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { LaneBadge } from "@/components/features/LaneBadge";
 import { PRIORITY_LABELS, PRIORITY_COLORS, SERVICE_TYPE_LEFT_BORDER_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers/format";
-import type { Job } from "@/lib/schemas/job";
+import type { Job } from "@domain/entities/job";
 
 interface JobHeaderProps {
   job: Job;

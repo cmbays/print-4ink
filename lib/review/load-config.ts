@@ -8,7 +8,7 @@ import {
   type CompositionPolicy,
   type AgentRegistryEntry,
   type DomainMapping,
-} from "@/lib/schemas/review-config";
+} from "@domain/entities/review-config";
 
 import rulesJson from "@/config/review-rules.json";
 import compositionJson from "@/config/review-composition.json";

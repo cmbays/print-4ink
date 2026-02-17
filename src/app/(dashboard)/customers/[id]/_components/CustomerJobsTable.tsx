@@ -10,7 +10,7 @@ import {
   PRIORITY_COLORS,
 } from "@/lib/constants";
 import { formatDate } from "@/lib/helpers/format";
-import type { Job } from "@/lib/schemas/job";
+import type { Job } from "@domain/entities/job";
 
 interface CustomerJobsTableProps {
   jobs: Job[];

@@ -6,8 +6,8 @@ import type {
   ReviewFinding,
   ReviewReport,
   SeverityMetrics,
-} from "@/lib/schemas/review-pipeline";
-import type { Severity } from "@/lib/schemas/review-config";
+} from "@domain/entities/review-pipeline";
+import type { Severity } from "@domain/entities/review-config";
 
 // ---------------------------------------------------------------------------
 // Types

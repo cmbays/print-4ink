@@ -2,7 +2,7 @@
 
 import { Link2, Unlink2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { InheritanceMode } from "@/lib/schemas/color-preferences";
+import type { InheritanceMode } from "@domain/entities/color-preferences";
 
 interface InheritanceToggleProps {
   parentLabel: string;

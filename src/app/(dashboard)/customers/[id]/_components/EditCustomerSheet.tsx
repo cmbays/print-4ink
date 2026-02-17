@@ -26,8 +26,8 @@ import {
   PAYMENT_TERMS_LABELS,
   PRICING_TIER_LABELS,
 } from "@/lib/constants";
-import type { Customer, LifecycleStage, CustomerTypeTag, PaymentTerms, PricingTier } from "@/lib/schemas/customer";
-import { lifecycleStageEnum, customerTypeTagEnum, paymentTermsEnum, pricingTierEnum } from "@/lib/schemas/customer";
+import type { Customer, LifecycleStage, CustomerTypeTag, PaymentTerms, PricingTier } from "@domain/entities/customer";
+import { lifecycleStageEnum, customerTypeTagEnum, paymentTermsEnum, pricingTierEnum } from "@domain/entities/customer";
 
 interface EditCustomerSheetProps {
   customer: Customer;

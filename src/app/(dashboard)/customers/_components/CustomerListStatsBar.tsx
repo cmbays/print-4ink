@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { Customer } from "@/lib/schemas/customer";
-import type { Quote } from "@/lib/schemas/quote";
+import type { Customer } from "@domain/entities/customer";
+import type { Quote } from "@domain/entities/quote";
 import { Users, UserCheck, DollarSign, UserPlus } from "lucide-react";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 

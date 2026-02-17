@@ -5,7 +5,7 @@ import { Monitor } from "lucide-react";
 import { deriveScreensFromJobs } from "@/lib/helpers/screen-helpers";
 import { ScreenRecordRow } from "./ScreenRecordRow";
 import { ReclaimScreenDialog } from "./ReclaimScreenDialog";
-import type { CustomerScreen } from "@/lib/schemas/customer-screen";
+import type { CustomerScreen } from "@domain/entities/customer-screen";
 
 interface CustomerScreensTabProps {
   customerId: string;

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/helpers/format";
-import type { JobNote, JobNoteType } from "@/lib/schemas/job";
+import type { JobNote, JobNoteType } from "@domain/entities/job";
 
 const NOTE_TYPE_STYLES: Record<
   JobNoteType,

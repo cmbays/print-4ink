@@ -47,9 +47,9 @@ import {
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
 } from "@/lib/constants";
-import type { Job, Lane, RiskLevel } from "@/lib/schemas/job";
-import type { ServiceType } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Job, Lane, RiskLevel } from "@domain/entities/job";
+import type { ServiceType } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props

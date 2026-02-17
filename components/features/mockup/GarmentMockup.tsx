@@ -4,8 +4,8 @@ import { useId, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { getZoneForPosition } from "@/lib/constants/print-zones";
 import { hexToColorMatrix } from "@/lib/helpers/color-matrix";
-import type { GarmentCategory } from "@/lib/schemas/garment";
-import type { MockupView } from "@/lib/schemas/mockup-template";
+import type { GarmentCategory } from "@domain/entities/garment";
+import type { MockupView } from "@domain/entities/mockup-template";
 
 export interface ArtworkPlacement {
   artworkUrl: string;

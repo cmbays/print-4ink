@@ -4,7 +4,7 @@ import {
   brandPreferences,
   autoPropagationConfig,
 } from "@/lib/mock-data";
-import type { BrandPreference } from "@/lib/schemas/color-preferences";
+import type { BrandPreference } from "@domain/entities/color-preferences";
 
 // ---------------------------------------------------------------------------
 // Shared: global favorites derived from catalog

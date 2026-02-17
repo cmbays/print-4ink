@@ -6,7 +6,7 @@ import {
   loadAgentRegistry,
   loadDomainMappings,
 } from "../load-config";
-import { reviewRuleSchema } from "@/lib/schemas/review-config";
+import { reviewRuleSchema } from "@domain/entities/review-config";
 
 // ---------------------------------------------------------------------------
 // Loader return types and basic correctness

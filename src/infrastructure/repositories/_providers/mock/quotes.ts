@@ -1,6 +1,6 @@
 import { quotes } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Quote } from '@/lib/schemas/quote';
+import type { Quote } from '@domain/entities/quote';
 
 export async function getQuotes(): Promise<Quote[]> {
   return quotes.map((q) => structuredClone(q));

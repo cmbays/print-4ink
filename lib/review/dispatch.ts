@@ -2,7 +2,7 @@ import type {
   AgentManifestEntry,
   PRFacts,
   AgentResult,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 
 // ---------------------------------------------------------------------------
 // Types

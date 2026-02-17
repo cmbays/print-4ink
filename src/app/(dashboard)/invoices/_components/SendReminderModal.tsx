@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { computeIsOverdue, computeDaysOverdue } from "@/lib/helpers/invoice-utils";
 import { formatCurrency } from "@/lib/helpers/money";
-import type { Invoice } from "@/lib/schemas/invoice";
+import type { Invoice } from "@domain/entities/invoice";
 
 interface SendReminderModalProps {
   open: boolean;

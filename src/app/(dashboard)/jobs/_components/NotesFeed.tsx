@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NoteItem } from "./NoteItem";
-import type { JobNote, JobNoteType } from "@/lib/schemas/job";
+import type { JobNote, JobNoteType } from "@domain/entities/job";
 
 interface NotesFeedProps {
   notes: JobNote[];

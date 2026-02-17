@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { LANE_LABELS } from "@/lib/constants";
-import type { Lane } from "@/lib/schemas/job";
+import type { Lane } from "@domain/entities/job";
 
 interface MobileLaneTabBarProps {
   lanes: Lane[];

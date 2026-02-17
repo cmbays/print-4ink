@@ -12,7 +12,7 @@ import {
   INVOICE_STATUS_LABELS,
   INVOICE_STATUS_BADGE_COLORS,
 } from "@/lib/constants";
-import type { JobCard } from "@/lib/schemas/board-card";
+import type { JobCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -4,8 +4,8 @@ import { useMemo } from "react";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
 import { cn } from "@/lib/utils";
 import { buildFullMatrixData, formatCurrency } from "@/lib/pricing-engine";
-import type { PricingTemplate, MarginIndicator } from "@/lib/schemas/price-matrix";
-import type { GarmentCategory } from "@/lib/schemas/garment";
+import type { PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
+import type { GarmentCategory } from "@domain/entities/garment";
 
 const DEFAULT_GARMENT_COST = 3.5;
 

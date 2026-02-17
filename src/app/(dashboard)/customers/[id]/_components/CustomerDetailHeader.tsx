@@ -10,7 +10,7 @@ import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import { CustomerQuickStats, type CustomerStats } from "@/components/features/CustomerQuickStats";
 import { EditCustomerSheet } from "./EditCustomerSheet";
 import { ArchiveDialog } from "./ArchiveDialog";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Customer } from "@domain/entities/customer";
 
 interface CustomerDetailHeaderProps {
   customer: Customer;

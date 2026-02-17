@@ -8,7 +8,7 @@ import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { TaskItem } from "./TaskItem";
 import { AddCustomTaskInput } from "./AddCustomTaskInput";
 import { computeTaskProgress } from "@/lib/helpers/job-utils";
-import type { JobTask } from "@/lib/schemas/job";
+import type { JobTask } from "@domain/entities/job";
 
 interface TaskChecklistProps {
   tasks: JobTask[];

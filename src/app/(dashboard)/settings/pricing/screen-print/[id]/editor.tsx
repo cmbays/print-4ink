@@ -63,9 +63,9 @@ import type {
   SetupFeeConfig,
   ColorPricing,
   MarginIndicator,
-} from "@/lib/schemas/price-matrix";
+} from "@domain/entities/price-matrix";
 
-import type { GarmentCategory } from "@/lib/schemas/garment";
+import type { GarmentCategory } from "@domain/entities/garment";
 
 import { ColorPricingGrid } from "../../_components/ColorPricingGrid";
 import { QuantityTierEditor, validateTiers } from "../../_components/QuantityTierEditor";

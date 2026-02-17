@@ -1,6 +1,6 @@
 import { garmentCatalog } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { GarmentCatalog } from '@/lib/schemas/garment';
+import type { GarmentCatalog } from '@domain/entities/garment';
 
 export async function getGarmentCatalog(): Promise<GarmentCatalog[]> {
   return garmentCatalog.map((g) => structuredClone(g));

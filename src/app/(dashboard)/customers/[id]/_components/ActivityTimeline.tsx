@@ -12,9 +12,9 @@ import {
   LANE_COLORS,
   NOTE_CHANNEL_LABELS,
 } from "@/lib/constants";
-import type { Quote } from "@/lib/schemas/quote";
-import type { Job } from "@/lib/schemas/job";
-import type { Note } from "@/lib/schemas/note";
+import type { Quote } from "@domain/entities/quote";
+import type { Job } from "@domain/entities/job";
+import type { Note } from "@domain/entities/note";
 
 interface ActivityTimelineProps {
   quotes: Quote[];

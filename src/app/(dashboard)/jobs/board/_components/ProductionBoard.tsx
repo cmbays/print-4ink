@@ -46,9 +46,9 @@ import {
   getCardLabel,
   getCardSortDate,
 } from "@/lib/helpers/board-dnd";
-import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
-import type { Lane, Job } from "@/lib/schemas/job";
-import type { ScratchNote } from "@/lib/schemas/scratch-note";
+import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@domain/entities/board-card";
+import type { Lane, Job } from "@domain/entities/job";
+import type { ScratchNote } from "@domain/entities/scratch-note";
 
 // ---------------------------------------------------------------------------
 // Drag overlay wrapper — module-scoped to keep stable reference across renders

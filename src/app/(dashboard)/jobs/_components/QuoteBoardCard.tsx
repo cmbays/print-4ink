@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { QuoteCardBody, quoteCardContainerClass } from "./QuoteCardBody";
-import type { QuoteCard } from "@/lib/schemas/board-card";
+import type { QuoteCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Component

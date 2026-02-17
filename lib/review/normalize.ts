@@ -1,5 +1,5 @@
 import { execFileSync } from "child_process";
-import type { PRFacts, FileChange, CommitInfo } from "@/lib/schemas/review-pipeline";
+import type { PRFacts, FileChange, CommitInfo } from "@domain/entities/review-pipeline";
 
 // ---------------------------------------------------------------------------
 // Stage 1: Normalize — Extract immutable PR facts from git diff

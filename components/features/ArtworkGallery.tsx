@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Artwork } from "@/lib/schemas/artwork";
+import type { Artwork } from "@domain/entities/artwork";
 import { ARTWORK_TAG_LABELS } from "@/lib/constants";
 
 type SortMode = "smart" | "a-z" | "newest";

@@ -23,10 +23,10 @@ import {
 import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
 import { z } from "zod";
-import { riskLevelEnum } from "@/lib/schemas/job";
-import { serviceTypeEnum } from "@/lib/schemas/quote";
-import type { RiskLevel } from "@/lib/schemas/job";
-import type { ServiceType } from "@/lib/schemas/quote";
+import { riskLevelEnum } from "@domain/entities/job";
+import { serviceTypeEnum } from "@domain/entities/quote";
+import type { RiskLevel } from "@domain/entities/job";
+import type { ServiceType } from "@domain/entities/quote";
 import type { CardFilters } from "@/lib/helpers/job-utils";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);

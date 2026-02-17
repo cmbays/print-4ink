@@ -1,7 +1,7 @@
 import { computeTaskProgress } from "./job-utils";
 import { customers, invoices, garmentCatalog, colors as allColors, artworks as allArtworks } from "@/lib/mock-data";
-import type { JobCard, ScratchNoteCard } from "@/lib/schemas/board-card";
-import type { Job } from "@/lib/schemas/job";
+import type { JobCard, ScratchNoteCard } from "@domain/entities/board-card";
+import type { Job } from "@domain/entities/job";
 
 // ---------------------------------------------------------------------------
 // Projection: Job → JobCard view model

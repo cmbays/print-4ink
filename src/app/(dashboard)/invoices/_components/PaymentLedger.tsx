@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PAYMENT_METHOD_LABELS } from "@/lib/constants";
-import type { Payment } from "@/lib/schemas/invoice";
+import type { Payment } from "@domain/entities/invoice";
 import { CreditCard } from "lucide-react";
 import { formatDate } from "@/lib/helpers/format";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";

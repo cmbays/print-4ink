@@ -1,6 +1,6 @@
-import { laneEnum } from "@/lib/schemas/job";
-import type { Lane } from "@/lib/schemas/job";
-import type { BoardCard } from "@/lib/schemas/board-card";
+import { laneEnum } from "@domain/entities/job";
+import type { Lane } from "@domain/entities/job";
+import type { BoardCard } from "@domain/entities/board-card";
 
 /** Drag IDs are "job:{uuid}", "quote:{quoteId}", "scratch:{uuid}" */
 export function parseDragId(dragId: string): { cardType: string; cardId: string } | null {

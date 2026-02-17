@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { optimizeCost } from "../cost-optimize";
-import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
+import type { DTFSheetTier } from "@domain/entities/dtf-pricing";
 import type { PackedSheet } from "../shelf-pack";
 
 const MOCK_TIERS: DTFSheetTier[] = [

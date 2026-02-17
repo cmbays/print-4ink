@@ -9,8 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { DiscountRow } from "./DiscountRow";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@/lib/constants";
-import type { Discount } from "@/lib/schemas/quote";
-import type { CustomerTag } from "@/lib/schemas/customer";
+import type { Discount } from "@domain/entities/quote";
+import type { CustomerTag } from "@domain/entities/customer";
 
 interface PricingSummaryProps {
   garmentSubtotal: number;

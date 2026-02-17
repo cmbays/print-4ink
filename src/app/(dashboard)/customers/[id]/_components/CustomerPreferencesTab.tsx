@@ -11,10 +11,10 @@ import {
   resolveEffectiveFavorites,
   getInheritanceChain,
 } from "@/lib/helpers/color-preferences";
-import type { Color } from "@/lib/schemas/color";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { InheritanceMode } from "@/lib/schemas/color-preferences";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Color } from "@domain/entities/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { InheritanceMode } from "@domain/entities/color-preferences";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props

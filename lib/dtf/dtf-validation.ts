@@ -1,4 +1,4 @@
-import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
+import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 
 /**
  * Check if a single DTF line item has valid data for calculation.

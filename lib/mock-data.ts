@@ -1,21 +1,21 @@
-import type { Customer } from "@/lib/schemas/customer";
-import type { Contact } from "@/lib/schemas/contact";
-import type { Group } from "@/lib/schemas/group";
-import type { Note } from "@/lib/schemas/note";
-import type { Address } from "@/lib/schemas/address";
-import type { Job, JobTask, JobNote } from "@/lib/schemas/job";
-import type { Quote } from "@/lib/schemas/quote";
-import type { ScratchNote } from "@/lib/schemas/scratch-note";
-import type { QuoteCard } from "@/lib/schemas/board-card";
-import type { Screen } from "@/lib/schemas/screen";
-import type { Color } from "@/lib/schemas/color";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { Artwork } from "@/lib/schemas/artwork";
-import type { Invoice, Payment } from "@/lib/schemas/invoice";
-import type { CreditMemo } from "@/lib/schemas/credit-memo";
-import type { MockupTemplate } from "@/lib/schemas/mockup-template";
-import type { BrandPreference, DisplayPreference, PropagationConfig } from "@/lib/schemas/color-preferences";
-import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
+import type { Customer } from "@domain/entities/customer";
+import type { Contact } from "@domain/entities/contact";
+import type { Group } from "@domain/entities/group";
+import type { Note } from "@domain/entities/note";
+import type { Address } from "@domain/entities/address";
+import type { Job, JobTask, JobNote } from "@domain/entities/job";
+import type { Quote } from "@domain/entities/quote";
+import type { ScratchNote } from "@domain/entities/scratch-note";
+import type { QuoteCard } from "@domain/entities/board-card";
+import type { Screen } from "@domain/entities/screen";
+import type { Color } from "@domain/entities/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { Artwork } from "@domain/entities/artwork";
+import type { Invoice, Payment } from "@domain/entities/invoice";
+import type { CreditMemo } from "@domain/entities/credit-memo";
+import type { MockupTemplate } from "@domain/entities/mockup-template";
+import type { BrandPreference, DisplayPreference, PropagationConfig } from "@domain/entities/color-preferences";
+import type { DTFSheetTier } from "@domain/entities/dtf-pricing";
 
 // ---------------------------------------------------------------------------
 // Customer IDs (stable — referenced by jobs, quotes, artworks)

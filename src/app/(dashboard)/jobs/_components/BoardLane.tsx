@@ -6,8 +6,8 @@ import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LANE_LABELS, LANE_COLORS } from "@/lib/constants";
-import type { Lane } from "@/lib/schemas/job";
-import type { BoardCard } from "@/lib/schemas/board-card";
+import type { Lane } from "@domain/entities/job";
+import type { BoardCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Props

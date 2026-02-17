@@ -21,7 +21,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { Color } from "@/lib/schemas/color";
+import type { Color } from "@domain/entities/color";
 import type { ImpactPreview } from "@/lib/helpers/color-preferences";
 
 // ---------------------------------------------------------------------------

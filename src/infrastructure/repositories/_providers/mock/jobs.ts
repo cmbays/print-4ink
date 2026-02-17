@@ -1,8 +1,8 @@
 import { jobs, quoteCards, scratchNotes } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Job, JobTask, JobNote } from '@/lib/schemas/job';
-import type { QuoteCard } from '@/lib/schemas/board-card';
-import type { ScratchNote } from '@/lib/schemas/scratch-note';
+import type { Job, JobTask, JobNote } from '@domain/entities/job';
+import type { QuoteCard } from '@domain/entities/board-card';
+import type { ScratchNote } from '@domain/entities/scratch-note';
 
 export async function getJobs(): Promise<Job[]> {
   return jobs.map((j) => structuredClone(j));

@@ -12,13 +12,13 @@ import { optimizeCost } from "@/lib/dtf/cost-optimize";
 import { isValidDtfLineItem } from "@/lib/dtf/dtf-validation";
 import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from "@/lib/dtf/dtf-constants";
 import { formatCurrency } from "@/lib/helpers/money";
-import type { DtfLineItem } from "@/lib/schemas/dtf-line-item";
+import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type {
   OptimizedSheet,
   SheetCalculation,
   CanvasLayout,
-} from "@/lib/schemas/dtf-sheet-calculation";
-import type { DTFSheetTier } from "@/lib/schemas/dtf-pricing";
+} from "@domain/entities/dtf-sheet-calculation";
+import type { DTFSheetTier } from "@domain/entities/dtf-pricing";
 
 // ---------------------------------------------------------------------------
 // Props

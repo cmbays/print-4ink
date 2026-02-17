@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { CUSTOMER_TYPE_TAG_LABELS } from "@/lib/constants";
-import type { CustomerTypeTag } from "@/lib/schemas/customer";
+import type { CustomerTypeTag } from "@domain/entities/customer";
 
 interface NewCustomerData {
   id: string;

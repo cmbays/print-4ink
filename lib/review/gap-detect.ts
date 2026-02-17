@@ -3,7 +3,7 @@ import type {
   PRClassification,
   AgentManifestEntry,
   GapLogEntry,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 import { mergeIntoManifest } from "./manifest-utils";
 
 // ---------------------------------------------------------------------------

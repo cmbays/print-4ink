@@ -5,7 +5,7 @@ import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/helpers/money";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { GarmentCatalog } from "@domain/entities/garment";
 
 interface GarmentTableRowProps {
   garment: GarmentCatalog;

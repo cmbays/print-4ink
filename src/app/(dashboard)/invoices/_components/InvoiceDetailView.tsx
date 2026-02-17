@@ -35,9 +35,9 @@ import { computeIsOverdue, isValidStatusTransition } from "@/lib/helpers/invoice
 import { formatDate } from "@/lib/helpers/format";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { toast } from "sonner";
-import type { Invoice, Payment } from "@/lib/schemas/invoice";
-import type { Customer } from "@/lib/schemas/customer";
-import type { CreditMemo } from "@/lib/schemas/credit-memo";
+import type { Invoice, Payment } from "@domain/entities/invoice";
+import type { Customer } from "@domain/entities/customer";
+import type { CreditMemo } from "@domain/entities/credit-memo";
 
 interface InvoiceDetailViewProps {
   invoice: Invoice;

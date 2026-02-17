@@ -38,9 +38,9 @@ import {
 } from "@/lib/helpers/invoice-utils";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
-import type { Customer, PaymentTerms, PricingTier } from "@/lib/schemas/customer";
-import type { Invoice } from "@/lib/schemas/invoice";
-import type { Quote } from "@/lib/schemas/quote";
+import type { Customer, PaymentTerms, PricingTier } from "@domain/entities/customer";
+import type { Invoice } from "@domain/entities/invoice";
+import type { Quote } from "@domain/entities/quote";
 
 const DEFAULT_TAX_RATE = 7; // Indiana state tax
 

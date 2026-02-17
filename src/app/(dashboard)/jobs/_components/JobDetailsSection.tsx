@@ -5,7 +5,7 @@ import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@/lib/constants";
 import { getGarmentById, getColorById } from "@/lib/helpers/garment-helpers";
 import { getScreensByJobId } from "@/lib/helpers/screen-helpers";
 import { GarmentImage } from "@/components/features/GarmentImage";
-import type { Job } from "@/lib/schemas/job";
+import type { Job } from "@domain/entities/job";
 
 interface JobDetailsSectionProps {
   job: Job;

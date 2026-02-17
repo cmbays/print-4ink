@@ -1,4 +1,4 @@
-import type { JobTask } from "@/lib/schemas/job";
+import type { JobTask } from "@domain/entities/job";
 
 // ---------------------------------------------------------------------------
 // DTF Size Presets (S26) — standalone presets, NOT artwork-tied

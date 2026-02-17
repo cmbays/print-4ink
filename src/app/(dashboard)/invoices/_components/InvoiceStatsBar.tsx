@@ -3,7 +3,7 @@ import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { money, toNumber } from "@/lib/helpers/money";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import type { Invoice } from "@/lib/schemas/invoice";
+import type { Invoice } from "@domain/entities/invoice";
 
 // ---------------------------------------------------------------------------
 // Helpers

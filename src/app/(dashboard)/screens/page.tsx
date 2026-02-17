@@ -15,7 +15,7 @@ import { getScreens } from "@infra/repositories/screens";
 import { getJobs } from "@infra/repositories/jobs";
 import { BURN_STATUS_LABELS } from "@/lib/constants";
 import { Printer } from "lucide-react";
-import type { BurnStatus } from "@/lib/schemas/screen";
+import type { BurnStatus } from "@domain/entities/screen";
 
 const BURN_STATUS_COLORS: Record<BurnStatus, string> = {
   pending: "bg-warning/10 text-warning border border-warning/20",

@@ -9,8 +9,8 @@ import { JobsDataTable } from "./JobsDataTable";
 import { MoveLaneDialog } from "./MoveLaneDialog";
 import { BlockReasonDialog } from "./BlockReasonDialog";
 import { LANE_LABELS } from "@/lib/constants";
-import type { Job, Lane } from "@/lib/schemas/job";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Job, Lane } from "@domain/entities/job";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props

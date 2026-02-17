@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { QuoteDetailView } from "./QuoteDetailView";
-import type { Quote } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
-import type { Artwork } from "@/lib/schemas/artwork";
-import type { Color } from "@/lib/schemas/color";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { Quote } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
+import type { Artwork } from "@domain/entities/artwork";
+import type { Color } from "@domain/entities/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
 
 type QuoteReviewSheetProps = {
   open: boolean;

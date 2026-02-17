@@ -1,6 +1,6 @@
 import { artworks } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Artwork } from '@/lib/schemas/artwork';
+import type { Artwork } from '@domain/entities/artwork';
 
 export async function getArtworks(): Promise<Artwork[]> {
   return artworks.map((a) => ({ ...a }));

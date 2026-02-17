@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
-import type { Color } from "@/lib/schemas/color";
+import type { Color } from "@domain/entities/color";
 
 interface FavoritesColorSectionProps {
   favorites: Color[];

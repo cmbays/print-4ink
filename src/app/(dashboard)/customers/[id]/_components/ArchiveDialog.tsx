@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Customer } from "@domain/entities/customer";
 
 interface ArchiveDialogProps {
   customer: Customer;

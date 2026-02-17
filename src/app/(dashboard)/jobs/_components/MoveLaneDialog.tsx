@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LANE_LABELS } from "@/lib/constants";
-import type { Lane } from "@/lib/schemas/job";
+import type { Lane } from "@domain/entities/job";
 
 const LANE_OPTIONS: Lane[] = [
   "ready",

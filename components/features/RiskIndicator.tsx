@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { RISK_COLORS, RISK_LABELS } from "@/lib/constants";
-import type { RiskLevel } from "@/lib/schemas/job";
+import type { RiskLevel } from "@domain/entities/job";
 
 export interface RiskIndicatorProps {
   riskLevel: RiskLevel;

@@ -5,8 +5,8 @@ import type {
   PRClassification,
   PRType,
   PRScope,
-} from "@/lib/schemas/review-pipeline";
-import type { ReviewRiskLevel } from "@/lib/schemas/review-config";
+} from "@domain/entities/review-pipeline";
+import type { ReviewRiskLevel } from "@domain/entities/review-config";
 
 // ---------------------------------------------------------------------------
 // Domain severity weights — used for risk scoring

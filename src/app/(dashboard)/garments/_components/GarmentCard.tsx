@@ -8,8 +8,8 @@ import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/helpers/money";
 import { getColorById } from "@/lib/helpers/garment-helpers";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { Color } from "@domain/entities/color";
 
 interface GarmentCardProps {
   garment: GarmentCatalog;

@@ -36,8 +36,8 @@ import { formatDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { INVOICE_STATUS_LABELS } from "@/lib/constants";
-import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Invoice, InvoiceStatus } from "@domain/entities/invoice";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props

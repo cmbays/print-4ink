@@ -19,7 +19,7 @@ import {
   Package,
   Kanban,
 } from "lucide-react";
-import type { Lane } from "@/lib/schemas/job";
+import type { Lane } from "@domain/entities/job";
 
 export default async function DashboardPage() {
   const [jobs, customers] = await Promise.all([getJobs(), getCustomers()]);

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ColorFilterGrid } from "./ColorFilterGrid";
 import { getColorById } from "@/lib/helpers/garment-helpers";
-import { garmentCategoryEnum } from "@/lib/schemas/garment";
+import { garmentCategoryEnum } from "@domain/entities/garment";
 import { GARMENT_CATEGORY_LABELS } from "@/lib/constants";
 import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
 
