@@ -103,7 +103,7 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 
 **What sessions CAN commit on their feature branch:**
 - All source code changes
-- New `knowledge-base/src/content/sessions/YYYY-MM-DD-*.md` session doc (unique filename, no conflicts)
+- New `knowledge-base/src/content/pipelines/YYYY-MM-DD-*.md` pipeline doc (unique filename, no conflicts)
 - New docs (breadboards, spikes, strategy)
 - Schema and test changes
 
@@ -354,7 +354,7 @@ These documents define the project. Reference them, keep them current, and never
 - Before building a screen, check `APP_FLOW.md` for its route, purpose, and connections.
 - Before starting work, check `IMPLEMENTATION_PLAN.md` for the current step.
 - After PR merges, regenerate PROGRESS.md: `work progress`
-- After completing work, create or update a session doc in `knowledge-base/src/content/sessions/` (see Knowledge Base section below).
+- After completing work, create or update a pipeline doc in `knowledge-base/src/content/pipelines/` (see Knowledge Base section below).
 - When a doc becomes stale, update it — don't ignore it.
 - Every canonical doc has a `Last Verified` date. Update it when you confirm the doc still matches reality.
 
@@ -416,11 +416,11 @@ Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestr
 
 ## Knowledge Base (Astro)
 
-After every feature build, plan, or decision, create or update a Markdown file in `knowledge-base/src/content/sessions/`.
+After every feature build, plan, or decision, create or update a Markdown file in `knowledge-base/src/content/pipelines/`.
 
 ### File Format
 
-Create `knowledge-base/src/content/sessions/YYYY-MM-DD-kebab-topic.md` with YAML frontmatter:
+Create `knowledge-base/src/content/pipelines/YYYY-MM-DD-kebab-topic.md` with YAML frontmatter:
 
 ```yaml
 ---
@@ -428,8 +428,10 @@ title: "Document Title"
 subtitle: "Short description"
 date: YYYY-MM-DD
 phase: 1
-vertical: VERTICAL_SLUG
-verticalSecondary: []
+pipelineName: "Human Readable Pipeline Name"
+pipelineType: vertical
+products: []
+tools: []
 stage: STAGE_SLUG
 tags: [feature, build]
 sessionId: "UUID"
@@ -488,7 +490,7 @@ Embed in any session Markdown file:
 
 ### Rules
 
-- **One file per session**: `YYYY-MM-DD-kebab-topic.md` in `knowledge-base/src/content/sessions/`
+- **One file per session**: `YYYY-MM-DD-kebab-topic.md` in `knowledge-base/src/content/pipelines/`
 - **Build validates**: `npm run kb:build` catches schema errors at build time
 - **Session ID**: Find via `ls -t ~/.claude/projects/-Users-cmbays-Github-print-4ink/*.jsonl | head -1` — filename (without `.jsonl`) is the ID
 - **Include**: session resume command, artifact links, PR links, decision rationale

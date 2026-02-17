@@ -4,7 +4,7 @@ import Badge from './Badge.astro';
 
 interface Props {
   questionId: string;
-  vertical: string;
+  pipeline: string;
   status: 'unanswered' | 'answered';
   questionText: string;
   context: string;
@@ -12,14 +12,14 @@ interface Props {
   answeredDate?: string;
 }
 
-const { questionId, vertical, status, questionText, context, answer, answeredDate } = Astro.props;
+const { questionId, pipeline, status, questionText, context, answer, answeredDate } = Astro.props;
 ---
 
 <div class="bg-bg-elevated border border-border border-l-[3px] border-l-purple rounded-lg p-4 mb-3" data-question-id={questionId}>
   <div class="flex items-center justify-between mb-2">
     <span class="text-[11px] font-semibold uppercase tracking-wide text-purple">{questionId}</span>
     <div class="flex items-center gap-2">
-      <span class="text-[11px] font-medium uppercase tracking-wide text-text-muted">{pipelineLabel(vertical)}</span>
+      <span class="text-[11px] font-medium uppercase tracking-wide text-text-muted">{pipelineLabel(pipeline)}</span>
       {status === 'answered' ? (
         <Badge colorClass="bg-success/12 text-success">Answered</Badge>
       ) : (

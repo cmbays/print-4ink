@@ -15,7 +15,7 @@ declare global {
 
 export interface GaryQuestionData {
   questionId: string;
-  vertical: string;
+  pipeline: string;
   status: 'unanswered' | 'answered';
   questionText: string;
   context: string;
