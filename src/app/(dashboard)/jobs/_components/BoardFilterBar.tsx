@@ -19,15 +19,16 @@ import {
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
   SERVICE_TYPE_COLORS,
-} from "@/lib/constants";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+} from "@domain/constants";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
 import { z } from "zod";
-import { riskLevelEnum } from "@/lib/schemas/job";
-import { serviceTypeEnum } from "@/lib/schemas/quote";
-import type { RiskLevel } from "@/lib/schemas/job";
-import type { ServiceType } from "@/lib/schemas/quote";
-import type { CardFilters } from "@/lib/helpers/job-utils";
+import { riskLevelEnum } from "@domain/entities/job";
+import { serviceTypeEnum } from "@domain/entities/quote";
+import type { RiskLevel } from "@domain/entities/job";
+import type { ServiceType } from "@domain/entities/quote";
+import type { CardFilters } from "@domain/rules/job.rules";
 
 const horizonEnum = z.enum(["past_due", "this_week", "next_week"]);
 const cardTypeEnum = z.enum(["all", "jobs", "quotes"]);
@@ -150,7 +151,7 @@ export function BoardFilterBar() {
           aria-pressed={cardType === "jobs"}
           onClick={() => setParam("cardType", "jobs")}
         >
-          <ENTITY_STYLES.job.icon className={cn("size-3", cardType === "jobs" && ENTITY_STYLES.job.color)} />
+          <ENTITY_ICONS.job className={cn("size-3", cardType === "jobs" && ENTITY_STYLES.job.color)} />
           Jobs
         </Button>
         <Button
@@ -165,7 +166,7 @@ export function BoardFilterBar() {
           aria-pressed={cardType === "quotes"}
           onClick={() => setParam("cardType", "quotes")}
         >
-          <ENTITY_STYLES.quote.icon className={cn("size-3", cardType === "quotes" && ENTITY_STYLES.quote.color)} />
+          <ENTITY_ICONS.quote className={cn("size-3", cardType === "quotes" && ENTITY_STYLES.quote.color)} />
           Quotes
         </Button>
       </div>

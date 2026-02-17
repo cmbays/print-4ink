@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { CustomerScreen } from "@/lib/schemas/customer-screen";
+import type { CustomerScreen } from "@domain/entities/customer-screen";
 
 interface ReclaimScreenDialogProps {
   screen: CustomerScreen;

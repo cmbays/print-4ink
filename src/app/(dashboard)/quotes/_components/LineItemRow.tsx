@@ -28,11 +28,11 @@ import {
 } from "@/components/ui/tooltip";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { ArtworkAssignmentPicker } from "./ArtworkAssignmentPicker";
-import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@/lib/constants";
-import type { GarmentCatalog, GarmentCategory } from "@/lib/schemas/garment";
-import type { Color } from "@/lib/schemas/color";
-import type { Artwork } from "@/lib/schemas/artwork";
-import type { ServiceType } from "@/lib/schemas/quote";
+import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
+import type { GarmentCatalog, GarmentCategory } from "@domain/entities/garment";
+import type { Color } from "@domain/entities/color";
+import type { Artwork } from "@domain/entities/artwork";
+import type { ServiceType } from "@domain/entities/quote";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 
 export interface PrintLocationDetail {

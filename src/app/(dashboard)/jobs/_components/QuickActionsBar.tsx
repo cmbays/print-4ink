@@ -7,10 +7,11 @@ import {
   ShieldCheck,
   LayoutGrid,
 } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { Job } from "@/lib/schemas/job";
+import type { Job } from "@domain/entities/job";
 
 interface QuickActionsBarProps {
   job: Job;
@@ -62,7 +63,7 @@ export function QuickActionsBar({
       {job.sourceQuoteId && (
         <Button variant="outline" size="sm" className="gap-1.5" asChild>
           <Link href={`/quotes/${job.sourceQuoteId}`}>
-            <ENTITY_STYLES.quote.icon className={cn("size-3.5", ENTITY_STYLES.quote.color)} />
+            <ENTITY_ICONS.quote className={cn("size-3.5", ENTITY_STYLES.quote.color)} />
             View Quote
           </Link>
         </Button>
@@ -72,7 +73,7 @@ export function QuickActionsBar({
       {job.invoiceId && (
         <Button variant="outline" size="sm" className="gap-1.5" asChild>
           <Link href={`/invoices/${job.invoiceId}`}>
-            <ENTITY_STYLES.invoice.icon className={cn("size-3.5", ENTITY_STYLES.invoice.color)} />
+            <ENTITY_ICONS.invoice className={cn("size-3.5", ENTITY_STYLES.invoice.color)} />
             View Invoice
           </Link>
         </Button>

@@ -951,6 +951,39 @@ EOF
 
 **Pre-flight:** Merge Phase 2 PR first. Start a new worktree from `main`.
 
+### Tech Debt Inherited from Phase 2
+
+These two issues were identified during Phase 2 code review and intentionally deferred. Resolve them early in Phase 3 before moving files.
+
+#### C3 — Domain rules import `@/lib/mock-data` directly (4 files)
+
+`board.rules.ts`, `garment.rules.ts`, `customer.rules.ts`, `screen.rules.ts` all import collections directly from mock-data at module scope. Domain rules should be pure functions that receive data as parameters.
+
+**Fix in Phase 3:** Refactor each function to accept its data collections as arguments (dependency injection). The infrastructure layer (mock repositories) provides the data when calling these functions. Example:
+```typescript
+// Before (Phase 2 state):
+import { garmentCatalog, colors } from "@/lib/mock-data";
+export function getGarmentById(id: string) { return garmentCatalog.find(...); }
+
+// After (Phase 3 target):
+export function getGarmentById(id: string, catalog: Garment[]) { return catalog.find(...); }
+// Called from: mockGarmentRepository.getById = (id) => getGarmentById(id, mockData.garmentCatalog)
+```
+Files to refactor: `src/domain/rules/board.rules.ts`, `garment.rules.ts`, `customer.rules.ts`, `screen.rules.ts`.
+
+#### I2 — Bidirectional import between `dtf.service.ts` and `dtf.rules.ts`
+
+`dtf.service.ts` imports constants (`DTF_SHEET_WIDTH`, `DTF_DEFAULT_MARGIN`, `DTF_MAX_SHEET_LENGTH`) from `dtf.rules.ts`, while `dtf.rules.ts` imports the `PackedSheet` type from `dtf.service.ts`. Services should not depend on rules.
+
+**Fix:** Extract the three DTF sheet constants into `src/domain/constants/dtf.ts`. Both files import from constants. No circular dependency.
+
+```bash
+# Create src/domain/constants/dtf.ts with the three constants
+# Update dtf.rules.ts and dtf.service.ts to import from @domain/constants/dtf
+```
+
+---
+
 ### Task 3.1: Move `components/ui/` → `src/shared/ui/primitives/`
 
 **Files:**
@@ -1230,6 +1263,24 @@ EOF
 **Effort:** 1–2 days. Ties everything together — feature slices, config split, tools separation, alias switch, lint rules, docs.
 
 **Pre-flight:** Merge Phase 3 PR first. Start a new worktree from `main`.
+
+### Constants Strategy: Two-Tier Rule
+
+> **Established during Phase 2 execution. Apply throughout Phase 4.**
+
+All constants follow a two-tier placement rule:
+
+| Tier | Rule | Location |
+|------|------|----------|
+| **Domain-wide** | Used across 2+ features, describes shared domain state (status labels, entity styles, risk levels, lifecycle stages) | `src/domain/constants/` |
+| **Feature-scoped** | Used only within one vertical, describes that feature's specific concepts | `src/features/{domain}/constants/` |
+
+**Phase 2 decisions to revisit in Phase 4 (flagged for audit):**
+
+- `src/domain/constants/print-zones.ts` — print zone geometry. Used only by garments + quotes mockup renderer. Strong candidate for `src/features/garments/constants/print-zones.ts`.
+- `src/domain/constants/swatch.ts` — swatch text style helper. Used only by garment/color pickers. Strong candidate for `src/features/garments/constants/swatch.ts`.
+
+**How to audit:** `grep -r "domain/constants/print-zones\|domain/constants/swatch" --include="*.ts" --include="*.tsx" src/` — if consumers are all within one feature, move it down.
 
 ### Task 4.1: Move feature components from `components/features/` to `src/features/`
 

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Tag, Search } from "lucide-react";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
-import { SERVICE_TYPE_COLORS } from "@/lib/constants";
+import { SERVICE_TYPE_COLORS } from "@domain/constants";
 import { SetupWizard } from "./_components/SetupWizard";
 import { TagTemplateMapper } from "./_components/TagTemplateMapper";
 import {
@@ -20,15 +20,15 @@ import {
   allDTFTemplates,
   tagTemplateMappings,
 } from "@/lib/mock-data-pricing";
-import type { TagTemplateMapping } from "@/lib/schemas/tag-template-mapping";
+import type { TagTemplateMapping } from "@domain/entities/tag-template-mapping";
 import { customers } from "@/lib/mock-data";
 import {
   calculateTemplateHealth,
   calculateDTFTemplateHealth,
-} from "@/lib/pricing-engine";
-import type { PricingTemplate } from "@/lib/schemas/price-matrix";
-import type { DTFPricingTemplate } from "@/lib/schemas/dtf-pricing";
-import type { MarginIndicator } from "@/lib/schemas/price-matrix";
+} from "@domain/services/pricing.service";
+import type { PricingTemplate } from "@domain/entities/price-matrix";
+import type { DTFPricingTemplate } from "@domain/entities/dtf-pricing";
+import type { MarginIndicator } from "@domain/entities/price-matrix";
 
 // ---------------------------------------------------------------------------
 // Helpers

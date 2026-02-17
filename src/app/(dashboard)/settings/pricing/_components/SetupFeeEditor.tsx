@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import type { SetupFeeConfig } from "@/lib/schemas/price-matrix";
+import type { SetupFeeConfig } from "@domain/entities/price-matrix";
 import { Settings } from "lucide-react";
 
 interface SetupFeeEditorProps {

@@ -16,8 +16,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { ARTWORK_TAG_LABELS } from "@/lib/constants";
-import type { ArtworkTag } from "@/lib/schemas/artwork";
+import { ARTWORK_TAG_LABELS } from "@domain/constants";
+import type { ArtworkTag } from "@domain/entities/artwork";
 
 interface ArtworkUploadModalProps {
   open: boolean;

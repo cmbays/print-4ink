@@ -7,7 +7,7 @@ import { CapacitySummary } from "@/components/features/CapacitySummary";
 import {
   LANE_LABELS,
   PRIORITY_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 import { getJobs } from "@infra/repositories/jobs";
 import { getCustomers } from "@infra/repositories/customers";
 import { money, toNumber } from "@/lib/helpers/money";
@@ -19,7 +19,7 @@ import {
   Package,
   Kanban,
 } from "lucide-react";
-import type { Lane } from "@/lib/schemas/job";
+import type { Lane } from "@domain/entities/job";
 
 export default async function DashboardPage() {
   const [jobs, customers] = await Promise.all([getJobs(), getCustomers()]);

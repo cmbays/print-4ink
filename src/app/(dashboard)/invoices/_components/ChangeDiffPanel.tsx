@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
-import type { PricingSnapshot } from "@/lib/schemas/invoice";
+import type { PricingSnapshot } from "@domain/entities/invoice";
 
 interface ChangeDiffPanelProps {
   pricingSnapshot: PricingSnapshot | undefined;

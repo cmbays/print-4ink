@@ -7,7 +7,7 @@ import { DiscountRow } from "./DiscountRow";
 import { QuoteActions } from "./QuoteActions";
 import { EmailPreviewModal } from "./EmailPreviewModal";
 import { MockupFilterProvider, GarmentMockupThumbnail } from "@/components/features/mockup";
-import { normalizePosition } from "@/lib/constants/print-zones";
+import { normalizePosition } from "@domain/constants/print-zones";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useMemo } from "react";
@@ -20,13 +20,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Quote, QuoteLineItem } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
-import type { Artwork } from "@/lib/schemas/artwork";
-import type { Color } from "@/lib/schemas/color";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
+import type { Quote, QuoteLineItem } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
+import type { Artwork } from "@domain/entities/artwork";
+import type { Color } from "@domain/entities/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
 import { formatDate } from "@/lib/helpers/format";
-import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@/lib/constants";
+import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@domain/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import { cn } from "@/lib/utils";

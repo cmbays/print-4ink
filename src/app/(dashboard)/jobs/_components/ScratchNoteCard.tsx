@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { StickyNote, Plus, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { CARD_TYPE_BORDER_COLORS } from "@/lib/constants";
+import { CARD_TYPE_BORDER_COLORS } from "@domain/constants";
 import { formatRelativeTime } from "@/lib/helpers/format";
-import type { ScratchNoteCard as ScratchNoteCardType } from "@/lib/schemas/board-card";
+import type { ScratchNoteCard as ScratchNoteCardType } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Component

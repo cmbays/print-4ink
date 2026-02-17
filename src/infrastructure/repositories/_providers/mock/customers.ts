@@ -1,12 +1,12 @@
 import { customers, contacts, customerNotes, quotes, jobs, invoices, artworks } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Customer } from '@/lib/schemas/customer';
-import type { Contact } from '@/lib/schemas/contact';
-import type { Note } from '@/lib/schemas/note';
-import type { Quote } from '@/lib/schemas/quote';
-import type { Job } from '@/lib/schemas/job';
-import type { Invoice } from '@/lib/schemas/invoice';
-import type { Artwork } from '@/lib/schemas/artwork';
+import type { Customer } from '@domain/entities/customer';
+import type { Contact } from '@domain/entities/contact';
+import type { Note } from '@domain/entities/note';
+import type { Quote } from '@domain/entities/quote';
+import type { Job } from '@domain/entities/job';
+import type { Invoice } from '@domain/entities/invoice';
+import type { Artwork } from '@domain/entities/artwork';
 
 export async function getCustomers(): Promise<Customer[]> {
   return customers.map((c) => structuredClone(c));

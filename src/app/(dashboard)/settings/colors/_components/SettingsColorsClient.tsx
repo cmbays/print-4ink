@@ -22,11 +22,11 @@ import {
   removeFromAll,
   removeFromLevelOnly,
   removeFromSelected,
-} from "@/lib/helpers/color-preferences";
-import { displayPreferenceSchema } from "@/lib/schemas/color-preferences";
-import type { Color } from "@/lib/schemas/color";
-import type { ImpactPreview } from "@/lib/helpers/color-preferences";
-import type { DisplayPreference } from "@/lib/schemas/color-preferences";
+} from "@domain/rules/customer.rules";
+import { displayPreferenceSchema } from "@domain/entities/color-preferences";
+import type { Color } from "@domain/entities/color";
+import type { ImpactPreview } from "@domain/rules/customer.rules";
+import type { DisplayPreference } from "@domain/entities/color-preferences";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 
 // ---------------------------------------------------------------------------

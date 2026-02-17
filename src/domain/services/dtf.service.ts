@@ -14,13 +14,13 @@ import {
   DTF_SHEET_WIDTH,
   DTF_DEFAULT_MARGIN,
   DTF_MAX_SHEET_LENGTH,
-} from "@/lib/dtf/dtf-constants";
+} from "@domain/rules/dtf.rules";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface PackedDesign {
+export type PackedDesign = {
   id: string;
   x: number;
   y: number;
@@ -29,12 +29,12 @@ export interface PackedDesign {
   label: string;
 }
 
-export interface PackedSheet {
+export type PackedSheet = {
   designs: PackedDesign[];
   usedHeight: number;
 }
 
-export interface DesignInput {
+export type DesignInput = {
   id: string;
   width: number;
   height: number;

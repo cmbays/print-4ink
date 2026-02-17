@@ -18,11 +18,11 @@ import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { FavoritesColorSection } from "@/components/features/FavoritesColorSection";
 import { cn } from "@/lib/utils";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
-import { getColorById } from "@/lib/helpers/garment-helpers";
-import { resolveEffectiveFavorites } from "@/lib/helpers/color-preferences";
+import { getColorById } from "@domain/rules/garment.rules";
+import { resolveEffectiveFavorites } from "@domain/rules/customer.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { Color } from "@domain/entities/color";
 
 type GarmentDetailDrawerProps = {
   garment: GarmentCatalog;

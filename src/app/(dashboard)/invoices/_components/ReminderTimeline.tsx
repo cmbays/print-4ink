@@ -1,4 +1,4 @@
-import type { Reminder } from "@/lib/schemas/invoice";
+import type { Reminder } from "@domain/entities/invoice";
 import { Bell } from "lucide-react";
 import { formatDate } from "@/lib/helpers/format";
 

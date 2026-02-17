@@ -4,8 +4,8 @@ import { useCallback, useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { GarmentMockup } from "./GarmentMockup";
 import type { ArtworkPlacement } from "./GarmentMockup";
-import type { GarmentCategory } from "@/lib/schemas/garment";
-import type { MockupView } from "@/lib/schemas/mockup-template";
+import type { GarmentCategory } from "@domain/entities/garment";
+import type { MockupView } from "@domain/entities/mockup-template";
 
 interface GarmentMockupCardProps {
   garmentCategory: GarmentCategory;

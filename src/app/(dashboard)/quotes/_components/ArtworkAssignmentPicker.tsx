@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useState } from "react";
-import type { Artwork } from "@/lib/schemas/artwork";
+import type { Artwork } from "@domain/entities/artwork";
 
 interface ArtworkAssignmentPickerProps {
   artworks: Artwork[];

@@ -9,12 +9,12 @@ import { GarmentCard } from "./GarmentCard";
 import { GarmentTableRow } from "./GarmentTableRow";
 import { GarmentDetailDrawer } from "./GarmentDetailDrawer";
 import { BrandDetailDrawer } from "./BrandDetailDrawer";
-import { resolveEffectiveFavorites } from "@/lib/helpers/color-preferences";
+import { resolveEffectiveFavorites } from "@domain/rules/customer.rules";
 import { useColorFilter } from "@/lib/hooks/useColorFilter";
 import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { Job } from "@/lib/schemas/job";
-import type { Customer } from "@/lib/schemas/customer";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { Job } from "@domain/entities/job";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props

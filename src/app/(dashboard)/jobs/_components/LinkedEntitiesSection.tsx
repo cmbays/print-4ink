@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { User, ExternalLink } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@/lib/constants";
-import type { Job } from "@/lib/schemas/job";
-import type { InvoiceStatus } from "@/lib/schemas/invoice";
+import { INVOICE_STATUS_LABELS, INVOICE_STATUS_BADGE_COLORS } from "@domain/constants";
+import type { Job } from "@domain/entities/job";
+import type { InvoiceStatus } from "@domain/entities/invoice";
 
 interface LinkedEntitiesSectionProps {
   job: Job;
@@ -45,7 +46,7 @@ export function LinkedEntitiesSection({
         {/* Source Quote */}
         {job.sourceQuoteId && (
           <EntityRow
-            icon={ENTITY_STYLES.quote.icon}
+            icon={ENTITY_ICONS.quote}
             label="Quote"
             href={`/quotes/${job.sourceQuoteId}`}
             value="Source Quote"
@@ -62,7 +63,7 @@ export function LinkedEntitiesSection({
         {/* Invoice */}
         {job.invoiceId && (
           <EntityRow
-            icon={ENTITY_STYLES.invoice.icon}
+            icon={ENTITY_ICONS.invoice}
             label="Invoice"
             href={`/invoices/${job.invoiceId}`}
             value="Invoice"

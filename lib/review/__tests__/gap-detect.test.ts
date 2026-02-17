@@ -5,7 +5,7 @@ import {
   type PRFacts,
   type PRClassification,
   type AgentManifestEntry,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 import { z } from "zod";
 import {
   gapDetect,

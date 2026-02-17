@@ -4,9 +4,9 @@ import {
   computeRiskLevel,
   computeTaskProgress,
   computeFilteredCards,
-} from "../job-utils";
-import type { BoardCard } from "@/lib/schemas/board-card";
-import type { JobTask } from "@/lib/schemas/job";
+} from "../job.rules";
+import type { BoardCard } from "@domain/entities/board-card";
+import type { JobTask } from "@domain/entities/job";
 
 // ---------------------------------------------------------------------------
 // computeCapacitySummary

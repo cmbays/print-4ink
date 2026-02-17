@@ -1,5 +1,5 @@
-import type { PrintZone, MockupView } from "@/lib/schemas/mockup-template";
-import type { GarmentCategory } from "@/lib/schemas/garment";
+import type { PrintZone, MockupView } from "@domain/entities/mockup-template";
+import type { GarmentCategory } from "@domain/entities/garment";
 
 /**
  * Human-readable labels for print positions.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { hexToColorMatrix } from "@/lib/helpers/color-matrix";
+import { hexToColorMatrix } from "@domain/rules/color.rules";
 
 interface MockupFilterProviderProps {
   /** Set of hex colors currently visible on screen. */

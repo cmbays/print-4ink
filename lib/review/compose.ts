@@ -3,11 +3,11 @@ import type {
   PRClassification,
   PRFacts,
   AgentManifestEntry,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 import type {
   CompositionPolicy,
   ReviewRiskLevel,
-} from "@/lib/schemas/review-config";
+} from "@domain/entities/review-config";
 import {
   loadCompositionPolicies,
   loadReviewRules,

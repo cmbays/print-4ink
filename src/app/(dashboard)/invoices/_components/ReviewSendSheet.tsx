@@ -11,7 +11,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { InvoicePricingSummary } from "./InvoicePricingSummary";
-import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@/lib/constants";
+import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
 import { formatCurrency } from "@/lib/helpers/money";
 import type { InvoiceLineItemData } from "./InvoiceLineItemRow";
 

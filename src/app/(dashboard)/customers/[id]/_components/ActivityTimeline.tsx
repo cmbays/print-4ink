@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Clock } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
@@ -11,10 +12,10 @@ import {
   LANE_LABELS,
   LANE_COLORS,
   NOTE_CHANNEL_LABELS,
-} from "@/lib/constants";
-import type { Quote } from "@/lib/schemas/quote";
-import type { Job } from "@/lib/schemas/job";
-import type { Note } from "@/lib/schemas/note";
+} from "@domain/constants";
+import type { Quote } from "@domain/entities/quote";
+import type { Job } from "@domain/entities/job";
+import type { Note } from "@domain/entities/note";
 
 interface ActivityTimelineProps {
   quotes: Quote[];
@@ -61,9 +62,9 @@ function relativeDate(dateStr: string): string {
 }
 
 const ICON_CONFIG = {
-  quote: { icon: ENTITY_STYLES.quote.icon, color: ENTITY_STYLES.quote.color },
-  job: { icon: ENTITY_STYLES.job.icon, color: ENTITY_STYLES.job.color },
-  note: { icon: ENTITY_STYLES.scratch_note.icon, color: ENTITY_STYLES.scratch_note.color },
+  quote: { icon: ENTITY_ICONS.quote, color: ENTITY_STYLES.quote.color },
+  job: { icon: ENTITY_ICONS.job, color: ENTITY_STYLES.job.color },
+  note: { icon: ENTITY_ICONS.scratch_note, color: ENTITY_STYLES.scratch_note.color },
 } as const;
 
 export function ActivityTimeline({ quotes, jobs, notes, onSwitchTab }: ActivityTimelineProps) {

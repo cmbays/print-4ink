@@ -31,13 +31,14 @@ import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
+import { computeIsOverdue } from "@domain/rules/invoice.rules";
 import { formatDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
-import { INVOICE_STATUS_LABELS } from "@/lib/constants";
-import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
-import type { Customer } from "@/lib/schemas/customer";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
+import { INVOICE_STATUS_LABELS } from "@domain/constants";
+import type { Invoice, InvoiceStatus } from "@domain/entities/invoice";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -561,7 +562,7 @@ export function InvoicesDataTable({ invoices, customers }: InvoicesDataTableProp
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ENTITY_STYLES.invoice.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
+          <ENTITY_ICONS.invoice className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No invoices found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters

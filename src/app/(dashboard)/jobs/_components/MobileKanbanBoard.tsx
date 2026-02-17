@@ -14,8 +14,8 @@ import type {
   QuoteCard,
   ScratchNoteCard,
   BoardCard,
-} from "@/lib/schemas/board-card";
-import type { Lane } from "@/lib/schemas/job";
+} from "@domain/entities/board-card";
+import type { Lane } from "@domain/entities/job";
 
 const LANES: Lane[] = ["ready", "in_progress", "review", "blocked", "done"];
 

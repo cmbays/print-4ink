@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { deriveScreensFromJobs, getScreensByJobId, getActiveCustomerScreens } from "../screen-helpers";
+import { deriveScreensFromJobs, getScreensByJobId, getActiveCustomerScreens } from "../screen.rules";
 import { jobs } from "@/lib/mock-data";
 
 describe("deriveScreensFromJobs", () => {

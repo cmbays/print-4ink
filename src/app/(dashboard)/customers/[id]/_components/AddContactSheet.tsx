@@ -20,9 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CONTACT_ROLE_LABELS } from "@/lib/constants";
-import { contactRoleEnum } from "@/lib/schemas/contact";
-import type { Group } from "@/lib/schemas/group";
+import { CONTACT_ROLE_LABELS } from "@domain/constants";
+import { contactRoleEnum } from "@domain/entities/contact";
+import type { Group } from "@domain/entities/group";
 
 interface AddContactSheetProps {
   open: boolean;

@@ -3,8 +3,8 @@
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { BoardLane } from "./BoardLane";
-import type { Lane } from "@/lib/schemas/job";
-import type { BoardCard } from "@/lib/schemas/board-card";
+import type { Lane } from "@domain/entities/job";
+import type { BoardCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Constants

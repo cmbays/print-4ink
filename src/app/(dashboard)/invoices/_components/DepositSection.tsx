@@ -3,10 +3,10 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { DEPOSIT_DEFAULTS_BY_TIER } from "@/lib/constants";
-import { calculateSmartDeposit } from "@/lib/helpers/invoice-utils";
+import { DEPOSIT_DEFAULTS_BY_TIER } from "@domain/constants";
+import { calculateSmartDeposit } from "@domain/rules/invoice.rules";
 import { money, toNumber } from "@/lib/helpers/money";
-import type { PricingTier } from "@/lib/schemas/customer";
+import type { PricingTier } from "@domain/entities/customer";
 
 interface DepositSectionProps {
   depositAmount: number;

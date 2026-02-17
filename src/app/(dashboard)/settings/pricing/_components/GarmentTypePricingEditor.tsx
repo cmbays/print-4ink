@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import type { GarmentTypePricing } from "@/lib/schemas/price-matrix";
+import type { GarmentTypePricing } from "@domain/entities/price-matrix";
 
 const CATEGORY_LABELS: Record<string, string> = {
   "t-shirts": "T-Shirts",

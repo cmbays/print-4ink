@@ -11,8 +11,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import type { Quote } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Quote } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
 import { formatCurrency } from "@/lib/helpers/money";
 
 interface EmailPreviewModalProps {

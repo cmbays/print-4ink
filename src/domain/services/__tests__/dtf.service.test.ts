@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { shelfPack } from "../shelf-pack";
-import { DTF_MAX_SHEET_LENGTH } from "@/lib/dtf/dtf-constants";
+import { shelfPack } from "../dtf.service";
+import { DTF_MAX_SHEET_LENGTH } from "@domain/rules/dtf.rules";
 
 describe("shelfPack", () => {
   it("returns empty array for empty input", () => {

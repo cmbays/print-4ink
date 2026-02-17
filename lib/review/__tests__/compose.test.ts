@@ -4,7 +4,7 @@ import {
   agentManifestEntrySchema,
   type PRClassification,
   type PRFacts,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 import { compose } from "../compose";
 
 // ---------------------------------------------------------------------------

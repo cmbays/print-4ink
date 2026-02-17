@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { classify } from "../classify";
-import { prClassificationSchema, type PRFacts } from "@/lib/schemas/review-pipeline";
+import { prClassificationSchema, type PRFacts } from "@domain/entities/review-pipeline";
 
 // ---------------------------------------------------------------------------
 // Helper — builds a minimal PRFacts with sensible defaults

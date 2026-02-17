@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { demoLoginSchema } from '@/lib/schemas/demo-login';
+import { demoLoginSchema } from '@domain/entities/demo-login';
 
 export async function POST(request: NextRequest) {
   try {

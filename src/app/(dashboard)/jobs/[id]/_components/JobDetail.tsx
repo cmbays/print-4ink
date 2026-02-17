@@ -24,8 +24,8 @@ import { BlockReasonBanner } from "../../_components/BlockReasonBanner";
 import { BlockReasonDialog } from "../../_components/BlockReasonDialog";
 import { MoveLaneDialog } from "../../_components/MoveLaneDialog";
 
-import type { Job, Lane, JobNoteType } from "@/lib/schemas/job";
-import type { InvoiceStatus } from "@/lib/schemas/invoice";
+import type { Job, Lane, JobNoteType } from "@domain/entities/job";
+import type { InvoiceStatus } from "@domain/entities/invoice";
 
 // ---------------------------------------------------------------------------
 // Props

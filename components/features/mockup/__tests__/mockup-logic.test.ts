@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   PRINT_ZONES,
   PRINT_POSITION_LABELS,
-} from "@/lib/constants/print-zones";
+} from "@domain/constants/print-zones";
 
 // ---------------------------------------------------------------------------
 // VIEW_POSITION_MAP logic (extracted from GarmentMockupCard)

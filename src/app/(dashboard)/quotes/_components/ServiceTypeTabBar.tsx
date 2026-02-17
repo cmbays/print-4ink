@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { SERVICE_TYPE_ICONS } from "@/components/features/ServiceTypeBadge";
-import { SERVICE_TYPE_LABELS } from "@/lib/constants";
-import type { ServiceType } from "@/lib/schemas/quote";
+import { SERVICE_TYPE_LABELS } from "@domain/constants";
+import type { ServiceType } from "@domain/entities/quote";
 import { cn } from "@/lib/utils";
 
 interface ServiceTypeTabBarProps {

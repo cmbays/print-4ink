@@ -14,13 +14,13 @@ import { cn } from "@/lib/utils";
 import {
   buildFullMatrixData,
   formatCurrency,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import type {
   PricingTemplate,
   MarginIndicator,
   MarginBreakdown,
-} from "@/lib/schemas/price-matrix";
-import type { GarmentCategory } from "@/lib/schemas/garment";
+} from "@domain/entities/price-matrix";
+import type { GarmentCategory } from "@domain/entities/garment";
 import { useSpreadsheetEditor } from "@/lib/hooks/useSpreadsheetEditor";
 import { X } from "lucide-react";
 

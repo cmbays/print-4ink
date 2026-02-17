@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { prFactsSchema } from "@/lib/schemas/review-pipeline";
+import { prFactsSchema } from "@domain/entities/review-pipeline";
 
 // ---------------------------------------------------------------------------
 // Mock child_process — intercept execFileSync calls

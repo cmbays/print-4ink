@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { MarginIndicator as MarginIndicatorType } from "@/lib/schemas/price-matrix";
+import type { MarginIndicator as MarginIndicatorType } from "@domain/entities/price-matrix";
 import {
   Tooltip,
   TooltipContent,

@@ -1,6 +1,6 @@
-import type { ProductionState, Priority, Lane, RiskLevel } from "@/lib/schemas/job";
-import type { BurnStatus } from "@/lib/schemas/screen";
-import type { QuoteStatus, ServiceType } from "@/lib/schemas/quote";
+import type { ProductionState, Priority, Lane, RiskLevel } from "@domain/entities/job";
+import type { BurnStatus } from "@domain/entities/screen";
+import type { QuoteStatus, ServiceType } from "@domain/entities/quote";
 import type {
   CustomerTag,
   LifecycleStage,
@@ -8,13 +8,13 @@ import type {
   CustomerTypeTag,
   PaymentTerms,
   PricingTier,
-} from "@/lib/schemas/customer";
-import type { ContactRole } from "@/lib/schemas/contact";
-import type { NoteChannel } from "@/lib/schemas/note";
-import type { ArtworkTag } from "@/lib/schemas/artwork";
-import type { GarmentCategory } from "@/lib/schemas/garment";
-import type { InvoiceStatus, PaymentMethod, InvoiceLineItemType } from "@/lib/schemas/invoice";
-import type { CreditMemoReason } from "@/lib/schemas/credit-memo";
+} from "@domain/entities/customer";
+import type { ContactRole } from "@domain/entities/contact";
+import type { NoteChannel } from "@domain/entities/note";
+import type { ArtworkTag } from "@domain/entities/artwork";
+import type { GarmentCategory } from "@domain/entities/garment";
+import type { InvoiceStatus, PaymentMethod, InvoiceLineItemType } from "@domain/entities/invoice";
+import type { CreditMemoReason } from "@domain/entities/credit-memo";
 
 export const PRODUCTION_STATE_LABELS: Record<ProductionState, string> = {
   design: "Design",
@@ -332,14 +332,15 @@ export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
 // ---------------------------------------------------------------------------
 // Card Type — Visual Encoding (neobrutalist accent: left border)
 // ---------------------------------------------------------------------------
-// Canonical entity icons, colors, and border colors live in
-// lib/constants/entities.ts — import ENTITY_STYLES from there.
+// Canonical entity labels, colors, and border colors in ENTITY_STYLES.
+// Icons (LucideIcon) are a UI concern — import ENTITY_ICONS from
+// @/lib/constants/entity-icons for rendering.
 // CARD_TYPE_BORDER_COLORS kept as a convenience alias for board cards.
 
-export { ENTITY_STYLES } from "@/lib/constants/entities";
+export { ENTITY_STYLES } from "@domain/constants/entities";
 
 // Derived from ENTITY_STYLES to prevent drift
-import { ENTITY_STYLES as _ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES as _ENTITY_STYLES } from "@domain/constants/entities";
 export const CARD_TYPE_BORDER_COLORS = {
   job: _ENTITY_STYLES.job.borderColor,
   quote: _ENTITY_STYLES.quote.borderColor,

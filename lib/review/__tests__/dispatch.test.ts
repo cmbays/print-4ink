@@ -4,7 +4,7 @@ import {
   agentResultSchema,
   type PRFacts,
   type AgentManifestEntry,
-} from "@/lib/schemas/review-pipeline";
+} from "@domain/entities/review-pipeline";
 import { dispatch, type AgentLauncher } from "../dispatch";
 
 // ---------------------------------------------------------------------------

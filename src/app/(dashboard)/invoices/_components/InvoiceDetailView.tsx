@@ -30,14 +30,14 @@ import {
   INVOICE_LINE_ITEM_TYPE_LABELS,
   PAYMENT_TERMS_LABELS,
   CREDIT_MEMO_REASON_LABELS,
-} from "@/lib/constants";
-import { computeIsOverdue, isValidStatusTransition } from "@/lib/helpers/invoice-utils";
+} from "@domain/constants";
+import { computeIsOverdue, isValidStatusTransition } from "@domain/rules/invoice.rules";
 import { formatDate } from "@/lib/helpers/format";
 import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { toast } from "sonner";
-import type { Invoice, Payment } from "@/lib/schemas/invoice";
-import type { Customer } from "@/lib/schemas/customer";
-import type { CreditMemo } from "@/lib/schemas/credit-memo";
+import type { Invoice, Payment } from "@domain/entities/invoice";
+import type { Customer } from "@domain/entities/customer";
+import type { CreditMemo } from "@domain/entities/credit-memo";
 
 interface InvoiceDetailViewProps {
   invoice: Invoice;

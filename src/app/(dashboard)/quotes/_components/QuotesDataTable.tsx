@@ -11,7 +11,8 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { z } from "zod";
 
@@ -36,8 +37,8 @@ import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { formatDate } from "@/lib/helpers/format";
-import type { Quote, QuoteStatus } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
+import type { Quote, QuoteStatus } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Derived table rows
@@ -540,7 +541,7 @@ export function QuotesDataTable({ quotes, customers }: QuotesDataTableProps) {
       ) : (
         /* Empty state */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ENTITY_STYLES.quote.icon className="size-6 text-muted-foreground/50" aria-hidden="true" />
+          <ENTITY_ICONS.quote className="size-6 text-muted-foreground/50" aria-hidden="true" />
           <p className="mt-4 text-sm font-medium">No quotes found</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {hasFilters

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDate } from "@/lib/helpers/format";
-import type { JobTask } from "@/lib/schemas/job";
+import type { JobTask } from "@domain/entities/job";
 
 interface TaskItemProps {
   task: JobTask;

@@ -20,10 +20,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Save, X } from "lucide-react";
 import { toast } from "sonner";
-import { customerTypeTagEnum } from "@/lib/schemas/customer";
-import type { TagTemplateMapping } from "@/lib/schemas/tag-template-mapping";
-import type { PricingTemplate } from "@/lib/schemas/price-matrix";
-import type { DTFPricingTemplate } from "@/lib/schemas/dtf-pricing";
+import { customerTypeTagEnum } from "@domain/entities/customer";
+import type { TagTemplateMapping } from "@domain/entities/tag-template-mapping";
+import type { PricingTemplate } from "@domain/entities/price-matrix";
+import type { DTFPricingTemplate } from "@domain/entities/dtf-pricing";
 
 // ---------------------------------------------------------------------------
 // Constants

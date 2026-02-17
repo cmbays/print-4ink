@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { JobCardBody, jobCardContainerClass } from "./JobCardBody";
-import type { JobCard } from "@/lib/schemas/board-card";
+import type { JobCard } from "@domain/entities/board-card";
 
 // ---------------------------------------------------------------------------
 // Component

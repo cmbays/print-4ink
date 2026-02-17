@@ -1,6 +1,6 @@
 import { garmentCatalog, colors } from "@/lib/mock-data";
-import type { GarmentCatalog } from "@/lib/schemas/garment";
-import type { Color } from "@/lib/schemas/color";
+import type { GarmentCatalog } from "@domain/entities/garment";
+import type { Color } from "@domain/entities/color";
 
 export function getGarmentById(id: string): GarmentCatalog | null {
   return garmentCatalog.find((g) => g.id === id) ?? null;

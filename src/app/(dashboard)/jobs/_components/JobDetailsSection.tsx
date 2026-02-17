@@ -1,11 +1,11 @@
 import { Package, MapPin, Shirt, CheckCircle2, XCircle, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@/lib/constants";
-import { getGarmentById, getColorById } from "@/lib/helpers/garment-helpers";
-import { getScreensByJobId } from "@/lib/helpers/screen-helpers";
+import { SERVICE_TYPE_LABELS, BURN_STATUS_LABELS } from "@domain/constants";
+import { getGarmentById, getColorById } from "@domain/rules/garment.rules";
+import { getScreensByJobId } from "@domain/rules/screen.rules";
 import { GarmentImage } from "@/components/features/GarmentImage";
-import type { Job } from "@/lib/schemas/job";
+import type { Job } from "@domain/entities/job";
 
 interface JobDetailsSectionProps {
   job: Job;

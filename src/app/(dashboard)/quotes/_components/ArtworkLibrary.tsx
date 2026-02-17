@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { Artwork } from "@/lib/schemas/artwork";
-import type { CustomerTag } from "@/lib/schemas/customer";
-import { ARTWORK_TAG_LABELS } from "@/lib/constants";
+import type { Artwork } from "@domain/entities/artwork";
+import type { CustomerTag } from "@domain/entities/customer";
+import { ARTWORK_TAG_LABELS } from "@domain/constants";
 
 interface ArtworkLibraryProps {
   artworks: Artwork[];

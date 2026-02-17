@@ -1,13 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { QuoteStatus } from "@/lib/schemas/quote";
-import type { InvoiceStatus } from "@/lib/schemas/invoice";
+import type { QuoteStatus } from "@domain/entities/quote";
+import type { InvoiceStatus } from "@domain/entities/invoice";
 import {
   INVOICE_STATUS_BADGE_COLORS,
   INVOICE_STATUS_LABELS,
   QUOTE_STATUS_BADGE_COLORS,
   QUOTE_STATUS_LABELS,
-} from "@/lib/constants";
+} from "@domain/constants";
 
 // ---------------------------------------------------------------------------
 // Component

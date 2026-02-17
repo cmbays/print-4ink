@@ -31,7 +31,7 @@ import type {
   LocationUpcharge,
   GarmentTypePricing,
   SetupFeeConfig,
-} from "@/lib/schemas/price-matrix";
+} from "@domain/entities/price-matrix";
 import { QuantityTierEditor } from "./QuantityTierEditor";
 import { GarmentTypePricingEditor } from "./GarmentTypePricingEditor";
 import { LocationUpchargeEditor } from "./LocationUpchargeEditor";

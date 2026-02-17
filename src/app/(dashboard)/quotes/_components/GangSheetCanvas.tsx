@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import type { CanvasLayout, CanvasDesign } from "@/lib/schemas/dtf-sheet-calculation";
+import type { CanvasLayout, CanvasDesign } from "@domain/entities/dtf-sheet-calculation";
 
 // ---------------------------------------------------------------------------
 // Design color palette — muted fills cycling by design type (label)

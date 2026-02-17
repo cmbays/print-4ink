@@ -9,9 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PAYMENT_TERMS_LABELS } from "@/lib/constants";
-import { calculateDueDate } from "@/lib/helpers/invoice-utils";
-import type { PaymentTerms } from "@/lib/schemas/customer";
+import { PAYMENT_TERMS_LABELS } from "@domain/constants";
+import { calculateDueDate } from "@domain/rules/invoice.rules";
+import type { PaymentTerms } from "@domain/entities/customer";
 
 const PAYMENT_TERMS_OPTIONS: PaymentTerms[] = [
   "cod",

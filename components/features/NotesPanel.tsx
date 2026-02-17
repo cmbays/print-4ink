@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { NOTE_CHANNEL_LABELS } from "@/lib/constants";
-import type { Note, NoteChannel, NoteEntityType } from "@/lib/schemas/note";
+import { NOTE_CHANNEL_LABELS } from "@domain/constants";
+import type { Note, NoteChannel, NoteEntityType } from "@domain/entities/note";
 
 const CHANNEL_COLORS: Record<NoteChannel, string> = {
   phone: "bg-action/10 text-action border border-action/20",

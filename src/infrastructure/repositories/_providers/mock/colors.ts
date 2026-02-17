@@ -1,6 +1,6 @@
 import { colors } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Color } from '@/lib/schemas/color';
+import type { Color } from '@domain/entities/color';
 
 export async function getColors(): Promise<Color[]> {
   return colors.map((c) => ({ ...c }));

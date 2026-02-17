@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Pencil, Send, Ban, CreditCard, Bell, FileText, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { isValidStatusTransition } from "@/lib/helpers/invoice-utils";
-import type { Invoice } from "@/lib/schemas/invoice";
-import type { Customer } from "@/lib/schemas/customer";
+import { isValidStatusTransition } from "@domain/rules/invoice.rules";
+import type { Invoice } from "@domain/entities/invoice";
+import type { Customer } from "@domain/entities/customer";
 
 interface InvoiceActionsProps {
   invoice: Invoice;

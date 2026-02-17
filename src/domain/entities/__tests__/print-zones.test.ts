@@ -6,8 +6,8 @@ import {
   getZonesForCategory,
   getZoneForPosition,
   normalizePosition,
-} from "@/lib/constants/print-zones";
-import { printZoneSchema } from "@/lib/schemas/mockup-template";
+} from "@domain/constants/print-zones";
+import { printZoneSchema } from "@domain/entities/mockup-template";
 
 describe("PRINT_ZONES", () => {
   it("has entries for all 5 garment categories", () => {

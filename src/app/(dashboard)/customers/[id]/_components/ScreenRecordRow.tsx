@@ -5,9 +5,9 @@ import { Monitor } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
-import { getColorById } from "@/lib/helpers/garment-helpers";
-import type { CustomerScreen } from "@/lib/schemas/customer-screen";
-import type { Color } from "@/lib/schemas/color";
+import { getColorById } from "@domain/rules/garment.rules";
+import type { CustomerScreen } from "@domain/entities/customer-screen";
+import type { Color } from "@domain/entities/color";
 
 interface ScreenRecordRowProps {
   screen: CustomerScreen;

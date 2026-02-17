@@ -1,7 +1,7 @@
 import { invoices, payments, creditMemos } from '@/lib/mock-data';
 import { validateUUID } from '@infra/repositories/_shared/validation';
-import type { Invoice, Payment } from '@/lib/schemas/invoice';
-import type { CreditMemo } from '@/lib/schemas/credit-memo';
+import type { Invoice, Payment } from '@domain/entities/invoice';
+import type { CreditMemo } from '@domain/entities/credit-memo';
 
 export async function getInvoices(): Promise<Invoice[]> {
   return invoices.map((inv) => structuredClone(inv));

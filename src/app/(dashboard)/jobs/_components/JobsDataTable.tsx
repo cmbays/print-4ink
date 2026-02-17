@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 
 import { z } from "zod";
-import { ENTITY_STYLES } from "@/lib/constants/entities";
+import { ENTITY_STYLES } from "@domain/constants/entities";
+import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,16 +41,16 @@ import { TaskProgressBar } from "@/components/features/TaskProgressBar";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
-import { computeTaskProgress } from "@/lib/helpers/job-utils";
+import { computeTaskProgress } from "@domain/rules/job.rules";
 import { formatDate } from "@/lib/helpers/format";
 import {
   LANE_LABELS,
   RISK_LABELS,
   SERVICE_TYPE_LABELS,
-} from "@/lib/constants";
-import type { Job, Lane, RiskLevel } from "@/lib/schemas/job";
-import type { ServiceType } from "@/lib/schemas/quote";
-import type { Customer } from "@/lib/schemas/customer";
+} from "@domain/constants";
+import type { Job, Lane, RiskLevel } from "@domain/entities/job";
+import type { ServiceType } from "@domain/entities/quote";
+import type { Customer } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -710,7 +711,7 @@ export function JobsDataTable({
       ) : (
         /* ---- Empty state ---- */
         <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-border py-16">
-          <ENTITY_STYLES.job.icon
+          <ENTITY_ICONS.job
             className="size-12 text-muted-foreground/50"
             aria-hidden="true"
           />

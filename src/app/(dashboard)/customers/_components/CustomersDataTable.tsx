@@ -36,13 +36,13 @@ import { TypeTagBadges } from "@/components/features/TypeTagBadges";
 import { AddCustomerModal } from "@/components/features/AddCustomerModal";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import type { Quote } from "@/lib/schemas/quote";
+import type { Quote } from "@domain/entities/quote";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   LIFECYCLE_STAGE_LABELS,
   HEALTH_STATUS_LABELS,
-} from "@/lib/constants";
-import type { Customer, CustomerTypeTag, LifecycleStage, HealthStatus } from "@/lib/schemas/customer";
+} from "@domain/constants";
+import type { Customer, CustomerTypeTag, LifecycleStage, HealthStatus } from "@domain/entities/customer";
 
 // ---------------------------------------------------------------------------
 // Props

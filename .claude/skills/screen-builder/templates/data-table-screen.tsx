@@ -38,7 +38,7 @@ import { cn } from "@/lib/utils";
 
 // Import mock data + constants for this domain
 // import { jobs } from "@/lib/mock-data";
-// import { PRODUCTION_STATE_LABELS, PRODUCTION_STATE_COLORS } from "@/lib/constants";
+// import { PRODUCTION_STATE_LABELS, PRODUCTION_STATE_COLORS } from "@domain/constants";
 
 export default function ExampleListPage() {
   const searchParams = useSearchParams();

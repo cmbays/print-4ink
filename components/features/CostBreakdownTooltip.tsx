@@ -1,7 +1,7 @@
 "use client";
 
-import type { MarginBreakdown } from "@/lib/schemas/price-matrix";
-import { formatCurrency, formatPercent } from "@/lib/pricing-engine";
+import type { MarginBreakdown } from "@domain/entities/price-matrix";
+import { formatCurrency, formatPercent } from "@domain/services/pricing.service";
 import {
   Tooltip,
   TooltipContent,

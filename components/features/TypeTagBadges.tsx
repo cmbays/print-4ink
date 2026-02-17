@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 import {
   CUSTOMER_TYPE_TAG_LABELS,
   CUSTOMER_TYPE_TAG_COLORS,
-} from "@/lib/constants";
-import type { CustomerTypeTag } from "@/lib/schemas/customer";
+} from "@domain/constants";
+import type { CustomerTypeTag } from "@domain/entities/customer";
 
 interface TypeTagBadgesProps {
   tags: CustomerTypeTag[];

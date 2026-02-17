@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import { money, toNumber } from "@/lib/helpers/money";
 import { cn } from "@/lib/utils";
-import { PRICING_TIER_LABELS, GARMENT_CATEGORY_LABELS } from "@/lib/constants";
+import { PRICING_TIER_LABELS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
 import {
   buildFullMatrixData,
   calculateDTFTierMargin,
@@ -41,13 +41,13 @@ import {
   calculateDTFPrice,
   formatCurrency,
   formatPercent,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import { spStandardTemplate, dtfRetailTemplate } from "@/lib/mock-data-pricing";
-import type { PricingTemplate, QuantityTier, ScreenPrintMatrix, CostConfig } from "@/lib/schemas/price-matrix";
-import type { DTFPricingTemplate, DTFSheetTier, DTFRushFee, DTFFilmTypeConfig, DTFCustomerTierDiscount, DTFCostConfig } from "@/lib/schemas/dtf-pricing";
-import type { PricingTier } from "@/lib/schemas/customer";
-import type { GarmentCategory } from "@/lib/schemas/garment";
-import type { ServiceType } from "@/lib/schemas/quote";
+import type { PricingTemplate, QuantityTier, ScreenPrintMatrix, CostConfig } from "@domain/entities/price-matrix";
+import type { DTFPricingTemplate, DTFSheetTier, DTFRushFee, DTFFilmTypeConfig, DTFCustomerTierDiscount, DTFCostConfig } from "@domain/entities/dtf-pricing";
+import type { PricingTier } from "@domain/entities/customer";
+import type { GarmentCategory } from "@domain/entities/garment";
+import type { ServiceType } from "@domain/entities/quote";
 
 interface SetupWizardProps {
   open: boolean;

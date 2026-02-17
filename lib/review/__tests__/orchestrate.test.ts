@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { reviewReportSchema, gateDecisionSchema } from "@/lib/schemas/review-pipeline";
+import { reviewReportSchema, gateDecisionSchema } from "@domain/entities/review-pipeline";
 
 vi.mock("child_process", () => ({
   execFileSync: vi.fn(),

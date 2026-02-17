@@ -1,9 +1,9 @@
 import { money, round2, toNumber } from "@/lib/helpers/money";
-import { DEPOSIT_DEFAULTS_BY_TIER } from "@/lib/constants";
-import type { InvoiceStatus } from "@/lib/schemas/invoice";
-import type { Quote } from "@/lib/schemas/quote";
-import type { PricingTier } from "@/lib/schemas/customer";
-import type { InvoiceLineItem } from "@/lib/schemas/invoice";
+import { DEPOSIT_DEFAULTS_BY_TIER } from "@domain/constants";
+import type { InvoiceStatus } from "@domain/entities/invoice";
+import type { Quote } from "@domain/entities/quote";
+import type { PricingTier } from "@domain/entities/customer";
+import type { InvoiceLineItem } from "@domain/entities/invoice";
 
 // ---------------------------------------------------------------------------
 // Status state machine

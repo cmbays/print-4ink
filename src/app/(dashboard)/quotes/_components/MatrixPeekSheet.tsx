@@ -19,14 +19,14 @@ import {
   buildFullMatrixData,
   formatCurrency,
   findQuantityTierIndex,
-} from "@/lib/pricing-engine";
+} from "@domain/services/pricing.service";
 import {
   allScreenPrintTemplates,
   tagTemplateMappings,
 } from "@/lib/mock-data-pricing";
-import type { Customer } from "@/lib/schemas/customer";
-import type { QuoteLineItem } from "@/lib/schemas/quote";
-import type { PricingTemplate, MarginIndicator } from "@/lib/schemas/price-matrix";
+import type { Customer } from "@domain/entities/customer";
+import type { QuoteLineItem } from "@domain/entities/quote";
+import type { PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
