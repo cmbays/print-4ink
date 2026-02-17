@@ -77,7 +77,7 @@ export function EmailPreviewModal({ open, onOpenChange, quote, customer }: Email
           <div className="rounded-md border border-border bg-surface px-4 py-2">
             <p className="font-medium text-action">View Quote →</p>
             <p className="text-xs text-muted-foreground">
-              https://app.4ink.com/quotes/{quote.quoteNumber.toLowerCase()}/view
+              {`${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/quotes/${quote.quoteNumber.toLowerCase()}/view`}
             </p>
           </div>
           <p className="text-muted-foreground">
