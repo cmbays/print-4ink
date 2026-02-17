@@ -31,8 +31,8 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
-import { money, toNumber } from "@/lib/helpers/money";
-import { cn } from "@/lib/utils";
+import { money, toNumber } from "@shared/lib/money";
+import { cn } from "@shared/lib/cn";
 import { PRICING_TIER_LABELS, GARMENT_CATEGORY_LABELS } from "@domain/constants";
 import {
   buildFullMatrixData,

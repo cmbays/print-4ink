@@ -11,7 +11,7 @@ import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_COLORS,
 } from "@domain/constants";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import type { Quote } from "@domain/entities/quote";
 
 interface CustomerQuotesTableProps {

@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@shared/ui/primitives/select";
 import { Button } from "@shared/ui/primitives/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { GarmentCategory } from "@domain/entities/garment";
 import type { LocationUpcharge, GarmentTypePricing } from "@domain/entities/price-matrix";
 import { Shirt, MapPin } from "lucide-react";

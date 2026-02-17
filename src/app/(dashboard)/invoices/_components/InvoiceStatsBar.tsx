@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { computeIsOverdue } from "@domain/rules/invoice.rules";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber } from "@shared/lib/money";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import type { Invoice } from "@domain/entities/invoice";
 

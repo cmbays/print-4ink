@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus, User, Building2, Mail, Phone, ExternalLink } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Badge } from "@shared/ui/primitives/badge";
 import {

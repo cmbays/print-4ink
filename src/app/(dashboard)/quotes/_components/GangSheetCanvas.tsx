@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { CanvasLayout, CanvasDesign } from "@domain/entities/dtf-sheet-calculation";
 
 // ---------------------------------------------------------------------------

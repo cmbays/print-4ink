@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Search, LayoutGrid, List, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
 import { Input } from "@shared/ui/primitives/input";
 import {

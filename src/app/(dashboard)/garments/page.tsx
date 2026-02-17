@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs } from "@shared/lib/breadcrumbs";
 import { getGarmentCatalog } from "@infra/repositories/garments";
 import { getJobs } from "@infra/repositories/jobs";
 import { getCustomers } from "@infra/repositories/customers";

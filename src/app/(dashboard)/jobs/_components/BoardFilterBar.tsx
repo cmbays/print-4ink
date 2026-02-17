@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { Filter, X, LayoutGrid } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Badge } from "@shared/ui/primitives/badge";
 import { Button } from "@shared/ui/primitives/button";
 import { Switch } from "@shared/ui/primitives/switch";

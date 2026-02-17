@@ -1,7 +1,7 @@
 "use client";
 
 import { Separator } from "@shared/ui/primitives/separator";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 
 interface InvoicePricingSummaryProps {
   subtotal: number;

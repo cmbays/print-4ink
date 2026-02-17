@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shared/ui/primitives/select";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { NOTE_CHANNEL_LABELS } from "@domain/constants";
 import type { Note, NoteChannel, NoteEntityType } from "@domain/entities/note";
 

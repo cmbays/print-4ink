@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@shared/ui/primitives/sheet";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 interface BottomSheetProps {
   open: boolean;

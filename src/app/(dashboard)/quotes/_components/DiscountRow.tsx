@@ -4,8 +4,8 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import { Badge } from "@shared/ui/primitives/badge";
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/helpers/money";
+import { cn } from "@shared/lib/cn";
+import { formatCurrency } from "@shared/lib/money";
 
 interface DiscountRowProps {
   label: string;

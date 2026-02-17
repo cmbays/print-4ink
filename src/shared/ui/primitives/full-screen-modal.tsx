@@ -10,7 +10,7 @@ import {
 } from "@shared/ui/primitives/dialog";
 import { Button } from "@shared/ui/primitives/button";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 interface FullScreenModalProps {
   open: boolean;

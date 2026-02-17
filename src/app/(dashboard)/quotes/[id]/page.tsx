@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@shared/ui/primitives/button";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { QuoteDetailView } from "@/src/app/(dashboard)/quotes/_components/QuoteDetailView";
 import { getQuoteById } from "@infra/repositories/quotes";
 import { getCustomerById } from "@infra/repositories/customers";

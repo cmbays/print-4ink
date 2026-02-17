@@ -6,7 +6,7 @@ import { Search, Upload, Check, ImageIcon } from "lucide-react";
 import { Input } from "@shared/ui/primitives/input";
 import { Button } from "@shared/ui/primitives/button";
 import { Badge } from "@shared/ui/primitives/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { Artwork } from "@domain/entities/artwork";
 import type { CustomerTag } from "@domain/entities/customer";
 import { ARTWORK_TAG_LABELS } from "@domain/constants";

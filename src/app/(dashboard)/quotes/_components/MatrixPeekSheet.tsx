@@ -27,7 +27,7 @@ import {
 import type { Customer } from "@domain/entities/customer";
 import type { QuoteLineItem } from "@domain/entities/quote";
 import type { PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // ---------------------------------------------------------------------------
 // Helpers

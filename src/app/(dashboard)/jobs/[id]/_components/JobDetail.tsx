@@ -9,7 +9,7 @@ import { Button } from "@shared/ui/primitives/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@shared/ui/primitives/tabs";
 import { BottomActionBar } from "@shared/ui/layouts/bottom-action-bar";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 
 import { GarmentMockupCard, MockupFilterProvider } from "@/components/features/mockup";
 import type { ArtworkPlacement } from "@/components/features/mockup";

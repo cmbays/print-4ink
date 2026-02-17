@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Trash2, ChevronDown, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import { Label } from "@shared/ui/primitives/label";
@@ -33,7 +33,7 @@ import type { GarmentCatalog, GarmentCategory } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 import type { Artwork } from "@domain/entities/artwork";
 import type { ServiceType } from "@domain/entities/quote";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { money, toNumber, formatCurrency } from "@shared/lib/money";
 
 export interface PrintLocationDetail {
   location: string;

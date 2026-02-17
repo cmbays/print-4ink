@@ -24,7 +24,7 @@ import {
   ChevronRight,
   ArrowLeft,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type {
   PricingTemplate,
   QuantityTier,

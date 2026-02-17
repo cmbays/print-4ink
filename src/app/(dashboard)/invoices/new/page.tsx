@@ -1,5 +1,5 @@
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { getInvoices } from "@infra/repositories/invoices";
 import { getCustomers } from "@infra/repositories/customers";
 import { getQuoteById } from "@infra/repositories/quotes";

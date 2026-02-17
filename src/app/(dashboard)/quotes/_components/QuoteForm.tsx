@@ -29,7 +29,7 @@ import type { Color } from "@domain/entities/color";
 import type { GarmentCatalog } from "@domain/entities/garment";
 
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@domain/constants";
-import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
 import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
 import { getJobsMutable } from "@infra/repositories/jobs";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
@@ -38,8 +38,8 @@ import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type { SheetCalculation, CanvasLayout } from "@domain/entities/dtf-sheet-calculation";
 import type { Artwork, ArtworkTag } from "@domain/entities/artwork";
 import type { Customer, CustomerTag, CustomerTypeTag } from "@domain/entities/customer";
-import { cn } from "@/lib/utils";
-import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
+import { cn } from "@shared/lib/cn";
+import { scrollToFirstError } from "@shared/lib/scroll-to-error";
 
 export type QuoteFormInitialData = {
   customerId?: string;

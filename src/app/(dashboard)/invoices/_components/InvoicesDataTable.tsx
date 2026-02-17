@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import { z } from "zod";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import {
   Tooltip,
@@ -32,7 +32,7 @@ import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { computeIsOverdue } from "@domain/rules/invoice.rules";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { ENTITY_STYLES } from "@domain/constants/entities";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";

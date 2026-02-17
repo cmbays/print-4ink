@@ -14,7 +14,7 @@ import type {
 } from "@domain/entities/dtf-pricing";
 import type { PricingTier } from "@domain/entities/customer";
 import type { GarmentCategory } from "@domain/entities/garment";
-import { money as bigMoney, round2, toNumber } from "@/lib/helpers/money";
+import { money as bigMoney, round2, toNumber } from "@shared/lib/money";
 
 // Local wrapper: pricing-engine uses money() → number throughout.
 // Main's money() returns Big, so wrap with round2 + toNumber.

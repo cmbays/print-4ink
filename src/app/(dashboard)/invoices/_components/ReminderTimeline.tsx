@@ -1,6 +1,6 @@
 import type { Reminder } from "@domain/entities/invoice";
 import { Bell } from "lucide-react";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 
 interface ReminderTimelineProps {
   reminders: Reminder[];

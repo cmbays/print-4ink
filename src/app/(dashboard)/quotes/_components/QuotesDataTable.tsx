@@ -16,7 +16,7 @@ import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { z } from "zod";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import { Badge } from "@shared/ui/primitives/badge";
@@ -36,7 +36,7 @@ import {
 import { StatusBadge } from "@/components/features/StatusBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import type { Quote, QuoteStatus } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";
 

@@ -13,7 +13,7 @@ import {
 import { toast } from "sonner";
 
 import { z } from "zod";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import { Badge } from "@shared/ui/primitives/badge";

@@ -20,14 +20,14 @@ import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import { Label } from "@shared/ui/primitives/label";
 import { Save, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   calculateCellMargin,
   formatCurrency,
   formatPercent,
   getMarginIndicator,
 } from "@domain/services/pricing.service";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@shared/lib/money";
 import type { CostConfig, PricingTemplate, MarginIndicator } from "@domain/entities/price-matrix";
 
 // ---------------------------------------------------------------------------

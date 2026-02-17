@@ -1,5 +1,5 @@
 import { Printer, Film, Scissors } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { SERVICE_TYPE_BORDER_COLORS, SERVICE_TYPE_COLORS, SERVICE_TYPE_LABELS } from "@domain/constants";
 import type { ServiceType } from "@domain/entities/quote";
 import type { LucideIcon } from "lucide-react";

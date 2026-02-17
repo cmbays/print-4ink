@@ -15,7 +15,7 @@ import { InheritanceToggle } from "@/components/features/InheritanceToggle";
 import { InheritanceDetail } from "@/components/features/InheritanceDetail";
 import { GarmentMiniCard } from "@/components/features/GarmentMiniCard";
 import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   resolveEffectiveFavorites,
   getInheritanceChain,

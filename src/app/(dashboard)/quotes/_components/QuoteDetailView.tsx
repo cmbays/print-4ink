@@ -25,12 +25,12 @@ import type { Customer } from "@domain/entities/customer";
 import type { Artwork } from "@domain/entities/artwork";
 import type { Color } from "@domain/entities/color";
 import type { GarmentCatalog } from "@domain/entities/garment";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from "@domain/constants";
 import { LifecycleBadge } from "@/components/features/LifecycleBadge";
 import { DECORATION_COST_PER_COLOR, LOCATION_FEE_PER_UNIT, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
-import { cn } from "@/lib/utils";
-import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { cn } from "@shared/lib/cn";
+import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
 
 type QuoteDetailViewProps = {
   quote: Quote;

@@ -1,7 +1,7 @@
 "use client";
 
 import { ImageIcon, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import {

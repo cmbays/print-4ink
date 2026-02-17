@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Check, ChevronsUpDown, ImageIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import {
   Popover,

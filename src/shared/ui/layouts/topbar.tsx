@@ -5,7 +5,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@shared/ui/primitives/breadcrumb";
-import type { BreadcrumbSegment } from "@/lib/helpers/breadcrumbs";
+import type { BreadcrumbSegment } from "@shared/lib/breadcrumbs";
 
 interface TopbarProps {
   breadcrumbs?: BreadcrumbSegment[];

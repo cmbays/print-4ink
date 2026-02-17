@@ -7,7 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@shared/ui/primitives/collapsible";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { getColorsMutable } from "@infra/repositories/colors";
 import type { InheritanceChain } from "@domain/rules/customer.rules";
 

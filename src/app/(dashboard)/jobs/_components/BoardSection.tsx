@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { BoardLane } from "./BoardLane";
 import type { Lane } from "@domain/entities/job";
 import type { BoardCard } from "@domain/entities/board-card";

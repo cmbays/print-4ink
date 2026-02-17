@@ -15,7 +15,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@shared/ui/primitives/dialog";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { ARTWORK_TAG_LABELS } from "@domain/constants";
 import type { ArtworkTag } from "@domain/entities/artwork";
 

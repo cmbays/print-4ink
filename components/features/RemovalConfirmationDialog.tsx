@@ -20,7 +20,7 @@ import {
 } from "@shared/ui/primitives/collapsible";
 import { Checkbox } from "@shared/ui/primitives/checkbox";
 import { Button } from "@shared/ui/primitives/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { Color } from "@domain/entities/color";
 import type { ImpactPreview } from "@domain/rules/customer.rules";
 

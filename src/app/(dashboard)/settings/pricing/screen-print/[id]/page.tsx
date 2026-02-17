@@ -1,5 +1,5 @@
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { ScreenPrintEditor } from "./editor";
 
 export default async function ScreenPrintEditorPage({

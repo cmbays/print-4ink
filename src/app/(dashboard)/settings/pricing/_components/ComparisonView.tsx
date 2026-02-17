@@ -19,7 +19,7 @@ import {
   formatCurrency,
   formatPercent,
 } from "@domain/services/pricing.service";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { PricingTemplate } from "@domain/entities/price-matrix";
 import {
   ArrowDownRight,

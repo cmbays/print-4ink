@@ -1,5 +1,5 @@
 import { Badge } from "@shared/ui/primitives/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { QuoteStatus } from "@domain/entities/quote";
 import type { InvoiceStatus } from "@domain/entities/invoice";
 import {

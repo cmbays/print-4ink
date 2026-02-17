@@ -10,7 +10,7 @@ import {
 import { Input } from "@shared/ui/primitives/input";
 import { Button } from "@shared/ui/primitives/button";
 import { CostBreakdownTooltip } from "@/components/features/CostBreakdownTooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   buildFullMatrixData,
   formatCurrency,

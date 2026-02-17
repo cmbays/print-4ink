@@ -1,7 +1,7 @@
 "use client";
 
 import { Link2, Unlink2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import type { InheritanceMode } from "@domain/entities/color-preferences";
 
 interface InheritanceToggleProps {

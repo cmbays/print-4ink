@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@shared/ui/primitives/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 type SortDir = "asc" | "desc";
 

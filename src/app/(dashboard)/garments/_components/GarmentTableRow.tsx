@@ -1,10 +1,10 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { Switch } from "@shared/ui/primitives/switch";
 import { Badge } from "@shared/ui/primitives/badge";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 import type { GarmentCatalog } from "@domain/entities/garment";
 
 interface GarmentTableRowProps {

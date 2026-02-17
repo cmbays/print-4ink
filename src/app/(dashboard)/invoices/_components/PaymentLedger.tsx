@@ -11,8 +11,8 @@ import {
 import { PAYMENT_METHOD_LABELS } from "@domain/constants";
 import type { Payment } from "@domain/entities/invoice";
 import { CreditCard } from "lucide-react";
-import { formatDate } from "@/lib/helpers/format";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { formatDate } from "@shared/lib/format";
+import { money, toNumber, formatCurrency } from "@shared/lib/money";
 
 interface PaymentLedgerProps {
   payments: Payment[];

@@ -12,7 +12,7 @@ import {
 } from "@shared/ui/primitives/sheet";
 import { InvoicePricingSummary } from "./InvoicePricingSummary";
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from "@domain/constants";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 import type { InvoiceLineItemData } from "./InvoiceLineItemRow";
 
 interface ReviewSendSheetProps {

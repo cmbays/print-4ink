@@ -12,7 +12,7 @@ import {
 } from "@shared/ui/primitives/dialog";
 import { Button } from "@shared/ui/primitives/button";
 import { computeIsOverdue, computeDaysOverdue } from "@domain/rules/invoice.rules";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 import type { Invoice } from "@domain/entities/invoice";
 
 interface SendReminderModalProps {

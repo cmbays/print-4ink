@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs } from "@shared/lib/breadcrumbs";
 import { Badge } from "@shared/ui/primitives/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/ui/primitives/card";
 import {

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { LANE_LABELS } from "@domain/constants";
 import type { Lane } from "@domain/entities/job";
 

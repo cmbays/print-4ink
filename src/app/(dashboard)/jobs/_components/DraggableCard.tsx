@@ -1,7 +1,7 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 interface DraggableCardProps {
   /** Unique drag ID for dnd-kit (e.g. "job:uuid" or "quote:uuid") */

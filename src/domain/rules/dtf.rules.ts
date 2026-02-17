@@ -14,7 +14,7 @@ import type {
 import type { PackedSheet } from "@domain/services/dtf.service";
 import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type { JobTask } from "@domain/entities/job";
-import { money, round2, toNumber } from "@/lib/helpers/money";
+import { money, round2, toNumber } from "@shared/lib/money";
 
 // Sheet constants live in @domain/constants/dtf — re-exported here for backward compatibility
 export { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, DTF_MAX_SHEET_LENGTH } from "@domain/constants/dtf";

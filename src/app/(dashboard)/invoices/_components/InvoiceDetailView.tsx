@@ -25,15 +25,15 @@ import { InvoiceActions } from "./InvoiceActions";
 import { PaymentLedger } from "./PaymentLedger";
 import { ReminderTimeline } from "./ReminderTimeline";
 import { ChangeDiffPanel } from "./ChangeDiffPanel";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   INVOICE_LINE_ITEM_TYPE_LABELS,
   PAYMENT_TERMS_LABELS,
   CREDIT_MEMO_REASON_LABELS,
 } from "@domain/constants";
 import { computeIsOverdue, isValidStatusTransition } from "@domain/rules/invoice.rules";
-import { formatDate } from "@/lib/helpers/format";
-import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { formatDate } from "@shared/lib/format";
+import { money, toNumber, formatCurrency } from "@shared/lib/money";
 import { toast } from "sonner";
 import type { Invoice, Payment } from "@domain/entities/invoice";
 import type { Customer } from "@domain/entities/customer";

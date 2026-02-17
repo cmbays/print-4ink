@@ -9,7 +9,7 @@ import {
   Trophy,
   Sun,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Badge } from "@shared/ui/primitives/badge";
 import { Button } from "@shared/ui/primitives/button";
 import type { Artwork } from "@domain/entities/artwork";

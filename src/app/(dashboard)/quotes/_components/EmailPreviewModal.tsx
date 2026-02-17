@@ -13,7 +13,7 @@ import {
 } from "@shared/ui/primitives/dialog";
 import type { Quote } from "@domain/entities/quote";
 import type { Customer } from "@domain/entities/customer";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 
 interface EmailPreviewModalProps {
   open: boolean;

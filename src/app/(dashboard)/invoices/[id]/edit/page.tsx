@@ -6,7 +6,7 @@ import { getCustomers } from "@infra/repositories/customers";
 import { getQuoteById } from "@infra/repositories/quotes";
 import { Button } from "@shared/ui/primitives/button";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { InvoiceForm } from "@/src/app/(dashboard)/invoices/_components/InvoiceForm";
 
 export default async function EditInvoicePage({

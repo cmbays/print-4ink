@@ -10,7 +10,7 @@ import {
 } from "@domain/constants";
 import { getJobs } from "@infra/repositories/jobs";
 import { getCustomers } from "@infra/repositories/customers";
-import { money, toNumber } from "@/lib/helpers/money";
+import { money, toNumber } from "@shared/lib/money";
 import {
   AlertTriangle,
   Calendar,

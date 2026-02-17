@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@shared/ui/primitives/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { ActivityTimeline } from "./ActivityTimeline";
 import { CustomerQuotesTable } from "./CustomerQuotesTable";
 import { CustomerJobsTable } from "./CustomerJobsTable";

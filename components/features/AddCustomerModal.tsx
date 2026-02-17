@@ -13,7 +13,7 @@ import {
 } from "@shared/ui/primitives/dialog";
 import { Input } from "@shared/ui/primitives/input";
 import { Label } from "@shared/ui/primitives/label";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { CUSTOMER_TYPE_TAG_LABELS } from "@domain/constants";
 import type { CustomerTypeTag } from "@domain/entities/customer";
 

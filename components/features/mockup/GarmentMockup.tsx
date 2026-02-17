@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { getZoneForPosition } from "@domain/constants/print-zones";
 import { hexToColorMatrix } from "@domain/rules/color.rules";
 import type { GarmentCategory } from "@domain/entities/garment";

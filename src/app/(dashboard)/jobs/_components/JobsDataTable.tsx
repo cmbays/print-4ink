@@ -17,7 +17,7 @@ import {
 import { z } from "zod";
 import { ENTITY_STYLES } from "@domain/constants/entities";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Input } from "@shared/ui/primitives/input";
 import {
@@ -42,7 +42,7 @@ import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { computeTaskProgress } from "@domain/rules/job.rules";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import {
   LANE_LABELS,
   RISK_LABELS,

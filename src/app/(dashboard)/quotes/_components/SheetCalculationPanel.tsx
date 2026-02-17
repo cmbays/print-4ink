@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, Calculator, Layers, Combine } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Button } from "@shared/ui/primitives/button";
 import { Badge } from "@shared/ui/primitives/badge";
 import { WithTooltip } from "@shared/ui/primitives/with-tooltip";
@@ -11,7 +11,7 @@ import { shelfPack } from "@domain/services/dtf.service";
 import { optimizeCost } from "@domain/rules/dtf.rules";
 import { isValidDtfLineItem } from "@domain/rules/dtf.rules";
 import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from "@domain/rules/dtf.rules";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type {
   OptimizedSheet,

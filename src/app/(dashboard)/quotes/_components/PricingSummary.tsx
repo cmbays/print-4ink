@@ -7,7 +7,7 @@ import { Input } from "@shared/ui/primitives/input";
 import { Badge } from "@shared/ui/primitives/badge";
 import { Separator } from "@shared/ui/primitives/separator";
 import { DiscountRow } from "./DiscountRow";
-import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
+import { money, round2, toNumber, formatCurrency } from "@shared/lib/money";
 import { TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@domain/constants";
 import type { Discount } from "@domain/entities/quote";
 import type { CustomerTag } from "@domain/entities/customer";

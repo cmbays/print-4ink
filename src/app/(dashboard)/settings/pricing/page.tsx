@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { PricingTemplateCard } from "@/components/features/PricingTemplateCard";
 import { Tabs, TabsList, TabsTrigger } from "@shared/ui/primitives/tabs";
 import { Button } from "@shared/ui/primitives/button";

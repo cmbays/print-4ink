@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { GarmentImage } from "@/components/features/GarmentImage";
 import { FavoriteStar } from "@/components/features/FavoriteStar";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { Badge } from "@shared/ui/primitives/badge";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatCurrency } from "@shared/lib/money";
 import { getColorById } from "@domain/rules/garment.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
 import type { GarmentCatalog } from "@domain/entities/garment";

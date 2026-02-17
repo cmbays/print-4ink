@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@shared/ui/primitives/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { swatchTextStyle } from "@/lib/helpers/swatch";
 import type { Color } from "@domain/entities/color";
 

@@ -12,7 +12,7 @@ import {
   Users,
   Building2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { Badge } from "@shared/ui/primitives/badge";
 import { Button } from "@shared/ui/primitives/button";
 import {

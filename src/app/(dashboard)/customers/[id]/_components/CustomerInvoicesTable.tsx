@@ -8,8 +8,8 @@ import {
   INVOICE_STATUS_BADGE_COLORS,
   INVOICE_STATUS_LABELS,
 } from "@domain/constants";
-import { formatDate } from "@/lib/helpers/format";
-import { formatCurrency } from "@/lib/helpers/money";
+import { formatDate } from "@shared/lib/format";
+import { formatCurrency } from "@shared/lib/money";
 import type { Invoice } from "@domain/entities/invoice";
 
 interface CustomerInvoicesTableProps {

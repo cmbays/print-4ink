@@ -9,7 +9,7 @@ import {
   PRIORITY_LABELS,
   PRIORITY_COLORS,
 } from "@domain/constants";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import type { Job } from "@domain/entities/job";
 
 interface CustomerJobsTableProps {

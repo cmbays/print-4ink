@@ -1,5 +1,5 @@
 import { Badge } from "@shared/ui/primitives/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { LIFECYCLE_STAGE_LABELS, LIFECYCLE_STAGE_COLORS } from "@domain/constants";
 import type { LifecycleStage } from "@domain/entities/customer";
 

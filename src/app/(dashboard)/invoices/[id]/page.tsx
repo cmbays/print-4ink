@@ -4,7 +4,7 @@ import { getInvoiceById, getInvoicePayments, getInvoiceCreditMemos } from "@infr
 import { getCustomerById } from "@infra/repositories/customers";
 import { Button } from "@shared/ui/primitives/button";
 import { Topbar } from "@shared/ui/layouts/topbar";
-import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
+import { buildBreadcrumbs, CRUMBS } from "@shared/lib/breadcrumbs";
 import { InvoiceDetailView } from "@/src/app/(dashboard)/invoices/_components/InvoiceDetailView";
 
 export default async function InvoiceDetailPage({

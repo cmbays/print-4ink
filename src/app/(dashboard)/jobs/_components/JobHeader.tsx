@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { Calendar, Clock, CalendarPlus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import { ServiceTypeBadge } from "@/components/features/ServiceTypeBadge";
 import { RiskIndicator } from "@/components/features/RiskIndicator";
 import { LaneBadge } from "@/components/features/LaneBadge";
 import { PRIORITY_LABELS, PRIORITY_COLORS, SERVICE_TYPE_LEFT_BORDER_COLORS } from "@domain/constants";
-import { formatDate } from "@/lib/helpers/format";
+import { formatDate } from "@shared/lib/format";
 import type { Job } from "@domain/entities/job";
 
 interface JobHeaderProps {

@@ -5,7 +5,7 @@ import { Clock } from "lucide-react";
 import { ENTITY_STYLES } from "@domain/constants/entities";
 import { ENTITY_ICONS } from "@/lib/constants/entity-icons";
 import { Badge } from "@shared/ui/primitives/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   QUOTE_STATUS_LABELS,
   QUOTE_STATUS_COLORS,

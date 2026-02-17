@@ -1,7 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 interface FavoriteStarProps {
   isFavorite: boolean;

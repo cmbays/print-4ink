@@ -6,7 +6,7 @@ import { FavoritesColorSection } from "@/components/features/FavoritesColorSecti
 import { InheritanceToggle } from "@/components/features/InheritanceToggle";
 import { InheritanceDetail } from "@/components/features/InheritanceDetail";
 import { GarmentMiniCard } from "@/components/features/GarmentMiniCard";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 import {
   resolveEffectiveFavorites,
   getInheritanceChain,

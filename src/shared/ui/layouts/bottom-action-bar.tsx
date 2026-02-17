@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 interface BottomActionBarProps {
   children: React.ReactNode;
