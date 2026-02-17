@@ -39,7 +39,7 @@ After implementation is complete, run automated review orchestration:
 8. **Act on the gate decision** returned by the skill:
    - `fail`: Fix all critical findings, re-run orchestration from Stage 1
    - `needs_fixes`: Fix all major findings, re-run orchestration from Stage 1
-   - `pass_with_warnings`: Proceed to Phase 3; file warning findings as GitHub Issues
+   - `pass_with_warnings`: Proceed to Phase 3; file warning findings as GitHub Issues with labels: `vertical/<name>`, `type/tech-debt`, `source/review`, `priority/low` or `priority/medium`
    - `pass`: Proceed directly to Phase 3
 
 9. **Do not proceed to Phase 3** until the gate decision is `pass` or `pass_with_warnings`.

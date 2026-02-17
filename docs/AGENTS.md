@@ -125,7 +125,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Tools**: Read, Grep, Glob (read-only)
 **Preloaded skills**: none
 **Reads**: Changed files touching schemas, pricing, invoicing, quoting
-**Writes**: Structured `ReviewFinding[]` JSON (output format migrated from markdown in #341)
+**Writes**: Structured `ReviewFinding[]` JSON when dispatched by `review-orchestration`; audit reports in `agent-outputs/` when invoked directly
 **Never touches**: Code (read-only)
 
 **When to use**:
@@ -140,7 +140,7 @@ This document is the canonical reference for Screen Print Pro's agent architectu
 **Tools**: Read, Grep, Glob (read-only)
 **Preloaded skills**: none
 **Reads**: Changed files, CLAUDE.md standards, existing component patterns
-**Writes**: Structured `ReviewFinding[]` JSON (output format migrated from markdown in #341)
+**Writes**: Structured `ReviewFinding[]` JSON when dispatched by `review-orchestration`; audit reports in `agent-outputs/` when invoked directly
 **Never touches**: Code (read-only)
 
 **When to use**:
