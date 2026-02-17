@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { WithTooltip } from "@/components/ui/with-tooltip";
-import { shelfPack } from "@/lib/dtf/shelf-pack";
-import { optimizeCost } from "@/lib/dtf/cost-optimize";
-import { isValidDtfLineItem } from "@/lib/dtf/dtf-validation";
-import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from "@/lib/dtf/dtf-constants";
+import { shelfPack } from "@domain/services/dtf.service";
+import { optimizeCost } from "@domain/rules/dtf.rules";
+import { isValidDtfLineItem } from "@domain/rules/dtf.rules";
+import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from "@domain/rules/dtf.rules";
 import { formatCurrency } from "@/lib/helpers/money";
 import type { DtfLineItem } from "@domain/entities/dtf-line-item";
 import type {

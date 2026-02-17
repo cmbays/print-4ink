@@ -14,7 +14,7 @@ import {
   DTF_SHEET_WIDTH,
   DTF_DEFAULT_MARGIN,
   DTF_MAX_SHEET_LENGTH,
-} from "@/lib/dtf/dtf-constants";
+} from "@domain/rules/dtf.rules";
 
 // ---------------------------------------------------------------------------
 // Types
