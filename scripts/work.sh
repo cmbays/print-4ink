@@ -1019,6 +1019,12 @@ _work_clean() {
         fi
     fi
 
+    # 3c. Persistent session store (mark as cleared — never delete, preserves resume capability)
+    if type _sessions_persistent_clear &>/dev/null; then
+        _sessions_persistent_clear "$TOPIC" 2>/dev/null || true
+        echo "  Marked session '$TOPIC' as cleared in persistent store"
+    fi
+
     # 4. Tmux session/window (migration period — may kill current shell)
     if [[ "$HAS_TMUX" == true ]]; then
         if tmux has-session -t "$TOPIC" 2>/dev/null; then
