@@ -236,7 +236,7 @@ NOTES
   - Branch naming: session/<MMDD>-<topic> for sessions, build/<pipeline-id> for base
   - Inside Zellij: new workstreams open as tabs in current session
   - Outside Zellij: creates a new Zellij session to attach to
-  - Max 15 concurrent worktrees
+  - Max $PRINT4INK_MAX_WORKTREES concurrent worktrees
   - Pipeline registry: ~/Github/print-4ink-worktrees/.pipeline-registry.json
   - Session registry: ~/Github/print-4ink-worktrees/.session-registry.json
 HELP
@@ -368,7 +368,9 @@ CONTEXT
         # ── No-launch mode: print attach command ─────────────────────────
         echo ""
         echo "  Zellij session ready. Attach with:"
-        echo "    zellij --new-session-with-layout $LAYOUT_FILE --session $TOPIC"
+        echo "    zellij --new-session-with-layout \"$LAYOUT_FILE\" --session \"$TOPIC\""
+        echo ""
+        echo "  (layout file is temporary — attach before next reboot)"
     else
         # ── Outside Zellij: auto-launch session (blocking) ───────────────
         echo "  Launching Zellij session '$TOPIC'..."

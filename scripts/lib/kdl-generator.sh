@@ -14,20 +14,6 @@ _kdl_check_deps() {
     fi
 }
 
-# ── Prompt Sanitization ──────────────────────────────────────────────────
-# Escape and flatten a multi-line prompt for safe KDL embedding.
-# Handles: double-quotes, backslashes, backticks, newlines → single space.
-# Usage: sanitized=$(_kdl_sanitize_prompt "$raw_prompt")
-_kdl_sanitize_prompt() {
-    local raw="$1"
-    # Escape backslashes first, then double-quotes, then backticks
-    local escaped="${raw//\\/\\\\}"
-    escaped="${escaped//\"/\\\"}"
-    escaped="${escaped//\`/\\\`}"
-    # Collapse newlines to spaces, compress whitespace, trim
-    echo "$escaped" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//'
-}
-
 # ── KDL Tab Rendering ────────────────────────────────────────────────────
 # Render a single KDL tab block. Used by both _kdl_generate_wave and _work_build.
 # Usage: _kdl_render_tab <tab_name> <cwd> [prompt] [claude_args]
