@@ -49,6 +49,11 @@ import {
 import type { BoardCard, JobCard, QuoteCard, ScratchNoteCard as ScratchNoteCardType } from "@domain/entities/board-card";
 import type { Lane, Job } from "@domain/entities/job";
 import type { ScratchNote } from "@domain/entities/scratch-note";
+import { getCustomersMutable } from "@infra/repositories/customers";
+import { getInvoicesMutable } from "@infra/repositories/invoices";
+import { getGarmentCatalogMutable } from "@infra/repositories/garments";
+import { getColorsMutable } from "@infra/repositories/colors";
+import { getArtworksMutable } from "@infra/repositories/artworks";
 
 // ---------------------------------------------------------------------------
 // Drag overlay wrapper — module-scoped to keep stable reference across renders
@@ -140,9 +145,16 @@ function ProductionBoardInner({ initialJobs, initialQuoteCards, initialScratchNo
   }, []);
 
   // ---- Mutable state (Phase 1 client-side only) ----
-  const [jobCards, setJobCards] = useState<JobCard[]>(() =>
-    initialJobs.filter((j) => !j.isArchived).map(projectJobToCard),
-  );
+  const [jobCards, setJobCards] = useState<JobCard[]>(() => {
+    const customers = getCustomersMutable();
+    const invoices = getInvoicesMutable();
+    const garmentCatalog = getGarmentCatalogMutable();
+    const colors = getColorsMutable();
+    const artworks = getArtworksMutable();
+    return initialJobs
+      .filter((j) => !j.isArchived)
+      .map((job) => projectJobToCard(job, customers, invoices, garmentCatalog, colors, artworks));
+  });
   const [quoteCardState, setQuoteCardState] = useState<QuoteCard[]>(() => [...initialQuoteCards]);
   const [scratchNoteCards, setScratchNoteCards] = useState<ScratchNoteCardType[]>(() =>
     initialScratchNotes

@@ -21,6 +21,8 @@ import { money, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { getColorById } from "@domain/rules/garment.rules";
 import { resolveEffectiveFavorites } from "@domain/rules/customer.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
+import { getCustomersMutable } from "@infra/repositories/customers";
+import { getBrandPreferencesMutable } from "@infra/repositories/settings";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 
@@ -70,7 +72,7 @@ export function GarmentDetailDrawer({
   // resolveEffectiveFavorites reads from mutable catalog arrays.
   // In Phase 3 this becomes a proper data fetch.
   const favoriteColorIds = useMemo(
-    () => new Set(resolveEffectiveFavorites(favoriteContext.context, favoriteContext.contextId)),
+    () => new Set(resolveEffectiveFavorites(favoriteContext.context, favoriteContext.contextId, getColorsMutable(), getCustomersMutable(), getBrandPreferencesMutable())),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [favoriteVersion, favoriteContext.context, favoriteContext.contextId],
   );
@@ -95,7 +97,7 @@ export function GarmentDetailDrawer({
 
   // Resolve selected color object
   const selectedColor = selectedColorId
-    ? getColorById(selectedColorId)
+    ? getColorById(selectedColorId, getColorsMutable())
     : null;
 
   return (

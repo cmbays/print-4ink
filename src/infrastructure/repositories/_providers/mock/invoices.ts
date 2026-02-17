@@ -28,3 +28,6 @@ export async function getQuoteInvoice(quoteId: string): Promise<Invoice | null> 
   const invoice = invoices.find((inv) => inv.quoteId === quoteId);
   return invoice ? structuredClone(invoice) : null;
 }
+
+/** Phase 1 only: returns raw mutable invoices array for in-place mock data mutations. */
+export function getInvoicesMutable(): Invoice[] { return invoices; }

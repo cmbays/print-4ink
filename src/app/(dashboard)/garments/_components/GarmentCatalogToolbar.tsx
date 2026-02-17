@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ColorFilterGrid } from "./ColorFilterGrid";
 import { getColorById } from "@domain/rules/garment.rules";
+import { getColorsMutable } from "@infra/repositories/colors";
 import { garmentCategoryEnum } from "@domain/entities/garment";
 import { GARMENT_CATEGORY_LABELS } from "@domain/constants";
 import { PRICE_STORAGE_KEY } from "@/lib/constants/garment-catalog";
@@ -116,10 +117,12 @@ export function GarmentCatalogToolbar({
 
   // --- Resolved color objects for pills ---
   const selectedColors = useMemo(
-    () =>
-      selectedColorIds
-        .map((id) => getColorById(id))
-        .filter((c) => c != null),
+    () => {
+      const allColors = getColorsMutable();
+      return selectedColorIds
+        .map((id) => getColorById(id, allColors))
+        .filter((c) => c != null);
+    },
     [selectedColorIds],
   );
 

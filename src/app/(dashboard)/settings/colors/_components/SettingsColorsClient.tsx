@@ -15,7 +15,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { RemovalConfirmationDialog } from "@/components/features/RemovalConfirmationDialog";
 import { getColorsMutable } from "@infra/repositories/colors";
-import { getAutoPropagationConfigMutable } from "@infra/repositories/settings";
+import { getAutoPropagationConfigMutable, getBrandPreferencesMutable } from "@infra/repositories/settings";
+import { getCustomersMutable } from "@infra/repositories/customers";
 import {
   propagateAddition,
   getImpactPreview,
@@ -143,11 +144,11 @@ export function SettingsColorsClient({
         // N4 addition path: toggle + propagate if enabled
         applyGlobalToggle(colorId, true);
         if (autoPropagate) {
-          propagateAddition("global", colorId);
+          propagateAddition("global", colorId, getBrandPreferencesMutable(), getCustomersMutable(), getAutoPropagationConfigMutable());
         }
       } else {
         // N4 removal path: check impact before removing
-        const impact = getImpactPreview("global", colorId);
+        const impact = getImpactPreview("global", colorId, getCustomersMutable(), getBrandPreferencesMutable());
         if (impact.supplierCount > 0 || impact.customerCount > 0) {
           // Open RemovalConfirmationDialog — don't toggle yet
           setPendingRemoval({ colorId, color, impact });
@@ -164,7 +165,7 @@ export function SettingsColorsClient({
   const handleRemoveAll = useCallback(() => {
     if (!pendingRemoval) return;
     applyGlobalToggle(pendingRemoval.colorId, false);
-    removeFromAll("global", pendingRemoval.colorId);
+    removeFromAll("global", pendingRemoval.colorId, getBrandPreferencesMutable(), getCustomersMutable());
     setPendingRemoval(null);
   }, [pendingRemoval, applyGlobalToggle]);
 
@@ -179,7 +180,7 @@ export function SettingsColorsClient({
     (brandNames: string[], customerCompanies: string[]) => {
       if (!pendingRemoval) return;
       applyGlobalToggle(pendingRemoval.colorId, false);
-      removeFromSelected("global", pendingRemoval.colorId, brandNames, customerCompanies);
+      removeFromSelected("global", pendingRemoval.colorId, brandNames, customerCompanies, getBrandPreferencesMutable(), getCustomersMutable());
       setPendingRemoval(null);
     },
     [pendingRemoval, applyGlobalToggle]

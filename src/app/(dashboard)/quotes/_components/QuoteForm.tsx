@@ -31,6 +31,7 @@ import type { GarmentCatalog } from "@domain/entities/garment";
 import { CUSTOMER_TAG_LABELS, SERVICE_TYPE_LABELS, TAX_RATE, CONTRACT_DISCOUNT_RATE } from "@domain/constants";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { deriveScreensFromJobs } from "@domain/rules/screen.rules";
+import { getJobsMutable } from "@infra/repositories/jobs";
 import { type LineItemData, calculateGarmentCost, calculateDecorationCost, calculateLineItemSetupFee, calculateQuoteSetupFee } from "./LineItemRow";
 import type { Discount, ServiceType } from "@domain/entities/quote";
 import type { DtfLineItem } from "@domain/entities/dtf-line-item";
@@ -124,7 +125,7 @@ export function QuoteForm({ mode, customers: initialCustomers, colors, garmentCa
   // Screen reuse
   const customerScreens = useMemo(() => {
     if (!customerId) return [];
-    return deriveScreensFromJobs(customerId);
+    return deriveScreensFromJobs(customerId, getJobsMutable());
   }, [customerId]);
   const [screenReuse, setScreenReuse] = useState(false);
 

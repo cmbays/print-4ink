@@ -11,6 +11,7 @@ import {
   resolveEffectiveFavorites,
   getInheritanceChain,
 } from "@domain/rules/customer.rules";
+import { getBrandPreferencesMutable } from "@infra/repositories/settings";
 import type { Color } from "@domain/entities/color";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { InheritanceMode } from "@domain/entities/color-preferences";
@@ -58,13 +59,13 @@ export function CustomerPreferencesTab({
       : "global";
 
   // Resolve effective favorites for this customer
-  const favoriteIds = resolveEffectiveFavorites("customer", customer.id);
+  const favoriteIds = resolveEffectiveFavorites("customer", customer.id, catalogColors, customers, getBrandPreferencesMutable());
   const favorites = favoriteIds
     .map((id) => catalogColors.find((c) => c.id === id))
     .filter((c): c is Color => c != null);
 
   // Get inheritance chain for the detail disclosure
-  const chain = getInheritanceChain("customer", customer.id);
+  const chain = getInheritanceChain("customer", customer.id, catalogColors, customers, getBrandPreferencesMutable());
 
   // Garment lists
   const favGarmentSet = new Set(customer.favoriteGarments);
@@ -82,7 +83,7 @@ export function CustomerPreferencesTab({
     if (mode === "inherit") {
       cust.favoriteColors = [];
     } else {
-      const effective = resolveEffectiveFavorites("customer", customer.id);
+      const effective = resolveEffectiveFavorites("customer", customer.id, catalogColors, customers, getBrandPreferencesMutable());
       cust.favoriteColors = [...effective];
     }
     setVersion((v) => v + 1);

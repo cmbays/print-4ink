@@ -8,6 +8,7 @@ import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/helpers/money";
 import { getColorById } from "@domain/rules/garment.rules";
+import { getColorsMutable } from "@infra/repositories/colors";
 import type { GarmentCatalog } from "@domain/entities/garment";
 import type { Color } from "@domain/entities/color";
 
@@ -30,10 +31,12 @@ export function GarmentCard({
 }: GarmentCardProps) {
   // All Color objects for this garment's palette
   const garmentColors = useMemo(
-    () =>
-      garment.availableColors
-        .map((id) => getColorById(id))
-        .filter((c): c is Color => c != null),
+    () => {
+      const allColors = getColorsMutable();
+      return garment.availableColors
+        .map((id) => getColorById(id, allColors))
+        .filter((c): c is Color => c != null);
+    },
     [garment.availableColors]
   );
 

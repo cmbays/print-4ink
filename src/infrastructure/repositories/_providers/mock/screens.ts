@@ -10,3 +10,6 @@ export async function getScreensByJobId(jobId: string): Promise<Screen[]> {
   if (!validateUUID(jobId)) return [];
   return screens.filter((s) => s.jobId === jobId).map((s) => structuredClone(s));
 }
+
+/** Phase 1 only: returns raw mutable screens array for in-place mock data mutations. */
+export function getScreensMutable(): Screen[] { return screens; }

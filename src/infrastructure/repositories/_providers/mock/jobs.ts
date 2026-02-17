@@ -41,3 +41,7 @@ export async function getQuoteCards(): Promise<QuoteCard[]> {
 export async function getScratchNotes(): Promise<ScratchNote[]> {
   return scratchNotes.map((sn) => structuredClone(sn));
 }
+
+/** Phase 1 only: returns raw mutable jobs/quoteCards/scratchNotes arrays for in-place mock data mutations. */
+export function getJobsMutable(): Job[] { return jobs; }
+export function getQuoteCardsMutable(): QuoteCard[] { return quoteCards; }

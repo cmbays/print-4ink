@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ColorSwatchPicker } from "@/components/features/ColorSwatchPicker";
 import { getColorById } from "@domain/rules/garment.rules";
+import { getColorsMutable } from "@infra/repositories/colors";
 import type { CustomerScreen } from "@domain/entities/customer-screen";
 import type { Color } from "@domain/entities/color";
 
@@ -16,8 +17,9 @@ interface ScreenRecordRowProps {
 
 export function ScreenRecordRow({ screen, onReclaim }: ScreenRecordRowProps) {
   // Resolve color objects
+  const allColors = getColorsMutable();
   const screenColors = screen.colorIds
-    .map((id) => getColorById(id))
+    .map((id) => getColorById(id, allColors))
     .filter((c): c is Color => c != null);
 
   const dateStr = new Date(screen.createdAt).toLocaleDateString("en-US", {

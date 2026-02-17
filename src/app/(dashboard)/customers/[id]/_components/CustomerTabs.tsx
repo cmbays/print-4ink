@@ -74,7 +74,7 @@ export function CustomerTabs({
 }: CustomerTabsProps) {
   const defaultTab = customer.lifecycleStage === "prospect" ? "notes" : "activity";
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const screens = deriveScreensFromJobs(customer.id);
+  const screens = deriveScreensFromJobs(customer.id, jobs);
 
   const isSecondaryActive = (SECONDARY_TABS as readonly string[]).includes(activeTab);
 

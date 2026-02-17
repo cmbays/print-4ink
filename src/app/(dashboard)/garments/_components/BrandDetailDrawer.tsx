@@ -29,7 +29,8 @@ import {
 import type { ImpactPreview } from "@domain/rules/customer.rules";
 import { getColorsMutable } from "@infra/repositories/colors";
 import { getGarmentCatalogMutable } from "@infra/repositories/garments";
-import { getBrandPreferencesMutable } from "@infra/repositories/settings";
+import { getBrandPreferencesMutable, getAutoPropagationConfigMutable } from "@infra/repositories/settings";
+import { getCustomersMutable } from "@infra/repositories/customers";
 import type { Color } from "@domain/entities/color";
 import { brandPreferenceSchema } from "@domain/entities/color-preferences";
 import type { InheritanceMode } from "@domain/entities/color-preferences";
@@ -37,6 +38,7 @@ import type { InheritanceMode } from "@domain/entities/color-preferences";
 const catalogColors = getColorsMutable();
 const garmentCatalog = getGarmentCatalogMutable();
 const brandPreferences = getBrandPreferencesMutable();
+const customers = getCustomersMutable();
 
 // ---------------------------------------------------------------------------
 // Props
@@ -78,7 +80,7 @@ export function BrandDetailDrawer({
   // Get or initialize brand preference
   const brandPref = useMemo(
     () => {
-      const existing = getBrandPreference(brandName);
+      const existing = getBrandPreference(brandName, brandPreferences);
       if (existing) return existing;
       // Brand has no explicit preference — construct validated fallback
       return brandPreferenceSchema.parse({
@@ -95,7 +97,7 @@ export function BrandDetailDrawer({
 
   // Resolve effective favorites for this brand
   const effectiveFavoriteIds = useMemo(
-    () => resolveEffectiveFavorites("brand", brandName),
+    () => resolveEffectiveFavorites("brand", brandName, catalogColors, customers, brandPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [brandName, version],
   );
@@ -111,7 +113,7 @@ export function BrandDetailDrawer({
 
   // N20: getInheritanceChain for the disclosure section
   const inheritanceChain = useMemo(
-    () => getInheritanceChain("brand", brandName),
+    () => getInheritanceChain("brand", brandName, catalogColors, customers, brandPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [brandName, version],
   );
@@ -136,7 +138,7 @@ export function BrandDetailDrawer({
 
       if (mode === "customize" && (!existing || existing.inheritMode === "inherit")) {
         // Switching to customize: copy current effective favorites as starting set
-        const currentEffective = resolveEffectiveFavorites("brand", brandName);
+        const currentEffective = resolveEffectiveFavorites("brand", brandName, catalogColors, customers, brandPreferences);
 
         if (existing) {
           existing.inheritMode = "customize";
@@ -173,7 +175,7 @@ export function BrandDetailDrawer({
       const pref = brandPreferences.find((b) => b.brandName === brandName);
       if (!pref || pref.inheritMode === "inherit") return;
 
-      const globalFavoriteIds = resolveEffectiveFavorites("global");
+      const globalFavoriteIds = resolveEffectiveFavorites("global", undefined, catalogColors, customers, brandPreferences);
       const isGlobalFavorite = globalFavoriteIds.includes(colorId);
 
       pref.favoriteColorIds = pref.favoriteColorIds.filter((id) => id !== colorId);
@@ -198,7 +200,7 @@ export function BrandDetailDrawer({
 
       if (isFavorite) {
         // N8→P4: check impact before removing
-        const impact = getImpactPreview("brand", colorId);
+        const impact = getImpactPreview("brand", colorId, customers, brandPreferences);
         if (!impact.isStub && (impact.supplierCount > 0 || impact.customerCount > 0)) {
           // Open RemovalConfirmationDialog — don't remove yet
           const color = catalogColors.find((c) => c.id === colorId);
@@ -214,7 +216,7 @@ export function BrandDetailDrawer({
         applyBrandRemoval(colorId);
       } else {
         // Adding
-        const globalFavoriteIds = resolveEffectiveFavorites("global");
+        const globalFavoriteIds = resolveEffectiveFavorites("global", undefined, catalogColors, customers, brandPreferences);
         const isGlobalFavorite = globalFavoriteIds.includes(colorId);
 
         pref.favoriteColorIds.push(colorId);
@@ -228,7 +230,7 @@ export function BrandDetailDrawer({
         );
 
         // N22: propagateAddition for brand level
-        propagateAddition("brand", colorId);
+        propagateAddition("brand", colorId, brandPreferences, customers, getAutoPropagationConfigMutable());
 
         setVersion((v) => v + 1);
       }
@@ -240,7 +242,7 @@ export function BrandDetailDrawer({
   const handleRemoveAll = useCallback(() => {
     if (!pendingRemoval) return;
     applyBrandRemoval(pendingRemoval.colorId);
-    removeFromAll("brand", pendingRemoval.colorId);
+    removeFromAll("brand", pendingRemoval.colorId, brandPreferences, customers);
     setPendingRemoval(null);
   }, [pendingRemoval, applyBrandRemoval]);
 
@@ -255,7 +257,7 @@ export function BrandDetailDrawer({
     (brandNames: string[], customerCompanies: string[]) => {
       if (!pendingRemoval) return;
       applyBrandRemoval(pendingRemoval.colorId);
-      removeFromSelected("brand", pendingRemoval.colorId, brandNames, customerCompanies);
+      removeFromSelected("brand", pendingRemoval.colorId, brandNames, customerCompanies, brandPreferences, customers);
       setPendingRemoval(null);
     },
     [pendingRemoval, applyBrandRemoval],

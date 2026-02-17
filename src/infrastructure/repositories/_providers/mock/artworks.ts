@@ -11,3 +11,6 @@ export async function getArtworkById(id: string): Promise<Artwork | null> {
   const artwork = artworks.find((a) => a.id === id);
   return artwork ? { ...artwork } : null;
 }
+
+/** Phase 1 only: returns raw mutable artworks array for in-place mock data mutations. */
+export function getArtworksMutable(): Artwork[] { return artworks; }
