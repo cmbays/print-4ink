@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { invoices } from "@/lib/mock-data";
+import { getInvoiceById } from "@/lib/dal/invoices";
+import { getCustomers } from "@/lib/dal/customers";
+import { getQuoteById } from "@/lib/dal/quotes";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
@@ -13,7 +15,7 @@ export default async function EditInvoicePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const invoice = invoices.find((inv) => inv.id === id);
+  const invoice = await getInvoiceById(id);
 
   if (!invoice) {
     return (
@@ -52,6 +54,11 @@ export default async function EditInvoicePage({
     redirect(`/invoices/${id}`);
   }
 
+  const [customers, sourceQuote] = await Promise.all([
+    getCustomers(),
+    invoice.quoteId ? getQuoteById(invoice.quoteId) : Promise.resolve(null),
+  ]);
+
   return (
     <>
       <Topbar
@@ -62,7 +69,12 @@ export default async function EditInvoicePage({
         )}
       />
       <div className="mx-auto max-w-4xl space-y-6 py-6">
-        <InvoiceForm mode="edit" initialData={invoice} />
+        <InvoiceForm
+          mode="edit"
+          initialData={invoice}
+          customers={customers}
+          sourceQuote={sourceQuote}
+        />
       </div>
     </>
   );

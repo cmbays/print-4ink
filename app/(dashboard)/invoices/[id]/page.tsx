@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { invoices, customers, payments, creditMemos } from "@/lib/mock-data";
+import { getInvoiceById, getInvoicePayments, getInvoiceCreditMemos } from "@/lib/dal/invoices";
+import { getCustomerById } from "@/lib/dal/customers";
 import { Button } from "@/components/ui/button";
 import { Topbar } from "@/components/layout/topbar";
 import { buildBreadcrumbs, CRUMBS } from "@/lib/helpers/breadcrumbs";
@@ -12,7 +13,7 @@ export default async function InvoiceDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const invoice = invoices.find((inv) => inv.id === id);
+  const invoice = await getInvoiceById(id);
 
   if (!invoice) {
     return (
@@ -46,11 +47,11 @@ export default async function InvoiceDetailPage({
     );
   }
 
-  const customer = customers.find((c) => c.id === invoice.customerId) ?? null;
-  const invoicePayments = payments.filter((p) => p.invoiceId === invoice.id);
-  const invoiceCreditMemos = creditMemos.filter(
-    (cm) => cm.invoiceId === invoice.id,
-  );
+  const [customer, invoicePayments, invoiceCreditMemos] = await Promise.all([
+    getCustomerById(invoice.customerId),
+    getInvoicePayments(invoice.id),
+    getInvoiceCreditMemos(invoice.id),
+  ]);
 
   return (
     <>

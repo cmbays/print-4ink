@@ -1,15 +1,15 @@
 import type { ReactNode } from "react";
-import { invoices } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { DollarSign, AlertCircle, CheckCircle, Clock } from "lucide-react";
 import { money, toNumber } from "@/lib/helpers/money";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
+import type { Invoice } from "@/lib/schemas/invoice";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function computeStats() {
+function computeStats(invoices: Invoice[]) {
   // 1. Total Outstanding — sum of balanceDue for sent + partial invoices
   const outstandingInvoices = invoices.filter(
     (inv) => inv.status === "sent" || inv.status === "partial",
@@ -70,8 +70,12 @@ const stats = [
 // Component
 // ---------------------------------------------------------------------------
 
-export function InvoiceStatsBar() {
-  const { totalOutstanding, overdueCount, overdueTotal, paidThisMonth, avgDays } = computeStats();
+interface InvoiceStatsBarProps {
+  invoices: Invoice[];
+}
+
+export function InvoiceStatsBar({ invoices }: InvoiceStatsBarProps) {
+  const { totalOutstanding, overdueCount, overdueTotal, paidThisMonth, avgDays } = computeStats(invoices);
 
   const values: Record<(typeof stats)[number]["key"], ReactNode> = {
     outstanding: <MoneyAmount value={totalOutstanding} format="compact" />,
