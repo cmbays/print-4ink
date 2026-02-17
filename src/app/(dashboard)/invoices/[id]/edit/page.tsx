@@ -7,7 +7,7 @@ import { getQuoteById } from '@infra/repositories/quotes'
 import { Button } from '@shared/ui/primitives/button'
 import { Topbar } from '@shared/ui/layouts/topbar'
 import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
-import { InvoiceForm } from '@/src/app/(dashboard)/invoices/_components/InvoiceForm'
+import { InvoiceForm } from '@/app/(dashboard)/invoices/_components/InvoiceForm'
 
 export default async function EditInvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

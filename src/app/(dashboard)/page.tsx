@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@shared/ui/primitives/
 import { Badge } from '@shared/ui/primitives/badge'
 import { Button } from '@shared/ui/primitives/button'
 import { Topbar } from '@shared/ui/layouts/topbar'
-import { CapacitySummary } from '@/components/features/CapacitySummary'
+import { CapacitySummary } from '@features/jobs/components/CapacitySummary'
 import { LANE_LABELS, PRIORITY_LABELS } from '@domain/constants'
 import { getJobs } from '@infra/repositories/jobs'
 import { getCustomers } from '@infra/repositories/customers'

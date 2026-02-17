@@ -6,9 +6,8 @@ import { Input } from '@shared/ui/primitives/input'
 import { ScrollArea } from '@shared/ui/primitives/scroll-area'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
 import { cn } from '@shared/lib/cn'
-import { swatchTextStyle } from '@/lib/helpers/swatch'
+import { swatchTextStyle } from '@shared/lib/swatch'
 import type { Color } from '@domain/entities/color'
-import { getColorsMutable } from '@infra/repositories/colors'
 import { useGridKeyboardNav } from '@shared/hooks/useGridKeyboardNav'
 
 type ColorSwatchPickerProps = {
@@ -23,9 +22,6 @@ type ColorSwatchPickerProps = {
   selectedColorIds?: string[]
   onToggleColor?: (colorId: string) => void
 }
-
-const DEFAULT_COLORS = getColorsMutable()
-const DEFAULT_FAVORITES = DEFAULT_COLORS.filter((c) => c.isFavorite === true).map((c) => c.id)
 
 function Swatch({
   color,
@@ -121,10 +117,10 @@ function Swatch({
 }
 
 export function ColorSwatchPicker({
-  colors = DEFAULT_COLORS,
+  colors,
   selectedColorId,
   onSelect,
-  favorites = DEFAULT_FAVORITES,
+  favorites,
   onToggleFavorite,
   compact,
   maxCompactSwatches,
@@ -132,6 +128,8 @@ export function ColorSwatchPicker({
   selectedColorIds = [],
   onToggleColor,
 }: ColorSwatchPickerProps) {
+  const effectiveFavorites =
+    favorites ?? colors.filter((c) => c.isFavorite === true).map((c) => c.id)
   const [search, setSearch] = useState('')
   const gridRef = useRef<HTMLDivElement>(null)
 
@@ -144,8 +142,8 @@ export function ColorSwatchPicker({
   }, [colors, search])
 
   const favoriteColors = useMemo(
-    () => filtered.filter((c) => favorites.includes(c.id)),
-    [filtered, favorites]
+    () => filtered.filter((c) => effectiveFavorites.includes(c.id)),
+    [filtered, effectiveFavorites]
   )
 
   const handleKeyDown = useGridKeyboardNav(gridRef, '[role="option"]', 42)
@@ -249,7 +247,7 @@ export function ColorSwatchPicker({
                   isSelected={
                     multiSelect ? selectedColorIds.includes(color.id) : selectedColorId === color.id
                   }
-                  isFavorite={favorites.includes(color.id)}
+                  isFavorite={effectiveFavorites.includes(color.id)}
                   onSelect={() =>
                     multiSelect && onToggleColor ? onToggleColor(color.id) : onSelect(color.id)
                   }

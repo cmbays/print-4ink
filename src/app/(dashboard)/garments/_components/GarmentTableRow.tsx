@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@shared/lib/cn'
-import { FavoriteStar } from '@/components/features/FavoriteStar'
+import { FavoriteStar } from '@shared/ui/organisms/FavoriteStar'
 import { Switch } from '@shared/ui/primitives/switch'
 import { Badge } from '@shared/ui/primitives/badge'
 import { formatCurrency } from '@domain/lib/money'

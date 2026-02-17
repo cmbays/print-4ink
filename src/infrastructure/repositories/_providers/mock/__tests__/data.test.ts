@@ -1,20 +1,20 @@
 import { describe, it, expect } from 'vitest'
-import { customerSchema } from '../customer'
-import { contactSchema } from '../contact'
-import { groupSchema } from '../group'
-import { noteSchema } from '../note'
-import { addressSchema } from '../address'
-import { jobSchema } from '../job'
-import { quoteSchema } from '../quote'
-import { screenSchema } from '../screen'
-import { colorSchema } from '../color'
-import { garmentCatalogSchema } from '../garment'
-import { artworkSchema } from '../artwork'
-import { invoiceSchema } from '../invoice'
-import { creditMemoSchema } from '../credit-memo'
-import { scratchNoteSchema } from '../scratch-note'
-import { quoteCardSchema } from '../board-card'
-import { mockupTemplateSchema } from '../mockup-template'
+import { customerSchema } from '@domain/entities/customer'
+import { contactSchema } from '@domain/entities/contact'
+import { groupSchema } from '@domain/entities/group'
+import { noteSchema } from '@domain/entities/note'
+import { addressSchema } from '@domain/entities/address'
+import { jobSchema } from '@domain/entities/job'
+import { quoteSchema } from '@domain/entities/quote'
+import { screenSchema } from '@domain/entities/screen'
+import { colorSchema } from '@domain/entities/color'
+import { garmentCatalogSchema } from '@domain/entities/garment'
+import { artworkSchema } from '@domain/entities/artwork'
+import { invoiceSchema } from '@domain/entities/invoice'
+import { creditMemoSchema } from '@domain/entities/credit-memo'
+import { scratchNoteSchema } from '@domain/entities/scratch-note'
+import { quoteCardSchema } from '@domain/entities/board-card'
+import { mockupTemplateSchema } from '@domain/entities/mockup-template'
 import {
   customers,
   contacts,
@@ -33,7 +33,7 @@ import {
   scratchNotes,
   quoteCards,
   mockupTemplates,
-} from '@/lib/mock-data'
+} from '../data'
 
 describe('mock data validates against schemas', () => {
   it('all customers are valid', () => {

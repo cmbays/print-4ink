@@ -1,11 +1,11 @@
 import { Package, Palette, MapPin, Calendar, Zap } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
 import { Badge } from '@shared/ui/primitives/badge'
-import { ServiceTypeBadge } from '@/components/features/ServiceTypeBadge'
-import { GarmentMockupThumbnail } from '@/components/features/mockup'
-import { TaskProgressBar } from '@/components/features/TaskProgressBar'
+import { ServiceTypeBadge } from '@features/pricing/components/ServiceTypeBadge'
+import { GarmentMockupThumbnail } from '@features/quotes/components/mockup'
+import { TaskProgressBar } from '@features/jobs/components/TaskProgressBar'
 import { formatShortDate } from '@shared/lib/format'
-import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
 import {
   RISK_COLORS,
   CARD_TYPE_BORDER_COLORS,

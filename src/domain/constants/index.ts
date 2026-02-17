@@ -334,7 +334,7 @@ export const SERVICE_TYPE_LEFT_BORDER_COLORS: Record<ServiceType, string> = {
 // ---------------------------------------------------------------------------
 // Canonical entity labels, colors, and border colors in ENTITY_STYLES.
 // Icons (LucideIcon) are a UI concern — import ENTITY_ICONS from
-// @/lib/constants/entity-icons for rendering.
+// @shared/constants/entity-icons for rendering.
 // CARD_TYPE_BORDER_COLORS kept as a convenience alias for board cards.
 
 export { ENTITY_STYLES } from '@domain/constants/entities'

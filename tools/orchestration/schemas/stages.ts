@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { configEntryBase } from './base'
+import { configEntryBase } from '@config/schemas/base'
 
 const stageEntry = configEntryBase.extend({
   core: z.boolean().optional(),

@@ -14,13 +14,13 @@ import { Button } from '@shared/ui/primitives/button'
 import { Separator } from '@shared/ui/primitives/separator'
 import { ExternalLink, Package, Palette, Pencil } from 'lucide-react'
 import Link from 'next/link'
-import { MarginLegend } from '@/components/features/MarginLegend'
+import { MarginLegend } from '@features/pricing/components/MarginLegend'
 import {
   buildFullMatrixData,
   formatCurrency,
   findQuantityTierIndex,
 } from '@domain/services/pricing.service'
-import { allScreenPrintTemplates, tagTemplateMappings } from '@/lib/mock-data-pricing'
+import { allScreenPrintTemplates, tagTemplateMappings } from '@infra/repositories/pricing'
 import type { Customer } from '@domain/entities/customer'
 import type { QuoteLineItem } from '@domain/entities/quote'
 import type { PricingTemplate, MarginIndicator } from '@domain/entities/price-matrix'

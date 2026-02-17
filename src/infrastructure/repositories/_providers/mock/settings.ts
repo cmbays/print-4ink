@@ -4,7 +4,7 @@ import {
   displayPreference,
   autoPropagationConfig,
   dtfSheetTiers,
-} from '@/lib/mock-data'
+} from './data'
 import type { MockupTemplate } from '@domain/entities/mockup-template'
 import type {
   BrandPreference,

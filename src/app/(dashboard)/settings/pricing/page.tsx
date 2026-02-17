@@ -5,25 +5,24 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@shared/lib/cn'
 import { Topbar } from '@shared/ui/layouts/topbar'
 import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
-import { PricingTemplateCard } from '@/components/features/PricingTemplateCard'
+import { PricingTemplateCard } from '@features/pricing/components/PricingTemplateCard'
 import { Tabs, TabsList, TabsTrigger } from '@shared/ui/primitives/tabs'
 import { Button } from '@shared/ui/primitives/button'
 import { Input } from '@shared/ui/primitives/input'
 import { Badge } from '@shared/ui/primitives/badge'
 import { Plus, Tag, Search } from 'lucide-react'
-import { SERVICE_TYPE_ICONS } from '@/components/features/ServiceTypeBadge'
+import { SERVICE_TYPE_ICONS } from '@features/pricing/components/ServiceTypeBadge'
 import { SERVICE_TYPE_COLORS } from '@domain/constants'
 import { SetupWizard } from './_components/SetupWizard'
 import { TagTemplateMapper } from './_components/TagTemplateMapper'
-// eslint-disable-next-line no-restricted-syntax -- TODO(#403): no repository equivalent for pricing templates yet; migrate when @infra/repositories/pricing exists
 import {
   allScreenPrintTemplates,
   allDTFTemplates,
   tagTemplateMappings,
-} from '@/lib/mock-data-pricing'
+} from '@infra/repositories/pricing'
 import type { TagTemplateMapping } from '@domain/entities/tag-template-mapping'
-// eslint-disable-next-line no-restricted-syntax -- TODO(#403): migrate to repository; no sync customer access without server wrapper
-import { customers } from '@/lib/mock-data'
+import { getCustomersMutable } from '@infra/repositories/customers'
+const customers = getCustomersMutable()
 import {
   calculateTemplateHealth,
   calculateDTFTemplateHealth,

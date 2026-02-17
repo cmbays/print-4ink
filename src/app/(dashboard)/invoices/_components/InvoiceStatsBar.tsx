@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { computeIsOverdue } from '@domain/rules/invoice.rules'
 import { DollarSign, AlertCircle, CheckCircle, Clock } from 'lucide-react'
 import { money, toNumber } from '@domain/lib/money'
-import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
 import type { Invoice } from '@domain/entities/invoice'
 
 // ---------------------------------------------------------------------------

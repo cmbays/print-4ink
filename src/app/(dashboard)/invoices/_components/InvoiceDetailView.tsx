@@ -27,8 +27,8 @@ import {
   TableHeader,
   TableRow,
 } from '@shared/ui/primitives/table'
-import { StatusBadge } from '@/components/features/StatusBadge'
-import { OverdueBadge } from '@/components/features/OverdueBadge'
+import { StatusBadge } from '@shared/ui/organisms/StatusBadge'
+import { OverdueBadge } from '@shared/ui/organisms/OverdueBadge'
 import { BottomActionBar } from '@shared/ui/layouts/bottom-action-bar'
 import { InvoiceActions } from './InvoiceActions'
 import { PaymentLedger } from './PaymentLedger'

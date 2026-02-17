@@ -1,4 +1,4 @@
-import { jobs, quoteCards, scratchNotes } from '@/lib/mock-data'
+import { jobs, quoteCards, scratchNotes } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Job, JobTask, JobNote } from '@domain/entities/job'
 import type { QuoteCard } from '@domain/entities/board-card'

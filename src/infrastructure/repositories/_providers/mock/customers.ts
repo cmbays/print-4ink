@@ -1,12 +1,4 @@
-import {
-  customers,
-  contacts,
-  customerNotes,
-  quotes,
-  jobs,
-  invoices,
-  artworks,
-} from '@/lib/mock-data'
+import { customers, contacts, customerNotes, quotes, jobs, invoices, artworks } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { Customer } from '@domain/entities/customer'
 import type { Contact } from '@domain/entities/contact'

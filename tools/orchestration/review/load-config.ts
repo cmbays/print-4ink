@@ -10,10 +10,10 @@ import {
   type DomainMapping,
 } from '@domain/entities/review-config'
 
-import rulesJson from '@/config/review-rules.json'
-import compositionJson from '@/config/review-composition.json'
-import agentsJson from '@/config/review-agents.json'
-import domainsJson from '@/config/review-domains.json'
+import rulesJson from '../config/review-rules.json'
+import compositionJson from '../config/review-composition.json'
+import agentsJson from '../config/review-agents.json'
+import domainsJson from '../config/review-domains.json'
 
 // ---------------------------------------------------------------------------
 // Validated config loaders

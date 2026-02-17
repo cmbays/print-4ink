@@ -22,8 +22,11 @@ import { Label } from '@shared/ui/primitives/label'
 import { Textarea } from '@shared/ui/primitives/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
 import { Switch } from '@shared/ui/primitives/switch'
-import { CustomerCombobox, type CustomerOption } from '@/components/features/CustomerCombobox'
-import { AddCustomerModal } from '@/components/features/AddCustomerModal'
+import {
+  CustomerCombobox,
+  type CustomerOption,
+} from '@features/customers/components/CustomerCombobox'
+import { AddCustomerModal } from '@features/customers/components/AddCustomerModal'
 import { LineItemRow } from './LineItemRow'
 import { PricingSummary } from './PricingSummary'
 import { CollapsibleSection } from './CollapsibleSection'

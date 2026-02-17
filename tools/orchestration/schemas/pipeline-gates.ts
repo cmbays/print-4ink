@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import rawStages from '../stages.json'
+import rawStages from '../config/stages.json'
 
 const validStageSlugs = rawStages.map((s) => s.slug) as [string, ...string[]]
 const gateTypeEnum = z.enum(['artifact-exists', 'human-confirms', 'human-approves-manifest'])

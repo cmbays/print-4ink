@@ -15,7 +15,7 @@ import {
   type DragEndEvent,
   type DropAnimation,
 } from '@dnd-kit/core'
-import { MockupFilterProvider } from '@/components/features/mockup'
+import { MockupFilterProvider } from '@features/quotes/components/mockup'
 import { Button } from '@shared/ui/primitives/button'
 import { CapacitySummaryBar } from '../../_components/CapacitySummaryBar'
 import {

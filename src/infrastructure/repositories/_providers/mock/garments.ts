@@ -1,4 +1,4 @@
-import { garmentCatalog } from '@/lib/mock-data'
+import { garmentCatalog } from './data'
 import { validateUUID } from '@infra/repositories/_shared/validation'
 import type { GarmentCatalog } from '@domain/entities/garment'
 

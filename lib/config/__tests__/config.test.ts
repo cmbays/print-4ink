@@ -25,17 +25,15 @@ import {
   tagLabel,
   pipelineTypeLabel,
 } from '../index'
+import { configEntryBase, domainsConfigSchema, productsConfigSchema } from '@config/schemas'
 import {
-  domainsConfigSchema,
-  productsConfigSchema,
   toolsConfigSchema,
   stagesConfigSchema,
   tagsConfigSchema,
   pipelineTypesConfigSchema,
   pipelineGatesConfigSchema,
   pipelineFieldsConfigSchema,
-  configEntryBase,
-} from '@/config/schemas'
+} from '../../../tools/orchestration/schemas'
 
 // ── Helpers ─────────────────────────────────────────────────────────
 

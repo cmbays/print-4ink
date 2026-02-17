@@ -2,9 +2,9 @@
 
 import { useMemo } from 'react'
 import { cn } from '@shared/lib/cn'
-import { GarmentImage } from '@/components/features/GarmentImage'
-import { FavoriteStar } from '@/components/features/FavoriteStar'
-import { ColorSwatchPicker } from '@/components/features/ColorSwatchPicker'
+import { GarmentImage } from '@shared/ui/organisms/GarmentImage'
+import { FavoriteStar } from '@shared/ui/organisms/FavoriteStar'
+import { ColorSwatchPicker } from '@shared/ui/organisms/ColorSwatchPicker'
 import { Badge } from '@shared/ui/primitives/badge'
 import { formatCurrency } from '@domain/lib/money'
 import { getColorById } from '@domain/rules/garment.rules'

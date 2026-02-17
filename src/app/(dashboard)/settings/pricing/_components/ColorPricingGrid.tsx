@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
-import { CostBreakdownTooltip } from '@/components/features/CostBreakdownTooltip'
+import { CostBreakdownTooltip } from '@shared/ui/organisms/CostBreakdownTooltip'
 import { cn } from '@shared/lib/cn'
 import { buildFullMatrixData, formatCurrency } from '@domain/services/pricing.service'
 import type { PricingTemplate, MarginIndicator } from '@domain/entities/price-matrix'

@@ -1,7 +1,7 @@
 // Canonical entity label + color assignments.
 // Every component that renders entity metadata MUST import from here to
 // guarantee visual consistency. For icon components, use ENTITY_ICONS from
-// @/lib/constants/entity-icons (icons are a UI concern, not domain).
+// @shared/constants/entity-icons (icons are a UI concern, not domain).
 
 export type EntityStyle = {
   /** Tailwind text-color class, e.g. "text-purple" */

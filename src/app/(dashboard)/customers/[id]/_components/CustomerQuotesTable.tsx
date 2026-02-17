@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { Copy } from 'lucide-react'
-import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { ENTITY_ICONS } from '@shared/constants/entity-icons'
 import { Badge } from '@shared/ui/primitives/badge'
 import { Button } from '@shared/ui/primitives/button'
-import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
 
 import { QUOTE_STATUS_LABELS, QUOTE_STATUS_COLORS } from '@domain/constants'
 import { formatDate } from '@shared/lib/format'

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { ArrowRightLeft, ShieldAlert, ShieldCheck, LayoutGrid } from 'lucide-react'
 import { ENTITY_STYLES } from '@domain/constants/entities'
-import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
+import { ENTITY_ICONS } from '@shared/constants/entity-icons'
 import { cn } from '@shared/lib/cn'
 import { Button } from '@shared/ui/primitives/button'
 import type { Job } from '@domain/entities/job'

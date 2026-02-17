@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@shared/ui/primitives/select'
 import { Separator } from '@shared/ui/primitives/separator'
-import { MarginIndicator } from '@/components/features/MarginIndicator'
+import { MarginIndicator } from '@features/pricing/components/MarginIndicator'
 import { calculateDTFPrice, formatCurrency, formatPercent } from '@domain/services/pricing.service'
 import type {
   DTFPricingTemplate,

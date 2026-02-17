@@ -4,10 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Copy, Check, Plus, Pencil, Archive, Mail, Phone } from 'lucide-react'
 import { Button } from '@shared/ui/primitives/button'
-import { LifecycleBadge } from '@/components/features/LifecycleBadge'
-import { HealthBadge } from '@/components/features/HealthBadge'
-import { TypeTagBadges } from '@/components/features/TypeTagBadges'
-import { CustomerQuickStats, type CustomerStats } from '@/components/features/CustomerQuickStats'
+import { LifecycleBadge } from '@shared/ui/organisms/LifecycleBadge'
+import { HealthBadge } from '@shared/ui/organisms/HealthBadge'
+import { TypeTagBadges } from '@shared/ui/organisms/TypeTagBadges'
+import {
+  CustomerQuickStats,
+  type CustomerStats,
+} from '@features/customers/components/CustomerQuickStats'
 import { EditCustomerSheet } from './EditCustomerSheet'
 import { ArchiveDialog } from './ArchiveDialog'
 import type { Customer } from '@domain/entities/customer'

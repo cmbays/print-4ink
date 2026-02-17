@@ -9,7 +9,7 @@ import { getCustomerById } from '@infra/repositories/customers'
 import { Button } from '@shared/ui/primitives/button'
 import { Topbar } from '@shared/ui/layouts/topbar'
 import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
-import { InvoiceDetailView } from '@/src/app/(dashboard)/invoices/_components/InvoiceDetailView'
+import { InvoiceDetailView } from '@/app/(dashboard)/invoices/_components/InvoiceDetailView'
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { configEntryBase } from './base'
+import { configEntryBase } from '@config/schemas/base'
 
 const tagEntry = configEntryBase.extend({
   color: z.enum(['green', 'blue', 'amber', 'purple']),

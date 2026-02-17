@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { deriveScreensFromJobs, getScreensByJobId, getActiveCustomerScreens } from '../screen.rules'
-import { jobs, screens } from '@/lib/mock-data'
+import { jobs, screens } from '@infra/repositories/_providers/mock/data'
 
 describe('deriveScreensFromJobs', () => {
   it('returns screen records for a customer with completed jobs', () => {

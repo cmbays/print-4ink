@@ -1,5 +1,5 @@
 // lib/suppliers/adapters/mock.ts
-import { garmentCatalog } from '@/lib/mock-data'
+import { garmentCatalog } from '@infra/repositories/_providers/mock/data'
 import type {
   SupplierAdapter,
   SupplierName,

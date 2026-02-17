@@ -124,27 +124,41 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 
 ## Architecture
 
+> Phase 4 Clean Architecture migration complete (2026-02-17). See `docs/ARCHITECTURE.md` for layer definitions, import rules, and ESLint enforcement.
+
 ```
-app/                        # Pages & layouts (file-based routing)
-  (dashboard)/              # Dashboard route group
-  layout.tsx                # Root layout (fonts, metadata)
-  globals.css               # Tailwind directives + CSS custom properties
-components/
-  ui/                       # shadcn/ui primitives (auto-generated)
-  features/                 # Domain components (QuoteCalculator, KanbanBoard)
-  layout/                   # Shell components (Sidebar, Topbar)
-lib/
-  schemas/                  # Zod schemas — single source of truth for types
-  constants.ts              # Enums, status mappings
-  mock-data.ts              # Realistic sample data
-  utils.ts                  # shadcn/ui cn() helper
-docs/
-  PROJECT_BIBLE.md          # Full project context
-  AGENTS.md                 # Agent registry & orchestration guide
-  breadboards/              # Breadboard documents (affordance maps per vertical)
-  spikes/                   # Pre-build research spikes
-  reference/                # Archived design system docs, UX research
-agent-outputs/              # Structured output from agent runs (audit trail)
+src/
+  app/                      # Next.js routing — thin shell (pages + layouts)
+  domain/                   # Innermost — pure business logic, zero framework deps
+    entities/               # Zod schemas + derived types
+    rules/                  # Pure business invariants (pure functions)
+    ports/                  # Repository interfaces (TypeScript types)
+    lib/                    # Domain utilities (money.ts, etc.)
+  infrastructure/           # Outer ring — concrete implementations
+    repositories/           # Implements domain/ports/ interfaces
+      _providers/mock/      # In-memory mock data (Phase 1 only)
+    auth/                   # Session management
+    bootstrap.ts            # Composition root — wires ports to implementations
+  features/                 # Vertical slices — domain-specific UI + hooks
+    customers/components/   # Customer-specific components
+    garments/components/    # Garment-specific components
+    garments/hooks/         # useColorFilter
+    jobs/components/        # Job-specific components
+    quotes/components/      # Quote-specific components (includes mockup/)
+    pricing/components/     # Pricing-specific components
+  shared/                   # Cross-cutting — reusable across all feature domains
+    ui/primitives/          # shadcn/ui Radix wrappers
+    ui/organisms/           # Cross-domain feature components (MoneyAmount, StatusBadge…)
+    ui/layouts/             # Sidebar, Topbar, BottomTabBar, MobileShell
+    hooks/                  # useIsMobile, useDebounce, useGridKeyboardNav
+    lib/                    # cn(), formatters, logger, breadcrumbs, swatch
+    constants/              # entity-icons, shared constants
+    providers/              # TooltipProviderWrapper, etc.
+  config/                   # App runtime config (products.json, domains.json)
+docs/                       # Canonical docs (ARCHITECTURE.md, AGENTS.md, etc.)
+tools/orchestration/        # Dev tooling — never imported by src/
+  review/                   # Review engine
+  config/                   # Pipeline types, stages, gate schemas
 .claude/
   agents/                   # Agent definitions (YAML frontmatter + system prompts)
   skills/                   # Skill definitions (SKILL.md + templates/reference)
@@ -219,7 +233,7 @@ Sheet and Dialog components from shadcn/ui use z-50 with a backdrop overlay that
 4. **Separation of concerns**: Keep logic (hooks) separate from presentation (Tailwind classes).
 5. **URL state**: Filters, search, pagination live in URL query params.
 6. **Breadcrumb navigation**: Deep views use breadcrumbs (Home > Jobs > #1024 > Mockups).
-7. **Repository imports**: Import from `@infra/repositories/{domain}` (Phase 1/3). Never import from `@infra/repositories/_providers/mock` or `@/lib/mock-data` outside of `src/infrastructure/`. After Phase 4, app layer imports from `@features/{domain}` use-cases only.
+7. **Repository imports**: Import from `@infra/repositories/{domain}` only. Never import from `@infra/repositories/_providers/mock` or `_providers/*` outside of `src/infrastructure/`. The `no-restricted-imports` ESLint rule enforces this at lint time. Domain-specific UI lives in `@features/{domain}/components/`; cross-domain UI lives in `@shared/ui/organisms/`.
 8. **No raw SQL injection**: Never use `sql.raw()` with user input.
 9. **DAL ID validation**: Repository functions validate ID inputs with Zod.
 10. **No hardcoded URLs or env-specific values**: Use `process.env.NEXT_PUBLIC_*` for client-accessible config, `process.env.*` for server-only. Never hardcode domains, API endpoints, or environment-specific strings.

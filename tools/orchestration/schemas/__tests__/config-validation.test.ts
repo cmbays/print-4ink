@@ -3,10 +3,8 @@
 // (parseConfig helper, slug tuples, label lookups).
 
 import { describe, it, expect } from 'vitest'
+import { configEntryBase, domainsConfigSchema, productsConfigSchema } from '@config/schemas'
 import {
-  configEntryBase,
-  domainsConfigSchema,
-  productsConfigSchema,
   toolsConfigSchema,
   stagesConfigSchema,
   tagsConfigSchema,
@@ -15,14 +13,14 @@ import {
   pipelineFieldsConfigSchema,
 } from '../index'
 
-import rawDomains from '../../domains.json'
-import rawProducts from '../../products.json'
-import rawTools from '../../tools.json'
-import rawStages from '../../stages.json'
-import rawTags from '../../tags.json'
-import rawPipelineTypes from '../../pipeline-types.json'
-import rawPipelineGates from '../../pipeline-gates.json'
-import rawPipelineFields from '../../pipeline-fields.json'
+import rawDomains from '../../../../src/config/domains.json'
+import rawProducts from '../../../../src/config/products.json'
+import rawTools from '../../config/tools.json'
+import rawStages from '../../config/stages.json'
+import rawTags from '../../config/tags.json'
+import rawPipelineTypes from '../../config/pipeline-types.json'
+import rawPipelineGates from '../../config/pipeline-gates.json'
+import rawPipelineFields from '../../config/pipeline-fields.json'
 
 // ── Data Validation (JSON against schemas) ─────────────────────────
 

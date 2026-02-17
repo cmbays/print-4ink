@@ -10,11 +10,11 @@ import {
   SheetDescription,
 } from '@shared/ui/primitives/sheet'
 import { ScrollArea } from '@shared/ui/primitives/scroll-area'
-import { FavoritesColorSection } from '@/components/features/FavoritesColorSection'
-import { InheritanceToggle } from '@/components/features/InheritanceToggle'
-import { InheritanceDetail } from '@/components/features/InheritanceDetail'
-import { GarmentMiniCard } from '@/components/features/GarmentMiniCard'
-import { RemovalConfirmationDialog } from '@/components/features/RemovalConfirmationDialog'
+import { FavoritesColorSection } from '@features/garments/components/FavoritesColorSection'
+import { InheritanceToggle } from '@features/quotes/components/InheritanceToggle'
+import { InheritanceDetail } from '@features/quotes/components/InheritanceDetail'
+import { GarmentMiniCard } from '@shared/ui/organisms/GarmentMiniCard'
+import { RemovalConfirmationDialog } from '@features/customers/components/RemovalConfirmationDialog'
 import { cn } from '@shared/lib/cn'
 import {
   resolveEffectiveFavorites,
@@ -374,6 +374,7 @@ export function BrandDetailDrawer({
             {/* U26-U28: InheritanceDetail — progressive disclosure */}
             <InheritanceDetail
               chain={inheritanceChain}
+              colors={catalogColors}
               onRestore={brandPref.inheritMode === 'customize' ? handleRestoreColor : undefined}
             />
 

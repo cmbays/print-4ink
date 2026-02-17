@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { configEntryBase } from './base'
-import rawStages from '../stages.json'
+import { configEntryBase } from '@config/schemas/base'
+import rawStages from '../config/stages.json'
 
 const validStageSlugs = rawStages.map((s) => s.slug) as [string, ...string[]]
 

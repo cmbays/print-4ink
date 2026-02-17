@@ -10,7 +10,7 @@ import { getColorById } from '@infra/repositories/colors'
 import { getArtworks } from '@infra/repositories/artworks'
 import { normalizePosition } from '@domain/constants/print-zones'
 import { JobDetail } from './_components/JobDetail'
-import type { ArtworkPlacement } from '@/components/features/mockup'
+import type { ArtworkPlacement } from '@features/quotes/components/mockup'
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

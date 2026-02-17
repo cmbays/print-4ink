@@ -34,7 +34,7 @@ import {
 } from '@shared/ui/primitives/dialog'
 import { DTFSheetTierEditor } from '../../_components/DTFSheetTierEditor'
 import { DTFPricingCalculator } from '../../_components/DTFPricingCalculator'
-import { allDTFTemplates } from '@/lib/mock-data-pricing'
+import { allDTFTemplates } from '@infra/repositories/pricing'
 import type { DTFPricingTemplate, DTFSheetTier, DTFCostConfig } from '@domain/entities/dtf-pricing'
 
 // ---------------------------------------------------------------------------

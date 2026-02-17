@@ -3,7 +3,7 @@
 import { Heart, Check } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
 import { cn } from '@shared/lib/cn'
-import { swatchTextStyle } from '@/lib/helpers/swatch'
+import { swatchTextStyle } from '@shared/lib/swatch'
 import type { Color } from '@domain/entities/color'
 
 type FavoritesColorSectionProps = {
