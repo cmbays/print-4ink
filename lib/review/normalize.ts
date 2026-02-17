@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import type { PRFacts, FileChange, CommitInfo } from "@/lib/schemas/review-pipeline";
 
 // ---------------------------------------------------------------------------
@@ -7,8 +7,9 @@ import type { PRFacts, FileChange, CommitInfo } from "@/lib/schemas/review-pipel
 // Shells out to git to collect line counts, file statuses, commit metadata,
 // and the raw unified diff. All downstream stages consume the PRFacts output.
 //
-// Security: branch names are internal pipeline data (CI-controlled), not
-// user input. execSync is safe in this context.
+// Security: Uses execFileSync (no shell) to eliminate command injection risk.
+// Branch names are passed as array arguments, never interpolated into a shell
+// command string.
 // ---------------------------------------------------------------------------
 
 type FileStatus = FileChange["status"];
@@ -125,11 +126,20 @@ function resolveRenamePath(numstatPath: string): string {
 export function normalize(branch: string, baseBranch: string): PRFacts {
   const range = `${baseBranch}...${branch}`;
 
-  // Shell out to git for raw data
-  const numstatRaw = execSync(`git diff --numstat ${range}`, { encoding: "utf-8" });
-  const nameStatusRaw = execSync(`git diff --name-status -M ${range}`, { encoding: "utf-8" });
-  const logRaw = execSync(`git log --format='%H%x00%s%x00%an' ${range}`, { encoding: "utf-8" });
-  const diffRaw = execSync(`git diff ${range}`, { encoding: "utf-8" });
+  // Run git commands — execFileSync bypasses the shell, passing args as an array
+  let numstatRaw: string;
+  let nameStatusRaw: string;
+  let logRaw: string;
+  let diffRaw: string;
+
+  try {
+    numstatRaw = execFileSync("git", ["diff", "--numstat", range], { encoding: "utf-8" });
+    nameStatusRaw = execFileSync("git", ["diff", "--name-status", "-M", range], { encoding: "utf-8" });
+    logRaw = execFileSync("git", ["log", "--format=%H%x00%s%x00%an", range], { encoding: "utf-8" });
+    diffRaw = execFileSync("git", ["diff", range], { encoding: "utf-8" });
+  } catch {
+    throw new Error(`normalize: git commands failed for range ${range}`);
+  }
 
   // Parse raw outputs
   const numstatMap = parseNumstat(numstatRaw);

@@ -4,6 +4,7 @@ import type {
   AgentManifestEntry,
   GapLogEntry,
 } from "@/lib/schemas/review-pipeline";
+import { mergeIntoManifest } from "./manifest-utils";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -38,41 +39,6 @@ export type GapAnalyzer = (
 ) => Promise<GapAnalysisResult>;
 
 // ---------------------------------------------------------------------------
-// Merge helpers
-// ---------------------------------------------------------------------------
-
-/** Deduplicated union of two string arrays, preserving insertion order. */
-function unionStrings(a: string[], b: string[]): string[] {
-  const set = new Set(a);
-  for (const item of b) {
-    set.add(item);
-  }
-  return [...set];
-}
-
-/**
- * Merge an additional agent into an existing manifest entry.
- *
- * - scope: union of both scopes
- * - rules: union of both rule lists
- * - priority: max of both priorities
- * - reason: append the new reason (separated by "; ")
- */
-function mergeEntry(
-  existing: AgentManifestEntry,
-  incoming: AgentManifestEntry,
-): AgentManifestEntry {
-  return {
-    agentId: existing.agentId,
-    scope: unionStrings(existing.scope, incoming.scope),
-    priority: Math.max(existing.priority, incoming.priority),
-    rules: unionStrings(existing.rules, incoming.rules),
-    reason: `${existing.reason}; ${incoming.reason}`,
-    triggeredBy: existing.triggeredBy,
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Stage 4: Gap Detect
 // ---------------------------------------------------------------------------
 
@@ -98,21 +64,7 @@ export async function gapDetect(
   const analysis = await analyzer(facts, classification, manifest);
 
   // 3. Merge additional agents into manifest (dedup by agentId)
-  const merged = [...manifest];
-
-  for (const incoming of analysis.additionalAgents) {
-    const existingIndex = merged.findIndex(
-      (e) => e.agentId === incoming.agentId,
-    );
-
-    if (existingIndex >= 0) {
-      // Agent already exists — merge scope, rules, priority, reason
-      merged[existingIndex] = mergeEntry(merged[existingIndex], incoming);
-    } else {
-      // New agent — append
-      merged.push(incoming);
-    }
-  }
+  const merged = mergeIntoManifest(manifest, analysis.additionalAgents);
 
   // 4. Return merged manifest + gaps
   return {

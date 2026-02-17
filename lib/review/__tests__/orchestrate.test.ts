@@ -2,30 +2,29 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { reviewReportSchema, gateDecisionSchema } from "@/lib/schemas/review-pipeline";
 
 vi.mock("child_process", () => ({
-  execSync: vi.fn(),
+  execFileSync: vi.fn(),
 }));
 
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import { runReviewOrchestration } from "../orchestrate";
 import type { AgentLauncher } from "../dispatch";
 import type { GapAnalyzer } from "../gap-detect";
 
-const mockedExecSync = vi.mocked(execSync);
+const mockedExecFileSync = vi.mocked(execFileSync);
 
 function setupGitMocks() {
-  // normalize calls execSync with { encoding: "utf-8" } which returns strings
-  mockedExecSync.mockImplementation((cmd: string) => {
-    const cmdStr = String(cmd);
-    if (cmdStr.includes("--numstat")) {
+  mockedExecFileSync.mockImplementation((_cmd: unknown, args: unknown) => {
+    const argsArr = args as string[];
+    if (argsArr.includes("--numstat")) {
       return "10\t2\tlib/helpers/money.ts\n5\t1\tcomponents/features/quotes/QuoteCard.tsx\n";
     }
-    if (cmdStr.includes("--name-status")) {
+    if (argsArr.includes("--name-status")) {
       return "M\tlib/helpers/money.ts\nM\tcomponents/features/quotes/QuoteCard.tsx\n";
     }
-    if (cmdStr.includes("git log")) {
+    if (argsArr[0] === "log") {
       return "abc1234\x00feat: update pricing\x00Claude\n";
     }
-    if (cmdStr.includes("git diff")) {
+    if (argsArr[0] === "diff") {
       return "diff --git a/lib/helpers/money.ts...";
     }
     return "";
@@ -115,9 +114,9 @@ describe("runReviewOrchestration", () => {
   });
 
   it("handles empty diff gracefully", async () => {
-    mockedExecSync.mockImplementation((cmd: string) => {
-      const cmdStr = String(cmd);
-      if (cmdStr.includes("git log")) {
+    mockedExecFileSync.mockImplementation((_cmd: unknown, args: unknown) => {
+      const argsArr = args as string[];
+      if (argsArr[0] === "log") {
         return "bbb2222\x00chore: empty\x00Claude\n";
       }
       return "";
@@ -135,5 +134,32 @@ describe("runReviewOrchestration", () => {
     });
 
     expect(result.gateDecision.decision).toBe("pass");
+  });
+
+  it("degrades gracefully when gap analyzer throws", async () => {
+    const mockLauncher: AgentLauncher = async (entry) => ({
+      agentId: entry.agentId,
+      status: "success",
+      findings: [],
+      durationMs: 50,
+    });
+
+    const failingAnalyzer: GapAnalyzer = async () => {
+      throw new Error("LLM service unavailable");
+    };
+
+    const result = await runReviewOrchestration("session/0216-test", "main", {
+      launcher: mockLauncher,
+      gapAnalyzer: failingAnalyzer,
+    });
+
+    // Pipeline should still complete successfully
+    expect(result.report).toBeDefined();
+    expect(result.gateDecision.decision).toBeDefined();
+
+    // Should log a gap entry about the failure
+    expect(result.report.gaps).toHaveLength(1);
+    expect(result.report.gaps[0].concern).toContain("Gap analyzer failed");
+    expect(result.report.gaps[0].confidence).toBe(0);
   });
 });

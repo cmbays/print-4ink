@@ -13,6 +13,7 @@ import {
   loadReviewRules,
   loadDomainMappings,
 } from "./load-config";
+import { deduplicateManifest } from "./manifest-utils";
 
 // ---------------------------------------------------------------------------
 // Risk level ordering for comparison
@@ -55,7 +56,12 @@ function evaluateTrigger(
 
     case "content":
       if (!facts.diffContent) return false;
-      return new RegExp(trigger.pattern).test(facts.diffContent);
+      try {
+        return new RegExp(trigger.pattern).test(facts.diffContent);
+      } catch {
+        // Invalid regex pattern in config — skip this trigger rather than crash
+        return false;
+      }
 
     default:
       return false;
@@ -161,50 +167,11 @@ export function compose(
   }
 
   // Deduplicate by agentId: merge scope (union), keep highest priority,
-  // append reasons
-  const deduped = new Map<string, AgentManifestEntry>();
-
-  for (const entry of rawEntries) {
-    const existing = deduped.get(entry.agentId);
-    if (!existing) {
-      deduped.set(entry.agentId, { ...entry, scope: [...entry.scope] });
-      continue;
-    }
-
-    // Merge scope (union via Set)
-    const mergedScope = [...new Set([...existing.scope, ...entry.scope])];
-
-    // Keep highest priority
-    const maxPriority = Math.max(existing.priority, entry.priority);
-
-    // Append reasons
-    const mergedReason = existing.reason.includes(entry.reason)
-      ? existing.reason
-      : `${existing.reason}; ${entry.reason}`;
-
-    // Merge rules (union via Set)
-    const mergedRules = [...new Set([...existing.rules, ...entry.rules])];
-
-    // Keep the triggeredBy of the higher-priority entry
-    const triggeredBy =
-      entry.priority > existing.priority
-        ? entry.triggeredBy
-        : existing.triggeredBy;
-
-    deduped.set(entry.agentId, {
-      agentId: entry.agentId,
-      scope: mergedScope,
-      priority: maxPriority,
-      rules: mergedRules,
-      reason: mergedReason,
-      triggeredBy,
-    });
-  }
+  // append reasons. Use triggeredBy from higher-priority entry.
+  const manifest = deduplicateManifest(rawEntries, {
+    triggeredByHighestPriority: true,
+  });
 
   // Sort by priority descending
-  const manifest = [...deduped.values()].sort(
-    (a, b) => b.priority - a.priority,
-  );
-
-  return manifest;
+  return manifest.sort((a, b) => b.priority - a.priority);
 }

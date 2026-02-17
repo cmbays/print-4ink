@@ -52,17 +52,34 @@ export async function runReviewOrchestration(
     .array(agentManifestEntrySchema)
     .parse(compose(classification, facts));
 
-  // Stage 4: Gap Detect
-  const gapResult = await gapDetect(
-    facts,
-    classification,
-    manifest,
-    deps.gapAnalyzer,
-  );
-  const amendedManifest = z
-    .array(agentManifestEntrySchema)
-    .parse(gapResult.manifest);
-  const gaps = z.array(gapLogEntrySchema).parse(gapResult.gaps);
+  // Stage 4: Gap Detect (graceful degradation — analyzer failures don't block)
+  let amendedManifest: z.infer<typeof agentManifestEntrySchema>[];
+  let gaps: z.infer<typeof gapLogEntrySchema>[];
+
+  try {
+    const gapResult = await gapDetect(
+      facts,
+      classification,
+      manifest,
+      deps.gapAnalyzer,
+    );
+    amendedManifest = z
+      .array(agentManifestEntrySchema)
+      .parse(gapResult.manifest);
+    gaps = z.array(gapLogEntrySchema).parse(gapResult.gaps);
+  } catch {
+    // Analyzer failure: fall back to Stage 3 manifest, log a gap entry
+    amendedManifest = manifest;
+    gaps = [
+      {
+        concern:
+          "Gap analyzer failed — pipeline continued with Stage 3 manifest",
+        recommendation:
+          "Investigate gap analyzer failure and re-run review",
+        confidence: 0,
+      },
+    ];
+  }
 
   // Stage 5: Dispatch
   const agentResults = z

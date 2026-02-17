@@ -2,13 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { prFactsSchema } from "@/lib/schemas/review-pipeline";
 
 // ---------------------------------------------------------------------------
-// Mock child_process — intercept execSync calls
+// Mock child_process — intercept execFileSync calls
 // ---------------------------------------------------------------------------
 
-const mockExecSync = vi.fn();
+const mockExecFileSync = vi.fn();
 
 vi.mock("child_process", () => ({
-  execSync: (...args: unknown[]) => mockExecSync(...args),
+  execFileSync: (...args: unknown[]) => mockExecFileSync(...args),
 }));
 
 // Import after mocking so the module picks up the mock
@@ -25,11 +25,12 @@ function setupGitMocks(opts: {
   log?: string;
   diff?: string;
 }) {
-  mockExecSync.mockImplementation((cmd: string) => {
-    if (cmd.includes("--numstat")) return opts.numstat ?? "";
-    if (cmd.includes("--name-status")) return opts.nameStatus ?? "";
-    if (cmd.includes("git log")) return opts.log ?? "";
-    if (cmd.includes("git diff") && !cmd.includes("--")) return opts.diff ?? "";
+  mockExecFileSync.mockImplementation((_cmd: string, args: string[]) => {
+    if (args.includes("--numstat")) return opts.numstat ?? "";
+    if (args.includes("--name-status")) return opts.nameStatus ?? "";
+    if (args[0] === "log") return opts.log ?? "";
+    // Plain diff (no --numstat or --name-status flags)
+    if (args[0] === "diff") return opts.diff ?? "";
     return "";
   });
 }
@@ -40,7 +41,7 @@ function setupGitMocks(opts: {
 
 describe("normalize (Stage 1 — git diff to PRFacts)", () => {
   beforeEach(() => {
-    mockExecSync.mockReset();
+    mockExecFileSync.mockReset();
   });
 
   // -------------------------------------------------------------------------
@@ -222,5 +223,18 @@ describe("normalize (Stage 1 — git diff to PRFacts)", () => {
 
     expect(parsed.totalAdditions).toBe(0);
     expect(parsed.totalDeletions).toBe(80);
+  });
+
+  // -------------------------------------------------------------------------
+  // 6. Git command failure wraps error with sanitized message
+  // -------------------------------------------------------------------------
+  it("wraps git command failures with a sanitized error message", () => {
+    mockExecFileSync.mockImplementation(() => {
+      throw new Error("fatal: bad revision 'main...feature/broken'");
+    });
+
+    expect(() => normalize("feature/broken", "main")).toThrow(
+      "normalize: git commands failed for range main...feature/broken",
+    );
   });
 });
