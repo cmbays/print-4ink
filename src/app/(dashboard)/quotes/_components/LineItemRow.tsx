@@ -18,7 +18,7 @@ import {
   CommandList,
 } from '@shared/ui/primitives/command'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
-import { ColorSwatchPicker } from '@/components/features/ColorSwatchPicker'
+import { ColorSwatchPicker } from '@shared/ui/organisms/ColorSwatchPicker'
 import { ArtworkAssignmentPicker } from './ArtworkAssignmentPicker'
 import {
   SERVICE_TYPE_LABELS,

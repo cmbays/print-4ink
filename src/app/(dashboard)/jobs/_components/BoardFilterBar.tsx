@@ -18,7 +18,7 @@ import {
 import { RISK_LABELS, SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from '@domain/constants'
 import { ENTITY_STYLES } from '@domain/constants/entities'
 import { ENTITY_ICONS } from '@/lib/constants/entity-icons'
-import { SERVICE_TYPE_ICONS } from '@/components/features/ServiceTypeBadge'
+import { SERVICE_TYPE_ICONS } from '@features/pricing/components/ServiceTypeBadge'
 import { z } from 'zod'
 import { riskLevelEnum } from '@domain/entities/job'
 import { serviceTypeEnum } from '@domain/entities/quote'

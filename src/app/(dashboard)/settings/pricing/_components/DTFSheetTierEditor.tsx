@@ -18,8 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from '@shared/ui/primitives/table'
-import { MarginIndicator } from '@/components/features/MarginIndicator'
-import { CostBreakdownTooltip } from '@/components/features/CostBreakdownTooltip'
+import { MarginIndicator } from '@features/pricing/components/MarginIndicator'
+import { CostBreakdownTooltip } from '@shared/ui/organisms/CostBreakdownTooltip'
 import { calculateDTFTierMargin, formatCurrency } from '@domain/services/pricing.service'
 import type { DTFSheetTier, DTFCostConfig } from '@domain/entities/dtf-pricing'
 

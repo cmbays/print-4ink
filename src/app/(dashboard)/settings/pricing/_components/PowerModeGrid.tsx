@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-table'
 import { Input } from '@shared/ui/primitives/input'
 import { Button } from '@shared/ui/primitives/button'
-import { CostBreakdownTooltip } from '@/components/features/CostBreakdownTooltip'
+import { CostBreakdownTooltip } from '@shared/ui/organisms/CostBreakdownTooltip'
 import { cn } from '@shared/lib/cn'
 import { buildFullMatrixData, formatCurrency } from '@domain/services/pricing.service'
 import type {

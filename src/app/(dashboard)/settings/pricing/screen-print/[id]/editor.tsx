@@ -47,7 +47,7 @@ import {
 import { allScreenPrintTemplates } from '@infra/repositories/pricing'
 import { calculateTemplateHealth } from '@domain/services/pricing.service'
 import { cn } from '@shared/lib/cn'
-import { MarginLegend } from '@/components/features/MarginLegend'
+import { MarginLegend } from '@features/pricing/components/MarginLegend'
 import { BottomActionBar } from '@shared/ui/layouts/bottom-action-bar'
 import type {
   PricingTemplate,

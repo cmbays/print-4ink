@@ -2,11 +2,11 @@
 
 import { Separator } from '@shared/ui/primitives/separator'
 import { Badge } from '@shared/ui/primitives/badge'
-import { StatusBadge } from '@/components/features/StatusBadge'
+import { StatusBadge } from '@shared/ui/organisms/StatusBadge'
 import { DiscountRow } from './DiscountRow'
 import { QuoteActions } from './QuoteActions'
 import { EmailPreviewModal } from './EmailPreviewModal'
-import { MockupFilterProvider, GarmentMockupThumbnail } from '@/components/features/mockup'
+import { MockupFilterProvider, GarmentMockupThumbnail } from '@features/quotes/components/mockup'
 import { normalizePosition } from '@domain/constants/print-zones'
 import { Button } from '@shared/ui/primitives/button'
 import Link from 'next/link'
@@ -23,7 +23,7 @@ import type { Color } from '@domain/entities/color'
 import type { GarmentCatalog } from '@domain/entities/garment'
 import { formatDate } from '@shared/lib/format'
 import { SERVICE_TYPE_LABELS, SERVICE_TYPE_COLORS } from '@domain/constants'
-import { LifecycleBadge } from '@/components/features/LifecycleBadge'
+import { LifecycleBadge } from '@shared/ui/organisms/LifecycleBadge'
 import {
   DECORATION_COST_PER_COLOR,
   LOCATION_FEE_PER_UNIT,

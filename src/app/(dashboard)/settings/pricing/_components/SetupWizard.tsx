@@ -21,7 +21,7 @@ import {
 } from '@shared/ui/primitives/select'
 import { Checkbox } from '@shared/ui/primitives/checkbox'
 import { Separator } from '@shared/ui/primitives/separator'
-import { MarginIndicator } from '@/components/features/MarginIndicator'
+import { MarginIndicator } from '@features/pricing/components/MarginIndicator'
 import { Printer, Layers, ChevronRight, ChevronLeft, Check, Plus, Minus } from 'lucide-react'
 import { money, toNumber } from '@domain/lib/money'
 import { cn } from '@shared/lib/cn'

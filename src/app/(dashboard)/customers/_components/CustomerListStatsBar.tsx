@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import type { Customer } from '@domain/entities/customer'
 import type { Quote } from '@domain/entities/quote'
 import { Users, UserCheck, DollarSign, UserPlus } from 'lucide-react'
-import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
 
 function computeRevenueYTD(quotes: Quote[]): number {
   const now = new Date()

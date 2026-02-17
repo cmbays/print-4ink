@@ -19,12 +19,12 @@ import {
   TableRow,
 } from '@shared/ui/primitives/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
-import { LifecycleBadge } from '@/components/features/LifecycleBadge'
-import { HealthBadge } from '@/components/features/HealthBadge'
-import { TypeTagBadges } from '@/components/features/TypeTagBadges'
-import { AddCustomerModal } from '@/components/features/AddCustomerModal'
-import { ColumnHeaderMenu } from '@/components/features/ColumnHeaderMenu'
-import { MobileFilterSheet } from '@/components/features/MobileFilterSheet'
+import { LifecycleBadge } from '@shared/ui/organisms/LifecycleBadge'
+import { HealthBadge } from '@shared/ui/organisms/HealthBadge'
+import { TypeTagBadges } from '@shared/ui/organisms/TypeTagBadges'
+import { AddCustomerModal } from '@features/customers/components/AddCustomerModal'
+import { ColumnHeaderMenu } from '@shared/ui/organisms/ColumnHeaderMenu'
+import { MobileFilterSheet } from '@shared/ui/organisms/MobileFilterSheet'
 import type { Quote } from '@domain/entities/quote'
 import {
   CUSTOMER_TYPE_TAG_LABELS,
@@ -75,7 +75,7 @@ type SortKey = z.infer<typeof sortKeySchema>
 const sortDirSchema = z.enum(['asc', 'desc'])
 type SortDir = z.infer<typeof sortDirSchema>
 
-import { MoneyAmount } from '@/components/features/MoneyAmount'
+import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
 
 function formatRelativeDate(iso: string): string {
   const now = new Date()

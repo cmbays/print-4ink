@@ -4,13 +4,16 @@ import { useState, useMemo, useCallback } from 'react'
 import { Palette, Search, LayoutGrid, List } from 'lucide-react'
 import { Topbar } from '@shared/ui/layouts/topbar'
 import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
-import { FavoritesColorSection, ColorSwatch } from '@/components/features/FavoritesColorSection'
+import {
+  FavoritesColorSection,
+  ColorSwatch,
+} from '@features/garments/components/FavoritesColorSection'
 import { Input } from '@shared/ui/primitives/input'
 import { Switch } from '@shared/ui/primitives/switch'
 import { Label } from '@shared/ui/primitives/label'
 import { Button } from '@shared/ui/primitives/button'
 import { cn } from '@shared/lib/cn'
-import { RemovalConfirmationDialog } from '@/components/features/RemovalConfirmationDialog'
+import { RemovalConfirmationDialog } from '@features/customers/components/RemovalConfirmationDialog'
 import { getColorsMutable } from '@infra/repositories/colors'
 import {
   getAutoPropagationConfigMutable,

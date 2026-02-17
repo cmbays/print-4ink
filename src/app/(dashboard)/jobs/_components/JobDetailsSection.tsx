@@ -7,7 +7,7 @@ import { getScreensByJobId } from '@domain/rules/screen.rules'
 import { getGarmentCatalogMutable } from '@infra/repositories/garments'
 import { getColorsMutable } from '@infra/repositories/colors'
 import { getScreensMutable } from '@infra/repositories/screens'
-import { GarmentImage } from '@/components/features/GarmentImage'
+import { GarmentImage } from '@features/garments/components/GarmentImage'
 import type { Job } from '@domain/entities/job'
 
 type JobDetailsSectionProps = {

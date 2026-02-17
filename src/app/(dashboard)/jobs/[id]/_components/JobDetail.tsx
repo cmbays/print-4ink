@@ -11,8 +11,8 @@ import { BottomActionBar } from '@shared/ui/layouts/bottom-action-bar'
 import { Topbar } from '@shared/ui/layouts/topbar'
 import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
 
-import { GarmentMockupCard, MockupFilterProvider } from '@/components/features/mockup'
-import type { ArtworkPlacement } from '@/components/features/mockup'
+import { GarmentMockupCard, MockupFilterProvider } from '@features/quotes/components/mockup'
+import type { ArtworkPlacement } from '@features/quotes/components/mockup'
 
 import { JobHeader } from '../../_components/JobHeader'
 import { QuickActionsBar } from '../../_components/QuickActionsBar'

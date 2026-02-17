@@ -30,8 +30,8 @@ import {
   CONTACT_ROLE_LABELS,
   LIFECYCLE_STAGE_LABELS,
 } from '@domain/constants'
-import { LifecycleBadge } from '@/components/features/LifecycleBadge'
-import { TypeTagBadges } from '@/components/features/TypeTagBadges'
+import { LifecycleBadge } from '@shared/ui/organisms/LifecycleBadge'
+import { TypeTagBadges } from '@shared/ui/organisms/TypeTagBadges'
 import type { Customer } from '@domain/entities/customer'
 import type { ContactRole } from '@domain/entities/contact'
 

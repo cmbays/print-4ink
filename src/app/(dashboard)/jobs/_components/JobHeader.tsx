@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { Calendar, Clock, CalendarPlus } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
-import { ServiceTypeBadge } from '@/components/features/ServiceTypeBadge'
-import { RiskIndicator } from '@/components/features/RiskIndicator'
-import { LaneBadge } from '@/components/features/LaneBadge'
+import { ServiceTypeBadge } from '@features/pricing/components/ServiceTypeBadge'
+import { RiskIndicator } from '@features/quotes/components/RiskIndicator'
+import { LaneBadge } from '@shared/ui/organisms/LaneBadge'
 import {
   PRIORITY_LABELS,
   PRIORITY_COLORS,

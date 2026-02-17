@@ -14,7 +14,7 @@ import { Button } from '@shared/ui/primitives/button'
 import { Separator } from '@shared/ui/primitives/separator'
 import { ExternalLink, Package, Palette, Pencil } from 'lucide-react'
 import Link from 'next/link'
-import { MarginLegend } from '@/components/features/MarginLegend'
+import { MarginLegend } from '@features/pricing/components/MarginLegend'
 import {
   buildFullMatrixData,
   formatCurrency,
