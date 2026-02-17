@@ -1,5 +1,5 @@
 ---
-import { pipelineStageLabelMap } from '../lib/utils';
+import { pipelineStageLabelMap, pipelineStageDescriptionMap } from '../lib/utils';
 
 interface StageInfo {
   name: string;
@@ -22,12 +22,14 @@ const { stages, pipeline } = Astro.props;
       const hasContent = stage.count > 0;
       const isActive = stage.active;
       const label = pipelineStageLabelMap[stage.slug] || stage.name;
+      const description = pipelineStageDescriptionMap[stage.slug];
 
       return (
         <div class="flex items-start flex-1">
           {/* Stage node */}
           <a
             href={hasContent ? `/pipelines/${pipeline}/${stage.slug}` : undefined}
+            title={description}
             class:list={[
               'flex flex-col items-center gap-1.5 relative z-10 group',
               hasContent ? 'cursor-pointer' : 'cursor-default',
