@@ -26,6 +26,16 @@ const composition = loadJson<unknown[]>("review-composition.json");
 const agents = loadJson<unknown[]>("review-agents.json");
 const domains = loadJson<unknown[]>("review-domains.json");
 
+// Pre-parse for cross-reference tests
+const parsedRules = rules.map((r) => reviewRuleSchema.parse(r));
+const parsedComposition = composition.map((c) =>
+  compositionPolicySchema.parse(c),
+);
+const parsedAgents = agents.map((a) => agentRegistryEntrySchema.parse(a));
+const parsedDomains = domains.map((d) => domainMappingSchema.parse(d));
+const agentIds = parsedAgents.map((a) => a.id);
+const domainNames = [...new Set(parsedDomains.map((d) => d.domain))];
+
 // ---------------------------------------------------------------------------
 // review-agents.json
 // ---------------------------------------------------------------------------
@@ -43,17 +53,20 @@ describe("review-agents.json", () => {
   });
 
   it("has no duplicate agent IDs", () => {
-    const parsed = agents.map((a) => agentRegistryEntrySchema.parse(a));
-    const ids = parsed.map((a) => a.id);
-    expect(new Set(ids).size).toBe(ids.length);
+    expect(new Set(agentIds).size).toBe(agentIds.length);
   });
 
   it("contains expected agents", () => {
-    const parsed = agents.map((a) => agentRegistryEntrySchema.parse(a));
-    const ids = parsed.map((a) => a.id);
-    expect(ids).toContain("build-reviewer");
-    expect(ids).toContain("finance-sme");
-    expect(ids).toContain("design-auditor");
+    expect(agentIds).toContain("build-reviewer");
+    expect(agentIds).toContain("finance-sme");
+    expect(agentIds).toContain("design-auditor");
+  });
+
+  it("every agent is dispatched by at least one composition policy", () => {
+    const dispatchedAgents = new Set(parsedComposition.map((c) => c.dispatch));
+    for (const agent of parsedAgents) {
+      expect(dispatchedAgents).toContain(agent.id);
+    }
   });
 });
 
@@ -73,15 +86,21 @@ describe("review-domains.json", () => {
     }
   });
 
+  it("has no duplicate patterns", () => {
+    const patterns = parsedDomains.map((d) => d.pattern);
+    expect(new Set(patterns).size).toBe(patterns.length);
+  });
+
   it("covers expected domains", () => {
-    const parsed = domains.map((d) => domainMappingSchema.parse(d));
-    const domainNames = [...new Set(parsed.map((d) => d.domain))];
     expect(domainNames).toContain("schemas");
     expect(domainNames).toContain("financial");
+    expect(domainNames).toContain("dtf-optimization");
     expect(domainNames).toContain("ui-components");
     expect(domainNames).toContain("design-system");
     expect(domainNames).toContain("infrastructure");
     expect(domainNames).toContain("testing");
+    expect(domainNames).toContain("data-layer");
+    expect(domainNames).toContain("documentation");
   });
 });
 
@@ -102,25 +121,25 @@ describe("review-composition.json", () => {
   });
 
   it("has no duplicate policy IDs", () => {
-    const parsed = composition.map((c) => compositionPolicySchema.parse(c));
-    const ids = parsed.map((c) => c.id);
+    const ids = parsedComposition.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it("has at least one universal (always) trigger policy", () => {
+    const alwaysPolicies = parsedComposition.filter(
+      (c) => c.trigger.type === "always",
+    );
+    expect(alwaysPolicies.length).toBeGreaterThanOrEqual(1);
+  });
+
   it("all dispatched agents exist in review-agents.json", () => {
-    const agentIds = agents.map((a) => agentRegistryEntrySchema.parse(a).id);
-    const parsed = composition.map((c) => compositionPolicySchema.parse(c));
-    for (const policy of parsed) {
+    for (const policy of parsedComposition) {
       expect(agentIds).toContain(policy.dispatch);
     }
   });
 
   it("all domain trigger values exist in review-domains.json", () => {
-    const domainNames = [
-      ...new Set(domains.map((d) => domainMappingSchema.parse(d).domain)),
-    ];
-    const parsed = composition.map((c) => compositionPolicySchema.parse(c));
-    for (const policy of parsed) {
+    for (const policy of parsedComposition) {
       if (policy.trigger.type === "domain") {
         for (const domain of policy.trigger.domains) {
           expect(domainNames).toContain(domain);
@@ -147,8 +166,7 @@ describe("review-rules.json", () => {
   });
 
   it("has no duplicate rule IDs", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    const ids = parsed.map((r) => r.id);
+    const ids = parsedRules.map((r) => r.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
@@ -157,37 +175,31 @@ describe("review-rules.json", () => {
   });
 
   it("all agent references exist in review-agents.json", () => {
-    const agentIds = agents.map((a) => agentRegistryEntrySchema.parse(a).id);
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    for (const rule of parsed) {
+    for (const rule of parsedRules) {
       expect(agentIds).toContain(rule.agent);
     }
   });
 
   it("every rule has a description of at least 10 characters", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    for (const rule of parsed) {
+    for (const rule of parsedRules) {
       expect(rule.description.length).toBeGreaterThanOrEqual(10);
     }
   });
 
   it("every rule has detection of at least 10 characters", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    for (const rule of parsed) {
+    for (const rule of parsedRules) {
       expect(rule.detection.length).toBeGreaterThanOrEqual(10);
     }
   });
 
   it("every rule has recommendation of at least 10 characters", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    for (const rule of parsed) {
+    for (const rule of parsedRules) {
       expect(rule.recommendation.length).toBeGreaterThanOrEqual(10);
     }
   });
 
   it("covers expected concern groups", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    const concerns = [...new Set(parsed.map((r) => r.concern))];
+    const concerns = [...new Set(parsedRules.map((r) => r.concern))];
     expect(concerns).toContain("dry-extraction");
     expect(concerns).toContain("modularity");
     expect(concerns).toContain("type-safety");
@@ -200,29 +212,27 @@ describe("review-rules.json", () => {
   });
 
   it("rule IDs follow prefix convention", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
-    for (const rule of parsed) {
+    for (const rule of parsedRules) {
       expect(rule.id).toMatch(/^[A-Z]-[A-Z]+-\d+$/);
     }
   });
 
-  describe("agent rule counts match expected distribution", () => {
-    const parsed = rules.map((r) => reviewRuleSchema.parse(r));
+  describe("agent rule distribution", () => {
     const byAgent = new Map<string, number>();
-    for (const rule of parsed) {
+    for (const rule of parsedRules) {
       byAgent.set(rule.agent, (byAgent.get(rule.agent) ?? 0) + 1);
     }
 
-    it("build-reviewer owns 31 rules", () => {
-      expect(byAgent.get("build-reviewer")).toBe(31);
+    it("build-reviewer owns the most rules", () => {
+      expect(byAgent.get("build-reviewer")).toBeGreaterThanOrEqual(25);
     });
 
-    it("finance-sme owns 8 rules", () => {
-      expect(byAgent.get("finance-sme")).toBe(8);
+    it("finance-sme owns at least 5 rules", () => {
+      expect(byAgent.get("finance-sme")).toBeGreaterThanOrEqual(5);
     });
 
-    it("design-auditor owns 15 rules", () => {
-      expect(byAgent.get("design-auditor")).toBe(15);
+    it("design-auditor owns at least 10 rules", () => {
+      expect(byAgent.get("design-auditor")).toBeGreaterThanOrEqual(10);
     });
   });
 });

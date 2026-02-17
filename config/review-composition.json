@@ -8,10 +8,10 @@
   },
   {
     "id": "financial-domain-reviewer",
-    "trigger": { "type": "domain", "domains": ["financial"] },
+    "trigger": { "type": "domain", "domains": ["financial", "dtf-optimization"] },
     "dispatch": "finance-sme",
     "priority": 80,
-    "description": "Dispatch the financial safety reviewer when PR touches monetary calculations, pricing logic, or invoice-related code"
+    "description": "Dispatch the financial safety reviewer when PR touches monetary calculations, pricing logic, invoice-related code, or DTF cost optimization"
   },
   {
     "id": "design-domain-reviewer",

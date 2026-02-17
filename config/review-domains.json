@@ -30,6 +30,26 @@
     "description": "Invoice pages and routes that display or manipulate monetary amounts"
   },
   {
+    "pattern": "lib/helpers/invoice-utils.ts",
+    "domain": "financial",
+    "description": "Invoice calculation utilities involving monetary arithmetic and payment amounts"
+  },
+  {
+    "pattern": "lib/dtf/**",
+    "domain": "dtf-optimization",
+    "description": "DTF gang sheet cost optimization, validation, and layout algorithms with monetary calculations"
+  },
+  {
+    "pattern": "lib/schemas/dtf-*",
+    "domain": "dtf-optimization",
+    "description": "DTF pricing, sheet calculation, and line item schemas with monetary fields"
+  },
+  {
+    "pattern": "app/**/dtf/**",
+    "domain": "dtf-optimization",
+    "description": "DTF editor and configuration pages involving pricing and cost optimization UI"
+  },
+  {
     "pattern": "components/features/**",
     "domain": "ui-components",
     "description": "Domain-specific feature components like QuoteCalculator, KanbanBoard, and job cards"
