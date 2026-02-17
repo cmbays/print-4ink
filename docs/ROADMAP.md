@@ -134,11 +134,16 @@ Issues are tagged with a consistent multi-dimensional taxonomy:
 
 | Dimension | Labels | Purpose |
 |-----------|--------|--------|
-| **Vertical** | `vertical/quoting`, `vertical/jobs`, `vertical/invoicing`, `vertical/customers`, `vertical/price-matrix`, `vertical/screen-room`, `vertical/garments`, `vertical/dashboard`, `vertical/infrastructure` | Where does this belong? |
+| **Product** | `product/quotes`, `product/jobs`, `product/invoices`, `product/customers`, `product/dashboard` | Things users DO |
+| **Domain** | `domain/garments`, `domain/screens`, `domain/pricing`, `domain/colors`, `domain/dtf`, `domain/screen-printing`, `domain/mobile` | Things products USE |
+| **Tool** | `tool/work-orchestrator`, `tool/skills-framework`, `tool/agent-system`, `tool/knowledge-base`, `tool/ci-pipeline`, `tool/pm-system` | How we BUILD |
+| **Pipeline** | `pipeline/vertical`, `pipeline/polish`, `pipeline/horizontal`, `pipeline/bug-fix` | What kind of pipeline |
 | **Type** | `type/bug`, `type/feature`, `type/research`, `type/feedback`, `type/tech-debt`, `type/refactor`, `type/tooling` | What kind of thing is it? |
 | **Priority** | `priority/now`, `priority/next`, `priority/later`, `priority/icebox` | When should we address it? |
 | **Source** | `source/testing`, `source/interview`, `source/idea`, `source/review`, `source/cool-down` | Where did it come from? |
 | **Phase** | `phase/1`, `phase/2`, `phase/3` | Which development phase? |
+
+See `docs/PM.md` Section 3 for full label definitions and litmus tests.
 
 ## Information Hierarchy
 
