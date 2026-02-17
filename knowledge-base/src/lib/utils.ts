@@ -2,6 +2,7 @@ import stagesConfig from '../../../config/stages.json';
 import tagsConfig from '../../../config/tags.json';
 import productsConfig from '../../../config/products.json';
 import toolsConfig from '../../../config/tools.json';
+import domainsConfig from '../../../config/domains.json';
 
 // ── Pipeline stage constants (config-driven) ─────────────────────
 
@@ -40,6 +41,10 @@ const toolLabelMap: Record<string, string> = Object.fromEntries(
   toolsConfig.map((t) => [t.slug, t.label]),
 );
 
+const domainLabelMap: Record<string, string> = Object.fromEntries(
+  domainsConfig.map((d) => [d.slug, d.label]),
+);
+
 /** Fallback: convert kebab-case slug to Title Case */
 export function labelFromSlug(s: string): string {
   return s
@@ -66,6 +71,11 @@ export function productLabel(slug: string): string {
 /** Config-driven tool label with fallback */
 export function toolLabel(slug: string): string {
   return toolLabelMap[slug] || labelFromSlug(slug);
+}
+
+/** Config-driven domain label with fallback */
+export function domainLabel(slug: string): string {
+  return domainLabelMap[slug] || labelFromSlug(slug);
 }
 
 // ── Tag colors (config-driven) ───────────────────────────────────
