@@ -265,7 +265,7 @@ export function QuantityTierEditor({
               <Button
                 variant="ghost"
                 size="icon-xs"
-                className="size-7 text-muted-foreground hover:text-error"
+                className="size-7 text-destructive hover:text-destructive/80"
                 onClick={() => removeTier(index)}
                 disabled={tiers.length <= 1}
                 aria-label={`Remove tier ${tier.label}`}
