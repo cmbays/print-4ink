@@ -1,7 +1,7 @@
 ---
 title: "Garments — Decisions"
 subtitle: "Key decisions made during Garments development"
-product: garments
+domain: garments
 docType: decisions
 lastUpdated: 2026-02-15
 status: draft

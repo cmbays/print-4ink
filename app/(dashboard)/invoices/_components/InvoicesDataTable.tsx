@@ -31,13 +31,13 @@ import { StatusBadge } from "@/components/features/StatusBadge";
 import { OverdueBadge } from "@/components/features/OverdueBadge";
 import { ColumnHeaderMenu } from "@/components/features/ColumnHeaderMenu";
 import { MobileFilterSheet } from "@/components/features/MobileFilterSheet";
-import { customers } from "@/lib/mock-data";
 import { computeIsOverdue } from "@/lib/helpers/invoice-utils";
 import { formatDate } from "@/lib/helpers/format";
 import { MoneyAmount } from "@/components/features/MoneyAmount";
 import { ENTITY_STYLES } from "@/lib/constants/entities";
 import { INVOICE_STATUS_LABELS } from "@/lib/constants";
 import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
+import type { Customer } from "@/lib/schemas/customer";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -45,6 +45,7 @@ import type { Invoice, InvoiceStatus } from "@/lib/schemas/invoice";
 
 interface InvoicesDataTableProps {
   invoices: Invoice[];
+  customers: Customer[];
 }
 
 // ---------------------------------------------------------------------------
@@ -57,7 +58,7 @@ type SortKey = z.infer<typeof sortKeySchema>;
 const sortDirSchema = z.enum(["asc", "desc"]);
 type SortDir = z.infer<typeof sortDirSchema>;
 
-function getCustomerName(customerId: string): string {
+function getCustomerName(customerId: string, customers: Customer[]): string {
   const customer = customers.find((c) => c.id === customerId);
   return customer?.company ?? "Unknown";
 }
@@ -69,7 +70,7 @@ const ALL_STATUSES: InvoiceStatus[] = ["draft", "sent", "partial", "paid", "void
 // Component
 // ---------------------------------------------------------------------------
 
-export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
+export function InvoicesDataTable({ invoices, customers }: InvoicesDataTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -176,11 +177,11 @@ export function InvoicesDataTable({ invoices }: InvoicesDataTableProps) {
     const map = new Map<string, string>();
     for (const inv of invoices) {
       if (!map.has(inv.customerId)) {
-        map.set(inv.customerId, getCustomerName(inv.customerId));
+        map.set(inv.customerId, getCustomerName(inv.customerId, customers));
       }
     }
     return map;
-  }, [invoices]);
+  }, [invoices, customers]);
 
   // ---- Filter + sort pipeline -----------------------------------------------
 

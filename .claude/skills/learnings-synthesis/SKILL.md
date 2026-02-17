@@ -49,7 +49,9 @@ For each PR, skim reviews: `gh api repos/cmbays/print-4ink/pulls/{N}/reviews`
 
 **Open issues** related to the vertical:
 ```bash
-gh issue list --repo cmbays/print-4ink --label "vertical/{VERTICAL}" --state open
+gh issue list --repo cmbays/print-4ink --label "product/{VERTICAL}" --state open
+# or for domain-scoped work:
+gh issue list --repo cmbays/print-4ink --label "domain/{VERTICAL}" --state open
 ```
 
 ### Step 2: Extract Patterns

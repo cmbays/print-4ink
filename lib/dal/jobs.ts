@@ -1,3 +1,5 @@
+// Auth classification: AUTHENTICATED — production operations; links customers to orders.
+// Phase 2: All functions must call verifySession() before returning data.
 export {
   getJobs,
   getJobById,

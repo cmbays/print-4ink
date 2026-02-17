@@ -5,7 +5,8 @@ date: 2026-02-15
 phase: 2
 pipelineName: meta
 pipelineType: horizontal
-products: [garments]
+products: []
+domains: [garments]
 tools: [knowledge-base]
 stage: research
 tags: [research, plan, decision]

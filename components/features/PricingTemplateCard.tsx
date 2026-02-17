@@ -85,7 +85,7 @@ export function PricingTemplateCard({
       }}
     >
       <CardHeader className="gap-1.5">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 min-w-0">
           {/* Title row: health dot + title */}
           <div className="flex min-w-0 items-center gap-2">
             <MarginIndicator
@@ -93,7 +93,7 @@ export function PricingTemplateCard({
               indicator={healthIndicator}
               size="md"
             />
-            <CardTitle className="truncate text-sm">{template.name}</CardTitle>
+            <CardTitle className="truncate text-sm min-w-0">{template.name}</CardTitle>
           </div>
 
           {/* Badges row — wraps below title on narrow screens */}

@@ -30,11 +30,6 @@ import { InvoicePricingSummary } from "./InvoicePricingSummary";
 import { DepositSection } from "./DepositSection";
 import { PaymentTermsSection } from "./PaymentTermsSection";
 import { ReviewSendSheet } from "./ReviewSendSheet";
-import {
-  customers as mockCustomers,
-  quotes as mockQuotes,
-  invoices as mockInvoices,
-} from "@/lib/mock-data";
 import { PAYMENT_TERMS_LABELS } from "@/lib/constants";
 import {
   calculateInvoiceTotal,
@@ -43,15 +38,18 @@ import {
 } from "@/lib/helpers/invoice-utils";
 import { money, round2, toNumber, formatCurrency } from "@/lib/helpers/money";
 import { scrollToFirstError } from "@/lib/helpers/scroll-to-error";
-import type { PaymentTerms, PricingTier } from "@/lib/schemas/customer";
+import type { Customer, PaymentTerms, PricingTier } from "@/lib/schemas/customer";
 import type { Invoice } from "@/lib/schemas/invoice";
+import type { Quote } from "@/lib/schemas/quote";
 
 const DEFAULT_TAX_RATE = 7; // Indiana state tax
 
 interface InvoiceFormProps {
   mode: "create" | "edit";
   initialData?: Invoice;
-  quoteId?: string;
+  customers: Customer[];
+  sourceQuote?: Quote | null;
+  initialInvoiceNumber?: string;
 }
 
 function createEmptyLineItem(): InvoiceLineItemData {
@@ -64,21 +62,9 @@ function createEmptyLineItem(): InvoiceLineItemData {
   };
 }
 
-function generateInvoiceNumber(): string {
-  const nextNum = mockInvoices.length + 1;
-  return `INV-${String(nextNum).padStart(4, "0")}`;
-}
-
-export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
+export function InvoiceForm({ mode, initialData, customers, sourceQuote, initialInvoiceNumber }: InvoiceFormProps) {
   const router = useRouter();
   const isEdit = mode === "edit";
-
-  // Resolve source quote if present
-  const sourceQuote = useMemo(() => {
-    const qId = quoteId || initialData?.quoteId;
-    if (!qId) return null;
-    return mockQuotes.find((q) => q.id === qId) ?? null;
-  }, [quoteId, initialData?.quoteId]);
 
   // Pre-populate line items from quote
   const initialLineItems = useMemo((): InvoiceLineItemData[] => {
@@ -103,7 +89,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
   // Customer state
   const customerOptions: CustomerOption[] = useMemo(
     () =>
-      mockCustomers.map((c) => {
+      customers.map((c) => {
         const primaryContact = c.contacts.find((ct) => ct.isPrimary);
         return {
           id: c.id,
@@ -117,14 +103,14 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
           contactRole: primaryContact?.role,
         };
       }),
-    []
+    [customers]
   );
 
   const initialCustomerId =
     initialData?.customerId || sourceQuote?.customerId || "";
 
   const [customerId, setCustomerId] = useState(initialCustomerId);
-  const selectedCustomer = mockCustomers.find((c) => c.id === customerId);
+  const selectedCustomer = customers.find((c) => c.id === customerId);
 
   // Line items
   const [lineItems, setLineItems] =
@@ -168,7 +154,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Invoice number
-  const invoiceNumber = initialData?.invoiceNumber ?? generateInvoiceNumber();
+  const invoiceNumber = initialData?.invoiceNumber ?? initialInvoiceNumber ?? "";
 
   // Computed pricing
   const pricing = useMemo(() => {
@@ -201,7 +187,7 @@ export function InvoiceForm({ mode, initialData, quoteId }: InvoiceFormProps) {
   const handleCustomerSelect = useCallback(
     (id: string) => {
       setCustomerId(id);
-      const customer = mockCustomers.find((c) => c.id === id);
+      const customer = customers.find((c) => c.id === id);
       if (customer) {
         // Auto-set payment terms from customer
         setPaymentTerms(customer.paymentTerms);

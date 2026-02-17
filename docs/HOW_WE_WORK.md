@@ -94,13 +94,16 @@ We chose GitHub Issues over Linear, Jira, and Notion. The reasoning:
 
 ### The 5-Dimension Label Taxonomy
 
-Labels are the organizational backbone. Every issue needs three: `type/*` + `priority/*` + `vertical/*`.
+Labels are the organizational backbone. Every issue needs three: `type/*` + `priority/*` + one scope label (`product/*`, `domain/*`, or `tool/*`).
 
 | Dimension | Purpose | Examples |
 |-----------|---------|---------|
 | `type/*` | What kind of work | feature, bug, research, tech-debt, refactor, tooling |
 | `priority/*` | When to do it | now, next, later, low, icebox |
-| `vertical/*` | Which product/tool | quoting, garments, devx, infrastructure, dtf |
+| `product/*` | Things users DO | quotes, jobs, customers, invoices, dashboard |
+| `domain/*` | Things products USE | garments, pricing, colors, dtf, screens |
+| `tool/*` | How we BUILD | work-orchestrator, ci-pipeline, pm-system |
+| `pipeline/*` (optional) | Pipeline type | vertical, horizontal, polish, bug-fix |
 | `phase/*` (optional) | Which project phase | 1, 2, 3 |
 | `source/*` (optional) | How we found it | interview, testing, review, cool-down |
 
@@ -143,7 +146,7 @@ Three automated layers:
 | Action | Trigger | Effect |
 |--------|---------|--------|
 | Auto-add to project | Issue/PR opened | Every new item appears on the board |
-| PR Labeler | PR opened/synced | `vertical/*` labels applied by file path |
+| PR Labeler | PR opened/synced | `product/*` / `domain/*` / `tool/*` labels applied by file path |
 | Template labels | Issue created via form | `type/*` label from template config |
 
 ### `work progress`

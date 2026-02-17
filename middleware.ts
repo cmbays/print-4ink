@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
   // Check for demo access cookie
   const demoAccess = request.cookies.get('demo-access')?.value;
 
-  if (!demoAccess) {
+  if (demoAccess !== 'true') {
     // Redirect to login page
     return NextResponse.redirect(new URL('/demo-login', request.url));
   }

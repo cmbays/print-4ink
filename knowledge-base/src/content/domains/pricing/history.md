@@ -1,7 +1,7 @@
 ---
-title: "Screens — History"
-subtitle: "Build history and changelog for the Screens product"
-product: screens
+title: "Pricing — History"
+subtitle: "Build history and changelog for the Pricing product"
+domain: pricing
 docType: history
 lastUpdated: 2026-02-15
 status: draft

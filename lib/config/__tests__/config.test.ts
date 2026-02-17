@@ -449,7 +449,7 @@ describe("label lookups", () => {
 
   it("productLabel returns correct label for known slug", () => {
     expect(productLabel("quotes")).toBe("Quotes");
-    expect(productLabel("garments")).toBe("Garments");
+    expect(productLabel("customers")).toBe("Customers");
   });
 
   it("toolLabel returns correct label for known slug", () => {

@@ -5,7 +5,8 @@ date: 2026-02-14
 phase: 1
 pipelineName: mobile-optimization
 pipelineType: horizontal
-products: [dashboard, quotes, customers, invoices, jobs, garments, pricing]
+products: [dashboard, quotes, customers, invoices, jobs]
+domains: [garments, pricing]
 tools: []
 stage: research
 tags: [plan, build]

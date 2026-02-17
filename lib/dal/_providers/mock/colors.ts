@@ -11,3 +11,8 @@ export async function getColorById(id: string): Promise<Color | null> {
   const color = colors.find((c) => c.id === id);
   return color ? { ...color } : null;
 }
+
+/** Phase 1 only: returns the raw mutable colors array for in-place mock data mutations. */
+export function getColorsMutable(): Color[] {
+  return colors;
+}

@@ -98,7 +98,7 @@ EOF
 14. Address all critical and major CodeRabbit comments
 15. For remaining items (minor, style, suggestions):
     - Create GitHub Issues with labels:
-      - `vertical/<name>` — which vertical
+      - `product/<name>` or `domain/<name>` — which product or domain
       - `type/tech-debt` — deferred review item
       - `source/review` — originated from code review
       - `priority/low` or `priority/medium` — based on impact

@@ -5,7 +5,8 @@ date: 2026-02-15
 phase: 1
 pipelineName: colors
 pipelineType: vertical
-products: [garments, customers]
+products: [customers]
+domains: [garments]
 tools: []
 stage: build
 tags: [feature, build]

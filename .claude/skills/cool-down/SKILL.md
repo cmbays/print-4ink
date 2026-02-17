@@ -9,7 +9,7 @@ Use between verticals, after demos, or whenever the user wants to step back and 
 ## Prerequisites
 
 - `docs/ROADMAP.md` exists with current strategic context
-- GitHub Issues populated with labels (vertical/*, type/*, priority/*, source/*)
+- GitHub Issues populated with labels (product/*, domain/*, tool/*, type/*, priority/*, source/*)
 - `PROGRESS.md` reflects recent work
 - KB sessions exist for recent build work
 - Vertical BRIEFs in `docs/verticals/` (create if missing)

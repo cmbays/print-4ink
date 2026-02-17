@@ -1,7 +1,7 @@
 ---
-title: "Pricing — Decisions"
-subtitle: "Key decisions made during Pricing development"
-product: pricing
+title: "Screens — Decisions"
+subtitle: "Key decisions made during Screens development"
+domain: screens
 docType: decisions
 lastUpdated: 2026-02-15
 status: draft
