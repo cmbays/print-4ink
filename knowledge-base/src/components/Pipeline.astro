@@ -29,7 +29,7 @@ const { stages, pipeline } = Astro.props;
           {/* Stage node */}
           <a
             href={hasContent ? `/pipelines/${pipeline}/${stage.slug}` : undefined}
-            title={description}
+            title={description || undefined}
             class:list={[
               'flex flex-col items-center gap-1.5 relative z-10 group',
               hasContent ? 'cursor-pointer' : 'cursor-default',

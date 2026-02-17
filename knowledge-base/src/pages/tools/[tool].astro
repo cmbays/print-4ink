@@ -50,7 +50,7 @@ if (decisions) {
     <BackLink href="/tools" label="Back to Tools" />
 
     <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{config.label}</h1>
-    <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || ''}</p>
+    <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || config.description}</p>
     <div class="flex items-center gap-3 text-[12px] text-text-muted mb-6">
       <span>{pluralize(relatedPipelines.length, 'pipeline doc')}</span>
     </div>

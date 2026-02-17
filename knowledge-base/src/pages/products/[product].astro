@@ -50,7 +50,7 @@ if (decisions) {
     <BackLink href="/products" label="Back to Products" />
 
     <h1 class="text-[28px] font-bold tracking-tight leading-tight mb-2">{config.label}</h1>
-    <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || ''}</p>
+    <p class="text-[15px] text-text-secondary leading-relaxed mb-2">{overview?.data.subtitle || config.description}</p>
     <div class="flex items-center gap-3 text-[12px] text-text-muted mb-6">
       <code class="font-mono text-[11px] bg-bg-surface px-1.5 py-0.5 rounded text-action">{config.route}</code>
       <span class="opacity-40">&middot;</span>
