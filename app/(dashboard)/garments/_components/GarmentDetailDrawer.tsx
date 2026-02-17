@@ -124,7 +124,7 @@ export function GarmentDetailDrawer({
           </SheetDescription>
         </SheetHeader>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 min-h-0">
           <div className="flex flex-col gap-6 p-4">
             {/* Garment image */}
             <div className="flex justify-center py-2">
