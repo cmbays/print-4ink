@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { getColorsMutable } from "@/lib/dal/colors";
+import { getColorsMutable } from "@infra/repositories/colors";
 import type { InheritanceChain } from "@/lib/helpers/color-preferences";
 
 const catalogColors = getColorsMutable();

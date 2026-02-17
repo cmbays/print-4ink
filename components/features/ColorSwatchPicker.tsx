@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { swatchTextStyle } from "@/lib/constants/swatch";
 import type { Color } from "@/lib/schemas/color";
-import { getColorsMutable } from "@/lib/dal/colors";
+import { getColorsMutable } from "@infra/repositories/colors";
 import { useGridKeyboardNav } from "@/lib/hooks/useGridKeyboardNav";
 
 type ColorSwatchPickerProps = {
