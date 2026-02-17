@@ -50,7 +50,7 @@ export const prFactsSchema = z.object({
   totalDeletions: z.number().int().nonnegative(),
   commits: z.array(commitInfoSchema),
   /** Raw unified diff output from `git diff base...head`. Optional for dry-run classification. */
-  diffContent: z.string().optional(),
+  diffContent: z.string().min(1).optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -117,13 +117,18 @@ export const reviewFindingSchema = z.object({
 
 export const agentResultStatusEnum = z.enum(["success", "timeout", "error"]);
 
-export const agentResultSchema = z.object({
-  agentId: z.string().min(1),
-  status: agentResultStatusEnum,
-  findings: z.array(reviewFindingSchema),
-  durationMs: z.number().int().nonnegative(),
-  error: z.string().optional(),
-});
+export const agentResultSchema = z
+  .object({
+    agentId: z.string().min(1),
+    status: agentResultStatusEnum,
+    findings: z.array(reviewFindingSchema),
+    durationMs: z.number().int().nonnegative(),
+    error: z.string().min(1).optional(),
+  })
+  .refine(
+    (r) => (r.status === "success" ? !r.error : !!r.error),
+    { message: "error is required for timeout/error status and must be absent for success" },
+  );
 
 // ---------------------------------------------------------------------------
 // Stage 6: Aggregate — Review Report + Gate Decision
@@ -141,17 +146,22 @@ export const severityMetricsSchema = z.object({
  * Findings with identical keys from different agents are merged; the
  * `deduplicated` counter records how many were collapsed.
  */
-export const reviewReportSchema = z.object({
-  agentResults: z.array(agentResultSchema),
-  findings: z.array(reviewFindingSchema),
-  gaps: z.array(gapLogEntrySchema),
-  metrics: severityMetricsSchema,
-  agentsDispatched: z.number().int().nonnegative(),
-  agentsCompleted: z.number().int().nonnegative(),
-  /** Number of duplicate findings merged during aggregation. */
-  deduplicated: z.number().int().nonnegative(),
-  timestamp: z.string().datetime(),
-});
+export const reviewReportSchema = z
+  .object({
+    agentResults: z.array(agentResultSchema),
+    findings: z.array(reviewFindingSchema),
+    gaps: z.array(gapLogEntrySchema),
+    metrics: severityMetricsSchema,
+    agentsDispatched: z.number().int().nonnegative(),
+    agentsCompleted: z.number().int().nonnegative(),
+    /** Number of duplicate findings merged during aggregation. */
+    deduplicated: z.number().int().nonnegative(),
+    timestamp: z.string().datetime(),
+  })
+  .refine(
+    (r) => r.agentsCompleted <= r.agentsDispatched,
+    { message: "agentsCompleted cannot exceed agentsDispatched" },
+  );
 
 export const gateDecisionSchema = z.object({
   decision: gateDecisionEnum,

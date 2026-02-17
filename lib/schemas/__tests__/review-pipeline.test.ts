@@ -214,6 +214,12 @@ describe("prFactsSchema", () => {
     expect(result.diffContent).toBeUndefined();
   });
 
+  it("rejects empty diffContent", () => {
+    expect(() =>
+      prFactsSchema.parse({ ...validFacts, diffContent: "" }),
+    ).toThrow();
+  });
+
   it("does not accept a domains field", () => {
     const result = prFactsSchema.parse({ ...validFacts, domains: ["schemas"] });
     expect((result as Record<string, unknown>).domains).toBeUndefined();
@@ -628,6 +634,36 @@ describe("agentResultSchema", () => {
     expect(result.error).toBe("Agent crashed unexpectedly");
   });
 
+  it("rejects success status with error message", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "success",
+        error: "should not be here",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects timeout status without error message", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "timeout",
+        findings: [],
+      }),
+    ).toThrow();
+  });
+
+  it("rejects error status without error message", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "error",
+        findings: [],
+      }),
+    ).toThrow();
+  });
+
   it("accepts empty findings array", () => {
     const result = agentResultSchema.parse({
       ...validResult,
@@ -656,9 +692,19 @@ describe("agentResultSchema", () => {
     ).toThrow();
   });
 
-  it("error field is optional", () => {
+  it("error field is optional for success", () => {
     const result = agentResultSchema.parse(validResult);
     expect(result.error).toBeUndefined();
+  });
+
+  it("rejects empty error string", () => {
+    expect(() =>
+      agentResultSchema.parse({
+        ...validResult,
+        status: "error",
+        error: "",
+      }),
+    ).toThrow();
   });
 });
 
@@ -755,6 +801,34 @@ describe("reviewReportSchema", () => {
     expect(() =>
       reviewReportSchema.parse({ ...validReport, deduplicated: -1 }),
     ).toThrow();
+  });
+
+  it("rejects agentsCompleted exceeding agentsDispatched", () => {
+    expect(() =>
+      reviewReportSchema.parse({
+        ...validReport,
+        agentsDispatched: 2,
+        agentsCompleted: 3,
+      }),
+    ).toThrow();
+  });
+
+  it("accepts agentsCompleted equal to agentsDispatched", () => {
+    const result = reviewReportSchema.parse({
+      ...validReport,
+      agentsDispatched: 3,
+      agentsCompleted: 3,
+    });
+    expect(result.agentsCompleted).toBe(3);
+  });
+
+  it("accepts agentsCompleted less than agentsDispatched", () => {
+    const result = reviewReportSchema.parse({
+      ...validReport,
+      agentsDispatched: 3,
+      agentsCompleted: 1,
+    });
+    expect(result.agentsCompleted).toBe(1);
   });
 });
 
