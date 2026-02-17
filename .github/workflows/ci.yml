@@ -43,6 +43,9 @@ jobs:
             exit 1
           }
 
+      - name: Format check
+        run: npm run format:check
+
       - name: Type check
         run: npx tsc --noEmit
 

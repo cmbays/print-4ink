@@ -1,0 +1,15 @@
+# Build outputs
+.next/
+knowledge-base/dist/
+knowledge-base/.pagefind/
+
+# Dependencies
+node_modules/
+knowledge-base/node_modules/
+
+# Static assets
+public/
+
+# Auto-generated
+for_human/index.html
+for_human/README.md
