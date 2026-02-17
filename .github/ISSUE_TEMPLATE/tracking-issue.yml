@@ -35,29 +35,26 @@ body:
     attributes:
       label: Product / Domain / Tool
       description: Which product, domain, or tool does this relate to?
+      # Sync with config/products.json + config/tools.json
       options:
-        # Products
-        - "Product: Dashboard"
-        - "Product: Quotes"
-        - "Product: Customers"
-        - "Product: Invoices"
-        - "Product: Jobs"
-        # Domains
-        - "Domain: Garments"
-        - "Domain: Screens"
-        - "Domain: Pricing"
-        - "Domain: Colors"
-        - "Domain: Direct-to-Film"
-        - "Domain: Screen Printing"
-        - "Domain: Mobile"
-        # Tools
-        - "Tool: Work Orchestrator"
-        - "Tool: Skills Framework"
-        - "Tool: Agent System"
-        - "Tool: Knowledge Base"
-        - "Tool: CI Pipeline"
-        - "Tool: PM System"
-    validations:
+        - Product: Dashboard
+        - Product: Quotes
+        - Product: Customers
+        - Product: Invoices
+        - Product: Jobs
+        - Domain: Garments
+        - Domain: Screens
+        - Domain: Pricing
+        - Domain: Colors
+        - Domain: Direct-to-Film
+        - Domain: Screen Printing
+        - Domain: Mobile
+        - Tool: Work Orchestrator
+        - Tool: Skills Framework
+        - Tool: Agent System
+        - Tool: Knowledge Base
+        - Tool: CI Pipeline
+        - Tool: PM System
       required: true
 
   - type: textarea

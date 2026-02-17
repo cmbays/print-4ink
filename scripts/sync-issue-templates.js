@@ -2,9 +2,10 @@
 /**
  * sync-issue-templates.js
  *
- * Generates the Product/Tool dropdown options from config/products.json and
- * config/tools.json, then rewrites the `options:` block in all 4 GitHub issue
- * templates that carry the marker comment:
+ * Generates the Product / Domain / Tool dropdown options from
+ * config/products.json, config/domains.json, and config/tools.json, then
+ * rewrites the `options:` block in all 4 GitHub issue templates that carry
+ * the marker comment:
  *
  *   # Sync with config/products.json + config/tools.json
  *
@@ -39,19 +40,36 @@ function readConfig(relPath) {
 }
 
 const products = readConfig('config/products.json');
+const domains = readConfig('config/domains.json');
 const tools = readConfig('config/tools.json');
 
-// Products first, then tools — preserves the existing ordering convention.
-// Filter out entries with missing/empty labels and warn so the error is visible.
-const labels = [];
-for (const entry of [...products, ...tools]) {
+// Build label list: Products (excluding domain slugs) → Domains → Tools.
+// products.json still contains some domain-only slugs (garments, screens,
+// pricing) that will be removed in issue #321. Skip them here to avoid
+// duplication with the domains list.
+const domainSlugs = new Set(domains.map((d) => d.slug));
+
+function validateEntry(entry, relPath) {
   if (!entry.label || typeof entry.label !== 'string') {
     console.error(
-      `ERROR: Config entry is missing a valid "label" field: ${JSON.stringify(entry)}`
+      `ERROR: Config entry is missing a valid "label" field in ${relPath}: ${JSON.stringify(entry)}`
     );
     process.exit(1);
   }
-  labels.push(entry.label);
+}
+
+const labels = [];
+for (const entry of products) {
+  validateEntry(entry, 'config/products.json');
+  if (!domainSlugs.has(entry.slug)) labels.push(`Product: ${entry.label}`);
+}
+for (const entry of domains) {
+  validateEntry(entry, 'config/domains.json');
+  labels.push(`Domain: ${entry.label}`);
+}
+for (const entry of tools) {
+  validateEntry(entry, 'config/tools.json');
+  labels.push(`Tool: ${entry.label}`);
 }
 
 if (labels.length === 0) {
