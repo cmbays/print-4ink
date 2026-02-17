@@ -51,6 +51,27 @@ import type { Lane, Job } from "@/lib/schemas/job";
 import type { ScratchNote } from "@/lib/schemas/scratch-note";
 
 // ---------------------------------------------------------------------------
+// Drag overlay wrapper — module-scoped to keep stable reference across renders
+// ---------------------------------------------------------------------------
+
+function DragOverlayWrapper({
+  children,
+  prefersReducedMotion,
+}: {
+  children: React.ReactNode;
+  prefersReducedMotion: boolean | null;
+}) {
+  return (
+    <div
+      className="w-50 scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200"
+      style={prefersReducedMotion ? undefined : { transitionTimingFunction: "var(--transition-timing-spring)" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
@@ -380,26 +401,15 @@ function ProductionBoardInner({ initialJobs, initialQuoteCards, initialScratchNo
   // Drag overlay renderer
   // ===========================================================================
 
-  function DragOverlayWrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <div
-        className="w-50 scale-[1.03] rotate-2 opacity-90 shadow-xl transition-transform duration-200"
-        style={prefersReducedMotion ? undefined : { transitionTimingFunction: "var(--transition-timing-spring)" }}
-      >
-        {children}
-      </div>
-    );
-  }
-
   function renderDragOverlay() {
     if (!activeCard) return null;
     switch (activeCard.type) {
       case "job":
-        return <DragOverlayWrapper><JobBoardCard card={activeCard} /></DragOverlayWrapper>;
+        return <DragOverlayWrapper prefersReducedMotion={prefersReducedMotion}><JobBoardCard card={activeCard} /></DragOverlayWrapper>;
       case "quote":
-        return <DragOverlayWrapper><QuoteBoardCard card={activeCard} /></DragOverlayWrapper>;
+        return <DragOverlayWrapper prefersReducedMotion={prefersReducedMotion}><QuoteBoardCard card={activeCard} /></DragOverlayWrapper>;
       case "scratch_note":
-        return <DragOverlayWrapper><ScratchNoteCard card={activeCard} /></DragOverlayWrapper>;
+        return <DragOverlayWrapper prefersReducedMotion={prefersReducedMotion}><ScratchNoteCard card={activeCard} /></DragOverlayWrapper>;
     }
   }
 

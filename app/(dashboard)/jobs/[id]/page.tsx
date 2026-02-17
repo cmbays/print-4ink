@@ -11,7 +11,6 @@ import { getArtworks } from "@/lib/dal/artworks";
 import { normalizePosition } from "@/lib/constants/print-zones";
 import { JobDetail } from "./_components/JobDetail";
 import type { ArtworkPlacement } from "@/components/features/mockup";
-import type { InvoiceStatus } from "@/lib/schemas/invoice";
 
 export default async function JobDetailPage({
   params,
@@ -59,7 +58,7 @@ export default async function JobDetailPage({
 
   const customerName = customer?.company ?? customer?.name ?? "Unknown";
   const quoteTotal = quote?.total;
-  const invoiceStatus = invoice?.status as InvoiceStatus | undefined;
+  const invoiceStatus = invoice?.status;
 
   const mockupData =
     garment && color
@@ -78,7 +77,7 @@ export default async function JobDetailPage({
                 position: normalizePosition(loc.position),
               };
             })
-            .filter((p) => p.artworkUrl) as ArtworkPlacement[],
+            .filter((p): p is ArtworkPlacement => Boolean(p.artworkUrl)),
           colors: [color.hex],
         }
       : null;
