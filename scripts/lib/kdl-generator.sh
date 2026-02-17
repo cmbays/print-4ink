@@ -59,6 +59,52 @@ LAUNCHER
 KDL_TAB
 }
 
+# ── Layout Launch ──────────────────────────────────────────────────────────
+# Launch a pre-built KDL layout file via Zellij using a 3-path dispatch:
+#   Inside Zellij ($ZELLIJ set): opens a new tab, delayed cleanup
+#   Outside + --no-launch:       prints attach command (temp file persists)
+#   Outside (default):           auto-launches blocking session, cleanup after
+#
+# Usage: _kdl_launch_layout <layout_file> <session_name> [--no-launch]
+#   layout_file:  path to a KDL layout file (caller creates with mktemp + chmod 600)
+#   session_name: used as Zellij tab name (inside) or session name (outside)
+#   --no-launch:  opt out of auto-launch; print attach command instead
+_kdl_launch_layout() {
+    local layout_file="$1"
+    local session_name="$2"
+    local no_launch=""
+
+    if [[ "${3:-}" == "--no-launch" ]]; then
+        no_launch="1"
+    fi
+
+    if [[ -n "${ZELLIJ:-}" ]]; then
+        # Inside Zellij: add tab to current session
+        zellij action new-tab --layout "$layout_file" --name "$session_name"
+        echo "  Zellij:    tab '$session_name' opened"
+
+        # Clean up temp file after Zellij reads it
+        (sleep 5 && rm -f "$layout_file" 2>/dev/null) &
+        disown
+    elif [[ -n "$no_launch" ]]; then
+        # No-launch mode: print attach command
+        echo ""
+        echo "  Zellij session ready. Attach with:"
+        echo "    zellij --new-session-with-layout \"$layout_file\" --session \"$session_name\""
+        echo ""
+        echo "  (layout file is temporary — attach before next reboot)"
+    else
+        # Outside Zellij: auto-launch session (blocking)
+        echo "  Launching Zellij session '$session_name'..."
+        echo ""
+
+        zellij --new-session-with-layout "$layout_file" --session "$session_name"
+
+        # Cleanup after Zellij session ends
+        rm -f "$layout_file" 2>/dev/null
+    fi
+}
+
 # ── Layout Generation ─────────────────────────────────────────────────────
 # Generate a Zellij KDL layout for a wave from a YAML manifest.
 # Usage: _kdl_generate_wave <manifest_file> <wave_index> <output_file>
