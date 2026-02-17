@@ -45,7 +45,7 @@ import {
   FormMessage,
 } from "@shared/ui/primitives/form";
 import { Plus, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // Import mock data for dropdowns
 // import { customers } from "@/lib/mock-data";

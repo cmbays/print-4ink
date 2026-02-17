@@ -34,7 +34,7 @@ import {
 // import { EmptyState } from "@/components/features/empty-state";
 // import { DataTable } from "@/components/features/data-table";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // Import mock data + constants for this domain
 // import { jobs } from "@/lib/mock-data";

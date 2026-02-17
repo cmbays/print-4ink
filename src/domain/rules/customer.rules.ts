@@ -50,7 +50,7 @@ export function resolveEffectiveFavorites(
 
     default: {
       const _exhaustive: never = entityType;
-      return _exhaustive;
+      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`);
     }
   }
 }
@@ -107,7 +107,7 @@ export function getInheritanceChain(
 
     default: {
       const _exhaustive: never = entityType;
-      return _exhaustive;
+      throw new Error(`[customer.rules] Unhandled entityType: ${String(_exhaustive)}`);
     }
   }
 }
@@ -270,6 +270,7 @@ export function removeFromAll(
 
   if (level === "brand") {
     // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
+    console.warn("[customer.rules] removeFromAll: brand-level cascade is a Phase 1 stub (no-op) — implement in V5");
   }
 }
 
@@ -329,6 +330,7 @@ export function removeFromSelected(
 
   if (level === "brand") {
     // PHASE 1 STUB: Brand→customer cascade requires customer-brand link (V5)
+    console.warn("[customer.rules] removeFromSelected: brand-level cascade is a Phase 1 stub (no-op) — implement in V5");
   }
 }
 

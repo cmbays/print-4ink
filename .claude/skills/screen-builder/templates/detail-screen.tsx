@@ -28,7 +28,7 @@ import {
 // import { StatusBadge } from "@/components/features/status-badge";
 // import { PriorityBadge } from "@/components/features/priority-badge";
 import { ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/cn";
 
 // Import mock data + constants
 // import { jobs, customers } from "@/lib/mock-data";
