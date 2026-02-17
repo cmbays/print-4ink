@@ -207,7 +207,7 @@ export function InvoiceForm({ mode, initialData, customers, sourceQuote, initial
         });
       }
     },
-    [createdAt, errors.customerId]
+    [customers, createdAt, errors.customerId]
   );
 
   function validate(): boolean {
