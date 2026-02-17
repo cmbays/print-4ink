@@ -55,6 +55,13 @@ const eslintConfig = defineConfig([
       "no-restricted-imports": "off",
     },
   },
+  // MockAdapter is the supplier-layer equivalent of dal/_providers/mock — allowed to read mock-data directly
+  {
+    files: ["lib/suppliers/adapters/mock.ts"],
+    rules: {
+      "no-restricted-syntax": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
