@@ -9,4 +9,4 @@ export {
   getBrandPreferencesMutable,
   getAutoPropagationConfigMutable,
   getDtfSheetTiersSync,
-} from './_providers/mock/settings';
+} from '@infra/repositories/_providers/mock/settings';

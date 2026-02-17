@@ -3,4 +3,4 @@
 export {
   getQuotes,
   getQuoteById,
-} from './_providers/mock/quotes';
+} from '@infra/repositories/_providers/mock/quotes';

@@ -9,4 +9,4 @@ export {
   getJobNotes,
   getQuoteCards,
   getScratchNotes,
-} from './_providers/mock/jobs';
+} from '@infra/repositories/_providers/mock/jobs';

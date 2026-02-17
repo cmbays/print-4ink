@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { getProviderName } from '../_providers';
+import { getProviderName } from '@infra/repositories/_providers';
 import { DalError } from '@infra/repositories/_shared/errors';
 
 describe('getProviderName()', () => {
