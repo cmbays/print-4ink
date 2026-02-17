@@ -29,3 +29,18 @@ export async function getAutoPropagationConfig(): Promise<PropagationConfig> {
 export async function getDtfSheetTiers(): Promise<DTFSheetTier[]> {
   return dtfSheetTiers.map((t) => structuredClone(t));
 }
+
+/** Phase 1 only: returns the raw mutable brandPreferences array for in-place mock data mutations. */
+export function getBrandPreferencesMutable(): BrandPreference[] {
+  return brandPreferences;
+}
+
+/** Phase 1 only: returns the raw mutable autoPropagationConfig object for in-place mock data mutations. */
+export function getAutoPropagationConfigMutable(): PropagationConfig {
+  return autoPropagationConfig;
+}
+
+/** Synchronous copy of dtfSheetTiers for use in client components. */
+export function getDtfSheetTiersSync(): DTFSheetTier[] {
+  return dtfSheetTiers.map((t) => ({ ...t }));
+}
