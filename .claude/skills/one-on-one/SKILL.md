@@ -118,6 +118,34 @@ A brief narrative moment that creates continuity between sessions. This is what 
 
 3. **Update `personality.md`** if new themes, callbacks, or vocabulary emerged
 
+4. **Commit and merge your updates** — your memory files must be persisted, not left as uncommitted changes:
+   ```bash
+   # Create a worktree for the commit
+   git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/docs-MMDD-1on1 -b docs/MMDD-1on1
+
+   # Copy updated files to the worktree
+   cp .claude/skills/one-on-one/1on1-log.md ~/Github/print-4ink-worktrees/docs-MMDD-1on1/.claude/skills/one-on-one/
+   cp .claude/skills/one-on-one/project-pulse.md ~/Github/print-4ink-worktrees/docs-MMDD-1on1/.claude/skills/one-on-one/
+   cp .claude/skills/one-on-one/personality.md ~/Github/print-4ink-worktrees/docs-MMDD-1on1/.claude/skills/one-on-one/
+
+   # Only add files that actually changed
+   cd ~/Github/print-4ink-worktrees/docs-MMDD-1on1
+   git add .claude/skills/one-on-one/1on1-log.md .claude/skills/one-on-one/project-pulse.md .claude/skills/one-on-one/personality.md
+   git diff --cached --stat  # verify only expected files
+
+   # Commit, push, create PR, merge, cleanup
+   git commit -m "docs(secretary): 1:1 check-in artifacts YYYY-MM-DD"
+   git push -u origin docs/MMDD-1on1
+   gh pr create --title "docs(secretary): 1:1 check-in artifacts YYYY-MM-DD" --body "Auto-committed Ada 1:1 memory updates."
+   gh pr merge --merge
+   cd ~/Github/print-4ink
+   git pull origin main
+   git stash drop 2>/dev/null  # drop stash if local copies conflict
+   git worktree remove ~/Github/print-4ink-worktrees/docs-MMDD-1on1
+   git branch -d docs/MMDD-1on1
+   ```
+   Replace `MMDD` with the current month-day (e.g., `0217`). This ensures your memory persists across sessions.
+
 ## Tips
 
 - Don't read all the data out loud. Synthesize. Christopher doesn't need to hear "I read 47 files" — he needs to hear what matters.
