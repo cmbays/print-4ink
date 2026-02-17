@@ -6,14 +6,14 @@ import {
   compositionPolicySchema,
   agentRegistryEntrySchema,
   domainMappingSchema,
-} from '../review-config'
+} from '@domain/entities/review-config'
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function loadJson<T>(filename: string): T {
-  const filePath = resolve(__dirname, '../../../../config', filename)
+  const filePath = resolve(__dirname, '../../config', filename)
   return JSON.parse(readFileSync(filePath, 'utf8')) as T
 }
 
