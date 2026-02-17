@@ -218,6 +218,9 @@ Sheet and Dialog components from shadcn/ui use z-50 with a backdrop overlay that
 4. **Separation of concerns**: Keep logic (hooks) separate from presentation (Tailwind classes).
 5. **URL state**: Filters, search, pagination live in URL query params.
 6. **Breadcrumb navigation**: Deep views use breadcrumbs (Home > Jobs > #1024 > Mockups).
+7. **DAL imports**: Import from `@/lib/dal/{domain}`, never from `mock-data.ts` or `db/` directly.
+8. **No raw SQL injection**: Never use `sql.raw()` with user input.
+9. **DAL ID validation**: DAL functions validate ID inputs with Zod.
 
 ## Quality Checklist
 
