@@ -3,5 +3,7 @@
   { "slug": "quotes", "label": "Quotes", "description": "Quote creation and pricing calculator for customer orders", "route": "/quotes", "icon": "Calculator" },
   { "slug": "customers", "label": "Customers", "description": "Customer contact management and order history", "route": "/customers", "icon": "Users" },
   { "slug": "invoices", "label": "Invoices", "description": "Invoice generation, payment tracking, and accounts receivable", "route": "/invoices", "icon": "FileText" },
-  { "slug": "jobs", "label": "Jobs", "description": "Production job tracking from design through shipping", "route": "/jobs", "icon": "ClipboardList" }
+  { "slug": "jobs", "label": "Jobs", "description": "Production job tracking from design through shipping", "route": "/jobs", "icon": "ClipboardList" },
+  { "slug": "garments", "label": "Garments", "description": "Garment catalog — SKU selection, style/brand/color browsing, and size-run management", "route": "/garments", "icon": "Shirt" },
+  { "slug": "screens", "label": "Screens", "description": "Screen room inventory — mesh count, emulsion type, and burn status tracking", "route": "/screens", "icon": "Layers" }
 ]
