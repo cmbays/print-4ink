@@ -13,6 +13,9 @@ type GarmentMockupModalProps = {
   artworkPlacements?: ArtworkPlacement[]
   children: React.ReactNode
   defaultView?: MockupView
+  /** Pin to a single view and hide the front/back toggle. Use when the placement
+   *  position unambiguously belongs to one side (e.g. front-chest → 'front'). */
+  lockedView?: MockupView
 }
 
 const VIEWS: MockupView[] = ['front', 'back']
@@ -33,9 +36,10 @@ export function GarmentMockupModal({
   artworkPlacements = [],
   children,
   defaultView = 'front',
+  lockedView,
 }: GarmentMockupModalProps) {
   const [open, setOpen] = useState(false)
-  const [view, setView] = useState<MockupView>(defaultView)
+  const [view, setView] = useState<MockupView>(lockedView ?? defaultView)
 
   return (
     <>
@@ -60,25 +64,27 @@ export function GarmentMockupModal({
           <DialogContent className="max-w-2xl flex flex-col items-center gap-4 p-6">
             <DialogTitle className="sr-only">Garment Mockup</DialogTitle>
 
-            {/* Front/Back view toggle */}
-            <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-0.5">
-              {VIEWS.map((v) => (
-                <Button
-                  key={v}
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setView(v)}
-                  className={
-                    v === view
-                      ? 'bg-elevated text-foreground h-7 px-3 text-xs'
-                      : 'text-muted-foreground hover:text-foreground h-7 px-3 text-xs'
-                  }
-                >
-                  {VIEW_LABELS[v]}
-                </Button>
-              ))}
-            </div>
+            {/* Only show toggle when view is not locked to a specific side */}
+            {!lockedView && (
+              <div className="flex items-center gap-1 rounded-md border border-border bg-surface p-0.5">
+                {VIEWS.map((v) => (
+                  <Button
+                    key={v}
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setView(v)}
+                    className={
+                      v === view
+                        ? 'bg-elevated text-foreground h-7 px-3 text-xs'
+                        : 'text-muted-foreground hover:text-foreground h-7 px-3 text-xs'
+                    }
+                  >
+                    {VIEW_LABELS[v]}
+                  </Button>
+                ))}
+              </div>
+            )}
 
             <GarmentMockup
               garmentCategory={garmentCategory}

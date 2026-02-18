@@ -13,6 +13,16 @@ import {
   GarmentMockupCard,
 } from '@features/quotes/components/mockup'
 import { normalizePosition } from '@domain/constants/print-zones'
+import type { MockupView } from '@domain/entities/mockup-template'
+
+/** Maps a normalised print position to the mockup view it belongs to.
+ *  Returns undefined for ambiguous positions (sleeve, pocket) so the modal
+ *  keeps its front/back toggle. */
+function positionToLockedView(position: string): MockupView | undefined {
+  if (position.startsWith('front-')) return 'front'
+  if (position.startsWith('back-')) return 'back'
+  return undefined
+}
 import { Button } from '@shared/ui/primitives/button'
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
@@ -292,6 +302,7 @@ export function QuoteDetailView({
                                 ]
                               : []
                           }
+                          lockedView={positionToLockedView(normalizePosition(detail.location))}
                         >
                           <GarmentMockupThumbnail
                             garmentCategory={garment?.baseCategory ?? 't-shirts'}
