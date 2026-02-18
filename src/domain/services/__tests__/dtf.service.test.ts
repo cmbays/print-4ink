@@ -20,6 +20,7 @@ describe('shelfPack', () => {
       width: 4,
       height: 4,
       label: 'Logo',
+      shape: 'box',
     })
     // usedHeight = top margin (1) + design height (4) + bottom margin (1) = 6
     expect(result[0].usedHeight).toBe(6)
@@ -198,6 +199,24 @@ describe('shelfPack', () => {
     expect(() =>
       shelfPack([{ id: 'd1', width: 4, height: 59, quantity: 1, label: 'Too Tall' }])
     ).toThrow(/exceeds max sheet height/)
+  })
+
+  it('propagates shape through packed designs', () => {
+    const result = shelfPack([
+      { id: 'd1', width: 4, height: 4, quantity: 1, label: 'Box Logo', shape: 'box' },
+      { id: 'd2', width: 4, height: 4, quantity: 1, label: 'Round Logo', shape: 'round' },
+    ])
+
+    const allDesigns = result.flatMap((s) => s.designs)
+    const box = allDesigns.find((d) => d.label === 'Box Logo')
+    const round = allDesigns.find((d) => d.label === 'Round Logo')
+    expect(box?.shape).toBe('box')
+    expect(round?.shape).toBe('round')
+  })
+
+  it('defaults shape to box when omitted from input', () => {
+    const result = shelfPack([{ id: 'd1', width: 4, height: 4, quantity: 1, label: 'Logo' }])
+    expect(result[0].designs[0].shape).toBe('box')
   })
 
   it('handles multiple design types mixed together', () => {

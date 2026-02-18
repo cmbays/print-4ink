@@ -188,6 +188,7 @@
   /* Gang Sheet Canvas — semantic SVG tokens */
   --canvas-border: rgba(255, 255, 255, 0.12);
   --canvas-margin-zone: rgba(255, 255, 255, 0.03);
+  --canvas-safe-zone: rgba(255, 198, 99, 0.55);
   --canvas-label: rgba(255, 255, 255, 0.87);
   --canvas-dim-label: rgba(255, 255, 255, 0.6);
   --canvas-spacing-line: rgba(255, 255, 255, 0.25);

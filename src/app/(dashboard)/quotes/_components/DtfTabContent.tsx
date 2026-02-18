@@ -48,6 +48,7 @@ export function DtfTabContent({
       {
         id: crypto.randomUUID(),
         artworkName: '',
+        shape: 'box' as const,
         width: DEFAULT_PRESET.width,
         height: DEFAULT_PRESET.height,
         quantity: 1,

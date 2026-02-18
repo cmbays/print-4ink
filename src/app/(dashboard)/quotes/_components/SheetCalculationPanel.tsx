@@ -89,6 +89,7 @@ export function SheetCalculationPanel({
       height: item.height,
       quantity: item.quantity,
       label: item.artworkName,
+      shape: item.shape,
     }))
 
     if (designs.length === 0) return

@@ -23,6 +23,7 @@ export type PackedDesign = {
   width: number
   height: number
   label: string
+  shape: 'box' | 'round'
 }
 
 export type PackedSheet = {
@@ -36,6 +37,7 @@ export type DesignInput = {
   height: number
   quantity: number
   label: string
+  shape?: 'box' | 'round'
 }
 
 // ---------------------------------------------------------------------------
@@ -74,6 +76,7 @@ export function shelfPack(
     width: number
     height: number
     label: string
+    shape: 'box' | 'round'
   }> = []
 
   for (const design of designs) {
@@ -83,6 +86,7 @@ export function shelfPack(
         width: design.width,
         height: design.height,
         label: design.label,
+        shape: design.shape ?? 'box',
       })
     }
   }
@@ -158,6 +162,7 @@ export function shelfPack(
       width: item.width,
       height: item.height,
       label: item.label,
+      shape: item.shape,
     })
 
     // Advance horizontal cursor
