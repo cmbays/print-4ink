@@ -398,7 +398,7 @@ export function packDesigns(
   let curRightX = sheetWidth - margin // start from right safe zone boundary
 
   const sameRowRects: PackedDesign[] = []
-  const overflowRects: DesignInput[] = []
+  const overflowRects: PackedDesign[] = [] // preserve expanded IDs for direct repositioning
 
   for (const rect of expandedRects) {
     const rectX = curRightX - rect.width
@@ -407,15 +407,7 @@ export function packDesigns(
       sameRowRects.push({ ...rect, x: rectX, y: rowY + Math.max(0, D - rect.height) })
       curRightX = rectX - margin // move left for next rect
     } else {
-      // Convert back to DesignInput for maxrects packing
-      overflowRects.push({
-        id: rect.id.replace(/-\d+$/, ''), // strip suffix — maxRectsPack will re-expand
-        width: rect.width,
-        height: rect.height,
-        quantity: 1,
-        label: rect.label,
-        shape: rect.shape,
-      })
+      overflowRects.push(rect) // placeholder x,y — repositioned below
     }
   }
 
@@ -430,9 +422,51 @@ export function packDesigns(
     return mergedCircleSheets
   }
 
-  // MaxRects-pack the remaining rects that didn't fit in the circle row
-  const overflowSheets = maxRectsPack(overflowRects, sheetWidth, margin)
-  return [...mergedCircleSheets, ...overflowSheets]
+  // Pack overflow rects into the void space below circles on the same sheet.
+  // usedHeight already includes a 1" bottom margin from the circles, so voidTopY
+  // is margin-safe. Place designs starting here using a simple shelf algorithm.
+  const voidTopY = mergedLastSheet.usedHeight
+  const voidRects: PackedDesign[] = []
+  const trueOverflow: DesignInput[] = []
+
+  let voidCurX = margin
+  let voidShelfY = voidTopY
+  let voidTallest = 0
+
+  for (const rect of overflowRects) {
+    if (voidCurX > margin && voidCurX + rect.width + margin > sheetWidth) {
+      voidShelfY += voidTallest + margin
+      voidCurX = margin
+      voidTallest = 0
+    }
+    if (voidShelfY + rect.height + margin > DTF_MAX_SHEET_LENGTH) {
+      // Truly doesn't fit — spill to a new sheet
+      trueOverflow.push({
+        id: rect.id,
+        width: rect.width,
+        height: rect.height,
+        quantity: 1,
+        label: rect.label,
+        shape: rect.shape,
+      })
+      continue
+    }
+    voidRects.push({ ...rect, x: voidCurX, y: voidShelfY })
+    voidCurX += rect.width + margin
+    voidTallest = Math.max(voidTallest, rect.height)
+  }
+
+  const extendedLastSheet: PackedSheet = {
+    designs: [...mergedLastSheet.designs, ...voidRects],
+    usedHeight:
+      voidRects.length > 0 ? voidShelfY + voidTallest + margin : mergedLastSheet.usedHeight,
+  }
+  const extendedSheets = [...circleSheets.slice(0, -1), extendedLastSheet]
+
+  if (trueOverflow.length === 0) {
+    return extendedSheets
+  }
+  return [...extendedSheets, ...maxRectsPack(trueOverflow, sheetWidth, margin)]
 }
 
 // Module-level, unexported — used only by maxRectsPack.

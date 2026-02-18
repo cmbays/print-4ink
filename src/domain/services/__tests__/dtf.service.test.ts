@@ -413,23 +413,23 @@ describe('packDesigns', () => {
     expect(box!.x + box!.width).toBeCloseTo(21, 0)
   })
 
-  it('places overflow rects on a separate sheet when they dont fit in circle row gap', () => {
-    // Full circle row (4 circles fill row 0, leaving curX=21=rightBoundary) + 1 large box
-    // The 10" box cannot fit in the circle row gap → goes to an overflow sheet
+  it('places overflow rects in void space below circles on the same sheet', () => {
+    // 4 circles fill row 0, leaving no horizontal gap room for the 10" box.
+    // Box overflows gap-fit → placed in void below circles on the SAME sheet.
     const designs: DesignInput[] = [
       { id: 'c', width: 4, height: 4, quantity: 4, label: 'Circle', shape: 'round' },
       { id: 'b', width: 10, height: 4, quantity: 1, label: 'BigBox', shape: 'box' },
     ]
     const result = packDesigns(designs)
-    // All 5 designs placed
-    const all = result.flatMap((s) => s.designs)
+    // All 5 designs on one sheet
+    expect(result).toHaveLength(1)
+    const all = result[0].designs
     expect(all).toHaveLength(5)
-    // Box must land on a different sheet from the circles
-    const boxSheet = result.find((s) => s.designs.some((d) => d.label === 'BigBox'))
-    const circleSheet = result.find((s) => s.designs.some((d) => d.label === 'Circle'))
-    expect(boxSheet).toBeDefined()
-    expect(circleSheet).toBeDefined()
-    expect(boxSheet).not.toBe(circleSheet)
+    // BigBox is placed BELOW the circles (larger y value than any circle)
+    const box = all.find((d) => d.label === 'BigBox')
+    const circles = all.filter((d) => d.label === 'Circle')
+    expect(box).toBeDefined()
+    expect(box!.y).toBeGreaterThan(Math.max(...circles.map((c) => c.y)))
   })
 
   it('clean mode treats circles as bounding boxes and packs all shapes together', () => {
