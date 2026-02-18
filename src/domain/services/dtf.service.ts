@@ -342,9 +342,9 @@ export function packDesigns(
     return hexPackCircles(designs, sheetWidth, margin)
   }
 
-  // Pure rect job or non-uniform circles — use shelf packing
+  // Pure rect job or non-uniform circles — use maxrects packing
   if (!hasUniformCircles) {
-    return shelfPack(designs, sheetWidth, margin)
+    return maxRectsPack(designs, sheetWidth, margin)
   }
 
   // Mixed job: hex-pack circles, then fit rects into remaining space
@@ -371,8 +371,8 @@ export function packDesigns(
   // Find the rightmost design in the last row of circles (highest y = last row).
   const lastCircleDesigns = lastCircleSheet.designs
   if (lastCircleDesigns.length === 0) {
-    // Shouldn't happen, but fall back to shelf for rects
-    return [...circleSheets, ...shelfPack(rectDesigns, sheetWidth, margin)]
+    // Shouldn't happen, but fall back to maxrects for rects
+    return [...circleSheets, ...maxRectsPack(rectDesigns, sheetWidth, margin)]
   }
 
   const maxCircleY = Math.max(...lastCircleDesigns.map((d) => d.y))
@@ -419,8 +419,8 @@ export function packDesigns(
     return mergedCircleSheets
   }
 
-  // Shelf-pack the remaining rects that didn't fit in the circle row
-  const overflowSheets = shelfPack(overflowRects, sheetWidth, margin)
+  // MaxRects-pack the remaining rects that didn't fit in the circle row
+  const overflowSheets = maxRectsPack(overflowRects, sheetWidth, margin)
   return [...mergedCircleSheets, ...overflowSheets]
 }
 
