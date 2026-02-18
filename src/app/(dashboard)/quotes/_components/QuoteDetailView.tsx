@@ -307,6 +307,9 @@ export function QuoteDetailView({
                           <GarmentMockupThumbnail
                             garmentCategory={garment?.baseCategory ?? 't-shirts'}
                             colorHex={color.hex}
+                            view={
+                              positionToLockedView(normalizePosition(detail.location)) ?? 'front'
+                            }
                             artworkPlacements={
                               artwork
                                 ? [
