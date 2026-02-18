@@ -124,6 +124,7 @@ Once the PR is merged, close out the pipeline's working artifacts:
     - Domain or product decisions → synthesize into the appropriate living doc
 
 22. **Delete workspace** — Once the KB pipeline doc is written and committed, delete the pipeline's workspace dir:
+
     ```bash
     rm -rf docs/workspace/{pipeline-id}/
     git add -A && git commit -m "chore: wrap-up {pipeline-id} — delete workspace after KB deposit"

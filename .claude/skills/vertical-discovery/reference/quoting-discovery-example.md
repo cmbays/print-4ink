@@ -77,7 +77,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 
 ## Step 4: Competitive Analysis Document
 
-**Output**: `docs/workspace/legacy-phase1/competitive-analysis/print-life-quoting-analysis.md` *(Phase 1 legacy — new work uses `docs/workspace/{pipeline-id}/`)*
+**Output**: `docs/workspace/legacy-phase1/competitive-analysis/print-life-quoting-analysis.md` _(Phase 1 legacy — new work uses `docs/workspace/{pipeline-id}/`)_
 
 **Sections written**:
 
@@ -94,7 +94,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 
 ## Step 5: Journey Map Document
 
-**Output**: `docs/workspace/legacy-phase1/competitive-analysis/print-life-journey-quoting.md` *(Phase 1 legacy)*
+**Output**: `docs/workspace/legacy-phase1/competitive-analysis/print-life-journey-quoting.md` _(Phase 1 legacy)_
 
 **Sections written**:
 
@@ -109,7 +109,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 
 ## Step 6: Improved Journey Design
 
-**Output**: `docs/workspace/legacy-phase1/strategy/screen-print-pro-journey-quoting.md` *(Phase 1 legacy)*
+**Output**: `docs/workspace/legacy-phase1/strategy/screen-print-pro-journey-quoting.md` _(Phase 1 legacy)_
 
 **Key design decisions**:
 
@@ -133,7 +133,7 @@ This documents how the vertical-discovery methodology was first applied to the *
 
 ## Step 7: Scope Definition Update + Docs
 
-**Updated**: `docs/workspace/legacy-phase1/strategy/quoting-scope-definition.md` *(Phase 1 legacy)*
+**Updated**: `docs/workspace/legacy-phase1/strategy/quoting-scope-definition.md` _(Phase 1 legacy)_
 
 - Added S&S Color Swatch as CORE component
 - Added price override, quote notes, Revised status
