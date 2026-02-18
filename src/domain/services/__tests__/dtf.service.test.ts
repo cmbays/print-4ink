@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { shelfPack, hexPackCircles } from '../dtf.service'
+import { shelfPack, hexPackCircles, packDesigns } from '../dtf.service'
 import { DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
 
 describe('shelfPack', () => {
@@ -339,5 +339,51 @@ describe('hexPackCircles', () => {
         { id: 'd1', width: 4, height: 4, quantity: 5001, label: 'C', shape: 'round' },
       ])
     ).toThrow(/exceeds maximum/)
+  })
+})
+
+describe('packDesigns', () => {
+  it('routes uniform circles to hex packing (lower usedHeight)', () => {
+    const circles = [
+      { id: 'd1', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
+    ]
+    const result = packDesigns(circles)
+    // Hex gives ~18.99" for 13 × 4" circles
+    expect(result[0].usedHeight).toBeCloseTo(18.99, 0)
+    // Must be less than shelf packing
+    const shelfResult = shelfPack(circles)
+    expect(result[0].usedHeight).toBeLessThan(shelfResult[0].usedHeight)
+  })
+
+  it('routes non-uniform circle sizes to non-hex path', () => {
+    // Two different diameters — NOT hex eligible
+    const nonUniform = [
+      { id: 'd1', width: 4, height: 4, quantity: 2, label: 'Small', shape: 'round' as const },
+      { id: 'd2', width: 6, height: 6, quantity: 2, label: 'Large', shape: 'round' as const },
+    ]
+    const result = packDesigns(nonUniform)
+    const total = result.flatMap((s) => s.designs).length
+    expect(total).toBe(4)
+  })
+
+  it('routes mixed box + round to non-hex path', () => {
+    const mixed = [
+      { id: 'd1', width: 4, height: 4, quantity: 2, label: 'Circle', shape: 'round' as const },
+      { id: 'd2', width: 5, height: 5, quantity: 1, label: 'Box', shape: 'box' as const },
+    ]
+    const result = packDesigns(mixed)
+    const total = result.flatMap((s) => s.designs).length
+    expect(total).toBe(3)
+  })
+
+  it('routes box-only jobs to non-hex path', () => {
+    const boxes = [{ id: 'd1', width: 10, height: 12, quantity: 3, label: 'Box' }]
+    const result = packDesigns(boxes)
+    const total = result.flatMap((s) => s.designs).length
+    expect(total).toBe(3)
+  })
+
+  it('handles empty input', () => {
+    expect(packDesigns([])).toEqual([])
   })
 })

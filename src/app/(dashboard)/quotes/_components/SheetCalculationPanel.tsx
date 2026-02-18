@@ -7,7 +7,7 @@ import { cn } from '@shared/lib/cn'
 import { Button } from '@shared/ui/primitives/button'
 import { Badge } from '@shared/ui/primitives/badge'
 import { WithTooltip } from '@shared/ui/primitives/with-tooltip'
-import { shelfPack } from '@domain/services/dtf.service'
+import { packDesigns } from '@domain/services/dtf.service'
 import { optimizeCost } from '@domain/rules/dtf.rules'
 import { isValidDtfLineItem } from '@domain/rules/dtf.rules'
 import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from '@domain/rules/dtf.rules'
@@ -95,7 +95,7 @@ export function SheetCalculationPanel({
     if (designs.length === 0) return
 
     try {
-      const packedSheets = shelfPack(designs, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN)
+      const packedSheets = packDesigns(designs, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN)
       const result = optimizeCost(packedSheets, tiers, splitMode)
 
       setSheetCalculation(result)

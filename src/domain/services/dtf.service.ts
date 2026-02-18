@@ -311,3 +311,30 @@ export function hexPackCircles(
   finalizeSheet()
   return sheets
 }
+
+/**
+ * Smart dispatcher for gang sheet packing.
+ *
+ * Routes uniform-circle jobs to hexPackCircles() for ~10% better utilization.
+ * All other jobs (mixed shapes, non-uniform circles, rectangles) use shelfPack().
+ *
+ * This is the preferred entry point for all callers in Phase 1.
+ * In Phase 2 the fallback will switch from shelfPack to maxRectsPack.
+ */
+export function packDesigns(
+  designs: DesignInput[],
+  sheetWidth: number = DTF_SHEET_WIDTH,
+  margin: number = DTF_DEFAULT_MARGIN
+): PackedSheet[] {
+  if (designs.length === 0) return []
+
+  const allRound = designs.every((d) => d.shape === 'round')
+  const diameters = new Set(designs.map((d) => d.width))
+  const allSameDiameter = diameters.size === 1 && designs.every((d) => d.width === d.height)
+
+  if (allRound && allSameDiameter) {
+    return hexPackCircles(designs, sheetWidth, margin)
+  }
+
+  return shelfPack(designs, sheetWidth, margin)
+}
