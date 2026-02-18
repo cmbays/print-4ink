@@ -57,3 +57,18 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Coverage
+        run: npm run test:coverage
+
+      - name: Install Playwright browsers
+        if: hashFiles('tests/e2e/**') != ''
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests (non-blocking)
+        if: hashFiles('tests/e2e/**') != ''
+        continue-on-error: true
+        run: |
+          npx next start &
+          npx wait-on http://localhost:3000 --timeout 30000
+          npm run test:e2e
