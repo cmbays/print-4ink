@@ -4,6 +4,7 @@ import path from 'path'
 export default defineConfig({
   test: {
     globals: true,
+    exclude: ['node_modules/**', 'tests/**'], // keep Playwright E2E out of Vitest
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
@@ -25,7 +26,6 @@ export default defineConfig({
         'src/**/__tests__/**',
         '**/*.config.*',
         'src/**/*.d.ts',
-        'lib/**',
         'knowledge-base/**',
       ],
     },
