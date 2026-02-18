@@ -124,8 +124,7 @@ const eslintConfig = defineConfig([
             {
               target: './src/domain',
               from: './src/shared',
-              message:
-                'src/domain/ cannot import from src/shared/ — domain is the innermost ring.',
+              message: 'src/domain/ cannot import from src/shared/ — domain is the innermost ring.',
             },
           ],
         },
