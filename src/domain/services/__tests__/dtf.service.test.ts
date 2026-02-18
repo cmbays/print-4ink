@@ -390,8 +390,8 @@ describe('packDesigns', () => {
 
   it('keeps mixed jobs on same sheet when rect fits in circle row gap', () => {
     // 3 circles on 22" sheet: row 0 fits all 3 (centers at x=3,8,13 → bbox x=1,6,11)
-    // After row 0, curX = 11 + 4 + 1 = 16, rightBoundary = 21 → 5" available
-    // A 4" box fits at x=16 (4 ≤ 21-16=5) and height 4 ≤ D(4) → same row
+    // Right-to-left placement: curRightX = 22 - 1 = 21, rectX = 21 - 4 = 17
+    // minCircleGapBoundary = 11 + 4 + 1 = 16, 17 >= 16 → fits, height 4 <= D(4) → same row
     const designs: DesignInput[] = [
       { id: 'c', width: 4, height: 4, quantity: 3, label: 'Circle', shape: 'round' },
       { id: 'b', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' },
@@ -406,6 +406,11 @@ describe('packDesigns', () => {
     expect(box).toBeDefined()
     // Box y should equal the y of the last circle (same row top-left)
     expect(box!.y).toBeCloseTo(circles[circles.length - 1].y, 3)
+    // Box should be right-aligned to the safe zone boundary:
+    // x = sheetWidth - margin - box.width = 22 - 1 - 4 = 17"
+    expect(box!.x).toBeCloseTo(17, 0)
+    // Right edge should be at sheetWidth - margin = 21"
+    expect(box!.x + box!.width).toBeCloseTo(21, 0)
   })
 
   it('places overflow rects on a separate sheet when they dont fit in circle row gap', () => {

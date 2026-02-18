@@ -383,18 +383,21 @@ export function packDesigns(
   )
 
   const D = rightmostInLastRow.width
-  let curX = rightmostInLastRow.x + D + margin // start right of last circle
+  // Right-to-left placement: rects sit against the right safe zone boundary,
+  // maintaining at least `margin` gap from the last circle surface.
+  const minCircleGapBoundary = rightmostInLastRow.x + D + margin // leftmost x rects may occupy
   const rowY = rightmostInLastRow.y // same row top-left y as last circle row
-  const rightBoundary = sheetWidth - margin
+  let curRightX = sheetWidth - margin // start from right safe zone boundary
 
   const sameRowRects: PackedDesign[] = []
   const overflowRects: DesignInput[] = []
 
   for (const rect of expandedRects) {
-    // Rect fits in same row: horizontally AND vertically (height ≤ D so it doesn't extend below circles)
-    if (curX + rect.width <= rightBoundary && rect.height <= D) {
-      sameRowRects.push({ ...rect, x: curX, y: rowY })
-      curX += rect.width + margin
+    const rectX = curRightX - rect.width
+    // Rect fits: starts at or after circle gap boundary AND height fits within circle row
+    if (rectX >= minCircleGapBoundary && rect.height <= D) {
+      sameRowRects.push({ ...rect, x: rectX, y: rowY })
+      curRightX = rectX - margin // move left for next rect
     } else {
       // Convert back to DesignInput for maxrects packing
       overflowRects.push({
