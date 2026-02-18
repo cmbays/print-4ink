@@ -1,6 +1,7 @@
 import { DalError } from '@infra/repositories/_shared/errors'
 import { InMemoryCacheStore } from './cache/in-memory'
 import { MockAdapter } from './adapters/mock'
+import { SSActivewearAdapter } from './adapters/ss-activewear'
 import { supplierNameSchema } from './types'
 import type { SupplierAdapter, SupplierName } from './types'
 
@@ -24,6 +25,12 @@ export function getSupplierAdapter(): SupplierAdapter {
 
   if (name === 'mock') {
     _adapter = new MockAdapter(cache)
+    return _adapter
+  }
+
+  if (name === 'ss-activewear') {
+    const fallback = new MockAdapter(cache)
+    _adapter = new SSActivewearAdapter(cache, fallback)
     return _adapter
   }
 

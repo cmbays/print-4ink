@@ -44,8 +44,9 @@ describe('getSupplierAdapter()', () => {
     expect(a).not.toBe(b)
   })
 
-  it('throws for ss-activewear (not yet implemented)', () => {
+  it('returns SSActivewearAdapter when SUPPLIER_ADAPTER=ss-activewear', () => {
     process.env.SUPPLIER_ADAPTER = 'ss-activewear'
-    expect(() => getSupplierAdapter()).toThrow('not yet implemented')
+    const adapter = getSupplierAdapter()
+    expect(adapter.supplierName).toBe('ss-activewear')
   })
 })
