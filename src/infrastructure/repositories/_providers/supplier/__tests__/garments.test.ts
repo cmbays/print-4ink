@@ -6,12 +6,16 @@ import {
   getGarmentById,
   getAvailableBrands,
 } from '../garments'
-import type { CanonicalStyle } from '@lib/suppliers/types'
+import type { CanonicalStyle, SupplierAdapter } from '@lib/suppliers/types'
 
 // ─── Mock registry ────────────────────────────────────────────────────────────
 
 vi.mock('@lib/suppliers/registry', () => ({
   getSupplierAdapter: vi.fn(),
+}))
+
+vi.mock('@shared/lib/logger', () => ({
+  logger: { child: vi.fn().mockReturnValue({ warn: vi.fn(), error: vi.fn() }) },
 }))
 
 import { getSupplierAdapter } from '@lib/suppliers/registry'
@@ -86,43 +90,54 @@ describe('canonicalStyleToGarmentCatalog', () => {
     const style = makeStyle()
     const result = canonicalStyleToGarmentCatalog(style)
 
-    expect(result.id).toBe('3001')
-    expect(result.brand).toBe('Bella+Canvas')
-    expect(result.sku).toBe('BC3001')
-    expect(result.name).toBe('Unisex Jersey Tee')
-    expect(result.baseCategory).toBe('t-shirts')
-    expect(result.basePrice).toBe(4.5)
-    expect(result.availableColors).toEqual(['Black', 'White'])
-    expect(result.availableSizes).toEqual([
+    expect(result).not.toBeNull()
+    expect(result!.id).toBe('3001')
+    expect(result!.brand).toBe('Bella+Canvas')
+    expect(result!.sku).toBe('BC3001')
+    expect(result!.name).toBe('Unisex Jersey Tee')
+    expect(result!.baseCategory).toBe('t-shirts')
+    expect(result!.basePrice).toBe(4.5)
+    expect(result!.availableColors).toEqual(['Black', 'White'])
+    expect(result!.availableSizes).toEqual([
       { name: 'S', order: 0, priceAdjustment: 0 },
       { name: 'M', order: 1, priceAdjustment: 0 },
       { name: 'XL', order: 3, priceAdjustment: 2 },
     ])
-    expect(result.isEnabled).toBe(true)
-    expect(result.isFavorite).toBe(false)
+    expect(result!.isEnabled).toBe(true)
+    expect(result!.isFavorite).toBe(false)
   })
 
-  it('maps piecePrice null to basePrice 0', () => {
+  it('returns null when piecePrice is null (no pricing data)', () => {
     const style = makeStyle({ pricing: { piecePrice: null, dozenPrice: null, casePrice: null } })
-    expect(canonicalStyleToGarmentCatalog(style).basePrice).toBe(0)
+    expect(canonicalStyleToGarmentCatalog(style)).toBeNull()
   })
 
-  it('handles empty colors array', () => {
+  it('returns null when supplier returns invalid name (empty string)', () => {
+    const style = makeStyle({ styleName: '' })
+    expect(canonicalStyleToGarmentCatalog(style)).toBeNull()
+  })
+
+  it('returns null when supplier returns empty brand', () => {
+    const style = makeStyle({ brand: '' })
+    expect(canonicalStyleToGarmentCatalog(style)).toBeNull()
+  })
+
+  it('handles empty colors array (browse-mode style)', () => {
     const style = makeStyle({ colors: [] })
-    expect(canonicalStyleToGarmentCatalog(style).availableColors).toEqual([])
+    expect(canonicalStyleToGarmentCatalog(style)!.availableColors).toEqual([])
   })
 
-  it('handles empty sizes array (browse-mode style with no detail)', () => {
+  it('handles empty sizes array (browse-mode style)', () => {
     const style = makeStyle({ sizes: [] })
-    expect(canonicalStyleToGarmentCatalog(style).availableSizes).toEqual([])
+    expect(canonicalStyleToGarmentCatalog(style)!.availableSizes).toEqual([])
   })
 
   it('always sets isEnabled to true', () => {
-    expect(canonicalStyleToGarmentCatalog(makeStyle()).isEnabled).toBe(true)
+    expect(canonicalStyleToGarmentCatalog(makeStyle())!.isEnabled).toBe(true)
   })
 
   it('always sets isFavorite to false', () => {
-    expect(canonicalStyleToGarmentCatalog(makeStyle()).isFavorite).toBe(false)
+    expect(canonicalStyleToGarmentCatalog(makeStyle())!.isFavorite).toBe(false)
   })
 })
 
@@ -133,12 +148,12 @@ describe('getGarmentCatalog', () => {
     vi.clearAllMocks()
   })
 
-  it('calls searchCatalog and maps results', async () => {
+  it('calls searchCatalog with page size 100 and maps results', async () => {
     const style = makeStyle()
     const mockAdapter = {
       searchCatalog: vi.fn().mockResolvedValue({ styles: [style], total: 1, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getGarmentCatalog()
 
@@ -147,11 +162,75 @@ describe('getGarmentCatalog', () => {
     expect(result[0].id).toBe('3001')
   })
 
+  it('paginates until hasMore is false', async () => {
+    const page1Style = makeStyle({ supplierId: 'p1' })
+    const page2Style = makeStyle({ supplierId: 'p2' })
+    const mockAdapter = {
+      searchCatalog: vi
+        .fn()
+        .mockResolvedValueOnce({ styles: [page1Style], total: 2, hasMore: true })
+        .mockResolvedValueOnce({ styles: [page2Style], total: 2, hasMore: false }),
+    }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    const result = await getGarmentCatalog()
+
+    expect(mockAdapter.searchCatalog).toHaveBeenCalledTimes(2)
+    expect(mockAdapter.searchCatalog).toHaveBeenNthCalledWith(1, { limit: 100, offset: 0 })
+    expect(mockAdapter.searchCatalog).toHaveBeenNthCalledWith(2, { limit: 100, offset: 1 })
+    expect(result).toHaveLength(2)
+    expect(result.map((g) => g.id)).toEqual(['p1', 'p2'])
+  })
+
+  it('breaks on zero-progress even when hasMore is true (infinite loop guard)', async () => {
+    const mockAdapter = {
+      searchCatalog: vi.fn().mockResolvedValue({ styles: [], total: 0, hasMore: true }),
+    }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    const result = await getGarmentCatalog()
+    expect(mockAdapter.searchCatalog).toHaveBeenCalledTimes(1)
+    expect(result).toEqual([])
+  })
+
+  it('skips garments with invalid schema instead of aborting the fetch', async () => {
+    const valid = makeStyle({ supplierId: 'valid' })
+    const invalid = makeStyle({ supplierId: 'bad', brand: '' })
+    const mockAdapter = {
+      searchCatalog: vi
+        .fn()
+        .mockResolvedValue({ styles: [valid, invalid], total: 2, hasMore: false }),
+    }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    const result = await getGarmentCatalog()
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('valid')
+  })
+
+  it('filters out garments with null piecePrice', async () => {
+    const priced = makeStyle({ supplierId: 'has-price' })
+    const unpriced = makeStyle({
+      supplierId: 'no-price',
+      pricing: { piecePrice: null, dozenPrice: null, casePrice: null },
+    })
+    const mockAdapter = {
+      searchCatalog: vi
+        .fn()
+        .mockResolvedValue({ styles: [priced, unpriced], total: 2, hasMore: false }),
+    }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    const result = await getGarmentCatalog()
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('has-price')
+  })
+
   it('returns empty array when adapter returns no styles', async () => {
     const mockAdapter = {
       searchCatalog: vi.fn().mockResolvedValue({ styles: [], total: 0, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getGarmentCatalog()
     expect(result).toEqual([])
@@ -170,7 +249,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(style),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getGarmentById('3001')
 
@@ -183,20 +262,40 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(null),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getGarmentById('nonexistent')
     expect(result).toBeNull()
   })
 
-  it('returns null for empty id', async () => {
+  it('returns null for empty id without calling adapter', async () => {
     const mockAdapter = {
       getStyle: vi.fn(),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getGarmentById('')
     expect(mockAdapter.getStyle).not.toHaveBeenCalled()
+    expect(result).toBeNull()
+  })
+
+  it('returns null for id exceeding 50 chars without calling adapter', async () => {
+    const mockAdapter = { getStyle: vi.fn() }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    const result = await getGarmentById('x'.repeat(51))
+    expect(mockAdapter.getStyle).not.toHaveBeenCalled()
+    expect(result).toBeNull()
+  })
+
+  it('returns null for style with no pricing data', async () => {
+    const style = makeStyle({ pricing: { piecePrice: null, dozenPrice: null, casePrice: null } })
+    const mockAdapter = {
+      getStyle: vi.fn().mockResolvedValue(style),
+    }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    const result = await getGarmentById('3001')
     expect(result).toBeNull()
   })
 
@@ -205,7 +304,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(style),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getGarmentById('42')
     expect(result?.id).toBe('42')
@@ -215,14 +314,23 @@ describe('getGarmentById', () => {
 // ─── getAvailableBrands ───────────────────────────────────────────────────────
 
 describe('getAvailableBrands', () => {
-  it('delegates to adapter.getBrands', async () => {
+  it('returns brands sorted alphabetically', async () => {
     const mockAdapter = {
-      getBrands: vi.fn().mockResolvedValue(['Bella+Canvas', 'Gildan', 'Next Level']),
+      getBrands: vi.fn().mockResolvedValue(['Next Level', 'Bella+Canvas', 'Gildan']),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as never)
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
 
     const result = await getAvailableBrands()
-    expect(mockAdapter.getBrands).toHaveBeenCalledOnce()
     expect(result).toEqual(['Bella+Canvas', 'Gildan', 'Next Level'])
+  })
+
+  it('delegates to adapter.getBrands once', async () => {
+    const mockAdapter = {
+      getBrands: vi.fn().mockResolvedValue([]),
+    }
+    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+
+    await getAvailableBrands()
+    expect(mockAdapter.getBrands).toHaveBeenCalledOnce()
   })
 })
