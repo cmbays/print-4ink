@@ -354,9 +354,7 @@ Extended context lives in `docs/reference/` — consult only when needed:
 
 ## Agent & Skill Infrastructure
 
-Agents and skills are different primitives. **Agents** (`.claude/agents/`) are specialized AI assistants with own context windows and system prompts. **Skills** (`.claude/skills/`) are domain expertise containers with instructions, templates, and references. Agents preload skills for domain expertise.
-
-Full details: `docs/AGENTS.md` (canonical reference for agent registry, orchestration patterns, and calling conventions).
+See `docs/AGENTS.md` for agent registry, orchestration patterns, and calling conventions.
 
 ### Agents
 
