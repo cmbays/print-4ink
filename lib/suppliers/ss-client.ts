@@ -30,8 +30,18 @@ const RATE_LIMIT_BUFFER = 5
  * Pricing fields that are commercially sensitive and must never
  * leave the server. customerPrice is account-specific negotiated pricing;
  * mapPrice is minimum advertised price data S&S expects to stay internal.
+ * salePrice and saleExpiration are promotional pricing data.
+ * Prototype pollution keys are blocked as a defense-in-depth measure.
  */
-const STRIP_FIELDS = new Set(['customerPrice', 'mapPrice'])
+const STRIP_FIELDS = new Set([
+  'customerPrice',
+  'mapPrice',
+  'salePrice', // promotional pricing — commercially sensitive
+  'saleExpiration', // reveals when promotional terms end
+  '__proto__', // prototype pollution defense
+  'constructor', // prototype pollution defense
+  'prototype', // prototype pollution defense
+])
 
 // ─── Allowed segments ─────────────────────────────────────────────────────────
 
@@ -139,8 +149,12 @@ export async function ssGet(
       },
       next: { revalidate: ttl },
     })
-  } catch {
-    ssLogger.error('S&S API unreachable', { segment })
+  } catch (fetchErr) {
+    ssLogger.error('S&S API unreachable', {
+      segment,
+      error: fetchErr instanceof Error ? fetchErr.message : String(fetchErr),
+      errorName: fetchErr instanceof Error ? fetchErr.name : 'unknown',
+    })
     throw new SSClientError(502, 'Supplier API unreachable')
   }
 
@@ -148,7 +162,14 @@ export async function ssGet(
   // With serverless (no shared state), this is per-request: if the
   // current response signals < RATE_LIMIT_BUFFER remaining, we return
   // 429 immediately so the client backs off before the window exhausts.
-  const remaining = parseInt(response.headers.get('X-Rate-Limit-Remaining') ?? '999', 10)
+  const rateLimitHeader = response.headers.get('X-Rate-Limit-Remaining')
+  const remaining = rateLimitHeader !== null ? parseInt(rateLimitHeader, 10) : NaN
+  if (rateLimitHeader !== null && isNaN(remaining)) {
+    ssLogger.warn('X-Rate-Limit-Remaining header present but not a valid integer', {
+      segment,
+      headerValue: rateLimitHeader,
+    })
+  }
   if (!isNaN(remaining) && remaining < RATE_LIMIT_BUFFER) {
     ssLogger.warn('Rate limit buffer reached', { segment, remaining })
     throw new SSRateLimitError()
@@ -162,6 +183,16 @@ export async function ssGet(
     throw new SSClientError(status, 'Supplier API error')
   }
 
-  const data: unknown = await response.json()
+  let data: unknown
+  try {
+    data = await response.json()
+  } catch {
+    ssLogger.error('S&S API returned non-JSON response', {
+      segment,
+      status: response.status,
+      contentType: response.headers.get('content-type') ?? 'unknown',
+    })
+    throw new SSClientError(502, 'Supplier API returned non-JSON response')
+  }
   return stripSensitiveFields(data)
 }

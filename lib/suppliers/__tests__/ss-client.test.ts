@@ -86,6 +86,34 @@ describe('stripSensitiveFields', () => {
     expect(stripSensitiveFields({})).toEqual({})
     expect(stripSensitiveFields([])).toEqual([])
   })
+
+  it('strips salePrice and saleExpiration from responses', () => {
+    const input = {
+      styleId: '3001',
+      piecePrice: 5.99,
+      salePrice: 4.99, // must be stripped
+      saleExpiration: '2026-03-01', // must be stripped
+    }
+    const result = stripSensitiveFields(input) as typeof input
+    expect(result).not.toHaveProperty('salePrice')
+    expect(result).not.toHaveProperty('saleExpiration')
+    expect(result.piecePrice).toBe(5.99)
+  })
+
+  it('blocks prototype pollution keys (__proto__, constructor, prototype)', () => {
+    const input = {
+      styleId: '3001',
+      __proto__: { polluted: true },
+      constructor: { evil: true },
+      prototype: { bad: true },
+      legitimateField: 'keep me',
+    }
+    const result = stripSensitiveFields(input) as Record<string, unknown>
+    expect(result).not.toHaveProperty('__proto__')
+    expect(result).not.toHaveProperty('constructor')
+    expect(result).not.toHaveProperty('prototype')
+    expect(result.legitimateField).toBe('keep me')
+  })
 })
 
 // ─── ssGet — auth ─────────────────────────────────────────────────────────────
@@ -168,7 +196,7 @@ describe('ssGet — rate-limit circuit breaker', () => {
   })
 
   it('does NOT throw when X-Rate-Limit-Remaining header is absent', async () => {
-    mockFetch([]) // no rateLimitRemaining → defaults to 999
+    mockFetch([]) // no rateLimitRemaining → NaN → check skipped, no throw
     await expect(ssGet('styles', {}, SS_CACHE_TTL.styles)).resolves.toEqual([])
   })
 
@@ -212,6 +240,19 @@ describe('ssGet — error sanitization', () => {
 
   it('throws SSClientError(502) when fetch itself rejects (network error)', async () => {
     vi.spyOn(global, 'fetch').mockRejectedValueOnce(new TypeError('fetch failed'))
+    const err = await ssGet('styles', {}, SS_CACHE_TTL.styles).catch((e) => e)
+    expect(err).toBeInstanceOf(SSClientError)
+    expect((err as SSClientError).status).toBe(502)
+  })
+
+  it('throws SSClientError(502) when S&S returns non-JSON response body', async () => {
+    // Simulate S&S returning an HTML error page with a 200 status
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response('<html>Error</html>', {
+        status: 200,
+        headers: new Headers({ 'Content-Type': 'text/html' }),
+      })
+    )
     const err = await ssGet('styles', {}, SS_CACHE_TTL.styles).catch((e) => e)
     expect(err).toBeInstanceOf(SSClientError)
     expect((err as SSClientError).status).toBe(502)
@@ -266,5 +307,36 @@ describe('SS_CACHE_TTL', () => {
     expect(SS_CACHE_TTL.inventory).toBe(300)
     expect(SS_CACHE_TTL.categories).toBe(604800)
     expect(SS_CACHE_TTL.brands).toBe(604800)
+  })
+})
+
+// ─── ssGet — rate limit header parsing ────────────────────────────────────────
+
+describe('ssGet — rate limit header parsing', () => {
+  beforeEach(() => {
+    process.env.SS_ACCOUNT_NUMBER = 'acct123'
+    process.env.SS_API_KEY = 'key456'
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('does not throw when X-Rate-Limit-Remaining header is absent', async () => {
+    mockFetch([]) // no rateLimitRemaining
+    await expect(ssGet('styles', {}, SS_CACHE_TTL.styles)).resolves.toEqual([])
+  })
+
+  it('does not throw (but warns) when X-Rate-Limit-Remaining is present but not an integer', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    mockFetch([], { rateLimitRemaining: NaN })
+    // Build the mock manually since mockFetch sets the header as string
+    const headers = new Headers({ 'Content-Type': 'application/json' })
+    headers.set('X-Rate-Limit-Remaining', 'N/A')
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify([]), { status: 200, headers })
+    )
+    await expect(ssGet('styles', {}, SS_CACHE_TTL.styles)).resolves.toEqual([])
+    warnSpy.mockRestore()
   })
 })
