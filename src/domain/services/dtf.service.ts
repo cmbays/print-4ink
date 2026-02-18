@@ -319,8 +319,8 @@ export function hexPackCircles(
  * - Uniform-circle-only jobs: hexPackCircles() for ~10% height reduction.
  * - Mixed jobs (circles + rects): hexPackCircles() for circles, then attempts
  *   to fit rects in the remaining horizontal space of the last circle row,
- *   then shelfPack() for any rects that don't fit.
- * - Rect-only or non-uniform jobs: shelfPack() (Phase 1 fallback; Phase 2 = maxRectsPack).
+ *   then maxRectsPack() for any rects that don't fit.
+ * - Rect-only or non-uniform jobs: maxRectsPack().
  */
 export function packDesigns(
   designs: DesignInput[],
@@ -396,9 +396,9 @@ export function packDesigns(
       sameRowRects.push({ ...rect, x: curX, y: rowY })
       curX += rect.width + margin
     } else {
-      // Convert back to DesignInput for shelf packing
+      // Convert back to DesignInput for maxrects packing
       overflowRects.push({
-        id: rect.id.replace(/-\d+$/, ''), // strip suffix — shelfPack will re-expand
+        id: rect.id.replace(/-\d+$/, ''), // strip suffix — maxRectsPack will re-expand
         width: rect.width,
         height: rect.height,
         quantity: 1,
