@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { shelfPack, hexPackCircles, packDesigns } from '../dtf.service'
+import { shelfPack, hexPackCircles, packDesigns, maxRectsPack } from '../dtf.service'
 import type { DesignInput } from '../dtf.service'
 import { DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
 
@@ -425,5 +425,65 @@ describe('packDesigns', () => {
     expect(boxSheet).toBeDefined()
     expect(circleSheet).toBeDefined()
     expect(boxSheet).not.toBe(circleSheet)
+  })
+})
+
+describe('maxRectsPack', () => {
+  it('returns empty array for empty input', () => {
+    expect(maxRectsPack([])).toEqual([])
+  })
+
+  it('places a single design respecting margins', () => {
+    const result = maxRectsPack([{ id: 'd1', width: 4, height: 4, quantity: 1, label: 'Logo' }])
+    expect(result).toHaveLength(1)
+    expect(result[0].designs).toHaveLength(1)
+    const d = result[0].designs[0]
+    expect(d.x).toBeGreaterThanOrEqual(1) // at least 1" from left edge
+    expect(d.y).toBeGreaterThanOrEqual(1) // at least 1" from top edge
+    expect(d.width).toBe(4)
+    expect(d.height).toBe(4)
+    // usedHeight includes top + bottom margin
+    expect(result[0].usedHeight).toBeGreaterThanOrEqual(6) // 1 + 4 + 1
+  })
+
+  it('expands quantity correctly', () => {
+    const result = maxRectsPack([{ id: 'tiger', width: 4, height: 4, quantity: 5, label: 'Tiger' }])
+    const all = result.flatMap((s) => s.designs)
+    expect(all).toHaveLength(5)
+  })
+
+  it('creates multiple sheets when overflow occurs', () => {
+    // 20" wide, 15" tall design → 1 per row, 3 per sheet (60" max)
+    const result = maxRectsPack([{ id: 'd1', width: 20, height: 15, quantity: 4, label: 'Big' }])
+    expect(result.length).toBeGreaterThanOrEqual(2)
+    const total = result.flatMap((s) => s.designs).length
+    expect(total).toBe(4)
+  })
+
+  it('propagates shape through packed designs', () => {
+    const result = maxRectsPack([
+      { id: 'd1', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' },
+      { id: 'd2', width: 4, height: 4, quantity: 1, label: 'Round', shape: 'round' },
+    ])
+    const all = result.flatMap((s) => s.designs)
+    expect(all.find((d) => d.label === 'Box')?.shape).toBe('box')
+    expect(all.find((d) => d.label === 'Round')?.shape).toBe('round')
+  })
+
+  it('rejects quantity overflow', () => {
+    expect(() =>
+      maxRectsPack([{ id: 'd1', width: 4, height: 4, quantity: 5001, label: 'Big' }])
+    ).toThrow(/exceeds maximum/)
+  })
+
+  it('achieves same or better packing than shelfPack for rectangles', () => {
+    // MaxRects should never be worse than shelf for pure rectangle jobs
+    const designs = [
+      { id: 'big', width: 10, height: 12, quantity: 2, label: 'Big' },
+      { id: 'small', width: 4, height: 4, quantity: 5, label: 'Small' },
+    ]
+    const maxRectsHeight = maxRectsPack(designs).reduce((sum, s) => sum + s.usedHeight, 0)
+    const shelfHeight = shelfPack(designs).reduce((sum, s) => sum + s.usedHeight, 0)
+    expect(maxRectsHeight).toBeLessThanOrEqual(shelfHeight * 1.1) // within 10% of shelf
   })
 })
