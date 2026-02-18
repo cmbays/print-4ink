@@ -9,7 +9,7 @@ import {
 } from '@shared/ui/primitives/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
 import { Button } from '@shared/ui/primitives/button'
-import { SERVICE_TYPE_ICONS } from '@features/pricing/components/ServiceTypeBadge'
+import { SERVICE_TYPE_ICONS } from '@shared/ui/organisms/ServiceTypeBadge'
 import { SERVICE_TYPE_LABELS } from '@domain/constants'
 import type { ServiceType } from '@domain/entities/quote'
 import { cn } from '@shared/lib/cn'

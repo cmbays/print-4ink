@@ -15,6 +15,7 @@ import type {
 import type { PricingTier } from '@domain/entities/customer'
 import type { GarmentCategory } from '@domain/entities/garment'
 import { money as bigMoney, round2, toNumber } from '@domain/lib/money'
+import { domainLogger } from '@domain/lib/logger'
 
 // Local wrapper: pricing-engine uses money() → number throughout.
 // Main's money() returns Big, so wrap with round2 + toNumber.
@@ -102,7 +103,12 @@ export function getColorUpcharge(matrix: ScreenPrintMatrix, colorCount: number):
     (max, c) => (c.colors > max.colors ? c : max),
     matrix.colorPricing[0]
   )
-  if (!maxConfig) return 0
+  if (!maxConfig) {
+    domainLogger.warn('getColorUpcharge: colorPricing config is empty — returning $0', {
+      colorCount,
+    })
+    return 0
+  }
   return money(new Big(maxConfig.ratePerHit).times(colorCount))
 }
 
@@ -400,6 +406,9 @@ export function calculateDTFPrice(
   // Find sheet tier
   const sheetTier = template.sheetTiers.find((t) => t.length === sheetLength)
   if (!sheetTier) {
+    domainLogger.warn('calculateDTFPrice: no sheetTier found for length — returning $0', {
+      sheetLength,
+    })
     return {
       price: 0,
       margin: calculateMargin(0, {
@@ -410,16 +419,20 @@ export function calculateDTFPrice(
     }
   }
 
-  // Base price (use contract price if available and customer is contract tier)
+  // Base price: contract price already embeds the discount, so skip tier discount when using it
   let basePrice = new Big(sheetTier.retailPrice)
+  let usedContractPrice = false
   if (customerTier === 'contract' && sheetTier.contractPrice !== undefined) {
     basePrice = new Big(sheetTier.contractPrice)
+    usedContractPrice = true
   }
 
-  // Apply customer tier discount
-  const tierDiscount = template.customerTierDiscounts.find((d) => d.tier === customerTier)
-  if (tierDiscount && tierDiscount.discountPercent > 0) {
-    basePrice = basePrice.times(new Big(1).minus(new Big(tierDiscount.discountPercent).div(100)))
+  // Apply customer tier discount only when contractPrice was not used (prevents double-discount)
+  if (!usedContractPrice) {
+    const tierDiscount = template.customerTierDiscounts.find((d) => d.tier === customerTier)
+    if (tierDiscount && tierDiscount.discountPercent > 0) {
+      basePrice = basePrice.times(new Big(1).minus(new Big(tierDiscount.discountPercent).div(100)))
+    }
   }
 
   // Apply rush fee

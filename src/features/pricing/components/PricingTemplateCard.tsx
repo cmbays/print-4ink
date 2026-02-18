@@ -3,7 +3,7 @@
 import { cn } from '@shared/lib/cn'
 import type { MarginIndicator as MarginIndicatorType } from '@domain/entities/price-matrix'
 import { MarginIndicator } from './MarginIndicator'
-import { ServiceTypeBadge } from './ServiceTypeBadge'
+import { ServiceTypeBadge } from '@shared/ui/organisms/ServiceTypeBadge'
 import { Card, CardContent, CardHeader, CardTitle, CardAction } from '@shared/ui/primitives/card'
 import { Badge } from '@shared/ui/primitives/badge'
 import {
