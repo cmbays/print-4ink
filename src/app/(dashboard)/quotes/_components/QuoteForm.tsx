@@ -138,6 +138,7 @@ export function QuoteForm({
   const [dtfLineItems, setDtfLineItems] = useState<DtfLineItem[]>([])
   const [sheetCalculation, setSheetCalculation] = useState<SheetCalculation | null>(null)
   const [splitMode, setSplitMode] = useState<'combine' | 'split'>('combine')
+  const [packMode, setPackMode] = useState<'tight' | 'clean'>('tight')
   const [canvasLayout, setCanvasLayout] = useState<CanvasLayout[] | null>(null)
   const [activeSheetIndex, setActiveSheetIndex] = useState(0)
 
@@ -1110,6 +1111,8 @@ export function QuoteForm({
               sheetCalculation={sheetCalculation}
               splitMode={splitMode}
               setSplitMode={setSplitMode}
+              packMode={packMode}
+              setPackMode={setPackMode}
               canvasLayout={canvasLayout}
               activeSheetIndex={activeSheetIndex}
               setActiveSheetIndex={setActiveSheetIndex}

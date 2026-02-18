@@ -19,6 +19,8 @@ type DtfTabContentProps = {
   sheetCalculation: SheetCalculation | null
   splitMode: 'combine' | 'split'
   setSplitMode: React.Dispatch<React.SetStateAction<'combine' | 'split'>>
+  packMode: 'tight' | 'clean'
+  setPackMode: React.Dispatch<React.SetStateAction<'tight' | 'clean'>>
   canvasLayout: CanvasLayout[] | null
   activeSheetIndex: number
   setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>
@@ -35,6 +37,8 @@ export function DtfTabContent({
   sheetCalculation,
   splitMode,
   setSplitMode,
+  packMode,
+  setPackMode,
   canvasLayout,
   activeSheetIndex,
   setActiveSheetIndex,
@@ -103,6 +107,8 @@ export function DtfTabContent({
         setSheetCalculation={setSheetCalculation}
         splitMode={splitMode}
         setSplitMode={setSplitMode}
+        packMode={packMode}
+        setPackMode={setPackMode}
         setCanvasLayout={setCanvasLayout}
         setActiveSheetIndex={setActiveSheetIndex}
         tiers={DTF_SHEET_TIERS}

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { shelfPack, hexPackCircles, packDesigns, maxRectsPack } from '../dtf.service'
 import type { DesignInput } from '../dtf.service'
-import { DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
+import { DTF_MAX_SHEET_LENGTH, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from '@domain/constants/dtf'
 
 describe('shelfPack', () => {
   it('returns empty array for empty input', () => {
@@ -430,6 +430,34 @@ describe('packDesigns', () => {
     expect(boxSheet).toBeDefined()
     expect(circleSheet).toBeDefined()
     expect(boxSheet).not.toBe(circleSheet)
+  })
+
+  it('clean mode puts circles and rects on separate sheets', () => {
+    const mixed = [
+      { id: 'circle', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
+      { id: 'box', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' as const },
+    ]
+    const result = packDesigns(mixed, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, 'clean')
+    // Circles on sheet 1, box on sheet 2
+    expect(result.length).toBeGreaterThanOrEqual(2)
+    const allDesigns = result.flatMap((s) => s.designs)
+    expect(allDesigns).toHaveLength(14)
+    // No sheet should contain BOTH circles and boxes
+    for (const sheet of result) {
+      const shapes = new Set(sheet.designs.map((d) => d.shape))
+      expect(shapes.size).toBe(1) // each sheet has only one shape type
+    }
+  })
+
+  it('tight mode (default) keeps mixed jobs on fewer sheets', () => {
+    const mixed = [
+      { id: 'circle', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
+      { id: 'box', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' as const },
+    ]
+    const tightResult = packDesigns(mixed) // default is tight
+    const cleanResult = packDesigns(mixed, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, 'clean')
+    // Tight should use same or fewer sheets than clean
+    expect(tightResult.length).toBeLessThanOrEqual(cleanResult.length)
   })
 })
 

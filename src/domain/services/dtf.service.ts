@@ -325,7 +325,8 @@ export function hexPackCircles(
 export function packDesigns(
   designs: DesignInput[],
   sheetWidth: number = DTF_SHEET_WIDTH,
-  margin: number = DTF_DEFAULT_MARGIN
+  margin: number = DTF_DEFAULT_MARGIN,
+  packMode: 'tight' | 'clean' = 'tight'
 ): PackedSheet[] {
   if (designs.length === 0) return []
 
@@ -347,7 +348,14 @@ export function packDesigns(
     return maxRectsPack(designs, sheetWidth, margin)
   }
 
-  // Mixed job: hex-pack circles, then fit rects into remaining space
+  // Clean mode: circles and rects on separate sheets — clearer visual at the cost of additional sheets
+  if (packMode === 'clean') {
+    const circleSheets = hexPackCircles(circleDesigns, sheetWidth, margin)
+    const rectSheets = rectDesigns.length > 0 ? maxRectsPack(rectDesigns, sheetWidth, margin) : []
+    return [...circleSheets, ...rectSheets]
+  }
+
+  // Mixed job (tight mode): hex-pack circles, then fit rects into remaining space
   const circleSheets = hexPackCircles(circleDesigns, sheetWidth, margin)
   const lastCircleSheet = circleSheets[circleSheets.length - 1]
 
@@ -396,7 +404,7 @@ export function packDesigns(
     const rectX = curRightX - rect.width
     // Rect fits: starts at or after circle gap boundary AND height fits within circle row
     if (rectX >= minCircleGapBoundary && rect.height <= D) {
-      sameRowRects.push({ ...rect, x: rectX, y: rowY })
+      sameRowRects.push({ ...rect, x: rectX, y: rowY + Math.max(0, D - rect.height) })
       curRightX = rectX - margin // move left for next rect
     } else {
       // Convert back to DesignInput for maxrects packing
