@@ -15,12 +15,17 @@ import {
 import { normalizePosition } from '@domain/constants/print-zones'
 import type { MockupView } from '@domain/entities/mockup-template'
 
+/** Canonical positions that belong to the back of the garment. */
+const BACK_POSITIONS = new Set(['full-back', 'upper-back', 'back-chest', 'nape'])
+/** Canonical positions that belong to the front of the garment. */
+const FRONT_POSITIONS = new Set(['front-chest', 'left-chest', 'right-chest', 'full-front'])
+
 /** Maps a normalised print position to the mockup view it belongs to.
  *  Returns undefined for ambiguous positions (sleeve, pocket) so the modal
  *  keeps its front/back toggle. */
 function positionToLockedView(position: string): MockupView | undefined {
-  if (position.startsWith('front-')) return 'front'
-  if (position.startsWith('back-')) return 'back'
+  if (FRONT_POSITIONS.has(position) || position.startsWith('front-')) return 'front'
+  if (BACK_POSITIONS.has(position) || position.startsWith('back-')) return 'back'
   return undefined
 }
 import { Button } from '@shared/ui/primitives/button'
