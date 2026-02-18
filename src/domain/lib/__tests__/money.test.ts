@@ -9,6 +9,19 @@ import {
   Big,
 } from '../money'
 
+describe('Big configuration — global state', () => {
+  it('sets Big.DP to 20 for internal precision', () => {
+    // Module-level side effect on the global Big class.
+    // Any other import that mutates Big.DP would reduce internal precision for all callers.
+    expect(Big.DP).toBe(20)
+  })
+
+  it('sets Big.RM to roundHalfUp', () => {
+    // Any import that resets Big.RM to a different mode silently corrupts round2() globally.
+    expect(Big.RM).toBe(Big.roundHalfUp)
+  })
+})
+
 describe('money()', () => {
   it('creates a Big from a number', () => {
     const result = money(42)
@@ -55,6 +68,25 @@ describe('round2()', () => {
     expect(round2(money(5.5)).toNumber()).toBe(5.5)
     expect(round2(money(100)).toNumber()).toBe(100)
   })
+
+  it('rounds zero to zero (no-op for comped line items)', () => {
+    expect(round2(money(0)).toNumber()).toBe(0)
+  })
+
+  it('rounds negative values half away from zero (-1.235 → -1.24)', () => {
+    // big.js roundHalfUp uses "half away from zero" semantics.
+    // -1.235 is equidistant between -1.23 and -1.24 — rounds to -1.24 (further from zero).
+    // Relevant for refunds, negative discounts, and credit memos.
+    expect(round2(money('-1.235')).toFixed(2)).toBe('-1.24')
+  })
+
+  it('rounds a sub-cent value down to zero (0.001 → 0.00)', () => {
+    expect(round2(money('0.001')).toFixed(2)).toBe('0.00')
+  })
+
+  it('handles large values without precision loss (999999.995 → 1000000.00)', () => {
+    expect(round2(money('999999.995')).toFixed(2)).toBe('1000000.00')
+  })
 })
 
 describe('toNumber()', () => {
@@ -67,6 +99,19 @@ describe('toNumber()', () => {
   it('preserves decimal precision on the returned number', () => {
     const result = toNumber(money('9.99'))
     expect(result).toBe(9.99)
+  })
+
+  it('calling money() on a native float mid-pipeline reintroduces floating-point error', () => {
+    // toNumber() is only safe as a final output step — never for intermediate values.
+    // Wrapping a native float sum back into money() captures the IEEE 754 imprecision:
+    const nativeSum = 0.1 + 0.2 // 0.30000000000000004 in JS
+    const rewrapped = money(nativeSum) // imprecision is now inside big.js
+
+    // The imprecision is captured at construction time — round2 cannot recover it
+    expect(rewrapped.toFixed(20)).not.toBe(money(0.1).plus(money(0.2)).toFixed(20))
+
+    // The safe path stays inside big.js throughout:
+    expect(money(0.1).plus(money(0.2)).toFixed(2)).toBe('0.30')
   })
 })
 
