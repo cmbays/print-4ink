@@ -55,14 +55,20 @@ The MCP approach is strongly preferred because it gives Claude direct tool acces
 
 Each vertical discovery produces exactly 4 documents (+ updates to 2 existing docs):
 
-| #   | Document             | Location                                                        | Purpose                                    |
-| --- | -------------------- | --------------------------------------------------------------- | ------------------------------------------ |
-| 1   | Competitive Analysis | `docs/competitive-analysis/{competitor}-{vertical}-analysis.md` | Feature list, UI patterns, friction points |
-| 2   | Journey Map          | `docs/competitive-analysis/{competitor}-{vertical}-journey.md`  | Step-by-step workflow, click/time metrics  |
-| 3   | Improved Journey     | `docs/strategy/screen-print-pro-journey-{vertical}.md`          | Our redesigned workflow with targets       |
-| 4   | Scope Definition     | `docs/strategy/{vertical}-scope-definition.md`                  | CORE/PERIPHERAL/INTERCONNECTIONS           |
-| 5   | PROGRESS.md          | `PROGRESS.md`                                                   | Session log entry                          |
-| 6   | for_human doc        | `for_human/{date}-{vertical}-discovery.html`                    | Human-readable summary                     |
+| #   | Document             | Location                                                                   | Purpose                                    |
+| --- | -------------------- | -------------------------------------------------------------------------- | ------------------------------------------ |
+| 1   | Competitive Analysis | `docs/workspace/{pipeline-id}/competitive-analysis-{competitor}.md`        | Feature list, UI patterns, friction points |
+| 2   | Journey Map          | `docs/workspace/{pipeline-id}/journey-{competitor}.md`                     | Step-by-step workflow, click/time metrics  |
+| 3   | Improved Journey     | `docs/workspace/{pipeline-id}/improved-journey.md`                         | Our redesigned workflow with targets       |
+| 4   | Scope Definition     | `docs/workspace/{pipeline-id}/scope.md`                                    | CORE/PERIPHERAL/INTERCONNECTIONS           |
+| 5   | PROGRESS.md          | `PROGRESS.md`                                                               | Session log entry                          |
+| 6   | for_human doc        | `tmp/outbox/{date}-{vertical}-discovery.html`                              | Human-readable summary (ephemeral)         |
+
+**On wrap-up**, deposit to the KB (see `knowledge-base/README.md`):
+- Competitive analysis + journey map → synthesize into `knowledge-base/src/content/market/competitors/{competitor}.md`
+- Improved journey → synthesize into `knowledge-base/src/content/market/ux-patterns/{vertical}.md`
+- Scope decisions → synthesize into `knowledge-base/src/content/product/{vertical}/`
+- Then delete `docs/workspace/{pipeline-id}/`
 
 ## Workflow: 7 Steps
 
@@ -164,7 +170,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 9. Key Takeaways (top 5-6 insights)
 10. Competitive Landscape (other tools in the space)
 
-**Output file**: `docs/competitive-analysis/{competitor}-{vertical}-analysis.md`
+**Output file**: `docs/workspace/{pipeline-id}/competitive-analysis-{competitor}.md`
 
 ### Step 5: Write Journey Map Document
 
@@ -184,7 +190,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 8. Success Metrics for Redesign (before/after comparison table)
 9. Handoff to Designers (key principles + must-haves + nice-to-haves)
 
-**Output file**: `docs/competitive-analysis/{competitor}-{vertical}-journey.md`
+**Output file**: `docs/workspace/{pipeline-id}/journey-{competitor}.md`
 
 ### Step 6: Write Improved Journey Design
 
@@ -206,7 +212,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 10. Success Metrics (before/after comparison)
 11. Build Order (numbered list of screens/components to build)
 
-**Output file**: `docs/strategy/screen-print-pro-journey-{vertical}.md`
+**Output file**: `docs/workspace/{pipeline-id}/improved-journey.md`
 
 ### Step 7: Update Scope Definition + Docs
 
@@ -214,7 +220,7 @@ The MCP gives you tools like `browser_navigate`, `browser_click`, `browser_type`
 
 **Actions**:
 
-1. Update `docs/strategy/{vertical}-scope-definition.md` with findings
+1. Update `docs/workspace/{pipeline-id}/scope.md` with findings
 2. Add phase indicators (Phase 1/Phase 2) to every feature
 3. Ensure CORE/PERIPHERAL/INTERCONNECTIONS are accurate
 4. Update `PROGRESS.md` with session log entry
@@ -238,7 +244,7 @@ Before marking discovery as complete, verify:
 
 See `reference/quoting-discovery-example.md` for how this methodology was applied to the Quoting vertical. The actual output documents are:
 
-- `docs/competitive-analysis/print-life-quoting-analysis.md`
-- `docs/competitive-analysis/print-life-journey-quoting.md`
-- `docs/strategy/screen-print-pro-journey-quoting.md`
-- `docs/strategy/quoting-scope-definition.md`
+- `docs/workspace/legacy-phase1/competitive-analysis/print-life-quoting-analysis.md`
+- `docs/workspace/legacy-phase1/competitive-analysis/print-life-journey-quoting.md`
+- `docs/workspace/legacy-phase1/strategy/screen-print-pro-journey-quoting.md`
+- `docs/workspace/legacy-phase1/strategy/quoting-scope-definition.md`

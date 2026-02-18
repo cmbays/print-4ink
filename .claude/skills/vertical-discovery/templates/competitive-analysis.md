@@ -156,7 +156,6 @@ Step 2: [STEP]
 
 ## Related Documents
 
-- `docs/competitive-analysis/[COMPETITOR]-[VERTICAL]-journey.md` (journey map)
-- `docs/strategy/screen-print-pro-journey-[VERTICAL].md` (improved journey design)
-- `docs/strategy/[VERTICAL]-scope-definition.md` (scope boundaries)
-- `.claude/plans/vertical-by-vertical-strategy.md` (overall strategy)
+- `docs/workspace/{pipeline-id}/journey-[COMPETITOR].md` (journey map)
+- `docs/workspace/{pipeline-id}/improved-journey.md` (improved journey design)
+- `docs/workspace/{pipeline-id}/scope.md` (scope boundaries)

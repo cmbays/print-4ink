@@ -7,9 +7,9 @@ phase: 1
 created: [DATE]
 last-verified: [DATE]
 depends-on:
-  - docs/competitive-analysis/[COMPETITOR]-[VERTICAL]-analysis.md
-  - docs/competitive-analysis/[COMPETITOR]-[VERTICAL]-journey.md
-  - docs/strategy/[VERTICAL]-scope-definition.md
+  - docs/workspace/{pipeline-id}/competitive-analysis-[COMPETITOR].md
+  - docs/workspace/{pipeline-id}/journey-[COMPETITOR].md
+  - docs/workspace/{pipeline-id}/scope.md
 ---
 
 # Screen Print Pro — Improved [VERTICAL] Journey
@@ -126,8 +126,7 @@ END: [RESULT]
 
 ## Related Documents
 
-- `docs/competitive-analysis/[COMPETITOR]-[VERTICAL]-analysis.md` (features)
-- `docs/competitive-analysis/[COMPETITOR]-[VERTICAL]-journey.md` (journey + friction)
-- `docs/strategy/[VERTICAL]-scope-definition.md` (scope boundaries)
-- `.claude/plans/vertical-by-vertical-strategy.md` (overall strategy)
+- `docs/workspace/{pipeline-id}/competitive-analysis-[COMPETITOR].md` (features)
+- `docs/workspace/{pipeline-id}/journey-[COMPETITOR].md` (journey + friction)
+- `docs/workspace/{pipeline-id}/scope.md` (scope boundaries)
 - `CLAUDE.md` (quality checklist, design system)

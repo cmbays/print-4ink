@@ -160,7 +160,6 @@ END: [RESULT]
 
 ## Related Documents
 
-- `docs/competitive-analysis/[COMPETITOR]-[VERTICAL]-analysis.md` (feature analysis)
-- `docs/strategy/screen-print-pro-journey-[VERTICAL].md` (improved journey design)
-- `docs/strategy/[VERTICAL]-scope-definition.md` (scope boundaries)
-- `.claude/plans/vertical-by-vertical-strategy.md` (overall strategy)
+- `docs/workspace/{pipeline-id}/competitive-analysis-[COMPETITOR].md` (feature analysis)
+- `docs/workspace/{pipeline-id}/improved-journey.md` (improved journey design)
+- `docs/workspace/{pipeline-id}/scope.md` (scope boundaries)

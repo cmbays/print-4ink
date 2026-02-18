@@ -97,7 +97,7 @@ After all questions are answered, create an affordance table:
 
 ### Step 5: Write Spike Document
 
-Create a spike doc at `docs/spikes/spike-{topic}.md` using the template in `.claude/skills/pre-build-interrogator/templates/spike-template.md`.
+Create a spike doc at `docs/workspace/{pipeline-id}/spike-{topic}.md` using the template in `.claude/skills/pre-build-interrogator/templates/spike-template.md`.
 
 ### Step 6: Summarize
 
@@ -114,7 +114,7 @@ Present a complete summary of everything learned and ask: "Is there anything I m
 
 ## Deliverables
 
-- Spike doc: docs/spikes/spike-{topic}.md
+- Spike doc: docs/workspace/{pipeline-id}/spike-{topic}.md
 
 ## Unknowns Resolved
 

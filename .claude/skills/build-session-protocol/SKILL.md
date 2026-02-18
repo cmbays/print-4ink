@@ -114,6 +114,24 @@ EOF
 19. Post a comment on the PR: "Ready for merge. All critical/major review items addressed. Deferred items filed as GitHub Issues."
 20. Notify the user that the PR is ready
 
+### Phase 7: Workspace Wrap-up (after PR merges)
+
+Once the PR is merged, close out the pipeline's working artifacts:
+
+21. **Deposit to Knowledge Base** — Read `knowledge-base/README.md` for the two-pass protocol. For each piece of knowledge generated during this session:
+    - Engineering gotchas → `knowledge-base/src/content/learnings/<subdomain>/YYYY-MM-DD-topic.md`
+    - Session record → `knowledge-base/src/content/pipelines/YYYY-MM-DD-topic.md` (absorb key decisions, PR link, artifacts — not just links to files being deleted)
+    - Domain or product decisions → synthesize into the appropriate living doc
+
+22. **Delete workspace** — Once the KB pipeline doc is written and committed, delete the pipeline's workspace dir:
+    ```bash
+    rm -rf docs/workspace/{pipeline-id}/
+    git add -A && git commit -m "chore: wrap-up {pipeline-id} — delete workspace after KB deposit"
+    git push
+    ```
+
+23. **Nothing lost** — the KB pipeline doc must stand alone. An agent reading it after the workspace is deleted should have all the context they need.
+
 ## Rules
 
 - **Never modify tests to make them pass** — fix the implementation

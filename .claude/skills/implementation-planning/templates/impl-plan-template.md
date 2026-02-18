@@ -8,7 +8,7 @@
 
 **Tech Stack:** {KEY_TECHNOLOGIES}
 
-**Execution Manifest:** `docs/plans/YYYY-MM-DD-{VERTICAL}-manifest.yaml`
+**Execution Manifest:** `docs/workspace/{pipeline-id}/manifest.yaml`
 
 ---
 
