@@ -5,16 +5,17 @@
 **Pulse**: Architecture metamorphosis — 10 more PRs (Clean Architecture + DDD migration complete, IA refactor scoped). Demo in 4 days. Wizards still the only unbuilt must-have.
 **Focus decided**: Finish architecture session (~1 hour), then pivot immediately to wizards. IA refactor (#478) is `priority/next`, not `priority/now` — does not displace wizards.
 **Key decisions**:
+
 - Clean Architecture migration complete (domain, shared layer, observability, port interfaces, IA design)
 - IA refactor epic (#478) scoped with 6 sub-issues — all deferred post-demo
 - 28 Gary questions unanswered (up from ~2 in morning) — DTF batch (12) will resolve naturally at demo
 - Gary pre-brief still TBD
-**Open items**:
+  **Open items**:
 - Wizard scope: still end-to-end (customer → quote → job board → invoice, SP + DTF)?
 - IA refactor vs. wizard sequencing — #479–#483 need ordering decision
 - PR #456 (bridge imports) — demo impact?
 - Gary pre-brief before Feb 21?
-**Story beat**: Rebuilt the load-bearing wall while the house was standing. Ten PRs, zero rollbacks. The Phase 2 architecture debt that would have compounded forever just got paid in one day.
+  **Story beat**: Rebuilt the load-bearing wall while the house was standing. Ten PRs, zero rollbacks. The Phase 2 architecture debt that would have compounded forever just got paid in one day.
 
 ## 2026-02-17 (morning)
 

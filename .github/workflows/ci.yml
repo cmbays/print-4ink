@@ -39,7 +39,7 @@ jobs:
         run: |
           node scripts/sync-issue-templates.js
           git diff --exit-code .github/ISSUE_TEMPLATE/ || {
-            echo "::error::Issue templates are out of sync with config/products.json + config/tools.json. Run 'npm run sync:templates' locally and commit the result."
+            echo "::error::Issue templates are out of sync with src/config/products.json + tools/orchestration/config/tools.json. Run 'npm run sync:templates' locally and commit the result."
             exit 1
           }
 
