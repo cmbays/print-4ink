@@ -144,11 +144,18 @@ export function GarmentMockup({
           const zw = (zone.width / 100) * viewBoxWidth
           const zh = (zone.height / 100) * viewBoxHeight
 
-          // Apply scale and offset
-          const scaledW = zw * scale
-          const scaledH = zh * scale
-          const cx = zx + zw / 2 + (offsetX / 100) * zw
-          const cy = zy + zh / 2 + (offsetY / 100) * zh
+          // Apply 5% safety inset on all sides (screen printing safe zone — keeps artwork
+          // away from shirt silhouette edges and seams, per screen printing best practice)
+          const safeZx = zx + zw * 0.05
+          const safeZy = zy + zh * 0.05
+          const safeZw = zw * 0.9
+          const safeZh = zh * 0.9
+
+          // Apply scale and offset within safe zone
+          const scaledW = safeZw * scale
+          const scaledH = safeZh * scale
+          const cx = safeZx + safeZw / 2 + (offsetX / 100) * safeZw
+          const cy = safeZy + safeZh / 2 + (offsetY / 100) * safeZh
           const ax = cx - scaledW / 2
           const ay = cy - scaledH / 2
 
@@ -158,7 +165,7 @@ export function GarmentMockup({
             <g key={`${placement.position}-${i}`}>
               <defs>
                 <clipPath id={clipId}>
-                  <rect x={zx} y={zy} width={zw} height={zh} />
+                  <rect x={safeZx} y={safeZy} width={safeZw} height={safeZh} />
                 </clipPath>
               </defs>
               <image
