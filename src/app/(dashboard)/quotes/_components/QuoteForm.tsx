@@ -131,9 +131,12 @@ export function QuoteForm({
   const [internalNotes, setInternalNotes] = useState(initialData?.internalNotes || '')
   const [customerNotes, setCustomerNotes] = useState(initialData?.customerNotes || '')
 
-  // Service type tabs (S19, S20)
+  // Service type tabs (S19, S20) — screen-print and DTF always visible
   const [activeServiceTab, setActiveServiceTab] = useState<ServiceType>('screen-print')
-  const [enabledServiceTypes, setEnabledServiceTypes] = useState<ServiceType[]>(['screen-print'])
+  const [enabledServiceTypes, setEnabledServiceTypes] = useState<ServiceType[]>([
+    'screen-print',
+    'dtf',
+  ])
 
   // DTF state — lifted to QuoteForm for tab switching preservation (R1.2)
   const [dtfLineItems, setDtfLineItems] = useState<DtfLineItem[]>([])
@@ -482,9 +485,10 @@ export function QuoteForm({
       })
     }
 
-    // Validate DTF tab if enabled (N56)
+    // Validate DTF tab only when the user has actually added designs (N56)
+    // An empty DTF tab means "not using DTF" — not a validation error
     const failedTabs: ServiceType[] = []
-    if (enabledServiceTypes.includes('dtf')) {
+    if (enabledServiceTypes.includes('dtf') && dtfLineItems.length > 0) {
       const dtfResult = validateDtfTab()
       if (!dtfResult.valid) {
         nextErrors.dtfTab = dtfResult.errors.join('. ')
