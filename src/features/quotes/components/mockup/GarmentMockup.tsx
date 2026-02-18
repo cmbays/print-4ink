@@ -146,8 +146,8 @@ export function GarmentMockup({
 
           // Apply safe zone inset on all sides. Screen printing presses register ±1–2" —
           // artwork must stay inside this margin or risk bleeding into collar/seams.
-          // 10% per side = ~2" equivalent on a standard adult tee (20" wide print area).
-          const SAFE_INSET = 0.1
+          // 15% per side = ~3" equivalent on a standard adult tee (20" wide print area).
+          const SAFE_INSET = 0.15
           const safeZx = zx + zw * SAFE_INSET
           const safeZy = zy + zh * SAFE_INSET
           const safeZw = zw * (1 - 2 * SAFE_INSET)
