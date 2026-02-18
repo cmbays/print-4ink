@@ -144,12 +144,14 @@ export function GarmentMockup({
           const zw = (zone.width / 100) * viewBoxWidth
           const zh = (zone.height / 100) * viewBoxHeight
 
-          // Apply 5% safety inset on all sides (screen printing safe zone — keeps artwork
-          // away from shirt silhouette edges and seams, per screen printing best practice)
-          const safeZx = zx + zw * 0.05
-          const safeZy = zy + zh * 0.05
-          const safeZw = zw * 0.9
-          const safeZh = zh * 0.9
+          // Apply safe zone inset on all sides. Screen printing presses register ±1–2" —
+          // artwork must stay inside this margin or risk bleeding into collar/seams.
+          // 10% per side = ~2" equivalent on a standard adult tee (20" wide print area).
+          const SAFE_INSET = 0.1
+          const safeZx = zx + zw * SAFE_INSET
+          const safeZy = zy + zh * SAFE_INSET
+          const safeZw = zw * (1 - 2 * SAFE_INSET)
+          const safeZh = zh * (1 - 2 * SAFE_INSET)
 
           // Apply scale and offset within safe zone
           const scaledW = safeZw * scale
