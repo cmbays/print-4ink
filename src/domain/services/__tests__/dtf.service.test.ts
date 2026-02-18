@@ -284,12 +284,17 @@ describe('hexPackCircles', () => {
 
   it('reduces sheet height vs shelfPack for 13 uniform circles', () => {
     // Research confirmed: 13 × 4" circles → hex: ~18.99", shelf: 21"
+    // rowPitch = 5 × √3/2 ≈ 4.330", 4 rows → 4×4.330 = 17.32" of row centers,
+    // plus top margin (1) + r (2) + bottom margin (1) → 21.32... wait, let me re-derive.
+    // Row 0 cy = 3, Row 1 cy = 3 + 4.330 ≈ 7.330, Row 2 cy ≈ 11.66, Row 3 cy ≈ 15.99
+    // 13 circles: 4 + 4 + 4 + 1 = 13. Last row (Row 3) cy ≈ 15.99
+    // usedHeight = cy + r + margin = 15.99 + 2 + 1 = 18.99"
     const circles = [
       { id: 'd1', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
     ]
     const hexResult = hexPackCircles(circles)
     const shelfResult = shelfPack(circles)
-    expect(hexResult[0].usedHeight).toBeLessThan(19.5)
+    expect(hexResult[0].usedHeight).toBeCloseTo(18.99, 0) // within 0.5" of research value
     expect(hexResult[0].usedHeight).toBeLessThan(shelfResult[0].usedHeight)
   })
 
@@ -305,11 +310,14 @@ describe('hexPackCircles', () => {
   })
 
   it('each design on second sheet starts with y >= margin', () => {
-    // After sheet overflow, new sheet designs must start at margin from top
+    // After sheet overflow, new sheet designs must start at margin from top.
+    // First design y = cy - r = (margin + r) - r = margin = 1
     const result = hexPackCircles([
       { id: 'd1', width: 10, height: 10, quantity: 20, label: 'Large', shape: 'round' },
     ])
     if (result.length > 1) {
+      // First design on second sheet must be at the top margin (confirms reset)
+      expect(result[1].designs[0].y).toBeCloseTo(1, 5)
       for (const d of result[1].designs) {
         expect(d.y).toBeGreaterThanOrEqual(1)
       }
