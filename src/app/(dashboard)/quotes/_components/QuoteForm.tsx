@@ -14,6 +14,7 @@ import {
   DollarSign,
   Tag,
   Monitor,
+  Printer,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -130,14 +131,18 @@ export function QuoteForm({
   const [internalNotes, setInternalNotes] = useState(initialData?.internalNotes || '')
   const [customerNotes, setCustomerNotes] = useState(initialData?.customerNotes || '')
 
-  // Service type tabs (S19, S20)
+  // Service type tabs (S19, S20) — screen-print and DTF always visible
   const [activeServiceTab, setActiveServiceTab] = useState<ServiceType>('screen-print')
-  const [enabledServiceTypes, setEnabledServiceTypes] = useState<ServiceType[]>(['screen-print'])
+  const [enabledServiceTypes, setEnabledServiceTypes] = useState<ServiceType[]>([
+    'screen-print',
+    'dtf',
+  ])
 
   // DTF state — lifted to QuoteForm for tab switching preservation (R1.2)
   const [dtfLineItems, setDtfLineItems] = useState<DtfLineItem[]>([])
   const [sheetCalculation, setSheetCalculation] = useState<SheetCalculation | null>(null)
   const [splitMode, setSplitMode] = useState<'combine' | 'split'>('combine')
+  const [packMode, setPackMode] = useState<'tight' | 'clean'>('tight')
   const [canvasLayout, setCanvasLayout] = useState<CanvasLayout[] | null>(null)
   const [activeSheetIndex, setActiveSheetIndex] = useState(0)
 
@@ -480,9 +485,10 @@ export function QuoteForm({
       })
     }
 
-    // Validate DTF tab if enabled (N56)
+    // Validate DTF tab only when the user has actually added designs (N56)
+    // An empty DTF tab means "not using DTF" — not a validation error
     const failedTabs: ServiceType[] = []
-    if (enabledServiceTypes.includes('dtf')) {
+    if (enabledServiceTypes.includes('dtf') && dtfLineItems.length > 0) {
       const dtfResult = validateDtfTab()
       if (!dtfResult.valid) {
         nextErrors.dtfTab = dtfResult.errors.join('. ')
@@ -1043,6 +1049,11 @@ export function QuoteForm({
           </div>
         </CollapsibleSection>
 
+        {/* Service Type label */}
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-1">
+          Service Type
+        </p>
+
         {/* Service Type Tab Bar (P2.3) */}
         <ServiceTypeTabBar
           activeTab={activeServiceTab}
@@ -1104,18 +1115,29 @@ export function QuoteForm({
                 {errors.dtfTab}
               </p>
             )}
-            <DtfTabContent
-              lineItems={dtfLineItems}
-              setLineItems={setDtfLineItems}
-              sheetCalculation={sheetCalculation}
-              splitMode={splitMode}
-              setSplitMode={setSplitMode}
-              canvasLayout={canvasLayout}
-              activeSheetIndex={activeSheetIndex}
-              setActiveSheetIndex={setActiveSheetIndex}
-              setSheetCalculation={setSheetCalculation}
-              setCanvasLayout={setCanvasLayout}
-            />
+            <CollapsibleSection
+              title="Image Prints"
+              icon={<Printer size={16} className="text-muted-foreground" />}
+              isComplete={dtfLineItems.some((li) => li.artworkName !== '')}
+              defaultOpen
+            >
+              <div className="pt-2">
+                <DtfTabContent
+                  lineItems={dtfLineItems}
+                  setLineItems={setDtfLineItems}
+                  sheetCalculation={sheetCalculation}
+                  splitMode={splitMode}
+                  setSplitMode={setSplitMode}
+                  packMode={packMode}
+                  setPackMode={setPackMode}
+                  canvasLayout={canvasLayout}
+                  activeSheetIndex={activeSheetIndex}
+                  setActiveSheetIndex={setActiveSheetIndex}
+                  setSheetCalculation={setSheetCalculation}
+                  setCanvasLayout={setCanvasLayout}
+                />
+              </div>
+            </CollapsibleSection>
           </div>
         )}
 

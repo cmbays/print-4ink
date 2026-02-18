@@ -72,8 +72,6 @@ type LineItemRowProps = {
 
 const PRINT_LOCATIONS = ['Front', 'Back', 'Left Sleeve', 'Right Sleeve', 'Neck Label']
 
-const SERVICE_TYPES: ServiceType[] = ['screen-print', 'dtf', 'embroidery']
-
 const ALL_GARMENT_CATEGORIES: GarmentCategory[] = [
   't-shirts',
   'fleece',
@@ -272,28 +270,6 @@ export function LineItemRow({
       </div>
 
       <div className="space-y-4">
-        {/* Service Type */}
-        <div className="space-y-1.5">
-          <Label className="text-sm text-muted-foreground">Service Type</Label>
-          <div className="flex gap-1">
-            {SERVICE_TYPES.map((type) => (
-              <Button
-                key={type}
-                type="button"
-                variant={data.serviceType === type ? 'default' : 'outline'}
-                size="sm"
-                className={cn(
-                  'h-7 text-xs',
-                  data.serviceType === type && 'bg-action text-primary-foreground'
-                )}
-                onClick={() => updateField({ serviceType: type })}
-              >
-                {SERVICE_TYPE_LABELS[type]}
-              </Button>
-            ))}
-          </div>
-        </div>
-
         {/* Garment Category */}
         <div className="space-y-1.5">
           <Label className="text-sm text-muted-foreground">Garment Type</Label>

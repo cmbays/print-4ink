@@ -6,9 +6,12 @@ import { z } from 'zod'
 
 export const dtfSizePresetEnum = z.enum(['small', 'medium', 'large', 'custom'])
 
+export const dtfShapeEnum = z.enum(['box', 'round'])
+
 export const dtfLineItemSchema = z.object({
   id: z.string().uuid(),
   artworkName: z.string().min(1),
+  shape: dtfShapeEnum.default('box'),
   sizePreset: dtfSizePresetEnum,
   width: z.number().positive(),
   height: z.number().positive(),
@@ -20,4 +23,5 @@ export const dtfLineItemSchema = z.object({
 // ---------------------------------------------------------------------------
 
 export type DtfSizePreset = z.infer<typeof dtfSizePresetEnum>
+export type DtfShape = z.infer<typeof dtfShapeEnum>
 export type DtfLineItem = z.infer<typeof dtfLineItemSchema>

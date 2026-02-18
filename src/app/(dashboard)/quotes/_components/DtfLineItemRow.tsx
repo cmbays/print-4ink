@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageIcon, Trash2 } from 'lucide-react'
+import { Circle, ImageIcon, Square, Trash2 } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
 import { Button } from '@shared/ui/primitives/button'
 import { Input } from '@shared/ui/primitives/input'
@@ -81,8 +81,51 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
         )}
       </div>
 
-      {/* Row 2: Size preset, dimensions, quantity */}
+      {/* Row 2: Shape toggle, size preset, dimensions, quantity */}
       <div className="flex flex-wrap items-end gap-3">
+        {/* Box/Round shape toggle */}
+        <div className="space-y-1">
+          <span className="text-xs text-muted-foreground">Shape</span>
+          <div
+            className="flex items-center gap-1 rounded-md border border-border bg-surface p-0.5"
+            role="radiogroup"
+            aria-label="Design shape"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={item.shape === 'box'}
+              onClick={() => onUpdate(item.id, 'shape', 'box')}
+              className={cn(
+                'flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+                item.shape === 'box'
+                  ? 'bg-elevated text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <Square size={12} />
+              Box
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={item.shape === 'round'}
+              onClick={() => onUpdate(item.id, 'shape', 'round')}
+              className={cn(
+                'flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+                item.shape === 'round'
+                  ? 'bg-elevated text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <Circle size={12} />
+              Round
+            </button>
+          </div>
+        </div>
+
         {/* U75 — Size preset dropdown */}
         <div className="space-y-1">
           <label htmlFor={`preset-${item.id}`} className="text-xs text-muted-foreground">
@@ -146,6 +189,11 @@ export function DtfLineItemRow({ item, onUpdate, onRemove, canRemove }: DtfLineI
             <span className="text-xs text-muted-foreground">Dimensions</span>
             <p className="flex h-8 items-center text-sm text-foreground">
               {item.width}&quot; &times; {item.height}&quot;
+              {item.shape === 'round' && (
+                <span className="ml-1.5 text-xs text-muted-foreground">
+                  ({item.width === item.height ? 'circle' : 'oval'})
+                </span>
+              )}
             </p>
           </div>
         )}

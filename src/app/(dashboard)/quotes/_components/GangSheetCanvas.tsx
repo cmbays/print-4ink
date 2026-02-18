@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { Circle, Square } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
 import type { CanvasLayout, CanvasDesign } from '@domain/entities/dtf-sheet-calculation'
 
@@ -38,6 +39,17 @@ function buildColorMap(designs: CanvasDesign[]): Map<string, number> {
     if (!map.has(d.label)) {
       map.set(d.label, idx % DESIGN_COLORS.length)
       idx++
+    }
+  }
+  return map
+}
+
+/** Build a stable label → shape map using the first design encountered per label. */
+function buildShapeMap(designs: CanvasDesign[]): Map<string, 'box' | 'round'> {
+  const map = new Map<string, 'box' | 'round'>()
+  for (const d of designs) {
+    if (!map.has(d.label)) {
+      map.set(d.label, d.shape)
     }
   }
   return map
@@ -109,6 +121,7 @@ export function GangSheetCanvas({
 
   const { sheetWidth, sheetHeight, designs, margins } = layout
   const colorMap = buildColorMap(designs)
+  const shapeMap = buildShapeMap(designs)
 
   // pxPerInch for adaptive rendering decisions (label visibility)
   const pxPerInch = containerWidth > 0 ? containerWidth / sheetWidth : 30
@@ -119,6 +132,14 @@ export function GangSheetCanvas({
 
   // Spacing indicator
   const spacingGap = findSpacingGap(designs, margins)
+
+  // Void space hint: region below all designs where more shapes could fit
+  const maxDesignBottom =
+    designs.length > 0 ? Math.max(...designs.map((d) => d.y + d.height)) : margins
+  const voidTop = maxDesignBottom
+  const voidBottom = sheetHeight - margins
+  const voidHeight = voidBottom - voidTop
+  const showVoidHint = voidHeight > 2 // only show if > 2" of usable space remains
 
   return (
     <div className="rounded-lg border border-border bg-background p-4 space-y-3">
@@ -183,7 +204,7 @@ export function GangSheetCanvas({
               rx={0.15}
             />
 
-            {/* Edge margin zones */}
+            {/* Edge margin strips — subtle shading outside the safe zone */}
             <rect
               x={0}
               y={0}
@@ -213,6 +234,18 @@ export function GangSheetCanvas({
               fill="var(--canvas-margin-zone)"
             />
 
+            {/* Safe zone boundary — dashed amber line at margin distance from each edge */}
+            <rect
+              x={margins}
+              y={margins}
+              width={sheetWidth - margins * 2}
+              height={sheetHeight - margins * 2}
+              fill="none"
+              stroke="var(--canvas-safe-zone)"
+              strokeWidth={strokeW * 1.2}
+              strokeDasharray={`${0.3} ${0.2}`}
+            />
+
             {/* U89 — Design rectangles */}
             {designs.map((d, i) => {
               const ci = colorMap.get(d.label) ?? 0
@@ -228,18 +261,32 @@ export function GangSheetCanvas({
                     animation: `canvas-fade-in 0.3s ease-out ${i * 0.05}s forwards`,
                   }}
                 >
-                  <rect
-                    x={d.x}
-                    y={d.y}
-                    width={d.width}
-                    height={d.height}
-                    fill={color.fill}
-                    fillOpacity={color.fillOpacity}
-                    stroke={color.stroke}
-                    strokeOpacity={color.strokeOpacity}
-                    strokeWidth={strokeW}
-                    rx={0.1}
-                  />
+                  {d.shape === 'round' ? (
+                    <ellipse
+                      cx={d.x + d.width / 2}
+                      cy={d.y + d.height / 2}
+                      rx={d.width / 2}
+                      ry={d.height / 2}
+                      fill={color.fill}
+                      fillOpacity={color.fillOpacity}
+                      stroke={color.stroke}
+                      strokeOpacity={color.strokeOpacity}
+                      strokeWidth={strokeW}
+                    />
+                  ) : (
+                    <rect
+                      x={d.x}
+                      y={d.y}
+                      width={d.width}
+                      height={d.height}
+                      fill={color.fill}
+                      fillOpacity={color.fillOpacity}
+                      stroke={color.stroke}
+                      strokeOpacity={color.strokeOpacity}
+                      strokeWidth={strokeW}
+                      rx={0.1}
+                    />
+                  )}
                   {showLabel && (
                     <>
                       <text
@@ -321,6 +368,34 @@ export function GangSheetCanvas({
                 </text>
               </g>
             )}
+
+            {/* Void space hint — available area below packed designs */}
+            {showVoidHint && (
+              <g>
+                {/* Subtle shaded region */}
+                <rect
+                  x={margins}
+                  y={voidTop}
+                  width={sheetWidth - margins * 2}
+                  height={voidHeight}
+                  fill="var(--canvas-void)"
+                  rx={0.1}
+                />
+                {/* "Room for more shapes" label, centered in the void */}
+                <text
+                  x={sheetWidth / 2}
+                  y={voidTop + voidHeight / 2}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="var(--canvas-void-label)"
+                  fontSize={Math.min(0.55, voidHeight * 0.2)}
+                  fontFamily="Inter, system-ui, sans-serif"
+                  fontWeight={400}
+                >
+                  Room for more shapes below
+                </text>
+              </g>
+            )}
           </svg>
         )}
       </div>
@@ -330,16 +405,12 @@ export function GangSheetCanvas({
         <div className="flex flex-wrap items-center gap-3 pt-1">
           {Array.from(colorMap.entries()).map(([label, ci]) => {
             const color = DESIGN_COLORS[ci]
+            const shape = shapeMap.get(label) ?? 'box'
             const count = designs.filter((d) => d.label === label).length
+            const ShapeIcon = shape === 'round' ? Circle : Square
             return (
               <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span
-                  className="inline-block size-2.5 rounded-sm border"
-                  style={{
-                    backgroundColor: color.fill,
-                    borderColor: color.stroke,
-                  }}
-                />
+                <ShapeIcon size={10} style={{ color: color.stroke }} />
                 <span>
                   {label} <span className="text-foreground font-medium">&times;{count}</span>
                 </span>

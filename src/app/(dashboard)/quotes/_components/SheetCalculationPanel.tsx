@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { AlertCircle, Calculator, Layers, Combine } from 'lucide-react'
+import { AlertCircle, Calculator, Layers, Combine, Maximize2, Layout } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
 import { Button } from '@shared/ui/primitives/button'
 import { Badge } from '@shared/ui/primitives/badge'
 import { WithTooltip } from '@shared/ui/primitives/with-tooltip'
-import { shelfPack } from '@domain/services/dtf.service'
+import { packDesigns } from '@domain/services/dtf.service'
 import { optimizeCost } from '@domain/rules/dtf.rules'
 import { isValidDtfLineItem } from '@domain/rules/dtf.rules'
 import { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN } from '@domain/rules/dtf.rules'
@@ -30,6 +30,8 @@ type SheetCalculationPanelProps = {
   setSheetCalculation: React.Dispatch<React.SetStateAction<SheetCalculation | null>>
   splitMode: 'combine' | 'split'
   setSplitMode: React.Dispatch<React.SetStateAction<'combine' | 'split'>>
+  packMode: 'tight' | 'clean'
+  setPackMode: React.Dispatch<React.SetStateAction<'tight' | 'clean'>>
   setCanvasLayout: React.Dispatch<React.SetStateAction<CanvasLayout[] | null>>
   setActiveSheetIndex: React.Dispatch<React.SetStateAction<number>>
   tiers: DTFSheetTier[]
@@ -71,11 +73,14 @@ export function SheetCalculationPanel({
   setSheetCalculation,
   splitMode,
   setSplitMode,
+  packMode,
+  setPackMode,
   setCanvasLayout,
   setActiveSheetIndex,
   tiers,
 }: SheetCalculationPanelProps) {
   const prevSplitModeRef = useRef(splitMode)
+  const prevPackModeRef = useRef(packMode)
   const [calcError, setCalcError] = useState<string | null>(null)
   const canCalculate = lineItems.some(isValidDtfLineItem)
 
@@ -89,12 +94,13 @@ export function SheetCalculationPanel({
       height: item.height,
       quantity: item.quantity,
       label: item.artworkName,
+      shape: item.shape,
     }))
 
     if (designs.length === 0) return
 
     try {
-      const packedSheets = shelfPack(designs, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN)
+      const packedSheets = packDesigns(designs, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, packMode)
       const result = optimizeCost(packedSheets, tiers, splitMode)
 
       setSheetCalculation(result)
@@ -115,7 +121,15 @@ export function SheetCalculationPanel({
       setCanvasLayout(null)
       setActiveSheetIndex(0)
     }
-  }, [lineItems, splitMode, tiers, setSheetCalculation, setCanvasLayout, setActiveSheetIndex])
+  }, [
+    lineItems,
+    splitMode,
+    packMode,
+    tiers,
+    setSheetCalculation,
+    setCanvasLayout,
+    setActiveSheetIndex,
+  ])
 
   // N50 — recalculateOnChange: when splitMode toggles AND calculation exists, re-run
   useEffect(() => {
@@ -125,6 +139,14 @@ export function SheetCalculationPanel({
     prevSplitModeRef.current = splitMode
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run on splitMode change
   }, [splitMode])
+
+  useEffect(() => {
+    if (prevPackModeRef.current !== packMode && sheetCalculation !== null) {
+      calculateSheetLayout()
+    }
+    prevPackModeRef.current = packMode
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run on packMode change
+  }, [packMode])
 
   return (
     <div className="space-y-3">
@@ -169,6 +191,49 @@ export function SheetCalculationPanel({
           >
             <Layers size={16} />
             Split
+          </button>
+        </div>
+      </div>
+
+      {/* Tight/Clean pack mode toggle */}
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs text-muted-foreground">Pack mode</span>
+        <div
+          className="flex items-center gap-1 rounded-md border border-border bg-surface p-0.5"
+          role="radiogroup"
+          aria-label="Pack mode"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={packMode === 'tight'}
+            onClick={() => setPackMode('tight')}
+            className={cn(
+              'flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+              packMode === 'tight'
+                ? 'bg-elevated text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <Maximize2 size={16} />
+            Tight
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={packMode === 'clean'}
+            onClick={() => setPackMode('clean')}
+            className={cn(
+              'flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50 focus-visible:ring-offset-1 focus-visible:ring-offset-background',
+              packMode === 'clean'
+                ? 'bg-elevated text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <Layout size={16} />
+            Clean
           </button>
         </div>
       </div>

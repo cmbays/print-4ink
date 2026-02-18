@@ -13,6 +13,8 @@ import type { DtfLineItem } from '@domain/entities/dtf-line-item'
 import type { JobTask } from '@domain/entities/job'
 import { money, round2, toNumber } from '@domain/lib/money'
 
+import { DTF_DEFAULT_MARGIN } from '@domain/constants/dtf'
+
 // Sheet constants live in @domain/constants/dtf — re-exported here for backward compatibility
 export { DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
 
@@ -108,10 +110,15 @@ export function optimizeCost(
       selectedTier = sortedTiers[sortedTiers.length - 1]
     }
 
-    // Calculate total design area for utilization (geometry, not monetary — raw JS math OK)
-    const totalDesignArea = packedSheet.designs.reduce((sum, d) => sum + d.width * d.height, 0)
+    // Calculate effective footprint for utilization:
+    // Each design claims (width + margin) × (height + margin) of sheet space.
+    // This accounts for the required gap around every design.
+    const totalFootprintArea = packedSheet.designs.reduce(
+      (sum, d) => sum + (d.width + DTF_DEFAULT_MARGIN) * (d.height + DTF_DEFAULT_MARGIN),
+      0
+    )
     const tierArea = selectedTier.width * selectedTier.length
-    const rawUtilization = tierArea > 0 ? (totalDesignArea / tierArea) * 100 : 0
+    const rawUtilization = tierArea > 0 ? (totalFootprintArea / tierArea) * 100 : 0
     const utilization = Math.min(100, Math.round(rawUtilization))
 
     // Cost = tier retail price (big.js for precision)

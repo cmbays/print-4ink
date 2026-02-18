@@ -18,7 +18,7 @@ function makePackedSheet(designs: PackedSheet['designs'], usedHeight: number): P
 describe('optimizeCost', () => {
   it('picks cheapest tier that fits the used height', () => {
     const sheet = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'Logo' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'Logo', shape: 'box' }],
       10
     )
 
@@ -32,7 +32,7 @@ describe('optimizeCost', () => {
 
   it('picks larger tier when height exceeds smallest', () => {
     const sheet = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger', shape: 'box' }],
       20
     )
 
@@ -45,7 +45,7 @@ describe('optimizeCost', () => {
 
   it('uses largest tier when height exceeds all', () => {
     const sheet = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 20, height: 55, label: 'Huge' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 20, height: 55, label: 'Huge', shape: 'box' }],
       65
     )
 
@@ -57,26 +57,26 @@ describe('optimizeCost', () => {
   })
 
   it('calculates utilization percentage correctly', () => {
-    // One design: 10 x 12 = 120 sq inches
+    // One design: 10 x 12, with 1" margin → effective footprint = 11 x 13 = 143 sq in
     // Tier: 22 x 24 = 528 sq inches
-    // Utilization: (120 / 528) * 100 = 22.727... → Math.round → 23
+    // Utilization: (143 / 528) * 100 = 27.08... → Math.round → 27
     const sheet = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger', shape: 'box' }],
       20
     )
 
     const result = optimizeCost([sheet], MOCK_TIERS)
 
-    expect(result.sheets[0].utilization).toBe(23)
+    expect(result.sheets[0].utilization).toBe(27)
   })
 
   it('sums total cost across multiple sheets with big.js precision', () => {
     const sheet1 = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'Logo' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'Logo', shape: 'box' }],
       10
     )
     const sheet2 = makePackedSheet(
-      [{ id: 'd2-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger' }],
+      [{ id: 'd2-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger', shape: 'box' }],
       20
     )
 
@@ -90,9 +90,18 @@ describe('optimizeCost', () => {
 
   it('returns correct totalSheets count', () => {
     const sheets = [
-      makePackedSheet([{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'A' }], 10),
-      makePackedSheet([{ id: 'd2-0', x: 1, y: 1, width: 4, height: 4, label: 'B' }], 10),
-      makePackedSheet([{ id: 'd3-0', x: 1, y: 1, width: 4, height: 4, label: 'C' }], 10),
+      makePackedSheet(
+        [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'A', shape: 'box' }],
+        10
+      ),
+      makePackedSheet(
+        [{ id: 'd2-0', x: 1, y: 1, width: 4, height: 4, label: 'B', shape: 'box' }],
+        10
+      ),
+      makePackedSheet(
+        [{ id: 'd3-0', x: 1, y: 1, width: 4, height: 4, label: 'C', shape: 'box' }],
+        10
+      ),
     ]
 
     const result = optimizeCost(sheets, MOCK_TIERS)
@@ -111,7 +120,7 @@ describe('optimizeCost', () => {
     // Pass tiers in reverse order — algorithm should still pick cheapest fit
     const reversedTiers = [...MOCK_TIERS].reverse()
     const sheet = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'Logo' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 4, height: 4, label: 'Logo', shape: 'box' }],
       10
     )
 
@@ -125,7 +134,7 @@ describe('optimizeCost', () => {
   it('selects exact-fit tier without upgrading', () => {
     // usedHeight exactly equals a tier length
     const sheet = makePackedSheet(
-      [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 10, label: 'M' }],
+      [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 10, label: 'M', shape: 'box' }],
       12
     )
 
@@ -139,7 +148,10 @@ describe('optimizeCost', () => {
   it('accumulates cost for many sheets without floating-point drift', () => {
     // 10 sheets at $8.99 each = $89.90 (exact)
     const sheets = Array.from({ length: 10 }, (_, i) =>
-      makePackedSheet([{ id: `d${i}-0`, x: 1, y: 1, width: 4, height: 4, label: 'X' }], 10)
+      makePackedSheet(
+        [{ id: `d${i}-0`, x: 1, y: 1, width: 4, height: 4, label: 'X', shape: 'box' }],
+        10
+      )
     )
 
     const result = optimizeCost(sheets, MOCK_TIERS)

@@ -12,6 +12,7 @@ export const canvasDesignSchema = z.object({
   width: z.number().positive(),
   height: z.number().positive(),
   label: z.string(),
+  shape: z.enum(['box', 'round']).default('box'),
 })
 
 export const canvasLayoutSchema = z.object({
