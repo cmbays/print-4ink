@@ -222,6 +222,40 @@ Sheet and Dialog components from shadcn/ui use z-50 with a backdrop overlay that
 11. **Port interfaces**: Code against the port interface (e.g., `ICustomerRepository`), not the concrete implementation. The composition root (`src/infrastructure/bootstrap.ts`) is the only place that wires ports to implementations.
 12. **Logging**: Never use `console.log`/`console.warn`/`console.error` in production code. Use `logger` from `@shared/lib/logger` with bound domain context: `logger.child({ domain: 'quotes' })`.
 
+## Testing Standards
+
+**Skill:** `.claude/skills/tdd/skill.md` — invoke at start of every Build stage (wraps `superpowers:test-driven-development`)
+
+### Layer Thresholds
+
+| Layer           | Path                                     | Threshold             |
+| --------------- | ---------------------------------------- | --------------------- |
+| Money helpers   | `src/domain/lib/money.ts`                | **100% mandatory**    |
+| Pricing service | `src/domain/services/pricing.service.ts` | **100% mandatory**    |
+| DTF service     | `src/domain/services/dtf.service.ts`     | 90%                   |
+| Domain rules    | `src/domain/rules/`                      | 90%                   |
+| Domain entities | `src/domain/entities/`                   | Excluded              |
+| Repositories    | `src/infrastructure/repositories/`       | 80%                   |
+| Route handlers  | `app/api/`                               | 80%                   |
+| Server Actions  | `src/features/*/actions/`                | 80%                   |
+| UI components   | `src/features/*/components/`             | 70% (pure logic only) |
+
+### Commands
+
+```bash
+npm run test:coverage   # Unit/integration with thresholds (hard fail in CI)
+npm run test:e2e        # Playwright E2E (non-blocking in Phase 1)
+npm run test:e2e:ui     # E2E with Playwright UI (local debugging)
+```
+
+### Rules
+
+- **No PR without passing `npm run test:coverage`** — thresholds block merge
+- **100% on `money.ts` and `pricing.service.ts`** — zero tolerance, CI hard-fails
+- **E2E for critical flows** — quote creation, job board, invoice generation require journey tests in `tests/e2e/journeys/`
+- **Plan stage outputs function signatures** — "wished-for APIs" before RED phase begins
+- **Test behavior, not implementation** — repository tests assert results, not internal state
+
 ## Quality Checklist
 
 Before considering any screen done:
