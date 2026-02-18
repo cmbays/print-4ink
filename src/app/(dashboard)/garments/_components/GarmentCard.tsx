@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { cn } from '@shared/lib/cn'
-import { GarmentImage } from '@shared/ui/organisms/GarmentImage'
+import { GarmentMockup } from '@features/quotes/components/mockup'
 import { FavoriteStar } from '@shared/ui/organisms/FavoriteStar'
 import { ColorSwatchPicker } from '@shared/ui/organisms/ColorSwatchPicker'
 import { Badge } from '@shared/ui/primitives/badge'
@@ -66,7 +66,11 @@ export function GarmentCard({
     >
       {/* Image */}
       <div className="flex justify-center py-2">
-        <GarmentImage brand={garment.brand} sku={garment.sku} name={garment.name} size="md" />
+        <GarmentMockup
+          garmentCategory={garment.baseCategory}
+          colorHex={garmentColors[0]?.hex ?? '#ffffff'}
+          size="sm"
+        />
       </div>
 
       {/* Brand + SKU */}
