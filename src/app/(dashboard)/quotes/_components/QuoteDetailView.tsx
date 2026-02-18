@@ -6,7 +6,12 @@ import { StatusBadge } from '@shared/ui/organisms/StatusBadge'
 import { DiscountRow } from './DiscountRow'
 import { QuoteActions } from './QuoteActions'
 import { EmailPreviewModal } from './EmailPreviewModal'
-import { MockupFilterProvider, GarmentMockupThumbnail } from '@features/quotes/components/mockup'
+import {
+  MockupFilterProvider,
+  GarmentMockupThumbnail,
+  GarmentMockupModal,
+  GarmentMockupCard,
+} from '@features/quotes/components/mockup'
 import { normalizePosition } from '@domain/constants/print-zones'
 import { Button } from '@shared/ui/primitives/button'
 import Link from 'next/link'
@@ -148,6 +153,40 @@ export function QuoteDetailView({
         )}
       </div>
 
+      {/* Review mockup preview — lg card shown only in slide-out review mode */}
+      {mode === 'review' &&
+        (() => {
+          const firstItem = quote.lineItems[0]
+          const firstGarment = firstItem
+            ? garmentCatalog.find((g) => g.id === firstItem.garmentId)
+            : undefined
+          const firstColor = firstItem
+            ? allColors.find((c) => c.id === firstItem.colorId)
+            : undefined
+          const firstDetail = firstItem?.printLocationDetails[0]
+          const firstArtwork = firstDetail?.artworkId
+            ? artworkMap.get(firstDetail.artworkId)
+            : undefined
+          if (!firstGarment || !firstColor) return null
+          return (
+            <GarmentMockupCard
+              size="lg"
+              garmentCategory={firstGarment.baseCategory}
+              colorHex={firstColor.hex}
+              artworkPlacements={
+                firstArtwork && firstDetail
+                  ? [
+                      {
+                        artworkUrl: firstArtwork.thumbnailUrl,
+                        position: normalizePosition(firstDetail.location),
+                      },
+                    ]
+                  : []
+              }
+            />
+          )
+        })()}
+
       {/* Line Items */}
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-foreground">Line Items</h3>
@@ -240,7 +279,7 @@ export function QuoteDetailView({
                   return (
                     <div key={di} className="flex items-center gap-3 text-sm">
                       {color && (
-                        <GarmentMockupThumbnail
+                        <GarmentMockupModal
                           garmentCategory={garment?.baseCategory ?? 't-shirts'}
                           colorHex={color.hex}
                           artworkPlacements={
@@ -253,8 +292,23 @@ export function QuoteDetailView({
                                 ]
                               : []
                           }
-                          className="shrink-0"
-                        />
+                        >
+                          <GarmentMockupThumbnail
+                            garmentCategory={garment?.baseCategory ?? 't-shirts'}
+                            colorHex={color.hex}
+                            artworkPlacements={
+                              artwork
+                                ? [
+                                    {
+                                      artworkUrl: artwork.thumbnailUrl,
+                                      position: normalizePosition(detail.location),
+                                    },
+                                  ]
+                                : []
+                            }
+                            className="shrink-0"
+                          />
+                        </GarmentMockupModal>
                       )}
                       <div className="flex-1">
                         <span className="text-foreground">{detail.location}</span>
