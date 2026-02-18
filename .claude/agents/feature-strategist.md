@@ -94,7 +94,7 @@ Present the plan. Wait for user review. Revise as needed. Do not proceed until t
 
 ## Deliverables
 
-- Feature plan: docs/FEATURE*PLAN*[YYYYMMDD].md
+- Feature plan: docs/workspace/{pipeline-id}/feature-plan.md
 
 ## Key Findings
 

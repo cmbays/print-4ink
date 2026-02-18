@@ -14,8 +14,8 @@ prerequisites:
 
 This skill produces two artifacts for each vertical build:
 
-1. **Implementation Plan** (`docs/plans/YYYY-MM-DD-<vertical>-impl-plan.md`) — human-readable, step-by-step tasks
-2. **Execution Manifest** (`docs/plans/YYYY-MM-DD-<vertical>-manifest.yaml`) — machine-readable YAML consumed by `work build`
+1. **Implementation Plan** (`docs/workspace/{pipeline-id}/plan.md`) — human-readable, step-by-step tasks
+2. **Execution Manifest** (`docs/workspace/{pipeline-id}/manifest.yaml`) — machine-readable YAML consumed by `work build`
 
 The manifest is the contract between planning and execution. `work build` parses it to create worktrees and generate Zellij layouts.
 
@@ -27,7 +27,7 @@ Read these docs in order:
 
 1. `CLAUDE.md` — project standards, tech stack, quality checklist
 2. `docs/PRD.md` — feature scope and acceptance criteria
-3. `docs/breadboards/<vertical>-breadboard.md` — affordance maps, component boundaries, build order
+3. `docs/workspace/{pipeline-id}/breadboard.md` — affordance maps, component boundaries, build order
 4. Prior KB docs for the vertical (research, interview)
 5. `docs/TECH_STACK.md` — technology choices and constraints
 
