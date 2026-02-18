@@ -101,14 +101,15 @@ infrastructure/ → shared/
 
 ## Path Aliases (`tsconfig.json`)
 
-| Alias         | Resolves to            |
-| ------------- | ---------------------- |
-| `@/*`         | `src/*`                |
-| `@domain/*`   | `src/domain/*`         |
-| `@features/*` | `src/features/*`       |
-| `@shared/*`   | `src/shared/*`         |
-| `@infra/*`    | `src/infrastructure/*` |
-| `@config/*`   | `src/config/*`         |
+| Alias         | Resolves to            | Used for                                                                                    |
+| ------------- | ---------------------- | ------------------------------------------------------------------------------------------- |
+| `@/*`         | `src/*`                | General src imports (prefer layer aliases when possible)                                    |
+| `@domain/*`   | `src/domain/*`         | Entities, ports, rules, services, value objects                                             |
+| `@features/*` | `src/features/*`       | Domain-specific UI components and hooks                                                     |
+| `@shared/*`   | `src/shared/*`         | Cross-domain UI, hooks, utilities, and constants                                            |
+| `@infra/*`    | `src/infrastructure/*` | Repository implementations, auth, bootstrap composition root                                |
+| `@config/*`   | `src/config/*`         | App runtime config (products.json, domains.json)                                            |
+| `@lib/*`      | `lib/*`                | Supplier adapters, helpers, and shared utilities outside the src/ Clean Architecture layers |
 
 ## File Naming Conventions
 
