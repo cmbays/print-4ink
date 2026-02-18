@@ -193,6 +193,8 @@
   --canvas-dim-label: rgba(255, 255, 255, 0.6);
   --canvas-spacing-line: rgba(255, 255, 255, 0.25);
   --canvas-spacing-label: rgba(255, 255, 255, 0.4);
+  --canvas-void: rgba(255, 255, 255, 0.02);
+  --canvas-void-label: rgba(255, 255, 255, 0.25);
 
   /* Sidebar */
   --sidebar: #111213;

@@ -133,6 +133,14 @@ export function GangSheetCanvas({
   // Spacing indicator
   const spacingGap = findSpacingGap(designs, margins)
 
+  // Void space hint: region below all designs where more shapes could fit
+  const maxDesignBottom =
+    designs.length > 0 ? Math.max(...designs.map((d) => d.y + d.height)) : margins
+  const voidTop = maxDesignBottom
+  const voidBottom = sheetHeight - margins
+  const voidHeight = voidBottom - voidTop
+  const showVoidHint = voidHeight > 2 // only show if > 2" of usable space remains
+
   return (
     <div className="rounded-lg border border-border bg-background p-4 space-y-3">
       {/* Header: multi-sheet tabs + dimensions */}
@@ -357,6 +365,34 @@ export function GangSheetCanvas({
                   fontFamily="Inter, system-ui, sans-serif"
                 >
                   {margins}&quot;
+                </text>
+              </g>
+            )}
+
+            {/* Void space hint — available area below packed designs */}
+            {showVoidHint && (
+              <g>
+                {/* Subtle shaded region */}
+                <rect
+                  x={margins}
+                  y={voidTop}
+                  width={sheetWidth - margins * 2}
+                  height={voidHeight}
+                  fill="var(--canvas-void)"
+                  rx={0.1}
+                />
+                {/* "Room for more shapes" label, centered in the void */}
+                <text
+                  x={sheetWidth / 2}
+                  y={voidTop + voidHeight / 2}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="var(--canvas-void-label)"
+                  fontSize={Math.min(0.55, voidHeight * 0.2)}
+                  fontFamily="Inter, system-ui, sans-serif"
+                  fontWeight={400}
+                >
+                  Room for more shapes below
                 </text>
               </g>
             )}
