@@ -24,7 +24,8 @@
       "@features/*": ["./src/features/*"],
       "@shared/*": ["./src/shared/*"],
       "@infra/*": ["./src/infrastructure/*"],
-      "@config/*": ["./src/config/*"]
+      "@config/*": ["./src/config/*"],
+      "@lib/*": ["./lib/*"]
     }
   },
   "include": [
