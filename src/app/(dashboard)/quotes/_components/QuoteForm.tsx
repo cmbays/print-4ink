@@ -14,6 +14,7 @@ import {
   DollarSign,
   Tag,
   Monitor,
+  Printer,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -1044,6 +1045,11 @@ export function QuoteForm({
           </div>
         </CollapsibleSection>
 
+        {/* Service Type label */}
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-1">
+          Service Type
+        </p>
+
         {/* Service Type Tab Bar (P2.3) */}
         <ServiceTypeTabBar
           activeTab={activeServiceTab}
@@ -1105,20 +1111,29 @@ export function QuoteForm({
                 {errors.dtfTab}
               </p>
             )}
-            <DtfTabContent
-              lineItems={dtfLineItems}
-              setLineItems={setDtfLineItems}
-              sheetCalculation={sheetCalculation}
-              splitMode={splitMode}
-              setSplitMode={setSplitMode}
-              packMode={packMode}
-              setPackMode={setPackMode}
-              canvasLayout={canvasLayout}
-              activeSheetIndex={activeSheetIndex}
-              setActiveSheetIndex={setActiveSheetIndex}
-              setSheetCalculation={setSheetCalculation}
-              setCanvasLayout={setCanvasLayout}
-            />
+            <CollapsibleSection
+              title="Image Prints"
+              icon={<Printer size={16} className="text-muted-foreground" />}
+              isComplete={dtfLineItems.some((li) => li.artworkName !== '')}
+              defaultOpen
+            >
+              <div className="pt-2">
+                <DtfTabContent
+                  lineItems={dtfLineItems}
+                  setLineItems={setDtfLineItems}
+                  sheetCalculation={sheetCalculation}
+                  splitMode={splitMode}
+                  setSplitMode={setSplitMode}
+                  packMode={packMode}
+                  setPackMode={setPackMode}
+                  canvasLayout={canvasLayout}
+                  activeSheetIndex={activeSheetIndex}
+                  setActiveSheetIndex={setActiveSheetIndex}
+                  setSheetCalculation={setSheetCalculation}
+                  setCanvasLayout={setCanvasLayout}
+                />
+              </div>
+            </CollapsibleSection>
           </div>
         )}
 
