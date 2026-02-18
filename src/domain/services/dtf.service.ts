@@ -316,11 +316,13 @@ export function hexPackCircles(
 /**
  * Smart dispatcher for gang sheet packing.
  *
- * - Uniform-circle-only jobs: hexPackCircles() for ~10% height reduction.
- * - Mixed jobs (circles + rects): hexPackCircles() for circles, then attempts
- *   to fit rects in the remaining horizontal space of the last circle row,
- *   then maxRectsPack() for any rects that don't fit.
- * - Rect-only or non-uniform jobs: maxRectsPack().
+ * packMode controls layout strategy:
+ * - 'tight' (default): hex-pack uniform circles for ~10% height savings, then
+ *   fit rects into the remaining horizontal gap of the last circle row, then
+ *   overflow rects to maxRectsPack(). Pure rect/non-uniform jobs → maxRectsPack().
+ * - 'clean': route ALL designs (circles and rects) through maxRectsPack() so
+ *   circles are treated as their bounding boxes. Produces a uniform rectangular
+ *   grid — no hex offset — making the sheet easier to guillotine-cut.
  */
 export function packDesigns(
   designs: DesignInput[],
@@ -348,11 +350,9 @@ export function packDesigns(
     return maxRectsPack(designs, sheetWidth, margin)
   }
 
-  // Clean mode: circles and rects on separate sheets — clearer visual at the cost of additional sheets
+  // Clean mode: treat ALL designs as bounding boxes — uniform rectangular grid, easier to guillotine-cut
   if (packMode === 'clean') {
-    const circleSheets = hexPackCircles(circleDesigns, sheetWidth, margin)
-    const rectSheets = rectDesigns.length > 0 ? maxRectsPack(rectDesigns, sheetWidth, margin) : []
-    return [...circleSheets, ...rectSheets]
+    return maxRectsPack(designs, sheetWidth, margin)
   }
 
   // Mixed job (tight mode): hex-pack circles, then fit rects into remaining space

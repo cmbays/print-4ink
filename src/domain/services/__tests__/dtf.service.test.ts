@@ -432,32 +432,38 @@ describe('packDesigns', () => {
     expect(boxSheet).not.toBe(circleSheet)
   })
 
-  it('clean mode puts circles and rects on separate sheets', () => {
+  it('clean mode treats circles as bounding boxes and packs all shapes together', () => {
     const mixed = [
       { id: 'circle', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
       { id: 'box', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' as const },
     ]
     const result = packDesigns(mixed, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, 'clean')
-    // Circles on sheet 1, box on sheet 2
-    expect(result.length).toBeGreaterThanOrEqual(2)
+    // All 14 designs packed (circles treated as 4x4 bounding boxes)
     const allDesigns = result.flatMap((s) => s.designs)
     expect(allDesigns).toHaveLength(14)
-    // No sheet should contain BOTH circles and boxes
-    for (const sheet of result) {
-      const shapes = new Set(sheet.designs.map((d) => d.shape))
-      expect(shapes.size).toBe(1) // each sheet has only one shape type
-    }
+    // Circles maintain their shape type but are positioned like rectangles (no hex offset)
+    const circleDesigns = allDesigns.filter((d) => d.shape === 'round')
+    expect(circleDesigns).toHaveLength(13)
+    // With uniform 4x4 sizes, maxrects packs all 14 onto a single sheet
+    expect(result).toHaveLength(1)
+    // Circles and boxes are on the same sheet (unlike old "separate sheets" behaviour)
+    const shapesOnSheet0 = new Set(result[0].designs.map((d) => d.shape))
+    expect(shapesOnSheet0.has('round')).toBe(true)
+    expect(shapesOnSheet0.has('box')).toBe(true)
   })
 
-  it('tight mode (default) keeps mixed jobs on fewer sheets', () => {
+  it('tight mode uses hex packing for circles; clean mode uses rectangular grid', () => {
+    // Tight: hex-pack circles (offset rows) — circles have non-uniform y spacing
+    // Clean: maxrects-pack all as rectangles — circles have uniform row y spacing
     const mixed = [
-      { id: 'circle', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
+      { id: 'circle', width: 4, height: 4, quantity: 8, label: 'Circle', shape: 'round' as const },
       { id: 'box', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' as const },
     ]
     const tightResult = packDesigns(mixed) // default is tight
     const cleanResult = packDesigns(mixed, DTF_SHEET_WIDTH, DTF_DEFAULT_MARGIN, 'clean')
-    // Tight should use same or fewer sheets than clean
-    expect(tightResult.length).toBeLessThanOrEqual(cleanResult.length)
+    // Both modes should pack all 9 designs
+    expect(tightResult.flatMap((s) => s.designs)).toHaveLength(9)
+    expect(cleanResult.flatMap((s) => s.designs)).toHaveLength(9)
   })
 })
 
