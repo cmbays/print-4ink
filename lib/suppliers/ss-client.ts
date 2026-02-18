@@ -12,6 +12,8 @@
  *
  * @module lib/suppliers/ss-client
  */
+import { Redis } from '@upstash/redis'
+import { Ratelimit } from '@upstash/ratelimit'
 import { logger } from '@shared/lib/logger'
 
 const ssLogger = logger.child({ domain: 'ss-client' })
@@ -61,6 +63,42 @@ export const SS_CACHE_TTL = {
   inventory: 300, // 5m  — stock levels are volatile
   brands: 604800, // 7d  — reference data
 } as const satisfies Record<SSSegment, number>
+
+// ─── Distributed rate limiter ─────────────────────────────────────────────────
+
+/**
+ * Lazy-initialized Upstash rate limiter — only created when Upstash env vars
+ * are present. Returns null when running without Upstash (local dev, InMemory
+ * cache mode) so ssGet() degrades gracefully to the per-response circuit breaker.
+ *
+ * Sliding window at 50 req/min provides a 10-req buffer below S&S's 60 req/min
+ * hard limit. The sliding window algorithm prevents burst spikes at window
+ * boundaries that a fixed window would allow.
+ */
+let _rateLimiter: Ratelimit | null | undefined = undefined
+
+function getRateLimiter(): Ratelimit | null {
+  if (_rateLimiter !== undefined) return _rateLimiter
+
+  const url = process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN
+  if (!url || !token) {
+    _rateLimiter = null
+    return null
+  }
+
+  _rateLimiter = new Ratelimit({
+    redis: new Redis({ url, token }),
+    limiter: Ratelimit.slidingWindow(50, '60 s'),
+    prefix: 'ss:ratelimit',
+  })
+  return _rateLimiter
+}
+
+/** For testing only — resets the lazy singleton so tests get a fresh limiter. */
+export function _resetRateLimiter(): void {
+  _rateLimiter = undefined
+}
 
 // ─── Error types ──────────────────────────────────────────────────────────────
 
@@ -134,6 +172,21 @@ export async function ssGet(
   // on missing credentials. If it were inside the try, that error would be caught and
   // re-thrown as SSClientError(502), masking the real config problem.
   const authHeader = getAuthHeader()
+
+  // Distributed rate limiter — checked before the fetch so we never hit S&S
+  // when the budget is exhausted. Falls through when Upstash is not configured.
+  const rateLimiter = getRateLimiter()
+  if (rateLimiter) {
+    const { success, reset } = await rateLimiter.limit('ss-api')
+    if (!success) {
+      const retryAfter = Math.ceil((reset - Date.now()) / 1000)
+      ssLogger.warn('Distributed rate limit reached before S&S request', {
+        segment,
+        retryAfter,
+      })
+      throw new SSRateLimitError(retryAfter)
+    }
+  }
 
   const url = new URL(`${SS_BASE_URL}/${segment}/`)
   for (const [key, value] of Object.entries(params)) {
