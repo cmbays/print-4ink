@@ -280,6 +280,8 @@ export class SSActivewearAdapter implements SupplierAdapter {
     try {
       raw = await ssGet('products', { styleId }, SS_CACHE_TTL.products)
     } catch (err) {
+      // 502 = unreachable → degrade gracefully to mock. 429/5xx = operator action needed → propagate.
+      // SSRateLimitError extends SSClientError but has status=429, so it correctly rethrows here.
       if (err instanceof SSClientError && err.status === 502) {
         adapterLogger.warn('S&S unreachable in getStyle, falling back to mock', { styleId })
         return this.fallback.getStyle(styleId)
@@ -363,6 +365,8 @@ export class SSActivewearAdapter implements SupplierAdapter {
     try {
       raw = await ssGet('inventory', { skuids: skuIds.join(',') }, SS_CACHE_TTL.inventory)
     } catch (err) {
+      // 502 = unreachable → degrade gracefully to mock. 429/5xx = operator action needed → propagate.
+      // SSRateLimitError extends SSClientError but has status=429, so it correctly rethrows here.
       if (err instanceof SSClientError && err.status === 502) {
         adapterLogger.warn('S&S unreachable in getInventory, falling back to mock', {
           skuCount: skuIds.length,
@@ -385,6 +389,8 @@ export class SSActivewearAdapter implements SupplierAdapter {
     try {
       raw = await ssGet('brands', {}, SS_CACHE_TTL.brands)
     } catch (err) {
+      // 502 = unreachable → degrade gracefully to mock. 429/5xx = operator action needed → propagate.
+      // SSRateLimitError extends SSClientError but has status=429, so it correctly rethrows here.
       if (err instanceof SSClientError && err.status === 502) {
         adapterLogger.warn('S&S unreachable in getBrands, falling back to mock')
         return this.fallback.getBrands()
@@ -407,6 +413,8 @@ export class SSActivewearAdapter implements SupplierAdapter {
     try {
       raw = await ssGet('categories', {}, SS_CACHE_TTL.categories)
     } catch (err) {
+      // 502 = unreachable → degrade gracefully to mock. 429/5xx = operator action needed → propagate.
+      // SSRateLimitError extends SSClientError but has status=429, so it correctly rethrows here.
       if (err instanceof SSClientError && err.status === 502) {
         adapterLogger.warn('S&S unreachable in getCategories, falling back to mock')
         return this.fallback.getCategories()

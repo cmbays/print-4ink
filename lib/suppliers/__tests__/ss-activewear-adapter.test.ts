@@ -331,6 +331,18 @@ describe('searchCatalog()', () => {
     expect(mockSsGet).toHaveBeenCalledTimes(1)
   })
 
+  it('applies text query to cached catalog data — no extra ssGet call', async () => {
+    mockSsGet.mockResolvedValueOnce([
+      styleRow,
+      { ...styleRow, styleID: '9999', styleName: 'Polo Shirt', partNumber: '3800' },
+    ])
+    await adapter.searchCatalog({ brand: 'Gildan' }) // warms cache
+    const result = await adapter.searchCatalog({ brand: 'Gildan', query: 'polo' })
+    expect(mockSsGet).toHaveBeenCalledTimes(1) // second call served from cache
+    expect(result.styles).toHaveLength(1)
+    expect(result.styles[0].styleName).toBe('Polo Shirt')
+  })
+
   it('falls back to MockAdapter on 502', async () => {
     mockSsGet.mockRejectedValueOnce(new SSClientError(502, 'Supplier API unreachable'))
     const result = await adapter.searchCatalog({})
