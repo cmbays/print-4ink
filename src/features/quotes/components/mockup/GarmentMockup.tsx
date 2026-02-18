@@ -2,7 +2,7 @@
 
 import { useId, useMemo } from 'react'
 import { cn } from '@shared/lib/cn'
-import { getZoneForPosition } from '@domain/constants/print-zones'
+import { getZoneForPosition, getZonesForCategory } from '@domain/constants/print-zones'
 import { hexToColorMatrix } from '@domain/rules/color.rules'
 import type { GarmentCategory } from '@domain/entities/garment'
 import type { MockupView } from '@domain/entities/mockup-template'
@@ -46,6 +46,8 @@ type GarmentMockupProps = {
   viewBoxWidth?: number
   /** ViewBox height of the SVG template. Defaults to 480. */
   viewBoxHeight?: number
+  /** Dev-only: renders dashed amber overlay showing print zone boundaries. */
+  debug?: boolean
 }
 
 /**
@@ -67,6 +69,7 @@ export function GarmentMockup({
   templatePath,
   viewBoxWidth = 400,
   viewBoxHeight = 480,
+  debug = false,
 }: GarmentMockupProps) {
   const instanceId = useId()
   const svgPath = templatePath ?? `/mockup-templates/${garmentCategory}-${view}.svg`
@@ -151,6 +154,29 @@ export function GarmentMockup({
             </g>
           )
         })}
+
+        {/* Dev debug: print zone boundaries */}
+        {debug &&
+          getZonesForCategory(garmentCategory, view).map((zone) => {
+            const zx = (zone.x / 100) * viewBoxWidth
+            const zy = (zone.y / 100) * viewBoxHeight
+            const zw = (zone.width / 100) * viewBoxWidth
+            const zh = (zone.height / 100) * viewBoxHeight
+            return (
+              <rect
+                key={zone.position}
+                x={zx}
+                y={zy}
+                width={zw}
+                height={zh}
+                fill="none"
+                stroke="var(--warning)"
+                strokeWidth={1.5}
+                strokeDasharray="6 3"
+                className="pointer-events-none"
+              />
+            )
+          })}
       </svg>
     </div>
   )
