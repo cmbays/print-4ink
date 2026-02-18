@@ -8,6 +8,9 @@ node_modules/
 !.yarn/releases
 !.yarn/versions
 
+# gitnore
+.gitignore
+
 # next.js
 .next/
 out/
@@ -32,7 +35,7 @@ next-env.d.ts
 !.claude/agents/**
 !.claude/hooks/
 !.claude/hooks/**
-!.claude/settings.json
+.claude/settings.json
 .claudeignore
 
 # ephemeral scratch space (delete at will — nothing here is committed)
