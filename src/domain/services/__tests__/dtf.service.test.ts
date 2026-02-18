@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { shelfPack } from '../dtf.service'
+import { shelfPack, hexPackCircles } from '../dtf.service'
 import { DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
 
 describe('shelfPack', () => {
@@ -233,5 +233,103 @@ describe('shelfPack', () => {
     expect(allDesigns[0].height).toBe(12)
     expect(allDesigns[1].height).toBe(12)
     expect(allDesigns[2].height).toBe(4)
+  })
+})
+
+describe('hexPackCircles', () => {
+  it('returns empty array for empty input', () => {
+    const result = hexPackCircles([])
+    expect(result).toEqual([])
+  })
+
+  it('places a single circle on one sheet', () => {
+    // 4" circle, margin 1": center at (1+2, 1+2) = (3, 3), bbox top-left = (1, 1)
+    // usedHeight = cy + r + margin = 3 + 2 + 1 = 6
+    const result = hexPackCircles([
+      { id: 'd1', width: 4, height: 4, quantity: 1, label: 'Circle', shape: 'round' },
+    ])
+    expect(result).toHaveLength(1)
+    expect(result[0].designs).toHaveLength(1)
+    const d = result[0].designs[0]
+    expect(d.x).toBe(1) // cx - r = 3 - 2
+    expect(d.y).toBe(1) // cy - r = 3 - 2
+    expect(d.width).toBe(4)
+    expect(d.height).toBe(4)
+    expect(d.shape).toBe('round')
+    expect(result[0].usedHeight).toBe(6)
+  })
+
+  it('uses circle-surface-to-circle-surface spacing on same row', () => {
+    // 2 circles of D=4, margin=1: centers at x=3, x=8 (spacing = D+margin = 5)
+    // x0 bbox = 1, x1 bbox = 6
+    // Surface gap between them = 6 - (1+4) = 1" ✓
+    const result = hexPackCircles([
+      { id: 'd1', width: 4, height: 4, quantity: 2, label: 'Circle', shape: 'round' },
+    ])
+    expect(result[0].designs[0].x).toBeCloseTo(1) // cx=3, bbox x=1
+    expect(result[0].designs[1].x).toBeCloseTo(6) // cx=8, bbox x=6
+  })
+
+  it('offsets odd rows by half the column spacing', () => {
+    // 5 × 4" circles on 22" sheet, margin=1:
+    // Row 0 (even): cxMin=3, spacing=5 → centers: 3, 8, 13, 18 → x=1,6,11,16 (4 circles)
+    // Row 1 (odd):  offset=2.5 → cx starts at 5.5 → x=3.5 (5th circle)
+    const result = hexPackCircles([
+      { id: 'd1', width: 4, height: 4, quantity: 5, label: 'Circle', shape: 'round' },
+    ])
+    expect(result[0].designs).toHaveLength(5)
+    expect(result[0].designs[0].x).toBeCloseTo(1) // Row 0 first
+    expect(result[0].designs[4].x).toBeCloseTo(3.5) // Row 1 first (offset)
+  })
+
+  it('reduces sheet height vs shelfPack for 13 uniform circles', () => {
+    // Research confirmed: 13 × 4" circles → hex: ~18.99", shelf: 21"
+    const circles = [
+      { id: 'd1', width: 4, height: 4, quantity: 13, label: 'Circle', shape: 'round' as const },
+    ]
+    const hexResult = hexPackCircles(circles)
+    const shelfResult = shelfPack(circles)
+    expect(hexResult[0].usedHeight).toBeLessThan(19.5)
+    expect(hexResult[0].usedHeight).toBeLessThan(shelfResult[0].usedHeight)
+  })
+
+  it('creates a new sheet when circles overflow vertically', () => {
+    // 10" circles: rowPitch = 11*sqrt(3)/2 ≈ 9.526". With margin=1, fit ~5-6 rows per 60" sheet.
+    // With quantity=20, must overflow to a second sheet.
+    const result = hexPackCircles([
+      { id: 'd1', width: 10, height: 10, quantity: 20, label: 'Large', shape: 'round' },
+    ])
+    expect(result.length).toBeGreaterThan(1)
+    const totalPlaced = result.flatMap((s) => s.designs).length
+    expect(totalPlaced).toBe(20)
+  })
+
+  it('each design on second sheet starts with y >= margin', () => {
+    // After sheet overflow, new sheet designs must start at margin from top
+    const result = hexPackCircles([
+      { id: 'd1', width: 10, height: 10, quantity: 20, label: 'Large', shape: 'round' },
+    ])
+    if (result.length > 1) {
+      for (const d of result[1].designs) {
+        expect(d.y).toBeGreaterThanOrEqual(1)
+      }
+    }
+  })
+
+  it('expands quantity correctly', () => {
+    const result = hexPackCircles([
+      { id: 'c', width: 4, height: 4, quantity: 4, label: 'Circle', shape: 'round' },
+    ])
+    const all = result.flatMap((s) => s.designs)
+    expect(all).toHaveLength(4)
+    expect(all.map((d) => d.id)).toEqual(['c-0', 'c-1', 'c-2', 'c-3'])
+  })
+
+  it('rejects quantity overflow', () => {
+    expect(() =>
+      hexPackCircles([
+        { id: 'd1', width: 4, height: 4, quantity: 5001, label: 'C', shape: 'round' },
+      ])
+    ).toThrow(/exceeds maximum/)
   })
 })
