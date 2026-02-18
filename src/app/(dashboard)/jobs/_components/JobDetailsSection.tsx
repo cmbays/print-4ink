@@ -7,7 +7,7 @@ import { getScreensByJobId } from '@domain/rules/screen.rules'
 import { getGarmentCatalogMutable } from '@infra/repositories/garments'
 import { getColorsMutable } from '@infra/repositories/colors'
 import { getScreensMutable } from '@infra/repositories/screens'
-import { GarmentImage } from '@shared/ui/organisms/GarmentImage'
+import { GarmentMockup } from '@features/quotes/components/mockup'
 import type { Job } from '@domain/entities/job'
 
 type JobDetailsSectionProps = {
@@ -51,13 +51,13 @@ export function JobDetailsSection({ job }: JobDetailsSectionProps) {
                 const garment = getGarmentById(gd.garmentId, allGarments)
                 const color = getColorById(gd.colorId, allColors)
                 return (
-                  <div key={`${gd.garmentId}:${gd.colorId}`} className="flex items-start gap-3">
-                    {garment && (
-                      <GarmentImage
-                        brand={garment.brand}
-                        sku={garment.sku}
-                        name={garment.name}
-                        size="sm"
+                  <div key={`${gd.garmentId}:${gd.colorId}`} className="flex flex-col gap-2">
+                    {garment && color && (
+                      <GarmentMockup
+                        garmentCategory={garment.baseCategory}
+                        colorHex={color.hex}
+                        size="xs"
+                        className="w-full h-auto aspect-[5/6]"
                       />
                     )}
                     <div>

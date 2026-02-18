@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Circle, CircleCheck } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@shared/ui/primitives/tooltip'
+import { GarmentMockup } from '@features/quotes/components/mockup/GarmentMockup'
 import { JobCardBody, jobCardContainerClass } from './JobCardBody'
 import type { JobCard } from '@domain/entities/board-card'
 
@@ -33,15 +34,29 @@ export function JobBoardCard({ card }: JobBoardCardProps) {
     </Link>
   )
 
-  const hasTooltip = card.tasks.length > 0 || isBlocked
+  const hasMockup = !!card.garmentCategory && !!card.garmentColorHex
+  const hasTooltip = card.tasks.length > 0 || isBlocked || hasMockup
 
   if (!hasTooltip) return linked
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>{linked}</TooltipTrigger>
-      <TooltipContent side="right" className="max-w-60 p-3">
+      <TooltipContent side="right" className="max-w-64 p-3">
         <div className="flex flex-col gap-2">
+          {hasMockup && (
+            <GarmentMockup
+              garmentCategory={card.garmentCategory!}
+              colorHex={card.garmentColorHex!}
+              artworkPlacements={
+                card.primaryArtworkUrl
+                  ? [{ artworkUrl: card.primaryArtworkUrl, position: 'front-chest' }]
+                  : []
+              }
+              size="xs"
+              className="w-full h-auto aspect-[5/6]"
+            />
+          )}
           {isBlocked && (
             <p className="text-xs font-medium text-error">Blocked: {card.blockReason}</p>
           )}

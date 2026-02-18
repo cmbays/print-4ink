@@ -2,7 +2,7 @@ import { Package, Palette, MapPin, Calendar, Zap } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
 import { Badge } from '@shared/ui/primitives/badge'
 import { ServiceTypeBadge } from '@shared/ui/organisms/ServiceTypeBadge'
-import { GarmentMockupThumbnail } from '@features/quotes/components/mockup'
+import { GarmentMockupThumbnail, GarmentMockupModal } from '@features/quotes/components/mockup'
 import { TaskProgressBar } from '@features/jobs/components/TaskProgressBar'
 import { formatShortDate } from '@shared/lib/format'
 import { MoneyAmount } from '@shared/ui/organisms/MoneyAmount'
@@ -66,7 +66,7 @@ export function JobCardBody({ card }: JobCardBodyProps) {
       {/* Header: mockup + customer name + assignee + service icon */}
       <div className="flex items-start justify-between gap-2">
         {card.garmentCategory && card.garmentColorHex && (
-          <GarmentMockupThumbnail
+          <GarmentMockupModal
             garmentCategory={card.garmentCategory}
             colorHex={card.garmentColorHex}
             artworkPlacements={
@@ -79,8 +79,23 @@ export function JobCardBody({ card }: JobCardBodyProps) {
                   ]
                 : []
             }
-            className="shrink-0"
-          />
+          >
+            <GarmentMockupThumbnail
+              garmentCategory={card.garmentCategory}
+              colorHex={card.garmentColorHex}
+              artworkPlacements={
+                card.primaryArtworkUrl
+                  ? [
+                      {
+                        artworkUrl: card.primaryArtworkUrl,
+                        position: 'front-chest',
+                      },
+                    ]
+                  : []
+              }
+              className="shrink-0"
+            />
+          </GarmentMockupModal>
         )}
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-foreground truncate">{card.customerName}</p>

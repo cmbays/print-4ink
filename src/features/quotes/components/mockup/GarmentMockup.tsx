@@ -2,7 +2,7 @@
 
 import { useId, useMemo } from 'react'
 import { cn } from '@shared/lib/cn'
-import { getZoneForPosition } from '@domain/constants/print-zones'
+import { getZoneForPosition, getZonesForCategory } from '@domain/constants/print-zones'
 import { hexToColorMatrix } from '@domain/rules/color.rules'
 import type { GarmentCategory } from '@domain/entities/garment'
 import type { MockupView } from '@domain/entities/mockup-template'
@@ -25,6 +25,26 @@ function isResolved<T extends Record<string, unknown>>(p: T | null): p is T & Re
 
 const EMPTY_PLACEMENTS: ArtworkPlacement[] = []
 
+function isHexDark(hex: string): boolean {
+  const clean = hex.replace('#', '').padEnd(6, '0')
+  const r = parseInt(clean.slice(0, 2), 16)
+  const g = parseInt(clean.slice(2, 4), 16)
+  const b = parseInt(clean.slice(4, 6), 16)
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.4
+}
+
+function resolveTemplatePath(
+  category: GarmentCategory,
+  colorHex: string,
+  view: MockupView
+): string {
+  if (category === 't-shirts') {
+    const shade = isHexDark(colorHex) ? 'black' : 'white'
+    return `/mockup-templates/${category}-${view}-${shade}.png`
+  }
+  return `/mockup-templates/${category}-${view}.svg`
+}
+
 // Size presets (classes applied to the root wrapper)
 const SIZE_CLASSES = {
   xs: 'w-10 h-12', // 40x48 — Kanban cards, table rows
@@ -46,6 +66,8 @@ type GarmentMockupProps = {
   viewBoxWidth?: number
   /** ViewBox height of the SVG template. Defaults to 480. */
   viewBoxHeight?: number
+  /** Dev-only: renders dashed amber overlay showing print zone boundaries. */
+  debug?: boolean
 }
 
 /**
@@ -67,9 +89,10 @@ export function GarmentMockup({
   templatePath,
   viewBoxWidth = 400,
   viewBoxHeight = 480,
+  debug = false,
 }: GarmentMockupProps) {
   const instanceId = useId()
-  const svgPath = templatePath ?? `/mockup-templates/${garmentCategory}-${view}.svg`
+  const svgPath = templatePath ?? resolveTemplatePath(garmentCategory, colorHex, view)
   const filterId = `garment-tint-${colorHex.replace('#', '').toLowerCase()}`
 
   // Resolve print zones for artwork placements
@@ -109,12 +132,7 @@ export function GarmentMockup({
         </defs>
 
         {/* Garment template with color tint filter */}
-        <image
-          href={svgPath}
-          width={viewBoxWidth}
-          height={viewBoxHeight}
-          filter={`url(#${filterId})`}
-        />
+        <image href={svgPath} width={viewBoxWidth} height={viewBoxHeight} />
 
         {/* Artwork overlays */}
         {resolvedPlacements.map((placement, i) => {
@@ -126,11 +144,20 @@ export function GarmentMockup({
           const zw = (zone.width / 100) * viewBoxWidth
           const zh = (zone.height / 100) * viewBoxHeight
 
-          // Apply scale and offset
-          const scaledW = zw * scale
-          const scaledH = zh * scale
-          const cx = zx + zw / 2 + (offsetX / 100) * zw
-          const cy = zy + zh / 2 + (offsetY / 100) * zh
+          // Apply safe zone inset on all sides. Screen printing presses register ±1–2" —
+          // artwork must stay inside this margin or risk bleeding into collar/seams.
+          // 15% per side = ~3" equivalent on a standard adult tee (20" wide print area).
+          const SAFE_INSET = 0.15
+          const safeZx = zx + zw * SAFE_INSET
+          const safeZy = zy + zh * SAFE_INSET
+          const safeZw = zw * (1 - 2 * SAFE_INSET)
+          const safeZh = zh * (1 - 2 * SAFE_INSET)
+
+          // Apply scale and offset within safe zone
+          const scaledW = safeZw * scale
+          const scaledH = safeZh * scale
+          const cx = safeZx + safeZw / 2 + (offsetX / 100) * safeZw
+          const cy = safeZy + safeZh / 2 + (offsetY / 100) * safeZh
           const ax = cx - scaledW / 2
           const ay = cy - scaledH / 2
 
@@ -140,7 +167,7 @@ export function GarmentMockup({
             <g key={`${placement.position}-${i}`}>
               <defs>
                 <clipPath id={clipId}>
-                  <rect x={zx} y={zy} width={zw} height={zh} />
+                  <rect x={safeZx} y={safeZy} width={safeZw} height={safeZh} />
                 </clipPath>
               </defs>
               <image
@@ -156,6 +183,29 @@ export function GarmentMockup({
             </g>
           )
         })}
+
+        {/* Dev debug: print zone boundaries */}
+        {debug &&
+          getZonesForCategory(garmentCategory, view).map((zone) => {
+            const zx = (zone.x / 100) * viewBoxWidth
+            const zy = (zone.y / 100) * viewBoxHeight
+            const zw = (zone.width / 100) * viewBoxWidth
+            const zh = (zone.height / 100) * viewBoxHeight
+            return (
+              <rect
+                key={zone.position}
+                x={zx}
+                y={zy}
+                width={zw}
+                height={zh}
+                fill="none"
+                stroke="var(--warning)"
+                strokeWidth={1.5}
+                strokeDasharray="6 3"
+                className="pointer-events-none"
+              />
+            )
+          })}
       </svg>
     </div>
   )

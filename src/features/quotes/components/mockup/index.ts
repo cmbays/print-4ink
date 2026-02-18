@@ -1,5 +1,6 @@
 export { GarmentMockup } from './GarmentMockup'
 export type { ArtworkPlacement } from './GarmentMockup'
 export { GarmentMockupCard } from './GarmentMockupCard'
+export { GarmentMockupModal } from './GarmentMockupModal'
 export { GarmentMockupThumbnail } from './GarmentMockupThumbnail'
 export { MockupFilterProvider } from './MockupFilterProvider'

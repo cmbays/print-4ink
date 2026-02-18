@@ -91,15 +91,15 @@ export function normalizePosition(input: string): string {
 export const PRINT_ZONES: Record<GarmentCategory, Partial<Record<MockupView, PrintZone[]>>> = {
   't-shirts': {
     front: [
-      { position: 'front-chest', x: 28, y: 18, width: 44, height: 35 },
-      { position: 'left-chest', x: 52, y: 18, width: 16, height: 16 },
-      { position: 'right-chest', x: 32, y: 18, width: 16, height: 16 },
-      { position: 'full-front', x: 22, y: 15, width: 56, height: 50 },
+      { position: 'front-chest', x: 28, y: 30, width: 44, height: 28 },
+      { position: 'left-chest', x: 54, y: 30, width: 16, height: 15 },
+      { position: 'right-chest', x: 30, y: 30, width: 16, height: 15 },
+      { position: 'full-front', x: 25, y: 26, width: 50, height: 47 },
     ],
     back: [
-      { position: 'full-back', x: 22, y: 18, width: 56, height: 50 },
-      { position: 'upper-back', x: 25, y: 12, width: 50, height: 15 },
-      { position: 'nape', x: 42, y: 5, width: 16, height: 10 },
+      { position: 'full-back', x: 25, y: 28, width: 50, height: 45 },
+      { position: 'upper-back', x: 28, y: 27, width: 44, height: 13 },
+      { position: 'nape', x: 42, y: 22, width: 16, height: 9 },
     ],
   },
   fleece: {

@@ -6,8 +6,28 @@ import { StatusBadge } from '@shared/ui/organisms/StatusBadge'
 import { DiscountRow } from './DiscountRow'
 import { QuoteActions } from './QuoteActions'
 import { EmailPreviewModal } from './EmailPreviewModal'
-import { MockupFilterProvider, GarmentMockupThumbnail } from '@features/quotes/components/mockup'
+import {
+  MockupFilterProvider,
+  GarmentMockupThumbnail,
+  GarmentMockupModal,
+  GarmentMockupCard,
+} from '@features/quotes/components/mockup'
 import { normalizePosition } from '@domain/constants/print-zones'
+import type { MockupView } from '@domain/entities/mockup-template'
+
+/** Canonical positions that belong to the back of the garment. */
+const BACK_POSITIONS = new Set(['full-back', 'upper-back', 'back-chest', 'nape'])
+/** Canonical positions that belong to the front of the garment. */
+const FRONT_POSITIONS = new Set(['front-chest', 'left-chest', 'right-chest', 'full-front'])
+
+/** Maps a normalised print position to the mockup view it belongs to.
+ *  Returns undefined for ambiguous positions (sleeve, pocket) so the modal
+ *  keeps its front/back toggle. */
+function positionToLockedView(position: string): MockupView | undefined {
+  if (FRONT_POSITIONS.has(position) || position.startsWith('front-')) return 'front'
+  if (BACK_POSITIONS.has(position) || position.startsWith('back-')) return 'back'
+  return undefined
+}
 import { Button } from '@shared/ui/primitives/button'
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
@@ -148,6 +168,40 @@ export function QuoteDetailView({
         )}
       </div>
 
+      {/* Review mockup preview — lg card shown only in slide-out review mode */}
+      {mode === 'review' &&
+        (() => {
+          const firstItem = quote.lineItems[0]
+          const firstGarment = firstItem
+            ? garmentCatalog.find((g) => g.id === firstItem.garmentId)
+            : undefined
+          const firstColor = firstItem
+            ? allColors.find((c) => c.id === firstItem.colorId)
+            : undefined
+          const firstDetail = firstItem?.printLocationDetails[0]
+          const firstArtwork = firstDetail?.artworkId
+            ? artworkMap.get(firstDetail.artworkId)
+            : undefined
+          if (!firstGarment || !firstColor) return null
+          return (
+            <GarmentMockupCard
+              size="lg"
+              garmentCategory={firstGarment.baseCategory}
+              colorHex={firstColor.hex}
+              artworkPlacements={
+                firstArtwork && firstDetail
+                  ? [
+                      {
+                        artworkUrl: firstArtwork.thumbnailUrl,
+                        position: normalizePosition(firstDetail.location),
+                      },
+                    ]
+                  : []
+              }
+            />
+          )
+        })()}
+
       {/* Line Items */}
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-foreground">Line Items</h3>
@@ -240,7 +294,7 @@ export function QuoteDetailView({
                   return (
                     <div key={di} className="flex items-center gap-3 text-sm">
                       {color && (
-                        <GarmentMockupThumbnail
+                        <GarmentMockupModal
                           garmentCategory={garment?.baseCategory ?? 't-shirts'}
                           colorHex={color.hex}
                           artworkPlacements={
@@ -253,8 +307,27 @@ export function QuoteDetailView({
                                 ]
                               : []
                           }
-                          className="shrink-0"
-                        />
+                          lockedView={positionToLockedView(normalizePosition(detail.location))}
+                        >
+                          <GarmentMockupThumbnail
+                            garmentCategory={garment?.baseCategory ?? 't-shirts'}
+                            colorHex={color.hex}
+                            view={
+                              positionToLockedView(normalizePosition(detail.location)) ?? 'front'
+                            }
+                            artworkPlacements={
+                              artwork
+                                ? [
+                                    {
+                                      artworkUrl: artwork.thumbnailUrl,
+                                      position: normalizePosition(detail.location),
+                                    },
+                                  ]
+                                : []
+                            }
+                            className="shrink-0"
+                          />
+                        </GarmentMockupModal>
                       )}
                       <div className="flex-1">
                         <span className="text-foreground">{detail.location}</span>
