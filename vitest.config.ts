@@ -4,6 +4,31 @@ import path from 'path'
 export default defineConfig({
   test: {
     globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov', 'html'],
+      thresholds: {
+        // Financial critical — no exceptions
+        'src/domain/lib/money.ts': { lines: 100, functions: 100 },
+        'src/domain/services/pricing.service.ts': { lines: 100, functions: 100 },
+        // Business logic
+        'src/domain/rules/**': { lines: 90, functions: 90 },
+        // DAL + infrastructure
+        'src/infrastructure/repositories/**': { lines: 80, functions: 80 },
+        // Overall floor
+        lines: 70,
+        functions: 70,
+      },
+      exclude: [
+        'src/domain/entities/**',
+        'src/**/*.test.ts',
+        'src/**/__tests__/**',
+        '**/*.config.*',
+        'src/**/*.d.ts',
+        'lib/**',
+        'knowledge-base/**',
+      ],
+    },
   },
   resolve: {
     alias: {
