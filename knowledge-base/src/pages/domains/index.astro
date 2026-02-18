@@ -5,7 +5,7 @@ import BackLink from '../../components/BackLink.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import { getCollection } from 'astro:content';
 import { pluralize } from '../../lib/utils';
-import domainsConfig from '../../../../config/domains.json';
+import domainsConfig from '../../../../src/config/domains.json';
 
 const domainDocs = await getCollection('domainDocs');
 const pipelines = await getCollection('pipelines');

@@ -6,10 +6,10 @@ phase: 1
 pipelineName: 'Clean Architecture Epic'
 pipelineType: horizontal
 products: []
-tools: ['eslint', 'typescript', 'vitest']
-domains: ['customers', 'garments', 'jobs', 'quotes', 'pricing']
+tools: ['ci-pipeline']
+domains: ['garments', 'pricing']
 stage: wrap-up
-tags: [build, decision, refactor]
+tags: [build, decision]
 sessionId: 'f18cd13d-4390-4d6f-bf05-51aa8502fdf6'
 branch: 'session/0217-phase4-clean-arch'
 status: complete

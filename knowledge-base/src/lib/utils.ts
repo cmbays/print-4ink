@@ -1,8 +1,8 @@
-import stagesConfig from '../../../config/stages.json'
-import tagsConfig from '../../../config/tags.json'
-import productsConfig from '../../../config/products.json'
-import toolsConfig from '../../../config/tools.json'
-import domainsConfig from '../../../config/domains.json'
+import stagesConfig from '../../../tools/orchestration/config/stages.json'
+import tagsConfig from '../../../tools/orchestration/config/tags.json'
+import productsConfig from '../../../src/config/products.json'
+import toolsConfig from '../../../tools/orchestration/config/tools.json'
+import domainsConfig from '../../../src/config/domains.json'
 
 // ── Pipeline stage constants (config-driven) ─────────────────────
 

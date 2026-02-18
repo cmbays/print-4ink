@@ -5,7 +5,7 @@ import BackLink from '../../components/BackLink.astro';
 import RelatedPipelinesSection from '../../components/RelatedPipelinesSection.astro';
 import { getCollection, render } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../../lib/utils';
-import domainsConfig from '../../../../config/domains.json';
+import domainsConfig from '../../../../src/config/domains.json';
 
 export function getStaticPaths() {
   return domainsConfig.map((d) => ({ params: { domain: d.slug } }));
