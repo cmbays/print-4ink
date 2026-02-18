@@ -1,7 +1,7 @@
 import { Package, Palette, MapPin, Calendar, Zap } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
 import { Badge } from '@shared/ui/primitives/badge'
-import { ServiceTypeBadge } from '@features/pricing/components/ServiceTypeBadge'
+import { ServiceTypeBadge } from '@shared/ui/organisms/ServiceTypeBadge'
 import { GarmentMockupThumbnail } from '@features/quotes/components/mockup'
 import { TaskProgressBar } from '@features/jobs/components/TaskProgressBar'
 import { formatShortDate } from '@shared/lib/format'

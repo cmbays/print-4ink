@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Calendar, Clock, CalendarPlus } from 'lucide-react'
 import { cn } from '@shared/lib/cn'
-import { ServiceTypeBadge } from '@features/pricing/components/ServiceTypeBadge'
+import { ServiceTypeBadge } from '@shared/ui/organisms/ServiceTypeBadge'
 import { RiskIndicator } from '@features/quotes/components/RiskIndicator'
 import { LaneBadge } from '@shared/ui/organisms/LaneBadge'
 import {

@@ -12,7 +12,7 @@ import {
 } from '@shared/ui/primitives/sheet'
 import { InvoicePricingSummary } from './InvoicePricingSummary'
 import { INVOICE_LINE_ITEM_TYPE_LABELS } from '@domain/constants'
-import { formatCurrency } from '@domain/lib/money'
+import { formatCurrency, money, round2, toNumber } from '@domain/lib/money'
 import type { InvoiceLineItemData } from './InvoiceLineItemRow'
 
 type ReviewSendSheetProps = {
@@ -113,7 +113,9 @@ export function ReviewSendSheet({
                         {formatCurrency(item.unitPrice)}
                       </td>
                       <td className="px-3 py-2 text-right font-mono font-medium text-foreground">
-                        {formatCurrency(item.quantity * item.unitPrice)}
+                        {formatCurrency(
+                          toNumber(round2(money(item.quantity).times(item.unitPrice)))
+                        )}
                       </td>
                     </tr>
                   ))}

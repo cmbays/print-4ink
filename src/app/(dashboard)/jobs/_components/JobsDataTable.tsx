@@ -34,7 +34,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@shared/ui/primitives/dropdown-menu'
-import { ServiceTypeBadge } from '@features/pricing/components/ServiceTypeBadge'
+import { ServiceTypeBadge } from '@shared/ui/organisms/ServiceTypeBadge'
 import { RiskIndicator } from '@features/quotes/components/RiskIndicator'
 import { LaneBadge } from '@shared/ui/organisms/LaneBadge'
 import { TaskProgressBar } from '@features/jobs/components/TaskProgressBar'
