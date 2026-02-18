@@ -452,12 +452,30 @@ describe('maxRectsPack', () => {
     expect(all).toHaveLength(5)
   })
 
+  it('places a design that exactly fills the bin width', () => {
+    // 22" sheet - 2 × 1" margin = 20" usable width
+    // A 20"-wide design must fit in one row, x starting at margin (1")
+    const result = maxRectsPack([{ id: 'd1', width: 20, height: 5, quantity: 1, label: 'Wide' }])
+    expect(result).toHaveLength(1)
+    const d = result[0].designs[0]
+    expect(d.x).toBeCloseTo(1, 5)
+    expect(d.width).toBe(20)
+  })
+
   it('creates multiple sheets when overflow occurs', () => {
-    // 20" wide, 15" tall design → 1 per row, 3 per sheet (60" max)
     const result = maxRectsPack([{ id: 'd1', width: 20, height: 15, quantity: 4, label: 'Big' }])
     expect(result.length).toBeGreaterThanOrEqual(2)
     const total = result.flatMap((s) => s.designs).length
     expect(total).toBe(4)
+    // Each design must be within sheet bounds
+    for (const sheet of result) {
+      expect(sheet.usedHeight).toBeLessThanOrEqual(60) // DTF_MAX_SHEET_LENGTH
+      for (const d of sheet.designs) {
+        expect(d.x).toBeGreaterThanOrEqual(1)
+        expect(d.y).toBeGreaterThanOrEqual(1)
+        expect(d.x + d.width).toBeLessThanOrEqual(22 - 1) // DTF_SHEET_WIDTH - margin
+      }
+    }
   })
 
   it('propagates shape through packed designs', () => {
@@ -484,6 +502,6 @@ describe('maxRectsPack', () => {
     ]
     const maxRectsHeight = maxRectsPack(designs).reduce((sum, s) => sum + s.usedHeight, 0)
     const shelfHeight = shelfPack(designs).reduce((sum, s) => sum + s.usedHeight, 0)
-    expect(maxRectsHeight).toBeLessThanOrEqual(shelfHeight * 1.1) // within 10% of shelf
+    expect(maxRectsHeight).toBeLessThanOrEqual(shelfHeight)
   })
 })

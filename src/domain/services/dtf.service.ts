@@ -424,6 +424,14 @@ export function packDesigns(
   return [...mergedCircleSheets, ...overflowSheets]
 }
 
+// Module-level, unexported — used only by maxRectsPack.
+// expandedId is used instead of id to avoid collision with IRectangle.id (which is number | undefined)
+type PackRect = IRectangle & {
+  expandedId: string
+  label: string
+  shape: 'box' | 'round'
+}
+
 /**
  * MaxRects-based packing for designs.
  *
@@ -451,12 +459,6 @@ export function maxRectsPack(
   }
 
   // --- Expand by quantity ---
-  // PackRect extends IRectangle so maxrects-packer can mutate x/y after placement.
-  type PackRect = IRectangle & {
-    expandedId: string
-    label: string
-    shape: 'box' | 'round'
-  }
   const items: PackRect[] = []
 
   for (const design of designs) {
@@ -490,21 +492,23 @@ export function maxRectsPack(
   })
   packer.addArray(items)
 
-  return packer.bins.map((bin) => {
-    const packedDesigns: PackedDesign[] = bin.rects.map((rect) => ({
-      id: rect.expandedId,
-      x: rect.x + margin, // container → sheet coordinates
-      y: rect.y + margin,
-      width: rect.width,
-      height: rect.height,
-      label: rect.label,
-      shape: rect.shape,
-    }))
-    // Use maxY across rects for actual occupied height (bin.height may return container height)
-    const maxY = bin.rects.reduce((max, r) => Math.max(max, r.y + r.height), 0)
-    return {
-      designs: packedDesigns,
-      usedHeight: maxY + 2 * margin,
-    }
-  })
+  return packer.bins
+    .filter((bin) => bin.rects.length > 0)
+    .map((bin) => {
+      const packedDesigns: PackedDesign[] = bin.rects.map((rect) => ({
+        id: rect.expandedId,
+        x: rect.x + margin, // container → sheet coordinates
+        y: rect.y + margin,
+        width: rect.width,
+        height: rect.height,
+        label: rect.label,
+        shape: rect.shape,
+      }))
+      // Use maxY across rects for actual occupied height (bin.height may return container height)
+      const maxY = bin.rects.reduce((max, r) => Math.max(max, r.y + r.height), 0)
+      return {
+        designs: packedDesigns,
+        usedHeight: maxY + 2 * margin,
+      }
+    })
 }
