@@ -86,8 +86,8 @@ describe('ssGet — distributed rate limiter', () => {
 
     expect(err).toBeInstanceOf(SSRateLimitError)
     // retryAfter should be approximately 30s (ceiling, within 1s tolerance)
-    expect((err as SSRateLimitError).retryAfter).toBeGreaterThanOrEqual(29)
-    expect((err as SSRateLimitError).retryAfter).toBeLessThanOrEqual(31)
+    expect((err as InstanceType<typeof SSRateLimitError>).retryAfter).toBeGreaterThanOrEqual(29)
+    expect((err as InstanceType<typeof SSRateLimitError>).retryAfter).toBeLessThanOrEqual(31)
   })
 
   it('proceeds with the fetch when the distributed limiter allows the request', async () => {
