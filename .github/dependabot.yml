@@ -1,0 +1,42 @@
+version: 2
+
+updates:
+  # Main Next.js app
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # Batch all minor + patch updates into one PR per week
+      non-major:
+        update-types:
+          - minor
+          - patch
+
+  # Knowledge base (Astro)
+  - package-ecosystem: npm
+    directory: /knowledge-base
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      non-major:
+        update-types:
+          - minor
+          - patch
+
+  # GitHub Actions — keep workflow actions up to date
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      non-major:
+        update-types:
+          - minor
+          - patch
