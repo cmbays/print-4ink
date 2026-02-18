@@ -109,12 +109,7 @@ export function GarmentMockup({
         </defs>
 
         {/* Garment template with color tint filter */}
-        <image
-          href={svgPath}
-          width={viewBoxWidth}
-          height={viewBoxHeight}
-          filter={`url(#${filterId})`}
-        />
+        <image href={svgPath} width={viewBoxWidth} height={viewBoxHeight} />
 
         {/* Artwork overlays */}
         {resolvedPlacements.map((placement, i) => {
