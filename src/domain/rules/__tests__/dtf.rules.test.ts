@@ -57,9 +57,9 @@ describe('optimizeCost', () => {
   })
 
   it('calculates utilization percentage correctly', () => {
-    // One design: 10 x 12 = 120 sq inches
+    // One design: 10 x 12, with 1" margin → effective footprint = 11 x 13 = 143 sq in
     // Tier: 22 x 24 = 528 sq inches
-    // Utilization: (120 / 528) * 100 = 22.727... → Math.round → 23
+    // Utilization: (143 / 528) * 100 = 27.08... → Math.round → 27
     const sheet = makePackedSheet(
       [{ id: 'd1-0', x: 1, y: 1, width: 10, height: 12, label: 'Tiger', shape: 'box' }],
       20
@@ -67,7 +67,7 @@ describe('optimizeCost', () => {
 
     const result = optimizeCost([sheet], MOCK_TIERS)
 
-    expect(result.sheets[0].utilization).toBe(23)
+    expect(result.sheets[0].utilization).toBe(27)
   })
 
   it('sums total cost across multiple sheets with big.js precision', () => {

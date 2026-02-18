@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { shelfPack, hexPackCircles, packDesigns } from '../dtf.service'
+import type { DesignInput } from '../dtf.service'
 import { DTF_MAX_SHEET_LENGTH } from '@domain/constants/dtf'
 
 describe('shelfPack', () => {
@@ -385,5 +386,44 @@ describe('packDesigns', () => {
 
   it('handles empty input', () => {
     expect(packDesigns([])).toEqual([])
+  })
+
+  it('keeps mixed jobs on same sheet when rect fits in circle row gap', () => {
+    // 3 circles on 22" sheet: row 0 fits all 3 (centers at x=3,8,13 → bbox x=1,6,11)
+    // After row 0, curX = 11 + 4 + 1 = 16, rightBoundary = 21 → 5" available
+    // A 4" box fits at x=16 (4 ≤ 21-16=5) and height 4 ≤ D(4) → same row
+    const designs: DesignInput[] = [
+      { id: 'c', width: 4, height: 4, quantity: 3, label: 'Circle', shape: 'round' },
+      { id: 'b', width: 4, height: 4, quantity: 1, label: 'Box', shape: 'box' },
+    ]
+    const result = packDesigns(designs)
+    expect(result).toHaveLength(1) // all on same sheet
+    const all = result[0].designs
+    expect(all).toHaveLength(4)
+    // Box should be placed in the same row as the circles (same y)
+    const box = all.find((d) => d.label === 'Box')
+    const circles = all.filter((d) => d.label === 'Circle')
+    expect(box).toBeDefined()
+    // Box y should equal the y of the last circle (same row top-left)
+    expect(box!.y).toBeCloseTo(circles[circles.length - 1].y, 3)
+  })
+
+  it('places overflow rects on a separate sheet when they dont fit in circle row gap', () => {
+    // Full circle row (4 circles fill row 0, leaving curX=21=rightBoundary) + 1 large box
+    // The 10" box cannot fit in the circle row gap → goes to an overflow sheet
+    const designs: DesignInput[] = [
+      { id: 'c', width: 4, height: 4, quantity: 4, label: 'Circle', shape: 'round' },
+      { id: 'b', width: 10, height: 4, quantity: 1, label: 'BigBox', shape: 'box' },
+    ]
+    const result = packDesigns(designs)
+    // All 5 designs placed
+    const all = result.flatMap((s) => s.designs)
+    expect(all).toHaveLength(5)
+    // Box must land on a different sheet from the circles
+    const boxSheet = result.find((s) => s.designs.some((d) => d.label === 'BigBox'))
+    const circleSheet = result.find((s) => s.designs.some((d) => d.label === 'Circle'))
+    expect(boxSheet).toBeDefined()
+    expect(circleSheet).toBeDefined()
+    expect(boxSheet).not.toBe(circleSheet)
   })
 })

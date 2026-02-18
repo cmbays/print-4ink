@@ -315,11 +315,11 @@ export function hexPackCircles(
 /**
  * Smart dispatcher for gang sheet packing.
  *
- * Routes uniform-circle jobs to hexPackCircles() for ~10% better utilization.
- * All other jobs (mixed shapes, non-uniform circles, rectangles) use shelfPack().
- *
- * This is the preferred entry point for all callers in Phase 1.
- * In Phase 2 the fallback will switch from shelfPack to maxRectsPack.
+ * - Uniform-circle-only jobs: hexPackCircles() for ~10% height reduction.
+ * - Mixed jobs (circles + rects): hexPackCircles() for circles, then attempts
+ *   to fit rects in the remaining horizontal space of the last circle row,
+ *   then shelfPack() for any rects that don't fit.
+ * - Rect-only or non-uniform jobs: shelfPack() (Phase 1 fallback; Phase 2 = maxRectsPack).
  */
 export function packDesigns(
   designs: DesignInput[],
@@ -328,13 +328,97 @@ export function packDesigns(
 ): PackedSheet[] {
   if (designs.length === 0) return []
 
-  const allRound = designs.every((d) => d.shape === 'round')
-  const diameters = new Set(designs.map((d) => d.width))
-  const allSameDiameter = diameters.size === 1 && designs.every((d) => d.width === d.height)
+  const circleDesigns = designs.filter((d) => d.shape === 'round')
+  const rectDesigns = designs.filter((d) => d.shape !== 'round')
 
-  if (allRound && allSameDiameter) {
+  const hasUniformCircles =
+    circleDesigns.length > 0 &&
+    new Set(circleDesigns.map((d) => d.width)).size === 1 &&
+    circleDesigns.every((d) => d.width === d.height)
+
+  // Pure circle job — use hex packing
+  if (rectDesigns.length === 0 && hasUniformCircles) {
     return hexPackCircles(designs, sheetWidth, margin)
   }
 
-  return shelfPack(designs, sheetWidth, margin)
+  // Pure rect job or non-uniform circles — use shelf packing
+  if (!hasUniformCircles) {
+    return shelfPack(designs, sheetWidth, margin)
+  }
+
+  // Mixed job: hex-pack circles, then fit rects into remaining space
+  const circleSheets = hexPackCircles(circleDesigns, sheetWidth, margin)
+  const lastCircleSheet = circleSheets[circleSheets.length - 1]
+
+  // Expand rect designs by quantity
+  const expandedRects: PackedDesign[] = []
+  for (const design of rectDesigns) {
+    for (let i = 0; i < design.quantity; i++) {
+      expandedRects.push({
+        id: `${design.id}-${i}`,
+        x: 0, // placeholder — will be positioned below
+        y: 0,
+        width: design.width,
+        height: design.height,
+        label: design.label,
+        shape: design.shape ?? 'box',
+      })
+    }
+  }
+
+  // Determine where to start placing rects on the last circle sheet.
+  // Find the rightmost design in the last row of circles (highest y = last row).
+  const lastCircleDesigns = lastCircleSheet.designs
+  if (lastCircleDesigns.length === 0) {
+    // Shouldn't happen, but fall back to shelf for rects
+    return [...circleSheets, ...shelfPack(rectDesigns, sheetWidth, margin)]
+  }
+
+  const maxCircleY = Math.max(...lastCircleDesigns.map((d) => d.y))
+  const lastRowCircles = lastCircleDesigns.filter((d) => Math.abs(d.y - maxCircleY) < 0.01)
+  const rightmostInLastRow = lastRowCircles.reduce(
+    (rightmost, d) => (d.x > rightmost.x ? d : rightmost),
+    lastRowCircles[0]
+  )
+
+  const D = rightmostInLastRow.width
+  let curX = rightmostInLastRow.x + D + margin // start right of last circle
+  const rowY = rightmostInLastRow.y // same row top-left y as last circle row
+  const rightBoundary = sheetWidth - margin
+
+  const sameRowRects: PackedDesign[] = []
+  const overflowRects: DesignInput[] = []
+
+  for (const rect of expandedRects) {
+    // Rect fits in same row: horizontally AND vertically (height ≤ D so it doesn't extend below circles)
+    if (curX + rect.width <= rightBoundary && rect.height <= D) {
+      sameRowRects.push({ ...rect, x: curX, y: rowY })
+      curX += rect.width + margin
+    } else {
+      // Convert back to DesignInput for shelf packing
+      overflowRects.push({
+        id: rect.id.replace(/-\d+$/, ''), // strip suffix — shelfPack will re-expand
+        width: rect.width,
+        height: rect.height,
+        quantity: 1,
+        label: rect.label,
+        shape: rect.shape,
+      })
+    }
+  }
+
+  // Merge same-row rects into the last circle sheet
+  const mergedLastSheet: PackedSheet = {
+    designs: [...lastCircleSheet.designs, ...sameRowRects],
+    usedHeight: lastCircleSheet.usedHeight, // same row → no height increase
+  }
+  const mergedCircleSheets = [...circleSheets.slice(0, -1), mergedLastSheet]
+
+  if (overflowRects.length === 0) {
+    return mergedCircleSheets
+  }
+
+  // Shelf-pack the remaining rects that didn't fit in the circle row
+  const overflowSheets = shelfPack(overflowRects, sheetWidth, margin)
+  return [...mergedCircleSheets, ...overflowSheets]
 }
