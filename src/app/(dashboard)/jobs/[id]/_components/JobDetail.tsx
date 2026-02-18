@@ -11,7 +11,11 @@ import { BottomActionBar } from '@shared/ui/layouts/bottom-action-bar'
 import { Topbar } from '@shared/ui/layouts/topbar'
 import { buildBreadcrumbs, CRUMBS } from '@shared/lib/breadcrumbs'
 
-import { GarmentMockupCard, MockupFilterProvider } from '@features/quotes/components/mockup'
+import {
+  GarmentMockupCard,
+  GarmentMockupModal,
+  MockupFilterProvider,
+} from '@features/quotes/components/mockup'
 import type { ArtworkPlacement } from '@features/quotes/components/mockup'
 
 import { JobHeader } from '../../_components/JobHeader'
@@ -270,7 +274,7 @@ export function JobDetail({
         {mockupData && (
           <div className="rounded-lg border border-border bg-card p-4">
             <h3 className="mb-3 text-sm font-semibold text-foreground">What We&apos;re Printing</h3>
-            <GarmentMockupCard
+            <GarmentMockupModal
               garmentCategory={
                 mockupData.garmentCategory as Parameters<
                   typeof GarmentMockupCard
@@ -278,8 +282,18 @@ export function JobDetail({
               }
               colorHex={mockupData.colorHex}
               artworkPlacements={mockupData.artworkPlacements}
-              size="md"
-            />
+            >
+              <GarmentMockupCard
+                garmentCategory={
+                  mockupData.garmentCategory as Parameters<
+                    typeof GarmentMockupCard
+                  >[0]['garmentCategory']
+                }
+                colorHex={mockupData.colorHex}
+                artworkPlacements={mockupData.artworkPlacements}
+                size="md"
+              />
+            </GarmentMockupModal>
           </div>
         )}
 
