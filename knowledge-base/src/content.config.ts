@@ -1,11 +1,11 @@
 import { defineCollection } from 'astro:content'
 import { glob } from 'astro/loaders'
 import { z } from 'astro/zod'
-import tagsConfig from '../../config/tags.json'
-import productsConfig from '../../config/products.json'
-import toolsConfig from '../../config/tools.json'
-import domainsConfig from '../../config/domains.json'
-import pipelineTypesConfig from '../../config/pipeline-types.json'
+import tagsConfig from '../../tools/orchestration/config/tags.json'
+import productsConfig from '../../src/config/products.json'
+import toolsConfig from '../../tools/orchestration/config/tools.json'
+import domainsConfig from '../../src/config/domains.json'
+import pipelineTypesConfig from '../../tools/orchestration/config/pipeline-types.json'
 import { pipelineStageSlugs } from './lib/utils'
 
 // Derive enum tuples from canonical config files
@@ -18,7 +18,7 @@ const stageSlugs = pipelineStageSlugs as [string, ...string[]]
 
 // ── Pipelines ─────────────────────────────────────────────────────
 const pipelines = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/pipelines' }),
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/pipelines' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
@@ -42,7 +42,7 @@ const pipelines = defineCollection({
 
 // ── Products ──────────────────────────────────────────────────────
 const productDocs = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/products' }),
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/products' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
@@ -55,7 +55,7 @@ const productDocs = defineCollection({
 
 // ── Tools ─────────────────────────────────────────────────────────
 const toolDocs = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/tools' }),
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/tools' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
@@ -68,7 +68,7 @@ const toolDocs = defineCollection({
 
 // ── Domains ───────────────────────────────────────────────────────
 const domainDocs = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/domains' }),
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/domains' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
@@ -82,7 +82,7 @@ const domainDocs = defineCollection({
 // ── Strategy ──────────────────────────────────────────────────────
 // Pipeline names are free text (not config-backed enums).
 const strategy = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/strategy' }),
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/strategy' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
@@ -99,4 +99,51 @@ const strategy = defineCollection({
   }),
 })
 
-export const collections = { pipelines, productDocs, domainDocs, toolDocs, strategy }
+// ── Industry ──────────────────────────────────────────────────────
+// Ground-truth knowledge about the screen-print and garment industry.
+// Not product decisions — physical world facts, supplier standards, chemistry.
+const industry = defineCollection({
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/industry' }),
+  schema: z.object({
+    title: z.string(),
+    type: z.string(), // 'overview' | 'reference' | 'standards' — free text, not enum-constrained
+    status: z.enum(['current', 'draft', 'deprecated']).default('current'),
+    lastUpdated: z.coerce.date(),
+  }),
+})
+
+// ── Market ────────────────────────────────────────────────────────
+// Competitor analysis, customer mental models, UX patterns from peer tools.
+const market = defineCollection({
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/market' }),
+  schema: z.object({
+    title: z.string(),
+    type: z.string(), // 'analysis' | 'overview' | 'patterns' — free text
+    status: z.enum(['current', 'draft', 'deprecated']).default('current'),
+    lastUpdated: z.coerce.date(),
+  }),
+})
+
+// ── Learnings ─────────────────────────────────────────────────────
+// Append-only engineering gotchas and patterns. One file per discovery.
+// Subdirs: financial/, architecture/, mobile/, typing/, ui/, deployment/
+const learnings = defineCollection({
+  loader: glob({ pattern: ['**/*.md', '!**/_*.md'], base: './src/content/learnings' }),
+  schema: z.object({
+    title: z.string(),
+    type: z.string(), // 'gotcha' | 'pattern' | 'decision' — free text
+    status: z.enum(['active', 'superseded']).default('active'),
+    date: z.coerce.date(),
+  }),
+})
+
+export const collections = {
+  pipelines,
+  productDocs,
+  domainDocs,
+  toolDocs,
+  strategy,
+  industry,
+  market,
+  learnings,
+}

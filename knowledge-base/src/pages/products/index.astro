@@ -5,7 +5,7 @@ import BackLink from '../../components/BackLink.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import { getCollection } from 'astro:content';
 import { pluralize } from '../../lib/utils';
-import productsConfig from '../../../../config/products.json';
+import productsConfig from '../../../../src/config/products.json';
 
 const productDocs = await getCollection('productDocs');
 const pipelines = await getCollection('pipelines');

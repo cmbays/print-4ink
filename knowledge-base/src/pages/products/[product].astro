@@ -5,7 +5,7 @@ import BackLink from '../../components/BackLink.astro';
 import RelatedPipelinesSection from '../../components/RelatedPipelinesSection.astro';
 import { getCollection, render } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../../lib/utils';
-import productsConfig from '../../../../config/products.json';
+import productsConfig from '../../../../src/config/products.json';
 
 export function getStaticPaths() {
   return productsConfig.map((p) => ({ params: { product: p.slug } }));

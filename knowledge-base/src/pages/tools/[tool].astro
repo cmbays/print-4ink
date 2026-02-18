@@ -5,7 +5,7 @@ import BackLink from '../../components/BackLink.astro';
 import RelatedPipelinesSection from '../../components/RelatedPipelinesSection.astro';
 import { getCollection, render } from 'astro:content';
 import { sortByDateDesc, pluralize } from '../../lib/utils';
-import toolsConfig from '../../../../config/tools.json';
+import toolsConfig from '../../../../tools/orchestration/config/tools.json';
 
 export function getStaticPaths() {
   return toolsConfig.map((t) => ({ params: { tool: t.slug } }));
