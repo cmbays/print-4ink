@@ -38,7 +38,7 @@ describe('garments repository router', () => {
     expect(result[0]).toMatchObject({ source: 'supplier' })
   })
 
-  it('uses supplier provider when SUPPLIER_ADAPTER=mock', async () => {
+  it('uses supplier provider via MockAdapter when SUPPLIER_ADAPTER=mock (no HTTP calls)', async () => {
     vi.stubEnv('SUPPLIER_ADAPTER', 'mock')
     const { getGarmentCatalog } = await import('@infra/repositories/garments')
     const result = await getGarmentCatalog()

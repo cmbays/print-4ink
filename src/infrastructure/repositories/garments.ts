@@ -2,8 +2,14 @@
 // Phase 2: May be exposed to unauthenticated customer-facing quote requests.
 //
 // Router: SUPPLIER_ADAPTER env var selects the data source.
-//   - Set to 'ss-activewear' or 'mock' → supplier provider (SupplierAdapter)
-//   - Unset → mock provider (direct in-process mock data, for backward compat)
+//   - 'ss-activewear' → supplier provider via SSActivewearAdapter (real S&S API)
+//   - 'mock'          → supplier provider via MockAdapter (no HTTP; for dev/CI)
+//   - unset           → legacy mock provider (direct in-process data, no SupplierAdapter)
+//
+// Note: SUPPLIER_ADAPTER='mock' still routes through the supplier provider code path
+// (SupplierAdapter registry, pagination, schema mapping). The MockAdapter returns
+// fixture data with no HTTP calls — useful for exercising the full pipeline without
+// S&S credentials. See lib/suppliers/registry.ts for adapter selection logic.
 //
 // getGarmentCatalogMutable() is Phase 1 only and always returns mock data.
 import type { GarmentCatalog } from '@domain/entities/garment'
