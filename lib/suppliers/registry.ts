@@ -1,13 +1,25 @@
 import { DalError } from '@infra/repositories/_shared/errors'
 import { InMemoryCacheStore } from './cache/in-memory'
+import { UpstashCacheStore } from './cache/upstash'
 import { MockAdapter } from './adapters/mock'
 import { SSActivewearAdapter } from './adapters/ss-activewear'
 import { supplierNameSchema } from './types'
-import type { SupplierAdapter, SupplierName } from './types'
+import type { CacheStore, SupplierAdapter, SupplierName } from './types'
 
 const VALID_ADAPTERS = supplierNameSchema.options
 
 let _adapter: SupplierAdapter | null = null
+
+/**
+ * Select the appropriate CacheStore based on available environment variables.
+ * UpstashCacheStore is used when both Upstash env vars are set (production/staging).
+ * InMemoryCacheStore is the fallback for local dev without Upstash credentials.
+ */
+function buildCacheStore(): CacheStore {
+  const hasUpstash =
+    Boolean(process.env.UPSTASH_REDIS_REST_URL) && Boolean(process.env.UPSTASH_REDIS_REST_TOKEN)
+  return hasUpstash ? new UpstashCacheStore() : new InMemoryCacheStore()
+}
 
 export function getSupplierAdapter(): SupplierAdapter {
   if (_adapter) return _adapter
@@ -21,7 +33,7 @@ export function getSupplierAdapter(): SupplierAdapter {
     )
   }
 
-  const cache = new InMemoryCacheStore()
+  const cache = buildCacheStore()
 
   if (name === 'mock') {
     _adapter = new MockAdapter(cache)
