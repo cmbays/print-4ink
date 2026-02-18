@@ -55,43 +55,26 @@ work clean <topic>                    # Remove worktree + tmux + branch
 
 ## Session Startup (Required)
 
-Every Claude session that will modify code MUST create its own worktree.
+Every Claude session that will modify code MUST create its own worktree. Full workflow in `memory/worktree-workflow.md`.
 
-### Standard Session (branch from main)
+```bash
+# Standard session
+git -C ~/Github/print-4ink pull origin main
+git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/session-MMDD-topic -b session/MMDD-topic
+cd ~/Github/print-4ink-worktrees/session-MMDD-topic && npm install
+# Stacked PR: branch from parent, set PR base to parent branch (not main)
+# Cleanup: pull main → worktree remove → branch -d
+```
 
-1. **Pull latest main**: `git -C ~/Github/print-4ink pull origin main`
-2. **Create worktree**: `git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/session-MMDD-topic -b session/MMDD-topic`
-3. **Install deps**: `cd ~/Github/print-4ink-worktrees/session-MMDD-topic && npm install`
-4. **Create scratchpad**: Write `.session-context.md` with task context (gitignored)
-5. **Work normally** — edit files, run tests, dev server (`PORT=300X npm run dev`)
-6. **Commit and push frequently** — after each logical chunk of work (a completed component, a passing test suite, a schema change), commit and push immediately. Don't batch commits until the end.
-   - `git add <files> && git commit -m "description" && git push -u origin session/MMDD-topic`
-   - First push uses `-u` to set upstream; subsequent pushes just need `git push`
-7. **Open PR when ready**: `gh pr create --title "..." --body "..."`
+**Rules:**
 
-### Stacked PR (branch from worktree branch)
-
-1. **Create worktree from branch**: `git -C ~/Github/print-4ink worktree add ~/Github/print-4ink-worktrees/session-MMDD-v2 -b session/MMDD-v2 session/MMDD-parent`
-2. **Install deps**: `cd ~/Github/print-4ink-worktrees/session-MMDD-v2 && npm install`
-3. When creating PR, set base to parent branch (not main)
-
-### Cleanup (after PR merges)
-
-1. `git -C ~/Github/print-4ink pull origin main`
-2. `git -C ~/Github/print-4ink worktree remove ~/Github/print-4ink-worktrees/session-MMDD-topic`
-3. `git -C ~/Github/print-4ink branch -d session/MMDD-topic`
-
-### Rules
-
-- **Worktree location**: Always `~/Github/print-4ink-worktrees/<branch-name>/`
-- **Main repo** (`~/Github/print-4ink/`) stays on `main` — never switch branches there
-- Branch name format: `session/<MMDD>-<kebab-case-topic>`
-- **NEVER push directly to main** — always branch + PR
-- **Push after every commit** — work should always be on the remote. Local-only commits are at risk if a worktree is lost. Commit+push is one action, not two separate steps.
-- **No worktree limit** — accumulate worktrees freely during active work. The user will run a batch cleanup when ready.
-- **NEVER remove worktrees you didn't create** — agents must only clean up their own worktree, and only when explicitly asked. Other worktrees may belong to concurrent sessions.
-- **Dev server ports**: Each worktree uses a unique port (`PORT=3001`, `3002`, etc.)
-- If session is read-only (research, questions), no worktree needed
+- Worktrees at `~/Github/print-4ink-worktrees/<branch-name>/` — main repo stays on `main`
+- Branch format: `session/<MMDD>-<kebab-case-topic>`
+- **NEVER push to main directly** — always branch + PR
+- **Commit+push after every logical chunk** — never leave work local-only
+- **NEVER remove worktrees you didn't create** — other worktrees belong to concurrent sessions
+- Dev server: each worktree needs a unique port (`PORT=3001`, `3002`, etc.)
+- Read-only sessions (research, questions) do not need a worktree
 
 ## Hot File Protocol
 
@@ -124,45 +107,7 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 
 ## Architecture
 
-> Phase 4 Clean Architecture migration complete (2026-02-17). See `docs/ARCHITECTURE.md` for layer definitions, import rules, and ESLint enforcement.
-
-```
-src/
-  app/                      # Next.js routing — thin shell (pages + layouts)
-  domain/                   # Innermost — pure business logic, zero framework deps
-    entities/               # Zod schemas + derived types
-    rules/                  # Pure business invariants (pure functions)
-    ports/                  # Repository interfaces (TypeScript types)
-    lib/                    # Domain utilities (money.ts, etc.)
-  infrastructure/           # Outer ring — concrete implementations
-    repositories/           # Implements domain/ports/ interfaces
-      _providers/mock/      # In-memory mock data (Phase 1 only)
-    auth/                   # Session management
-    bootstrap.ts            # Composition root — wires ports to implementations
-  features/                 # Vertical slices — domain-specific UI + hooks
-    customers/components/   # Customer-specific components
-    garments/components/    # Garment-specific components
-    garments/hooks/         # useColorFilter
-    jobs/components/        # Job-specific components
-    quotes/components/      # Quote-specific components (includes mockup/)
-    pricing/components/     # Pricing-specific components
-  shared/                   # Cross-cutting — reusable across all feature domains
-    ui/primitives/          # shadcn/ui Radix wrappers
-    ui/organisms/           # Cross-domain feature components (MoneyAmount, StatusBadge…)
-    ui/layouts/             # Sidebar, Topbar, BottomTabBar, MobileShell
-    hooks/                  # useIsMobile, useDebounce, useGridKeyboardNav
-    lib/                    # cn(), formatters, logger, breadcrumbs, swatch
-    constants/              # entity-icons, shared constants
-    providers/              # TooltipProviderWrapper, etc.
-  config/                   # App runtime config (products.json, domains.json)
-docs/                       # Canonical docs (ARCHITECTURE.md, AGENTS.md, etc.)
-tools/orchestration/        # Dev tooling — never imported by src/
-  review/                   # Review engine
-  config/                   # Pipeline types, stages, gate schemas
-.claude/
-  agents/                   # Agent definitions (YAML frontmatter + system prompts)
-  skills/                   # Skill definitions (SKILL.md + templates/reference)
-```
+Phase 4 Clean Architecture migration complete (2026-02-17). Layer structure: `domain/` → `infrastructure/` → `features/` → `shared/` → `app/`. See `docs/ARCHITECTURE.md` for full layer definitions, import rules, path aliases, and ESLint boundary enforcement.
 
 ## Domain Context
 
@@ -486,56 +431,9 @@ status: complete
 Write Markdown content here. Standard Markdown: headers, lists, tables, code blocks.
 ```
 
-### Commands
-
-```bash
-npm run kb:dev       # Astro dev server (knowledge-base)
-npm run kb:build     # Production build (50+ static pages + Pagefind search index)
-npm run kb:preview   # Preview production build locally
-```
-
-Or from within `knowledge-base/`:
-
-```bash
-npm run dev          # Astro dev server
-npm run build        # Production build
-npm run preview      # Preview
-```
-
 ### Schema
 
-All frontmatter is validated by Zod at build time (`knowledge-base/src/content.config.ts`).
-
-**Pipeline types, stages, products, tools, and tags** are defined in canonical config files — see `config/pipeline-types.json`, `config/stages.json`, `config/products.json`, `config/tools.json`, and `config/tags.json`. Pipeline names are free text (not config-backed enums). All consumers (KB schema, KB UI, `work.sh`) import from these files. Do not duplicate the lists elsewhere.
-
-**Status:** `complete`, `in-progress`, `superseded`
-
-### Features
-
-- **Full-text search** (Pagefind): Indexes all session content, sub-results link to headings, tag facet filters
-- **Client-side filtering**: Vertical, phase, and status filters on the index page
-- **Pipeline stepper**: 7-stage pipeline visualization per vertical
-- **Workflow chains**: Auto-computed related sessions by vertical+stage on detail pages
-- **Gary Tracker**: Aggregated questions from all sessions (embed HTML blocks in Markdown)
-- **Decision log**: All sessions tagged with `decision`
-- **Vertical health**: Stats per vertical with progress indicators
-
-### Gary Questions
-
-Embed in any session Markdown file:
-
-```html
-<div
-  class="gary-question"
-  data-question-id="PIPELINE-q1"
-  data-pipeline="PIPELINE_SLUG"
-  data-status="unanswered"
->
-  <p class="gary-question-text">Your question here?</p>
-  <p class="gary-question-context">Why this matters</p>
-  <div class="gary-answer" data-answered-date=""></div>
-</div>
-```
+All frontmatter validated by Zod at build time (`knowledge-base/src/content.config.ts`). Pipeline types, stages, products, tools, and tags defined in `config/pipeline-types.json`, `config/stages.json`, `config/products.json`, `config/tools.json`, `config/tags.json`. **Status:** `complete`, `in-progress`, `superseded`.
 
 ### Rules
 
