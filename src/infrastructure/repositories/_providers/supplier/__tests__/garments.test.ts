@@ -20,6 +20,19 @@ vi.mock('@shared/lib/logger', () => ({
 
 import { getSupplierAdapter } from '@lib/suppliers/registry'
 
+// ─── Test helpers ─────────────────────────────────────────────────────────────
+
+/**
+ * Cast a partial object to SupplierAdapter for test stubs.
+ * Only the methods exercised by the test under scrutiny need to be defined —
+ * other members of the interface are irrelevant to the test's assertions.
+ * The cast is safe because vi.mocked(getSupplierAdapter) replaces the real
+ * adapter entirely; no unimplemented method can be called at test time.
+ */
+function asAdapter(partial: Record<string, unknown>): SupplierAdapter {
+  return partial as unknown as SupplierAdapter
+}
+
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 function makeStyle(overrides: Partial<CanonicalStyle> = {}): CanonicalStyle {
@@ -153,7 +166,7 @@ describe('getGarmentCatalog', () => {
     const mockAdapter = {
       searchCatalog: vi.fn().mockResolvedValue({ styles: [style], total: 1, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
 
@@ -171,7 +184,7 @@ describe('getGarmentCatalog', () => {
         .mockResolvedValueOnce({ styles: [page1Style], total: 2, hasMore: true })
         .mockResolvedValueOnce({ styles: [page2Style], total: 2, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
 
@@ -186,7 +199,7 @@ describe('getGarmentCatalog', () => {
     const mockAdapter = {
       searchCatalog: vi.fn().mockResolvedValue({ styles: [], total: 0, hasMore: true }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
     expect(mockAdapter.searchCatalog).toHaveBeenCalledTimes(1)
@@ -201,7 +214,7 @@ describe('getGarmentCatalog', () => {
         .fn()
         .mockResolvedValue({ styles: [valid, invalid], total: 2, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
     expect(result).toHaveLength(1)
@@ -219,7 +232,7 @@ describe('getGarmentCatalog', () => {
         .fn()
         .mockResolvedValue({ styles: [priced, unpriced], total: 2, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
     expect(result).toHaveLength(1)
@@ -230,7 +243,7 @@ describe('getGarmentCatalog', () => {
     const mockAdapter = {
       searchCatalog: vi.fn().mockResolvedValue({ styles: [], total: 0, hasMore: false }),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
     expect(result).toEqual([])
@@ -249,7 +262,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(style),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('3001')
 
@@ -262,7 +275,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(null),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('nonexistent')
     expect(result).toBeNull()
@@ -272,7 +285,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn(),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('')
     expect(mockAdapter.getStyle).not.toHaveBeenCalled()
@@ -281,7 +294,7 @@ describe('getGarmentById', () => {
 
   it('returns null for id exceeding 50 chars without calling adapter', async () => {
     const mockAdapter = { getStyle: vi.fn() }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('x'.repeat(51))
     expect(mockAdapter.getStyle).not.toHaveBeenCalled()
@@ -293,7 +306,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(style),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('3001')
     expect(result).toBeNull()
@@ -304,7 +317,7 @@ describe('getGarmentById', () => {
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(style),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('42')
     expect(result?.id).toBe('42')
@@ -318,7 +331,7 @@ describe('getAvailableBrands', () => {
     const mockAdapter = {
       getBrands: vi.fn().mockResolvedValue(['Next Level', 'Bella+Canvas', 'Gildan']),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getAvailableBrands()
     expect(result).toEqual(['Bella+Canvas', 'Gildan', 'Next Level'])
@@ -328,7 +341,7 @@ describe('getAvailableBrands', () => {
     const mockAdapter = {
       getBrands: vi.fn().mockResolvedValue([]),
     }
-    vi.mocked(getSupplierAdapter).mockReturnValue(mockAdapter as unknown as SupplierAdapter)
+    vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     await getAvailableBrands()
     expect(mockAdapter.getBrands).toHaveBeenCalledOnce()

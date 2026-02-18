@@ -134,7 +134,10 @@ export async function getGarmentCatalog(): Promise<GarmentCatalog[]> {
 }
 
 export async function getGarmentById(id: string): Promise<GarmentCatalog | null> {
-  if (!supplierIdSchema.safeParse(id).success) return null
+  if (!supplierIdSchema.safeParse(id).success) {
+    supplierLogger.warn('getGarmentById called with invalid id', { id })
+    return null
+  }
   const adapter = getSupplierAdapter()
   const style = await adapter.getStyle(id)
   return style ? canonicalStyleToGarmentCatalog(style) : null
