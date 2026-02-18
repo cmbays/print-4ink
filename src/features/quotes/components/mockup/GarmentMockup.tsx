@@ -25,6 +25,26 @@ function isResolved<T extends Record<string, unknown>>(p: T | null): p is T & Re
 
 const EMPTY_PLACEMENTS: ArtworkPlacement[] = []
 
+function isHexDark(hex: string): boolean {
+  const clean = hex.replace('#', '').padEnd(6, '0')
+  const r = parseInt(clean.slice(0, 2), 16)
+  const g = parseInt(clean.slice(2, 4), 16)
+  const b = parseInt(clean.slice(4, 6), 16)
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.4
+}
+
+function resolveTemplatePath(
+  category: GarmentCategory,
+  colorHex: string,
+  view: MockupView
+): string {
+  if (category === 't-shirts') {
+    const shade = isHexDark(colorHex) ? 'black' : 'white'
+    return `/mockup-templates/${category}-${view}-${shade}.png`
+  }
+  return `/mockup-templates/${category}-${view}.svg`
+}
+
 // Size presets (classes applied to the root wrapper)
 const SIZE_CLASSES = {
   xs: 'w-10 h-12', // 40x48 — Kanban cards, table rows
@@ -72,7 +92,7 @@ export function GarmentMockup({
   debug = false,
 }: GarmentMockupProps) {
   const instanceId = useId()
-  const svgPath = templatePath ?? `/mockup-templates/${garmentCategory}-${view}.svg`
+  const svgPath = templatePath ?? resolveTemplatePath(garmentCategory, colorHex, view)
   const filterId = `garment-tint-${colorHex.replace('#', '').toLowerCase()}`
 
   // Resolve print zones for artwork placements
