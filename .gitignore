@@ -35,8 +35,8 @@ next-env.d.ts
 !.claude/settings.json
 .claudeignore
 
-# inbox / scratch
-inbox/
+# ephemeral scratch space (delete at will — nothing here is committed)
+tmp/
 
 # secrets
 **/*.pem

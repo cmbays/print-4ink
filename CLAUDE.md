@@ -88,10 +88,47 @@ These files cause merge conflicts in concurrent sessions. They are NEVER committ
 
 - All source code changes
 - New `knowledge-base/src/content/pipelines/YYYY-MM-DD-*.md` pipeline doc (unique filename, no conflicts)
-- New docs (breadboards, spikes, strategy)
+- New `docs/workspace/{pipeline-id}/` files (scoped to this session's pipeline)
 - Schema and test changes
 
 **Per-worktree scratchpad**: Each session creates `.session-context.md` in its worktree root (gitignored). Task context, decisions, blockers, modified files.
+
+## Process Artifact Zones
+
+Three zones govern where process artifacts live:
+
+**Zone 1 — `tmp/`** (gitignored, ephemeral)
+Scratch space — delete at will. Nothing here is committed.
+
+- `tmp/inbox/` — drop zone for incoming files
+- `tmp/outbox/` — agent output for human review
+- `tmp/screenshots/` — Playwright screenshots, discovery captures
+
+**Zone 2 — `docs/workspace/`** (committed during work, deleted on wrap-up)
+All process artifacts scoped by pipeline. Committed so parallel Claude sessions can see in-progress work. Deleted after the KB pipeline doc absorbs key content.
+
+```
+docs/workspace/
+  {YYYYMMDD-pipeline-id}/    ← one dir per pipeline (e.g. 20260217-ia-refactor)
+    research.md
+    competitive-analysis.md
+    interview.md
+    frame.md
+    shaping.md
+    breadboard.md
+    spike-*.md
+    plan.md                  ← impl plan lives here during work
+    manifest.yaml
+  adhoc-{MMDD-topic}/        ← for work without a pipeline ID
+  legacy-phase1/             ← migration home for existing scattered docs/
+```
+
+**Lifecycle**: Created at pipeline start → committed throughout → deleted on wrap-up after KB doc is written.
+
+**Zone 3 — `knowledge-base/`** (committed, permanent)
+The single durable record. KB pipeline docs absorb key findings from the workspace — not just links — so workspace deletion loses nothing important.
+
+> **Deprecated locations** (do not use for new work): `docs/research/`, `docs/spikes/`, `docs/shaping/`, `docs/breadboards/`, `docs/competitive-analysis/`, `docs/strategy/` (process artifacts only). Existing content migrating to `docs/workspace/legacy-phase1/` in Phase 2 of epic #478.
 
 ## Tech Stack
 
@@ -216,11 +253,11 @@ Before considering any screen done:
 
 Before building any vertical, the Shaping phase produces these artifacts:
 
-1. **Run shaping skill** → produces `docs/shaping/{topic}/frame.md` + `docs/shaping/{topic}/shaping.md`
+1. **Run shaping skill** → produces `docs/workspace/{pipeline-id}/frame.md` + `docs/workspace/{pipeline-id}/shaping.md`
    - Defines requirements (R) and explores competing shapes (A, B, C...)
    - Selects shape via fit check (R x S binary matrix)
    - Spikes flagged unknowns before committing
-2. **Run breadboarding skill** → produces `docs/breadboards/{topic}-breadboard.md`
+2. **Run breadboarding skill** → produces `docs/workspace/{pipeline-id}/breadboard.md`
    - Maps selected shape's parts into concrete affordances (U, N, S)
    - Wires control flow (Wires Out) and data flow (Returns To)
    - Slices into vertical demo-able increments (V1, V2...)
@@ -236,7 +273,7 @@ Before building any vertical, the Shaping phase produces these artifacts:
 
 For screens with high interaction complexity (e.g., New Quote Form, Kanban Board):
 
-1. **Spike unknowns**: Write a spike file in `docs/spikes/` investigating technical questions
+1. **Spike unknowns**: Write a spike file in `docs/workspace/{pipeline-id}/` investigating technical questions
    - Structure: Context → Goal → Questions → Findings → Recommendation
    - Name: `spike-{topic}.md` (e.g., `spike-kanban-dnd.md`)
    - Questions should ask about mechanics ("How does X work?"), not effort ("How long?")
@@ -322,7 +359,7 @@ These documents define the project. Reference them, keep them current, and never
 | ----------------------------- | ----------------------------------------------------------------- | ------------------------------------ |
 | `CLAUDE.md`                   | AI operating rules, loaded every session                          | Any pattern/rule changes             |
 | `docs/ROADMAP.md`             | Vision, phases, bets, forward planning                            | Cycle transitions, betting decisions |
-| `docs/AGENTS.md`              | Agent registry, orchestration, calling conventions                | Adding/retiring agents               |
+| `.claude/agents/AGENTS.md`    | Agent registry, orchestration, calling conventions                | Adding/retiring agents               |
 | `docs/TECH_STACK.md`          | Tool choices, versions, decision context                          | Adding/removing/upgrading deps       |
 | `docs/PRD.md`                 | Features, scope, acceptance criteria                              | Scope changes or new features        |
 | `docs/APP_FLOW.md`            | Screens, routes, navigation paths                                 | Adding/changing pages or flows       |
@@ -354,7 +391,7 @@ Extended context lives in `docs/reference/` — consult only when needed:
 
 ## Agent & Skill Infrastructure
 
-See `docs/AGENTS.md` for agent registry, orchestration patterns, and calling conventions.
+See `.claude/agents/AGENTS.md` for agent registry, orchestration patterns, and calling conventions.
 
 ### Agents
 
@@ -391,7 +428,7 @@ See `docs/AGENTS.md` for agent registry, orchestration patterns, and calling con
 
 ### Orchestration Patterns
 
-> Simplified references. See `docs/AGENTS.md` for full pattern details.
+> Simplified references. See `.claude/agents/AGENTS.md` for full pattern details.
 
 - **Vertical Build Chain** (standard per-vertical): `research → interview → shaping → breadboarding → bb-reflection → implementation-planning → build → quality-gate → demo`
 - **Linear Chain** (simple screens): `frontend-builder → quality-gate → progress update`
