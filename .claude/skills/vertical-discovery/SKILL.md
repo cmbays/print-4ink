@@ -55,16 +55,17 @@ The MCP approach is strongly preferred because it gives Claude direct tool acces
 
 Each vertical discovery produces exactly 4 documents (+ updates to 2 existing docs):
 
-| #   | Document             | Location                                                                   | Purpose                                    |
-| --- | -------------------- | -------------------------------------------------------------------------- | ------------------------------------------ |
-| 1   | Competitive Analysis | `docs/workspace/{pipeline-id}/competitive-analysis-{competitor}.md`        | Feature list, UI patterns, friction points |
-| 2   | Journey Map          | `docs/workspace/{pipeline-id}/journey-{competitor}.md`                     | Step-by-step workflow, click/time metrics  |
-| 3   | Improved Journey     | `docs/workspace/{pipeline-id}/improved-journey.md`                         | Our redesigned workflow with targets       |
-| 4   | Scope Definition     | `docs/workspace/{pipeline-id}/scope.md`                                    | CORE/PERIPHERAL/INTERCONNECTIONS           |
-| 5   | PROGRESS.md          | `PROGRESS.md`                                                               | Session log entry                          |
-| 6   | for_human doc        | `tmp/outbox/{date}-{vertical}-discovery.html`                              | Human-readable summary (ephemeral)         |
+| #   | Document             | Location                                                            | Purpose                                    |
+| --- | -------------------- | ------------------------------------------------------------------- | ------------------------------------------ |
+| 1   | Competitive Analysis | `docs/workspace/{pipeline-id}/competitive-analysis-{competitor}.md` | Feature list, UI patterns, friction points |
+| 2   | Journey Map          | `docs/workspace/{pipeline-id}/journey-{competitor}.md`              | Step-by-step workflow, click/time metrics  |
+| 3   | Improved Journey     | `docs/workspace/{pipeline-id}/improved-journey.md`                  | Our redesigned workflow with targets       |
+| 4   | Scope Definition     | `docs/workspace/{pipeline-id}/scope.md`                             | CORE/PERIPHERAL/INTERCONNECTIONS           |
+| 5   | PROGRESS.md          | `PROGRESS.md`                                                       | Session log entry                          |
+| 6   | for_human doc        | `tmp/outbox/{date}-{vertical}-discovery.html`                       | Human-readable summary (ephemeral)         |
 
 **On wrap-up**, deposit to the KB (see `knowledge-base/README.md`):
+
 - Competitive analysis + journey map → synthesize into `knowledge-base/src/content/market/competitors/{competitor}.md`
 - Improved journey → synthesize into `knowledge-base/src/content/market/ux-patterns/{vertical}.md`
 - Scope decisions → synthesize into `knowledge-base/src/content/product/{vertical}/`
