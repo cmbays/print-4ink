@@ -609,7 +609,10 @@ describe('data lookup helpers', () => {
 
   it('getCustomerContacts returns contacts for the customer', () => {
     const result = getCustomerContacts(firstCustomerId)
-    expect(Array.isArray(result)).toBe(true)
+    expect(result.length).toBeGreaterThan(0)
+    for (const c of result) {
+      expect(typeof c.id).toBe('string')
+    }
   })
 
   it('getCustomerContacts returns empty array for unknown customer', () => {
@@ -668,24 +671,21 @@ describe('data lookup helpers', () => {
 
   it('getInvoiceCreditMemos returns credit memos for an invoice', () => {
     const invoice = invoices.find((inv) => creditMemos.some((cm) => cm.invoiceId === inv.id))
-    if (invoice) {
-      const result = getInvoiceCreditMemos(invoice.id)
-      expect(Array.isArray(result)).toBe(true)
-      for (const cm of result) {
-        expect(cm.invoiceId).toBe(invoice.id)
-      }
+    expect(invoice).toBeDefined()
+    const result = getInvoiceCreditMemos(invoice!.id)
+    expect(result.length).toBeGreaterThan(0)
+    for (const cm of result) {
+      expect(cm.invoiceId).toBe(invoice!.id)
     }
-    // Always verify the empty-array path
     expect(getInvoiceCreditMemos('unknown-id')).toEqual([])
   })
 
   it('getQuoteInvoice returns the invoice for a quote', () => {
     const invoiceWithQuote = invoices.find((inv) => inv.quoteId)
-    if (invoiceWithQuote?.quoteId) {
-      const result = getQuoteInvoice(invoiceWithQuote.quoteId)
-      expect(result).toBeDefined()
-      expect(result?.id).toBe(invoiceWithQuote.id)
-    }
+    expect(invoiceWithQuote).toBeDefined()
+    const result = getQuoteInvoice(invoiceWithQuote!.quoteId!)
+    expect(result).toBeDefined()
+    expect(result!.id).toBe(invoiceWithQuote!.id)
     expect(getQuoteInvoice('unknown-quote-id')).toBeUndefined()
   })
 
@@ -707,10 +707,9 @@ describe('data lookup helpers', () => {
 
   it('getJobTasks returns tasks for a known job', () => {
     const job = jobs.find((j) => j.tasks.length > 0)
-    if (job) {
-      const result = getJobTasks(job.id)
-      expect(result).toEqual(job.tasks)
-    }
+    expect(job).toBeDefined()
+    const result = getJobTasks(job!.id)
+    expect(result).toEqual(job!.tasks)
     expect(getJobTasks('unknown-id')).toEqual([])
   })
 
