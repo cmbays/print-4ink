@@ -4,8 +4,8 @@ description: 'AI operating rules, design system, coding standards, and canonical
 category: canonical
 status: active
 phase: all
-last_updated: 2026-02-17
-last_verified: 2026-02-17
+last_updated: 2026-02-19
+last_verified: 2026-02-19
 depends_on: []
 ---
 
@@ -15,7 +15,7 @@ depends_on: []
 
 Screen Print Pro is production management software for 4Ink, a screen-printing shop. It manages the full garment lifecycle: Quote → Artwork Approval → Screen Room → Production → Shipping. The primary user is the shop owner/operator who needs instant clarity on job status, blocked items, and next actions.
 
-**Current Phase**: Phase 1 — Mockup with mock data for user acceptance testing. No backend yet.
+**Current Phase**: Phase 2a — Backend foundation shipped. Supabase (PostgreSQL), Drizzle ORM, email/password auth, catalog sync, and CI drift checks are live. Mock data still drives most verticals; real data wiring happens per-vertical.
 
 ## Commands
 
@@ -28,6 +28,12 @@ npm test             # Run Vitest (schema tests)
 npm run test:watch   # Vitest in watch mode
 npx tsc --noEmit     # Type check
 npx shadcn@latest add <component>  # Add shadcn/ui component
+
+# Database (Drizzle + Supabase)
+npm run db:generate  # Generate SQL migration from schema changes
+npm run db:migrate   # Apply pending migrations to local Supabase
+npm run db:studio    # Open Drizzle Studio (DB browser)
+npx supabase start   # Start local Supabase (requires Docker)
 
 # Version Control (git worktrees)
 git worktree list                    # List all active worktrees
@@ -541,3 +547,8 @@ Capture mistakes and patterns here so they aren't repeated. Update as you go.
 - **Breadcrumbs — never include "Dashboard"**: The `Topbar` component hard-codes "Dashboard" as the root breadcrumb. Pages must NOT include `label: "Dashboard"` in their breadcrumbs prop — this causes a duplicate. Use `buildBreadcrumbs()` from `lib/helpers/breadcrumbs.ts` to construct breadcrumb arrays; it validates this contract at dev time. CI also runs a grep check that fails on any `label:.*"Dashboard"` in `app/`.
 - **NEVER use `interface` — use `type` or `z.infer<>`**: TypeScript `interface` declarations silently drift from Zod schemas and are flagged by the linter. Use `type Foo = { ... }` for component props. For domain entities (Customer, Job, Quote, etc.) always derive the type from the schema: `type Customer = z.infer<typeof CustomerSchema>`. The `@typescript-eslint/consistent-type-definitions` rule warns on any new `interface` declaration. See issue #404 for the full migration.
 - **NEVER import from `@/lib/mock-data` or `@/lib/mock-data-pricing` outside `lib/dal/`**: Direct imports bypass the DAL and create data coupling in the UI layer. The linter warns on any violation. All data access goes through `@/lib/dal/{domain}`. See issue #403 for the full migration.
+- **Supabase Auth: ALWAYS `getUser()`, NEVER `getSession()`**: `getSession()` reads the JWT without revalidating the auth token — it can return stale or spoofed sessions. `getUser()` always hits the Supabase Auth server. This is a security requirement, not a preference. Enforced in middleware and all server-side auth checks.
+- **Drizzle `prepare: false` for Supabase**: Supabase connection pooler (PgBouncer) runs in Transaction mode. Prepared statements are not supported. The `postgres(DATABASE_URL, { prepare: false })` flag is required for production. Without it, queries fail silently.
+- **Drizzle `numeric` returns string from PostgreSQL**: The `postgres.js` driver returns `numeric` columns as strings. Use `{ mode: 'number' }` on the Drizzle column definition, or add `.transform(Number)` in the Zod schema. Otherwise, TypeScript types show `number` but runtime values are strings.
+- **Zero-behavior-change infrastructure waves**: When adding backend infrastructure, ship Wave 0 as purely additive (install packages, scaffold files, no behavior change). This keeps the app deployable throughout the build. Wave 1+ flips switches on a stable foundation. Validated in Supabase Foundation (#529).
+- **Multi-supplier PK design**: Using a supplier's external ID as the sole primary key fails when a second supplier is added. Use `(source, external_id)` composite key or a synthetic UUID from day one. Adding `source` later requires a migration.
