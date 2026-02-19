@@ -177,6 +177,22 @@ const dtfTemplateWithFlatFee: DTFPricingTemplate = {
 // Empty sheetTiers — exercises the "no margins" early return.
 const dtfTemplateEmpty: DTFPricingTemplate = { ...dtfTemplate, sheetTiers: [] }
 
+// Regression fixture for issue #498 — values chosen so the double-discount
+// anti-pattern is obvious from the numbers alone:
+//   contractPrice ($8.00) = retailPrice ($10.00) minus 20% discount
+//   Pre-fix (wrong):    contractPrice × (1 − 0.20) = 8.00 × 0.80 = 6.40
+//   Post-fix (correct): contractPrice directly      = 8.00
+const dtfTemplateDoubleDiscountRegression: DTFPricingTemplate = {
+  ...dtfTemplate,
+  sheetTiers: [{ width: 22, length: 10, retailPrice: 10.0, contractPrice: 8.0 }],
+  customerTierDiscounts: [
+    { tier: 'standard', discountPercent: 0 },
+    { tier: 'preferred', discountPercent: 5 },
+    { tier: 'contract', discountPercent: 20 },
+    { tier: 'wholesale', discountPercent: 10 },
+  ],
+}
+
 // ===========================================================================
 // getMarginIndicator
 // ===========================================================================
@@ -691,6 +707,38 @@ describe('calculateDTFPrice — edge cases', () => {
     )
     expect(price).toBe(0)
     expect(margin.revenue).toBe(0)
+  })
+})
+
+// ===========================================================================
+// calculateDTFPrice — double-discount regression (issue #498)
+// ===========================================================================
+
+describe('calculateDTFPrice — double-discount regression (issue #498)', () => {
+  it('contract tier uses contractPrice and does NOT apply tierDiscount on top', () => {
+    // contractPrice ($8.00) already reflects the negotiated 20% off retail ($10.00).
+    // Pre-fix (wrong):    8.00 × (1 − 0.20) = 6.40  (tier discount applied twice)
+    // Post-fix (correct): 8.00              (contractPrice used directly, no second discount)
+    const { price } = calculateDTFPrice(
+      10,
+      'contract',
+      'standard',
+      'standard',
+      dtfTemplateDoubleDiscountRegression
+    )
+    expect(price).toBe(8.0)
+  })
+
+  it('non-contract tier applies tierDiscount to retailPrice', () => {
+    // wholesale: 10% off retailPrice $10.00 → $9.00
+    const { price } = calculateDTFPrice(
+      10,
+      'wholesale',
+      'standard',
+      'standard',
+      dtfTemplateDoubleDiscountRegression
+    )
+    expect(price).toBe(9.0)
   })
 })
 
