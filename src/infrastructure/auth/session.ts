@@ -1,6 +1,7 @@
 import 'server-only'
 import { cache } from 'react'
 import { cookies } from 'next/headers'
+import { createServerClient } from '@supabase/ssr'
 
 // ---------------------------------------------------------------------------
 // Session type
@@ -93,21 +94,31 @@ const MOCK_SESSION: Session = {
  *   defense model and DAL classification table.
  */
 export const verifySession = cache(async (): Promise<Session | null> => {
-  // Development: skip cookie check to keep DX frictionless
+  // Development: skip auth check to keep DX frictionless
   // Use === 'development' (not !== 'production') so test environments
-  // also exercise the real cookie path.
+  // also exercise the real auth path.
   if (process.env.NODE_ENV === 'development') {
     return { ...MOCK_SESSION }
   }
 
-  // Production — Phase 1: validate demo-access cookie value
-  // Production — Phase 2: replace with Supabase Auth.getUser() (see JSDoc above)
+  // Production — Phase 2a: Supabase Auth verification
+  // Phase 2b (future): fetch role + shopId from shop_members table join
   const cookieStore = await cookies()
-  const demoAccess = cookieStore.get('demo-access')?.value
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    { cookies: { getAll: () => cookieStore.getAll() } }
+  )
 
-  if (demoAccess !== 'true') {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+
+  if (error || !user) {
     return null
   }
 
-  return { ...MOCK_SESSION }
+  // Hardcoded until shop_members table added in Phase 2b
+  return { userId: user.id, role: 'owner' as const, shopId: 'shop_4ink' }
 })
