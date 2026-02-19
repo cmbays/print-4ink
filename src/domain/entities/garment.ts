@@ -2,8 +2,19 @@ import { z } from 'zod'
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod'
 import { catalog } from '@db/schema/catalog'
 
-// Garment category — mirrors S&S Activewear API "baseCategory" field on /v2/styles/
-export const garmentCategoryEnum = z.enum(['t-shirts', 'fleece', 'outerwear', 'pants', 'headwear'])
+// Garment category — maps S&S Activewear API "baseCategory" values to domain categories
+// S&S uses free-text categories; we normalize them to a canonical enum
+export const garmentCategoryEnum = z.enum([
+  't-shirts',
+  'polos',
+  'fleece',
+  'knits-layering',
+  'outerwear',
+  'pants',
+  'shorts',
+  'headwear',
+  'activewear',
+])
 
 export type GarmentCategory = z.infer<typeof garmentCategoryEnum>
 

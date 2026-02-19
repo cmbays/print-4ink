@@ -23,6 +23,49 @@ import type { CanonicalStyle } from '@lib/suppliers/types'
 
 const supplierLogger = logger.child({ domain: 'supplier-garments' })
 
+/**
+ * S&S category → canonical domain category mapping.
+ * Handles common variations: "T-Shirts", "T Shirts", "Tshirts", etc.
+ */
+const CATEGORY_MAPPING = {
+  // T-Shirts variants
+  't-shirts': 't-shirts',
+  't-shirt': 't-shirts',
+  't-shirts-premium': 't-shirts',
+  tshirts: 't-shirts',
+  // Polos
+  polos: 'polos',
+  polo: 'polos',
+  // Fleece & Hoodies
+  fleece: 'fleece',
+  hoodies: 'fleece',
+  hoodie: 'fleece',
+  sweatshirts: 'fleece',
+  sweatshirt: 'fleece',
+  // Knits & Layering
+  'knits-layering': 'knits-layering',
+  knits: 'knits-layering',
+  layering: 'knits-layering',
+  cardigans: 'knits-layering',
+  sweaters: 'knits-layering',
+  // Outerwear
+  outerwear: 'outerwear',
+  jackets: 'outerwear',
+  coats: 'outerwear',
+  // Pants
+  pants: 'pants',
+  trousers: 'pants',
+  // Shorts
+  shorts: 'shorts',
+  // Headwear
+  headwear: 'headwear',
+  hats: 'headwear',
+  caps: 'headwear',
+  // Activewear
+  activewear: 'activewear',
+  performance: 'activewear',
+}
+
 const CATALOG_PAGE_SIZE = 100
 /** Safety ceiling: prevents unbounded pagination if the supplier misbehaves. */
 const MAX_CATALOG_PAGES = 500
@@ -34,24 +77,48 @@ const supplierIdSchema = z.string().min(1).max(50)
 /**
  * Normalize a S&S category string to a domain GarmentCategory.
  *
- * S&S uses free-text values like "T-Shirts", "T-Shirts - Premium", "Fleece - Quarter Zip", etc.
- * Some are base categories, others include subcategories after " - " delimiter.
- * We extract the base category (before " - "), lowercase, hyphenate, and match against the enum.
- * Unknown categories fall back to 't-shirts' and a warning is logged.
+ * S&S uses free-text values with optional subcategories (e.g., "T-Shirts - Premium",
+ * "Fleece - Quarter Zip") and special characters (e.g., "Knits & Layering").
+ *
+ * Process:
+ *   1. Extract base category (before " - " delimiter)
+ *   2. Normalize: remove special chars (&, /, etc.), lowercase, hyphenate
+ *   3. Look up in explicit CATEGORY_MAPPING (handles common variations)
+ *   4. If found, return mapped category
+ *   5. If not found, try direct enum parse as fallback
+ *   6. If all fail, use default and log warning
  */
 export function canonicalCategoryToGarmentCategory(categories: string[]): GarmentCategory {
   const categoryString = categories[0] ?? ''
-  // Extract base category before " - " delimiter (e.g., "T-Shirts - Premium" → "T-Shirts")
-  const baseCategory = categoryString.split(' - ')[0].toLowerCase().replace(/\s+/g, '-')
-  const result = garmentCategoryEnum.safeParse(baseCategory)
-  if (!result.success) {
-    supplierLogger.warn('Unknown garment category, falling back to default', {
-      baseCategory,
-      original: categoryString,
-      categories,
-    })
+
+  // Extract base category before " - " delimiter (handles "T-Shirts - Premium" → "T-Shirts")
+  const baseCategory = categoryString.split(' - ')[0]
+
+  // Normalize: replace special chars with space, then lowercase/hyphenate
+  const normalized = baseCategory
+    .replace(/[&/,]+/g, ' ') // Replace special chars with space
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Collapse spaces to hyphens
+
+  // Try explicit mapping first (handles "knits-layering", "t-shirts", etc.)
+  const mapped = CATEGORY_MAPPING[normalized as keyof typeof CATEGORY_MAPPING]
+  if (mapped) {
+    return mapped as GarmentCategory
   }
-  return result.success ? result.data : FALLBACK_GARMENT_CATEGORY
+
+  // Fallback: try direct enum parse
+  const result = garmentCategoryEnum.safeParse(normalized)
+  if (result.success) {
+    return result.data
+  }
+
+  // Log and use default
+  supplierLogger.warn('Unknown garment category, falling back to default', {
+    normalized,
+    baseCategory,
+    original: categoryString,
+  })
+  return FALLBACK_GARMENT_CATEGORY
 }
 
 /**
