@@ -64,29 +64,46 @@ export async function syncCatalogFromSupplier(): Promise<number> {
       return 0
     }
 
-    // Upsert all garments to the catalog table
-    // On conflict (by id), update all fields except id using EXCLUDED pseudo-table
-    await db
-      .insert(catalog)
-      .values(garments)
-      .onConflictDoUpdate({
-        target: catalog.id,
-        set: {
-          brand: sql`excluded.brand`,
-          sku: sql`excluded.sku`,
-          name: sql`excluded.name`,
-          baseCategory: sql`excluded.base_category`,
-          basePrice: sql`excluded.base_price`,
-          availableColors: sql`excluded.available_colors`,
-          availableSizes: sql`excluded.available_sizes`,
-          isEnabled: sql`excluded.is_enabled`,
-          isFavorite: sql`excluded.is_favorite`,
-          updatedAt: new Date(),
-        },
-      })
+    // Batch upserts to prevent exceeding PostgreSQL parameter limits.
+    // With 11 columns per row and PostgreSQL's 65535 parameter limit,
+    // safe batch size is ~5000 rows. Using 1000 for extra safety.
+    const BATCH_SIZE = 1000
+    let syncedTotal = 0
 
-    syncLogger.info('Catalog sync completed', { synced: garments.length })
-    return garments.length
+    for (let i = 0; i < garments.length; i += BATCH_SIZE) {
+      const batch = garments.slice(i, i + BATCH_SIZE)
+
+      // Upsert batch to the catalog table
+      // On conflict (by id), update supplier-sourced fields using EXCLUDED pseudo-table
+      // Note: isEnabled and isFavorite are intentionally omitted from the update clause.
+      // These are user-curated fields that should be preserved across supplier syncs.
+      await db
+        .insert(catalog)
+        .values(batch)
+        .onConflictDoUpdate({
+          target: catalog.id,
+          set: {
+            brand: sql`excluded.brand`,
+            sku: sql`excluded.sku`,
+            name: sql`excluded.name`,
+            baseCategory: sql`excluded.base_category`,
+            basePrice: sql`excluded.base_price`,
+            availableColors: sql`excluded.available_colors`,
+            availableSizes: sql`excluded.available_sizes`,
+            updatedAt: new Date(),
+          },
+        })
+
+      syncedTotal += batch.length
+      syncLogger.info('Catalog sync batch completed', {
+        batchSize: batch.length,
+        totalSynced: syncedTotal,
+        totalRemaining: garments.length - syncedTotal,
+      })
+    }
+
+    syncLogger.info('Catalog sync completed', { synced: syncedTotal })
+    return syncedTotal
   } catch (error) {
     syncLogger.error('Catalog sync failed', { error })
     throw error

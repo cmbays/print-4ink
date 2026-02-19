@@ -51,11 +51,14 @@ export async function getGarmentById(id: string): Promise<GarmentCatalog | null>
 
 /**
  * Fetch distinct brands from Supabase PostgreSQL catalog.
- * Returns sorted list of unique brand names.
+ * Returns sorted list of unique brand names from enabled garments only.
  */
 export async function getAvailableBrands(): Promise<string[]> {
   try {
-    const rows = await db.selectDistinct({ brand: catalog.brand }).from(catalog)
+    const rows = await db
+      .selectDistinct({ brand: catalog.brand })
+      .from(catalog)
+      .where(eq(catalog.isEnabled, true))
     return rows.map((r) => r.brand).sort()
   } catch (error) {
     supabaseLogger.error('Failed to fetch available brands from Supabase', { error })
