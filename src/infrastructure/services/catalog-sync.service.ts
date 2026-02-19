@@ -21,8 +21,10 @@ export async function syncCatalogFromSupplier(): Promise<number> {
     const { db } = await import('@shared/lib/supabase/db')
     const { catalog } = await import('@db/schema/catalog')
 
-    // Get the supplier adapter and paginate through all styles (not just first page)
-    const adapter = getSupplierAdapter()
+    // Catalog sync always reads from S&S Activewear, regardless of SUPPLIER_ADAPTER mode.
+    // The app may serve garments from Supabase (supabase-catalog mode), but the sync
+    // endpoint is what populates Supabase in the first place.
+    const adapter = getSupplierAdapter('ss-activewear')
     const allStyles: (ReturnType<typeof canonicalStyleToGarmentCatalog> | null)[] = []
     let offset = 0
     let page = 0
@@ -66,8 +68,9 @@ export async function syncCatalogFromSupplier(): Promise<number> {
 
     // Batch upserts to prevent exceeding PostgreSQL parameter limits.
     // With 11 columns per row and PostgreSQL's 65535 parameter limit,
-    // safe batch size is ~5000 rows. Using 1000 for extra safety.
-    const BATCH_SIZE = 1000
+    // safe batch size is ~5000 rows. Using 100 for Supabase Nano plan
+    // compatibility — large batches cause FATAL XX000 resource exhaustion.
+    const BATCH_SIZE = 100
     let syncedTotal = 0
 
     for (let i = 0; i < garments.length; i += BATCH_SIZE) {

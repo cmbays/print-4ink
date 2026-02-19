@@ -21,7 +21,17 @@ function buildCacheStore(): CacheStore {
   return hasUpstash ? new UpstashCacheStore() : new InMemoryCacheStore()
 }
 
-export function getSupplierAdapter(): SupplierAdapter {
+export function getSupplierAdapter(nameOverride?: SupplierName): SupplierAdapter {
+  // When a nameOverride is provided (e.g., by the catalog sync service which always
+  // reads from S&S regardless of SUPPLIER_ADAPTER), skip the singleton and env validation.
+  if (nameOverride) {
+    const cache = buildCacheStore()
+    if (nameOverride === 'mock') return new MockAdapter(cache)
+    if (nameOverride === 'ss-activewear')
+      return new SSActivewearAdapter(cache, new MockAdapter(cache))
+    throw new DalError('PROVIDER', `Adapter '${nameOverride}' not yet implemented`)
+  }
+
   if (_adapter) return _adapter
 
   const name = process.env.SUPPLIER_ADAPTER
