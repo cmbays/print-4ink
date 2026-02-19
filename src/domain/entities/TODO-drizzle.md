@@ -7,7 +7,7 @@ This document tracks existing domain entity schemas that are currently hand-writ
 ### Already Migrated ✓
 
 - **garment.ts** — `GarmentCatalog` (Session B, Wave 1)
-  - Drizzle schema: `src/infrastructure/database/schema/garment.ts`
+  - Drizzle schema: `src/db/schema/garment.ts`
   - Zod derived from Drizzle table
 
 ### Pending Migration (Alphabetical)
@@ -142,13 +142,14 @@ When allocating future work:
 
 When migrating an entity `Foo`:
 
-1. Create Drizzle table in `src/infrastructure/database/schema/foo.ts`
-2. Export table in `src/infrastructure/database/schema/index.ts`
+1. Create Drizzle table in `src/db/schema/foo.ts` (configured in `drizzle.config.ts`)
+2. Export table in `src/db/schema/index.ts`
 3. Update `src/domain/entities/foo.ts` to derive the type from Drizzle:
    ```typescript
-   import { foosTable } from '@infra/database/schema'
+   import { foosTable } from '@/db/schema'
    export type Foo = typeof foosTable.$inferSelect
    export const fooSchema = /* validate type */
    ```
-4. Update tests and repositories to use the new schema
-5. Update this TODO file to move `Foo` to "Already Migrated"
+4. Run `npx drizzle-kit generate` to create migration files in `supabase/migrations/`
+5. Update tests and repositories to use the new schema
+6. Update this TODO file to move `Foo` to "Already Migrated"
