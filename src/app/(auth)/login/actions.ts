@@ -25,8 +25,16 @@ function normalizeAuthError(errorMessage: string): string {
 }
 
 export async function signIn(formData: FormData) {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  // Proper type narrowing instead of unsafe 'as string' cast
+  const rawEmail = formData.get('email')
+  const rawPassword = formData.get('password')
+
+  if (typeof rawEmail !== 'string' || typeof rawPassword !== 'string') {
+    return { error: 'Email and password are required' }
+  }
+
+  const email = rawEmail.trim()
+  const password = rawPassword
 
   if (!email || !password) {
     return { error: 'Email and password are required' }

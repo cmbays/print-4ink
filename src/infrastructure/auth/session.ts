@@ -1,7 +1,6 @@
 import 'server-only'
 import { cache } from 'react'
-import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@shared/lib/supabase/server'
 
 // ---------------------------------------------------------------------------
 // Session type
@@ -103,12 +102,7 @@ export const verifySession = cache(async (): Promise<Session | null> => {
 
   // Production — Phase 2a: Supabase Auth verification
   // Phase 2b (future): fetch role + shopId from shop_members table join
-  const cookieStore = await cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  )
+  const supabase = await createClient()
 
   const {
     data: { user },
