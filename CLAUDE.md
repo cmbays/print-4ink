@@ -107,23 +107,26 @@ Scratch space — delete at will. Nothing here is committed.
 **Zone 2 — `docs/workspace/`** (committed during work, deleted on wrap-up)
 All process artifacts scoped by pipeline. Committed so parallel Claude sessions can see in-progress work. Deleted after the KB pipeline doc absorbs key content.
 
+**Critical rule:** One pipeline = one directory. All sessions working on the same pipeline write to the same `{YYYYMMDD-pipeline-id}/` directory with unique filenames. This prevents sprawl and enables centralized wrap-up consolidation.
+
 ```
 docs/workspace/
-  {YYYYMMDD-pipeline-id}/    ← one dir per pipeline (e.g. 20260217-ia-refactor)
-    research.md
-    competitive-analysis.md
-    interview.md
-    frame.md
-    shaping.md
-    breadboard.md
-    spike-*.md
-    plan.md                  ← impl plan lives here during work
-    manifest.yaml
+  {YYYYMMDD-pipeline-id}/    ← one dir per pipeline (e.g. 20260218-supabase-foundation)
+    research.md              ← from planning phase
+    shaping.md               ← from planning phase
+    breadboard.md            ← from planning phase
+    plan.md                  ← implementation plan
+    manifest.yaml            ← Wave/Session execution spec
+    {session-topic}-notes.md ← from Wave 1A (unique filename)
+    {session-topic}-notes.md ← from Wave 1B (unique filename)
+    {session-topic}-notes.md ← from Wave 1C (unique filename)
   adhoc-{MMDD-topic}/        ← for work without a pipeline ID
   legacy-phase1/             ← migration home for existing scattered docs/
 ```
 
-**Lifecycle**: Created at pipeline start → committed throughout → deleted on wrap-up after KB doc is written.
+**Per-session requirements:** If your session contributes implementation notes, decisions, or architecture findings, commit them to the pipeline directory with a unique filename like `{your-session-topic}-notes.md` or `{your-session-topic}-decisions.md`. This gets consolidated into the KB pipeline doc during wrap-up.
+
+**Lifecycle**: Created at pipeline start → committed throughout by all sessions → consolidated into single KB doc on wrap-up → deleted after content absorbed.
 
 **Zone 3 — `knowledge-base/`** (committed, permanent)
 The single durable record. KB pipeline docs absorb key findings from the workspace — not just links — so workspace deletion loses nothing important.
