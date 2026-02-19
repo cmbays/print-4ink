@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { createSelectSchema, createInsertSchema } from 'drizzle-zod'
+import { catalog } from '@db/schema/catalog'
 
 // Garment category — mirrors S&S Activewear API "baseCategory" field on /v2/styles/
 export const garmentCategoryEnum = z.enum(['t-shirts', 'fleece', 'outerwear', 'pants', 'headwear'])
@@ -16,25 +18,18 @@ export const garmentSchema = z.object({
 
 export type Garment = z.infer<typeof garmentSchema>
 
-// Catalog schemas (for quoting garment selection)
+// Catalog schemas derived from Drizzle table (single source of truth)
+// These replace the hand-written schemas above
 export const garmentSizeSchema = z.object({
   name: z.string().min(1),
   order: z.number().int().nonnegative(),
   priceAdjustment: z.number(),
 })
 
-export const garmentCatalogSchema = z.object({
-  id: z.string(),
-  brand: z.string().min(1),
-  sku: z.string().min(1),
-  name: z.string().min(1),
-  baseCategory: garmentCategoryEnum,
-  basePrice: z.number().nonnegative(),
-  availableColors: z.array(z.string()),
-  availableSizes: z.array(garmentSizeSchema),
-  isEnabled: z.boolean().default(true),
-  isFavorite: z.boolean().default(false),
-})
+export const garmentCatalogSchema = createSelectSchema(catalog).refine(
+  (data) => data.basePrice !== null
+)
+export const newGarmentCatalogSchema = createInsertSchema(catalog)
 
 export type GarmentSize = z.infer<typeof garmentSizeSchema>
 export type GarmentCatalog = z.infer<typeof garmentCatalogSchema>
