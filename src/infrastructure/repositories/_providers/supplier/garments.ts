@@ -82,6 +82,7 @@ export function canonicalStyleToGarmentCatalog(style: CanonicalStyle): GarmentCa
     })),
     isEnabled: true,
     isFavorite: false,
+    updatedAt: new Date(),
   }
 
   const parsed = garmentCatalogSchema.safeParse(raw)

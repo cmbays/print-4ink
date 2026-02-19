@@ -26,10 +26,23 @@ export const garmentSizeSchema = z.object({
   priceAdjustment: z.number(),
 })
 
-export const garmentCatalogSchema = createSelectSchema(catalog).refine(
-  (data) => data.basePrice !== null
-)
-export const newGarmentCatalogSchema = createInsertSchema(catalog)
+// Note: .extend() already overrides basePrice with z.number().nonnegative() which rejects null,
+// so the previous .refine() check was redundant and has been removed.
+export const garmentCatalogSchema = createSelectSchema(catalog).extend({
+  brand: z.string().min(1),
+  sku: z.string().min(1),
+  name: z.string().min(1),
+  baseCategory: garmentCategoryEnum,
+  basePrice: z.number().nonnegative(),
+})
+
+export const newGarmentCatalogSchema = createInsertSchema(catalog).extend({
+  brand: z.string().min(1),
+  sku: z.string().min(1),
+  name: z.string().min(1),
+  baseCategory: garmentCategoryEnum,
+  basePrice: z.number().nonnegative(),
+})
 
 export type GarmentSize = z.infer<typeof garmentSizeSchema>
 export type GarmentCatalog = z.infer<typeof garmentCatalogSchema>

@@ -1,6 +1,5 @@
 import 'server-only'
-import { db } from '@shared/lib/supabase/db'
-import { catalog } from '@db/schema/catalog'
+import { sql } from 'drizzle-orm'
 import { getSupplierAdapter } from '@lib/suppliers/registry'
 import { canonicalStyleToGarmentCatalog } from '@infra/repositories/_providers/supplier/garments'
 import { logger } from '@shared/lib/logger'
@@ -11,19 +10,54 @@ const syncLogger = logger.child({ domain: 'catalog-sync' })
  * Sync the supplier catalog to Supabase PostgreSQL.
  * Fetches all styles from the supplier adapter and upserts them to the catalog table.
  * Returns the number of garments synced.
+ *
+ * Database import is deferred until runtime to prevent requiring DATABASE_URL during build.
  */
 export async function syncCatalogFromSupplier(): Promise<number> {
   try {
     syncLogger.info('Starting catalog sync from supplier')
 
-    // Get the supplier adapter and fetch all styles
-    const adapter = getSupplierAdapter()
-    const styles = await adapter.searchCatalog({ limit: 100, offset: 0 })
+    // Dynamic import of database (deferred to runtime to avoid DATABASE_URL requirement at build time)
+    const { db } = await import('@shared/lib/supabase/db')
+    const { catalog } = await import('@db/schema/catalog')
 
-    // Map CanonicalStyle to GarmentCatalog insert format
-    const garments = styles.styles
-      .map((style) => canonicalStyleToGarmentCatalog(style))
-      .filter((garment) => garment !== null)
+    // Get the supplier adapter and paginate through all styles (not just first page)
+    const adapter = getSupplierAdapter()
+    const allStyles: (ReturnType<typeof canonicalStyleToGarmentCatalog> | null)[] = []
+    let offset = 0
+    let page = 0
+    const CATALOG_PAGE_SIZE = 100
+    const MAX_CATALOG_PAGES = 500
+
+    while (true) {
+      const result = await adapter.searchCatalog({ limit: CATALOG_PAGE_SIZE, offset })
+
+      for (const style of result.styles) {
+        const garment = canonicalStyleToGarmentCatalog(style)
+        allStyles.push(garment) // Keep nulls for filtering later
+      }
+
+      // Zero-progress guard: prevent infinite loop if supplier returns hasMore:true with empty page
+      if (result.styles.length === 0 || !result.hasMore) break
+
+      offset += result.styles.length
+      page++
+
+      if (page >= MAX_CATALOG_PAGES) {
+        syncLogger.error('Exceeded MAX_CATALOG_PAGES — possible supplier pagination bug', {
+          page,
+          offset,
+          totalSoFar: allStyles.filter((g) => g !== null).length,
+        })
+        break
+      }
+    }
+
+    // Filter out nulls and cast to guarantee non-null array for Drizzle
+    const garments = allStyles.filter((g) => g !== null) as Exclude<
+      (typeof allStyles)[number],
+      null
+    >[]
 
     if (garments.length === 0) {
       syncLogger.warn('No valid garments to sync from supplier')
@@ -31,22 +65,22 @@ export async function syncCatalogFromSupplier(): Promise<number> {
     }
 
     // Upsert all garments to the catalog table
-    // On conflict (by id), update all fields except id
+    // On conflict (by id), update all fields except id using EXCLUDED pseudo-table
     await db
       .insert(catalog)
       .values(garments)
       .onConflictDoUpdate({
         target: catalog.id,
         set: {
-          brand: catalog.brand,
-          sku: catalog.sku,
-          name: catalog.name,
-          baseCategory: catalog.baseCategory,
-          basePrice: catalog.basePrice,
-          availableColors: catalog.availableColors,
-          availableSizes: catalog.availableSizes,
-          isEnabled: catalog.isEnabled,
-          isFavorite: catalog.isFavorite,
+          brand: sql`excluded.brand`,
+          sku: sql`excluded.sku`,
+          name: sql`excluded.name`,
+          baseCategory: sql`excluded.base_category`,
+          basePrice: sql`excluded.base_price`,
+          availableColors: sql`excluded.available_colors`,
+          availableSizes: sql`excluded.available_sizes`,
+          isEnabled: sql`excluded.is_enabled`,
+          isFavorite: sql`excluded.is_favorite`,
           updatedAt: new Date(),
         },
       })
