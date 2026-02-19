@@ -316,7 +316,8 @@ describe('getLocationUpcharge', () => {
   })
 
   it('returns 0 for locations with no upcharge or unknown locations', () => {
-    expect(getLocationUpcharge(spMatrix, 'front')).toBe(0) // explicitly 0
+    expect(getLocationUpcharge(spMatrix, 'front')).toBe(0) // configured entry, upcharge = 0
+    expect(getLocationUpcharge(spMatrix, 'unknown')).toBe(0) // config undefined → ?? 0 fallback
   })
 })
 
