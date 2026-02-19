@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Registry of available review agents and their capabilities",
+  "agents": {
+    "build-reviewer": {
+      "id": "build-reviewer",
+      "name": "Build Quality Reviewer",
+      "description": "Reviews code quality, DRY principles, types, component patterns",
+      "capabilities": [
+        "code-quality",
+        "type-safety",
+        "component-patterns",
+        "architecture-boundaries"
+      ],
+      "domains": ["all"]
+    },
+    "security-reviewer": {
+      "id": "security-reviewer",
+      "name": "Security Reviewer",
+      "description": "Reviews for OWASP Top 10, injection, XSS, auth, secrets, crypto",
+      "capabilities": [
+        "authentication",
+        "authorization",
+        "input-validation",
+        "secrets-management",
+        "injection-prevention",
+        "secure-crypto"
+      ],
+      "domains": ["auth", "api", "infrastructure"]
+    },
+    "finance-sme": {
+      "id": "finance-sme",
+      "name": "Financial Calculations Expert",
+      "description": "Verifies financial calculations use big.js, no floating-point on money",
+      "capabilities": ["financial-calculations", "monetary-arithmetic", "precision-validation"],
+      "domains": ["pricing", "invoices"]
+    },
+    "design-auditor": {
+      "id": "design-auditor",
+      "name": "Design System Auditor",
+      "description": "Audits design system compliance, tokens, hierarchy, accessibility",
+      "capabilities": [
+        "design-system-compliance",
+        "accessibility",
+        "visual-hierarchy",
+        "responsive-design",
+        "color-tokens",
+        "typography"
+      ],
+      "domains": ["ui"]
+    },
+    "architecture-reviewer": {
+      "id": "architecture-reviewer",
+      "name": "Architecture Specialist",
+      "description": "Reviews system design, scalability, layer boundaries, patterns",
+      "capabilities": [
+        "architecture-design",
+        "scalability",
+        "layer-boundaries",
+        "design-patterns",
+        "technical-decisions"
+      ],
+      "domains": ["infrastructure", "api", "database"]
+    }
+  }
+}
