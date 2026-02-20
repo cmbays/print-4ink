@@ -57,7 +57,7 @@ export const catalogBrandSources = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     brandId: uuid('brand_id')
       .notNull()
-      .references(() => catalogBrands.id),
+      .references(() => catalogBrands.id, { onDelete: 'cascade' }),
     source: varchar('source', { length: 50 }).notNull(),
     externalId: varchar('external_id', { length: 100 }).notNull(),
     externalName: varchar('external_name', { length: 255 }),
@@ -160,10 +160,11 @@ export const catalogStylePreferences = pgTable(
   {
     id: uuid('id').primaryKey().defaultRandom(),
     scopeType: varchar('scope_type', { length: 20 }).notNull().default('shop'),
+    /** Scope identifier — must be a UUID. All supported scope types (shop, brand, customer) resolve to UUID PKs. */
     scopeId: uuid('scope_id').notNull(),
     styleId: uuid('style_id')
       .notNull()
-      .references(() => catalogStyles.id),
+      .references(() => catalogStyles.id, { onDelete: 'cascade' }),
     isEnabled: boolean('is_enabled'),
     isFavorite: boolean('is_favorite'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
