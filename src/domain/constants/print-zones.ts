@@ -146,6 +146,21 @@ export const PRINT_ZONES: Record<GarmentCategory, Partial<Record<MockupView, Pri
     ],
     back: [{ position: 'full-back', x: 20, y: 20, width: 60, height: 48 }],
   },
+  accessories: {
+    front: [],
+    back: [],
+  },
+  wovens: {
+    front: [
+      { position: 'left-chest', x: 52, y: 28, width: 16, height: 15 },
+      { position: 'front-chest', x: 28, y: 28, width: 44, height: 28 },
+    ],
+    back: [{ position: 'full-back', x: 25, y: 28, width: 50, height: 45 }],
+  },
+  other: {
+    front: [],
+    back: [],
+  },
 }
 
 /** Get all print zones for a garment category and view. */

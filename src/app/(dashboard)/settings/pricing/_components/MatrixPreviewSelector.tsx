@@ -40,6 +40,9 @@ const garmentLabels: Record<GarmentCategory, string> = {
   shorts: 'Shorts',
   headwear: 'Headwear',
   activewear: 'Activewear',
+  accessories: 'Accessories',
+  wovens: 'Wovens',
+  other: 'Other',
 }
 
 const locationLabels: Record<string, string> = {
