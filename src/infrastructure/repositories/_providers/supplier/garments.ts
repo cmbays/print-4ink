@@ -34,21 +34,17 @@ const supplierLogger = logger.child({ domain: 'supplier-garments' })
  */
 const CATEGORY_MAPPING: Record<string, GarmentCategory> = {
   // T-Shirts variants
-  't-shirts': 't-shirts',
   't-shirt': 't-shirts',
   't-shirts-premium': 't-shirts',
   tshirts: 't-shirts',
   // Polos
-  polos: 'polos',
   polo: 'polos',
   // Fleece & Hoodies
-  fleece: 'fleece',
   hoodies: 'fleece',
   hoodie: 'fleece',
   sweatshirts: 'fleece',
   sweatshirt: 'fleece',
-  // Knits & Layering
-  'knits-layering': 'knits-layering',
+  // Knits / Layering — ampersand in name prevents direct enum match
   'knits--layering': 'knits-layering',
   'knits-&-layering': 'knits-layering',
   knits: 'knits-layering',
@@ -56,29 +52,21 @@ const CATEGORY_MAPPING: Record<string, GarmentCategory> = {
   cardigans: 'knits-layering',
   sweaters: 'knits-layering',
   // Outerwear
-  outerwear: 'outerwear',
   jackets: 'outerwear',
   coats: 'outerwear',
   // Pants
-  pants: 'pants',
   trousers: 'pants',
-  // Shorts
-  shorts: 'shorts',
   // Headwear
-  headwear: 'headwear',
   hats: 'headwear',
   caps: 'headwear',
   // Activewear
-  activewear: 'activewear',
   performance: 'activewear',
-  // Accessories
-  accessories: 'accessories',
+  // Accessories — S&S compound strings that don't normalize to enum value directly
   'bags--accessories': 'accessories',
   'bags-&-accessories': 'accessories',
   'bags-accessories': 'accessories',
   bags: 'accessories',
-  // Wovens
-  wovens: 'wovens',
+  // Wovens — subcategory strings
   'woven-shirts': 'wovens',
 }
 

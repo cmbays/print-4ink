@@ -106,6 +106,9 @@ describe('canonicalCategoryToGarmentCategory — new categories', () => {
   it('maps "Wovens" to "wovens"', () => {
     expect(canonicalCategoryToGarmentCategory(['Wovens'])).toBe('wovens')
   })
+  it('maps "Knits & Layering" to "knits-layering"', () => {
+    expect(canonicalCategoryToGarmentCategory(['Knits & Layering'])).toBe('knits-layering')
+  })
   it('returns "other" for completely unknown categories instead of silently falling back to t-shirts', () => {
     expect(canonicalCategoryToGarmentCategory(['Socks'])).toBe('other')
   })
