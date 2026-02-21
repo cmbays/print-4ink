@@ -24,7 +24,7 @@ type GarmentCardProps = {
 }
 
 function isNormalized(g: GarmentCatalog | NormalizedGarmentCatalog): g is NormalizedGarmentCatalog {
-  return 'colors' in g && Array.isArray(g.colors)
+  return 'source' in g
 }
 
 export function GarmentCard({
@@ -51,7 +51,11 @@ export function GarmentCard({
     return garmentColors.filter((c) => favSet.has(c.id))
   }, [garmentColors, favoriteColorIds])
 
-  const totalColorCount = garmentColors.length
+  const totalColorCount = isNormalized(garment) ? garment.colors.length : garmentColors.length
+
+  const frontImage = isNormalized(garment)
+    ? garment.colors[0]?.images.find((i) => i.imageType === 'front')
+    : undefined
 
   return (
     <div
@@ -74,10 +78,10 @@ export function GarmentCard({
     >
       {/* Image — real photo if available, SVG tinting fallback */}
       <div className="flex justify-center py-2">
-        {isNormalized(garment) && garment.colors[0]?.images.find((i) => i.imageType === 'front') ? (
+        {frontImage ? (
           <div className="relative w-16 h-20 rounded overflow-hidden bg-surface">
             <Image
-              src={garment.colors[0].images.find((i) => i.imageType === 'front')!.url}
+              src={frontImage.url}
               alt={`${garment.name} front view`}
               fill
               sizes="64px"

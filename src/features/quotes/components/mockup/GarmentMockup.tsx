@@ -55,6 +55,10 @@ const SIZE_CLASSES = {
 
 type GarmentMockupProps = {
   garmentCategory: GarmentCategory
+  /**
+   * The hex color used for SVG color tinting (e.g. '#ffffff').
+   * Only used when `imageUrl` is absent — pass any value when providing `imageUrl`.
+   */
   colorHex: string
   artworkPlacements?: ArtworkPlacement[]
   view?: MockupView

@@ -43,7 +43,7 @@ export function ImageTypeCarousel({ images, alt, className }: ImageTypeCarouselP
           alt={`${alt} — ${activeType}`}
           fill
           sizes="(max-width: 768px) 50vw, 200px"
-          className="object-contain transition-opacity duration-150"
+          className="object-contain transition-opacity duration-150 motion-reduce:transition-none"
         />
       </div>
 
@@ -52,19 +52,21 @@ export function ImageTypeCarousel({ images, alt, className }: ImageTypeCarouselP
         <div
           className={cn(
             'flex gap-1 mt-1.5 justify-center',
-            'md:opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-150'
+            'md:opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-150 motion-reduce:transition-none'
           )}
         >
           {availableStrip.map((type) => (
             <button
               key={type}
               type="button"
+              aria-pressed={activeType === type}
               onClick={(e) => {
                 e.stopPropagation()
                 setActiveType(type)
               }}
               className={cn(
                 'px-1.5 py-0.5 text-[10px] rounded border transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50',
                 activeType === type
                   ? 'border-action text-action bg-action/10'
                   : 'border-border text-muted-foreground hover:border-foreground/30'
