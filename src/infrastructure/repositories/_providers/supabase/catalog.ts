@@ -1,6 +1,7 @@
 import 'server-only'
 import { sql } from 'drizzle-orm'
-import type { NormalizedGarmentCatalog, CatalogImage } from '@domain/entities/catalog-style'
+import type { NormalizedGarmentCatalog } from '@domain/entities/catalog-style'
+import { catalogImageSchema } from '@domain/entities/catalog-style'
 import { logger } from '@shared/lib/logger'
 
 const repoLogger = logger.child({ domain: 'supabase-catalog' })
@@ -48,7 +49,7 @@ export function parseNormalizedCatalogRow(row: {
       name: c.name,
       hex1: c.hex1,
       hex2: c.hex2,
-      images: c.images as CatalogImage[],
+      images: catalogImageSchema.array().parse(c.images),
     })),
     sizes: row.sizes.map((s) => ({
       id: s.id,

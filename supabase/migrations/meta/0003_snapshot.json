@@ -662,8 +662,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.catalog": {
-      "name": "catalog",
+    "public.catalog_archived": {
+      "name": "catalog_archived",
       "schema": "",
       "columns": {
         "id": {
