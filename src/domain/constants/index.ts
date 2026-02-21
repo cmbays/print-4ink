@@ -112,6 +112,9 @@ export const GARMENT_CATEGORY_LABELS: Record<GarmentCategory, string> = {
   shorts: 'Shorts',
   headwear: 'Headwear',
   activewear: 'Activewear',
+  accessories: 'Accessories',
+  wovens: 'Wovens',
+  other: 'Other',
 }
 
 export const ARTWORK_TAG_LABELS: Record<ArtworkTag, string> = {

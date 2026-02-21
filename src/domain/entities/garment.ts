@@ -14,6 +14,9 @@ export const garmentCategoryEnum = z.enum([
   'shorts',
   'headwear',
   'activewear',
+  'accessories',
+  'wovens',
+  'other',
 ])
 
 export type GarmentCategory = z.infer<typeof garmentCategoryEnum>

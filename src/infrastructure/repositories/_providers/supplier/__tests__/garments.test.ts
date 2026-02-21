@@ -83,16 +83,34 @@ describe('canonicalCategoryToGarmentCategory', () => {
     expect(canonicalCategoryToGarmentCategory(['Headwear'])).toBe('headwear')
   })
 
-  it('defaults unknown category to t-shirts', () => {
-    expect(canonicalCategoryToGarmentCategory(['Accessories'])).toBe('t-shirts')
+  it('defaults unknown category to other', () => {
+    expect(canonicalCategoryToGarmentCategory(['Socks'])).toBe('other')
   })
 
-  it('defaults empty categories array to t-shirts', () => {
-    expect(canonicalCategoryToGarmentCategory([])).toBe('t-shirts')
+  it('defaults empty categories array to other', () => {
+    expect(canonicalCategoryToGarmentCategory([])).toBe('other')
   })
 
   it('uses first category only', () => {
     expect(canonicalCategoryToGarmentCategory(['Fleece', 'Outerwear'])).toBe('fleece')
+  })
+})
+
+describe('canonicalCategoryToGarmentCategory — new categories', () => {
+  it('maps "Accessories" to "accessories"', () => {
+    expect(canonicalCategoryToGarmentCategory(['Accessories'])).toBe('accessories')
+  })
+  it('maps "Bags & Accessories" to "accessories"', () => {
+    expect(canonicalCategoryToGarmentCategory(['Bags & Accessories'])).toBe('accessories')
+  })
+  it('maps "Wovens" to "wovens"', () => {
+    expect(canonicalCategoryToGarmentCategory(['Wovens'])).toBe('wovens')
+  })
+  it('maps "Knits & Layering" to "knits-layering"', () => {
+    expect(canonicalCategoryToGarmentCategory(['Knits & Layering'])).toBe('knits-layering')
+  })
+  it('returns "other" for completely unknown categories instead of silently falling back to t-shirts', () => {
+    expect(canonicalCategoryToGarmentCategory(['Socks'])).toBe('other')
   })
 })
 

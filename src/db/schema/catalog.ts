@@ -1,6 +1,6 @@
 import { pgTable, varchar, numeric, boolean, jsonb, timestamp } from 'drizzle-orm/pg-core'
 
-export const catalog = pgTable('catalog', {
+export const catalog = pgTable('catalog_archived', {
   id: varchar('id', { length: 50 }).primaryKey(), // S&S styleId (numeric string like "3001")
   brand: varchar('brand', { length: 255 }).notNull(),
   sku: varchar('sku', { length: 100 }).notNull(),

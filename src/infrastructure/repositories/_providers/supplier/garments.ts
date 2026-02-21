@@ -26,50 +26,54 @@ const supplierLogger = logger.child({ domain: 'supplier-garments' })
 /**
  * S&S category → canonical domain category mapping.
  * Handles common variations: "T-Shirts", "T Shirts", "Tshirts", etc.
+ * Also handles special characters and S&S subcategory strings that don't
+ * normalize cleanly via simple lowercase + hyphenation.
+ *
+ * Keys are the lowercased-and-hyphenated form of the raw supplier string
+ * (after special char normalization).
  */
-const CATEGORY_MAPPING = {
+const CATEGORY_MAPPING: Record<string, GarmentCategory> = {
   // T-Shirts variants
-  't-shirts': 't-shirts',
   't-shirt': 't-shirts',
   't-shirts-premium': 't-shirts',
   tshirts: 't-shirts',
   // Polos
-  polos: 'polos',
   polo: 'polos',
   // Fleece & Hoodies
-  fleece: 'fleece',
   hoodies: 'fleece',
   hoodie: 'fleece',
   sweatshirts: 'fleece',
   sweatshirt: 'fleece',
-  // Knits & Layering
-  'knits-layering': 'knits-layering',
+  // Knits / Layering — ampersand in name prevents direct enum match
+  'knits--layering': 'knits-layering',
+  'knits-&-layering': 'knits-layering',
   knits: 'knits-layering',
   layering: 'knits-layering',
   cardigans: 'knits-layering',
   sweaters: 'knits-layering',
   // Outerwear
-  outerwear: 'outerwear',
   jackets: 'outerwear',
   coats: 'outerwear',
   // Pants
-  pants: 'pants',
   trousers: 'pants',
-  // Shorts
-  shorts: 'shorts',
   // Headwear
-  headwear: 'headwear',
   hats: 'headwear',
   caps: 'headwear',
   // Activewear
-  activewear: 'activewear',
   performance: 'activewear',
+  // Accessories — S&S compound strings that don't normalize to enum value directly
+  'bags--accessories': 'accessories',
+  'bags-&-accessories': 'accessories',
+  'bags-accessories': 'accessories',
+  bags: 'accessories',
+  // Wovens — subcategory strings
+  'woven-shirts': 'wovens',
 }
 
 const CATALOG_PAGE_SIZE = 100
 /** Safety ceiling: prevents unbounded pagination if the supplier misbehaves. */
 const MAX_CATALOG_PAGES = 500
-const FALLBACK_GARMENT_CATEGORY: GarmentCategory = 't-shirts'
+const FALLBACK_GARMENT_CATEGORY: GarmentCategory = 'other'
 
 /** Zod validator for supplier style IDs (non-UUID, numeric strings like "3001"). */
 const supplierIdSchema = z.string().min(1).max(50)
@@ -86,7 +90,7 @@ const supplierIdSchema = z.string().min(1).max(50)
  *   3. Look up in explicit CATEGORY_MAPPING (handles common variations)
  *   4. If found, return mapped category
  *   5. If not found, try direct enum parse as fallback
- *   6. If all fail, use default and log warning
+ *   6. If all fail, use 'other' and log warning
  */
 export function canonicalCategoryToGarmentCategory(categories: string[]): GarmentCategory {
   const categoryString = categories[0] ?? ''
@@ -101,9 +105,9 @@ export function canonicalCategoryToGarmentCategory(categories: string[]): Garmen
     .replace(/\s+/g, '-') // Collapse spaces to hyphens
 
   // Try explicit mapping first (handles "knits-layering", "t-shirts", etc.)
-  const mapped = CATEGORY_MAPPING[normalized as keyof typeof CATEGORY_MAPPING]
+  const mapped = CATEGORY_MAPPING[normalized]
   if (mapped) {
-    return mapped as GarmentCategory
+    return mapped
   }
 
   // Fallback: try direct enum parse
