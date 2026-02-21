@@ -16,6 +16,7 @@ import 'server-only'
 //
 // getGarmentCatalogMutable() is Phase 1 only and always returns mock data.
 import type { GarmentCatalog } from '@domain/entities/garment'
+import type { NormalizedGarmentCatalog } from '@domain/entities/catalog-style'
 
 import {
   getGarmentCatalog as getMockCatalog,
@@ -50,6 +51,16 @@ async function loadSupabaseGarmentsModule() {
   return supabaseGarmentsModule
 }
 
+let supabaseCatalogModule: typeof import('@infra/repositories/_providers/supabase/catalog') | null =
+  null
+
+async function loadSupabaseCatalogModule() {
+  if (!supabaseCatalogModule) {
+    supabaseCatalogModule = await import('@infra/repositories/_providers/supabase/catalog')
+  }
+  return supabaseCatalogModule
+}
+
 async function getSupabaseCatalog(): Promise<GarmentCatalog[]> {
   const mod = await loadSupabaseGarmentsModule()
   return mod.getGarmentCatalog()
@@ -78,6 +89,16 @@ export async function getGarmentById(id: string): Promise<GarmentCatalog | null>
 export async function getAvailableBrands(): Promise<string[]> {
   if (isSupabaseCatalogMode()) return getSupabaseBrands()
   return isSupplierMode() ? getSupplierBrands() : getMockBrands()
+}
+
+/**
+ * Fetch normalized catalog styles (with colors and images).
+ * Only available in supabase-catalog mode. Returns [] in mock/supplier mode.
+ */
+export async function getNormalizedCatalog(): Promise<NormalizedGarmentCatalog[]> {
+  if (!isSupabaseCatalogMode()) return []
+  const mod = await loadSupabaseCatalogModule()
+  return mod.getNormalizedCatalog()
 }
 
 // Phase 1 mutable export - for development only, always returns mock data
