@@ -1,5 +1,6 @@
 import 'server-only'
-import type { CanonicalStyle } from '@lib/suppliers/types'
+import type { CanonicalStyle, CanonicalImageType } from '@lib/suppliers/types'
+import type { GarmentCategory } from '@domain/entities/garment'
 import { canonicalCategoryToGarmentCategory } from '@infra/repositories/_providers/supplier/garments'
 
 /** Extract the raw subcategory string after " - " delimiter. Returns null if absent. */
@@ -14,7 +15,11 @@ export function extractBaseCategory(category: string): string {
 }
 
 /** Build the value object for a brand upsert. */
-export function buildBrandUpsertValue(canonicalName: string) {
+export function buildBrandUpsertValue(canonicalName: string): {
+  canonicalName: string
+  isActive: boolean
+  updatedAt: Date
+} {
   return {
     canonicalName,
     isActive: true,
@@ -23,7 +28,26 @@ export function buildBrandUpsertValue(canonicalName: string) {
 }
 
 /** Build the value object for a style upsert. */
-export function buildStyleUpsertValue(style: CanonicalStyle, brandId: string, source: string) {
+export function buildStyleUpsertValue(
+  style: CanonicalStyle,
+  brandId: string,
+  source: string
+): {
+  source: string
+  externalId: string
+  brandId: string
+  styleNumber: string
+  name: string
+  description: string | null
+  category: GarmentCategory
+  subcategory: string | null
+  gtin: string | null
+  piecePrice: number | null
+  dozenPrice: number | null
+  casePrice: number | null
+  lastSyncedAt: Date
+  updatedAt: Date
+} {
   const primaryCategory = style.categories[0] ?? ''
   const subcategory = extractSubcategory(primaryCategory)
   // Strip subcategory suffix before normalizing to enum — "T-Shirts - Premium" → "T-Shirts"
@@ -48,7 +72,16 @@ export function buildStyleUpsertValue(style: CanonicalStyle, brandId: string, so
 }
 
 /** Build color upsert value for catalog_colors. */
-export function buildColorUpsertValue(styleId: string, color: CanonicalStyle['colors'][number]) {
+export function buildColorUpsertValue(
+  styleId: string,
+  color: CanonicalStyle['colors'][number]
+): {
+  styleId: string
+  name: string
+  hex1: string | null
+  hex2: string | null
+  updatedAt: Date
+} {
   return {
     styleId,
     name: color.name,
@@ -62,7 +95,12 @@ export function buildColorUpsertValue(styleId: string, color: CanonicalStyle['co
 export function buildImageUpsertValue(
   colorId: string,
   image: CanonicalStyle['colors'][number]['images'][number]
-) {
+): {
+  colorId: string
+  imageType: CanonicalImageType
+  url: string
+  updatedAt: Date
+} {
   return {
     colorId,
     imageType: image.type,
@@ -72,7 +110,16 @@ export function buildImageUpsertValue(
 }
 
 /** Build size upsert value for catalog_sizes. */
-export function buildSizeUpsertValue(styleId: string, size: CanonicalStyle['sizes'][number]) {
+export function buildSizeUpsertValue(
+  styleId: string,
+  size: CanonicalStyle['sizes'][number]
+): {
+  styleId: string
+  name: string
+  sortOrder: number
+  priceAdjustment: number
+  updatedAt: Date
+} {
   return {
     styleId,
     name: size.name,
