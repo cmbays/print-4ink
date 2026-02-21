@@ -120,9 +120,11 @@ describe('canonicalStyleToGarmentCatalog', () => {
     expect(result!.isFavorite).toBe(false)
   })
 
-  it('returns null when piecePrice is null (no pricing data)', () => {
+  it('returns a garment with basePrice 0 when piecePrice is null (browse-mode placeholder)', () => {
     const style = makeStyle({ pricing: { piecePrice: null, dozenPrice: null, casePrice: null } })
-    expect(canonicalStyleToGarmentCatalog(style)).toBeNull()
+    const result = canonicalStyleToGarmentCatalog(style)
+    expect(result).not.toBeNull()
+    expect(result!.basePrice).toBe(0)
   })
 
   it('returns null when supplier returns invalid name (empty string)', () => {
@@ -221,7 +223,7 @@ describe('getGarmentCatalog', () => {
     expect(result[0].id).toBe('valid')
   })
 
-  it('filters out garments with null piecePrice', async () => {
+  it('includes garments with null piecePrice as browse-mode entries (basePrice: 0)', async () => {
     const priced = makeStyle({ supplierId: 'has-price' })
     const unpriced = makeStyle({
       supplierId: 'no-price',
@@ -235,8 +237,9 @@ describe('getGarmentCatalog', () => {
     vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentCatalog()
-    expect(result).toHaveLength(1)
-    expect(result[0].id).toBe('has-price')
+    expect(result).toHaveLength(2)
+    expect(result.find((g) => g.id === 'has-price')?.basePrice).toBe(4.5)
+    expect(result.find((g) => g.id === 'no-price')?.basePrice).toBe(0)
   })
 
   it('returns empty array when adapter returns no styles', async () => {
@@ -301,7 +304,7 @@ describe('getGarmentById', () => {
     expect(result).toBeNull()
   })
 
-  it('returns null for style with no pricing data', async () => {
+  it('returns a garment with basePrice 0 for style with no pricing data (browse-mode)', async () => {
     const style = makeStyle({ pricing: { piecePrice: null, dozenPrice: null, casePrice: null } })
     const mockAdapter = {
       getStyle: vi.fn().mockResolvedValue(style),
@@ -309,7 +312,8 @@ describe('getGarmentById', () => {
     vi.mocked(getSupplierAdapter).mockReturnValue(asAdapter(mockAdapter))
 
     const result = await getGarmentById('3001')
-    expect(result).toBeNull()
+    expect(result).not.toBeNull()
+    expect(result!.basePrice).toBe(0)
   })
 
   it('accepts non-UUID supplier style IDs', async () => {

@@ -171,7 +171,8 @@ export function canonicalStyleToGarmentCatalog(style: CanonicalStyle): GarmentCa
 
 /**
  * Fetch the full supplier catalog, paginating until hasMore is false.
- * Garments with no piecePrice or invalid schema are silently filtered out.
+ * Garments with invalid schema (empty name/brand) are silently filtered out.
+ * Garments with no piecePrice are included with basePrice: 0 (browse-mode placeholder).
  */
 export async function getGarmentCatalog(): Promise<GarmentCatalog[]> {
   const adapter = getSupplierAdapter()
