@@ -117,10 +117,15 @@ export function GarmentDetailDrawer({
   const selectedColor = selectedColorId ? getColorById(selectedColorId, getColorsMutable()) : null
 
   // Resolve normalized color (with images) for the selected color slot
-  // Falls back to first normalized color when no selectedColorId is set yet
-  const selectedNormalizedColor = normalizedColors
-    ? (normalizedColors.find((c) => c.id === selectedColorId) ?? normalizedColors[0] ?? null)
-    : null
+  // Match by name because selectedColorId holds a mock Color entity ID (e.g., "color-white")
+  // while CatalogColor.id is a Supabase UUID — they can never be equal.
+  // Both old Color entities and CatalogColor share human-readable names (e.g., "Black", "White").
+  const selectedNormalizedColor =
+    normalizedColors && selectedColor
+      ? (normalizedColors.find((c) => c.name === selectedColor.name) ?? normalizedColors[0] ?? null)
+      : normalizedColors
+        ? (normalizedColors[0] ?? null)
+        : null
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
