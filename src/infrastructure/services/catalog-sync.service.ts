@@ -55,7 +55,11 @@ export async function syncCatalogFromSupplier(): Promise<number> {
       page++
 
       if (page >= MAX_CATALOG_PAGES) {
-        syncLogger.error('Exceeded MAX_CATALOG_PAGES', { page, offset })
+        syncLogger.error('Exceeded MAX_CATALOG_PAGES — possible supplier pagination bug', {
+          page,
+          offset,
+          totalSoFar: allStyles.length,
+        })
         break
       }
     }
@@ -85,6 +89,7 @@ export async function syncCatalogFromSupplier(): Promise<number> {
 
       // ── Step 2: Upsert brand source bridges ─────────────────────────────
       const brandSourceValues = batch.map((s) => ({
+        // Safe: brandIdByName is built from RETURNING on the same brand names in this batch
         brandId: brandIdByName.get(s.brand)!,
         source: s.supplier,
         externalId: s.supplierId,
@@ -101,6 +106,7 @@ export async function syncCatalogFromSupplier(): Promise<number> {
 
       // ── Step 3: Upsert styles, get externalId → UUID map ─────────────────
       const styleValues = batch.map((s) =>
+        // Safe: brandIdByName is built from RETURNING on the same brand names in this batch
         buildStyleUpsertValue(s, brandIdByName.get(s.brand)!, s.supplier)
       )
       const styleRows = await db
@@ -129,7 +135,12 @@ export async function syncCatalogFromSupplier(): Promise<number> {
       // ── Step 4: Colors, images, sizes per style ──────────────────────────
       for (const style of batch) {
         const styleId = styleIdByExternalId.get(style.supplierId)
-        if (!styleId) continue
+        if (!styleId) {
+          syncLogger.warn('Style missing from RETURNING result — skipping child inserts', {
+            supplierId: style.supplierId,
+          })
+          continue
+        }
 
         if (style.colors.length > 0) {
           const colorValues = style.colors.map((c) => buildColorUpsertValue(styleId, c))
