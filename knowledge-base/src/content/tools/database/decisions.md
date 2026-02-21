@@ -1,8 +1,10 @@
 ---
 title: 'Database — Key Decisions'
-type: 'decisions'
-status: 'active'
-date: 2026-02-19
+subtitle: 'Key decisions for the database system'
+tool: 'database'
+docType: 'decisions'
+lastUpdated: 2026-02-19
+status: 'current'
 ---
 
 # Database Architecture Decisions

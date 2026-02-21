@@ -1,8 +1,10 @@
 ---
 title: 'Database — Supabase + Drizzle ORM'
-type: 'infrastructure'
-status: 'active'
-date: 2026-02-19
+subtitle: 'Core database architecture and connection rules'
+tool: 'database'
+docType: 'overview'
+lastUpdated: 2026-02-19
+status: 'current'
 ---
 
 # Database Tool — Supabase PostgreSQL + Drizzle

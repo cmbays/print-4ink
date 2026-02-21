@@ -1,8 +1,10 @@
 ---
 title: 'Database — Implementation History'
-type: 'history'
-status: 'active'
-date: 2026-02-19
+subtitle: 'The history of database build'
+tool: 'database'
+docType: 'history'
+lastUpdated: 2026-02-19
+status: 'current'
 ---
 
 # Database Tool — Build Timeline
