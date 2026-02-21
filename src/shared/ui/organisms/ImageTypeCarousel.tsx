@@ -65,7 +65,7 @@ export function ImageTypeCarousel({ images, alt, className }: ImageTypeCarouselP
                 setActiveType(type)
               }}
               className={cn(
-                'px-1.5 py-0.5 text-[10px] rounded border transition-colors motion-reduce:transition-none',
+                'px-2 py-1.5 min-h-(--mobile-touch-target) md:min-h-0 md:py-0.5 text-xs rounded border transition-colors motion-reduce:transition-none',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action/50',
                 activeType === type
                   ? 'border-action text-action bg-action/10'

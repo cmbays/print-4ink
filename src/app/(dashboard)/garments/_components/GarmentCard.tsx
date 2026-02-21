@@ -37,6 +37,8 @@ export function GarmentCard({
 }: GarmentCardProps) {
   // All Color objects for this garment's palette
   // GarmentCatalog has availableColors (array of color IDs); NormalizedGarmentCatalog has colors (rich objects)
+  // Normalized garments return [] here — favorite swatches depend on Color entity IDs not available in the
+  // normalized schema. This is intentionally deferred until the favorites system is migrated to catalog_colors.
   const garmentColors = useMemo(() => {
     if (isNormalized(garment)) return []
     const allColors = getColorsMutable()
@@ -53,6 +55,7 @@ export function GarmentCard({
 
   const totalColorCount = isNormalized(garment) ? garment.colors.length : garmentColors.length
 
+  // Card always shows the first color's front image — intentional; the detail drawer handles color switching.
   const frontImage = isNormalized(garment)
     ? garment.colors[0]?.images.find((i) => i.imageType === 'front')
     : undefined
@@ -143,11 +146,9 @@ export function GarmentCard({
       {/* Bottom row: price + badges + favorite */}
       <div className="flex items-center justify-between gap-2 pt-1">
         <div className="flex items-center gap-1.5">
-          {showPrice && (
+          {showPrice && !(isNormalized(garment) && garment.piecePrice == null) && (
             <span className="text-sm font-medium text-foreground">
-              {formatCurrency(
-                isNormalized(garment) ? (garment.piecePrice ?? 0) : garment.basePrice
-              )}
+              {formatCurrency(isNormalized(garment) ? garment.piecePrice! : garment.basePrice)}
             </span>
           )}
           {!garment.isEnabled && (

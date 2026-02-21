@@ -1,7 +1,5 @@
 # Catalog Schema Normalization + Real S&S Product Images
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
-
 **Goal:** Replace the denormalized `catalog` JSONB table with 6 normalized tables, populate them from S&S API (preserving hex codes and all 8 image types), and replace the SVG tinting mockup in GarmentCard with real product photos.
 
 **Architecture:** Approach C (additive + archive) — new tables live alongside old `catalog` during the sprint; a final migration renames `catalog` → `catalog_archived`. The sync service writes to new tables; the repository is updated to read from them. The old table provides a rollback safety net for one sprint.

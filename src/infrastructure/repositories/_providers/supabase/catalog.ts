@@ -1,7 +1,8 @@
 import 'server-only'
 import { sql } from 'drizzle-orm'
 import type { NormalizedGarmentCatalog } from '@domain/entities/catalog-style'
-import { catalogImageSchema } from '@domain/entities/catalog-style'
+import { catalogImageSchema, catalogSizeSchema } from '@domain/entities/catalog-style'
+import { garmentCategoryEnum } from '@domain/entities/garment'
 import { logger } from '@shared/lib/logger'
 
 const repoLogger = logger.child({ domain: 'supabase-catalog' })
@@ -28,7 +29,7 @@ export function parseNormalizedCatalogRow(row: {
     hex2: string | null
     images: Array<{ imageType: string; url: string }>
   }>
-  sizes: Array<{ id: string; name: string; sortOrder: number; priceAdjustment: number }>
+  sizes: unknown[]
   is_enabled: boolean | null
   is_favorite: boolean | null
 }): NormalizedGarmentCatalog {
@@ -40,7 +41,7 @@ export function parseNormalizedCatalogRow(row: {
     styleNumber: row.style_number,
     name: row.name,
     description: row.description,
-    category: row.category as NormalizedGarmentCatalog['category'],
+    category: garmentCategoryEnum.parse(row.category),
     subcategory: row.subcategory,
     piecePrice: row.piece_price,
     colors: row.colors.map((c) => ({
@@ -51,12 +52,7 @@ export function parseNormalizedCatalogRow(row: {
       hex2: c.hex2,
       images: catalogImageSchema.array().parse(c.images),
     })),
-    sizes: row.sizes.map((s) => ({
-      id: s.id,
-      name: s.name,
-      sortOrder: s.sortOrder,
-      priceAdjustment: s.priceAdjustment,
-    })),
+    sizes: catalogSizeSchema.array().parse(row.sizes),
     isEnabled: row.is_enabled ?? true,
     isFavorite: row.is_favorite ?? false,
   }

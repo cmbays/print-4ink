@@ -3,7 +3,7 @@
 **Date**: 2026-02-19
 **Issue**: #164 — Replace mockup tinting with real S&S product photos
 **Parent Epic**: #140 — Garment catalog: supplier API integration
-**Status**: Design approved, implementation pending
+**Status**: Design approved, implementation complete (PR #558)
 
 ---
 
@@ -42,7 +42,7 @@ The `GarmentMockup` component uses SVG `feColorMatrix` tinting (a single white t
 
 **12-value canonical enum** (`garment_category`):
 
-```
+```text
 t-shirts, polos, fleece, knits-layering, outerwear, pants,
 shorts, headwear, activewear, accessories, wovens, other
 ```
