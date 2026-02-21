@@ -40,7 +40,7 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-foreground">
               Email

@@ -23,6 +23,49 @@ import type { CanonicalStyle } from '@lib/suppliers/types'
 
 const supplierLogger = logger.child({ domain: 'supplier-garments' })
 
+/**
+ * S&S category → canonical domain category mapping.
+ * Handles common variations: "T-Shirts", "T Shirts", "Tshirts", etc.
+ */
+const CATEGORY_MAPPING = {
+  // T-Shirts variants
+  't-shirts': 't-shirts',
+  't-shirt': 't-shirts',
+  't-shirts-premium': 't-shirts',
+  tshirts: 't-shirts',
+  // Polos
+  polos: 'polos',
+  polo: 'polos',
+  // Fleece & Hoodies
+  fleece: 'fleece',
+  hoodies: 'fleece',
+  hoodie: 'fleece',
+  sweatshirts: 'fleece',
+  sweatshirt: 'fleece',
+  // Knits & Layering
+  'knits-layering': 'knits-layering',
+  knits: 'knits-layering',
+  layering: 'knits-layering',
+  cardigans: 'knits-layering',
+  sweaters: 'knits-layering',
+  // Outerwear
+  outerwear: 'outerwear',
+  jackets: 'outerwear',
+  coats: 'outerwear',
+  // Pants
+  pants: 'pants',
+  trousers: 'pants',
+  // Shorts
+  shorts: 'shorts',
+  // Headwear
+  headwear: 'headwear',
+  hats: 'headwear',
+  caps: 'headwear',
+  // Activewear
+  activewear: 'activewear',
+  performance: 'activewear',
+}
+
 const CATALOG_PAGE_SIZE = 100
 /** Safety ceiling: prevents unbounded pagination if the supplier misbehaves. */
 const MAX_CATALOG_PAGES = 500
@@ -34,38 +77,68 @@ const supplierIdSchema = z.string().min(1).max(50)
 /**
  * Normalize a S&S category string to a domain GarmentCategory.
  *
- * S&S uses free-text values like "T-Shirts", "Fleece", "Outerwear", etc.
- * We lowercase and hyphenate to match the domain enum. Unknown categories
- * fall back to 't-shirts' and a warning is logged so miscategorization is
- * visible rather than silent.
+ * S&S uses free-text values with optional subcategories (e.g., "T-Shirts - Premium",
+ * "Fleece - Quarter Zip") and special characters (e.g., "Knits & Layering").
+ *
+ * Process:
+ *   1. Extract base category (before " - " delimiter)
+ *   2. Normalize: remove special chars (&, /, etc.), lowercase, hyphenate
+ *   3. Look up in explicit CATEGORY_MAPPING (handles common variations)
+ *   4. If found, return mapped category
+ *   5. If not found, try direct enum parse as fallback
+ *   6. If all fail, use default and log warning
  */
 export function canonicalCategoryToGarmentCategory(categories: string[]): GarmentCategory {
-  const raw = (categories[0] ?? '').toLowerCase().replace(/\s+/g, '-')
-  const result = garmentCategoryEnum.safeParse(raw)
-  if (!result.success) {
-    supplierLogger.warn('Unknown garment category, falling back to default', { raw, categories })
+  const categoryString = categories[0] ?? ''
+
+  // Extract base category before " - " delimiter (handles "T-Shirts - Premium" → "T-Shirts")
+  const baseCategory = categoryString.split(' - ')[0]
+
+  // Normalize: replace special chars with space, then lowercase/hyphenate
+  const normalized = baseCategory
+    .replace(/[&/,]+/g, ' ') // Replace special chars with space
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Collapse spaces to hyphens
+
+  // Try explicit mapping first (handles "knits-layering", "t-shirts", etc.)
+  const mapped = CATEGORY_MAPPING[normalized as keyof typeof CATEGORY_MAPPING]
+  if (mapped) {
+    return mapped as GarmentCategory
   }
-  return result.success ? result.data : FALLBACK_GARMENT_CATEGORY
+
+  // Fallback: try direct enum parse
+  const result = garmentCategoryEnum.safeParse(normalized)
+  if (result.success) {
+    return result.data
+  }
+
+  // Log and use default
+  supplierLogger.warn('Unknown garment category, falling back to default', {
+    normalized,
+    baseCategory,
+    original: categoryString,
+  })
+  return FALLBACK_GARMENT_CATEGORY
 }
 
 /**
  * Map a CanonicalStyle to a domain GarmentCatalog.
  *
- * Returns null in two cases:
- *   - piecePrice is null (no pricing data — not shown in catalog)
+ * Returns null in one case:
  *   - garmentCatalogSchema validation fails (malformed supplier data logged, item skipped)
+ *
+ * Note: Styles without pricing are included. S&S browse results (/v2/styles/)
+ * intentionally omit pricing to avoid N+1 API calls. Pricing is loaded on-demand
+ * via getGarmentById() when full details are needed.
  *
  * Returning null rather than throwing allows the catalog pagination loop to
  * skip individual bad records without aborting the full fetch.
  */
 export function canonicalStyleToGarmentCatalog(style: CanonicalStyle): GarmentCatalog | null {
-  if (style.pricing.piecePrice === null) {
-    supplierLogger.warn('Skipping garment with no piecePrice', {
-      styleId: style.supplierId,
-      styleNumber: style.styleNumber,
-    })
-    return null
-  }
+  // S&S browse results (/v2/styles/) intentionally omit pricing to avoid N+1 API calls.
+  // Use 0 as a placeholder when pricing isn't available — it clearly signals
+  // "pricing not loaded" on the UI. Pricing is loaded on-demand via getGarmentById().
+  const basePrice = style.pricing.piecePrice ?? 0
 
   const raw = {
     id: style.supplierId,
@@ -73,7 +146,7 @@ export function canonicalStyleToGarmentCatalog(style: CanonicalStyle): GarmentCa
     sku: style.styleNumber,
     name: style.styleName,
     baseCategory: canonicalCategoryToGarmentCategory(style.categories),
-    basePrice: style.pricing.piecePrice,
+    basePrice,
     availableColors: style.colors.map((c) => c.name),
     availableSizes: style.sizes.map((s) => ({
       name: s.name,
@@ -98,7 +171,8 @@ export function canonicalStyleToGarmentCatalog(style: CanonicalStyle): GarmentCa
 
 /**
  * Fetch the full supplier catalog, paginating until hasMore is false.
- * Garments with no piecePrice or invalid schema are silently filtered out.
+ * Garments with invalid schema (empty name/brand) are silently filtered out.
+ * Garments with no piecePrice are included with basePrice: 0 (browse-mode placeholder).
  */
 export async function getGarmentCatalog(): Promise<GarmentCatalog[]> {
   const adapter = getSupplierAdapter()
