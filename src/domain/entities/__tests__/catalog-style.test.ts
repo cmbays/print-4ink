@@ -5,6 +5,32 @@ import {
   normalizedGarmentCatalogSchema,
 } from '../catalog-style'
 
+describe('catalogImageSchema', () => {
+  it('accepts a valid image', () => {
+    const result = catalogImageSchema.safeParse({
+      imageType: 'front',
+      url: 'https://www.ssactivewear.com/images/img.jpg',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects an unknown image type', () => {
+    const result = catalogImageSchema.safeParse({
+      imageType: 'thumbnail',
+      url: 'https://www.ssactivewear.com/images/img.jpg',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects a non-URL string', () => {
+    const result = catalogImageSchema.safeParse({
+      imageType: 'front',
+      url: 'not-a-url',
+    })
+    expect(result.success).toBe(false)
+  })
+})
+
 describe('catalogColorSchema', () => {
   it('accepts a color with images', () => {
     const result = catalogColorSchema.safeParse({

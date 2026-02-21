@@ -21,8 +21,14 @@ export const catalogColorSchema = z.object({
   id: z.string().uuid(),
   styleId: z.string().uuid(),
   name: z.string().min(1),
-  hex1: z.string().nullable(),
-  hex2: z.string().nullable(),
+  hex1: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/)
+    .nullable(),
+  hex2: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/)
+    .nullable(),
   images: z.array(catalogImageSchema),
 })
 
