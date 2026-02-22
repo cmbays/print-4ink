@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AlertCircle, RotateCcw, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@shared/ui/primitives/button'
 import { logger } from '@shared/lib/logger'
 
 const errorLogger = logger.child({ domain: 'quotes-error-boundary' })
