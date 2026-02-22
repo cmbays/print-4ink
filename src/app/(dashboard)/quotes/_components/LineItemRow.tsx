@@ -164,7 +164,7 @@ export function LineItemRow({
   }, [selectedGarment])
 
   const availableColors = useMemo(() => {
-    if (!selectedGarment) return colors
+    if (!selectedGarment || selectedGarment.availableColors.length === 0) return colors
     return colors.filter((c) => selectedGarment.availableColors.includes(c.id))
   }, [selectedGarment, colors])
 
