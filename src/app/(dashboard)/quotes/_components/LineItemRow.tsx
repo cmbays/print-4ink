@@ -206,8 +206,7 @@ export function LineItemRow({
     const garment = garmentCatalog.find((g) => g.id === garmentId)
     const resetSizes: Record<string, number> = {}
     if (garment) {
-      const sizes =
-        garment.availableSizes.length > 0 ? garment.availableSizes : DEFAULT_SIZES
+      const sizes = garment.availableSizes.length > 0 ? garment.availableSizes : DEFAULT_SIZES
       sizes.forEach((s) => {
         resetSizes[s.name] = 0
       })
